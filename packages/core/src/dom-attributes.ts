@@ -1,6 +1,7 @@
 import { Scope, onCleanup, renderEffect, untrack, unowned } from './reactivity.js';
 import type { Props } from './props.js';
 import type { HydrationSession } from './hydration.js';
+import { bindControl, controlProperties, notifySelect } from './dom-controls.js';
 import {
   HTML,
   attributeName,
@@ -8,7 +9,6 @@ import {
   eventName,
   nativeAttributes,
   styleEntries,
-  textValue,
 } from './native.js';
 
 const properties = new Set([
@@ -23,7 +23,6 @@ const properties = new Set([
 interface EventBinding {
   type: string;
   capture: boolean;
-  current: (event: Event) => void;
   listener: EventListener;
 }
 
@@ -47,26 +46,13 @@ function setAttribute(element: Element, key: string, value: unknown): void {
   if (key === 'innerHTML' || key === 'outerHTML' || key === 'textContent' || key === 'innerText') {
     throw new Error(`${key} 会绕过 JSX 所有权，请使用 children 或明确的 DOM ref 集成。`);
   }
-  if (properties.has(key) && key in element) {
-    if ((key === 'value' || key === 'defaultValue') && element.localName === 'select') {
-      const values = new Set((Array.isArray(value) ? value : [value ?? '']).map(textValue));
-      let matched = false;
-      for (const option of (element as HTMLSelectElement).options) {
-        const selected: boolean =
-          values.has(option.value) && ((element as HTMLSelectElement).multiple || !matched);
-        option.selected = selected;
-        matched ||= selected;
-      }
-      if (!matched) (element as HTMLSelectElement).selectedIndex = -1;
-      return;
-    }
-    const next =
-      key === 'value' || key === 'defaultValue'
-        ? value == null
-          ? ''
-          : textValue(value)
-        : Boolean(value);
-    if (!Object.is(Reflect.get(element, key), next)) Reflect.set(element, key, next);
+  if (
+    (key === 'selected' && element.localName === 'option') ||
+    (key === 'muted' && key in element)
+  ) {
+    const next = Boolean(value);
+    element.toggleAttribute(key, next);
+    if (Reflect.get(element, key) !== next) Reflect.set(element, key, next);
     return;
   }
   const name = attributeName(key, element.namespaceURI ?? HTML);
@@ -86,30 +72,15 @@ export function attachAttributes(
   const previous = new Map<string, unknown>();
   const styles = new Map<string, string>();
   const events = new Map<string, EventBinding>();
-  const control = element as HTMLInputElement | HTMLTextAreaElement;
-  const editedValue = Boolean(
-    hydration &&
-    input.value !== undefined &&
-    (element.localName === 'input' || element.localName === 'textarea') &&
-    (element.localName !== 'input' ||
-      !['checkbox', 'radio'].includes((element as HTMLInputElement).type)) &&
-    control.value !==
-      (element.localName === 'textarea'
-        ? control.defaultValue
-        : (element.getAttribute('value') ?? '')),
+  const control = bindControl(element, input, hydration, (type) =>
+    [...events.values()].some((binding) => binding.type === type),
   );
-  const editedChecked = Boolean(
-    hydration &&
-    input.checked !== undefined &&
-    element.localName === 'input' &&
-    (element as HTMLInputElement).checked !== element.hasAttribute('checked'),
-  );
-  let initial = true;
   onCleanup(() => {
     for (const binding of events.values())
       element.removeEventListener(binding.type, binding.listener, binding.capture);
   });
   renderEffect(() => {
+    control?.track();
     nativeAttributes(input, element.localName, element.namespaceURI ?? HTML);
     const next = new Map(
       Object.keys(input)
@@ -119,6 +90,7 @@ export function attachAttributes(
     );
     for (const key of previous.keys()) if (!next.has(key)) next.set(key, undefined);
     for (const [key, value] of next) {
+      if (control && controlProperties.has(key)) continue;
       if (key === 'style') {
         applyStyle(element, value, styles);
         continue;
@@ -134,50 +106,26 @@ export function attachAttributes(
           if (!binding) {
             binding = {
               ...event,
-              current: value as (event: Event) => void,
               listener: (event) => {
-                unowned(() => binding!.current.call(element, event));
+                unowned(() => {
+                  const handler = input[key];
+                  if (typeof handler === 'function') handler.call(element, event);
+                });
               },
             };
             events.set(key, binding);
             element.addEventListener(binding.type, binding.listener, binding.capture);
-          } else binding.current = value as (event: Event) => void;
+          }
         }
-      } else if (
-        initial &&
-        ((key === 'value' && editedValue) || (key === 'checked' && editedChecked))
-      )
-        continue;
-      else if (!Object.is(previous.get(key), value) || !previous.has(key))
+      } else if (!Object.is(previous.get(key), value) || !previous.has(key))
         setAttribute(element, key, value);
     }
     previous.clear();
     for (const [key, value] of next) if (value !== undefined) previous.set(key, value);
-    initial = false;
+    control?.update();
+    if (element.localName === 'option' || element.localName === 'optgroup')
+      notifySelect(element.parentNode);
   });
-  if (editedValue || editedChecked)
-    hydration!.replay(() => {
-      if (
-        !element.isConnected ||
-        (element.localName === 'input' &&
-          (element as HTMLInputElement).type === 'radio' &&
-          !(element as HTMLInputElement).checked)
-      )
-        return;
-      const available = new Set([...events.values()].map((binding) => binding.type));
-      const type =
-        editedChecked && available.has('change')
-          ? 'change'
-          : available.has('input')
-            ? 'input'
-            : available.has('change')
-              ? 'change'
-              : undefined;
-      if (type)
-        element.dispatchEvent(
-          new element.ownerDocument.defaultView!.Event(type, { bubbles: true, composed: true }),
-        );
-    });
 }
 
 export function attachRef(element: Element, input: Props, owner: Scope): void {

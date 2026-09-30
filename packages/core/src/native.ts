@@ -30,6 +30,7 @@ const aliases: Record<string, string> = {
   fillRule: 'fill-rule',
   defaultValue: 'value',
   defaultChecked: 'checked',
+  defaultSelected: 'selected',
   xlinkHref: 'xlink:href',
 };
 
@@ -48,6 +49,13 @@ export function assertName(name: string): void {
 
 export function textValue(value: unknown): string {
   return String(value).replace(/\0/g, '\ufffd');
+}
+
+export function selectionValues(value: unknown): Set<string> {
+  const items: unknown[] = Array.isArray(value) ? value : [value ?? ''];
+  if (items.some((item) => typeof item !== 'string' && typeof item !== 'number'))
+    throw new Error('select 的值使用字符串、数字或其数组。');
+  return new Set(items.map(textValue));
 }
 
 export function eventName(name: string): { type: string; capture: boolean } | null {
@@ -139,9 +147,14 @@ export function nativeAttributes(input: Props, tag: string, namespace = HTML): M
     throw new Error('value 与 defaultValue 不能同时提供。');
   if (input.checked !== undefined && input.defaultChecked !== undefined)
     throw new Error('checked 与 defaultChecked 不能同时提供。');
+  if (tag === 'input' && input.type === 'file' && (input.value ?? input.defaultValue ?? '') !== '')
+    throw new Error('文件输入不能设置非空 value/defaultValue。');
+  if (tag === 'select' && !input.multiple && Array.isArray(input.value ?? input.defaultValue))
+    throw new Error('数组 value/defaultValue 需要 multiple select。');
   const attributes = new Map<string, string>();
   for (const key of Object.keys(input)) {
     if (key === 'children' || key === 'ref' || key === 'key' || eventName(key)) continue;
+    if (tag === 'input' && key === 'indeterminate') continue;
     if (key === 'innerHTML' || key === 'outerHTML' || key === 'textContent' || key === 'innerText')
       throw new Error(`${key} 会绕过 JSX 所有权，请使用 children 或 DOM ref。`);
     if (

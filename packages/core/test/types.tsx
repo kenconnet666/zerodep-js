@@ -54,6 +54,19 @@ export const boundary = (
     <span />
   </ErrorBoundary>
 );
+export const numericOption = <option value={1}>数字选项</option>;
+export const nativeInput = (
+  <input
+    type="checkbox"
+    onInput={(event) => {
+      const optional: boolean | undefined = event.isComposing;
+      void optional;
+      // @ts-expect-error 原生 input 事件不一定带有 InputEvent 扩展字段。
+      const guaranteed: boolean = event.isComposing;
+      void guaranteed;
+    }}
+  />
+);
 export const badList = (
   <For each={[{ id: 1 }]} keyBy={(row) => row.id}>
     {(row) => {

@@ -8,6 +8,7 @@ import {
   textValue,
   elementText,
   nativeAttributes,
+  selectionValues,
   setupComponent,
   element,
   dynamic,
@@ -94,6 +95,7 @@ function render(value: Renderable, owner: Scope, context: Context): string {
   }
   if (value.kind === 'boundary') {
     const scope = new Scope(owner);
+    const matched = context.selection?.matched;
     try {
       const body = scope.run(() =>
         render(
@@ -104,6 +106,7 @@ function render(value: Renderable, owner: Scope, context: Context): string {
       );
       return range('boundary', body);
     } catch (error) {
+      if (context.selection && matched !== undefined) context.selection.matched = matched;
       let failure = error;
       try {
         scope.dispose();
@@ -164,12 +167,13 @@ function render(value: Renderable, owner: Scope, context: Context): string {
   } else {
     const childContext: Context = { ...context, namespace, tag };
     if (namespace === HTML && tag === 'select') {
-      const selected = value.props.value ?? value.props.defaultValue;
+      const selected =
+        value.props.value !== undefined ? value.props.value : value.props.defaultValue;
       childContext.selection =
         selected === undefined
           ? undefined
           : {
-              values: new Set((Array.isArray(selected) ? selected : [selected]).map(textValue)),
+              values: selectionValues(selected),
               multiple: Boolean(value.props.multiple),
               matched: false,
             };

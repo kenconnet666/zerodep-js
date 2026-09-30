@@ -2,6 +2,7 @@ import { Scope, getScope, renderEffect, untrack, type Cleanup } from './reactivi
 import { setupComponent, type AnyComponent, type ComponentProps } from './component.js';
 import { TEMPLATE, element, type DynamicTemplate, type Renderable } from './template.js';
 import { attachAttributes, attachRef } from './dom-attributes.js';
+import { notifySelect } from './dom-controls.js';
 import type { Props } from './props.js';
 import { createRange, insert, rollback, type Container } from './dom-utils.js';
 import { renderList } from './dom-list.js';
@@ -86,6 +87,7 @@ function renderDynamic(
     branch = next;
     text = primitive ? (fragment.firstChild as Text) : undefined;
     anchor.parentNode!.insertBefore(fragment, anchor);
+    notifySelect(anchor.parentNode);
     previous = value;
     initialized = true;
   });
@@ -185,6 +187,7 @@ export function renderValue(
           text = node.ownerDocument.createTextNode(content);
           node.appendChild(text);
         }
+        if (node.localName === 'option') notifySelect(node.parentNode);
       });
     if (hydration) hydration.session.defer(bindText);
     else bindText();
@@ -195,6 +198,7 @@ export function renderValue(
     child?.finish();
   }
   if (node.localName === 'select') {
+    hydration?.select(node as HTMLSelectElement, value.props);
     if (hydration) hydration.session.defer(attributes);
     else attributes();
   }

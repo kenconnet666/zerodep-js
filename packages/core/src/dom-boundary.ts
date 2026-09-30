@@ -3,6 +3,7 @@ import { dynamic } from './template.js';
 import type { BoundaryTemplate } from './flow.js';
 import { HydrationCursor, containsHydrationError } from './hydration.js';
 import { createRange, rollback, type Container, type Render } from './dom-utils.js';
+import { notifySelect } from './dom-controls.js';
 
 export function renderBoundary(
   template: BoundaryTemplate,
@@ -94,6 +95,7 @@ export function renderBoundary(
     branch = next;
     range.end.parentNode!.insertBefore(fragment, range.end);
     range.start.data = failure ? 'zj:boundary:error' : 'zj:boundary';
+    notifySelect(range.end.parentNode);
   }
   owner.onError = (error) => {
     if (recovering) throw error;

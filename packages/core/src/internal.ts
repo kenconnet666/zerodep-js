@@ -20,6 +20,7 @@ export {
   textContent,
   elementText,
   nativeAttributes,
+  selectionValues,
 } from './native.js';
 
 export function source<T>(initial: T): Source<T> {

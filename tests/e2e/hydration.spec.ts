@@ -138,3 +138,23 @@ for (const mode of ['csr', 'ssr']) {
     expect(errors).toEqual([]);
   });
 }
+
+test('接管保留预先勾选、单选和多选，并且不伪造平台默认值的输入', async ({ page }) => {
+  const release = await holdClient(page);
+  try {
+    await page.goto('/?render=ssr', { waitUntil: 'commit' });
+    await page.getByRole('checkbox', { name: '接受勾选', exact: true }).check();
+    await page.getByRole('radio', { name: '单选乙', exact: true }).check();
+    await page.getByRole('combobox', { name: '单选内容', exact: true }).selectOption('a');
+    await page.getByRole('listbox', { name: '多选内容', exact: true }).selectOption('b');
+    release();
+    await expect(page.locator('#app')).toHaveAttribute('data-client-ready', 'true');
+    await expect(page.getByRole('checkbox', { name: '接受勾选', exact: true })).toBeChecked();
+    await expect(page.getByRole('radio', { name: '单选乙', exact: true })).toBeChecked();
+    await expect(page.locator('[data-check-state]')).toHaveText('true/0');
+    await expect(page.locator('[data-choice]')).toHaveText('a/b');
+    await expect(page.locator('[data-range-events]')).toHaveText('0');
+  } finally {
+    release();
+  }
+});

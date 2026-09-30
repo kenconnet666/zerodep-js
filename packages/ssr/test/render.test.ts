@@ -13,6 +13,35 @@ import { For, ErrorBoundary } from '@zerodep-js/core';
 import { renderToString, serializeData } from '../src/index.js';
 
 describe('真实组件 SSR', () => {
+  it('select 的 null 值匹配空选项，失败子树不会消耗选中状态', () => {
+    const fail = defineComponent(() => {
+      throw new Error('失败');
+    });
+    const option = () => element('option', props([{ value: () => '', children: () => '空' }]));
+    const App = defineComponent(() =>
+      element(
+        'select',
+        props([
+          {
+            value: () => null,
+            children: () =>
+              element(
+                ErrorBoundary,
+                props([
+                  {
+                    children: () => [option(), element(fail, {})],
+                    fallback: () => option,
+                  },
+                ]),
+              ),
+          },
+        ]),
+      ),
+    );
+    const html = renderToString(App);
+    expect(html).toContain('<option value="" selected="">空</option>');
+    expect(html.match(/ selected=/g)).toHaveLength(1);
+  });
   it('SSR 中 flush 不会提前运行其他根的任务', () => {
     const callback = vi.fn();
     const stop = createRoot((dispose) => {

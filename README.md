@@ -2,7 +2,7 @@
 
 面向 TSX 的细粒度响应式框架实验工作区，目标是显式声明响应式变量、直接读写、组件参数解构和自然的默认值。
 
-当前已开始完整生产化目标：变量式状态、组件、列表、context、错误恢复、CSR 和 SSR/hydration 已接入同一 App。完整表单行为、开发体验、稳定性及发布验收仍在建设中，尚未达到生产验收。
+当前已开始完整生产化目标：变量式状态、组件、列表、context、错误恢复、原生表单、CSR 和 SSR/hydration 已接入同一 App。开发体验、长期稳定性、平台试点及发布验收仍在建设中，尚未达到生产验收。
 
 ## 工作区
 
@@ -107,6 +107,7 @@ pnpm lsp:inspect packages/ssr/src/index.ts apps/example/src/entry-client.ts
 - [执行中的语义契约](docs/semantics.md)
 - [目标执行记录](docs/execution.md)
 - [SSR 与 hydration 使用及边界](docs/ssr-and-hydration.md)
+- [原生输入与表单契约](docs/forms.md)
 - [第一阶段 API 评审用例](docs/api-review.md)
 - [实现路线、代价与设计约束](docs/implementation-design.md)
 - [TS7 与编译工具研究](.design/ts7-tsx-research.md)

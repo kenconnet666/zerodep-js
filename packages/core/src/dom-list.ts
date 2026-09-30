@@ -2,6 +2,7 @@ import { Scope, Source, batch, getScope, renderEffect, untrack } from './reactiv
 import { dynamic } from './template.js';
 import type { Key, ListTemplate } from './flow.js';
 import type { HydrationCursor } from './hydration.js';
+import { notifySelect } from './dom-controls.js';
 import {
   createRange,
   moveRange,
@@ -139,6 +140,7 @@ export function renderList(
         }
         pending?.finish();
         pending = undefined;
+        notifySelect(range.end.parentNode);
         if (errors.length === 1) throw errors[0];
         if (errors.length) throw new AggregateError(errors, '列表清理失败。');
       }),

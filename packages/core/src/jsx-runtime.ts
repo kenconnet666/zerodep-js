@@ -16,11 +16,13 @@ type NativeValues<T> = {
   ]?: T[K] | null;
 };
 export type EventHandler<T, E extends Event> = (event: E & { readonly currentTarget: T }) => void;
+// checkbox 等控件可能派发普通 Event，InputEvent 的扩展字段不能无条件承诺存在。
+type NativeInputEvent = Event & Partial<Omit<InputEvent, keyof Event>>;
 
 interface Events {
   onClick: MouseEvent;
   onDblClick: MouseEvent;
-  onInput: InputEvent;
+  onInput: NativeInputEvent;
   onChange: Event;
   onFocus: FocusEvent;
   onBlur: FocusEvent;
@@ -77,7 +79,8 @@ type EventProps<T> = { [K in keyof Events]?: EventHandler<T, Events[K]> | undefi
   [K in keyof Events as `${K}Capture`]?: EventHandler<T, Events[K]> | undefined;
 } & {
   [K in keyof GlobalEventHandlersEventMap as `on${K}`]?:
-    EventHandler<T, GlobalEventHandlersEventMap[K]> | undefined;
+    | EventHandler<T, K extends 'input' ? NativeInputEvent : GlobalEventHandlersEventMap[K]>
+    | undefined;
 };
 export type Style =
   | string
@@ -95,7 +98,9 @@ type ControlValues<T> = T extends HTMLSelectElement
         value?: InputValue;
         defaultValue?: InputValue;
       }
-    : NativeValues<T>;
+    : T extends HTMLOptionElement | HTMLButtonElement
+      ? Omit<NativeValues<T>, 'value'> & { value?: InputValue }
+      : NativeValues<T>;
 
 export type NativeProps<T extends Element> = (T extends Element
   ? Omit<

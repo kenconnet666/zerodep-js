@@ -1,5 +1,5 @@
 import { Scope, dispatchError, getScope, onCleanup, untrack } from './reactivity.js';
-import { nativeAttributes, HTML } from './native.js';
+import { nativeAttributes, selectionValues, HTML } from './native.js';
 import type { Props } from './props.js';
 import type { Container, NodeRange } from './dom-utils.js';
 
@@ -26,6 +26,7 @@ interface Task {
 /** 验证期间只认领节点；监听器与 ref 在整棵树验证后激活。 */
 export class HydrationSession {
   committed = false;
+  readonly optionDefaults = new WeakMap<Element, boolean>();
   private readonly tasks: Task[] = [];
   private readonly after: (() => void)[] = [];
   private readonly undo: (() => void)[] = [];
@@ -130,7 +131,10 @@ export class HydrationCursor {
 
   attributes(element: Element, input: Props): void {
     const expected = nativeAttributes(input, element.localName, element.namespaceURI ?? HTML);
+    const option = element.localName === 'option' && element.closest('select') !== null;
+    if (option) this.session.optionDefaults.set(element, expected.has('selected'));
     for (const [name, value] of expected) {
+      if (option && name === 'selected') continue;
       const actual =
         name === 'nonce' && 'nonce' in element
           ? String(Reflect.get(element, 'nonce'))
@@ -140,7 +144,7 @@ export class HydrationCursor {
     }
     for (const attribute of element.attributes) {
       // option.selected 可能来自父 select 的 value，稍后由 select 属性绑定接管。
-      if (element.localName === 'option' && attribute.name === 'selected') continue;
+      if (option && attribute.name === 'selected') continue;
       if (!expected.has(attribute.name))
         throw new HydrationError(`<${element.localName}> 多出 ${attribute.name} 属性。`);
     }
@@ -148,6 +152,20 @@ export class HydrationCursor {
 
   child(element: Element): HydrationCursor {
     return new HydrationCursor(element.firstChild, null, this.session);
+  }
+
+  select(element: HTMLSelectElement, input: Props): void {
+    const model = input.value !== undefined ? input.value : input.defaultValue;
+    const values = model === undefined ? undefined : selectionValues(model);
+    let matched = false;
+    for (const option of element.options) {
+      const expected = values
+        ? values.has(option.value) && (element.multiple || !matched)
+        : this.session.optionDefaults.get(option);
+      if (expected !== undefined && option.defaultSelected !== expected)
+        throw new HydrationError('select 的初始选项与服务端不同。');
+      if (expected) matched = true;
+    }
   }
 
   range(label: string): NodeRange {
