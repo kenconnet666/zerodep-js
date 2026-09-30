@@ -3,11 +3,21 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "sideEffects": [
+    "./dist/cli.js"
+  ],
+  "engines": {
+    "node": ">=24.11 <25"
+  },
   "bin": {
     "zerodep-check": "./dist/cli.js"
   },
   "files": [
-    "dist"
+    "dist/**/*.js",
+    "dist/**/*.js.map",
+    "dist/**/*.d.ts",
+    "dist/**/*.d.ts.map",
+    "src"
   ],
   "exports": {
     ".": {

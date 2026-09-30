@@ -23,8 +23,8 @@
 | --------------- | ------------------------------------------------------- | -------------------------------------- |
 | 工作区与工具    | pnpm、TS7、Vite 8、Babel 8、Vitest、Playwright 已配置   | 持续验证和发布流程                     |
 | `packages/core` | 状态、组件、列表、错误恢复、原生表单与 hydration 已接通 | 原生属性审计、稳定性和生产边界验证     |
-| compiler / Vite | 宏、props、JSX、边界诊断、独立检查及开发更新已接通      | 诊断边界持续加固、真实包产物消费       |
-| `packages/ssr`  | 请求内组件 HTML、转义、数据编码及区域协议               | 生产边界、压力与包消费验证             |
+| compiler / Vite | 宏、JSX、诊断、开发更新、依赖扫描和独立包消费已接通     | 语义与工具边界持续加固                 |
+| `packages/ssr`  | 请求渲染、转义、数据编码、接管协议及安装包消费已验证    | 生产边界与压力验证                     |
 | `apps/example`  | 同一 App 已支持 CSR/SSR、表单与开发更新                 | 真实业务试点、平台输入法与长期运行     |
 | 语言服务        | 原生 TS7 已直接验证，框架诊断桥的独立错误/修复验证通过  | 当前旧进程重启后确认、消费项目接入体验 |
 | GitHub          | 公开仓库与基础 CI 已建立                                | 阶段交付、版本发布和真实试点           |
@@ -418,6 +418,6 @@ mount、hydrate 与组件 renderToString 均已实现，前两个返回清理函
 - 提交号、是否已经推送、远程结果是否仍待完成。
 - 下一项可直接开始的工作，或需要用户解决的具体阻碍。
 
-当前停靠点：工程、响应式、组件/DOM、列表/context/错误边界、SSR/hydration 和原生表单基线已交付；本轮收尾框架诊断、开发更新与相关类型边界。接下来先做独立包消费和原生属性审计，再推进资源/性能、真实业务试点及完整生产验收。阶段允许合并或调整；这些基线不等于各领域已通过最终生产门槛。最新证据见 execution.md。
+当前停靠点：响应式、组件/DOM、列表/context/错误边界、SSR/hydration、原生表单及开发诊断已有执行基线；工作区外的真实包安装和预编译组件库消费已经通过本地验证。下一步优先原生属性与类型/SSR 一致性审计，再推进资源/性能、异步业务试点及完整生产验收。Linux/Windows 的产物 CI 继续按提交结果确认。阶段允许合并或调整；已有基线不等于各领域通过最终生产门槛。最新证据见 execution.md。
 
 参考资料：[Svelte props](https://svelte.dev/docs/svelte/$props)、[Vue props](https://vuejs.org/guide/components/props.html)、[TypeScript JSX](https://www.typescriptlang.org/docs/handbook/jsx.html)、[Vite SSR](https://vite.dev/guide/ssr.html)。本项目以已确认契约和实测结果为准，不把参考框架的全部行为默认搬入。

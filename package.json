@@ -25,6 +25,7 @@
     "test:e2e": "pnpm build && playwright test",
     "test:e2e:chromium": "pnpm test:e2e --project=chromium",
     "test:dev": "node scripts/verify-dev.mjs",
+    "test:packages": "pnpm build:packages && node scripts/verify-packages.mjs",
     "browsers:install": "playwright install chromium firefox webkit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

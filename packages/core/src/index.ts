@@ -6,7 +6,7 @@ export type { Component, ComponentProps } from './component.js';
 export { mount, hydrate } from './dom.js';
 export type { MountOptions, HydrateOptions } from './dom.js';
 export { HydrationError } from './hydration.js';
-export type { Renderable } from './template.js';
+export type { Renderable, Template } from './template.js';
 export type { JSX, NativeProps, Style, EventHandler } from './jsx-runtime.js';
 export { createContext, provideContext, useContext } from './context.js';
 export type { Context } from './context.js';

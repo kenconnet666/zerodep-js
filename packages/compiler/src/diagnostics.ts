@@ -1,4 +1,4 @@
-import type { Node } from '@babel/types';
+type Position = { line: number; column: number };
 
 export interface Diagnostic {
   code: string;
@@ -25,7 +25,7 @@ export class CompileError extends Error {
 }
 
 export function diagnostic(
-  node: Node,
+  node: { loc?: { start: Position; end: Position } | null | undefined },
   filename: string,
   code: string,
   message: string,

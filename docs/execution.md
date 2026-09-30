@@ -102,3 +102,18 @@
 - 本地证据：109 项编译器/调度用例、20 项 CSR/SSR 的 Chromium 组件/结构用例通过；pnpm check、pnpm build、开发更新验证、独立 LSP 错误/修复验证通过。相关文件格式检查通过。
 - 当前会话直接查询 App.tsx 的 TS7 诊断完整且为 0，但返回仍无 framework 字段，说明旧 MCP 进程尚未加载桥接变更。下次重启 Codex 后再确认当前会话框架诊断；该差异不阻塞构建和独立检查。
 - 前一提交 `e843c55` 的 [完整 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/36778171148) 已通过；本轮提交后不等待新矩阵，下次推送前读取结果。
+
+## 真实包产物与独立消费
+
+- 包清单检查发现 dist/.tsbuildinfo 被打包、映射指向的源码缺失、core/ssr README 过时。现明确选择 ESM、声明、映射与源码，排除缓存及测试，并为四个包补齐准确说明、Node 范围和副作用声明。
+- SSR 将 core 改为同版本 peer dependency，组件库采用同样约定，通过普通包管理共享运行时。安装验证不使用工作区 alias 或源码链接；源码只随包用于编辑器和调试。
+- 增加 `pnpm test:packages`：在工作区外真实安装四个 tgz，用安装后的 compiler 与 TS7 构建泛型组件库，再打包/安装这个库，由客户端和 Node SSR 消费。夹具放在 tests/consumer，单独检查，无需建立额外 workspace 子项目。
+- 该路径实际复现并修复了 TS7 声明问题：自然推断的 Template 无法通过公开包出口命名。core 现在导出 Template 类型，组件库可继续使用自然的 component 写法生成可移植声明。
+- 该路径还复现了 compiler 公共类型泄漏 Babel 声明、要求消费者补装 @types/convert-source-map 的问题。公共 SourceMap 与诊断位置改用本项目的格式类型，消费者无需为编译结果读取补装 Babel 内部类型。
+- 编译结果和 SSR 增加内部协议检查，协议不匹配以 ZJ_RUNTIME_ABI 在自身初始化前报告；单元用例验证错误先于应用状态初始化。普通模块不增加框架运行时依赖。
+- 独立消费保持 skipLibCheck=false，验证必填 props、泛型 children、原生事件类型、CLI bin、exports、映射目标、SSR 请求隔离/转义、浏览器 CSR/SSR 节点接管、表单与卸载。小入口当前为未压缩 2656 字节，以 5000 字节作为该入口的回归上限；没有用此数值宣称整体框架性能。
+- 前一提交 `d439ed5` 的 [CI](https://github.com/kenconnet666/zerodep-js/actions/runs/36784130699) 在 Linux 开发更新验证中失败：依赖扫描按默认 JSX 错误发现 react/jsx-dev-runtime，随后更新超时。现让 Vite 常规转换与 optimizeDeps 的 Rolldown 扫描使用同一个编译 hook，并覆盖 .mts/.mjs 宏模块。
+- 开发验证现在等待真实扫描与请求空闲状态，拒绝初始扫描错误/警告，保留原有无整页刷新、清理次数、状态重置、覆盖层修复与 SSR 更新断言；另检查无页面异常。修复后的本地验证通过，Linux 结果仍由本轮 CI 确认。
+- 本地证据：独立打包消费、实际开发更新、106 项相关编译器/SSR 单元用例、pnpm check、pnpm build、格式与工作流静态检查通过。临时安装目录、tgz、开发项目、服务、浏览器和已修复的失败报告已清理，共享 store 未清理。
+- CI 的 Linux 完整任务加入真实包消费，另增加 Windows 包消费任务；本轮不等待新 CI，下次推送前检查两者。未发布 npm，也没有将包消费通过视为生产验收。
+- 依据实际问题将发布产物验证提前，它已直接改善公共类型与开发接入；下一步原生属性及类型/SSR 一致性审计，再推进资源/性能、异步业务试点和完整生产门槛。

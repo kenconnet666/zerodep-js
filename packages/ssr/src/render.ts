@@ -13,10 +13,13 @@ import {
   element,
   dynamic,
   untrack,
+  assertRuntime,
   type AnyComponent,
   type ComponentProps,
   type Renderable,
 } from '@zerodep-js/core/internal';
+
+assertRuntime(1);
 
 export type RenderOptions<C extends AnyComponent> =
   {} extends ComponentProps<C> ? { props?: ComponentProps<C> } : { props: ComponentProps<C> };

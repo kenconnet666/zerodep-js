@@ -1,4 +1,4 @@
-import { transformFromAstSync, type FileResult } from '@babel/core';
+import { transformFromAstSync } from '@babel/core';
 import { parse } from '@babel/parser';
 import presetTypescript from '@babel/preset-typescript';
 import traverse, { type Binding, type NodePath } from '@babel/traverse';
@@ -17,10 +17,26 @@ export interface CompileOptions {
   runtimeModule?: string;
 }
 
+/** 公共结果只依赖源码映射格式，不把 Babel 的整套类型带给消费者。 */
+export interface SourceMap {
+  version: 3;
+  names: readonly string[];
+  sources: readonly (string | null)[];
+  mappings: string;
+  file?: string | null;
+  sourceRoot?: string;
+  sourcesContent?: readonly (string | null)[];
+  ignoreList?: readonly number[];
+  rangeMappings?: string;
+}
+
 export interface CompileResult {
   code: string;
-  map: FileResult['map'];
+  map: SourceMap | null;
 }
+
+// 这是输出协议版本，不跟随普通修复版本变化；修改时须同步 core/internal。
+const RUNTIME_ABI = 1;
 
 interface ReactiveBinding {
   binding: Binding;
@@ -308,14 +324,18 @@ export function compile(
     }
   }
   if (errors.length) throw new CompileError(errors);
-  if (reactive.size || hasComponents || hasJsx)
-    program.unshiftContainer(
-      'body',
+  if (reactive.size || hasComponents || hasJsx) {
+    const statements = program.node.body;
+    program.node.body = [
       t.importDeclaration(
         [t.importNamespaceSpecifier(runtime)],
         t.stringLiteral(options.runtimeModule ?? '@zerodep-js/core/internal'),
       ),
-    );
+      ...statements.filter((node) => t.isImportDeclaration(node)),
+      t.expressionStatement(helper('assertRuntime', [t.numericLiteral(RUNTIME_ABI)])),
+      ...statements.filter((node) => !t.isImportDeclaration(node)),
+    ];
+  }
   const result = transformFromAstSync(ast, source, {
     filename,
     sourceFileName: filename,

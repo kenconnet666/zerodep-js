@@ -1,0 +1,11 @@
+{
+  "name": "zerodep-package-consumer",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "library": "node build-library.mjs && tsc -p tsconfig.library.json",
+    "check": "tsc -p tsconfig.json && tsc -p tsconfig.data.json && zerodep-check src",
+    "build": "node build.mjs"
+  }
+}

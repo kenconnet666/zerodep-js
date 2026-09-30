@@ -3,8 +3,16 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=24.11 <25"
+  },
   "files": [
-    "dist"
+    "dist/**/*.js",
+    "dist/**/*.js.map",
+    "dist/**/*.d.ts",
+    "dist/**/*.d.ts.map",
+    "src"
   ],
   "exports": {
     ".": {
@@ -21,10 +29,11 @@
     "check": "tsc -p tsconfig.json --noEmit --incremental false --composite false",
     "build": "tsc -b"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@zerodep-js/core": "workspace:*"
   },
   "devDependencies": {
+    "@zerodep-js/core": "workspace:*",
     "typescript": "catalog:"
   }
 }

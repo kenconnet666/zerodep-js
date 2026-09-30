@@ -27,12 +27,13 @@ logger.warn = (message) => {
   logs.push(message);
 };
 const source = (label, invalid = false) => `
-import { component, $state, onCleanup } from '@zerodep-js/core';
+import { component, onCleanup } from '@zerodep-js/core';
+import { createCounter } from './counter.mts';
 export const App = component(({ onDestroy }: { onDestroy?: () => void }) => {
   ${invalid ? 'onDestroy = () => {};' : ''}
-  let count = $state(0);
+  const counter = createCounter();
   onCleanup(() => onDestroy?.());
-  return <button onClick={() => count++}>${label}:{count}</button>;
+  return <button onClick={counter.increment}>${label}:{counter.count}</button>;
 });
 `;
 let server;
@@ -43,6 +44,16 @@ try {
     '<div id="app"></div><script type="module" src="/entry.ts"></script>',
   );
   await writeFile(resolve(fixture, 'package.json'), '{"private":true,"type":"module"}');
+  await writeFile(
+    resolve(fixture, 'counter.mts'),
+    `
+import { $state } from '@zerodep-js/core';
+export function createCounter() {
+  let count = $state(0);
+  return { get count() { return count; }, increment() { count++; } };
+}
+`,
+  );
   await writeFile(resolve(fixture, 'App.tsx'), source('版本一'));
   await writeFile(
     resolve(fixture, 'entry.ts'),
@@ -81,7 +92,13 @@ if (import.meta.hot) {
   assert(first.render().includes('版本一:'));
   browser = await chromium.launch();
   const page = await browser.newPage();
+  const pageErrors = [];
+  page.on('pageerror', (error) => pageErrors.push(error.message));
   await page.goto(`http://127.0.0.1:${address.port}/`);
+  const client = server.environments.client;
+  await client.depsOptimizer?.scanProcessing;
+  await client.waitForRequestsIdle();
+  assert.deepEqual(logs, [], '初始依赖扫描不应产生错误或警告。');
   await page.getByRole('button').click();
   await page.waitForFunction(() => document.querySelector('button')?.textContent === '版本一:1');
   await writeFile(resolve(fixture, 'App.tsx'), source('版本二'));
@@ -103,6 +120,14 @@ if (import.meta.hot) {
   assert.equal(await page.evaluate(() => globalThis.__disposals), 2);
   const updated = await environment.runner.import('/server.ts');
   assert(updated.render().includes('版本三:'));
+  assert.deepEqual(pageErrors, []);
+  assert(logs.some((message) => String(message).includes('ZJ1203')));
+  // 故意写入错误源码会产生 SSR 堆栈和客户端重载提示，但不应破坏依赖扫描。
+  assert(
+    !logs.some((message) => /Failed to run dependency scan|react\/jsx/.test(String(message))),
+    logs.join('\n'),
+  );
+  await rm(resolve(root, 'test-results/dev-failure.png'), { force: true });
   console.log('开发验证通过：客户端热更新、旧作用域清理、错误覆盖层恢复、SSR Module Runner 更新。');
 } catch (error) {
   if (browser) {

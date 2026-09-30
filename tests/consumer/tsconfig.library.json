@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": true,
+    "types": [],
+    "rootDir": "library",
+    "outDir": "library/dist"
+  },
+  "include": ["library/Counter.tsx"]
+}

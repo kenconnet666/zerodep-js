@@ -8,6 +8,7 @@
     "checkJs": false,
     "noEmit": true
   },
+  "exclude": ["tests/consumer"],
   "include": [
     "*.config.ts",
     "babel.config.mjs",

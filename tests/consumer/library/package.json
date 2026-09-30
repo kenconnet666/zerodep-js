@@ -1,0 +1,20 @@
+{
+  "name": "@zerodep-consumer/counter",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "Counter.tsx"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/Counter.d.ts",
+      "import": "./dist/Counter.js"
+    }
+  },
+  "peerDependencies": {
+    "@zerodep-js/core": "0.0.0"
+  }
+}
