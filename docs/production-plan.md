@@ -17,14 +17,14 @@
 - 支持 CSR 和 SSR；生产版本还必须具备与 SSR 对应的 hydration。
 - 参考 Svelte、Solid、Vue 的具体机制，依据本项目的 TSX、类型系统和维护成本做选择。
 
-| 领域 | 当前情况 | 距离生产可用还缺什么 |
-| --- | --- | --- |
-| 工作区与工具 | pnpm、TS7、Vite 8、Babel 8、Vitest、Playwright 已配置 | 持续验证和发布流程 |
-| `packages/core` | 只有空入口 | 响应式、组件、DOM、公开类型 |
-| `packages/ssr` | 文档模板组合、SSR/CSR 分发 | 组件 HTML 渲染、转义、hydration 协议等 |
-| `apps/example` | 开发与生产入口、模式切换、原生 DOM 工程探针 | 用真正的框架 API 替换探针 |
-| 语言服务 | 原生 TS7 MCP 五项工具已直接验证 | 框架专有诊断、完整编辑器体验 |
-| GitHub | 公开仓库与基础 CI 已建立 | 阶段交付、版本发布和真实试点 |
+| 领域            | 当前情况                                              | 距离生产可用还缺什么                   |
+| --------------- | ----------------------------------------------------- | -------------------------------------- |
+| 工作区与工具    | pnpm、TS7、Vite 8、Babel 8、Vitest、Playwright 已配置 | 持续验证和发布流程                     |
+| `packages/core` | 只有空入口                                            | 响应式、组件、DOM、公开类型            |
+| `packages/ssr`  | 文档模板组合、SSR/CSR 分发                            | 组件 HTML 渲染、转义、hydration 协议等 |
+| `apps/example`  | 开发与生产入口、模式切换、原生 DOM 工程探针           | 用真正的框架 API 替换探针              |
+| 语言服务        | 原生 TS7 MCP 五项工具已直接验证                       | 框架专有诊断、完整编辑器体验           |
+| GitHub          | 公开仓库与基础 CI 已建立                              | 阶段交付、版本发布和真实试点           |
 
 目前的 SSR 页面可以在 JavaScript 执行前显示内容，但示例的原生事件接入不是通用 hydration。第三方工具接入测试和工程探针不能用作框架功能验收。
 
@@ -57,23 +57,21 @@ type CounterProps = {
   onChange?: (value: number) => void;
 };
 
-export const Counter = component(
-  ({ initial = 0, step = 1, onChange }: CounterProps) => {
-    let count = $state(initial);
-    const doubled = $derived(count * 2);
+export const Counter = component(({ initial = 0, step = 1, onChange }: CounterProps) => {
+  let count = $state(initial);
+  const doubled = $derived(count * 2);
 
-    function increment() {
-      count += step;
-      onChange?.(count);
-    }
+  function increment() {
+    count += step;
+    onChange?.(count);
+  }
 
-    return (
-      <button type="button" onClick={increment}>
-        {count} / {doubled}
-      </button>
-    );
-  },
-);
+  return (
+    <button type="button" onClick={increment}>
+      {count} / {doubled}
+    </button>
+  );
+});
 ```
 
 推荐规则：
@@ -87,16 +85,16 @@ export const Counter = component(
 
 默认值必须在第一阶段确认下表，不能先实现一种再让用户猜：
 
-| 情况 | 推荐语义 |
-| --- | --- |
-| 未传入或值为 `undefined` | 使用默认值 |
-| `null`、`false`、`0`、空字符串 | 保留传入值；不是默认值触发条件 |
-| 默认数组或对象 | 每个组件实例独立，不与其他实例共享 |
-| 无响应式依赖的默认表达式 | 首次需要时计算并缓存，反复读取不重建 |
+| 情况                           | 推荐语义                                              |
+| ------------------------------ | ----------------------------------------------------- |
+| 未传入或值为 `undefined`       | 使用默认值                                            |
+| `null`、`false`、`0`、空字符串 | 保留传入值；不是默认值触发条件                        |
+| 默认数组或对象                 | 每个组件实例独立，不与其他实例共享                    |
+| 无响应式依赖的默认表达式       | 首次需要时计算并缓存，反复读取不重建                  |
 | 默认表达式依赖前面声明的 props | 推荐按依赖更新的缓存 fallback；时序仍需确认和专项验证 |
-| 引用后面参数或形成循环 | 保持清楚的错误，不因改写而偷偷改变初始化规则 |
-| 默认函数值 | 得到该函数，不自动调用函数体 |
-| 默认值中建立订阅或发请求 | 不推荐；副作用放在明确的生命周期入口 |
+| 引用后面参数或形成循环         | 保持清楚的错误，不因改写而偷偷改变初始化规则          |
+| 默认函数值                     | 得到该函数，不自动调用函数体                          |
+| 默认值中建立订阅或发请求       | 不推荐；副作用放在明确的生命周期入口                  |
 
 “所有默认值永远只求值一次”不足以描述依赖其他 props 的情况。推荐使用统一的缓存 fallback 语义：无依赖结果保持稳定，有依赖时按实际读取更新；这个决定仍需在第一阶段冻结。
 
@@ -165,8 +163,12 @@ function createCounter(initial = 0) {
   let count = $state(initial);
 
   return {
-    get count() { return count; },
-    increment() { count++; },
+    get count() {
+      return count;
+    },
+    increment() {
+      count++;
+    },
   };
 }
 ```
@@ -321,15 +323,15 @@ const html = renderToString(App, { props });
 
 ## 5. 阶段里程碑
 
-| 里程碑 | 对应阶段 | 能证明什么 |
-| --- | --- | --- |
-| M0 工程入口 | 0 | 可构建、可运行工程级 SSR/CSR |
-| M1 最小真实框架 | 1–4 | 变量语法与 DOM 更新真实工作 |
-| M2 可组合应用 | 5–6 | 表单、列表和组件组合稳定 |
-| M3 同构应用 | 7 | 同一 App 的 CSR、SSR、hydration 一致 |
-| M4 开发可用 | 8–9 | 类型、调试、稳定性和性能达到目标 |
-| M5 发布候选 | 10 | 可由外部项目安装与消费 |
-| M6 生产可用 | 11 | 真实试点和发布门槛全部满足 |
+| 里程碑          | 对应阶段 | 能证明什么                           |
+| --------------- | -------- | ------------------------------------ |
+| M0 工程入口     | 0        | 可构建、可运行工程级 SSR/CSR         |
+| M1 最小真实框架 | 1–4      | 变量语法与 DOM 更新真实工作          |
+| M2 可组合应用   | 5–6      | 表单、列表和组件组合稳定             |
+| M3 同构应用     | 7        | 同一 App 的 CSR、SSR、hydration 一致 |
+| M4 开发可用     | 8–9      | 类型、调试、稳定性和性能达到目标     |
+| M5 发布候选     | 10       | 可由外部项目安装与消费               |
+| M6 生产可用     | 11       | 真实试点和发布门槛全部满足           |
 
 任何里程碑失败，必须说明缺口；不能用后续文档、跳过测试或固定等待把阶段标成完成。
 
@@ -358,9 +360,56 @@ const html = renderToString(App, { props });
 
 ## 7. 下一轮讨论顺序
 
+具体用例和需要选择的语义见 [第一阶段 API 评审用例](api-review.md)。
+
 1. 确认 `component` 参数解构、默认值缓存/更新、只读边界。
 2. 逐句审查受控输入、状态复用、带状态列表三个完整用例。
 3. 确认首版 children、key 和 mount/hydrate 的具体契约。
 4. 将确认结果写成阶段 1 决策与验收样例，然后授权进入阶段 2。
+
+## 8. 可连续推进的工作包
+
+下面将大阶段拆成可独立交付的工作包。包号用于记录进度，不要求机械地创建同名文件或拆出新 npm 包。
+
+| 工作包       | 前置条件               | 主要交付                             | 结束条件                               |
+| ------------ | ---------------------- | ------------------------------------ | -------------------------------------- |
+| API-01       | 用户评审               | 默认值、props、状态和取值边界        | 决策表不再含阻塞项                     |
+| API-02       | API-01                 | 输入、复用状态、列表、根入口完整用例 | 各用例能逐句解释                       |
+| REACT-01     | API-02                 | 状态读写与动态依赖                   | 依赖新增/移除正确                      |
+| REACT-02     | REACT-01               | 派生缓存、相等性和调度               | 立即读取一致，无错误中间值             |
+| REACT-03     | REACT-02               | effect、作用域与 cleanup             | 销毁后无继续订阅或执行                 |
+| COMPILE-01   | API-02                 | 模块识别、绑定分析、诊断框架         | 别名和遮蔽有正确正反例                 |
+| COMPILE-02   | COMPILE-01、REACT-03   | state/derived 读写改写               | 运算顺序、次数与返回值正确             |
+| COMPILE-03   | COMPILE-02             | source map 与错误位置                | 错误指向用户源码                       |
+| DOM-01       | COMPILE-02             | 静态 DOM、文本和属性更新             | 真实计数器使用框架运行                 |
+| DOM-02       | DOM-01、REACT-03       | 事件、ref、class/style、SVG          | 浏览器行为和清理正确                   |
+| COMPONENT-01 | DOM-02                 | props 默认值、rest、转发             | 输入变化与类型含义一致                 |
+| COMPONENT-02 | COMPONENT-01           | children、context、复用逻辑          | 创建与销毁位置明确                     |
+| INPUT-01     | COMPONENT-01           | 输入与编辑行为                       | 焦点、IME、选区和受控行为稳定          |
+| STRUCTURE-01 | COMPONENT-02、INPUT-01 | 条件、列表、动态组件                 | 身份保留和移除清理正确                 |
+| ERROR-01     | STRUCTURE-01           | 异常传播和恢复                       | 错误不会永久损坏后续更新               |
+| SSR-01       | STRUCTURE-01、ERROR-01 | 组件 HTML 渲染、转义、请求作用域     | 服务端独立且并发不串状态               |
+| SSR-02       | SSR-01                 | 标记、序列化和 hydration             | 接管复用节点，模式行为一致             |
+| DX-01        | COMPONENT-02、SSR-02   | 完整类型、声明和框架诊断             | 正反类型用例与编辑器体验可用           |
+| DX-02        | COMPILE-03、SSR-02     | Vite 集成与开发更新                  | 重新加载和清理稳定，保留状态有明确规则 |
+| HARDEN-01    | 前述功能包             | 长期稳定性、内存、性能与安全边界     | 发布阻断问题清零，指标达标             |
+| RELEASE-01   | HARDEN-01              | 包产物、干净消费工程、RC 文档        | 外部项目可复现安装与运行               |
+| PILOT-01     | RELEASE-01             | 真实使用试点与缺陷回归               | 试点反馈闭环，回滚流程可用             |
+| RELEASE-02   | PILOT-01、用户发布授权 | 生产版本与维护说明                   | 阶段 11 所有门槛满足                   |
+
+编译绑定分析和运行时可在契约冻结后分别推进，但不能各自发明不兼容语义。DOM、组件、列表、SSR 依次接入，避免同时摊开所有实现。
+
+## 9. 每个工作包的交接记录
+
+执行过程中在本文维护当前状态，至少记录：
+
+- 当前工作包及其前置条件是否满足。
+- 实际交付了什么，哪些能力仍未实现。
+- 本轮运行过的检查及结果，不把未运行项目写成通过。
+- 对 API 或实现作出的决定及其理由。
+- 提交号、是否已经推送、远程结果是否仍待完成。
+- 下一项可直接开始的工作，或需要用户解决的具体阻碍。
+
+当前停靠点：阶段 0 工程基础已交付；阶段 1 正等待 API 评审。尚未授权开始核心框架的长期自主实现。
 
 参考资料：[Svelte props](https://svelte.dev/docs/svelte/$props)、[Vue props](https://vuejs.org/guide/components/props.html)、[TypeScript JSX](https://www.typescriptlang.org/docs/handbook/jsx.html)、[Vite SSR](https://vite.dev/guide/ssr.html)。本项目以已确认契约和实测结果为准，不把参考框架的全部行为默认搬入。
