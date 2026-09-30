@@ -128,6 +128,14 @@ export function untrack<T>(fn: () => T): T {
   }
 }
 
+export function isTracking(): boolean {
+  return currentObserver !== null;
+}
+
+export function assertCanWrite(): void {
+  if (computing) throw new Error('纯派生计算不能写入状态。');
+}
+
 class Dependency {
   version = 0;
   readonly subscribers = new Set<Observer>();
@@ -180,7 +188,7 @@ export class Source<T> extends Dependency {
   }
 
   write(next: T): T {
-    if (computing) throw new Error('纯派生计算不能写入状态。');
+    assertCanWrite();
     if (!Object.is(this.current, next)) {
       this.current = next;
       this.version++;
