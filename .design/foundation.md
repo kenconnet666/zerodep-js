@@ -2,6 +2,8 @@
 
 日期：2026-09-30。范围为工程配置与语言服务，框架实现仍待讨论。
 
+2026-10-01 更新：工作区现为 `packages/core`、`packages/ssr`、`apps/example`；原 playground 已整理。工程级 SSR/CSR、9 项单元测试和 15 项三浏览器用例已通过。后续执行以 [生产化主计划](../docs/production-plan.md) 为准，以下保留初始搭建记录。
+
 ## 已配置
 
 - pnpm 10.34.5 workspace：`packages/core` 和 `apps/playground`。
