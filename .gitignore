@@ -1,0 +1,13 @@
+*.log
+node_modules
+**/dist/
+*.tsbuildinfo
+coverage/
+test-results/
+playwright-report/
+.codex/config.toml
+.idea
+.DS_Store
+.env
+.env.*
+!.env.example

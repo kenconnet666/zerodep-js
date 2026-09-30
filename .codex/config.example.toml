@@ -1,0 +1,8 @@
+# BEGIN ZERODEP JS LANGUAGE SERVICES
+[mcp_servers.zerodep_js_lsp]
+command = __NODE__
+args = ["scripts/language-services/server.mjs", "."]
+cwd = __ROOT__
+startup_timeout_sec = 30
+tool_timeout_sec = 90
+# END ZERODEP JS LANGUAGE SERVICES

@@ -1,0 +1,5 @@
+{
+  "extends": "./tsconfig.tools.json",
+  "files": [],
+  "references": [{ "path": "./packages/core" }, { "path": "./packages/ssr" }]
+}

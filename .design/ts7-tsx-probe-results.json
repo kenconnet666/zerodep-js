@@ -1,0 +1,169 @@
+{
+  "compiler": "Version 7.0.2",
+  "results": {
+    "valid_generic": {
+      "exit": 0,
+      "output": "",
+      "codes": [],
+      "source": "import { component, $state, $derived } from './framework';\nimport type { Renderable } from './framework';\n\ntype ListProps<T> = { items: readonly T[]; children: (item: T) => Renderable };\nexport const List = component(<T,>({ items, children }: ListProps<T>) => <div>{items.map(children)}</div>);\nconst view = <List items={[{ id: 1, name: 'Alice' }]}>{item => <span>{item.name}</span>}</List>;\nconst explicit = <List<number> items={[1]}>{item => item.toFixed()}</List>;\n"
+    },
+    "generic_wrong_property": {
+      "exit": 1,
+      "output": "generic_wrong_property.tsx(5,62): error TS2339: Property 'missingProperty' does not exist on type '{ name: string; }'.",
+      "codes": [
+        2339
+      ],
+      "source": "import { component, $state, $derived } from './framework';\nimport type { Renderable } from './framework';\n\nconst List = component(<T,>({ items, children }: { items: readonly T[]; children: (item: T) => Renderable }) => <div>{items.map(children)}</div>);\nconst view = <List items={[{ name: 'Alice' }]}>{item => item.missingProperty}</List>;\n"
+    },
+    "event_target": {
+      "exit": 1,
+      "output": "event_target.tsx(3,68): error TS18047: 'event.target' is possibly 'null'.\nevent_target.tsx(3,81): error TS2339: Property 'value' does not exist on type 'EventTarget'.",
+      "codes": [
+        18047,
+        2339
+      ],
+      "source": "import { component, $state, $derived } from './framework';\nimport type { Renderable } from './framework';\nconst view = <input onInput={event => { event.currentTarget.value; event.target.value; }} />;"
+    },
+    "default_required": {
+      "exit": 1,
+      "output": "default_required.tsx(3,108): error TS2322: Type '{}' is not assignable to type 'IntrinsicAttributes & { label: string; }'.\n  Property 'label' is missing in type '{}' but required in type '{ label: string; }'.",
+      "codes": [
+        2322
+      ],
+      "source": "import { component, $state, $derived } from './framework';\nimport type { Renderable } from './framework';\nconst Button = component(({ label = 'OK' }: { label: string }) => <button>{label}</button>); const view = <Button />;"
+    },
+    "default_optional": {
+      "exit": 0,
+      "output": "",
+      "codes": [],
+      "source": "import { component, $state, $derived } from './framework';\nimport type { Renderable } from './framework';\nconst Button = component(({ label = 'OK' }: { label?: string }) => <button>{label.toUpperCase()}</button>); const view = <Button />;"
+    },
+    "readonly_destructure_write": {
+      "exit": 0,
+      "output": "",
+      "codes": [],
+      "source": "import { component, $state, $derived } from './framework';\nimport type { Renderable } from './framework';\nconst Button = component(({ label }: Readonly<{ label: string }>) => { label = 'new'; return <button>{label}</button>; });"
+    },
+    "readonly_property_write": {
+      "exit": 1,
+      "output": "readonly_property_write.tsx(3,74): error TS2540: Cannot assign to 'label' because it is a read-only property.",
+      "codes": [
+        2540
+      ],
+      "source": "import { component, $state, $derived } from './framework';\nimport type { Renderable } from './framework';\nconst Button = component((props: Readonly<{ label: string }>) => { props.label = 'new'; return <button>{props.label}</button>; });"
+    },
+    "derived_const_closure": {
+      "exit": 0,
+      "output": "",
+      "codes": [],
+      "source": "import { component, $state, $derived } from './framework';\nimport type { Renderable } from './framework';\nfunction makeAction(props: { user: { id: string } | null }) { const user = $derived(props.user); if (user) return () => user.id; }"
+    },
+    "known_wrong_attribute": {
+      "exit": 1,
+      "output": "known_wrong_attribute.tsx(3,15): error TS2322: Type '{ \"aria-hidden\": number; }' is not assignable to type 'ButtonProps'.\n  Types of property ''aria-hidden'' are incompatible.\n    Type 'number' is not assignable to type '\"false\" | \"true\" | boolean'.",
+      "codes": [
+        2322
+      ],
+      "source": "import { component, $state, $derived } from './framework';\nimport type { Renderable } from './framework';\nconst view = <button aria-hidden={123} />;"
+    },
+    "unknown_dashed_attribute": {
+      "exit": 0,
+      "output": "",
+      "codes": [],
+      "source": "import { component, $state, $derived } from './framework';\nimport type { Renderable } from './framework';\nconst view = <button banana-mode={{ invalid: true }} />;"
+    },
+    "excess_direct": {
+      "exit": 1,
+      "output": "excess_direct.tsx(3,119): error TS2322: Type '{ label: string; typo: number; }' is not assignable to type 'IntrinsicAttributes & { label: string; }'.\n  Property 'typo' does not exist on type 'IntrinsicAttributes & { label: string; }'.",
+      "codes": [
+        2322
+      ],
+      "source": "import { component, $state, $derived } from './framework';\nimport type { Renderable } from './framework';\nconst Button = component(({ label }: { label: string }) => <button>{label}</button>); const view = <Button label='OK' typo={123} />;"
+    },
+    "excess_spread": {
+      "exit": 0,
+      "output": "",
+      "codes": [],
+      "source": "import { component, $state, $derived } from './framework';\nimport type { Renderable } from './framework';\nconst Button = component(({ label }: { label: string }) => <button>{label}</button>); const data = { label: 'OK', typo: 123 }; const view = <Button {...data} />;"
+    },
+    "exact_optional": {
+      "exit": 1,
+      "output": "exact_optional.tsx(3,109): error TS2375: Type '{ label: undefined; }' is not assignable to type 'IntrinsicAttributes & { label?: string; }' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.\n  Type '{ label: undefined; }' is not assignable to type '{ label?: string; }' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.\n    Types of property 'label' are incompatible.\n      Type 'undefined' is not assignable to type 'string'.",
+      "codes": [
+        2375
+      ],
+      "source": "import { component, $state, $derived } from './framework';\nimport type { Renderable } from './framework';\nconst Button = component(({ label = 'OK' }: { label?: string }) => <button>{label}</button>); const view = <Button label={undefined} />;"
+    },
+    "implicit_children": {
+      "exit": 1,
+      "output": "implicit_children.tsx(3,101): error TS2322: Type '{ label: string; children: string; }' is not assignable to type 'IntrinsicAttributes & { label: string; }'.\n  Property 'children' does not exist on type 'IntrinsicAttributes & { label: string; }'.",
+      "codes": [
+        2322
+      ],
+      "source": "import { component, $state, $derived } from './framework';\nimport type { Renderable } from './framework';\nconst Button = component(({ label }: { label: string }) => <button>{label}</button>); const view = <Button label='OK'>Extra</Button>;"
+    },
+    "async_component": {
+      "exit": 1,
+      "output": "async_component.tsx(3,25): error TS2345: Argument of type '(_props: {}) => Promise<Element>' is not assignable to parameter of type '(props: any) => Renderable'.\n  Type 'Promise<Element>' is not assignable to type 'Renderable'.",
+      "codes": [
+        2345
+      ],
+      "source": "import { component, $state, $derived } from './framework';\nimport type { Renderable } from './framework';\nconst Async = component(async (_props: {}) => <div />);"
+    },
+    "unmarked_component": {
+      "exit": 1,
+      "output": "unmarked_component.tsx(3,54): error TS2786: 'Plain' cannot be used as a JSX component.\n  Its type '(_props: {}) => Element' is not a valid JSX element type.\n    Type '(_props: {}) => Element' is not assignable to type 'Component<(props: any) => Renderable>'.\n      Type '(_props: {}) => Element' is not assignable to type '{ readonly [componentBrand]: true; }'.",
+      "codes": [
+        2786
+      ],
+      "source": "import { component, $state, $derived } from './framework';\nimport type { Renderable } from './framework';\nconst Plain = (_props: {}) => <div />; const view = <Plain />;"
+    },
+    "callback_variance": {
+      "exit": 1,
+      "output": "callback_variance.tsx(3,124): error TS2322: Type '(item: { id: string; admin: true; }) => void' is not assignable to type '(item: { id: string; }) => void'.\n  Types of parameters 'item' and 'item' are incompatible.\n    Property 'admin' is missing in type '{ id: string; }' but required in type '{ id: string; admin: true; }'.",
+      "codes": [
+        2322
+      ],
+      "source": "import { component, $state, $derived } from './framework';\nimport type { Renderable } from './framework';\nconst Picker = component(({ onSelect }: { onSelect: (item: { id: string }) => void }) => <button />); const view = <Picker onSelect={(item: { id: string; admin: true }) => {}} />;"
+    },
+    "controlled_union": {
+      "exit": 1,
+      "output": "controlled_union.tsx(3,229): error TS2322: Type '{ mode: \"multiple\"; value: string; }' is not assignable to type 'IntrinsicAttributes & Props'.\n  Types of property 'value' are incompatible.\n    Type 'string' is not assignable to type 'string[]'.",
+      "codes": [
+        2322
+      ],
+      "source": "import { component, $state, $derived } from './framework';\nimport type { Renderable } from './framework';\ntype Props = { mode: 'single'; value: string } | { mode: 'multiple'; value: string[] }; const Select = component(({ mode, value }: Props) => <div>{mode === 'single' ? value.toUpperCase() : value.join(',')}</div>); const view = <Select mode='multiple' value='wrong' />;"
+    },
+    "no_unchecked_index": {
+      "exit": 1,
+      "output": "no_unchecked_index.tsx(3,48): error TS2532: Object is possibly 'undefined'.",
+      "codes": [
+        2532
+      ],
+      "source": "import { component, $state, $derived } from './framework';\nimport type { Renderable } from './framework';\nconst items: { id: string }[] = []; const id = items[0].id;"
+    },
+    "noinfer": {
+      "exit": 1,
+      "output": "noinfer.tsx(3,143): error TS2322: Type 'string' is not assignable to type 'number'.",
+      "codes": [
+        2322
+      ],
+      "source": "import { component, $state, $derived } from './framework';\nimport type { Renderable } from './framework';\nconst Picker = component(<T,>({ items, value }: { items: readonly T[]; value?: NoInfer<T> }) => <div />); const view = <Picker items={[1, 2]} value='wrong' />;"
+    },
+    "declaration_emit": {
+      "exit": 0,
+      "output": "",
+      "declaration": "import type { Renderable } from './framework';\ntype ListProps<T> = {\n    items: readonly T[];\n    children: (item: T) => Renderable;\n};\nexport declare const List: import(\"./framework\").Component<<T>({ items, children }: ListProps<T>) => import(\"./framework\").Element>;\nexport {};\n"
+    },
+    "isolated_declarations": {
+      "exit": 1,
+      "output": "valid_generic.tsx(5,14): error TS9010: Variable must have an explicit type annotation with --isolatedDeclarations.\nvalid_generic.tsx(5,31): error TS9007: Function must have an explicit return type annotation with --isolatedDeclarations."
+    }
+  },
+  "researchDate": "2026-09-30",
+  "scope": "Synthetic JSX declarations and source-level type behavior only; no framework compiler or runtime validation.",
+  "declarations": {
+    "framework": "\nexport declare const elementBrand: unique symbol;\nexport declare const componentBrand: unique symbol;\nexport type Element = { readonly [elementBrand]: true };\nexport type Renderable = Element | string | number | boolean | null | undefined | readonly Renderable[];\nexport type Component<F extends (props: any) => Renderable> = F & { readonly [componentBrand]: true };\nexport declare function component<F extends (props: any) => Renderable>(setup: F): Component<F>;\nexport declare function $state<T>(initial: T): T;\nexport declare function $derived<T>(expression: T): T;\nexport type DOMEvent<T extends EventTarget, E extends Event> = E & { readonly currentTarget: T };\nexport interface ButtonProps {\n  disabled?: boolean;\n  onClick?: (event: DOMEvent<HTMLButtonElement, MouseEvent>) => void;\n  children?: Renderable;\n  'aria-hidden'?: boolean | 'true' | 'false';\n}\n",
+    "jsxRuntime": "\nimport type { Element as FrameworkElement, Renderable, Component, ButtonProps, DOMEvent } from './framework';\nexport namespace JSX {\n  type Element = FrameworkElement;\n  type ElementType = keyof IntrinsicElements | Component<(props: any) => Renderable>;\n  interface ElementChildrenAttribute { children: {}; }\n  interface IntrinsicAttributes { key?: string | number; }\n  interface IntrinsicElements {\n    button: ButtonProps;\n    input: { value?: string; onInput?: (event: DOMEvent<HTMLInputElement, Event>) => void };\n    div: { children?: Renderable };\n    span: { children?: Renderable };\n  }\n}\n"
+  }
+}

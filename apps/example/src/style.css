@@ -1,0 +1,61 @@
+:root {
+  font-family: system-ui, sans-serif;
+  color: #17202a;
+  background: #f5f6f8;
+}
+
+body {
+  margin: 0;
+}
+
+main {
+  max-width: 48rem;
+  margin: 8vh auto;
+  padding: 2rem;
+}
+
+h1 {
+  letter-spacing: -0.04em;
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+a {
+  color: #2854a6;
+}
+
+a[aria-current='page'] {
+  font-weight: 700;
+}
+
+section {
+  padding: 1.5rem;
+  border: 1px solid #dbe1e9;
+  border-radius: 0.75rem;
+  background: white;
+}
+
+button {
+  padding: 0.6rem 1rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+output {
+  margin-inline-start: 1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.eyebrow,
+.note {
+  color: #586579;
+}
+
+.note {
+  line-height: 1.7;
+}
