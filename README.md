@@ -81,6 +81,7 @@ pnpm lsp:inspect packages/ssr/src/index.ts apps/example/src/entry-client.ts
 
 - [从基础工程到生产可用的主计划](docs/production-plan.md)
 - [第一阶段 API 评审用例](docs/api-review.md)
+- [实现路线、代价与设计约束](docs/implementation-design.md)
 - [TS7 与编译工具研究](.design/ts7-tsx-research.md)
 - [TS7 类型实验](.design/ts7-tsx-probe-results.json)
 - [基础工程交接](.design/foundation.md)
