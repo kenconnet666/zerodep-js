@@ -1,6 +1,6 @@
 # 实现路线、代价与设计约束
 
-更新时间：2026-10-01。本文补充[生产化主计划](production-plan.md)的实现思路，配合[API 评审用例](api-review.md)讨论。以下是项目设计建议，不是已实现能力，也不新增本轮测试或实现任务。
+更新时间：2026-10-01。本文补充[生产化主计划](production-plan.md)的实现思路，保留[API 评审用例](api-review.md)的方案比较。目标模式已授权开始，当前选定契约见 [semantics.md](semantics.md)，实际交付和验证见 [execution.md](execution.md)。
 
 ## 1. 必须接受的基本取舍
 

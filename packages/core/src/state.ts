@@ -33,11 +33,14 @@ function arrayIndex(key: PropertyKey): number {
 export function reactive<T>(value: T): T {
   if (value === null || typeof value !== 'object' || originals.has(value)) return value;
   const prototype = Object.getPrototypeOf(value);
-  if (
-    (!Array.isArray(value) && prototype !== Object.prototype && prototype !== null) ||
-    !Object.isExtensible(value)
-  )
-    return value;
+  const constructor = prototype && Object.getOwnPropertyDescriptor(prototype, 'constructor')?.value;
+  const plain =
+    prototype === null ||
+    prototype === Object.prototype ||
+    (Object.getPrototypeOf(prototype) === null &&
+      typeof constructor === 'function' &&
+      Function.prototype.toString.call(constructor) === Function.prototype.toString.call(Object));
+  if ((!Array.isArray(value) && !plain) || !Object.isExtensible(value)) return value;
   const cached = proxies.get(value);
   if (cached) return cached as T;
 
