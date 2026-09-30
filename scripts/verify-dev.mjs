@@ -80,7 +80,12 @@ if (import.meta.hot) {
     customLogger: logger,
     plugins: [zerodep()],
     cacheDir: resolve(fixture, '.cache'),
-    server: { host: '127.0.0.1', port: 0 },
+    server: {
+      host: '127.0.0.1',
+      port: 0,
+      // 与示例的完整写入策略一致，保证连续的错误与修复都经过真实文件监听。
+      watch: { awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 20 } },
+    },
     ssr: { noExternal: ['@zerodep-js/core', '@zerodep-js/ssr'] },
   });
   await server.listen();

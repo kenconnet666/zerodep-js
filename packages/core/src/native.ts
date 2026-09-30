@@ -9,11 +9,26 @@ export const voidTags = new Set(
 );
 export const textTags = new Set(['title', 'textarea', 'script', 'style', 'option']);
 const booleans = new Set(
-  'allowfullscreen async autofocus autoplay checked controls default defer disabled formnovalidate hidden inert ismap itemscope loop multiple muted nomodule novalidate open playsinline readonly required reversed selected'.split(
+  'allowfullscreen async autofocus autoplay checked controls default defer disabled formnovalidate inert ismap itemscope loop multiple muted nomodule novalidate open playsinline readonly required reversed selected'.split(
     ' ',
   ),
 );
-const enumerated = new Set(['draggable', 'spellcheck', 'contenteditable']);
+const enumerated = new Set([
+  'draggable',
+  'spellcheck',
+  'contenteditable',
+  'focusable',
+  'externalresourcesrequired',
+  'displaystyle',
+  'stretchy',
+  'symmetric',
+  'fence',
+  'separator',
+  'largeop',
+  'movablelimits',
+  'accent',
+  'accentunder',
+]);
 const aliases: Record<string, string> = {
   className: 'class',
   htmlFor: 'for',
@@ -24,22 +39,95 @@ const aliases: Record<string, string> = {
   noValidate: 'novalidate',
   acceptCharset: 'accept-charset',
   httpEquiv: 'http-equiv',
-  strokeWidth: 'stroke-width',
-  strokeLinecap: 'stroke-linecap',
-  strokeLinejoin: 'stroke-linejoin',
-  fillRule: 'fill-rule',
   defaultValue: 'value',
   defaultChecked: 'checked',
   defaultSelected: 'selected',
   xlinkHref: 'xlink:href',
+  xmlLang: 'xml:lang',
+  xmlSpace: 'xml:space',
+  xmlnsXlink: 'xmlns:xlink',
 };
 
-export function namespaceFor(tag: string, parentNamespace = HTML, parentTag = ''): string {
+// 这些 presentation 属性允许 camelCase；viewBox 等大小写敏感名称保持原样。
+export const svgAliases = {
+  alignmentBaseline: 'alignment-baseline',
+  baselineShift: 'baseline-shift',
+  clipPath: 'clip-path',
+  clipRule: 'clip-rule',
+  colorInterpolation: 'color-interpolation',
+  colorInterpolationFilters: 'color-interpolation-filters',
+  dominantBaseline: 'dominant-baseline',
+  fillOpacity: 'fill-opacity',
+  fillRule: 'fill-rule',
+  floodColor: 'flood-color',
+  floodOpacity: 'flood-opacity',
+  fontFamily: 'font-family',
+  fontSize: 'font-size',
+  fontStyle: 'font-style',
+  fontWeight: 'font-weight',
+  imageRendering: 'image-rendering',
+  letterSpacing: 'letter-spacing',
+  lightingColor: 'lighting-color',
+  markerEnd: 'marker-end',
+  markerMid: 'marker-mid',
+  markerStart: 'marker-start',
+  paintOrder: 'paint-order',
+  pointerEvents: 'pointer-events',
+  shapeRendering: 'shape-rendering',
+  stopColor: 'stop-color',
+  stopOpacity: 'stop-opacity',
+  strokeDasharray: 'stroke-dasharray',
+  strokeDashoffset: 'stroke-dashoffset',
+  strokeLinecap: 'stroke-linecap',
+  strokeLinejoin: 'stroke-linejoin',
+  strokeMiterlimit: 'stroke-miterlimit',
+  strokeOpacity: 'stroke-opacity',
+  strokeWidth: 'stroke-width',
+  textAnchor: 'text-anchor',
+  textDecoration: 'text-decoration',
+  textRendering: 'text-rendering',
+  vectorEffect: 'vector-effect',
+  wordSpacing: 'word-spacing',
+  writingMode: 'writing-mode',
+};
+
+// 对齐 text/html 解析器的大小写修正规则，保证 SSR 与 createElementNS 路径一致。
+const svgCase = new Map(
+  'attributeName attributeType baseFrequency baseProfile calcMode clipPathUnits diffuseConstant edgeMode filterUnits glyphRef gradientTransform gradientUnits kernelMatrix kernelUnitLength keyPoints keySplines keyTimes lengthAdjust limitingConeAngle markerHeight markerUnits markerWidth maskContentUnits maskUnits numOctaves pathLength patternContentUnits patternTransform patternUnits pointsAtX pointsAtY pointsAtZ preserveAlpha preserveAspectRatio primitiveUnits refX refY repeatCount repeatDur requiredExtensions requiredFeatures specularConstant specularExponent spreadMethod startOffset stdDeviation stitchTiles surfaceScale systemLanguage tableValues targetX targetY textLength viewBox viewTarget xChannelSelector yChannelSelector zoomAndPan'
+    .split(' ')
+    .map((name) => [name.toLowerCase(), name]),
+);
+
+export function namespaceFor(
+  tag: string,
+  parentNamespace = HTML,
+  parentTag = '',
+  encoding = '',
+): string {
+  if (parentNamespace === SVG && !['foreignObject', 'desc', 'title'].includes(parentTag))
+    return SVG;
+  if (parentNamespace === MATH) {
+    const text = ['mi', 'mo', 'mn', 'ms', 'mtext'].includes(parentTag);
+    const annotation = parentTag === 'annotation-xml';
+    if (annotation && tag === 'svg') return SVG;
+    if (
+      !(text && tag !== 'mglyph' && tag !== 'malignmark') &&
+      !(annotation && ['text/html', 'application/xhtml+xml'].includes(encoding.toLowerCase()))
+    )
+      return MATH;
+  }
   if (tag === 'svg') return SVG;
   if (tag === 'math') return MATH;
-  if (parentNamespace === SVG && parentTag !== 'foreignObject') return SVG;
-  if (parentNamespace === MATH && parentTag !== 'annotation-xml') return MATH;
   return HTML;
+}
+
+export function attributeNamespace(name: string, namespace: string): string | null {
+  if (namespace === HTML) return null;
+  if (/^xlink:(actuate|arcrole|href|role|show|title|type)$/.test(name))
+    return 'http://www.w3.org/1999/xlink';
+  if (name === 'xml:lang' || name === 'xml:space') return 'http://www.w3.org/XML/1998/namespace';
+  if (name === 'xmlns' || name === 'xmlns:xlink') return 'http://www.w3.org/2000/xmlns/';
+  return null;
 }
 
 export function assertName(name: string): void {
@@ -71,13 +159,27 @@ export function attributeName(key: string, namespace = HTML): string {
     ? `aria-${key.slice(4).toLowerCase()}`
     : Object.hasOwn(aliases, key)
       ? aliases[key]!
-      : key;
+      : namespace === SVG && Object.hasOwn(svgAliases, key)
+        ? svgAliases[key as keyof typeof svgAliases]
+        : key;
   assertName(name);
-  return namespace === HTML ? name.toLowerCase() : name;
+  // HTML 只折叠 ASCII 大写字母，不能改变 data-Ä 等自定义名称中的 Unicode 字符。
+  const lower = name.replace(/[A-Z]/g, (letter) => letter.toLowerCase());
+  if (namespace === SVG) return svgCase.get(lower) ?? lower;
+  return namespace === MATH && lower === 'definitionurl' ? 'definitionURL' : lower;
 }
 
-export function attributeValue(name: string, value: unknown): string | null {
+export function attributeValue(name: string, value: unknown, namespace = HTML): string | null {
   const lower = name.toLowerCase();
+  if (
+    value != null &&
+    (typeof value === 'function' || typeof value === 'symbol' || typeof value === 'object')
+  )
+    throw new Error(`原生属性 ${name} 需要标量值。`);
+  if (namespace === HTML && lower === 'hidden')
+    return value == null || value === false ? null : value === true ? '' : textValue(value);
+  if (namespace === HTML && lower === 'translate' && typeof value === 'boolean')
+    return value ? 'yes' : 'no';
   if (
     value == null ||
     (value === false &&
@@ -86,9 +188,7 @@ export function attributeValue(name: string, value: unknown): string | null {
       !enumerated.has(lower))
   )
     return null;
-  if (booleans.has(lower)) return value ? '' : null;
-  if (typeof value === 'function' || typeof value === 'symbol' || typeof value === 'object')
-    throw new Error(`原生属性 ${name} 需要标量值。`);
+  if (namespace === HTML && booleans.has(lower)) return value ? '' : null;
   return value === true &&
     !lower.startsWith('aria-') &&
     !lower.startsWith('data-') &&
@@ -155,6 +255,20 @@ export function nativeAttributes(input: Props, tag: string, namespace = HTML): M
   for (const key of Object.keys(input)) {
     if (key === 'children' || key === 'ref' || key === 'key' || eventName(key)) continue;
     if (tag === 'input' && key === 'indeterminate') continue;
+    // undefined 的表单模型表示没有接管，不能清掉仍有效的首次默认值。
+    if (
+      namespace === HTML &&
+      input[key] === undefined &&
+      [
+        'value',
+        'defaultValue',
+        'checked',
+        'defaultChecked',
+        'selected',
+        'defaultSelected',
+      ].includes(key)
+    )
+      continue;
     if (key === 'innerHTML' || key === 'outerHTML' || key === 'textContent' || key === 'innerText')
       throw new Error(`${key} 会绕过 JSX 所有权，请使用 children 或 DOM ref。`);
     if (
@@ -165,8 +279,11 @@ export function nativeAttributes(input: Props, tag: string, namespace = HTML): M
       continue;
     const name = attributeName(key, namespace);
     const value =
-      key === 'style' ? styleText(input[key]) || null : attributeValue(name, input[key]);
-    if (value !== null) attributes.set(name, value);
+      name === 'style'
+        ? styleText(input[key]) || null
+        : attributeValue(name, input[key], namespace);
+    if (value === null) attributes.delete(name);
+    else attributes.set(name, value);
   }
   return attributes;
 }

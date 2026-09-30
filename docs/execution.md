@@ -117,3 +117,16 @@
 - 本地证据：独立打包消费、实际开发更新、106 项相关编译器/SSR 单元用例、pnpm check、pnpm build、格式与工作流静态检查通过。临时安装目录、tgz、开发项目、服务、浏览器和已修复的失败报告已清理，共享 store 未清理。
 - CI 的 Linux 完整任务加入真实包消费，另增加 Windows 包消费任务；本轮不等待新 CI，下次推送前检查两者。未发布 npm，也没有将包消费通过视为生产验收。
 - 依据实际问题将发布产物验证提前，它已直接改善公共类型与开发接入；下一步原生属性及类型/SSR 一致性审计，再推进资源/性能、异步业务试点和完整生产门槛。
+
+## 原生属性与合法命名空间结构
+
+- 修复 hidden=until-found、translate 的 yes/no、ARIA 与 MathML/SVG 布尔文本等序列化差异；普通可选原生属性允许显式 undefined。对象等非标量属性继续明确报错。
+- 原生属性先按真实名称合并，再比较最终值，修复较早的 class/aria/SVG 别名更新覆盖较晚稳定值的问题。null 会清除最终属性，删除别名键后较早值重新生效；undefined 表单模型不会遮蔽仍有效的首次默认值。
+- SVG presentation 别名与 JSX 类型共享名称映射；按 HTML 解析器规则修正 SVG 属性大小写，仅折叠 ASCII 大写字母。XML、XLink、XMLNS 的写入、删除和接管检查使用相应命名空间。
+- 补齐 SVG foreignObject/desc/title、MathML 文本集成点和 annotation-xml 编码的命名空间选择。普通外部节点不因遇到 math/svg 字面名称就错误切换，动态分支保留真实父容器上下文。
+- JSX 加入 TS7 的 MathMLElementTagNameMap、MathML 属性及正确 ref 类型。未知带连字符标签不再被强行当成 HTMLElement；有明确自定义元素类型时使用标准 HTMLElementTagNameMap 扩展。
+- 新增独立 AttributeExample 与六个 CSR/SSR 浏览器场景，验证别名更新/清除、布尔与枚举、XML 属性移除、外部命名空间以及动态子树。现有两处全局 circle 选择器因新增 SVG 不再唯一，已限定到实际验证的图形，原断言保留。
+- 本地证据：28 项相关原生/输入/SSR 单元用例通过；37 项 Chromium 属性、表单、组件与接管用例均完成验证，两个选择器用例修正后定向复跑通过，新增六项最终复跑通过。类型检查、lint 和构建已通过；Unicode 名称追加修改有专项单元验证。
+- 上一提交 `6b520ae` 的 [CI](https://github.com/kenconnet666/zerodep-js/actions/runs/36786892898) 中 Windows 包消费任务通过；Linux 完整任务在快速修复源码后的开发更新等待中失败，初始依赖扫描已无 React 错误。
+- 对照实际监听器源码，确认 change 事件存在 50 毫秒合并窗口，Linux 的修复写入落在其中且没有第三次通知。示例与开发夹具统一使用 awaitWriteFinish 的完整写入检测，稳定窗口 100 毫秒、检查间隔 20 毫秒；没有给测试增加固定 sleep、重试或跳过。完整开发更新验证在本地通过，Linux 再验证交给本轮 CI。
+- 原生审计尚未结束：非反射 DOM property、自定义元素对象输入/事件，以及 style 对象的名称、priority 和值边界仍需修复。具体支持与缺口见 native-elements.md，不把可写 DOM 类型等同于已实现属性行为，也不把本轮标为生产验收。

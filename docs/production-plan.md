@@ -418,6 +418,6 @@ mount、hydrate 与组件 renderToString 均已实现，前两个返回清理函
 - 提交号、是否已经推送、远程结果是否仍待完成。
 - 下一项可直接开始的工作，或需要用户解决的具体阻碍。
 
-当前停靠点：响应式、组件/DOM、列表/context/错误边界、SSR/hydration、原生表单及开发诊断已有执行基线；工作区外的真实包安装和预编译组件库消费已经通过本地验证。下一步优先原生属性与类型/SSR 一致性审计，再推进资源/性能、异步业务试点及完整生产验收。Linux/Windows 的产物 CI 继续按提交结果确认。阶段允许合并或调整；已有基线不等于各领域通过最终生产门槛。最新证据见 execution.md。
+当前停靠点：框架基础、SSR/hydration、表单、开发诊断和独立包消费已有执行基线；原生审计本轮修正属性别名、枚举值、SVG/MathML 命名空间与类型。后续优先处理非反射 DOM property、自定义元素和 style 值一致性，再推进资源/性能、异步业务试点及完整生产验收。已确认 Windows 包消费 CI 通过，Linux 完整 CI 的快速保存问题有对应修正，仍需后续运行确认。阶段允许按证据调整，现有基线不等于最终生产门槛。最新证据见 execution.md。
 
 参考资料：[Svelte props](https://svelte.dev/docs/svelte/$props)、[Vue props](https://vuejs.org/guide/components/props.html)、[TypeScript JSX](https://www.typescriptlang.org/docs/handbook/jsx.html)、[Vite SSR](https://vite.dev/guide/ssr.html)。本项目以已确认契约和实测结果为准，不把参考框架的全部行为默认搬入。

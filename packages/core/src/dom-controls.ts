@@ -12,14 +12,6 @@ import {
 } from './dom-input.js';
 
 const controls = new WeakMap<Element, Control>();
-export const controlProperties = new Set([
-  'value',
-  'defaultValue',
-  'checked',
-  'defaultChecked',
-  'indeterminate',
-]);
-
 class Control {
   readonly element: InputControl;
   private readonly input: Props;

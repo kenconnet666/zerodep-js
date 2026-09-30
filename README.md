@@ -115,6 +115,7 @@ pnpm lsp:inspect packages/ssr/src/index.ts apps/example/src/entry-client.ts
 - [包产物与独立消费](docs/packages.md)
 - [SSR 与 hydration 使用及边界](docs/ssr-and-hydration.md)
 - [原生输入与表单契约](docs/forms.md)
+- [原生元素、属性与命名空间](docs/native-elements.md)
 - [第一阶段 API 评审用例](docs/api-review.md)
 - [实现路线、代价与设计约束](docs/implementation-design.md)
 - [TS7 与编译工具研究](.design/ts7-tsx-research.md)

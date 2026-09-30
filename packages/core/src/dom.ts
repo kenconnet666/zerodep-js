@@ -155,6 +155,7 @@ export function renderValue(
     value.tag,
     inherited?.namespaceURI ?? HTML,
     inherited?.localName ?? '',
+    inherited?.getAttribute('encoding') ?? '',
   );
   assertName(value.tag);
   const node = hydration

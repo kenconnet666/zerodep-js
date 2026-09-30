@@ -33,6 +33,7 @@ interface Selection {
 interface Context {
   namespace: string;
   tag: string;
+  encoding?: string | undefined;
   selection?: Selection | undefined;
 }
 
@@ -136,7 +137,7 @@ function render(value: Renderable, owner: Scope, context: Context): string {
       render(setupComponent(value.tag as AnyComponent, value.props), scope, context),
     );
   const tag = value.tag;
-  const namespace = namespaceFor(tag, context.namespace, context.tag);
+  const namespace = namespaceFor(tag, context.namespace, context.tag, context.encoding);
   if (!/^[\p{L}][\p{L}\p{N}._:-]*$/u.test(tag)) throw new Error(`无效的元素名：${tag}`);
   const attributes = nativeAttributes(value.props, tag, namespace);
   if (namespace === HTML && tag === 'option' && context.selection) {
@@ -168,7 +169,12 @@ function render(value: Renderable, owner: Scope, context: Context): string {
       output += text;
     } else output += (tag === 'textarea' && text.startsWith('\n') ? '\n' : '') + escapeText(text);
   } else {
-    const childContext: Context = { ...context, namespace, tag };
+    const childContext: Context = {
+      ...context,
+      namespace,
+      tag,
+      encoding: attributes.get('encoding'),
+    };
     if (namespace === HTML && tag === 'select') {
       const selected =
         value.props.value !== undefined ? value.props.value : value.props.defaultValue;

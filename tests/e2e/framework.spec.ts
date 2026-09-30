@@ -52,15 +52,16 @@ for (const mode of ['csr', 'ssr']) {
       const oldButton = await page.locator('[data-increment]').elementHandle();
       await oldButton!.click();
       await expect(page.locator('[data-last-event]')).toHaveText('1');
-      await expect(page.locator('circle')).toHaveAttribute('stroke-width', '2');
-      expect(await page.locator('circle').evaluate((node) => node.namespaceURI)).toBe(
+      const graphic = page.getByRole('img', { name: '状态图形' });
+      await expect(graphic.locator('circle')).toHaveAttribute('stroke-width', '2');
+      expect(await graphic.locator('circle').evaluate((node) => node.namespaceURI)).toBe(
         'http://www.w3.org/2000/svg',
       );
       await page.locator('[data-change-step]').click();
       await expect(page.locator('main')).toHaveCSS('--step', '2');
       await page.locator('[data-toggle]').click();
       await expect(page.locator('[data-ref-disposed]')).toHaveText('1');
-      expect(await page.locator('rect').evaluate((node) => node.namespaceURI)).toBe(
+      expect(await graphic.locator('rect').evaluate((node) => node.namespaceURI)).toBe(
         'http://www.w3.org/2000/svg',
       );
       await oldButton!.evaluate((node) => (node as HTMLButtonElement).click());

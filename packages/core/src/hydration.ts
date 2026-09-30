@@ -1,5 +1,5 @@
 import { Scope, dispatchError, getScope, onCleanup, untrack } from './reactivity.js';
-import { nativeAttributes, selectionValues, HTML } from './native.js';
+import { nativeAttributes, selectionValues, attributeNamespace, HTML } from './native.js';
 import type { Props } from './props.js';
 import type { Container, NodeRange } from './dom-utils.js';
 
@@ -135,10 +135,13 @@ export class HydrationCursor {
     if (option) this.session.optionDefaults.set(element, expected.has('selected'));
     for (const [name, value] of expected) {
       if (option && name === 'selected') continue;
+      const namespace = attributeNamespace(name, element.namespaceURI ?? HTML);
       const actual =
         name === 'nonce' && 'nonce' in element
           ? String(Reflect.get(element, 'nonce'))
-          : element.getAttribute(name);
+          : namespace
+            ? element.getAttributeNS(namespace, name.slice(name.indexOf(':') + 1))
+            : element.getAttribute(name);
       if (actual !== value)
         throw new HydrationError(`<${element.localName}> 的 ${name} 属性不同。`);
     }

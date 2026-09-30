@@ -1,5 +1,6 @@
 import type { AnyComponent } from './component.js';
 import type { Renderable, Template } from './template.js';
+import type { svgAliases } from './native.js';
 
 type Equal<X, Y, Yes, No> =
   (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2 ? Yes : No;
@@ -13,7 +14,9 @@ type NativeValues<T> = {
         ? K
         : never
       : never
-  ]?: T[K] | null;
+  ]?: K extends `aria${string}`
+    ? string | number | boolean | null | undefined
+    : T[K] | null | undefined;
 };
 export type EventHandler<T, E extends Event> = (event: E & { readonly currentTarget: T }) => void;
 // checkbox 等控件可能派发普通 Event，InputEvent 的扩展字段不能无条件承诺存在。
@@ -111,6 +114,7 @@ export type NativeProps<T extends Element> = (T extends Element
   EventProps<T> & {
     children?: Renderable;
     class?: string | false | null | undefined;
+    className?: string | null | undefined;
     style?: Style | null | undefined;
     ref?: ((element: T) => void) | undefined;
     role?: string | null | undefined;
@@ -118,7 +122,7 @@ export type NativeProps<T extends Element> = (T extends Element
     [key: `aria-${string}`]: string | number | boolean | null | undefined;
   };
 
-type SvgAttributes = {
+type SvgValues = {
   viewBox?: string;
   preserveAspectRatio?: string;
   fill?: string;
@@ -140,13 +144,73 @@ type SvgAttributes = {
   ry?: number | string;
   width?: number | string;
   height?: number | string;
+  href?: string;
+  xlinkHref?: string;
+  xmlLang?: string;
+  xmlSpace?: 'default' | 'preserve';
+  xmlnsXlink?: string;
+  opacity?: string | number;
+  offset?: string | number;
+  x1?: string | number;
+  x2?: string | number;
+  y1?: string | number;
+  y2?: string | number;
+  pathLength?: number;
+  gradientUnits?: 'userSpaceOnUse' | 'objectBoundingBox';
+  gradientTransform?: string;
+  markerUnits?: 'userSpaceOnUse' | 'strokeWidth';
+  markerWidth?: string | number;
+  markerHeight?: string | number;
+  refX?: string | number;
+  refY?: string | number;
+  orient?: string | number;
+  clipPathUnits?: 'userSpaceOnUse' | 'objectBoundingBox';
+  focusable?: boolean | 'auto' | 'true' | 'false';
+  externalResourcesRequired?: boolean | 'true' | 'false';
 };
-type TagName = keyof HTMLElementTagNameMap | keyof SVGElementTagNameMap;
+type SvgAttributes = {
+  [K in keyof SvgValues | keyof typeof svgAliases]?:
+    (K extends keyof SvgValues ? SvgValues[K] : string | number) | null | undefined;
+};
+type Booleanish = boolean | 'true' | 'false';
+type MathAttributes = {
+  display?: 'block' | 'inline';
+  displaystyle?: Booleanish;
+  scriptlevel?: string | number;
+  mathvariant?: string;
+  mathsize?: string | number;
+  mathcolor?: string;
+  mathbackground?: string;
+  encoding?: string;
+  href?: string;
+  xmlns?: string;
+  xmlLang?: string;
+  xmlSpace?: 'default' | 'preserve';
+  stretchy?: Booleanish;
+  symmetric?: Booleanish;
+  fence?: Booleanish;
+  separator?: Booleanish;
+  largeop?: Booleanish;
+  movablelimits?: Booleanish;
+  accent?: Booleanish;
+  accentunder?: Booleanish;
+  linethickness?: string | number;
+  columnalign?: string;
+  columnspacing?: string;
+  rowalign?: string;
+  rowspacing?: string;
+};
+type TagName =
+  keyof HTMLElementTagNameMap | keyof SVGElementTagNameMap | keyof MathMLElementTagNameMap;
 type HtmlElement<K> = K extends keyof HTMLElementTagNameMap ? HTMLElementTagNameMap[K] : never;
 type SvgElement<K> = K extends keyof SVGElementTagNameMap ? SVGElementTagNameMap[K] : never;
+type MathElement<K> = K extends keyof MathMLElementTagNameMap ? MathMLElementTagNameMap[K] : never;
 type Elements = {
-  [K in TagName]: NativeProps<HtmlElement<K> | SvgElement<K>> &
-    (K extends keyof SVGElementTagNameMap ? SvgAttributes : {});
+  [K in TagName]: NativeProps<HtmlElement<K> | SvgElement<K> | MathElement<K>> &
+    (K extends keyof SVGElementTagNameMap ? SvgAttributes : {}) &
+    (K extends keyof MathMLElementTagNameMap
+      ? { [P in keyof MathAttributes]?: MathAttributes[P] | null | undefined }
+      : {});
 };
 
 export declare namespace JSX {
@@ -159,6 +223,7 @@ export declare namespace JSX {
     key?: string | number | symbol;
   }
   interface IntrinsicElements extends Elements {
-    [tag: `${string}-${string}`]: NativeProps<HTMLElement> & Record<string, unknown>;
+    // 已知自定义标签可扩展 HTMLElementTagNameMap；未知标签不假装知道其属性契约。
+    [tag: `${string}-${string}`]: Record<string, unknown>;
   }
 }

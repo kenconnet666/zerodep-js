@@ -55,6 +55,34 @@ export const boundary = (
   </ErrorBoundary>
 );
 export const numericOption = <option value={1}>数字选项</option>;
+export const scalarAttributes = <div hidden="until-found" ariaHidden={false} translate={false} />;
+export const optionalAttribute = <button disabled={undefined} />;
+export const vector = (
+  <svg className="图形" viewBox="0 0 10 10" focusable={false}>
+    <path fillOpacity={0.5} strokeDasharray={undefined} />
+  </svg>
+);
+export const mathematics = (
+  <math
+    displaystyle={false}
+    ref={(element) => {
+      const math: MathMLElement = element;
+      void math;
+      // @ts-expect-error MathML ref 不会伪装成 HTMLElement。
+      const html: HTMLDivElement = element;
+      void html;
+    }}
+  >
+    <mtext>
+      <span>类型正确</span>
+    </mtext>
+    <annotation-xml encoding="text/html">
+      <div />
+    </annotation-xml>
+  </math>
+);
+// @ts-expect-error SVG presentation 值不接受任意对象。
+export const invalidPresentation = <path strokeDasharray={{ values: [1, 2] }} />;
 export const nativeInput = (
   <input
     type="checkbox"

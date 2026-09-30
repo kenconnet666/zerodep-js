@@ -50,6 +50,7 @@
 - JSX 值是可重复插入的渲染描述；每个插入点创建独立 DOM 与作用域，不把已存在节点从别处搬走。普通 children 可转发；参数化内容使用显式调用的 render 函数，不自动执行任意函数值。
 - 同一 JSX 位置的组件/动态标签保持实例，标签或 key 变化才重建。key 只接受字符串、数字、symbol，不传入组件 props，也不写入 DOM；业务标识使用 id 等普通字段。
 - 原生事件保持浏览器派发与 currentTarget；ref 用于取得元素或返回清理函数，需要已连接 DOM 的测量放在 effect 中。style 字符串/对象和 CSS 变量受支持，长度单位由调用方显式提供。
+- HTML、SVG 和 MathML 的属性序列化及命名空间使用共同规则；属性别名先合并最终值再更新 DOM。已验证的范围及尚待修复的 property/style 类型缺口见 [原生元素](native-elements.md)。
 - value/checked 与 defaultValue/defaultChecked 分别表示受控值和首次默认状态；同值归一化也校准 DOM，组合输入期间延后 value 回写。文本 onInput 即时同步，只有原生 onChange 时允许编辑到提交。
 - 表单 reset 默认动作后，受控字段重新服从模型，非受控字段回到首次默认值；取消 reset 不强制重置。select 随结构及选项变化重新匹配模型，文件输入只允许空 value 用于清空。
 - `For` 使用稳定 key；内联回调的 row/index 是编译器识别的实时绑定。同 key 替换数据读取新对象、保留行实例；删除销毁，重复 key 报错。

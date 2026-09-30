@@ -1,24 +1,10 @@
 import { Scope, onCleanup, renderEffect, untrack, unowned } from './reactivity.js';
 import type { Props } from './props.js';
 import type { HydrationSession } from './hydration.js';
-import { bindControl, controlProperties, notifySelect } from './dom-controls.js';
-import {
-  HTML,
-  attributeName,
-  attributeValue,
-  eventName,
-  nativeAttributes,
-  styleEntries,
-} from './native.js';
+import { bindControl, notifySelect } from './dom-controls.js';
+import { HTML, attributeNamespace, eventName, nativeAttributes, styleEntries } from './native.js';
 
-const properties = new Set([
-  'value',
-  'defaultValue',
-  'checked',
-  'defaultChecked',
-  'selected',
-  'muted',
-]);
+const properties = new Set(['value', 'checked', 'selected', 'muted']);
 
 interface EventBinding {
   type: string;
@@ -42,26 +28,22 @@ function applyStyle(element: Element, value: unknown, previous: Map<string, stri
   if (!next.size) element.removeAttribute('style');
 }
 
-function setAttribute(element: Element, key: string, value: unknown): void {
-  if (key === 'innerHTML' || key === 'outerHTML' || key === 'textContent' || key === 'innerText') {
-    throw new Error(`${key} 会绕过 JSX 所有权，请使用 children 或明确的 DOM ref 集成。`);
-  }
+function setAttribute(element: Element, name: string, value: string | null): void {
   if (
-    (key === 'selected' && element.localName === 'option') ||
-    (key === 'muted' && key in element)
+    (name === 'selected' && element.localName === 'option') ||
+    (name === 'muted' && name in element)
   ) {
-    const next = Boolean(value);
-    element.toggleAttribute(key, next);
-    if (Reflect.get(element, key) !== next) Reflect.set(element, key, next);
+    const next = value !== null;
+    element.toggleAttribute(name, next);
+    if (Reflect.get(element, name) !== next) Reflect.set(element, name, next);
     return;
   }
-  const name = attributeName(key, element.namespaceURI ?? HTML);
-  const next = attributeValue(name, value);
-  if (name.startsWith('xlink:')) {
-    if (next === null) element.removeAttributeNS('http://www.w3.org/1999/xlink', name.slice(6));
-    else element.setAttributeNS('http://www.w3.org/1999/xlink', name, next);
-  } else if (next === null) element.removeAttribute(name);
-  else element.setAttribute(name, next);
+  const namespace = attributeNamespace(name, element.namespaceURI ?? HTML);
+  if (namespace) {
+    if (value === null) element.removeAttributeNS(namespace, name.slice(name.indexOf(':') + 1));
+    else element.setAttributeNS(namespace, name, value);
+  } else if (value === null) element.removeAttribute(name);
+  else element.setAttribute(name, value);
 }
 
 export function attachAttributes(
@@ -69,7 +51,7 @@ export function attachAttributes(
   input: Props,
   hydration?: HydrationSession,
 ): void {
-  const previous = new Map<string, unknown>();
+  const previous = new Map<string, string>();
   const styles = new Map<string, string>();
   const events = new Map<string, EventBinding>();
   const control = bindControl(element, input, hydration, (type) =>
@@ -81,47 +63,49 @@ export function attachAttributes(
   });
   renderEffect(() => {
     control?.track();
-    nativeAttributes(input, element.localName, element.namespaceURI ?? HTML);
-    const next = new Map(
-      Object.keys(input)
-        .filter((key) => key !== 'children' && key !== 'ref' && key !== 'key')
-        .sort((left, right) => Number(properties.has(left)) - Number(properties.has(right)))
-        .map((key) => [key, input[key]]),
+    const next = nativeAttributes(input, element.localName, element.namespaceURI ?? HTML);
+    // 先按真实属性名合并别名，再比较最终值；较早别名更新不能覆盖较晚的稳定值。
+    const names = [...new Set([...previous.keys(), ...next.keys()])].sort(
+      (left, right) => Number(properties.has(left)) - Number(properties.has(right)),
     );
-    for (const key of previous.keys()) if (!next.has(key)) next.set(key, undefined);
-    for (const [key, value] of next) {
-      if (control && controlProperties.has(key)) continue;
-      if (key === 'style') {
-        applyStyle(element, value, styles);
-        continue;
-      }
-      const event = eventName(key);
-      if (event) {
-        let binding = events.get(key);
-        if (value == null) {
-          if (binding) element.removeEventListener(binding.type, binding.listener, binding.capture);
-          events.delete(key);
-        } else {
-          if (typeof value !== 'function') throw new Error(`${key} 必须是事件处理函数。`);
-          if (!binding) {
-            binding = {
-              ...event,
-              listener: (event) => {
-                unowned(() => {
-                  const handler = input[key];
-                  if (typeof handler === 'function') handler.call(element, event);
-                });
-              },
-            };
-            events.set(key, binding);
-            element.addEventListener(binding.type, binding.listener, binding.capture);
-          }
+    for (const name of names) {
+      if (name === 'style' || (control && (name === 'value' || name === 'checked'))) continue;
+      const value = next.get(name) ?? null;
+      if (previous.get(name) !== value) setAttribute(element, name, value);
+    }
+    let style: unknown;
+    const eventKeys = new Set(events.keys());
+    for (const key of Object.keys(input)) {
+      if (key.toLowerCase() === 'style') style = input[key];
+      else if (eventName(key)) eventKeys.add(key);
+    }
+    applyStyle(element, style, styles);
+    for (const key of eventKeys) {
+      const event = eventName(key)!;
+      const value = input[key];
+      let binding = events.get(key);
+      if (value == null) {
+        if (binding) element.removeEventListener(binding.type, binding.listener, binding.capture);
+        events.delete(key);
+      } else {
+        if (typeof value !== 'function') throw new Error(`${key} 必须是事件处理函数。`);
+        if (!binding) {
+          binding = {
+            ...event,
+            listener: (event) => {
+              unowned(() => {
+                const handler = input[key];
+                if (typeof handler === 'function') handler.call(element, event);
+              });
+            },
+          };
+          events.set(key, binding);
+          element.addEventListener(binding.type, binding.listener, binding.capture);
         }
-      } else if (!Object.is(previous.get(key), value) || !previous.has(key))
-        setAttribute(element, key, value);
+      }
     }
     previous.clear();
-    for (const [key, value] of next) if (value !== undefined) previous.set(key, value);
+    for (const [key, value] of next) previous.set(key, value);
     control?.update();
     if (element.localName === 'option' || element.localName === 'optgroup')
       notifySelect(element.parentNode);

@@ -13,6 +13,17 @@ import { For, ErrorBoundary } from '@zerodep-js/core';
 import { renderToString, serializeData } from '../src/index.js';
 
 describe('真实组件 SSR', () => {
+  it('undefined 模型不会遮蔽首次默认值和默认勾选', () => {
+    const App = defineComponent(() =>
+      element('input', {
+        defaultValue: '默认文本',
+        value: undefined,
+        defaultChecked: true,
+        checked: undefined,
+      }),
+    );
+    expect(renderToString(App)).toBe('<input value="默认文本" checked="">');
+  });
   it('select 的 null 值匹配空选项，失败子树不会消耗选中状态', () => {
     const fail = defineComponent(() => {
       throw new Error('失败');
