@@ -61,6 +61,21 @@ export function transformComponents(
         for (const violation of binding.constantViolations)
           report(violation.node, 'ZJ1203', 'props 参数不能重新赋值。');
         setup.traverse({
+          'MemberExpression|OptionalMemberExpression'(read) {
+            const { object, property, computed } = read.node;
+            if (
+              t.isIdentifier(object) &&
+              read.scope.getBinding(object.name) === binding &&
+              ((!computed && t.isIdentifier(property, { name: 'key' })) ||
+                t.isStringLiteral(property, { value: 'key' }))
+            ) {
+              report(
+                read.node,
+                'ZJ1207',
+                'key 是 JSX 实例身份，不是组件输入；业务数据请使用 id 等名称。',
+              );
+            }
+          },
           'AssignmentExpression|UpdateExpression'(write) {
             const target = write.isAssignmentExpression() ? write.node.left : write.node.argument;
             if (
@@ -85,6 +100,18 @@ export function transformComponents(
           property: t.ObjectProperty | t.RestElement;
         }[] = [];
         for (const property of parameter.properties) {
+          if (
+            t.isObjectProperty(property) &&
+            !property.computed &&
+            (t.isIdentifier(property.key, { name: 'key' }) ||
+              t.isStringLiteral(property.key, { value: 'key' }))
+          ) {
+            report(
+              property,
+              'ZJ1207',
+              'key 是 JSX 实例身份，不是组件输入；业务数据请使用 id 等名称。',
+            );
+          }
           const value = t.isRestElement(property) ? property.argument : property.value;
           const local = t.isAssignmentPattern(value) ? value.left : value;
           if (

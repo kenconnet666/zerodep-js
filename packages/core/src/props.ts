@@ -3,9 +3,6 @@ import { Derived } from './reactivity.js';
 export type Props = Record<PropertyKey, unknown>;
 export type PropSource = Record<PropertyKey, () => unknown> | (() => unknown);
 
-const hasOwn = (object: object, key: PropertyKey) =>
-  Object.prototype.hasOwnProperty.call(object, key);
-
 function readonlyView(read: (key: PropertyKey) => unknown, keys: () => PropertyKey[]): Props {
   const reject = (): never => {
     throw new Error('组件 props 是只读输入，请通过回调通知数据拥有者。');
@@ -50,7 +47,8 @@ export function props(sources: readonly PropSource[]): Props {
     (key) => {
       for (let index = inputs.length - 1; index >= 0; index--) {
         const input = inputs[index]!();
-        if (hasOwn(input, key) && Reflect.getOwnPropertyDescriptor(input, key)?.enumerable) {
+        // 键集合也参与跟踪，保证缺失属性的新增与原型同名属性的覆盖可见。
+        if (enumerableKeys(input).includes(key)) {
           return input[key];
         }
       }

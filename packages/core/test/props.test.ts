@@ -58,6 +58,31 @@ describe('组件输入视图', () => {
     }).toThrow('只读');
   });
 
+  it('spread 中缺失属性新增后，使用默认值的读取会更新', () => {
+    const input = reactive<Record<string, unknown>>({});
+    const view = props([() => input]);
+    const label = prop(view, 'label', () => '默认');
+    const values: unknown[] = [];
+    const dispose = createRoot((stop) => {
+      effect(() => {
+        values.push(label());
+      });
+      return stop;
+    });
+    try {
+      flushSync();
+      flushSync(() => {
+        input.label = '新增';
+      });
+      flushSync(() => {
+        delete input.label;
+      });
+      expect(values).toEqual(['默认', '新增', '默认']);
+    } finally {
+      dispose();
+    }
+  });
+
   it('昂贵的显式表达式按依赖缓存，未使用的属性不求值', () => {
     const input = reactive({ value: 2 });
     const calculate = vi.fn(() => input.value * 2);

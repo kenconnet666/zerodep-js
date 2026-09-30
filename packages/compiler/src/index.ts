@@ -5,6 +5,7 @@ import traverse, { type Binding, type NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
 import { CompileError, diagnostic, type Diagnostic } from './diagnostics.js';
 import { transformComponents } from './components.js';
+import { transformJsx } from './jsx.js';
 
 export { CompileError } from './diagnostics.js';
 export type { Diagnostic } from './diagnostics.js';
@@ -78,6 +79,8 @@ export function compile(
     path.replaceWith(t.inherits(expression, path.node));
   }
 
+  const hasJsx = transformJsx(ast, helper);
+  program.scope.crawl();
   const hasComponents = transformComponents(ast, program, helper, report);
   for (const statement of program.get('body')) {
     if (!statement.isImportDeclaration() || statement.node.source.value !== '@zerodep-js/core')
@@ -275,13 +278,6 @@ export function compile(
         report(path.node, 'ZJ1008', '响应式模块不支持直接 eval 访问被转换的词法绑定。');
       }
     },
-    'JSXElement|JSXFragment'(path) {
-      report(
-        path.node,
-        'ZJ1100',
-        'JSX 输出正在实现中；当前编译入口支持变量宏，不会静默生成不可用的 JSX 运行时。',
-      );
-    },
   });
 
   // 重新收集引用以检测宏逃逸：把宏当普通回调或别名转交会失去编译边界。
@@ -301,7 +297,7 @@ export function compile(
     }
   }
   if (errors.length) throw new CompileError(errors);
-  if (reactive.size || hasComponents)
+  if (reactive.size || hasComponents || hasJsx)
     program.unshiftContainer(
       'body',
       t.importDeclaration(

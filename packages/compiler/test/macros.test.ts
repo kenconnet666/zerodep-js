@@ -1,19 +1,8 @@
-import { runInNewContext } from 'node:vm';
+import { execute } from './execute.js';
 import { TraceMap, originalPositionFor } from '@jridgewell/trace-mapping';
 import { describe, expect, it } from 'vitest';
-import * as runtime from '../../core/src/internal.js';
 import { $derived, $state } from '../../core/src/macros.js';
 import { CompileError, compile } from '../src/index.js';
-
-function execute(source: string): unknown {
-  const output = compile(source, 'example.ts', { runtimeModule: 'test-runtime' });
-  // 只替换测试沙盒的模块接线，变量转换及其运行时均使用真实实现。
-  const code = output.code.replace(
-    /import \* as (\w+) from ["']test-runtime["'];?/,
-    'const $1 = runtime;',
-  );
-  return runInNewContext(`${code}\nresult;`, { runtime });
-}
 
 describe('变量宏的绑定转换', () => {
   it('普通变量式读写、表达式派生和计算函数真实执行', () => {
@@ -148,6 +137,16 @@ describe('变量宏的绑定转换', () => {
     ).toEqual([7, 8, 10, 2]);
   });
 
+  it('内部 helper 不被嵌套函数的同名参数遮蔽', () => {
+    expect(
+      execute(`
+      import { $state } from '@zerodep-js/core';
+      function counter(_zj: number) { let count = $state(1); count++; return count + _zj; }
+      const result = counter(10);
+    `),
+    ).toBe(12);
+  });
+
   it('空模块仍生成有效的空输出', () => {
     expect(compile('', 'empty.ts').code).toBe('');
   });
@@ -183,7 +182,6 @@ describe('明确拒绝语义不成立的形式', () => {
     ['var', 'var n = $state(1);', 'ZJ1004'],
     ['展开参数', 'let n = $state(...[1]);', 'ZJ1003'],
     ['错误宏成员', 'let n = $state.magic(1);', 'ZJ1001'],
-    ['尚未实现的 JSX', 'const element = <div />;', 'ZJ1100'],
   ])('%s', (_name, code, expected) => {
     const source = `import { $state, $derived } from '@zerodep-js/core';\n${code}`;
     try {

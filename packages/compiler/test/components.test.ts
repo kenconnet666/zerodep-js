@@ -1,18 +1,9 @@
-import { runInNewContext } from 'node:vm';
+import { execute } from './execute.js';
 import { describe, expect, it } from 'vitest';
 import * as runtime from '../../core/src/internal.js';
 import { createRoot } from '../../core/src/reactivity.js';
 import { reactive } from '../../core/src/state.js';
 import { compile } from '../src/index.js';
-
-function execute(source: string, extra = {}): unknown {
-  const output = compile(source, 'component.ts', { runtimeModule: 'test-runtime' });
-  const code = output.code.replace(
-    /import \* as (\w+) from ["']test-runtime["'];?/,
-    'const $1 = runtime;',
-  );
-  return runInNewContext(`${code}\nresult;`, { runtime, ...extra });
-}
 
 describe('组件参数转换', () => {
   it('直接解构读取最新 props，初始值变化不重置局部状态，事件调用最新回调', () => {
@@ -165,6 +156,7 @@ describe('组件参数转换', () => {
     ],
     ['异步组件', 'component(async () => null);', 'ZJ1200'],
     ['间接标记', 'const alias = component;', 'ZJ1206'],
+    ['读取保留 key', 'component(({ key }) => key);', 'ZJ1207'],
   ])('明确诊断：%s', (_name, source, code) => {
     expect(() =>
       compile(`import { component } from '@zerodep-js/core'; ${source}`, 'invalid.ts'),

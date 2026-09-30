@@ -17,6 +17,7 @@
     "sirv": "catalog:"
   },
   "devDependencies": {
+    "@zerodep-js/vite": "workspace:*",
     "typescript": "catalog:",
     "vite": "catalog:"
   }

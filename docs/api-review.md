@@ -74,6 +74,8 @@ const Range = component(({ min = 0, max = min + 10 }: { min?: number; max?: numb
 ## 3. props 转发与输入
 
 ```tsx
+import type { JSX } from '@zerodep-js/core';
+
 type ButtonProps = JSX.IntrinsicElements['button'] & {
   tone?: 'primary' | 'neutral';
 };

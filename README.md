@@ -2,14 +2,15 @@
 
 面向 TSX 的细粒度响应式框架实验工作区，目标是显式声明响应式变量、直接读写、组件参数解构和自然的默认值。
 
-当前已开始完整生产化目标：工程入口可切换 SSR/CSR，响应式图、属性级状态、effect 生命周期与变量宏编译已实现并有真实执行用例。组件 DOM 与通用 hydration 仍在建设中，尚未达到生产验收。
+当前已开始完整生产化目标：变量式状态、组件 props、JSX DOM 渲染和 Vite 插件已接入真实 CSR 示例。列表、完整表单行为、SSR/hydration、错误边界与发布验收仍在建设中，尚未达到生产验收。
 
 ## 工作区
 
 | 子项目              | 当前职责                                                  |
 | ------------------- | --------------------------------------------------------- |
-| `packages/core`     | 状态、派生、生命周期、宏类型与内部 helper                 |
-| `packages/compiler` | 独立 Babel 8 编译入口，已支持变量宏及绑定诊断             |
+| `packages/core`     | 状态、组件、DOM、生命周期、JSX 类型与内部 helper          |
+| `packages/compiler` | 变量宏、组件参数和 JSX 编译，源码映射与绑定诊断           |
+| `packages/vite`     | Vite 8 接入，保持源码映射并展示编译诊断                   |
 | `packages/ssr`      | 文档模板组合和 SSR/CSR 模式分发                           |
 | `apps/example`      | 真实 workspace 消费项目，包含客户端、服务端和模式切换入口 |
 
@@ -29,7 +30,7 @@ pnpm dev
 - `/?render=ssr`：响应 HTML 已包含页面内容。
 - `/?render=csr`：响应包含空应用容器，由客户端入口创建页面。
 
-`pnpm dev` 同时监听 core、ssr 和示例。只开发示例且希望改变默认模式时，可使用 `pnpm dev:csr` 或 `pnpm dev:ssr`；这两个命令先构建库，再启动示例服务。
+`pnpm dev` 同时监听各库和示例。体验已实现的框架组件可使用 `pnpm dev:csr`；`pnpm dev:ssr` 查看服务端工程入口。这两个命令先构建库，再启动示例服务。
 
 生产入口：
 
@@ -43,9 +44,31 @@ pnpm preview --render-mode csr
 
 ## 当前示例的边界
 
-两个模式复用同一个页面定义。SSR 模式在禁用 JavaScript 时仍可阅读；客户端接入后启用计数按钮。CSR 模式在客户端创建页面。
+CSR 已运行 [App.tsx](apps/example/src/App.tsx)，包含状态与派生、组件默认值、属性转发、输入、条件销毁、key、ref、CSS 变量和 SVG。它通过 workspace 包产物和真实 Vite 插件消费框架。
 
-这只是原生 DOM 工程探针。SSR 模式接入现有 DOM 的少量事件代码不是通用 hydration 实现，也没有调用尚不存在的 `$state` 或 `component`。后续会用框架 API 替换该探针。
+SSR 暂时保留 `view.ts` 文档工程探针，在禁用 JavaScript 时仍可阅读；其原生事件接入不是通用 hydration。接下来会用同一 App 的真正 SSR + hydrate 替换此过渡入口。
+
+## 已可使用的组件形态
+
+```tsx
+import { component, $state, $derived } from '@zerodep-js/core';
+
+export const Counter = component(({ step = 1 }: { step?: number }) => {
+  let count = $state(0);
+  const doubled = $derived(count * 2);
+  return (
+    <button
+      onClick={() => {
+        count += step;
+      }}
+    >
+      {count} / {doubled}
+    </button>
+  );
+});
+```
+
+Vite 使用 `@zerodep-js/vite` 的 `zerodep()` 插件。TS 配置保持 `jsx: "preserve"`，并设置 `jsxImportSource: "@zerodep-js/core"`。客户端通过 `mount(App, { target, props })` 挂载，返回的函数负责卸载。未经过编译的宏会明确报错。
 
 ## 验证命令
 
@@ -57,7 +80,7 @@ pnpm format:check
 ```
 
 - `pnpm check`：构建库的声明，再检查子项目、工具配置和 Oxlint。
-- `pnpm test`：Vitest Node 测试，包含 Babel 工具链和 SSR 文档基础设施。
+- `pnpm test`：响应式、props、编译器和 SSR 文档基础设施的 Node 用例；JSX 类型正反例由 `pnpm check` 检查。
 - `pnpm test:watch`：单元测试监听。
 - `pnpm test:coverage`：V8 覆盖率；当前不将其作为框架完成度指标。
 - `pnpm test:e2e`：构建后运行 Chromium、Firefox、WebKit。
@@ -68,7 +91,7 @@ Playwright 使用独立的 4175 端口，测试完成后关闭服务。失败时
 
 ## Babel 与语言服务
 
-`babel.config.mjs` 配置 Babel 8 类型移除、JSX 保留和 source map。它还没有接入框架语义转换。TS7 负责类型检查与声明生成。
+根 `babel.config.mjs` 用于独立工具链探针；实际框架转换由 `packages/compiler` 执行，并经 `packages/vite` 接入应用。TS7 负责原始 TSX 的类型检查、编辑提示与声明生成；框架专有语义错误由编译器报告。
 
 ```sh
 pnpm lsp:setup

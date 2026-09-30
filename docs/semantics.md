@@ -44,7 +44,9 @@
 ## 内容、列表与根入口
 
 - JSX 使用框架自己的元素、事件和 children 类型；原生事件不包装成 React 事件。
-- 普通 children 支持转发。重复创建内容使用 render 函数；节点插入、所有权和实例化协议在 DOM 实现时用用例冻结。
+- JSX 值是可重复插入的渲染描述；每个插入点创建独立 DOM 与作用域，不把已存在节点从别处搬走。普通 children 可转发；参数化内容使用显式调用的 render 函数，不自动执行任意函数值。
+- 同一 JSX 位置的组件/动态标签保持实例，标签或 key 变化才重建。key 只接受字符串、数字、symbol，不传入组件 props，也不写入 DOM；业务标识使用 id 等普通字段。
+- 原生事件保持浏览器派发与 currentTarget；ref 用于取得元素或返回清理函数，需要已连接 DOM 的测量放在 effect 中。style 字符串/对象和 CSS 变量受支持，长度单位由调用方显式提供。
 - `For` 使用稳定 key；内联回调的 row/index 是编译器识别的实时绑定。同 key 替换数据读取新对象、保留行实例；删除销毁，重复 key 报错。
 - 普通 map 保持普通计算，不默认为有身份保留的列表机制。
 - `mount(App, { target, props })`、`hydrate(App, { target, props })` 返回 disposer；SSR 从同步 `renderToString(App, { props })` 建立正确基线。

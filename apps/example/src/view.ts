@@ -1,6 +1,6 @@
 import type { RenderMode } from '@zerodep-js/ssr';
 
-// 工程探针：框架 mount/hydrate 完成后替换此原生 DOM 示例。
+// SSR 工程探针：真正的服务端组件渲染与 hydration 接入后移除。
 export function renderExample(mode: RenderMode): string {
   return `
     <main>
@@ -16,7 +16,7 @@ export function renderExample(mode: RenderMode): string {
         <output data-count aria-live="polite">0</output>
         <p data-client-status>等待客户端接入</p>
       </section>
-      <p class="note">这是原生 DOM 工程探针。框架响应式、JSX 编译和通用 hydration 尚未实现。</p>
+      <p class="note">SSR 页面目前由文档工程探针生成，通用 hydration 尚未接入。</p>
     </main>
   `;
 }

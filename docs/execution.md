@@ -38,4 +38,15 @@
 - 修复默认表达式搬移后的词法捕获风险：自身/后序引用、函数体变量以及同名遮蔽均有诊断；复杂嵌套解构不静默变成快照。
 - 18 项新增组件/props 用例通过，相关类型检查和 lint 通过；上一轮 `f03a07d` 的 [CI](https://github.com/kenconnet666/zerodep-js/actions/runs/36753238331) 已通过。
 - 下一步接入 JSX 渲染值协议、DOM、原生事件与 Vite 插件；当前组件输入已可独立验证，尚不能以此宣称浏览器组件运行时完成。
-- 当前仍缺：组件/JSX 编译、DOM、真正的 SSR/hydration、完整类型与生产验收。工程入口不能代替这些能力。
+
+## JSX、DOM 与真实消费入口
+
+- JSX 编译为稳定的渲染描述，组件初始化一次，动态文本/属性/区域分别更新；静态子节点不建立无用的动态区域。
+- mount、Fragment、条件区域、动态标签和 key、原生事件、style/CSS 变量、SVG 命名空间及可清理 ref 已接入。每个 JSX 插入点拥有独立实例和作用域。
+- key 改变才重建该位置的实例；替换 spread 对象但 key 不变时保留实例并读取新输入。修复了缺失 spread 属性新增时未通知默认值读取的问题。
+- 新增实际承担集成职责的 `packages/vite`。CSR 示例已经使用 App.tsx、包产物与 Vite 8 插件；SSR 探针保留到真正 hydration 接通时移除。
+- JSX 类型来自本框架；新增 TS7 正反例覆盖泛型 children、原生 currentTarget、必填 props、只读 DOM 属性、组件标记和异步组件限制。真实 App 的原生 LSP 诊断完整返回 0 错误。
+- 本地验收：全部受影响包和工具类型检查、lint、构建通过；5 项框架 Chromium 用例通过，覆盖状态保留、key 重建、分支/事件/ref 清理、属性增删、输入、CSS 变量和 SVG。编译/props 针对性单元用例均通过，完整矩阵留给 CI。
+- 编译测试合并公共沙盒辅助函数，并按模块严格模式执行，减少重复接线。
+- 上一阶段 `6bb2fe5` 的 [完整 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/36755154158) 已通过。本轮本地选择 Chromium 交互用例，完整三浏览器矩阵在推送后运行，下次推送前再检查。
+- 当前仍缺：稳定 key 列表、context/错误边界、完整输入行为、真正的 SSR/hydration、开发体验收尾与生产验收。已有 CSR 不代替这些门槛。

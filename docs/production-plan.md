@@ -19,14 +19,15 @@
 - 支持 CSR 和 SSR；生产版本还必须具备与 SSR 对应的 hydration。
 - 参考 Svelte、Solid、Vue 的具体机制，依据本项目的 TSX、类型系统和维护成本做选择。
 
-| 领域            | 当前情况                                              | 距离生产可用还缺什么                      |
-| --------------- | ----------------------------------------------------- | ----------------------------------------- |
-| 工作区与工具    | pnpm、TS7、Vite 8、Babel 8、Vitest、Playwright 已配置 | 持续验证和发布流程                        |
-| `packages/core` | 已有响应式图、派生、调度与生命周期基础                | 对象状态、变量宏、组件、DOM、完整公开类型 |
-| `packages/ssr`  | 文档模板组合、SSR/CSR 分发                            | 组件 HTML 渲染、转义、hydration 协议等    |
-| `apps/example`  | 开发与生产入口、模式切换、原生 DOM 工程探针           | 用真正的框架 API 替换探针                 |
-| 语言服务        | 原生 TS7 MCP 五项工具已直接验证                       | 框架专有诊断、完整编辑器体验              |
-| GitHub          | 公开仓库与基础 CI 已建立                              | 阶段交付、版本发布和真实试点              |
+| 领域            | 当前情况                                              | 距离生产可用还缺什么                          |
+| --------------- | ----------------------------------------------------- | --------------------------------------------- |
+| 工作区与工具    | pnpm、TS7、Vite 8、Babel 8、Vitest、Playwright 已配置 | 持续验证和发布流程                            |
+| `packages/core` | 已有状态、派生、生命周期、组件、基础 DOM 与 JSX 类型  | 列表、完整表单、context、错误恢复及稳定性验证 |
+| compiler / Vite | 宏、props、JSX 编译及 Vite 消费已接通                 | 诊断覆盖、开发更新、目标产物与生产加固        |
+| `packages/ssr`  | 文档模板组合、SSR/CSR 分发                            | 组件 HTML 渲染、转义、hydration 协议等        |
+| `apps/example`  | CSR 已使用真实 App；SSR 仍保留工程探针                | 同一 App 的 SSR 与 hydration                  |
+| 语言服务        | 原生 TS7 MCP 五项工具已直接验证                       | 框架专有诊断、完整编辑器体验                  |
+| GitHub          | 公开仓库与基础 CI 已建立                              | 阶段交付、版本发布和真实试点                  |
 
 目前的 SSR 页面可以在 JavaScript 执行前显示内容，但示例的原生事件接入不是通用 hydration。第三方工具接入测试和工程探针不能用作框架功能验收。
 
@@ -131,6 +132,8 @@ effect(() => {
 ### 3.3 事件、属性与复用组件
 
 ```tsx
+import type { JSX } from '@zerodep-js/core';
+
 type ButtonProps = JSX.IntrinsicElements['button'] & {
   tone?: 'primary' | 'neutral';
 };

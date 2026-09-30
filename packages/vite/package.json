@@ -1,5 +1,5 @@
 {
-  "name": "@zerodep-js/core",
+  "name": "@zerodep-js/vite",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -10,14 +10,6 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    },
-    "./internal": {
-      "types": "./dist/internal.d.ts",
-      "import": "./dist/internal.js"
-    },
-    "./jsx-runtime": {
-      "types": "./dist/jsx-runtime.d.ts",
-      "import": "./dist/jsx-runtime.js"
     }
   },
   "scripts": {
@@ -25,7 +17,15 @@
     "check": "tsc -p tsconfig.json --noEmit --incremental false --composite false",
     "build": "tsc -b"
   },
+  "dependencies": {
+    "@zerodep-js/compiler": "workspace:*"
+  },
+  "peerDependencies": {
+    "vite": "^8.3.1"
+  },
   "devDependencies": {
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "@types/node": "catalog:"
   }
 }
