@@ -3,17 +3,19 @@
 ## 当前范围
 
 - 这是独立的 TSX 细粒度响应式框架项目，不能混入 zerodep-css、zerodep-svelte-ui 或其他框架项目的 API 决定。
-- 用户已选择显式声明的变量式响应式，不使用 `.value`；其他设计见 `.design`，文档中的候选方案不是已批准 API。
-- 当前提供 core 空入口、SSR/CSR 文档基础设施、Vite 8 示例、工具链与 LSP。响应式、JSX 编译和通用 hydration 仍需先讨论清楚。
+- 用户已选择显式声明的变量式响应式，不使用 `.value`。2026-10-01 已授权进入目标模式，持续推进完整生产可用实现，不以第一版或最小演示替代目标。
+- 以 `docs/production-plan.md` 和 `docs/semantics.md` 为执行依据。允许根据证据调整目标细节、实现手段和测试；记录取舍及影响，不为形式或减少工作量降低正确性门槛。
 - `packages/ssr` 负责服务端适配，`apps/example` 通过 `workspace:*` 使用 core 与 ssr。不引入 React 或其他框架作为临时运行时；原生 DOM 工程探针也不能冒充框架实现。
-- `packages/core` 预留核心实现；按确定的职责增加其他包，不提前创建无用途的抽象层或空包。
+- `packages/core` 提供响应式与运行时；按实际职责增加其他包，不提前创建无用途的抽象层或空包。
 
 ## 工具与质量
 
 - 使用 Node 24、package.json 固定的 pnpm 和 TypeScript 7。共享版本放在 catalog，包间依赖使用 `workspace:*`，不添加 npm/yarn 锁文件或旧版 TypeScript 兼容层。
-- 保持简洁、可维护的结构，优先原生语言能力；注释解释不明显的原因和生命周期责任。
+- 保持简洁、人工可维护的结构，优先原生语言能力；适当中文注释解释不明显的原因和生命周期责任。执行中持续整理目录、文件职责和 API 命名，不囤积废弃入口。
 - 配置变更运行 `pnpm check`、`pnpm build`；LSP 改动运行 `pnpm lsp:verify`。根据影响选择验证，不用空测试代表框架功能完成。
-- Babel 8、Vitest 和 Playwright 已用于基础工具配置；具体框架编译仍待讨论。工具链用例放在 `tests/tooling`，浏览器用例放在 `tests/e2e`，核心业务用例以后放在 `packages/core/test`。
+- Babel 8、Vitest 和 Playwright 用于编译与验证。工具链用例放在 `tests/tooling`，浏览器用例放在 `tests/e2e`，包级语义用例放在各包 `test`。
+- 本地运行改动相关检查，完整浏览器/平台矩阵交给 CI。每次准备推送时检查上一轮 CI 并修复真实失败；推送后继续工作，不空等或反复轮询，未完成的 CI 不记为验收通过。
+- Git 提交信息、工作记录和维护注释使用中文。每个可审阅阶段提交并推送，保留用户已有改动。
 - `pnpm test` 运行 Node 单元测试；`pnpm test:e2e` 构建并运行三种浏览器的基础测试。不要把第三方工具接入测试或空 core 的覆盖率当作框架功能验收。
 - 项目 LSP 使用独立服务 `zerodep_js_lsp`。通过 `pnpm lsp:setup` 生成本机配置，不改其他项目或全局 Codex 配置。
 - 先完成独立 LSP 验证再请求用户重启。磁盘配置、独立服务和当前会话工具暴露要分别说明。

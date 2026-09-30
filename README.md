@@ -2,13 +2,13 @@
 
 面向 TSX 的细粒度响应式框架实验工作区，目标是显式声明响应式变量、直接读写、组件参数解构和自然的默认值。
 
-当前完成开发工具链与可切换的 SSR/CSR 工程入口。响应式核心、JSX 编译器、组件运行时和通用 hydration 尚未实现，不作为生产框架使用。
+当前已开始完整生产化目标：工程入口可切换 SSR/CSR，响应式图、派生缓存、effect 调度和作用域清理已实现并有语义用例。变量宏编译、组件 DOM 与通用 hydration 仍在建设中，尚未达到生产验收。
 
 ## 工作区
 
 | 子项目          | 当前职责                                                  |
 | --------------- | --------------------------------------------------------- |
-| `packages/core` | 预留核心实现，当前为空模块入口                            |
+| `packages/core` | 响应式图、派生与生命周期，后续接入变量宏和 DOM            |
 | `packages/ssr`  | 文档模板组合和 SSR/CSR 模式分发                           |
 | `apps/example`  | 真实 workspace 消费项目，包含客户端、服务端和模式切换入口 |
 
@@ -80,6 +80,8 @@ pnpm lsp:inspect packages/ssr/src/index.ts apps/example/src/entry-client.ts
 ## 研究与状态
 
 - [从基础工程到生产可用的主计划](docs/production-plan.md)
+- [执行中的语义契约](docs/semantics.md)
+- [目标执行记录](docs/execution.md)
 - [第一阶段 API 评审用例](docs/api-review.md)
 - [实现路线、代价与设计约束](docs/implementation-design.md)
 - [TS7 与编译工具研究](.design/ts7-tsx-research.md)
