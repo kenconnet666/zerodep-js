@@ -40,7 +40,8 @@ test('SSR remains readable without JavaScript and CSR stays empty', async ({
     const page = await context.newPage();
     await page.goto(`${baseURL}/?render=ssr`);
     await expect(page.getByRole('heading', { name: 'zerodep-js', exact: true })).toBeVisible();
-    await expect(page.getByRole('button', { name: '增加计数' })).toBeDisabled();
+    await expect(page.locator('[data-count]')).toHaveText('0');
+    await expect(page.locator('[data-client-status]')).toHaveText('等待客户端接管');
     await page.goto(`${baseURL}/?render=csr`);
     await expect(page.locator('#app')).toBeEmpty();
   } finally {

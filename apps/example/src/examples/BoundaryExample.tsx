@@ -16,6 +16,10 @@ const FailedSetup = component(() => {
 const FailedFallback = component(() => {
   throw new Error('备用界面失败');
 });
+const ClientOnly = component(() => {
+  if (typeof document === 'undefined') throw new Error('该内容需要浏览器环境');
+  return <p data-client-recovered>客户端局部重试成功</p>;
+});
 
 export const BoundaryExample = component(() => {
   let mode = $state<'ok' | 'render' | 'effect'>('ok');
@@ -23,6 +27,9 @@ export const BoundaryExample = component(() => {
   return (
     <section aria-label="错误恢复">
       <h2>错误恢复</h2>
+      <ErrorBoundary fallback={() => <p data-server-fallback>服务端降级内容</p>}>
+        <ClientOnly />
+      </ErrorBoundary>
       <button
         type="button"
         data-render-error

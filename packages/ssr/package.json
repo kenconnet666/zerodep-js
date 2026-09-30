@@ -10,12 +10,19 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./data": {
+      "types": "./dist/data.d.ts",
+      "import": "./dist/data.js"
     }
   },
   "scripts": {
     "dev": "tsc -b --watch",
     "check": "tsc -p tsconfig.json --noEmit --incremental false --composite false",
     "build": "tsc -b"
+  },
+  "dependencies": {
+    "@zerodep-js/core": "workspace:*"
   },
   "devDependencies": {
     "typescript": "catalog:"

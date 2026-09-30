@@ -6,6 +6,21 @@ export { defineComponent, setupComponent } from './component.js';
 export { prop, props, restProps } from './props.js';
 export { element, dynamic, dynamicElement, fragment, conditional, logical } from './template.js';
 export { liveRender } from './flow.js';
+export { TEMPLATE } from './template.js';
+export type { Renderable, Template } from './template.js';
+export type { AnyComponent, ComponentProps } from './component.js';
+export {
+  HTML,
+  SVG,
+  MATH,
+  namespaceFor,
+  voidTags,
+  textTags,
+  textValue,
+  textContent,
+  elementText,
+  nativeAttributes,
+} from './native.js';
 
 export function source<T>(initial: T): Source<T> {
   return new Source(initial);

@@ -6,47 +6,88 @@ import type { Props } from './props.js';
 import { createRange, insert, rollback, type Container } from './dom-utils.js';
 import { renderList } from './dom-list.js';
 import { renderBoundary } from './dom-boundary.js';
+import { HydrationError, HydrationCursor, hydrationRoot } from './hydration.js';
+import {
+  HTML,
+  namespaceFor,
+  textTags,
+  textValue,
+  elementText,
+  voidTags,
+  assertName,
+} from './native.js';
 
 export type MountOptions<C extends AnyComponent> = {
   target: Container;
 } & ({} extends ComponentProps<C> ? { props?: ComponentProps<C> } : { props: ComponentProps<C> });
 const roots = new WeakMap<Container, Cleanup>();
-const svg = 'http://www.w3.org/2000/svg';
-const html = 'http://www.w3.org/1999/xhtml';
+export type HydrateOptions<C extends AnyComponent> = MountOptions<C> & {
+  mismatch?: 'throw' | 'replace';
+  onMismatch?: (error: HydrationError) => void;
+};
 
 function renderDynamic(
   template: DynamicTemplate,
   parent: Container,
   before: Node | null,
   namespaceParent: Container,
+  hydration?: HydrationCursor,
 ): void {
   const owner = getScope()!;
-  const { end: anchor } = createRange(parent, before, 'dynamic');
+  const range = createRange(parent, before, 'dynamic', hydration);
+  const anchor = range.end;
+  let pending = range.hydration;
+  let initialized = false;
   let branch: Scope | undefined;
   let previous: Renderable;
   let text: Text | undefined;
   renderEffect(() => {
     const value = template.value.read();
-    if (Object.is(value, previous)) return;
+    if (initialized && Object.is(value, previous)) return;
     const primitive =
       typeof value === 'string' || typeof value === 'number' || typeof value === 'bigint';
     if (primitive && text) {
-      text.data = String(value);
+      text.data = textValue(value);
       previous = value;
       return;
     }
     const next = new Scope(owner);
+    if (pending) {
+      const cursor = pending;
+      const first = cursor.current;
+      try {
+        untrack(() =>
+          next.run(() =>
+            renderValue(value, anchor.parentNode as Container, anchor, namespaceParent, cursor),
+          ),
+        );
+        cursor.finish();
+      } catch (error) {
+        rollback(next, error);
+      }
+      branch = next;
+      text = primitive && textValue(value) && first?.nodeType === 3 ? (first as Text) : undefined;
+      previous = value;
+      pending = undefined;
+      initialized = true;
+      return;
+    }
     const fragment = parent.ownerDocument!.createDocumentFragment();
     try {
       untrack(() => next.run(() => renderValue(value, fragment, null, namespaceParent)));
     } catch (error) {
       rollback(next, error);
     }
-    branch?.dispose();
+    try {
+      branch?.dispose();
+    } catch (error) {
+      rollback(next, error);
+    }
     branch = next;
     text = primitive ? (fragment.firstChild as Text) : undefined;
     anchor.parentNode!.insertBefore(fragment, anchor);
     previous = value;
+    initialized = true;
   });
 }
 
@@ -56,32 +97,36 @@ export function renderValue(
   parent: Container,
   before: Node | null,
   namespaceParent: Container = parent,
+  hydration?: HydrationCursor,
 ): void {
   if (value == null || typeof value === 'boolean') return;
   if (typeof value === 'string' || typeof value === 'number' || typeof value === 'bigint') {
-    insert(parent.ownerDocument!.createTextNode(String(value)), parent, before);
+    const content = textValue(value);
+    if (hydration) hydration.text(content);
+    else if (content) insert(parent.ownerDocument!.createTextNode(content), parent, before);
     return;
   }
   if (Array.isArray(value)) {
-    for (const item of value) renderValue(item, parent, before, namespaceParent);
+    for (const item of value) renderValue(item, parent, before, namespaceParent, hydration);
     return;
   }
   if (typeof value !== 'object' || !(TEMPLATE in value))
     throw new Error('无效 JSX 内容；函数请显式调用，对象请转换为可呈现值。');
   if (value.kind === 'fragment') {
-    for (const child of value.children) renderValue(child, parent, before, namespaceParent);
+    for (const child of value.children)
+      renderValue(child, parent, before, namespaceParent, hydration);
     return;
   }
   if (value.kind === 'dynamic') {
-    renderDynamic(value, parent, before, namespaceParent);
+    renderDynamic(value, parent, before, namespaceParent, hydration);
     return;
   }
   if (value.kind === 'list') {
-    renderList(value, parent, before, namespaceParent, renderValue);
+    renderList(value, parent, before, namespaceParent, renderValue, hydration);
     return;
   }
   if (value.kind === 'boundary') {
-    renderBoundary(value, parent, before, namespaceParent, renderValue);
+    renderBoundary(value, parent, before, namespaceParent, renderValue, hydration);
     return;
   }
   if (typeof value.tag !== 'string') {
@@ -94,6 +139,7 @@ export function renderValue(
             parent,
             before,
             namespaceParent,
+            hydration,
           ),
         ),
       );
@@ -103,31 +149,63 @@ export function renderValue(
     return;
   }
   const inherited = namespaceParent.nodeType === 1 ? (namespaceParent as Element) : null;
-  const namespace =
-    value.tag === 'svg' ||
-    (inherited?.namespaceURI === svg && inherited.localName !== 'foreignObject')
-      ? svg
-      : html;
-  const node = parent.ownerDocument!.createElementNS(namespace, value.tag);
-  insert(node, parent, before);
-  attachAttributes(node, value.props);
-  renderValue(value.props.children as Renderable, node, null);
-  attachRef(node, value.props, getScope()!);
+  const namespace = namespaceFor(
+    value.tag,
+    inherited?.namespaceURI ?? HTML,
+    inherited?.localName ?? '',
+  );
+  assertName(value.tag);
+  const node = hydration
+    ? hydration.element(value.tag, namespace)
+    : parent.ownerDocument!.createElementNS(namespace, value.tag);
+  if (hydration) hydration.attributes(node, value.props);
+  else insert(node, parent, before);
+  const owner = getScope()!;
+  const attributes = () => attachAttributes(node, value.props, hydration?.session);
+  if (node.localName !== 'select') {
+    if (hydration) hydration.session.defer(attributes);
+    else attributes();
+  }
+  const child = hydration?.child(node);
+  if (namespace === HTML && textTags.has(node.localName)) {
+    const fixed =
+      node.localName === 'textarea' &&
+      (value.props.value !== undefined || value.props.defaultValue !== undefined);
+    const initial = elementText(node.localName, value.props);
+    let text: Text | undefined;
+    if (child) {
+      text = child.text(initial);
+      child.finish();
+    }
+    const bindText = () =>
+      renderEffect(() => {
+        const content = fixed ? initial : elementText(node.localName, value.props);
+        if (text) text.data = content;
+        else if (content) {
+          text = node.ownerDocument.createTextNode(content);
+          node.appendChild(text);
+        }
+      });
+    if (hydration) hydration.session.defer(bindText);
+    else bindText();
+  } else {
+    if (namespace === HTML && voidTags.has(node.localName) && value.props.children != null)
+      throw new Error(`${node.localName} 是 void 元素，不能包含 children。`);
+    renderValue(value.props.children as Renderable, node, null, node, child);
+    child?.finish();
+  }
+  if (node.localName === 'select') {
+    if (hydration) hydration.session.defer(attributes);
+    else attributes();
+  }
+  if (hydration) hydration.session.defer(() => attachRef(node, value.props, owner));
+  else attachRef(node, value.props, owner);
 }
 
 export function mount<C extends AnyComponent>(component: C, options: MountOptions<C>): Cleanup {
   const { target } = options;
   if (roots.has(target)) throw new Error('目标容器已挂载，请先调用其 disposer。');
   const scope = new Scope(null);
-  const fragment = target.ownerDocument!.createDocumentFragment();
-  try {
-    scope.run(() =>
-      renderValue(element(component, (options.props ?? {}) as Props), fragment, null, target),
-    );
-    target.replaceChildren(fragment);
-  } catch (error) {
-    rollback(scope, error);
-  }
   const dispose = () => {
     try {
       scope.dispose();
@@ -136,5 +214,52 @@ export function mount<C extends AnyComponent>(component: C, options: MountOption
     }
   };
   roots.set(target, dispose);
+  const fragment = target.ownerDocument!.createDocumentFragment();
+  try {
+    scope.run(() =>
+      renderValue(element(component, (options.props ?? {}) as Props), fragment, null, target),
+    );
+    target.replaceChildren(fragment);
+  } catch (error) {
+    roots.delete(target);
+    rollback(scope, error);
+  }
   return dispose;
+}
+
+export function hydrate<C extends AnyComponent>(component: C, options: HydrateOptions<C>): Cleanup {
+  const { target } = options;
+  if (roots.has(target)) throw new Error('目标容器已挂载，请先调用其 disposer。');
+  const scope = new Scope(null);
+  const cursor = hydrationRoot(target);
+  const dispose = () => {
+    try {
+      scope.dispose();
+    } finally {
+      roots.delete(target);
+    }
+  };
+  roots.set(target, dispose);
+  try {
+    scope.run(() =>
+      renderValue(element(component, (options.props ?? {}) as Props), target, null, target, cursor),
+    );
+    cursor.finish();
+    cursor.session.commit();
+    return dispose;
+  } catch (error) {
+    const errors = [error];
+    try {
+      dispose();
+    } catch (cleanupError) {
+      errors.push(cleanupError);
+    }
+    cursor.session.rollback();
+    if (errors.length > 1) throw new AggregateError(errors, 'Hydration 与清理失败。');
+    if (error instanceof HydrationError) {
+      options.onMismatch?.(error);
+      if (options.mismatch === 'replace') return mount(component, options);
+    }
+    throw error;
+  }
 }

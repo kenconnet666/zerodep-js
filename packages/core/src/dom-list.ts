@@ -1,6 +1,7 @@
 import { Scope, Source, batch, getScope, renderEffect, untrack } from './reactivity.js';
 import { dynamic } from './template.js';
 import type { Key, ListTemplate } from './flow.js';
+import type { HydrationCursor } from './hydration.js';
 import {
   createRange,
   moveRange,
@@ -24,9 +25,11 @@ export function renderList(
   before: Node | null,
   namespaceParent: Container,
   render: Render,
+  hydration?: HydrationCursor,
 ): void {
   const owner = getScope()!;
-  const range = createRange(parent, before, 'list');
+  const range = createRange(parent, before, 'list', hydration);
+  let pending = range.hydration;
   let rows = new Map<Key, Row>();
   let fallback: Scope | undefined;
 
@@ -44,10 +47,12 @@ export function renderList(
               const scope = new Scope(owner);
               const item = new Source(entry.item);
               const position = new Source(index);
-              const fragment = parent.ownerDocument!.createDocumentFragment();
+              const fragment = pending
+                ? (range.end.parentNode as Container)
+                : parent.ownerDocument!.createDocumentFragment();
               try {
                 const nodes = scope.run(() => {
-                  const nodes = createRange(fragment, null, 'row');
+                  const nodes = createRange(fragment, null, 'row', pending);
                   render(
                     template.render(
                       () => item.read(),
@@ -56,7 +61,9 @@ export function renderList(
                     fragment,
                     nodes.end,
                     namespaceParent,
+                    nodes.hydration,
                   );
+                  nodes.hydration?.finish();
                   return nodes;
                 });
                 row = { scope, item, index: position, nodes };
@@ -98,7 +105,7 @@ export function renderList(
           }
           fallback = undefined;
         }
-        const restoreFocus = preserveFocus(range.end.ownerDocument!);
+        const restoreFocus = pending ? () => {} : preserveFocus(range.end.ownerDocument!);
         try {
           let anchor: Node = range.end;
           for (let index = entries.length - 1; index >= 0; index--) {
@@ -106,7 +113,7 @@ export function renderList(
             const row = rows.get(entry.key)!;
             row.item.write(entry.item);
             row.index.write(index);
-            moveRange(row.nodes, range.end.parentNode as Container, anchor);
+            if (!pending) moveRange(row.nodes, range.end.parentNode as Container, anchor);
             anchor = row.nodes.start;
           }
         } finally {
@@ -121,6 +128,7 @@ export function renderList(
                 range.end.parentNode as Container,
                 range.end,
                 namespaceParent,
+                pending,
               ),
             );
           } catch (error) {
@@ -129,6 +137,8 @@ export function renderList(
             rollback(failed, error);
           }
         }
+        pending?.finish();
+        pending = undefined;
         if (errors.length === 1) throw errors[0];
         if (errors.length) throw new AggregateError(errors, '列表清理失败。');
       }),

@@ -195,6 +195,10 @@ importers:
         version: 7.0.2
 
   packages/ssr:
+    dependencies:
+      '@zerodep-js/core':
+        specifier: workspace:*
+        version: link:../core
     devDependencies:
       typescript:
         specifier: 'catalog:'

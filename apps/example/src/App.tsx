@@ -1,8 +1,9 @@
-import { component, $state, $derived, onCleanup, type JSX } from '@zerodep-js/core';
+import { component, $state, $derived, onCleanup, effect, type JSX } from '@zerodep-js/core';
 import type { RenderMode } from '@zerodep-js/ssr';
 import { ListExample } from './examples/ListExample.js';
 import { ContextExample } from './examples/ContextExample.js';
 import { BoundaryExample } from './examples/BoundaryExample.js';
+import { NativeExample } from './examples/NativeExample.js';
 
 const Button = component(
   ({ type = 'button', children, ...attrs }: JSX.IntrinsicElements['button']) => (
@@ -62,7 +63,13 @@ const Counter = component(
   },
 );
 
-export const App = component(({ mode = 'csr' }: { mode?: RenderMode }) => {
+type AppProps = { mode?: RenderMode; onUnmount?: () => void };
+
+export const App = component(({ mode = 'csr', onUnmount }: AppProps) => {
+  let ready = $state(false);
+  effect(() => {
+    ready = true;
+  });
   let step = $state(1);
   let initial = $state(0);
   let counterKey = $state(0);
@@ -81,8 +88,10 @@ export const App = component(({ mode = 'csr' }: { mode?: RenderMode }) => {
         当前首屏模式：<strong data-mode>{mode.toUpperCase()}</strong>
       </p>
       <nav aria-label="渲染模式">
-        <a href="/?render=ssr">服务端渲染 SSR</a>
-        <a href="/?render=csr" aria-current="page">
+        <a href="/?render=ssr" aria-current={mode === 'ssr' ? 'page' : undefined}>
+          服务端渲染 SSR
+        </a>
+        <a href="/?render=csr" aria-current={mode === 'csr' ? 'page' : undefined}>
           客户端渲染 CSR
         </a>
       </nav>
@@ -180,8 +189,12 @@ export const App = component(({ mode = 'csr' }: { mode?: RenderMode }) => {
       <ListExample />
       <ContextExample />
       <BoundaryExample />
-      <p data-client-status>客户端已接入</p>
-      <p class="note">客户端已使用框架组件；服务端组件渲染与 hydration 正在实现。</p>
+      <NativeExample />
+      <p data-client-status>{ready ? '客户端已接入' : '等待客户端接管'}</p>
+      <p class="note">同一 App 验证客户端渲染与服务端渲染接管。</p>
+      <button type="button" data-unmount onClick={() => onUnmount?.()}>
+        卸载应用
+      </button>
     </main>
   );
 });

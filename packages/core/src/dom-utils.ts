@@ -1,5 +1,6 @@
 import { Scope, onCleanup } from './reactivity.js';
 import type { Renderable } from './template.js';
+import type { HydrationCursor } from './hydration.js';
 
 export type Container = Element | DocumentFragment;
 export type Render = (
@@ -7,10 +8,13 @@ export type Render = (
   parent: Container,
   before: Node | null,
   namespaceParent?: Container,
+  hydration?: HydrationCursor,
 ) => void;
 export interface NodeRange {
   start: Comment;
   end: Comment;
+  hydration?: HydrationCursor;
+  failed?: boolean;
 }
 
 export function rollback(scope: Scope, error: unknown): never {
@@ -29,7 +33,13 @@ export function insert(node: Node, parent: Container, before: Node | null): void
   });
 }
 
-export function createRange(parent: Container, before: Node | null, label: string): NodeRange {
+export function createRange(
+  parent: Container,
+  before: Node | null,
+  label: string,
+  hydration?: HydrationCursor,
+): NodeRange {
+  if (hydration) return hydration.range(label);
   const document = parent.ownerDocument!;
   const start = document.createComment(`zj:${label}`);
   const end = document.createComment(`zj:/${label}`);

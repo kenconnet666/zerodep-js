@@ -1,4 +1,7 @@
 export type RenderMode = 'csr' | 'ssr';
+export { renderToString } from './render.js';
+export { serializeData } from './data.js';
+export type { RenderOptions } from './render.js';
 
 export interface DocumentOptions {
   template: string;

@@ -33,11 +33,13 @@ export class Scope {
   clearing = false;
   context: Map<symbol, unknown> | undefined;
   onError: ((error: unknown) => void) | undefined;
+  server: boolean;
 
   constructor(parent = currentScope) {
     if (parent?.disposed || parent?.clearing)
       throw new Error('不能在已销毁或正在清理的作用域中创建资源。');
     this.parent = parent;
+    this.server = parent?.server ?? false;
     parent?.children.add(this);
   }
 
@@ -422,6 +424,7 @@ function makeEffect(callback: EffectCallback, render: boolean): Cleanup {
   if (!currentScope || currentScope.disposed || currentScope.clearing) {
     throw new Error('effect 必须在组件或 createRoot 作用域中创建。');
   }
+  if (currentScope.server) return () => {};
   const task = new ReactiveEffect(callback, render, currentScope);
   if (render) {
     try {
@@ -459,6 +462,8 @@ export function batch<T>(fn: () => T): T {
 }
 
 export function flushSync<T = void>(fn?: () => T): T | undefined {
+  // SSR 不能顺带冲刷其他根的排队任务，计算内写入限制仍然有效。
+  if (currentScope?.server && !computing) return fn ? batch(fn) : undefined;
   if (computing || runningEffects || flushing) {
     throw new Error('不能在计算或 effect 内重入 flushSync。');
   }

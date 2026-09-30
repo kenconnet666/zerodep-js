@@ -1,6 +1,6 @@
-import { renderDocument, type RenderMode } from '@zerodep-js/ssr';
-import { renderExample } from './view.js';
+import { renderDocument, renderToString, type RenderMode } from '@zerodep-js/ssr';
+import { App } from './App.js';
 
 export function render(template: string, mode: RenderMode): Promise<string> {
-  return renderDocument({ template, mode, render: () => renderExample(mode) });
+  return renderDocument({ template, mode, render: () => renderToString(App, { props: { mode } }) });
 }

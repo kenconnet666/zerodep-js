@@ -19,17 +19,17 @@
 - 支持 CSR 和 SSR；生产版本还必须具备与 SSR 对应的 hydration。
 - 参考 Svelte、Solid、Vue 的具体机制，依据本项目的 TSX、类型系统和维护成本做选择。
 
-| 领域            | 当前情况                                                | 距离生产可用还缺什么                      |
-| --------------- | ------------------------------------------------------- | ----------------------------------------- |
-| 工作区与工具    | pnpm、TS7、Vite 8、Babel 8、Vitest、Playwright 已配置   | 持续验证和发布流程                        |
-| `packages/core` | 已有状态、组件、DOM、列表、context、错误恢复与 JSX 类型 | 完整表单、hydration、稳定性和生产边界验证 |
-| compiler / Vite | 宏、props、JSX 编译及 Vite 消费已接通                   | 诊断覆盖、开发更新、目标产物与生产加固    |
-| `packages/ssr`  | 文档模板组合、SSR/CSR 分发                              | 组件 HTML 渲染、转义、hydration 协议等    |
-| `apps/example`  | CSR 已使用真实 App；SSR 仍保留工程探针                  | 同一 App 的 SSR 与 hydration              |
-| 语言服务        | 原生 TS7 MCP 五项工具已直接验证                         | 框架专有诊断、完整编辑器体验              |
-| GitHub          | 公开仓库与基础 CI 已建立                                | 阶段交付、版本发布和真实试点              |
+| 领域            | 当前情况                                                    | 距离生产可用还缺什么                   |
+| --------------- | ----------------------------------------------------------- | -------------------------------------- |
+| 工作区与工具    | pnpm、TS7、Vite 8、Babel 8、Vitest、Playwright 已配置       | 持续验证和发布流程                     |
+| `packages/core` | 状态、组件、DOM、列表、context、错误恢复及 hydration 已接通 | 完整表单、稳定性和生产边界验证         |
+| compiler / Vite | 宏、props、JSX 编译及 Vite 消费已接通                       | 诊断覆盖、开发更新、目标产物与生产加固 |
+| `packages/ssr`  | 请求内组件 HTML、转义、数据编码及区域协议                   | 生产边界、压力与包消费验证             |
+| `apps/example`  | 同一 App 已支持 CSR 和 SSR + hydration                      | 完整输入、更多真实使用及发布试点       |
+| 语言服务        | 原生 TS7 MCP 五项工具已直接验证                             | 框架专有诊断、完整编辑器体验           |
+| GitHub          | 公开仓库与基础 CI 已建立                                    | 阶段交付、版本发布和真实试点           |
 
-目前的 SSR 页面可以在 JavaScript 执行前显示内容，但示例的原生事件接入不是通用 hydration。第三方工具接入测试和工程探针不能用作框架功能验收。
+示例现在使用真正的组件 SSR 与节点接管，旧的原生探针已移除。验证覆盖节点身份、状态更新、请求隔离和不匹配行为；这仍不代替后续完整生产门槛。
 
 ## 2. 完整生产目标与职责边界
 
@@ -203,7 +203,7 @@ const disposeHydrated = hydrate(App, { target, props });
 const html = renderToString(App, { props });
 ```
 
-mount 已实现并返回清理函数，hydrate 与组件 renderToString 是接下来的交付。采用同步组件渲染基线，服务端数据在调用前准备；异步组件和流式结果根据实际需要另行扩展。
+mount、hydrate 与组件 renderToString 均已实现，前两个返回清理函数。采用同步组件渲染，服务端数据在调用前准备；异步组件和流式结果根据实际需要扩展。接管行为和恢复策略见 ssr-and-hydration.md。
 
 当前 `renderDocument` 只负责模板组合，不能替代这里的组件 renderToString。最终 mode 切换应当驱动同一 App 的 mount 或 SSR + hydrate。
 

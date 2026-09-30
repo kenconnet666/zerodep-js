@@ -1,46 +1,30 @@
 import { Scope, onCleanup, renderEffect, untrack, unowned } from './reactivity.js';
 import type { Props } from './props.js';
+import type { HydrationSession } from './hydration.js';
+import {
+  HTML,
+  attributeName,
+  attributeValue,
+  eventName,
+  nativeAttributes,
+  styleEntries,
+  textValue,
+} from './native.js';
 
-const booleanAttributes = new Set(
-  'allowfullscreen async autofocus autoplay checked controls default defer disabled formnovalidate hidden inert ismap itemscope loop multiple muted nomodule novalidate open playsinline readonly required reversed selected'.split(
-    ' ',
-  ),
-);
-const aliases: Record<string, string> = {
-  className: 'class',
-  htmlFor: 'for',
-  tabIndex: 'tabindex',
-  readOnly: 'readonly',
-  contentEditable: 'contenteditable',
-  crossOrigin: 'crossorigin',
-  noValidate: 'novalidate',
-  strokeWidth: 'stroke-width',
-  strokeLinecap: 'stroke-linecap',
-  strokeLinejoin: 'stroke-linejoin',
-  fillRule: 'fill-rule',
-};
-const properties = new Set(['value', 'checked', 'selected', 'muted']);
-const enumerated = new Set(['draggable', 'spellcheck', 'contenteditable']);
+const properties = new Set([
+  'value',
+  'defaultValue',
+  'checked',
+  'defaultChecked',
+  'selected',
+  'muted',
+]);
 
 interface EventBinding {
   type: string;
   capture: boolean;
   current: (event: Event) => void;
   listener: EventListener;
-}
-
-function eventName(name: string): { type: string; capture: boolean } | null {
-  if (name.startsWith('on:')) return { type: name.slice(3), capture: false };
-  if (!/^on[a-zA-Z]/.test(name)) return null;
-  const capture =
-    name.endsWith('Capture') && name !== 'onGotPointerCapture' && name !== 'onLostPointerCapture';
-  return { type: name.slice(2, capture ? -7 : undefined).toLowerCase(), capture };
-}
-
-function cssName(name: string): string {
-  return name.startsWith('--')
-    ? name
-    : name.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`).replace(/^ms-/, '-ms-');
 }
 
 function applyStyle(element: Element, value: unknown, previous: Map<string, string>): void {
@@ -50,14 +34,7 @@ function applyStyle(element: Element, value: unknown, previous: Map<string, stri
     previous.clear();
     return;
   }
-  const next = new Map<string, string>();
-  if (value != null && value !== false) {
-    if (typeof value !== 'object') throw new Error('style 使用 CSS 字符串或属性对象。');
-    for (const key of Object.keys(value)) {
-      const item: unknown = Reflect.get(value, key);
-      if (item != null && item !== false) next.set(cssName(key), String(item));
-    }
-  }
+  const next = styleEntries(value);
   if (!previous.size && element.hasAttribute('style')) style.cssText = '';
   for (const key of previous.keys()) if (!next.has(key)) style.removeProperty(key);
   for (const [key, item] of next) if (previous.get(key) !== item) style.setProperty(key, item);
@@ -71,47 +48,73 @@ function setAttribute(element: Element, key: string, value: unknown): void {
     throw new Error(`${key} 会绕过 JSX 所有权，请使用 children 或明确的 DOM ref 集成。`);
   }
   if (properties.has(key) && key in element) {
-    const next = key === 'value' ? (value == null ? '' : String(value)) : Boolean(value);
+    if ((key === 'value' || key === 'defaultValue') && element.localName === 'select') {
+      const values = new Set((Array.isArray(value) ? value : [value ?? '']).map(textValue));
+      let matched = false;
+      for (const option of (element as HTMLSelectElement).options) {
+        const selected: boolean =
+          values.has(option.value) && ((element as HTMLSelectElement).multiple || !matched);
+        option.selected = selected;
+        matched ||= selected;
+      }
+      if (!matched) (element as HTMLSelectElement).selectedIndex = -1;
+      return;
+    }
+    const next =
+      key === 'value' || key === 'defaultValue'
+        ? value == null
+          ? ''
+          : textValue(value)
+        : Boolean(value);
     if (!Object.is(Reflect.get(element, key), next)) Reflect.set(element, key, next);
     return;
   }
-  const name = Object.hasOwn(aliases, key) ? aliases[key]! : key;
-  const lower = name.toLowerCase();
-  if (
-    value == null ||
-    (value === false &&
-      !name.startsWith('aria-') &&
-      !name.startsWith('data-') &&
-      !enumerated.has(lower))
-  ) {
-    element.removeAttribute(name);
-  } else if (booleanAttributes.has(lower)) {
-    element.toggleAttribute(name, Boolean(value));
-  } else {
-    element.setAttribute(
-      name,
-      value === true &&
-        !name.startsWith('aria-') &&
-        !name.startsWith('data-') &&
-        !enumerated.has(lower)
-        ? ''
-        : String(value),
-    );
-  }
+  const name = attributeName(key, element.namespaceURI ?? HTML);
+  const next = attributeValue(name, value);
+  if (name.startsWith('xlink:')) {
+    if (next === null) element.removeAttributeNS('http://www.w3.org/1999/xlink', name.slice(6));
+    else element.setAttributeNS('http://www.w3.org/1999/xlink', name, next);
+  } else if (next === null) element.removeAttribute(name);
+  else element.setAttribute(name, next);
 }
 
-export function attachAttributes(element: Element, input: Props): void {
+export function attachAttributes(
+  element: Element,
+  input: Props,
+  hydration?: HydrationSession,
+): void {
   const previous = new Map<string, unknown>();
   const styles = new Map<string, string>();
   const events = new Map<string, EventBinding>();
+  const control = element as HTMLInputElement | HTMLTextAreaElement;
+  const editedValue = Boolean(
+    hydration &&
+    input.value !== undefined &&
+    (element.localName === 'input' || element.localName === 'textarea') &&
+    (element.localName !== 'input' ||
+      !['checkbox', 'radio'].includes((element as HTMLInputElement).type)) &&
+    control.value !==
+      (element.localName === 'textarea'
+        ? control.defaultValue
+        : (element.getAttribute('value') ?? '')),
+  );
+  const editedChecked = Boolean(
+    hydration &&
+    input.checked !== undefined &&
+    element.localName === 'input' &&
+    (element as HTMLInputElement).checked !== element.hasAttribute('checked'),
+  );
+  let initial = true;
   onCleanup(() => {
     for (const binding of events.values())
       element.removeEventListener(binding.type, binding.listener, binding.capture);
   });
   renderEffect(() => {
+    nativeAttributes(input, element.localName, element.namespaceURI ?? HTML);
     const next = new Map(
       Object.keys(input)
         .filter((key) => key !== 'children' && key !== 'ref' && key !== 'key')
+        .sort((left, right) => Number(properties.has(left)) - Number(properties.has(right)))
         .map((key) => [key, input[key]]),
     );
     for (const key of previous.keys()) if (!next.has(key)) next.set(key, undefined);
@@ -140,12 +143,41 @@ export function attachAttributes(element: Element, input: Props): void {
             element.addEventListener(binding.type, binding.listener, binding.capture);
           } else binding.current = value as (event: Event) => void;
         }
-      } else if (!Object.is(previous.get(key), value) || !previous.has(key))
+      } else if (
+        initial &&
+        ((key === 'value' && editedValue) || (key === 'checked' && editedChecked))
+      )
+        continue;
+      else if (!Object.is(previous.get(key), value) || !previous.has(key))
         setAttribute(element, key, value);
     }
     previous.clear();
     for (const [key, value] of next) if (value !== undefined) previous.set(key, value);
+    initial = false;
   });
+  if (editedValue || editedChecked)
+    hydration!.replay(() => {
+      if (
+        !element.isConnected ||
+        (element.localName === 'input' &&
+          (element as HTMLInputElement).type === 'radio' &&
+          !(element as HTMLInputElement).checked)
+      )
+        return;
+      const available = new Set([...events.values()].map((binding) => binding.type));
+      const type =
+        editedChecked && available.has('change')
+          ? 'change'
+          : available.has('input')
+            ? 'input'
+            : available.has('change')
+              ? 'change'
+              : undefined;
+      if (type)
+        element.dispatchEvent(
+          new element.ownerDocument.defaultView!.Event(type, { bubbles: true, composed: true }),
+        );
+    });
 }
 
 export function attachRef(element: Element, input: Props, owner: Scope): void {

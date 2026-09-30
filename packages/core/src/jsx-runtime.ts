@@ -86,9 +86,20 @@ export type Style =
         string | number | null | undefined;
     } & { [K in `--${string}`]?: string | number | null | undefined });
 
+type InputValue = string | number | null | undefined;
+type SelectValue = InputValue | readonly (string | number)[];
+type ControlValues<T> = T extends HTMLSelectElement
+  ? Omit<NativeValues<T>, 'value'> & { value?: SelectValue; defaultValue?: SelectValue }
+  : T extends HTMLInputElement | HTMLTextAreaElement
+    ? Omit<NativeValues<T>, 'value' | 'defaultValue'> & {
+        value?: InputValue;
+        defaultValue?: InputValue;
+      }
+    : NativeValues<T>;
+
 export type NativeProps<T extends Element> = (T extends Element
   ? Omit<
-      NativeValues<T>,
+      ControlValues<T>,
       'innerHTML' | 'outerHTML' | 'textContent' | 'innerText' | 'children' | 'style'
     >
   : never) &

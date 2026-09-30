@@ -1,6 +1,7 @@
 import {
   component,
   mount,
+  hydrate,
   For,
   ErrorBoundary,
   createContext,
@@ -81,3 +82,5 @@ declare const target: HTMLDivElement;
 mount(Required, { target, props: { label: '正确' } });
 // @ts-expect-error 根入口同样要求必填 props。
 mount(Required, { target });
+// @ts-expect-error hydration 也不能省略必填 props。
+hydrate(Required, { target });

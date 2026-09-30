@@ -2,7 +2,7 @@
 
 面向 TSX 的细粒度响应式框架实验工作区，目标是显式声明响应式变量、直接读写、组件参数解构和自然的默认值。
 
-当前已开始完整生产化目标：变量式状态、组件 props、JSX DOM、稳定 key 列表、context、错误恢复和 Vite 插件已接入真实 CSR 示例。完整表单行为、SSR/hydration、开发体验和发布验收仍在建设中，尚未达到生产验收。
+当前已开始完整生产化目标：变量式状态、组件、列表、context、错误恢复、CSR 和 SSR/hydration 已接入同一 App。完整表单行为、开发体验、稳定性及发布验收仍在建设中，尚未达到生产验收。
 
 ## 工作区
 
@@ -11,7 +11,7 @@
 | `packages/core`     | 状态、组件、DOM、生命周期、JSX 类型与内部 helper          |
 | `packages/compiler` | 变量宏、组件参数和 JSX 编译，源码映射与绑定诊断           |
 | `packages/vite`     | Vite 8 接入，保持源码映射并展示编译诊断                   |
-| `packages/ssr`      | 文档模板组合和 SSR/CSR 模式分发                           |
+| `packages/ssr`      | 请求内组件渲染、HTML 转义、数据编码与文档模板组合         |
 | `apps/example`      | 真实 workspace 消费项目，包含客户端、服务端和模式切换入口 |
 
 示例依赖包的构建产物，不使用指向源码的别名。原 `apps/playground` 已整理为 `apps/example`。
@@ -30,7 +30,7 @@ pnpm dev
 - `/?render=ssr`：响应 HTML 已包含页面内容。
 - `/?render=csr`：响应包含空应用容器，由客户端入口创建页面。
 
-`pnpm dev` 同时监听各库和示例。体验已实现的框架组件可使用 `pnpm dev:csr`；`pnpm dev:ssr` 查看服务端工程入口。这两个命令先构建库，再启动示例服务。
+`pnpm dev` 同时监听各库和示例；`pnpm dev:csr` 与 `pnpm dev:ssr` 分别启动两种默认模式。这两个命令先构建库，再启动示例服务。
 
 生产入口：
 
@@ -44,9 +44,9 @@ pnpm preview --render-mode csr
 
 ## 当前示例的边界
 
-CSR 已运行 [App.tsx](apps/example/src/App.tsx)，包含状态、props、输入、条件、key、ref、CSS 变量和 SVG；[examples](apps/example/src/examples) 另有带状态列表、context 和错误恢复用例。它通过 workspace 包产物和真实 Vite 插件消费框架。
+两种模式都运行 [App.tsx](apps/example/src/App.tsx)，包含状态、props、输入、条件、key、ref、CSS 变量和 SVG；[examples](apps/example/src/examples) 另有列表、context、错误恢复和原生序列化用例。它通过 workspace 包产物和真实 Vite 插件消费框架。
 
-SSR 暂时保留 `view.ts` 文档工程探针，在禁用 JavaScript 时仍可阅读；其原生事件接入不是通用 hydration。接下来会用同一 App 的真正 SSR + hydrate 替换此过渡入口。
+SSR 在服务端生成组件 HTML，浏览器通过 hydrate 认领原节点、建立绑定和监听器；禁用 JavaScript 仍可阅读。旧的 view.ts 探针已删除。默认严格报告不匹配，示例可用 `?render=ssr&recover=replace` 显式选择重建。具体边界见 [SSR 与 hydration](docs/ssr-and-hydration.md)。
 
 ## 已可使用的组件形态
 
@@ -80,7 +80,7 @@ pnpm format:check
 ```
 
 - `pnpm check`：构建库的声明，再检查子项目、工具配置和 Oxlint。
-- `pnpm test`：响应式、props、编译器和 SSR 文档基础设施的 Node 用例；JSX 类型正反例由 `pnpm check` 检查。
+- `pnpm test`：先准备包产物，再运行响应式、编译器和组件 SSR 用例；JSX 类型正反例由 `pnpm check` 检查。
 - `pnpm test:watch`：单元测试监听。
 - `pnpm test:coverage`：V8 覆盖率；当前不将其作为框架完成度指标。
 - `pnpm test:e2e`：构建后运行 Chromium、Firefox、WebKit。
@@ -106,6 +106,7 @@ pnpm lsp:inspect packages/ssr/src/index.ts apps/example/src/entry-client.ts
 - [从基础工程到生产可用的主计划](docs/production-plan.md)
 - [执行中的语义契约](docs/semantics.md)
 - [目标执行记录](docs/execution.md)
+- [SSR 与 hydration 使用及边界](docs/ssr-and-hydration.md)
 - [第一阶段 API 评审用例](docs/api-review.md)
 - [实现路线、代价与设计约束](docs/implementation-design.md)
 - [TS7 与编译工具研究](.design/ts7-tsx-research.md)

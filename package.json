@@ -18,7 +18,7 @@
     "build": "pnpm -r build",
     "preview": "pnpm --filter @zerodep-js/example preview",
     "lint": "oxlint . --deny-warnings",
-    "test": "vitest run",
+    "test": "pnpm build:packages && vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "pnpm build && playwright test",
