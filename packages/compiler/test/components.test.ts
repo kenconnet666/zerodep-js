@@ -157,6 +157,12 @@ describe('组件参数转换', () => {
     ['异步组件', 'component(async () => null);', 'ZJ1200'],
     ['间接标记', 'const alias = component;', 'ZJ1206'],
     ['读取保留 key', 'component(({ key }) => key);', 'ZJ1207'],
+    ['删除 props', 'component((props) => { delete props.title; return null; });', 'ZJ1203'],
+    [
+      '写入 rest',
+      'component(({ label, ...attrs }) => { attrs.title = label; return null; });',
+      'ZJ1203',
+    ],
   ])('明确诊断：%s', (_name, source, code) => {
     expect(() =>
       compile(`import { component } from '@zerodep-js/core'; ${source}`, 'invalid.ts'),

@@ -7,6 +7,7 @@ test-results/
 playwright-report/
 .codex/config.toml
 .idea
+apps/example/.dev-check-*/
 .DS_Store
 .env
 .env.*

@@ -6,6 +6,8 @@ export interface Diagnostic {
   filename: string;
   line: number;
   column: number;
+  endLine?: number;
+  endColumn?: number;
 }
 
 export class CompileError extends Error {
@@ -34,5 +36,7 @@ export function diagnostic(
     filename,
     line: node.loc?.start.line ?? 1,
     column: (node.loc?.start.column ?? 0) + 1,
+    endLine: node.loc?.end.line ?? node.loc?.start.line ?? 1,
+    endColumn: (node.loc?.end.column ?? node.loc?.start.column ?? 0) + 1,
   };
 }

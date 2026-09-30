@@ -24,4 +24,13 @@ dispose =
         },
       });
 root.dataset.clientReady = 'true';
-import.meta.hot?.dispose(dispose);
+if (import.meta.hot) {
+  // 开发更新重建应用并明确释放旧作用域；不猜测哪些局部状态可以迁移。
+  import.meta.hot.accept('./App.js', (next) => {
+    if (!next) return;
+    dispose();
+    // Vite 的模块回调不携带导出类型，在这个已知入口恢复 App 的签名。
+    dispose = mount(next.App as typeof App, options);
+  });
+  import.meta.hot.dispose(() => dispose());
+}

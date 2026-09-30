@@ -7,6 +7,8 @@ import { CompileError, diagnostic, type Diagnostic } from './diagnostics.js';
 import { transformComponents } from './components.js';
 import { transformJsx } from './jsx.js';
 import { collectForCallbacks, transformForCallbacks } from './loops.js';
+import { normalizeNamespaces } from './namespaces.js';
+import { checkGuards } from './guards.js';
 
 export { CompileError } from './diagnostics.js';
 export type { Diagnostic } from './diagnostics.js';
@@ -62,6 +64,7 @@ export function compile(
     },
   });
   const runtime = program.scope.generateUidIdentifier('zj');
+  normalizeNamespaces(program);
   const helper = (name: string, args: t.Expression[]) =>
     t.callExpression(t.memberExpression(t.cloneNode(runtime), t.identifier(name)), args);
   const cell = (entry: ReactiveBinding) => {
@@ -81,6 +84,7 @@ export function compile(
   }
 
   const forCallbacks = collectForCallbacks(ast, report);
+  checkGuards(ast, forCallbacks, report);
   const hasJsx = transformJsx(ast, helper);
   program.scope.crawl();
   transformForCallbacks(ast, forCallbacks, helper, report);
@@ -109,16 +113,19 @@ export function compile(
       const callee = path.node.callee;
       const identifier = t.isIdentifier(callee)
         ? callee
-        : t.isMemberExpression(callee) && !callee.computed && t.isIdentifier(callee.object)
+        : t.isMemberExpression(callee) && t.isIdentifier(callee.object)
           ? callee.object
           : null;
       if (!identifier) return;
       const macro = macros.get(path.scope.getBinding(identifier.name)!);
       if (!macro) return;
-      const member =
-        t.isMemberExpression(callee) && t.isIdentifier(callee.property)
+      const member = t.isMemberExpression(callee)
+        ? !callee.computed && t.isIdentifier(callee.property)
           ? callee.property.name
-          : undefined;
+          : t.isStringLiteral(callee.property)
+            ? callee.property.value
+            : null
+        : undefined;
       if (
         member !== undefined &&
         !(macro === '$state' && member === 'raw') &&
@@ -319,4 +326,14 @@ export function compile(
   });
   if (typeof result?.code !== 'string') throw new Error('编译器未生成代码。');
   return { code: result.code, map: result.map ?? null };
+}
+
+export function diagnose(source: string, filename: string): Diagnostic[] {
+  try {
+    compile(source, filename);
+    return [];
+  } catch (error) {
+    if (error instanceof CompileError) return error.diagnostics;
+    throw error;
+  }
 }

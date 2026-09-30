@@ -3,6 +3,7 @@ import { service, restart, stopAll } from './language-client.mjs';
 import { readFile, realpath } from 'node:fs/promises';
 import { extname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { frameworkDiagnostics } from './framework.mjs';
 
 const { McpServer } = requireProject('@modelcontextprotocol/sdk/server/mcp.js');
 const { StdioServerTransport } = requireProject('@modelcontextprotocol/sdk/server/stdio.js');
@@ -209,7 +210,7 @@ tool(
 
 tool(
   'diagnostics',
-  'Get a complete native TypeScript 7 pull-diagnostic report for one file. Timeouts and incomplete reports are errors. Full-project checks remain separate.',
+  'Get complete TypeScript 7 and zerodep-js framework diagnostics for one file. Timeouts and incomplete reports are errors. Full-project checks remain separate.',
   file,
   async (_args, doc, language, version) => {
     if (!language.capabilities.diagnosticProvider)
@@ -226,12 +227,15 @@ tool(
       range: range(item.range),
       source: item.source,
     }));
+    const framework = await frameworkDiagnostics(doc);
+    diagnostics.push(...framework);
     return {
       filePath: doc.relativePath,
       language: doc.kind,
       server: language.serverInfo,
       documentVersion: version,
       complete: true,
+      framework: { complete: true, errors: framework.length },
       errors: diagnostics.filter((item) => item.severity === 1).length,
       diagnostics,
     };

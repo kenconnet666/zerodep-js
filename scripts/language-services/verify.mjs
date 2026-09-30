@@ -137,6 +137,22 @@ try {
     arguments: { filePath: '../solid/package.json' },
   });
   assert(denied.isError, 'Paths outside the workspace must be rejected.');
+  const frameworkFile = 'apps/example/src/' + id + '_framework.tsx';
+  for (const valid of [false, true]) {
+    await save(
+      frameworkFile,
+      `import { component } from '@zerodep-js/core';\nexport const Probe = component(({ value }: { value: number }) => { ${valid ? '' : 'value++;'} return <span>{value}</span>; });\n`,
+    );
+    const report = await call('diagnostics', { filePath: frameworkFile });
+    assert(report.framework.complete);
+    if (valid) assert.equal(report.errors, 0, JSON.stringify(report));
+    else
+      assert(
+        report.diagnostics.some((item) => item.source === 'zerodep-js' && item.code === 'ZJ1203'),
+        JSON.stringify(report),
+      );
+  }
+  console.log('框架诊断与原生类型诊断的错误/修复循环通过。');
   const core = await call('diagnostics', { filePath: 'packages/core/src/index.ts' });
   assert(core.complete && core.errors === 0, JSON.stringify(core));
   console.log(

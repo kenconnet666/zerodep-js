@@ -79,19 +79,21 @@ pnpm test:e2e
 pnpm format:check
 ```
 
-- `pnpm check`：构建库的声明，再检查子项目、工具配置和 Oxlint。
+- `pnpm check`：构建库的声明，再检查子项目、工具配置、示例框架语义和 Oxlint。
+- `pnpm check:framework`：使用已构建的编译器独立检查示例框架语义。
 - `pnpm test`：先准备包产物，再运行响应式、编译器和组件 SSR 用例；JSX 类型正反例由 `pnpm check` 检查。
 - `pnpm test:watch`：单元测试监听。
 - `pnpm test:coverage`：V8 覆盖率；当前不将其作为框架完成度指标。
 - `pnpm test:e2e`：构建后运行 Chromium、Firefox、WebKit。
 - `pnpm test:e2e:chromium`：只运行 Chromium。
+- `pnpm test:dev`：实际 Vite 热更新、错误恢复、作用域清理与 SSR 模块更新。
 - `pnpm browsers:install`：安装测试所需浏览器。
 
 Playwright 使用独立的 4175 端口，测试完成后关闭服务。失败时将 trace 和截图保存到被 Git 忽略的 `test-results`。基础 CI 在 push 和 pull request 时运行这些检查。
 
 ## Babel 与语言服务
 
-根 `babel.config.mjs` 用于独立工具链探针；实际框架转换由 `packages/compiler` 执行，并经 `packages/vite` 接入应用。TS7 负责原始 TSX 的类型检查、编辑提示与声明生成；框架专有语义错误由编译器报告。
+根 `babel.config.mjs` 用于独立工具链探针；实际框架转换由 `packages/compiler` 执行，并经 `packages/vite` 接入应用。TS7 负责原始 TSX 的类型检查、编辑提示与声明生成；框架专有语义错误由编译器报告，独立入口为 `zerodep-check`。安全收窄写法、错误码、热更新行为见 [开发指南](docs/development.md)。
 
 ```sh
 pnpm lsp:setup
@@ -101,11 +103,14 @@ pnpm lsp:inspect packages/ssr/src/index.ts apps/example/src/entry-client.ts
 
 项目独立 MCP 服务名为 `zerodep_js_lsp`，使用本工作区的 `tsc --lsp --stdio`。setup 按当前机器生成被忽略的 `.codex/config.toml`，不会写入用户级配置。请在 Codex 中信任本项目并重新打开，然后确认工具已经加载。
 
+诊断桥现在合并 TS7 与框架诊断；已运行的旧进程需要重启 Codex 才加载新增检查，独立验证不代表当前会话已经刷新。普通编辑器仍使用标准 TS7，并通过检查命令或 Vite 获得框架错误。
+
 ## 研究与状态
 
 - [从基础工程到生产可用的主计划](docs/production-plan.md)
 - [执行中的语义契约](docs/semantics.md)
 - [目标执行记录](docs/execution.md)
+- [开发、类型检查与框架诊断](docs/development.md)
 - [SSR 与 hydration 使用及边界](docs/ssr-and-hydration.md)
 - [原生输入与表单契约](docs/forms.md)
 - [第一阶段 API 评审用例](docs/api-review.md)

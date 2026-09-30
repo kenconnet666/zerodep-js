@@ -6,6 +6,25 @@ import { transformReturns } from './render.js';
 type Helper = (name: string, args: t.Expression[]) => t.CallExpression;
 type Report = (node: t.Node, code: string, message: string) => void;
 
+function readonlyObject(
+  setup: NodePath<t.FunctionExpression | t.ArrowFunctionExpression>,
+  binding: Binding,
+  report: Report,
+): void {
+  setup.traverse({
+    'AssignmentExpression|UpdateExpression|UnaryExpression'(write) {
+      if (write.isUnaryExpression() && write.node.operator !== 'delete') return;
+      const target = write.isAssignmentExpression() ? write.node.left : write.node.argument;
+      if (
+        t.isMemberExpression(target) &&
+        t.isIdentifier(target.object) &&
+        write.scope.getBinding(target.object.name) === binding
+      )
+        report(write.node, 'ZJ1203', '不能修改 props 或 rest 输入的顶层属性，请使用回调。');
+    },
+  });
+}
+
 function isComponentImport(binding: Binding | undefined): boolean {
   return coreImport(binding) === 'component';
 }
@@ -52,6 +71,7 @@ export function transformComponents(
 
       if (t.isIdentifier(parameter)) {
         const binding = setup.scope.getBinding(parameter.name)!;
+        readonlyObject(setup, binding, report);
         for (const violation of binding.constantViolations)
           report(violation.node, 'ZJ1203', 'props 参数不能重新赋值。');
         setup.traverse({
@@ -68,16 +88,6 @@ export function transformComponents(
                 'ZJ1207',
                 'key 是 JSX 实例身份，不是组件输入；业务数据请使用 id 等名称。',
               );
-            }
-          },
-          'AssignmentExpression|UpdateExpression'(write) {
-            const target = write.isAssignmentExpression() ? write.node.left : write.node.argument;
-            if (
-              t.isMemberExpression(target) &&
-              t.isIdentifier(target.object) &&
-              write.scope.getBinding(target.object.name) === binding
-            ) {
-              report(write.node, 'ZJ1203', '不能修改 props 的顶层属性，请使用回调。');
             }
           },
         });
@@ -122,6 +132,7 @@ export function transformComponents(
             continue;
           }
           const binding = setup.scope.getBinding(local.name)!;
+          if (t.isRestElement(property)) readonlyObject(setup, binding, report);
           const replacement = setup.scope.generateUidIdentifier(local.name);
           entries.push({ binding, replacement, rest: t.isRestElement(property), property });
           for (const violation of binding.constantViolations)

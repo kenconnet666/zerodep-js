@@ -1,4 +1,5 @@
 /* oxlint-disable typescript/no-this-alias -- 这里切换同步跟踪上下文，并非给回调捕获 this 别名。 */
+import { RenderQueue } from './render-queue.js';
 export type Cleanup = () => void;
 export type EffectCallback = () => void | Cleanup;
 
@@ -16,7 +17,7 @@ let batchDepth = 0;
 let flushing = false;
 let runningEffects = 0;
 let scheduled: Promise<void> | null = null;
-const renderQueue = new Set<ReactiveEffect>();
+const renderQueue = new RenderQueue<ReactiveEffect>();
 const effectQueue = new Set<ReactiveEffect>();
 
 function throwErrors(errors: unknown[]): void {
@@ -27,6 +28,7 @@ function throwErrors(errors: unknown[]): void {
 /** 作用域只保存生命周期资源，组件数据不会存入全局注册表。 */
 export class Scope {
   parent: Scope | null;
+  readonly depth: number;
   readonly children = new Set<Scope>();
   readonly cleanups: Cleanup[] = [];
   disposed = false;
@@ -39,6 +41,7 @@ export class Scope {
     if (parent?.disposed || parent?.clearing)
       throw new Error('不能在已销毁或正在清理的作用域中创建资源。');
     this.parent = parent;
+    this.depth = parent ? parent.depth + 1 : 0;
     this.server = parent?.server ?? false;
     parent?.children.add(this);
   }
@@ -393,9 +396,8 @@ function flushEffects(): void {
   try {
     while (renderQueue.size || effectQueue.size) {
       // 用户副作用运行前，总是先处理新产生的 DOM 更新。
-      const queue = renderQueue.size ? renderQueue : effectQueue;
-      const task = queue.values().next().value!;
-      queue.delete(task);
+      const task = renderQueue.size ? renderQueue.take()! : effectQueue.values().next().value!;
+      effectQueue.delete(task);
       const errorScope = task.parent;
       const count = (executions.get(task) ?? 0) + 1;
       executions.set(task, count);

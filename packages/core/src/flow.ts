@@ -40,7 +40,7 @@ export interface ListTemplate {
 export const For = defineComponent(<T>(input: ForProps<T>): ListTemplate => {
   if (!isLiveRender(input.children))
     throw new Error(
-      'For 需要经过编译的内联 children 回调；请直接使用 For 命名导入，复用呈现放入组件。',
+      'For 需要经过编译的内联 children 回调；请使用导入绑定或静态命名空间成员，复用呈现放入组件。',
     );
   return {
     [TEMPLATE]: true,

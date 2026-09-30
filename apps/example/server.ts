@@ -48,19 +48,22 @@ if (values.production) {
   if (typeof entry.render !== 'function') throw new Error('Missing production SSR entry.');
   loadPage = async () => ({ template, entry });
 } else {
-  const { createServer: createViteServer } = await import('vite');
+  const { createServer: createViteServer, isRunnableDevEnvironment } = await import('vite');
   vite = await createViteServer({
     root,
     appType: 'custom',
     server: { middlewareMode: true, hmr: { server } },
   });
   const development = vite;
+  const environment = development.environments.ssr;
+  if (!environment || !isRunnableDevEnvironment(environment))
+    throw new Error('Missing runnable SSR environment.');
   loadPage = async (url) => ({
     template: await development.transformIndexHtml(
       url,
       await readFile(resolve(root, 'index.html'), 'utf8'),
     ),
-    entry: (await development.ssrLoadModule('/src/entry-server.ts')) as ServerEntry,
+    entry: (await environment.runner.import('/src/entry-server.ts')) as ServerEntry,
   });
 }
 

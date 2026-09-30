@@ -18,5 +18,9 @@ export function execute(source: string, extra: Record<string, unknown> = {}): un
         return `const { ${bindings} } = publicRuntime;`;
       },
     );
-  return runInNewContext(`"use strict";\n${code}\nresult;`, { runtime, publicRuntime, ...extra });
+  const linked = code.replace(
+    /^import \* as (\w+) from ["']@zerodep-js\/core["'];?/gm,
+    'const $1 = publicRuntime;',
+  );
+  return runInNewContext(`"use strict";\n${linked}\nresult;`, { runtime, publicRuntime, ...extra });
 }
