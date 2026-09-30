@@ -1,5 +1,6 @@
 import traverse, { type NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
+import { renderExpression } from './render.js';
 
 type Helper = (name: string, args: t.Expression[]) => t.CallExpression;
 
@@ -22,8 +23,9 @@ export function transformJsx(ast: t.File, helper: Helper): boolean {
       if (t.isJSXSpreadChild(child))
         return helper('dynamic', [t.arrowFunctionExpression([], child.expression)]);
       if (t.isStringLiteral(child)) return child;
+      if (t.isArrowFunctionExpression(child) || t.isFunctionExpression(child)) return child;
       if (templates.has(child)) return child as t.Expression;
-      return helper('dynamic', [t.arrowFunctionExpression([], child as t.Expression)]);
+      return renderExpression(child as t.Expression, helper);
     });
   }
 

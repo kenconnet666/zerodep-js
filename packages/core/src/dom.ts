@@ -1,32 +1,18 @@
-import { Scope, getScope, onCleanup, renderEffect, untrack, type Cleanup } from './reactivity.js';
+import { Scope, getScope, renderEffect, untrack, type Cleanup } from './reactivity.js';
 import { setupComponent, type AnyComponent, type ComponentProps } from './component.js';
 import { TEMPLATE, element, type DynamicTemplate, type Renderable } from './template.js';
 import { attachAttributes, attachRef } from './dom-attributes.js';
 import type { Props } from './props.js';
+import { createRange, insert, rollback, type Container } from './dom-utils.js';
+import { renderList } from './dom-list.js';
+import { renderBoundary } from './dom-boundary.js';
 
-type Container = Element | DocumentFragment;
 export type MountOptions<C extends AnyComponent> = {
   target: Container;
 } & ({} extends ComponentProps<C> ? { props?: ComponentProps<C> } : { props: ComponentProps<C> });
 const roots = new WeakMap<Container, Cleanup>();
 const svg = 'http://www.w3.org/2000/svg';
 const html = 'http://www.w3.org/1999/xhtml';
-
-function rollback(scope: Scope, error: unknown): never {
-  try {
-    scope.dispose();
-  } catch (cleanupError) {
-    throw new AggregateError([error, cleanupError], '渲染与回收均失败。');
-  }
-  throw error;
-}
-
-function insert(node: Node, parent: Container, before: Node | null): void {
-  parent.insertBefore(node, before);
-  onCleanup(() => {
-    node.parentNode?.removeChild(node);
-  });
-}
 
 function renderDynamic(
   template: DynamicTemplate,
@@ -35,8 +21,7 @@ function renderDynamic(
   namespaceParent: Container,
 ): void {
   const owner = getScope()!;
-  const anchor = parent.ownerDocument!.createComment('zj');
-  insert(anchor, parent, before);
+  const { end: anchor } = createRange(parent, before, 'dynamic');
   let branch: Scope | undefined;
   let previous: Renderable;
   let text: Text | undefined;
@@ -89,6 +74,14 @@ export function renderValue(
   }
   if (value.kind === 'dynamic') {
     renderDynamic(value, parent, before, namespaceParent);
+    return;
+  }
+  if (value.kind === 'list') {
+    renderList(value, parent, before, namespaceParent, renderValue);
+    return;
+  }
+  if (value.kind === 'boundary') {
+    renderBoundary(value, parent, before, namespaceParent, renderValue);
     return;
   }
   if (typeof value.tag !== 'string') {

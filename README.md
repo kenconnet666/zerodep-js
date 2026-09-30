@@ -2,7 +2,7 @@
 
 面向 TSX 的细粒度响应式框架实验工作区，目标是显式声明响应式变量、直接读写、组件参数解构和自然的默认值。
 
-当前已开始完整生产化目标：变量式状态、组件 props、JSX DOM 渲染和 Vite 插件已接入真实 CSR 示例。列表、完整表单行为、SSR/hydration、错误边界与发布验收仍在建设中，尚未达到生产验收。
+当前已开始完整生产化目标：变量式状态、组件 props、JSX DOM、稳定 key 列表、context、错误恢复和 Vite 插件已接入真实 CSR 示例。完整表单行为、SSR/hydration、开发体验和发布验收仍在建设中，尚未达到生产验收。
 
 ## 工作区
 
@@ -44,7 +44,7 @@ pnpm preview --render-mode csr
 
 ## 当前示例的边界
 
-CSR 已运行 [App.tsx](apps/example/src/App.tsx)，包含状态与派生、组件默认值、属性转发、输入、条件销毁、key、ref、CSS 变量和 SVG。它通过 workspace 包产物和真实 Vite 插件消费框架。
+CSR 已运行 [App.tsx](apps/example/src/App.tsx)，包含状态、props、输入、条件、key、ref、CSS 变量和 SVG；[examples](apps/example/src/examples) 另有带状态列表、context 和错误恢复用例。它通过 workspace 包产物和真实 Vite 插件消费框架。
 
 SSR 暂时保留 `view.ts` 文档工程探针，在禁用 JavaScript 时仍可阅读；其原生事件接入不是通用 hydration。接下来会用同一 App 的真正 SSR + hydrate 替换此过渡入口。
 

@@ -1,12 +1,14 @@
 import { Derived } from './reactivity.js';
 import { COMPONENT, type AnyComponent } from './component.js';
 import { restProps, type Props } from './props.js';
+import type { ListTemplate, BoundaryTemplate } from './flow.js';
 
 export const TEMPLATE = Symbol('zerodep.template');
 
 export type Renderable =
   Template | string | number | bigint | boolean | null | undefined | readonly Renderable[];
-export type Template = ElementTemplate | DynamicTemplate | FragmentTemplate;
+export type Template =
+  ElementTemplate | DynamicTemplate | FragmentTemplate | ListTemplate | BoundaryTemplate;
 
 export interface ElementTemplate {
   readonly [TEMPLATE]: true;
@@ -41,6 +43,32 @@ export function dynamic(read: () => Renderable): DynamicTemplate {
 
 export function fragment(children: readonly Renderable[]): FragmentTemplate {
   return { [TEMPLATE]: true, kind: 'fragment', children };
+}
+
+export function conditional(
+  test: () => unknown,
+  yes: () => Renderable,
+  no: () => Renderable,
+): DynamicTemplate {
+  const selected = new Derived(() => Boolean(test()));
+  return dynamic(() => (selected.read() ? yes() : no()));
+}
+
+export function logical(
+  operator: '&&' | '||' | '??',
+  left: () => unknown,
+  right: () => Renderable,
+): DynamicTemplate {
+  const value = new Derived(left);
+  const original = dynamic(() => value.read() as Renderable);
+  return conditional(
+    () => {
+      const current = value.read();
+      return operator === '&&' ? Boolean(current) : operator === '||' ? !current : current == null;
+    },
+    right,
+    () => original,
+  );
 }
 
 /** 每个 JSX 位置持有稳定输入视图；仅标签或 key 改变才重新建立实例。 */

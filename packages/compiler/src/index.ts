@@ -6,6 +6,7 @@ import * as t from '@babel/types';
 import { CompileError, diagnostic, type Diagnostic } from './diagnostics.js';
 import { transformComponents } from './components.js';
 import { transformJsx } from './jsx.js';
+import { collectForCallbacks, transformForCallbacks } from './loops.js';
 
 export { CompileError } from './diagnostics.js';
 export type { Diagnostic } from './diagnostics.js';
@@ -79,7 +80,10 @@ export function compile(
     path.replaceWith(t.inherits(expression, path.node));
   }
 
+  const forCallbacks = collectForCallbacks(ast, report);
   const hasJsx = transformJsx(ast, helper);
+  program.scope.crawl();
+  transformForCallbacks(ast, forCallbacks, helper, report);
   program.scope.crawl();
   const hasComponents = transformComponents(ast, program, helper, report);
   for (const statement of program.get('body')) {
@@ -271,7 +275,7 @@ export function compile(
     },
     CallExpression(path) {
       if (
-        reactive.size &&
+        (reactive.size || hasComponents || hasJsx) &&
         t.isIdentifier(path.node.callee, { name: 'eval' }) &&
         !path.scope.getBinding('eval')
       ) {

@@ -1,19 +1,13 @@
 import traverse, { type Binding, type NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
+import { coreImport } from './imports.js';
+import { transformReturns } from './render.js';
 
 type Helper = (name: string, args: t.Expression[]) => t.CallExpression;
 type Report = (node: t.Node, code: string, message: string) => void;
 
 function isComponentImport(binding: Binding | undefined): boolean {
-  const path = binding?.path;
-  if (!path?.isImportSpecifier() || path.node.importKind === 'type') return false;
-  const imported = path.node.imported;
-  return (
-    (t.isIdentifier(imported) ? imported.name : imported.value) === 'component' &&
-    path.parentPath.isImportDeclaration() &&
-    path.parentPath.node.importKind !== 'type' &&
-    path.parentPath.node.source.value === '@zerodep-js/core'
-  );
+  return coreImport(binding) === 'component';
 }
 
 /** 参数解构被改写为按需 getter；普通局部解构仍保持 JavaScript 快照语义。 */
@@ -222,7 +216,8 @@ export function transformComponents(
         if (declarations.length)
           setup.node.body.body.unshift(t.variableDeclaration('const', declarations));
       }
-      // 只替换调用入口，setup 保留原函数节点和泛型信息，后续变量宏继续遍历它。
+      transformReturns(setup, helper);
+      // setup 语句执行一次，返回的渲染表达式保留独立的更新位置。
       path.node.callee = helper('defineComponent', []).callee;
       transformed = true;
     },

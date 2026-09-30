@@ -31,6 +31,8 @@ export class Scope {
   readonly cleanups: Cleanup[] = [];
   disposed = false;
   clearing = false;
+  context: Map<symbol, unknown> | undefined;
+  onError: ((error: unknown) => void) | undefined;
 
   constructor(parent = currentScope) {
     if (parent?.disposed || parent?.clearing)
@@ -74,6 +76,7 @@ export class Scope {
         }
       });
     } finally {
+      this.context = undefined;
       this.clearing = false;
       currentScope = previousScope;
     }
@@ -84,13 +87,44 @@ export class Scope {
     if (this.disposed) return;
     this.disposed = true;
     this.parent?.children.delete(this);
-    this.parent = null;
-    this.clear();
+    try {
+      this.clear();
+    } finally {
+      this.parent = null;
+      this.onError = undefined;
+    }
   }
 }
 
 export function getScope(): Scope | null {
   return currentScope;
+}
+
+/** 仅沿仍存活的所有权链处理错误；fallback 自身失败时交给外层边界。 */
+export function dispatchError(error: unknown, scope: Scope | null): void {
+  let failure = error;
+  for (let owner = scope; owner; owner = owner.parent) {
+    if (!owner.onError || owner.disposed || owner.clearing) continue;
+    try {
+      const handler = owner.onError;
+      untrack(() => owner.run(() => handler(failure)));
+      return;
+    } catch (next) {
+      failure = next;
+    }
+  }
+  throw failure;
+}
+
+/** 程序触发的 DOM 事件也不能继承调用方的依赖跟踪或临时作用域。 */
+export function unowned<T>(fn: () => T): T {
+  const previous = currentScope;
+  currentScope = null;
+  try {
+    return untrack(fn);
+  } finally {
+    currentScope = previous;
+  }
 }
 
 export function createRoot<T>(fn: (dispose: Cleanup) => T): T {
@@ -360,6 +394,7 @@ function flushEffects(): void {
       const queue = renderQueue.size ? renderQueue : effectQueue;
       const task = queue.values().next().value!;
       queue.delete(task);
+      const errorScope = task.parent;
       const count = (executions.get(task) ?? 0) + 1;
       executions.set(task, count);
       try {
@@ -369,7 +404,11 @@ function flushEffects(): void {
         }
         task.execute();
       } catch (error) {
-        errors.push(error);
+        try {
+          dispatchError(error, errorScope);
+        } catch (unhandled) {
+          errors.push(unhandled);
+        }
       }
     }
   } finally {

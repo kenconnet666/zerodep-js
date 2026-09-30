@@ -50,3 +50,18 @@
 - 编译测试合并公共沙盒辅助函数，并按模块严格模式执行，减少重复接线。
 - 上一阶段 `6bb2fe5` 的 [完整 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/36755154158) 已通过。本轮本地选择 Chromium 交互用例，完整三浏览器矩阵在推送后运行，下次推送前再检查。
 - 当前仍缺：稳定 key 列表、context/错误边界、完整输入行为、真正的 SSR/hydration、开发体验收尾与生产验收。已有 CSR 不代替这些门槛。
+
+## 结构更新、context 与错误恢复
+
+- For 已建立每 key 独立行作用域，row/index 经编译保持实时读取；同 key 替换对象保留行状态，排序移动原节点，删除及空态清理资源。重复 key 在改变现有行之前校验。
+- 对新建的离线 DOM 使用普通插入；已连接节点优先使用 moveBefore，并提供焦点/输入选区恢复路径。浏览器实测发现了临时 DocumentFragment 不满足状态保留移动约束的问题，已据此修正；[接口约束参考](https://developer.mozilla.org/en-US/docs/Web/API/Element/moveBefore)。
+- context 沿实例作用域继承，覆盖与独立根隔离；清理过程中仍能读到父级提供者。DOM 事件不继承触发者临时的依赖跟踪和作用域。
+- ErrorBoundary 支持初始化、渲染、effect 的局部恢复；错误 fallback 再失败时交给外层。已在真实浏览器验证恢复后其他组件继续正常工作。
+- 修复普通 render callback children 被误当成动态内容的问题；JSX 内联回调保持普通函数，只有 For 指定的位置获得实时参数语义。
+- 组件与 For 回调可直接返回条件、逻辑表达式、数组或响应式值；分支只订阅选择结果，同一分支中的数据刷新不会重建实例，普通局部快照仍保持 JavaScript 语义。
+- 示例按用途整理到 examples/ListExample、ContextExample、BoundaryExample，避免继续膨胀 App。编译器共享导入识别，DOM 范围操作独立为小模块。
+- 前一提交 `a4fb124` 的 [完整 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/36759988086) 已通过。本轮针对性单元、类型和浏览器验证记录随交付更新，完整矩阵交给下一轮 CI。
+- 本地验证：作用域/context 与响应式用例、7 项 For 编译用例、类型正反例和构建通过；5 项结构浏览器用例通过，包含原生及兼容移动路径。已完成的框架浏览器回归也通过。
+- 返回表达式改进后，58 项编译器用例通过；列表示例直接返回条件，并再次验证同 key 数据刷新保留草稿及分支实例。类型检查与 lint 已完成。
+- 下一步：真实 SSR 与 hydration，复用当前模板和作用域契约；随后补齐输入归一化、IME、用户在 hydration 前编辑的状态、开发诊断和发布消费验证。
+- 后续原生属性审计必须对齐类型和实际写入行为，尤其是 ariaLabel 等反射属性、表单 property/attribute 差异以及 SVG；不能以类型允许代替运行时支持。

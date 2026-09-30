@@ -1,5 +1,8 @@
 import { component, $state, $derived, onCleanup, type JSX } from '@zerodep-js/core';
 import type { RenderMode } from '@zerodep-js/ssr';
+import { ListExample } from './examples/ListExample.js';
+import { ContextExample } from './examples/ContextExample.js';
+import { BoundaryExample } from './examples/BoundaryExample.js';
 
 const Button = component(
   ({ type = 'button', children, ...attrs }: JSX.IntrinsicElements['button']) => (
@@ -174,6 +177,9 @@ export const App = component(({ mode = 'csr' }: { mode?: RenderMode }) => {
         />
       </label>
       <p data-greeting>你好，{name}</p>
+      <ListExample />
+      <ContextExample />
+      <BoundaryExample />
       <p data-client-status>客户端已接入</p>
       <p class="note">客户端已使用框架组件；服务端组件渲染与 hydration 正在实现。</p>
     </main>

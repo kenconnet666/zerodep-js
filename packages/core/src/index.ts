@@ -7,3 +7,7 @@ export { mount } from './dom.js';
 export type { MountOptions } from './dom.js';
 export type { Renderable } from './template.js';
 export type { JSX, NativeProps, Style, EventHandler } from './jsx-runtime.js';
+export { createContext, provideContext, useContext } from './context.js';
+export type { Context } from './context.js';
+export { For, ErrorBoundary } from './flow.js';
+export type { ForProps, Key, ErrorBoundaryProps } from './flow.js';

@@ -1,4 +1,13 @@
-import { component, mount, type JSX, type Renderable } from '@zerodep-js/core';
+import {
+  component,
+  mount,
+  For,
+  ErrorBoundary,
+  createContext,
+  provideContext,
+  type JSX,
+  type Renderable,
+} from '@zerodep-js/core';
 
 const Required = component(({ label = '默认值' }: { label: string }) => <button>{label}</button>);
 const Generic = component(
@@ -29,6 +38,32 @@ export const valid = (
     />
   </>
 );
+
+export const list = (
+  <For each={[{ id: 1, name: 'A' }]} keyBy={(row) => row.id}>
+    {(row, index) => (
+      <span>
+        {index}: {row.name}
+      </span>
+    )}
+  </For>
+);
+export const boundary = (
+  <ErrorBoundary fallback={(error, reset) => <button onClick={reset}>{String(error)}</button>}>
+    <span />
+  </ErrorBoundary>
+);
+export const badList = (
+  <For each={[{ id: 1 }]} keyBy={(row) => row.id}>
+    {(row) => {
+      // @ts-expect-error 列表泛型必须由 each 推断，不得变成 any。
+      return row.missing;
+    }}
+  </For>
+);
+const nameContext = createContext<string>();
+// @ts-expect-error provider 不能反向扩大已定义的 context 类型。
+provideContext(nameContext, 123);
 
 // @ts-expect-error 参数默认值不改变调用方必填契约。
 export const missing = <Required />;

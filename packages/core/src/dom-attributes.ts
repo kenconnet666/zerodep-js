@@ -1,4 +1,4 @@
-import { Scope, onCleanup, renderEffect, untrack } from './reactivity.js';
+import { Scope, onCleanup, renderEffect, untrack, unowned } from './reactivity.js';
 import type { Props } from './props.js';
 
 const booleanAttributes = new Set(
@@ -133,7 +133,7 @@ export function attachAttributes(element: Element, input: Props): void {
               ...event,
               current: value as (event: Event) => void,
               listener: (event) => {
-                binding!.current.call(element, event);
+                unowned(() => binding!.current.call(element, event));
               },
             };
             events.set(key, binding);

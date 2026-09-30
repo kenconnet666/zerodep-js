@@ -14,7 +14,8 @@
 
 ## 生命周期与调度
 
-- 组件初始化一次；动态 JSX 区域跟踪后续更新。普通顶层条件与提前返回不自动变为响应式结构。
+- 组件初始化语句执行一次；返回表达式和 JSX 动态区域跟踪后续更新。直接返回条件、逻辑表达式、数组或响应式值都可更新；语句级 if / 提前返回的路径选择仍是初始化逻辑。
+- 条件选择结果不变时保留分支实例，避免父级对象刷新但条件仍为 true 时重建子组件。普通局部变量与辅助函数传参仍保留取值语义。
 - `effect` 必须属于组件、分支、列表行或显式 `createRoot`。禁止无作用域创建不可回收的订阅。
 - effect 首次和后续执行在微任务批次内，DOM 更新先于用户 effect；同步创建/更新过程中不运行半初始化的用户副作用。
 - 重跑先销毁上一轮的子作用域，再按注册的逆序执行清理；卸载同样清理，重复 dispose 无副作用。
@@ -48,6 +49,9 @@
 - 同一 JSX 位置的组件/动态标签保持实例，标签或 key 变化才重建。key 只接受字符串、数字、symbol，不传入组件 props，也不写入 DOM；业务标识使用 id 等普通字段。
 - 原生事件保持浏览器派发与 currentTarget；ref 用于取得元素或返回清理函数，需要已连接 DOM 的测量放在 effect 中。style 字符串/对象和 CSS 变量受支持，长度单位由调用方显式提供。
 - `For` 使用稳定 key；内联回调的 row/index 是编译器识别的实时绑定。同 key 替换数据读取新对象、保留行实例；删除销毁，重复 key 报错。
+- For 接受数组、null 或 undefined；缺失数组视为空，fallback 随空态创建与销毁。仅支持命名导入（可重命名）和内联同步 row/index 回调，写入参数或用外部回调代替会报错；普通辅助回调仍按 JavaScript 传值。
+- context 用 createContext / provideContext / useContext 表达，值按最近作用域继承，内层可覆盖；同一作用域只提供一次。变化值使用状态对象或 getter，普通数值保持取值语义。
+- ErrorBoundary 捕获子树的初始化、渲染与排队 effect 错误。fallback 接收错误与 reset，reset 重建子树；fallback 自身失败交给外层。原生事件和自行启动的异步任务仍由调用方处理错误。
 - 普通 map 保持普通计算，不默认为有身份保留的列表机制。
 - `mount(App, { target, props })`、`hydrate(App, { target, props })` 返回 disposer；SSR 从同步 `renderToString(App, { props })` 建立正确基线。
 - 完整生产目标包括受控表单、IME/选区、错误恢复、context、ref、属性转发、声明消费、HMR、SSR/hydration 与安全边界；不以只支持计数器代替完成。

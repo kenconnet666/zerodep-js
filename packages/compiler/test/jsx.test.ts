@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import * as runtime from '../../core/src/internal.js';
 import { createRoot } from '../../core/src/reactivity.js';
 import { state } from '../../core/src/state.js';
-import type { ElementTemplate, Renderable } from '../../core/src/template.js';
+import type { DynamicTemplate, ElementTemplate, Renderable } from '../../core/src/template.js';
 
 function text(value: Renderable): string {
   if (value == null || typeof value === 'boolean') return '';
@@ -12,10 +12,66 @@ function text(value: Renderable): string {
   if (!('kind' in value)) throw new Error('预期框架模板。');
   if (value.kind === 'dynamic') return text(value.value.read());
   if (value.kind === 'fragment') return value.children.map(text).join('');
+  if (value.kind !== 'element') throw new Error('结构模板由实际渲染器验证。');
   return text(value.props.children as Renderable);
 }
 
 describe('JSX 惰性输出', () => {
+  it('组件直接返回值、条件和数组时仍保持细粒度更新', () => {
+    const result = execute(`
+      import { component, $state } from '@zerodep-js/core';
+      let data = $state({ open: true, value: 1 });
+      const View = component(({ data }) => data.open ? [data.value, <span title="稳定" />] : '隐藏');
+      const view = <View data={data} />;
+      const result = { view, replace() { data = { open: true, value: 2 }; }, hide() { data.open = false; } };
+    `) as { view: DynamicTemplate; replace: () => void; hide: () => void };
+    createRoot((dispose) => {
+      try {
+        const descriptor = result.view.value.read() as ElementTemplate;
+        const output = runtime.setupComponent(
+          descriptor.tag as Parameters<typeof runtime.setupComponent>[0],
+          descriptor.props,
+        ) as DynamicTemplate;
+        const before = output.value.read();
+        expect(text(output)).toBe('1');
+        result.replace();
+        expect(output.value.read()).toBe(before);
+        expect(text(output)).toBe('2');
+        result.hide();
+        expect(text(output)).toBe('隐藏');
+      } finally {
+        dispose();
+      }
+    });
+  });
+
+  it('逻辑表达式保留 0、空字符串和 nullish 的原始含义', () => {
+    const result = execute(`
+      import { component, $state } from '@zerodep-js/core';
+      let value = $state(0);
+      const View = component(() => [value && <b>真</b>, value || '默认', value ?? '空']);
+      const result = { view: <View />, change(next) { value = next; } };
+    `) as { view: DynamicTemplate; change: (value: unknown) => void };
+    createRoot((dispose) => {
+      try {
+        const descriptor = result.view.value.read() as ElementTemplate;
+        const output = runtime.setupComponent(
+          descriptor.tag as Parameters<typeof runtime.setupComponent>[0],
+          descriptor.props,
+        );
+        expect(text(output)).toBe('0默认0');
+        result.change('');
+        expect(text(output)).toBe('默认');
+        result.change(null);
+        expect(text(output)).toBe('默认空');
+        result.change(2);
+        expect(text(output)).toBe('真22');
+      } finally {
+        dispose();
+      }
+    });
+  });
+
   it('替换 spread 对象但保留 key 时，描述身份和输入视图保持有效', () => {
     const input = state({ title: '旧', key: 1 });
     const view = runtime.dynamicElement(() => 'button', runtime.props([() => input.read()]));
