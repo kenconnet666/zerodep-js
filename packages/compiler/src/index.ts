@@ -4,6 +4,7 @@ import presetTypescript from '@babel/preset-typescript';
 import traverse, { type Binding, type NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
 import { CompileError, diagnostic, type Diagnostic } from './diagnostics.js';
+import { transformComponents } from './components.js';
 
 export { CompileError } from './diagnostics.js';
 export type { Diagnostic } from './diagnostics.js';
@@ -55,23 +56,6 @@ export function compile(
   traverse(ast, {
     Program(path) {
       program = path;
-      for (const statement of path.get('body')) {
-        if (!statement.isImportDeclaration() || statement.node.source.value !== '@zerodep-js/core')
-          continue;
-        for (const specifier of statement.get('specifiers')) {
-          if (
-            !specifier.isImportSpecifier() ||
-            statement.node.importKind === 'type' ||
-            specifier.node.importKind === 'type'
-          )
-            continue;
-          const imported = specifier.node.imported;
-          const name = t.isIdentifier(imported) ? imported.name : imported.value;
-          if (name === '$state' || name === '$derived') {
-            macros.set(path.scope.getBinding(specifier.node.local.name)!, name);
-          }
-        }
-      }
       path.stop();
     },
   });
@@ -92,6 +76,24 @@ export function compile(
   };
   function replace(path: NodePath, expression: t.Expression): void {
     path.replaceWith(t.inherits(expression, path.node));
+  }
+
+  const hasComponents = transformComponents(ast, program, helper, report);
+  for (const statement of program.get('body')) {
+    if (!statement.isImportDeclaration() || statement.node.source.value !== '@zerodep-js/core')
+      continue;
+    for (const specifier of statement.get('specifiers')) {
+      if (
+        !specifier.isImportSpecifier() ||
+        statement.node.importKind === 'type' ||
+        specifier.node.importKind === 'type'
+      )
+        continue;
+      const imported = specifier.node.imported;
+      const name = t.isIdentifier(imported) ? imported.name : imported.value;
+      if (name === '$state' || name === '$derived')
+        macros.set(program.scope.getBinding(specifier.node.local.name)!, name);
+    }
   }
 
   // 先登记所有声明，再转换闭包内读写，避免访问声明在后的绑定时漏掉转换。
@@ -299,7 +301,7 @@ export function compile(
     }
   }
   if (errors.length) throw new CompileError(errors);
-  if (reactive.size)
+  if (reactive.size || hasComponents)
     program.unshiftContainer(
       'body',
       t.importDeclaration(

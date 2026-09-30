@@ -2,6 +2,8 @@ import { Derived, Source } from './reactivity.js';
 
 export { Scope, getScope, renderEffect, untrack } from './reactivity.js';
 export { state } from './state.js';
+export { defineComponent, setupComponent } from './component.js';
+export { prop, props, restProps } from './props.js';
 
 export function source<T>(initial: T): Source<T> {
   return new Source(initial);
