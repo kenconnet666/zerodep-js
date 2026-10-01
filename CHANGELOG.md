@@ -1,6 +1,8 @@
 # 变更记录
 
-## 未发布
+## 1.0.0-rc.2 — 候选准备，尚未发布
+
+七个包已统一准备 rc.2，待该候选的完整 CI 与注册表验收；不覆盖 RC1 原始版本。
 
 - 新增 zerodep-js-vue、zerodep-js-react、zerodep-js-svelte 三个独立页面宿主包，支持保留实例的输入更新、入口替换、清理与宿主 SSR 空容器。
 - Vite 增加统一的 include/exclude 范围，覆盖开发、预扫描、生产和 SSR；三个宿主复用同一个 TSX/普通 TS 页面，并有独立 tgz 消费和开发热更新验证。

@@ -13,4 +13,6 @@ TS 配置使用 `jsx: "preserve"`、`jsxImportSource: "zerodep-js"`。应用安�
 
 依赖包应发布预编译 ESM；插件跳过 node_modules。开发 HMR 在应用入口明确接收根组件更新并调用旧 disposer，局部状态重置；完整示例与诊断规则见 [开发指南](https://github.com/kenconnet666/zerodep-js/blob/main/docs/development.md)。
 
-当前为 `1.0.0-rc.1` 发布候选。四个框架包使用同一版本，实际发布与验收状态见 [变更记录](https://github.com/kenconnet666/zerodep-js/blob/main/CHANGELOG.md)。
+`zerodep({ include, exclude })` 可为多框架工程指定文件范围，相对模式以应用 root 为基准；开发、依赖扫描、生产与 SSR 共用规则。完整示例见[页面宿主](https://github.com/kenconnet666/zerodep-js/blob/main/docs/page-hosts.md)。
+
+本文对应 `1.0.0-rc.2` API，框架与适配包统一版本，实际发布与验收状态见 [变更记录](https://github.com/kenconnet666/zerodep-js/blob/main/CHANGELOG.md)。
