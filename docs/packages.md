@@ -1,8 +1,8 @@
 # 包产物与独立消费
 
-四个公共包已准备版本 1.0.0-rc.1，尚未发布 npm。工作区根与 example 保持 private。本文记录已经实际验证的安装包契约，不把打包成功视为生产验收完成。
+四个公共包已发布 1.0.0-rc.1，实际 npm 安装验收通过。工作区根与 example 保持 private。本文记录已经验证的安装包契约，候选与稳定版本状态见 [发布记录](../CHANGELOG.md)。
 
-公共名称已经统一为下表中的四个无 scope 包名；开发阶段的 `@zerodep-js/core` 对应 `zerodep-js`，其余旧公共名称对应 `zerodep-js-compiler/vite/ssr`。尚未有已发布使用者需要兼容旧名。许可证为 MIT，每个实际 tgz 都应包含与根目录一致的 LICENSE。
+公共名称已经统一为下表中的四个无 scope 包名；开发阶段的 `@zerodep-js/core` 对应 `zerodep-js`，其余旧公共名称对应 `zerodep-js-compiler/vite/ssr`。旧名称未曾发布，不提供重复兼容入口。许可证为 MIT，每个实际 tgz 包含与根目录一致的 LICENSE。
 
 ## 包边界
 
@@ -61,6 +61,6 @@ Linux CI 在完整验证任务中执行此门槛，另有 Windows 的包消费�
 
 Vite 的依赖扫描和普通源码转换必须使用同一个 compiler。扫描阶段如果直接按默认 React JSX 处理，会错误发现 react/jsx-dev-runtime，并可能引起冷启动或热更新重载。插件已把转换接入 optimizeDeps 的 Rolldown 插件链，支持应用 `.ts/.tsx/.js/.jsx/.mts/.mjs`；预编译 node_modules 继续跳过。
 
-## 剩余发布门槛
+## 注册表验收
 
-独立包消费解决的是安装与产物正确性。资源、业务、编辑器与本机输入基线已有验证，入门/API/支持文档、MIT 许可证与贡献规则、发布及回滚工具已准备；当前仍需完成最终候选矩阵与注册表安装。用户已授权完成后使用环境变量中的 npm token 发布相关包；发布须核对注册表与实际安装结果，凭据不进入仓库或日志，验证脚本本身不发布。生产部署不包含在此授权中。具体步骤见 [发布与回滚](releasing.md)。
+1.0.0-rc.1 已通过候选完整矩阵，并由 release:verify-registry 从官方 registry 精确安装四包重新完成同一消费流程；原始 tgz 完整性和 CI 见 GitHub 预发布的 release.json。资源、业务、编辑器、本机输入、文档与许可已有证据。候选的 npm latest 标签例外在 CHANGELOG 中单独说明，不能把标签名当作稳定性承诺。生产部署不包含在本次发布中，稳定版和后续 CSS 接入留待讨论。

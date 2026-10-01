@@ -233,6 +233,7 @@ async function main() {
       const remote = await metadata(item.name, selectedVersion);
       if (remote) sameArtifact(item, remote);
       console.log(`${item.name}@${selectedVersion}: ${remote ? '注册表完整性一致' : '尚未发布'}`);
+      if (remote) console.log(JSON.stringify((await metadata(item.name))?.['dist-tags'] ?? {}));
     }
     return;
   }
@@ -324,6 +325,11 @@ async function main() {
           assert(remote, '发布命令返回后版本尚未可读，请先重新查询 status，保留现有产物。');
         }
         sameArtifact(item, remote);
+        // 首次发包时注册表可能同时初始化 latest，不能把 --tag next 当作最终标签证据。
+        item.tags = (await metadata(item.name))?.['dist-tags'] ?? {};
+        assert.equal(item.tags.next, selectedVersion, 'next 标签没有指向本次候选版本。');
+        if (selectedVersion.includes('-') && item.tags.latest === selectedVersion)
+          console.warn(`${item.name} 的 latest 也指向预发布版本，请单独确认并记录标签策略。`);
         item.published = true;
         await save();
         console.log(`候选已核对：${item.name}@${selectedVersion}`);

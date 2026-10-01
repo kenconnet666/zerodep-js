@@ -223,3 +223,14 @@
 - 包级 README、变更记录、主计划和发布说明同步进入候选状态，尚未声称已发布 npm。内部 helper ABI 保持 1，本次是此前协议范围内的语义修复。
 - 新版本的独立 tgz 安装、TS7 严格声明/泛型/事件类型、预编译组件库、CSR/SSR、节点接管、表单、卸载与模块隔离全部通过；数据入口观察值 2631 字节，无体积硬门槛。临时消费工程、服务和浏览器已由验证器清理。
 - 下一步在候选提交上核对完整 CI、固定 SHA-512 产物，发布 next 并运行真实 registry 安装；这些步骤完成前不提升 latest，不把打包成功记作发布完成。
+
+## RC1 发布完成及本轮范围调整
+
+- 候选源码 a29419625773bfb4c6bdedf136496fbf6e7e2624 的 [完整 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/36818853600) 成功。四个原始 tgz 固定于 .release/1.0.0-rc.1，SHA-512 与 npm 注册表完全一致；发布账户只读核对为 kenconnet666。
+- 四包 1.0.0-rc.1 已实际发布。release:verify-registry 从官方 npm 精确版本安装后完成 TS7 声明、泛型/事件类型、预编译库、CSR/SSR、节点接管、表单、卸载和按需模块检查。2026-10-01T05:30:04.207Z 写入 registryVerifiedAt；临时消费工程、浏览器与服务已清理。
+- [GitHub 预发布 v1.0.0-rc.1](https://github.com/kenconnet666/zerodep-js/releases/tag/v1.0.0-rc.1) 指向上述源码；四个原始 tgz 与 release.json 附件均已上传，标签 SHA 与 prerelease 状态已通过 GitHub MCP 回读。
+- 发布使用 next，但实际 registry 为首次发布同时生成了 latest。最初合并凭据、标签和临时目录清理的长命令被自动审批以 blocked by policy 拒绝，未执行；经用户要求，将同一 pnpm 操作拆为单包且不含递归清理后，工具审批通过，npm 对删除 latest 返回 HTTP 403。相同配置下 pnpm whoami 正确，未继续尝试绕过服务端权限。当前四包 next/latest 均为 RC1，未宣称已清理；文档明确候选身份和精确版本用法。
+- 发布工具新增真实标签回读、next 一致性检查与预发布 latest 提示；只报告和记录，不自动删除标签。临时认证配置只含环境引用，已删除；token 未写入文件或日志。
+- 用户明确本轮收尾为 RC1 后的 zerodep-css 接入研究与讨论，不直接执行接入；稳定 1.0.0 与接入实现均留待后续。研究已基于两个仓库当前源码完成，CSS 仓库保持干净，未新增 CSS 依赖或实现。
+- 探针证明逐属性 Derived 已阻止无关更新重复调用 css：首次 1 次，100 次 title 更新仍 1 次，color 变化增为 2 次，同值不增加；100 个不同颜色累计 101 条规则。另验证普通外部 className 不会被 css 自动合并，以及 raw 转 var 会改变无效值、important 和 initial 的层叠结果。
+- TS7 直接导入实验确认 7.0.2 没有 createSourceFile；现有 CSS compiler 依赖该旧 JS AST API，且其可选 peer 限制 <7。讨论稿建议保留当前 Babel 8 路径并调整实际包边界，不用扩大版本声明冒充兼容。完整写法与取舍见 [.design/zerodep-css-integration.md](../.design/zerodep-css-integration.md)。

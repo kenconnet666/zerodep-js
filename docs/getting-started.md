@@ -1,14 +1,14 @@
 # 开始使用 zerodep-js
 
-zerodep-js 使用标准 TSX、显式变量式状态和一次初始化的组件。状态在声明处标记，之后直接读写；编译器把这些操作连接到局部 DOM 更新。当前发布准备仍在进行，注册表版本以 [发布记录](../CHANGELOG.md) 为准；尚未发布时可先运行仓库中的 example。
+zerodep-js 使用标准 TSX、显式变量式状态和一次初始化的组件。状态在声明处标记，之后直接读写；编译器把这些操作连接到局部 DOM 更新。1.0.0-rc.1 已发布且安装验收通过；它仍是候选，版本与标签状态见 [发布记录](../CHANGELOG.md)。
 
 ## 安装与构建入口
 
-目标环境是 Node 24、TypeScript 7 和 Vite 8。发布后，客户端项目需要：
+目标环境是 Node 24、TypeScript 7 和 Vite 8。客户端项目使用已经核对的精确版本：
 
 ```sh
-pnpm add zerodep-js
-pnpm add -D zerodep-js-vite vite typescript
+pnpm add zerodep-js@1.0.0-rc.1
+pnpm add -D zerodep-js-vite@1.0.0-rc.1 vite@8.3.1 typescript@7.0.2
 ```
 
 Vite 插件同时处理普通转换和依赖扫描：
