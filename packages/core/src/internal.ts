@@ -28,6 +28,8 @@ export {
   namespaceFor,
   voidTags,
   textTags,
+  rawTextTags,
+  elementName,
   textValue,
   textContent,
   elementText,

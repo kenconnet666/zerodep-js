@@ -5,6 +5,8 @@ import {
   namespaceFor,
   voidTags,
   textTags,
+  rawTextTags,
+  elementName,
   textValue,
   elementText,
   nativeAttributes,
@@ -136,9 +138,8 @@ function render(value: Renderable, owner: Scope, context: Context): string {
     return scoped(owner, (scope) =>
       render(setupComponent(value.tag as AnyComponent, value.props), scope, context),
     );
-  const tag = value.tag;
-  const namespace = namespaceFor(tag, context.namespace, context.tag, context.encoding);
-  if (!/^[\p{L}][\p{L}\p{N}._:-]*$/u.test(tag)) throw new Error(`无效的元素名：${tag}`);
+  const namespace = namespaceFor(value.tag, context.namespace, context.tag, context.encoding);
+  const tag = elementName(value.tag, namespace);
   const attributes = nativeAttributes(value.props, tag, namespace);
   if (namespace === HTML && tag === 'option' && context.selection) {
     const optionValue =
@@ -163,11 +164,8 @@ function render(value: Renderable, owner: Scope, context: Context): string {
   }
   if (namespace === HTML && textTags.has(tag)) {
     const text = elementText(tag, value.props);
-    if (tag === 'script' || tag === 'style') {
-      if (new RegExp(`</${tag}(?:[\\t\\n\\f\\r />])`, 'i').test(text))
-        throw new Error(`${tag} 文本包含结束标签，请使用安全的数据序列化入口。`);
-      output += text;
-    } else output += (tag === 'textarea' && text.startsWith('\n') ? '\n' : '') + escapeText(text);
+    if (rawTextTags.has(tag)) output += text;
+    else output += (tag === 'textarea' && text.startsWith('\n') ? '\n' : '') + escapeText(text);
   } else {
     const childContext: Context = {
       ...context,

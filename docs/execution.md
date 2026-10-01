@@ -208,3 +208,11 @@
 - 本地类型/配置检查和构建通过，发布集成用例及四项原生输入用例通过。上一提交 `d7e8c42` 的 [完整 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/36813778034) 已确认成功；本轮新增用例的完整矩阵在下一次推送前核对。
 - 用户要求直接使用 Computer Use 验证真实输入法。Windows 工具初始化并启动 Chrome 成功，但读取窗口时因不能可靠确定浏览器 URL 而终止该轮；未发送系统输入，也没有把这次尝试算通过。临时预览使用内存数据，真实平台检查继续保留为发布门槛。
 - 随后用户实际试用并反馈“基本没问题”，附图可见本机 Windows、SSR 验证页和系统输入法候选窗口。记录为当前环境的真实输入基本验收，与两种渲染模式的浏览器编辑管线和三浏览器事件测试互相补充；没有推断未提供的输入法版本或全部平台支持。截图含用户其他应用信息，不复制进公开仓库。
+
+## 最终 HTML 解析边界审查
+
+- 在真实 Chromium 解析中复现 iframe 字符引用没有解码、动态注释变成文本、script 双重转义吞掉后续节点、plaintext 无法闭合和非 ASCII 首字母标签没有成为元素；均来自实际输出与 DOM 对照，不是仅依据扫描推测。
+- raw-text 集合补齐 iframe/xmp/noembed/noframes，与 script/style 共用纯文本渲染、换行及结束标签检查。script 额外检查 HTML 注释/双重转义状态，不修改 JavaScript 字符串；JSON 仍使用 serializeData。CSR/SSR 共用检查，危险内容更新不会偷偷在两端形成不同语义。
+- 统一 HTML ASCII 名称与 SVG 标准大小写，命名空间边界按同一名称解释；拒绝不可正常往返的名称和 plaintext，保留已有合法元素能力。新增示例验证 iframe 动态文本与自定义标签大小写，并保留节点身份、更新与卸载用例。
+- 22 项相关单元测试、18 项 Chromium 原生属性/序列化/hydration 用例、pnpm check 与构建通过；完整三浏览器回归交给本阶段 CI。新增安全文档明确文本转义、JSON、可信模板、URL/srcdoc/CSS/property、请求状态与应用责任，不承诺任意代码净化。
+- 官方 npm registry 的生产依赖审计完成，报告 No known vulnerabilities found；网络曾重试后成功，未将中间连接失败当结果。gitleaks 对截至 f79af98 的提交历史扫描成功，无检测项。后续候选继续核对产物与版本证据。

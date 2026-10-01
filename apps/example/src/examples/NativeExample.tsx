@@ -17,6 +17,10 @@ export const NativeExample = component(() => {
         }}
       />
       <output data-textarea-value>{text}</output>
+      <iframe title="原始文本校验" data-raw-frame hidden>
+        {text}
+      </iframe>
+      <x-Cased data-cased-tag>HTML 名称规范化</x-Cased>
       <pre data-leading-newline>{'\n首行'}</pre>
       <select
         ariaLabel="单选内容"

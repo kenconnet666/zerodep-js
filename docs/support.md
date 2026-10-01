@@ -33,11 +33,11 @@
 - TS 控制流收窄有时间边界。回调和 await 后重新取值判空，框架诊断不证明任意用户程序、any 或外部断言安全。
 - 不代理类、DOM、Date、Map/Set；经原始对象别名绕过代理的写入不承诺通知。响应式代理不支持原地冻结或改原型。
 - 自定义元素先注册再启用 prop 绑定。is 定制内建元素和声明式 shadow root 尚不支持；普通 template 与 noscript 有各自内容规则。
-- renderToString 输出 HTML 容器中的内容，调用方须使用合法 HTML/SVG/MathML 嵌套。用户提供的任意 HTML 字符串不是可信模板；JSON 数据使用专用编码入口。
+- renderToString 输出 HTML 容器中的内容，调用方须使用合法 HTML/SVG/MathML 嵌套。plaintext 和不可往返的元素名明确拒绝；原始文本结束标签及 script 双重转义不能绕过共享检查。任意 HTML 字符串不是可信模板，JSON 数据使用专用编码入口。
 - 服务端用户状态属于请求/组件。模块级可变对象按 JavaScript 规则共享，不会被自动隔离或序列化。
 - HMR 清理旧根并重新挂载，局部状态重置。库发布预编译 JS 与声明，预编译 node_modules 不再次转换。
 
-详细行为见 [语义契约](semantics.md)、[表单](forms.md)、[原生元素](native-elements.md)和[SSR](ssr-and-hydration.md)。
+详细行为见 [语义契约](semantics.md)、[表单](forms.md)、[原生元素](native-elements.md)、[SSR](ssr-and-hydration.md)和[安全边界](security.md)。
 
 ## 当前仍待完成
 

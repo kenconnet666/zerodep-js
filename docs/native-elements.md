@@ -2,6 +2,8 @@
 
 框架使用原生 DOM 与事件。普通 JSX 属性经过同一套规范化规则供客户端、服务端和 hydration 使用，原生表单另外遵循 [表单契约](forms.md)。本页区分已经验证的行为与仍需完成的原生接口审计。
 
+标签采用 HTML 传输规则：ASCII 名称统一大小写，SVG 的 foreignObject、linearGradient 等恢复标准拼写；不把 Unicode 后缀错误转小写。标签须以 ASCII 字母开头，且不使用冒号作为元素名前缀，命名空间由容器上下文决定。plaintext 无法序列化可结束的区域，因此明确拒绝；文本专用元素的内容规则见 [SSR 与接管](ssr-and-hydration.md)。
+
 ## 属性值
 
 ```tsx

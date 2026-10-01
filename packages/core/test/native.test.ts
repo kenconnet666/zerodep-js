@@ -6,7 +6,38 @@ import {
   namespaceFor,
   nativeAttributes,
   attributeNamespace,
+  elementName,
+  elementText,
 } from '../src/native.js';
+
+it('原生标签与 HTML 解析保持相同的名称和命名空间', () => {
+  expect(elementName('BUTTON', HTML)).toBe('button');
+  expect(elementName('x-ÄNAME', HTML)).toBe('x-Äname');
+  expect(elementName('lineargradient', SVG)).toBe('linearGradient');
+  expect(elementName('FOREIGNOBJECT', SVG)).toBe('foreignObject');
+  expect(elementName('ANNOTATION-XML', MATH)).toBe('annotation-xml');
+  expect(namespaceFor('SVG')).toBe(SVG);
+  expect(namespaceFor('DIV', SVG, 'FOREIGNOBJECT')).toBe(HTML);
+  expect(namespaceFor('MGLYPH', MATH, 'MI')).toBe(MATH);
+  for (const name of ['é-box', '_box', 'svg:path', 'div><script'])
+    expect(() => elementName(name, HTML)).toThrow('元素名');
+  expect(() => elementName('PLAINTEXT', HTML)).toThrow('plaintext');
+});
+
+it('原始文本共享结束标签和 script 双重转义检查', () => {
+  for (const tag of ['script', 'style', 'iframe', 'xmp', 'noembed', 'noframes']) {
+    expect(elementText(tag, { children: 'a<&>\r\nb\rc' })).toBe('a<&>\nb\nc');
+    for (const ending of ['>', ' ', '/', '\t', '\r', '\n', '\f'])
+      expect(() => elementText(tag, { children: `</${tag.toUpperCase()}${ending}` })).toThrow(
+        '结束标签',
+      );
+    expect(elementText(tag, { children: `</${tag}x>` })).toBe(`</${tag}x>`);
+  }
+  expect(elementText('script', { children: '<!--\nconst a = 1;\n//-->' })).toContain('const a');
+  expect(elementText('script', { children: '<script>' })).toBe('<script>');
+  expect(() => elementText('script', { children: '<!-- <ScRiPt >' })).toThrow('双重转义');
+  expect(() => elementText('script', { children: '<!--' })).toThrow('未闭合');
+});
 
 it('原生关联、历史别名与 SVG 生成属性使用正确的内容名称', () => {
   expect(Object.fromEntries(nativeAttributes({ encoding: 'multipart/form-data' }, 'form'))).toEqual(

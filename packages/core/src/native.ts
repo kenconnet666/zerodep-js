@@ -13,7 +13,24 @@ export const MATH = 'http://www.w3.org/1998/Math/MathML';
 export const voidTags = new Set(
   'area base br col embed hr img input link meta param source track wbr'.split(' '),
 );
-export const textTags = new Set(['title', 'textarea', 'script', 'style', 'option']);
+export const rawTextTags = new Set(['script', 'style', 'iframe', 'xmp', 'noembed', 'noframes']);
+export const textTags = new Set(['title', 'textarea', 'option', ...rawTextTags]);
+const asciiLower = (value: string) => value.replace(/[A-Z]/g, (letter) => letter.toLowerCase());
+// HTML 解析器会修正这些 SVG 名称；createElementNS 必须使用相同拼写。
+const svgTags = new Map(
+  'altGlyph altGlyphDef altGlyphItem animateColor animateMotion animateTransform clipPath feBlend feColorMatrix feComponentTransfer feComposite feConvolveMatrix feDiffuseLighting feDisplacementMap feDistantLight feDropShadow feFlood feFuncA feFuncB feFuncG feFuncR feGaussianBlur feImage feMerge feMergeNode feMorphology feOffset fePointLight feSpecularLighting feSpotLight feTile feTurbulence foreignObject glyphRef linearGradient radialGradient textPath'
+    .split(' ')
+    .map((name) => [asciiLower(name), name]),
+);
+
+export function elementName(name: string, namespace: string): string {
+  if (!/^[A-Za-z][\p{L}\p{N}\p{M}._\-\u00b7]*$/u.test(name))
+    throw new Error(`无效的 HTML 元素名：${name}；使用 ASCII 字母开头且不含冒号的名称。`);
+  const lower = asciiLower(name);
+  if (namespace === HTML && lower === 'plaintext')
+    throw new Error('plaintext 无法结束 HTML 解析，不能用于可接管内容；请使用 pre。');
+  return namespace === SVG ? (svgTags.get(lower) ?? lower) : lower;
+}
 const booleans = new Set(
   'allowfullscreen async autofocus autoplay checked controls default defer disabled formnovalidate inert ismap itemscope loop multiple muted nomodule novalidate open playsinline readonly required reversed selected'.split(
     ' ',
@@ -68,7 +85,9 @@ export function namespaceFor(
   parentTag = '',
   encoding = '',
 ): string {
-  if (parentNamespace === SVG && !['foreignObject', 'desc', 'title'].includes(parentTag))
+  tag = asciiLower(tag);
+  parentTag = asciiLower(parentTag);
+  if (parentNamespace === SVG && !['foreignobject', 'desc', 'title'].includes(parentTag))
     return SVG;
   if (parentNamespace === MATH) {
     const text = ['mi', 'mo', 'mn', 'ms', 'mtext'].includes(parentTag);
@@ -133,7 +152,7 @@ export function attributeName(key: string, namespace = HTML, tag = ''): string {
         : key;
   assertName(name);
   // HTML 只折叠 ASCII 大写字母，不能改变 data-Ä 等自定义名称中的 Unicode 字符。
-  const lower = name.replace(/[A-Z]/g, (letter) => letter.toLowerCase());
+  const lower = asciiLower(name);
   if (namespace === SVG) return svgCase.get(lower) ?? lower;
   return namespace === MATH && lower === 'definitionurl' ? 'definitionURL' : lower;
 }
@@ -185,7 +204,22 @@ export function elementText(tag: string, input: Props): string {
     return textValue(input.value ?? input.defaultValue ?? '');
   }
   const value = textContent(input.children as Renderable);
-  return tag === 'script' || tag === 'style' ? value.replace(/\r\n?/g, '\n') : value;
+  if (!rawTextTags.has(tag)) return value;
+  const text = value.replace(/\r\n?/g, '\n');
+  if (new RegExp(`</${tag}(?:[\\t\\n\\f\\r />])`, 'i').test(text))
+    throw new Error(`${tag} 文本包含结束标签，请使用安全的数据序列化入口。`);
+  if (tag === 'script') {
+    // 仅检查 HTML 解析状态，不改写 JS。双重转义会吞掉真正的 </script> 和后续页面。
+    let escaped = false;
+    for (const [token] of text.matchAll(/<!--|-->|<script(?=[\t\n\f\r />])/gi)) {
+      if (token === '<!--') escaped = true;
+      else if (token === '-->') escaped = false;
+      else if (escaped)
+        throw new Error('script 文本包含 HTML 双重转义序列；JSON 请使用 serializeData。');
+    }
+    if (escaped) throw new Error('script 文本包含未闭合的 HTML 注释；JSON 请使用 serializeData。');
+  }
+  return text;
 }
 
 export function nativeAttributes(input: Props, tag: string, namespace = HTML): Map<string, string> {

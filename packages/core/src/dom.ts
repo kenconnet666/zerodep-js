@@ -15,7 +15,7 @@ import {
   textValue,
   elementText,
   voidTags,
-  assertName,
+  elementName,
 } from './native.js';
 
 export type MountOptions<C extends AnyComponent> = {
@@ -157,10 +157,10 @@ export function renderValue(
     inherited?.localName ?? '',
     inherited?.getAttribute('encoding') ?? '',
   );
-  assertName(value.tag);
+  const tag = elementName(value.tag, namespace);
   const node = hydration
-    ? hydration.element(value.tag, namespace)
-    : parent.ownerDocument!.createElementNS(namespace, value.tag);
+    ? hydration.element(tag, namespace)
+    : parent.ownerDocument!.createElementNS(namespace, tag);
   if (hydration) hydration.attributes(node, value.props);
   else insert(node, parent, before);
   const owner = getScope()!;

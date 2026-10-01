@@ -122,6 +122,7 @@ pnpm lsp:inspect packages/ssr/src/index.ts apps/example/src/entry-client.ts
 - [开始使用](docs/getting-started.md)
 - [API 参考](docs/api.md)
 - [支持范围](docs/support.md)
+- [安全边界与发布审查](docs/security.md)
 - [发布、升级与回滚](docs/releasing.md)
 - [稳定性验证与观察基线](docs/stability.md)
 - [持久化任务管理试点](docs/pilot.md)
@@ -137,4 +138,4 @@ pnpm lsp:inspect packages/ssr/src/index.ts apps/example/src/entry-client.ts
 - [基础工程交接](.design/foundation.md)
 - [本轮工作区扩展范围](.design/workspace-expansion.md)
 
-所有包暂为 private，未发布到 npm。仓库公开用于开发与评审；生产发布、许可证和版本承诺将在后续阶段确定。
+所有包暂为 private，未发布到 npm。许可证已确定为 MIT；支持范围、统一版本和升级/回滚规则已经记录，最终候选验收与发布仍在推进。
