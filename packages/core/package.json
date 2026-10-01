@@ -12,7 +12,8 @@
     "dist/**/*.js.map",
     "dist/**/*.d.ts",
     "dist/**/*.d.ts.map",
-    "src"
+    "src",
+    "THIRD_PARTY_NOTICES.md"
   ],
   "exports": {
     ".": {

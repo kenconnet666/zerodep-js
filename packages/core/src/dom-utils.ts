@@ -1,8 +1,15 @@
 import { Scope, onCleanup } from './reactivity.js';
 import type { Renderable } from './template.js';
 import type { HydrationCursor } from './hydration.js';
+import { HTML } from './native.js';
 
 export type Container = Element | DocumentFragment;
+/** template 的子节点属于惰性文档片段，CSR 和接管必须走同一容器。 */
+export function childContainer(element: Element): Container {
+  return element.namespaceURI === HTML && element.localName === 'template'
+    ? (element as HTMLTemplateElement).content
+    : element;
+}
 export type Render = (
   value: Renderable,
   parent: Container,

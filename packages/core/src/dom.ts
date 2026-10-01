@@ -4,7 +4,7 @@ import { TEMPLATE, element, type DynamicTemplate, type Renderable } from './temp
 import { attachAttributes, attachRef } from './dom-attributes.js';
 import { notifySelect } from './dom-controls.js';
 import type { Props } from './props.js';
-import { createRange, insert, rollback, type Container } from './dom-utils.js';
+import { childContainer, createRange, insert, rollback, type Container } from './dom-utils.js';
 import { renderList } from './dom-list.js';
 import { renderBoundary } from './dom-boundary.js';
 import { HydrationError, HydrationCursor, hydrationRoot } from './hydration.js';
@@ -195,7 +195,7 @@ export function renderValue(
   } else {
     if (namespace === HTML && voidTags.has(node.localName) && value.props.children != null)
       throw new Error(`${node.localName} 是 void 元素，不能包含 children。`);
-    renderValue(value.props.children as Renderable, node, null, node, child);
+    renderValue(value.props.children as Renderable, childContainer(node), null, node, child);
     child?.finish();
   }
   if (node.localName === 'select') {

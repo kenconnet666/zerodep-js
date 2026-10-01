@@ -1,7 +1,7 @@
 import { Scope, dispatchError, getScope, onCleanup, untrack } from './reactivity.js';
 import { nativeAttributes, selectionValues, attributeNamespace, HTML } from './native.js';
 import type { Props } from './props.js';
-import type { Container, NodeRange } from './dom-utils.js';
+import { childContainer, type Container, type NodeRange } from './dom-utils.js';
 
 export class HydrationError extends Error {
   readonly code = 'ZJ_HYDRATION_MISMATCH';
@@ -154,7 +154,7 @@ export class HydrationCursor {
   }
 
   child(element: Element): HydrationCursor {
-    return new HydrationCursor(element.firstChild, null, this.session);
+    return new HydrationCursor(childContainer(element).firstChild, null, this.session);
   }
 
   select(element: HTMLSelectElement, input: Props): void {

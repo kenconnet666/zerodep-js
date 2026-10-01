@@ -4,6 +4,54 @@ const HTML = 'http://www.w3.org/1999/xhtml';
 const SVG = 'http://www.w3.org/2000/svg';
 const MATH = 'http://www.w3.org/1998/Math/MathML';
 for (const mode of ['csr', 'ssr']) {
+  test(`${mode} 生成属性、原生事件与 template 内容可更新`, async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    await page.goto(`/?render=${mode}`);
+    await expect(page.locator('#app')).toHaveAttribute('data-client-ready', 'true');
+    await expect(page.locator('[data-form-encoding]')).toHaveAttribute(
+      'enctype',
+      'multipart/form-data',
+    );
+    await expect(page.locator('[data-table-char]')).toHaveAttribute('char', '.');
+    await expect(page.locator('[data-table-char]')).toHaveAttribute('charoff', '2');
+    await page.locator('[data-associated-popover]').click();
+    expect(
+      await page.locator('#attribute-popover').evaluate((node) => node.matches(':popover-open')),
+    ).toBe(true);
+    await page.locator('[data-associated-popover]').click();
+    const media = page.locator('[data-metadata-event]');
+    await media.dispatchEvent('loadedmetadata');
+    await expect(media).toHaveAttribute('data-metadata', 'ready');
+    await expect(page.locator('[data-metadata-order]')).toHaveText('捕获;目标;');
+    await expect(page.locator('[data-filter-blur]')).toHaveAttribute('stdDeviation', '1 2');
+    await expect(page.locator('[data-filter-matrix]')).toHaveAttribute('preserveAlpha', 'false');
+    const template = page.locator('[data-native-template]');
+    const initial = await template.evaluateHandle(
+      (node: HTMLTemplateElement) => node.content.firstElementChild!,
+    );
+    expect(
+      await template.evaluate((node: HTMLTemplateElement) => [
+        node.childNodes.length,
+        node.content.textContent,
+      ]),
+    ).toEqual([0, '开启']);
+    await page.locator('[data-native-toggle]').click();
+    await expect(page.locator('[data-filter-blur]')).toHaveAttribute('stdDeviation', '2 3');
+    expect(await initial.evaluate((node) => node.textContent)).toBe('关闭');
+    expect(
+      await initial.evaluate(
+        (node) =>
+          node ===
+          (document.querySelector('[data-native-template]') as HTMLTemplateElement).content
+            .firstElementChild,
+      ),
+    ).toBe(true);
+    await page.locator('[data-unmount]').click();
+    expect(await initial.evaluate((node) => node.parentNode)).toBeNull();
+    expect(errors).toEqual([]);
+  });
+
   test(`${mode} 枚举属性、布尔属性和别名覆盖在更新后仍一致`, async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (error) => errors.push(error.message));

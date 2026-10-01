@@ -24,6 +24,8 @@ export const clientProperties = [
   'port',
   'protocol',
   'search',
+  'username',
+  'password',
   'currentScale',
 ] as const;
 export const ownedProperties = [
@@ -89,7 +91,8 @@ export function ownsContent(tag: string, name: string): boolean {
     (['a', 'script', 'title', 'option'].includes(tag) && name === 'text') ||
     (tag === 'output' && (name === 'value' || name === 'defaultValue')) ||
     (tag === 'select' && name === 'length') ||
-    (tag === 'table' && ['caption', 'tHead', 'tFoot'].includes(name))
+    (tag === 'table' && ['caption', 'tHead', 'tFoot'].includes(name)) ||
+    (tag === 'template' && name.toLowerCase().startsWith('shadowroot'))
   );
 }
 

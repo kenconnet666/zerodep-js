@@ -3,6 +3,12 @@ import { Counter, Label } from '@zerodep-consumer/counter';
 import { mount, type ComponentProps } from '@zerodep-js/core';
 
 const props: ComponentProps<typeof Counter> = { label: '声明消费', initial: 2 };
+<button popoverTarget="help" />;
+<svg>
+  <feGaussianBlur stdDeviation="1 2" />
+</svg>;
+// @ts-expect-error 生成数据的声明随包提供，但不放宽元素对象类型。
+<button popoverTarget={document.body} />;
 <Counter {...props} />;
 <Label value={{ id: 1 }}>{(value) => value.id}</Label>;
 const result: CompileResult = compile('const answer: number = 42;', 'answer.ts');

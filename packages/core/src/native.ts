@@ -3,6 +3,7 @@ import type { Props } from './props.js';
 import { clientProperty, ownsContent, propertyName } from './dom-property-names.js';
 import { styleText } from './style.js';
 import { textValue } from './text.js';
+import { svgAliases } from './native-data.js';
 
 export { textValue } from './text.js';
 
@@ -24,6 +25,7 @@ const enumerated = new Set([
   'contenteditable',
   'focusable',
   'externalresourcesrequired',
+  'preservealpha',
   'displaystyle',
   'stretchy',
   'symmetric',
@@ -51,49 +53,6 @@ const aliases: Record<string, string> = {
   xmlLang: 'xml:lang',
   xmlSpace: 'xml:space',
   xmlnsXlink: 'xmlns:xlink',
-};
-
-// 这些 presentation 属性允许 camelCase；viewBox 等大小写敏感名称保持原样。
-export const svgAliases = {
-  alignmentBaseline: 'alignment-baseline',
-  baselineShift: 'baseline-shift',
-  clipPath: 'clip-path',
-  clipRule: 'clip-rule',
-  colorInterpolation: 'color-interpolation',
-  colorInterpolationFilters: 'color-interpolation-filters',
-  dominantBaseline: 'dominant-baseline',
-  fillOpacity: 'fill-opacity',
-  fillRule: 'fill-rule',
-  floodColor: 'flood-color',
-  floodOpacity: 'flood-opacity',
-  fontFamily: 'font-family',
-  fontSize: 'font-size',
-  fontStyle: 'font-style',
-  fontWeight: 'font-weight',
-  imageRendering: 'image-rendering',
-  letterSpacing: 'letter-spacing',
-  lightingColor: 'lighting-color',
-  markerEnd: 'marker-end',
-  markerMid: 'marker-mid',
-  markerStart: 'marker-start',
-  paintOrder: 'paint-order',
-  pointerEvents: 'pointer-events',
-  shapeRendering: 'shape-rendering',
-  stopColor: 'stop-color',
-  stopOpacity: 'stop-opacity',
-  strokeDasharray: 'stroke-dasharray',
-  strokeDashoffset: 'stroke-dashoffset',
-  strokeLinecap: 'stroke-linecap',
-  strokeLinejoin: 'stroke-linejoin',
-  strokeMiterlimit: 'stroke-miterlimit',
-  strokeOpacity: 'stroke-opacity',
-  strokeWidth: 'stroke-width',
-  textAnchor: 'text-anchor',
-  textDecoration: 'text-decoration',
-  textRendering: 'text-rendering',
-  vectorEffect: 'vector-effect',
-  wordSpacing: 'word-spacing',
-  writingMode: 'writing-mode',
 };
 
 // 对齐 text/html 解析器的大小写修正规则，保证 SSR 与 createElementNS 路径一致。
@@ -156,7 +115,15 @@ export function eventName(name: string): { type: string; capture: boolean } | nu
   return { type: name.slice(2, capture ? -7 : undefined).toLowerCase(), capture };
 }
 
-export function attributeName(key: string, namespace = HTML): string {
+export function attributeName(key: string, namespace = HTML, tag = ''): string {
+  // 这些历史 DOM 别名只属于相应 HTML 元素，不能改写 MathML 或自定义元素的同名输入。
+  if (namespace === HTML) {
+    if (tag === 'form' && key === 'encoding') return 'enctype';
+    if (['col', 'colgroup', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr'].includes(tag)) {
+      if (key === 'ch') return 'char';
+      if (key === 'chOff') return 'charoff';
+    }
+  }
   const name = /^aria[A-Z]/.test(key)
     ? `aria-${key.slice(4).toLowerCase()}`
     : Object.hasOwn(aliases, key)
@@ -234,9 +201,15 @@ export function nativeAttributes(input: Props, tag: string, namespace = HTML): M
   const propertyAttributes = new Set<string>();
   for (const key of Object.keys(input)) {
     if (key === 'children' || key === 'ref' || key === 'key' || eventName(key)) continue;
+    if (
+      namespace === HTML &&
+      (key.toLowerCase() === 'is' ||
+        (tag === 'template' && key.toLowerCase().startsWith('shadowroot')))
+    )
+      throw new Error('当前不支持 is 或声明式 shadow root；请使用已注册的独立自定义元素。');
     const property = propertyName(key, tag, namespace === HTML);
     if (property) {
-      propertyAttributes.add(attributeName(property, namespace));
+      propertyAttributes.add(attributeName(property, namespace, tag));
       if (
         namespace === HTML &&
         input.value !== undefined &&
@@ -274,7 +247,7 @@ export function nativeAttributes(input: Props, tag: string, namespace = HTML): M
       (key === 'value' || key === 'defaultValue')
     )
       continue;
-    const name = attributeName(key, namespace);
+    const name = attributeName(key, namespace, tag);
     const value =
       name === 'style'
         ? styleText(input[key]) || null

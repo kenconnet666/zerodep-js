@@ -1,6 +1,7 @@
 import { component, $state } from '@zerodep-js/core';
 
 export const AttributeExample = component(() => {
+  let eventOrder = $state('');
   let first = $state('较早属性');
   let enabled = $state(true);
   const aliases = $state<{ className?: string | null; 'aria-label'?: string | null }>({
@@ -54,6 +55,38 @@ export const AttributeExample = component(() => {
       </button>
       <input aria-label="保留首次默认值" defaultValue="默认文本" value={undefined} />
       <input type="checkbox" aria-label="保留首次勾选" defaultChecked checked={undefined} />
+      <button
+        data-associated-popover
+        popoverTarget="attribute-popover"
+        popoverTargetAction="toggle"
+      >
+        打开提示
+      </button>
+      <div id="attribute-popover" popover="auto">
+        原生提示
+      </div>
+      <form data-form-encoding encoding="multipart/form-data" />
+      <table>
+        <tbody>
+          <tr>
+            <td data-table-char ch="." chOff="2">
+              表格对齐
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <video
+        data-metadata-event
+        onLoadedMetadataCapture={() => (eventOrder += '捕获;')}
+        onLoadedMetadata={(event) => {
+          event.currentTarget.dataset.metadata = 'ready';
+          eventOrder += '目标;';
+        }}
+      />
+      <output data-metadata-order>{eventOrder}</output>
+      <template data-native-template>
+        <span data-template-child>{enabled ? '开启' : '关闭'}</span>
+      </template>
       <svg
         data-native-svg
         viewBox="0 0 20 20"
@@ -66,6 +99,23 @@ export const AttributeExample = component(() => {
         height="60"
       >
         <defs>
+          <filter
+            id="attribute-filter"
+            filterUnits="userSpaceOnUse"
+            primitiveUnits="objectBoundingBox"
+          >
+            <feGaussianBlur
+              data-filter-blur
+              in="SourceGraphic"
+              stdDeviation={enabled ? '1 2' : '2 3'}
+            />
+            <feConvolveMatrix
+              data-filter-matrix
+              order="3"
+              kernelMatrix="0 0 0 0 1 0 0 0 0"
+              preserveAlpha={false}
+            />
+          </filter>
           <path id="attribute-shape" d="M0 0 L10 10" />
           <linearGradient id="attribute-gradient" gradientUnits="userSpaceOnUse">
             <stop offset="0%" stopColor="red" stopOpacity={0.5} />

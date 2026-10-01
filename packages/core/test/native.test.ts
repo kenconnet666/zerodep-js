@@ -8,6 +8,34 @@ import {
   attributeNamespace,
 } from '../src/native.js';
 
+it('原生关联、历史别名与 SVG 生成属性使用正确的内容名称', () => {
+  expect(Object.fromEntries(nativeAttributes({ encoding: 'multipart/form-data' }, 'form'))).toEqual(
+    { enctype: 'multipart/form-data' },
+  );
+  expect(Object.fromEntries(nativeAttributes({ encoding: 'custom' }, 'custom-element'))).toEqual({
+    encoding: 'custom',
+  });
+  expect(
+    Object.fromEntries(nativeAttributes({ encoding: 'text/html' }, 'annotation-xml', MATH)),
+  ).toEqual({ encoding: 'text/html' });
+  expect(Object.fromEntries(nativeAttributes({ ch: '.', chOff: 2 }, 'td'))).toEqual({
+    char: '.',
+    charoff: '2',
+  });
+  expect(
+    Object.fromEntries(
+      nativeAttributes(
+        { strokeDashArray: '1 2', preserveAlpha: false, stdDeviation: '1 2' },
+        'feGaussianBlur',
+        SVG,
+      ),
+    ),
+  ).toEqual({ 'stroke-dasharray': '1 2', preserveAlpha: 'false', stdDeviation: '1 2' });
+  expect(() => nativeAttributes({ username: 'name' }, 'a')).toThrow('prop:username');
+  expect(() => nativeAttributes({ is: 'custom-button' }, 'button')).toThrow('当前不支持');
+  expect(() => nativeAttributes({ shadowrootmode: 'open' }, 'template')).toThrow('当前不支持');
+});
+
 it('命名空间遵循 SVG 和 MathML 的 HTML 集成点', () => {
   expect(namespaceFor('math', SVG, 'g')).toBe(SVG);
   expect(namespaceFor('svg', MATH, 'mrow')).toBe(MATH);

@@ -1,6 +1,11 @@
 import type { AnyComponent } from './component.js';
 import type { Renderable, Template } from './template.js';
-import type { svgAliases } from './native.js';
+import type {
+  HtmlAttributeValues,
+  HtmlAttributeNames,
+  SvgAttributeValues,
+  NativeEventAliases,
+} from './native-data.js';
 import type { clientProperties, ownedProperties, formProperties } from './dom-property-names.js';
 import type { Style } from './style.js';
 
@@ -34,9 +39,15 @@ type NativeValues<T> = {
         ? K
         : never
       : never
-  ]?: K extends `aria${string}`
-    ? string | number | boolean | null | undefined
-    : T[K] | null | undefined;
+  ]?: K extends 'contentEditable' | 'download'
+    ? string | boolean | null | undefined
+    : K extends 'translate'
+      ? boolean | 'yes' | 'no' | null | undefined
+      : K extends 'draggable' | 'spellcheck'
+        ? boolean | 'true' | 'false' | null | undefined
+        : K extends `aria${string}`
+          ? string | number | boolean | null | undefined
+          : T[K] | null | undefined;
 };
 export type EventHandler<T, E extends Event> = (event: E & { readonly currentTarget: T }) => void;
 // 自定义事件的 detail 来自发送者约定，允许处理器显式声明其真实事件类型。
@@ -103,11 +114,25 @@ interface Events {
   onTransitionStart: TransitionEvent;
 }
 
-type EventProps<T> = { [K in keyof Events]?: EventHandler<T, Events[K]> | undefined } & {
-  [K in keyof Events as `${K}Capture`]?: EventHandler<T, Events[K]> | undefined;
+type AllEvents = Events & {
+  [
+    K in keyof NativeEventAliases as K extends keyof Events
+      ? never
+      : NativeEventAliases[K] extends keyof GlobalEventHandlersEventMap
+        ? K
+        : never
+  ]: NativeEventAliases[K] extends keyof GlobalEventHandlersEventMap
+    ? GlobalEventHandlersEventMap[NativeEventAliases[K]]
+    : never;
+};
+type EventProps<T> = {
+  [K in keyof AllEvents]?: EventHandler<T, AllEvents[K]> | null | undefined;
+} & {
+  [K in keyof AllEvents as `${K}Capture`]?: EventHandler<T, AllEvents[K]> | null | undefined;
 } & {
   [K in keyof GlobalEventHandlersEventMap as `on${K}`]?:
     | EventHandler<T, K extends 'input' ? NativeInputEvent : GlobalEventHandlersEventMap[K]>
+    | null
     | undefined;
 };
 type InputValue = string | number | null | undefined;
@@ -132,7 +157,9 @@ type ContentProperties<T> = T extends
       ? 'length'
       : T extends HTMLTableElement
         ? 'caption' | 'tHead' | 'tFoot'
-        : never;
+        : T extends HTMLTemplateElement
+          ? Extract<keyof T, `shadowRoot${string}`>
+          : never;
 // a、script 等标签可能来自不同命名空间；逐个元素推导，不能只取联合的共有成员。
 type PropertyProps<T> = T extends Element
   ? {
@@ -227,9 +254,8 @@ type SvgValues = {
   focusable?: boolean | 'auto' | 'true' | 'false';
   externalResourcesRequired?: boolean | 'true' | 'false';
 };
-type SvgAttributes = {
-  [K in keyof SvgValues | keyof typeof svgAliases]?:
-    (K extends keyof SvgValues ? SvgValues[K] : string | number) | null | undefined;
+type SvgAttributes = Omit<SvgAttributeValues, keyof SvgValues> & {
+  [K in keyof SvgValues]?: SvgValues[K] | null | undefined;
 };
 type Booleanish = boolean | 'true' | 'false';
 type MathAttributes = {
@@ -264,8 +290,20 @@ type TagName =
 type HtmlElement<K> = K extends keyof HTMLElementTagNameMap ? HTMLElementTagNameMap[K] : never;
 type SvgElement<K> = K extends keyof SVGElementTagNameMap ? SVGElementTagNameMap[K] : never;
 type MathElement<K> = K extends keyof MathMLElementTagNameMap ? MathMLElementTagNameMap[K] : never;
+// 只对相应 HTML 分支补缺失属性，避免同名 SVG/MathML 标签把已有 props 联合成笛卡尔积。
+type HtmlAttributes<K> = K extends keyof HTMLElementTagNameMap
+  ? Omit<
+      Pick<
+        HtmlAttributeValues,
+        | HtmlAttributeNames['*']
+        | (K extends keyof HtmlAttributeNames ? HtmlAttributeNames[K] : never)
+      >,
+      keyof NativeProps<HTMLElementTagNameMap[K]>
+    >
+  : {};
 type Elements = {
   [K in TagName]: NativeProps<HtmlElement<K> | SvgElement<K> | MathElement<K>> &
+    HtmlAttributes<K> &
     (K extends keyof SVGElementTagNameMap ? SvgAttributes : {}) &
     (K extends keyof MathMLElementTagNameMap
       ? { [P in keyof MathAttributes]?: MathAttributes[P] | null | undefined }

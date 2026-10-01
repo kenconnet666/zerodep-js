@@ -63,6 +63,8 @@ try {
     );
     const files = new Set(packed.files.map((file) => file.path));
     assert(files.has('README.md'), `${name} 缺少包级说明。`);
+    if (name === 'core')
+      assert(files.has('THIRD_PARTY_NOTICES.md'), 'core 缺少生成数据的第三方许可。');
     assert(
       [...files].every((file) => !/tsbuildinfo|(^|\/)(test|node_modules|\.codex)(\/|$)/.test(file)),
       `${name} 混入构建缓存或测试。`,

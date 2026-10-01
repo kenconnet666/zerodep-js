@@ -51,7 +51,15 @@ xmlLang、xmlSpace、xlinkHref、xmlnsXlink 分别映射到对应的 XML/XLink �
 
 JSX 使用 TS7 的 HTMLElementTagNameMap、SVGElementTagNameMap 和 MathMLElementTagNameMap。MathML ref 得到 MathMLElement；已知 SVG presentation 值不会退化为 any。自定义标签可以扩展标准 HTMLElementTagNameMap，未声明的标签不假装知道其专有属性和事件协议。
 
+HTML 的额外内容属性按标签补齐，包括 popoverTarget、commandFor、part/exportParts 等；SVG 的滤镜、渐变、图案与动画属性也有类型提示。运行时 SVG 别名和类型来自同一次生成，兼容 strokeDasharray / strokeDashArray 等已存在的拼写。原生事件补充 onLoadedMetadata、onPlayCapture 等常见别名，同时保留 TS7 事件表中的小写 on* 写法和具体 currentTarget 类型。
+
+维护时运行 `pnpm native:generate`，`pnpm check` 会检查生成产物没有过期。数据源是固定版本的 [property-information](https://github.com/wooorm/property-information) 和 [html-element-attributes](https://github.com/wooorm/html-element-attributes)；它们只在维护侧使用。少量框架语义修正在 scripts/generate-native.mjs，生成文件不手工修改，MIT 许可随 core 包分发。数据中包含历史名称，生成提示不代表浏览器实现所有历史能力，也不覆盖表单模型、实例化和子树所有权规则。
+
+form.encoding 映射为 enctype；表格相关元素的 ch/chOff 映射为 char/charoff。这些别名只作用于对应的 HTML 标签，不会改写 MathML 的 encoding 或自定义元素的同名字段。链接 URL 的 username/password 等拆分成员使用 prop:*，不能伪装为内容属性。
+
 代码仍须使用有效的 HTML/SVG/MathML 结构。类型系统不能证明任意父子标签组合合法；浏览器修正非法结构时，严格 hydration 会报告不匹配。renderToString 当前以 HTML 容器作为根上下文，外部 SVG/MathML 容器的片段 SSR 需另行明确上下文，不能从客户端挂载支持反推已具备该能力。
+
+普通 template 的内容渲染和接管使用 template.content，动态更新及卸载仍属于当前实例；直接 cloneNode 不会复制框架绑定。定制内建元素的 is 和声明式 shadow root 尚不在支持范围，类型与运行时明确拒绝；普通独立自定义元素可使用下述 property/event 协议。
 
 ## 客户端 property 与自定义元素
 
@@ -104,4 +112,4 @@ CSR、SSR 和接管检查共用同一段序列化文本；客户端在文本变�
 
 普通文本、属性和 style 统一替换 NUL 与孤立 UTF-16 代理项，保持 HTML 传输前后结果一致，完整 Unicode 字符和 emoji 保留。样式的动态对象按实际读取的字段跟踪；读取或删除字段会触发相应更新。
 
-原生 HTML/SVG 属性的类型覆盖仍继续系统审计。已有 property/style 用例不代替全部标准属性覆盖或平台兼容验证。
+类型覆盖和行为基线均有回归用例；平台兼容与长期运行继续在生产化阶段验证，新标准也须先核对真实浏览器行为再更新数据源。
