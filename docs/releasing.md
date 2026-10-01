@@ -15,6 +15,24 @@
 
 ## 发布前
 
+工具入口均通过固定 pnpm 执行：
+
+```sh
+pnpm release:check
+pnpm release:prepare --version 1.0.0-rc.1
+# 检查、提交并推送候选，核对对应 CI 后继续。
+pnpm release:pack
+pnpm release:status
+pnpm release:publish
+pnpm release:verify-registry
+```
+
+这些命令不是要求现在发布。prepare 需要干净工作区和明确版本，只修改四个包与锁文件；pack 固定当前提交的真实 tgz，记录在被 Git 忽略的 `.release/<version>/release.json`。相同提交再次 pack 会复核并复用原产物，不重新打包覆盖。status 可只读检查已记录的历史版本。
+
+publish 拒绝 private / 0.0.0，只处理经过完整 CI 的原提交和完整性一致的 tgz，发布到 next。verify-registry 对四个包核对注册表完整性后，使用官方 registry 的精确版本运行同一个独立消费流程。稳定版本准备为 1.0.0 并重新完成这些步骤后，`pnpm release:promote` 才能提升 latest；预发布版本和没有注册表消费记录的版本不能提升。
+
+发布辅助工具本身用独立临时 Git/包工作区验证，涵盖产物复用、篡改/路径越界/私有包拒绝及版本准备。用例不带 npm token，CI 模式不会从 Windows 用户环境读取凭据；测试不执行实际发布。
+
 1. 确认生产计划的验收项均有证据，许可证、支持范围、API 文档、示例、变更记录与包名一致。
 2. 为候选版本更新四个 manifest 与锁文件，检查 exports、peer dependency、源码映射、LICENSE 和第三方许可；工作区根与示例继续 private。
 3. 运行针对性本地验证，提交并推送。最终候选的完整 CI、浏览器矩阵和 Windows 独立消费必须通过。
@@ -24,6 +42,8 @@
 ## 发布与验收
 
 凭据从环境变量提供。Windows 用户级变量可能未继承到已运行进程，发布子进程可以显式读取它；不得把 token 值写入仓库、命令行参数或日志，也不修改用户全局 npm 配置。
+
+工具只在临时 npm 配置中写 `${NODE_AUTH_TOKEN}` 引用，值由子进程环境提供，结束后移除自己创建的目录。需要代理时在环境中设置 HTTPS_PROXY；工具不把本机代理地址写死，也不会把凭据发到自定义 registry。
 
 依赖顺序为 core、compiler、ssr、vite。先使用候选 tag 发布明确版本，验证四个包均存在，再用注册表上的版本重新安装和运行消费工程。只有声明、CSR/SSR、交互、接管及版本/完整性都核对后，才提升稳定 tag，并创建对应 Git 标签和发布记录。
 

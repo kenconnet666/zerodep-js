@@ -6,10 +6,18 @@ import { access, cp, mkdir, mkdtemp, readFile, realpath, rm, writeFile } from 'n
 import { basename, dirname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { promisify } from 'node:util';
+import { parseArgs, promisify } from 'node:util';
 import { chromium, expect } from '@playwright/test';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const { values } = parseArgs({
+  options: { registry: { type: 'boolean', default: false }, version: { type: 'string' } },
+});
+if (values.registry)
+  assert(
+    values.version && /^\d+\.\d+\.\d+(?:-rc\.\d+)?$/.test(values.version),
+    '注册表消费需要明确版本。',
+  );
 const pnpm = process.env.npm_execpath;
 assert(pnpm, '请通过 pnpm test:packages 运行，以使用当前固定版本的包管理器。');
 const temporary = await realpath(tmpdir());
@@ -21,6 +29,7 @@ const archives = resolve(fixture, 'archives');
 const executable = /\.[cm]?js$/.test(pnpm) ? process.execPath : pnpm;
 const prefix = executable === pnpm ? [] : [pnpm];
 const env = { ...process.env, CI: 'true' };
+if (values.registry) env.npm_config_registry = 'https://registry.npmjs.org/';
 delete env.NODE_PATH;
 const exec = promisify(execFile);
 async function run(args, cwd = consumer) {
@@ -58,6 +67,8 @@ try {
   for (const name of ['core', 'compiler', 'vite', 'ssr']) {
     const directory = resolve(root, 'packages', name);
     const sourceManifest = await json(resolve(directory, 'package.json'));
+    if (values.registry)
+      assert.equal(sourceManifest.version, values.version, '注册表验证版本与当前源码不同。');
     const packed = JSON.parse(
       (await run(['pack', '--json', '--pack-destination', archives], directory)).stdout,
     );
@@ -84,7 +95,9 @@ try {
     );
     const file = resolve(archives, basename(packed.filename));
     await access(file);
-    const dependency = 'file:' + relative(consumer, file).replaceAll('\\', '/');
+    const dependency = values.registry
+      ? values.version
+      : 'file:' + relative(consumer, file).replaceAll('\\', '/');
     (name === 'core' || name === 'ssr' ? manifest.dependencies : manifest.devDependencies)[
       packed.name
     ] = dependency;
@@ -94,9 +107,10 @@ try {
   await writeFile(resolve(consumer, 'package.json'), JSON.stringify(manifest, null, 2));
   await writeFile(
     resolve(consumer, '.npmrc'),
-    'engine-strict=true\nnode-linker=isolated\nstrict-peer-dependencies=true\nauto-install-peers=false\n',
+    'engine-strict=true\nnode-linker=isolated\nstrict-peer-dependencies=true\nauto-install-peers=false\n' +
+      (values.registry ? 'registry=https://registry.npmjs.org/\n' : ''),
   );
-  console.log('包内容清单通过，开始工作区外的独立安装。');
+  console.log(`包内容清单通过，开始工作区外的${values.registry ? '注册表' : 'tgz'}独立安装。`);
   await run(['install', '--ignore-scripts', '--prefer-offline']);
   for (const [name, { files, sourceManifest }] of packages) {
     const directory = resolve(consumer, 'node_modules', name);

@@ -67,6 +67,9 @@ export const FormExample = component(() => {
         />
       </label>
       <output data-ime>{ime}</output>
+      <button type="button" data-ime-external onClick={() => (ime = '外部模型')}>
+        更新组合输入模型
+      </button>
       <label>
         <input
           type="checkbox"

@@ -114,7 +114,9 @@ TS7 的补全、跳转、引用和原生类型错误继续来自标准语言服�
 
 WebStorm 2026.2 已提供 TS7 原生支持，可以选择项目中的 TypeScript，并按需要启用 service-powered type engine；该选择与框架 API 分开。[JetBrains 配置说明](https://www.jetbrains.com/help/webstorm/settings-languages-typescript.html)
 
-当前本机 WebStorm 会话尚未完成错误/修复和重命名复验：打开探针时日志出现 AI 插件类加载异常，相关 MCP 操作随后超时，二者的因果关系尚未证明。原生 TS7 独立验证通过；不能用 IDE 超时后的空结果宣称通过，也不为这个问题降级 TS 或修改其他项目的配置。
+本机 WebStorm 2026.2 重启后，事件提示正确给出 MouseEvent 与 HTMLButtonElement；响应式变量、组件导出、跨文件 import 与 JSX 重命名均实际执行并核对。用户确认故意类型错误在编辑器中显示 TS2322，修复后独立 TS7 对定义和使用文件均返回完整的零错误报告。临时文件在核对后清理。
+
+该版本 IDE MCP 的 get_file_problems / lint_files 对上述错误返回空结果，而编辑器可见诊断与独立 TS7 能正确发现；目前不能把 MCP 空结果用作 TS7 验收。此前出现的插件异常与接口超时在重启后未阻止本轮操作，其具体因果关系未确定。工具诊断继续使用项目 LSP 或 pnpm check；不因接口漏报而降级 TS 或修改其他项目设置。
 
 ## 开发更新
 

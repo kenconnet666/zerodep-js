@@ -42,4 +42,8 @@ reset 事件的默认动作之后，非受控字段回到首次默认值，受�
 
 SSR 接管比较浏览器原生初始状态，避免把 range 等平台默认规范化误判为用户输入。接管前已有的文本、勾选和选择状态会保留，并交给已经安装的 input/change 回调；模型拒绝的修改仍会回写模型值。事件监听器、校准任务和组合输入定时器随作用域释放。
 
-真实使用见 [FormExample.tsx](../apps/example/src/examples/FormExample.tsx) 与 [NativeExample.tsx](../apps/example/src/examples/NativeExample.tsx)。浏览器事件序列用例覆盖组合边界；真实平台与输入法试点仍属于生产验收的一部分。
+真实使用见 [FormExample.tsx](../apps/example/src/examples/FormExample.tsx) 与 [NativeExample.tsx](../apps/example/src/examples/NativeExample.tsx)。三浏览器的事件序列用例覆盖组合边界；Chromium 另经 CDP 的浏览器编辑管线验证候选更新、组合期间外部模型变化、提交、Unicode 选区替换与取消，CSR/SSR 共四项通过。
+
+CDP 用例没有自行 dispatch 组合事件。compositionstart/update、beforeinput/input 均验证 isTrusted；当前 CDP 提交产生的 compositionend 与未接入框架的原生 input 对照一致，但该事件的 isTrusted 为 false。因此这些结果证明浏览器编辑管线中的行为，不声称覆盖操作系统候选窗口或真实微软拼音。
+
+2026-10-01，用户在本机 Windows 通过实际输入法检查后反馈“基本没问题”，附图显示 SSR 页面与系统候选窗口。该人工记录补充真实输入的基本使用证据；未报告输入法具体版本，也不据此承诺所有操作系统和输入法组合。协议测试与人工结果分别保留，出现实际缺陷时按事件序列补充回归。

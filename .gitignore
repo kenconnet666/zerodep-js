@@ -5,6 +5,7 @@ node_modules
 coverage/
 test-results/
 reports/stability/
+.release/
 playwright-report/
 .codex/config.toml
 .idea
