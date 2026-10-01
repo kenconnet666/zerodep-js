@@ -1,5 +1,6 @@
 import { TEMPLATE, type Renderable } from './template.js';
 import type { Props } from './props.js';
+import { clientProperty, ownsContent, propertyName } from './dom-property-names.js';
 
 export const HTML = 'http://www.w3.org/1999/xhtml';
 export const SVG = 'http://www.w3.org/2000/svg';
@@ -147,6 +148,7 @@ export function selectionValues(value: unknown): Set<string> {
 }
 
 export function eventName(name: string): { type: string; capture: boolean } | null {
+  if (/^oncapture:/i.test(name)) return { type: name.slice(10), capture: true };
   if (/^on:/i.test(name)) return { type: name.slice(3), capture: false };
   if (!/^on[a-z]/i.test(name)) return null;
   const capture =
@@ -252,8 +254,26 @@ export function nativeAttributes(input: Props, tag: string, namespace = HTML): M
   if (tag === 'select' && !input.multiple && Array.isArray(input.value ?? input.defaultValue))
     throw new Error('数组 value/defaultValue 需要 multiple select。');
   const attributes = new Map<string, string>();
+  const propertyAttributes = new Set<string>();
   for (const key of Object.keys(input)) {
     if (key === 'children' || key === 'ref' || key === 'key' || eventName(key)) continue;
+    const property = propertyName(key, tag, namespace === HTML);
+    if (property) {
+      propertyAttributes.add(attributeName(property, namespace));
+      if (
+        namespace === HTML &&
+        input.value !== undefined &&
+        ['input', 'select'].includes(tag) &&
+        ['valueAsNumber', 'valueAsDate', 'selectedIndex', 'files'].includes(property)
+      )
+        throw new Error(`prop:${property} 与 value 模型不能同时拥有同一个表单状态。`);
+      continue;
+    }
+    const client = clientProperty(key);
+    if (client && !(namespace === HTML && tag.includes('-')))
+      throw new Error(`${key} 是 DOM property，请使用 prop:${client}。`);
+    if (namespace === HTML && ownsContent(tag, key))
+      throw new Error(`${key} 会改写子内容，请使用 children。`);
     if (tag === 'input' && key === 'indeterminate') continue;
     // undefined 的表单模型表示没有接管，不能清掉仍有效的首次默认值。
     if (
@@ -285,5 +305,7 @@ export function nativeAttributes(input: Props, tag: string, namespace = HTML): M
     if (value === null) attributes.delete(name);
     else attributes.set(name, value);
   }
+  for (const name of propertyAttributes)
+    if (attributes.has(name)) throw new Error(`${name} 不能同时由 attribute 和 prop:* 绑定。`);
   return attributes;
 }

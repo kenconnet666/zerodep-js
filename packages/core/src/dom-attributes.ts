@@ -1,8 +1,17 @@
-import { Scope, onCleanup, renderEffect, untrack, unowned } from './reactivity.js';
+import {
+  Scope,
+  getScope,
+  onCleanup,
+  renderEffect,
+  propertyEffect,
+  untrack,
+  unowned,
+} from './reactivity.js';
 import type { Props } from './props.js';
 import type { HydrationSession } from './hydration.js';
 import { bindControl, notifySelect } from './dom-controls.js';
 import { HTML, attributeNamespace, eventName, nativeAttributes, styleEntries } from './native.js';
+import { PropertyBindings } from './dom-properties.js';
 
 const properties = new Set(['value', 'checked', 'selected', 'muted']);
 
@@ -54,16 +63,24 @@ export function attachAttributes(
   const previous = new Map<string, string>();
   const styles = new Map<string, string>();
   const events = new Map<string, EventBinding>();
+  const owner = getScope()!;
+  let propertyBindings: PropertyBindings | undefined;
   const control = bindControl(element, input, hydration, (type) =>
     [...events.values()].some((binding) => binding.type === type),
   );
   onCleanup(() => {
     for (const binding of events.values())
       element.removeEventListener(binding.type, binding.listener, binding.capture);
+    propertyBindings?.dispose();
   });
   renderEffect(() => {
     control?.track();
     const next = nativeAttributes(input, element.localName, element.namespaceURI ?? HTML);
+    if (!propertyBindings && Object.keys(input).some((key) => key.startsWith('prop:'))) {
+      propertyBindings = new PropertyBindings(element);
+      // 绑定归属元素所在作用域，不随普通属性 effect 的重跑而销毁。
+      owner.run(() => propertyEffect(() => propertyBindings!.update(input)));
+    }
     // 先按真实属性名合并别名，再比较最终值；较早别名更新不能覆盖较晚的稳定值。
     const names = [...new Set([...previous.keys(), ...next.keys()])].sort(
       (left, right) => Number(properties.has(left)) - Number(properties.has(right)),

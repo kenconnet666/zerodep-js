@@ -18,6 +18,7 @@ let flushing = false;
 let runningEffects = 0;
 let scheduled: Promise<void> | null = null;
 const renderQueue = new RenderQueue<ReactiveEffect>();
+const propertyQueue = new Set<ReactiveEffect>();
 const effectQueue = new Set<ReactiveEffect>();
 
 function throwErrors(errors: unknown[]): void {
@@ -321,17 +322,19 @@ export class Derived<T> extends Dependency implements Observer {
   }
 }
 
+type EffectPhase = 'render' | 'property' | 'effect';
+
 class ReactiveEffect extends Scope implements Observer {
   readonly dependencies = new Map<Dependency, number>();
   private initialized = false;
   private dirty = true;
   private readonly callback: EffectCallback;
-  private readonly render: boolean;
+  private readonly phase: EffectPhase;
 
-  constructor(callback: EffectCallback, render: boolean, owner: Scope) {
+  constructor(callback: EffectCallback, phase: EffectPhase, owner: Scope) {
     super(owner);
     this.callback = callback;
-    this.render = render;
+    this.phase = phase;
   }
 
   get active(): boolean {
@@ -341,7 +344,12 @@ class ReactiveEffect extends Scope implements Observer {
   invalidate(): void {
     if (this.disposed) return;
     this.dirty = true;
-    (this.render ? renderQueue : effectQueue).add(this);
+    (this.phase === 'render'
+      ? renderQueue
+      : this.phase === 'property'
+        ? propertyQueue
+        : effectQueue
+    ).add(this);
     scheduleFlush();
   }
 
@@ -374,6 +382,7 @@ class ReactiveEffect extends Scope implements Observer {
 
   override dispose(): void {
     renderQueue.delete(this);
+    propertyQueue.delete(this);
     effectQueue.delete(this);
     disconnectDependencies(this);
     super.dispose();
@@ -394,9 +403,12 @@ function flushEffects(): void {
   const errors: unknown[] = [];
   const executions = new Map<ReactiveEffect, number>();
   try {
-    while (renderQueue.size || effectQueue.size) {
+    while (renderQueue.size || propertyQueue.size || effectQueue.size) {
       // 用户副作用运行前，总是先处理新产生的 DOM 更新。
-      const task = renderQueue.size ? renderQueue.take()! : effectQueue.values().next().value!;
+      const task = renderQueue.size
+        ? renderQueue.take()!
+        : (propertyQueue.size ? propertyQueue : effectQueue).values().next().value!;
+      propertyQueue.delete(task);
       effectQueue.delete(task);
       const errorScope = task.parent;
       const count = (executions.get(task) ?? 0) + 1;
@@ -421,14 +433,14 @@ function flushEffects(): void {
   throwErrors(errors);
 }
 
-function makeEffect(callback: EffectCallback, render: boolean): Cleanup {
+function makeEffect(callback: EffectCallback, phase: EffectPhase): Cleanup {
   if (computing) throw new Error('纯派生计算不能创建 effect。');
   if (!currentScope || currentScope.disposed || currentScope.clearing) {
     throw new Error('effect 必须在组件或 createRoot 作用域中创建。');
   }
   if (currentScope.server) return () => {};
-  const task = new ReactiveEffect(callback, render, currentScope);
-  if (render) {
+  const task = new ReactiveEffect(callback, phase, currentScope);
+  if (phase === 'render') {
     try {
       task.execute();
     } catch (error) {
@@ -445,12 +457,17 @@ function makeEffect(callback: EffectCallback, render: boolean): Cleanup {
 }
 
 export function effect(callback: EffectCallback): Cleanup {
-  return makeEffect(callback, false);
+  return makeEffect(callback, 'effect');
 }
 
 /** 编译后的 DOM 绑定使用，首次同步建立节点，后续进入渲染队列。 */
 export function renderEffect(callback: EffectCallback): Cleanup {
-  return makeEffect(callback, true);
+  return makeEffect(callback, 'render');
+}
+
+/** DOM 已提交后赋 property，保证布局相关成员在用户 effect 之前可读。 */
+export function propertyEffect(callback: EffectCallback): Cleanup {
+  return makeEffect(callback, 'property');
 }
 
 export function batch<T>(fn: () => T): T {
@@ -459,7 +476,8 @@ export function batch<T>(fn: () => T): T {
     return fn();
   } finally {
     batchDepth--;
-    if (!batchDepth && (renderQueue.size || effectQueue.size)) scheduleFlush();
+    if (!batchDepth && (renderQueue.size || propertyQueue.size || effectQueue.size))
+      scheduleFlush();
   }
 }
 

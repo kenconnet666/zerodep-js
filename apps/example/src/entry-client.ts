@@ -1,11 +1,13 @@
 import { mount, hydrate, type MountOptions } from '@zerodep-js/core';
 import { App } from './App.js';
+import { registerPropertyElement } from './examples/property-elements.js';
 import './style.css';
 
 const root = document.querySelector<HTMLElement>('#app');
 if (!root) throw new Error('Missing application root.');
 const mode = root.dataset.renderMode;
 if (mode !== 'csr' && mode !== 'ssr') throw new Error('Missing render mode.');
+registerPropertyElement();
 
 let dispose = () => {};
 const options: MountOptions<typeof App> = {

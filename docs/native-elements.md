@@ -53,13 +53,32 @@ JSX 使用 TS7 的 HTMLElementTagNameMap、SVGElementTagNameMap 和 MathMLElemen
 
 代码仍须使用有效的 HTML/SVG/MathML 结构。类型系统不能证明任意父子标签组合合法；浏览器修正非法结构时，严格 hydration 会报告不匹配。renderToString 当前以 HTML 容器作为根上下文，外部 SVG/MathML 容器的片段 SSR 需另行明确上下文，不能从客户端挂载支持反推已具备该能力。
 
+## 客户端 property 与自定义元素
+
+```tsx
+<div prop:scrollTop={top}>...</div>
+<video prop:volume={0.5} prop:srcObject={stream} />
+<my-editor
+  prop:document={document}
+  on:ValueChanged={(event: CustomEvent<DocumentData>) => save(event.detail)}
+  oncapture:ValueChanged={capture}
+/>
+```
+
+`prop:` 是标准 JSX 命名空间属性写法；成员名大小写与 DOM 一致。绑定在 DOM 结构提交后、用户 effect 前应用，适用于 scrollTop、volume、srcObject 以及已注册自定义元素的对象/函数输入。ref 执行时不承诺 property 已赋值，需要结果时放到 effect 或等待 tick。SSR 不输出这些属性，也不求值直接写在 `prop:*={expression}` 中的表达式；spread 对象本身的创建仍遵守 JavaScript 求值，不能借此跳过对象构造中的浏览器访问。
+
+首次接管时记录成员初值。值变为 undefined、从 spread 删除或卸载时恢复初值；null 是实际赋值，须符合相应类型。原型上的可写数据成员解除绑定后删除实例覆盖；内建反射成员恢复其影响的内容属性，包括原本不存在的 href。自定义元素自行管理反射协议，框架通过 setter 恢复初值并释放传入引用，不接管其内部结构。
+
+property 必须实际存在且可写；只读或未定义成员会报错并可由 ErrorBoundary 恢复。自定义元素须先注册，异步注册由应用等待 customElements.whenDefined 后再挂载或启用绑定，框架不隐藏注册队列。类型通过标准 HTMLElementTagNameMap 扩展；`prop:document` 等保留用户定义的实际类型。HTML/SVG 同名标签以可用元素类型的联合表达，TSX 不能依据任意父级结构推断命名空间，只读限制仍由运行时检查。
+
+对象按引用传递，不为外部组件克隆或转换格式。深层对象变化不会自动重复调用未读取这些字段的外部 setter；需要再次赋值时替换引用，或由接收者自行订阅。多个属性若共同控制同一平台状态（例如 href 与 hash），调用方应选择一个拥有者；框架不为任意 DOM/setter 组合建立事务或双向同步。
+
+同一规范化名称不能同时由普通属性和 prop 绑定。内建表单模型继续使用 value/checked 等原入口；value 与 valueAsNumber 等也不能共同接管一个控件。innerHTML、textContent、子树改写成员及 style 不能通过 prop 绕过框架所有权。复杂命令式集成继续使用 ref 和明确的清理。
+
+`on:ValueChanged` 保留精确事件名，`oncapture:ValueChanged` 使用捕获监听。自定义事件的 detail 来自组件协议，可显式标注 CustomEvent，或用公开的 EventHandler<ElementType, EventType> 同时约束 currentTarget。原生 onInput 等仍提供相应元素提示，事件和 property 清理与所属实例一致。
+
+form、input.list、label/output 的 for 是字符串 ID 内容属性，虽其 DOM 对应成员为只读元素引用，JSX 仍提供正确输入类型。不要改用 prop:form 或 prop:list。
+
 ## 仍需完成的审计
 
-当前原生类型有一部分来自可写 DOM 成员，尚不能把这些成员都当成可序列化 HTML attribute。这是生产验收前必须解决的缺口，不能因为类型检查通过就认为行为正确：
-
-- scrollTop、currentTime、volume 等运行时 property，需要明确的客户端赋值、移除及恢复规则；它们不是同名字符串 attribute。
-- form、list 等内容属性需要字符串 ID，但对应 DOM 成员是只读元素引用；它们需要明确的属性类型映射，不能被简单的可写成员筛选遗漏。
-- 自定义元素的对象输入、注册时序、大小写敏感事件及清理，需要完整的 property/event 约定。当前复杂集成仍通过 ref 和明确的生命周期处理。
-- 对象 style 的 cssFloat、厂商前缀、important、分隔符及字符串边界，需要继续对齐浏览器属性写入和 SSR；不能把简单样式通过当作完整 CSS 值支持。
-
-这些事项继续属于当前生产化目标。本轮属性规范化、合法命名空间嵌套与类型用例已提供基线，后续会用具体反例完善实现、类型和文档，不扩大成一套新的 DOM 或 CSS 标准库。
+对象 style 的 cssFloat、厂商前缀、important、分隔符及字符串边界仍需对齐浏览器和 SSR；原生属性类型还需系统检查覆盖面。继续用具体反例完善实现、类型和文档，不把简单用例通过当作完整标准库，也不重复实现成熟的 CSS 解析基础。

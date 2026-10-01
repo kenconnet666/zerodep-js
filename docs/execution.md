@@ -130,3 +130,14 @@
 - 上一提交 `6b520ae` 的 [CI](https://github.com/kenconnet666/zerodep-js/actions/runs/36786892898) 中 Windows 包消费任务通过；Linux 完整任务在快速修复源码后的开发更新等待中失败，初始依赖扫描已无 React 错误。
 - 对照实际监听器源码，确认 change 事件存在 50 毫秒合并窗口，Linux 的修复写入落在其中且没有第三次通知。示例与开发夹具统一使用 awaitWriteFinish 的完整写入检测，稳定窗口 100 毫秒、检查间隔 20 毫秒；没有给测试增加固定 sleep、重试或跳过。完整开发更新验证在本地通过，Linux 再验证交给本轮 CI。
 - 原生审计尚未结束：非反射 DOM property、自定义元素对象输入/事件，以及 style 对象的名称、priority 和值边界仍需修复。具体支持与缺口见 native-elements.md，不把可写 DOM 类型等同于已实现属性行为，也不把本轮标为生产验收。
+
+## DOM property 与自定义元素
+
+- 新增标准 TSX `prop:*` 客户端绑定及 `oncapture:*` 精确事件捕获。property 排在结构更新后、用户 effect 前，SSR 省略并跳过直接表达式；普通 spread 构造继续遵守 JavaScript 规则。
+- 解除绑定、卸载和同步 setter 触发卸载均释放传入引用、恢复初值；原型成员不留下实例覆盖，内建反射成员恢复原本缺失的内容属性。只读检查先于接管，避免清理再次尝试写入只读布局结果。
+- 已注册自定义元素支持对象与函数输入；未注册元素明确报错，可在注册后通过 ErrorBoundary 重试。精确事件名、捕获顺序和外部表单 form/list/for 关联已有 CSR/SSR 验证。
+- 类型排除 DOM 的宽泛索引签名，保留真实可写成员约束；HTML/SVG 同名标签按成员分支推导。框架拥有的子树、样式和表单模型不能通过 property 绕过原有契约。
+- 本地证据：25 项相关单元用例、9 项 Chromium property 用例、pnpm check 与 pnpm build 通过；form/list 用例按真实 combobox 角色修正后通过，原断言未减弱。完整三浏览器矩阵留给 CI。
+- 上一提交 `210193b` 的 [CI](https://github.com/kenconnet666/zerodep-js/actions/runs/36790758559) 已全部通过，含 Linux 开发更新及 Windows 独立包消费；之前的快速保存问题已有远端复验。
+- 同步更新主计划和工作包状态。用户允许类型生成与合适依赖，不设置包大小/速度硬指标；包消费脚本改为记录体积，保留真实模块隔离断言。用户已授权完成验收后使用环境变量 token 发布 npm 包，无须再次确认，凭据不进入仓库或日志。
+- 下一步处理 style 的 CSS 语法边界、名称与声明顺序，以及原生类型覆盖。现有进度仍不代表完整生产验收。

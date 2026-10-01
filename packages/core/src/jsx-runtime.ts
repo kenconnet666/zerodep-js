@@ -1,15 +1,32 @@
 import type { AnyComponent } from './component.js';
 import type { Renderable, Template } from './template.js';
 import type { svgAliases } from './native.js';
+import type { clientProperties, ownedProperties, formProperties } from './dom-property-names.js';
 
 type Equal<X, Y, Yes, No> =
   (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2 ? Yes : No;
-type WritableKeys<T> = {
-  [K in keyof T]-?: Equal<{ [P in K]: T[K] }, { -readonly [P in K]: T[K] }, K, never>;
-}[keyof T];
+// form 的按名称查找等 DOM 索引签名不是任意 JSX 属性许可。
+type DeclaredMembers<T> = {
+  [
+    K in keyof T as string extends K
+      ? never
+      : number extends K
+        ? never
+        : symbol extends K
+          ? never
+          : K
+  ]: T[K];
+};
+type WritableKeys<T, N = DeclaredMembers<T>> = {
+  [K in keyof N]-?: Equal<{ [P in K]: N[K] }, { -readonly [P in K]: N[K] }, K, never>;
+}[keyof N] &
+  keyof T;
 type NativeValues<T> = {
   [
-    K in WritableKeys<T> as K extends string
+    K in Exclude<
+      WritableKeys<T>,
+      (typeof clientProperties)[number] | (typeof ownedProperties)[number] | keyof Node
+    > as K extends string
       ? NonNullable<T[K]> extends string | number | boolean
         ? K
         : never
@@ -19,6 +36,11 @@ type NativeValues<T> = {
     : T[K] | null | undefined;
 };
 export type EventHandler<T, E extends Event> = (event: E & { readonly currentTarget: T }) => void;
+// 自定义事件的 detail 来自发送者约定，允许处理器显式声明其真实事件类型。
+type ExternalEventHandler = { handle(event: Event): void }['handle'];
+type ExternalEvents = {
+  [name: `on:${string}` | `oncapture:${string}`]: ExternalEventHandler | null | undefined;
+};
 // checkbox 等控件可能派发普通 Event，InputEvent 的扩展字段不能无条件承诺存在。
 type NativeInputEvent = Event & Partial<Omit<InputEvent, keyof Event>>;
 
@@ -105,13 +127,54 @@ type ControlValues<T> = T extends HTMLSelectElement
       ? Omit<NativeValues<T>, 'value'> & { value?: InputValue }
       : NativeValues<T>;
 
+type ContentProperties<T> = T extends
+  HTMLAnchorElement | HTMLScriptElement | HTMLTitleElement | HTMLOptionElement
+  ? 'text'
+  : T extends HTMLOutputElement
+    ? 'value' | 'defaultValue'
+    : T extends HTMLSelectElement
+      ? 'length'
+      : T extends HTMLTableElement
+        ? 'caption' | 'tHead' | 'tFoot'
+        : never;
+// a、script 等标签可能来自不同命名空间；逐个元素推导，不能只取联合的共有成员。
+type PropertyProps<T> = T extends Element
+  ? {
+      [
+        K in Exclude<
+          WritableKeys<T>,
+          | (typeof ownedProperties)[number]
+          | ContentProperties<T>
+          | (T extends
+              HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | HTMLOptionElement
+              ? (typeof formProperties)[number]
+              : never)
+        > as K extends string ? `prop:${K}` : never
+      ]?: T[K] | undefined;
+    }
+  : never;
+type AttributeLinks<T> = (T extends
+  | HTMLButtonElement
+  | HTMLFieldSetElement
+  | HTMLInputElement
+  | HTMLObjectElement
+  | HTMLOutputElement
+  | HTMLSelectElement
+  | HTMLTextAreaElement
+  ? { form?: string | null | undefined }
+  : {}) &
+  (T extends HTMLInputElement ? { list?: string | null | undefined } : {}) &
+  (T extends HTMLLabelElement | HTMLOutputElement
+    ? { for?: string | null | undefined; htmlFor?: string | null | undefined }
+    : {});
+
 export type NativeProps<T extends Element> = (T extends Element
-  ? Omit<
-      ControlValues<T>,
-      'innerHTML' | 'outerHTML' | 'textContent' | 'innerText' | 'children' | 'style'
-    >
+  ? Omit<ControlValues<T>, ContentProperties<T>>
   : never) &
-  EventProps<T> & {
+  EventProps<T> &
+  ExternalEvents &
+  PropertyProps<T> &
+  AttributeLinks<T> & {
     children?: Renderable;
     class?: string | false | null | undefined;
     className?: string | null | undefined;
