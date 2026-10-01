@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { prop, props, restProps } from '../src/runtime/props.js';
 import { reactive } from '../src/runtime/state.js';
-import { createRoot, effect, flushSync } from '../src/runtime/reactivity.js';
+import { _createRoot, _effect, _flushSync } from '../src/runtime/reactivity.js';
 
 describe('组件输入视图', () => {
   it('默认值按实例缓存，依赖更新和显式覆盖保持一致', () => {
@@ -63,18 +63,18 @@ describe('组件输入视图', () => {
     const view = props([() => input]);
     const label = prop(view, 'label', () => '默认');
     const values: unknown[] = [];
-    const dispose = createRoot((stop) => {
-      effect(() => {
+    const dispose = _createRoot((stop) => {
+      _effect(() => {
         values.push(label());
       });
       return stop;
     });
     try {
-      flushSync();
-      flushSync(() => {
+      _flushSync();
+      _flushSync(() => {
         input.label = '新增';
       });
-      flushSync(() => {
+      _flushSync(() => {
         delete input.label;
       });
       expect(values).toEqual(['默认', '新增', '默认']);
@@ -102,17 +102,17 @@ describe('组件输入视图', () => {
     const keys = vi.fn(() => {
       Object.keys(view);
     });
-    const dispose = createRoot((stop) => {
-      effect(keys);
+    const dispose = _createRoot((stop) => {
+      _effect(keys);
       return stop;
     });
     try {
-      flushSync();
-      flushSync(() => {
+      _flushSync();
+      _flushSync(() => {
         input.title = 'B';
       });
       expect(keys).toHaveBeenCalledTimes(1);
-      flushSync(() => {
+      _flushSync(() => {
         input.id = 'new';
       });
       expect(keys).toHaveBeenCalledTimes(2);

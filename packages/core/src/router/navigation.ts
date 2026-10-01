@@ -11,6 +11,7 @@ export interface DestinationOptions {
           string | number | boolean | readonly (string | number | boolean)[] | null | undefined
         >
       >;
+
   hash?: string;
 }
 type RequiredKeys<T> = { [K in keyof T]-?: {} extends Pick<T, K> ? never : K }[keyof T];
@@ -74,15 +75,15 @@ export class RouteRedirect {
     this.status = status;
   }
 }
-export function redirect<R extends AnyRoute>(
+export function _redirect<R extends AnyRoute>(
   to: R,
   ...args: RouteArguments<NoInfer<R>, { status?: 301 | 302 | 303 | 307 | 308 }>
 ): RouteRedirect;
-export function redirect(
+export function _redirect(
   to: string,
   options?: DestinationOptions & { status?: 301 | 302 | 303 | 307 | 308 },
 ): RouteRedirect;
-export function redirect(
+export function _redirect(
   to: string | AnyRoute,
   options: DestinationOptions & { status?: 301 | 302 | 303 | 307 | 308 } = {},
 ): RouteRedirect {

@@ -28,10 +28,18 @@ export default defineConfig({
       use: { ...devices['Desktop Safari'] },
     },
   ],
-  webServer: {
-    command: 'pnpm --filter @zerodep-js/example preview --port 4175 --tasks-file :memory:',
-    url: baseURL,
-    reuseExistingServer: false,
-    timeout: 30_000,
-  },
+  webServer: [
+    {
+      command: 'pnpm --filter @zerodep-js/example preview --port 4175 --tasks-file :memory:',
+      url: baseURL,
+      reuseExistingServer: false,
+      timeout: 30_000,
+    },
+    {
+      command: 'pnpm --filter @zerodep-js/hosts preview --port 4177',
+      url: 'http://127.0.0.1:4177/vue',
+      reuseExistingServer: false,
+      timeout: 30_000,
+    },
+  ],
 });

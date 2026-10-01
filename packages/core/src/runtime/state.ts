@@ -1,4 +1,4 @@
-import { Source, assertCanWrite, batch, isTracking, untrack } from './reactivity.js';
+import { Source, assertCanWrite, _batch, isTracking, _untrack } from './reactivity.js';
 
 const proxies = new WeakMap<object, object>();
 const originals = new WeakMap<object, object>();
@@ -74,7 +74,7 @@ export function reactive<T>(value: T): T {
   }
 
   function bump(source: Source<number>): void {
-    source.write(untrack(() => source.read()) + 1);
+    source.write(_untrack(() => source.read()) + 1);
   }
 
   function changed(map: Signals, key: PropertyKey): void {
@@ -120,7 +120,7 @@ export function reactive<T>(value: T): T {
         if (!method) {
           method = function (this: unknown, ...args: unknown[]): unknown {
             // 原生数组变更内部会读 length，这些机械读取不能成为 effect 依赖。
-            return batch(() => untrack(() => Reflect.apply(result as Function, this, args)));
+            return _batch(() => _untrack(() => Reflect.apply(result as Function, this, args)));
           };
           arrayMethods.set(key, method);
         }
@@ -135,7 +135,7 @@ export function reactive<T>(value: T): T {
     },
     set(target, key, next, receiver) {
       assertCanWrite();
-      return batch(() => {
+      return _batch(() => {
         const success = Reflect.set(target, key, raw(next), receiver);
         const descriptor = Reflect.getOwnPropertyDescriptor(target, key);
         // 普通数据属性由 defineProperty 通知；访问器可能只写入外部闭包。
@@ -152,7 +152,7 @@ export function reactive<T>(value: T): T {
         'value' in descriptor ? { ...descriptor, value: raw(descriptor.value) } : descriptor;
       const success = Reflect.defineProperty(target, key, next);
       // length 缩短遇到不可配置元素可能部分成功，失败时也要通知实际变更。
-      batch(() => {
+      _batch(() => {
         const after = Reflect.getOwnPropertyDescriptor(target, key);
         if (
           after &&
@@ -174,7 +174,7 @@ export function reactive<T>(value: T): T {
       const had = Reflect.has(target, key);
       const success = Reflect.deleteProperty(target, key);
       if (success && before)
-        batch(() => {
+        _batch(() => {
           changed(values, key);
           if (had !== Reflect.has(target, key)) changed(existence, key);
           bump(keys);

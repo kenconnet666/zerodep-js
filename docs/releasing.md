@@ -10,8 +10,11 @@
 | packages/compiler | zerodep-js-compiler |
 | packages/vite     | zerodep-js-vite     |
 | packages/ssr      | zerodep-js-ssr      |
+| packages/vue      | zerodep-js-vue      |
+| packages/react    | zerodep-js-react    |
+| packages/svelte   | zerodep-js-svelte   |
 
-四个包使用同一版本，内部 workspace 依赖打包后必须成为确定版本。第一次稳定版本拟为 1.0.0，只有门槛通过后才更新发布状态。内部 helper ABI 与包版本分开管理：修改不兼容输出协议须同步调整 ABI，普通修复不通过伪造 ABI 号制造兼容性。
+当前七个包使用同一版本，清单来自 scripts/package-list.mjs；内部 workspace 依赖打包后必须成为确定版本。RC1 的四包记录保留不变。第一次稳定版本拟为 1.0.0，只有门槛通过后才更新发布状态。内部 helper ABI 与包版本分开管理：修改不兼容输出协议须同步调整 ABI，普通修复不通过伪造 ABI 号制造兼容性。
 
 ## 发布前
 
@@ -19,7 +22,7 @@
 
 ```sh
 pnpm release:check
-pnpm release:prepare --version 1.0.0-rc.1
+pnpm release:prepare --version 1.0.0-rc.2
 # 检查、提交并推送候选，核对对应 CI 后继续。
 pnpm release:pack
 pnpm release:status
@@ -27,14 +30,14 @@ pnpm release:publish
 pnpm release:verify-registry
 ```
 
-这些命令不是要求现在发布。prepare 需要干净工作区和明确版本，只修改四个包与锁文件；pack 固定当前提交的真实 tgz，记录在被 Git 忽略的 `.release/<version>/release.json`。相同提交再次 pack 会复核并复用原产物，不重新打包覆盖。status 可只读检查已记录的历史版本。
+prepare 需要干净工作区和明确版本，修改全部发布包与锁文件；pack 固定当前提交的真实 tgz，记录在被 Git 忽略的 `.release/<version>/release.json`。相同提交再次 pack 会复核并复用原产物，不重新打包覆盖。status 可只读检查旧版包数较少的历史记录，发布和产物复用仍严格要求当前全量清单。
 
-publish 拒绝 private / 0.0.0，只处理经过完整 CI 的原提交和完整性一致的 tgz，发布到 next 并回读真实标签。首次发布不能只凭命令参数假定 latest 不存在；如 latest 同时指向预发布版本，工具报告提示并保留记录，标签管理要核对 npm 实际权限。verify-registry 对四个包核对完整性后，使用官方 registry 的精确版本运行同一个独立消费流程。稳定版本准备为 1.0.0 并重新完成这些步骤后，`pnpm release:promote` 才能执行稳定提升；预发布版本和没有 registry 消费记录的版本不能通过该命令提升。
+publish 拒绝 private / 0.0.0，只处理经过完整 CI 的原提交和完整性一致的 tgz，发布到 next 并回读真实标签。首次发布不能只凭命令参数假定 latest 不存在；如 latest 同时指向预发布版本，工具报告提示并保留记录，标签管理要核对 npm 实际权限。verify-registry 对全部包核对完整性后，分别执行基础框架和三宿主的注册表精确版本消费。稳定版本准备为 1.0.0 并重新完成这些步骤后，`pnpm release:promote` 才能执行稳定提升；预发布版本和没有 registry 消费记录的版本不能通过该命令提升。
 
 发布辅助工具本身用独立临时 Git/包工作区验证，涵盖产物复用、篡改/路径越界/私有包拒绝及版本准备。用例不带 npm token，CI 模式不会从 Windows 用户环境读取凭据；测试不执行实际发布。
 
 1. 确认生产计划的验收项均有证据，许可证、支持范围、API 文档、示例、变更记录与包名一致。
-2. 为候选版本更新四个 manifest 与锁文件，检查 exports、peer dependency、源码映射、LICENSE 和第三方许可；工作区根与示例继续 private。
+2. 为候选版本更新全部发布 manifest 与锁文件，检查 exports、peer dependency、源码映射、LICENSE 和第三方许可；工作区根与示例继续 private。
 3. 运行针对性本地验证，提交并推送。最终候选的完整 CI、浏览器矩阵和 Windows 独立消费必须通过。
 4. 用实际 tgz 建立独立消费工程，不能用工作区源码别名代替。记录 Git 提交、包版本、产物完整性与对应 CI。
 5. 核对 npm 账户与命名权限。认证成功不等于拥有组织或包的写权限；不以 metadata 读取结果证明可发布。
@@ -45,7 +48,7 @@ publish 拒绝 private / 0.0.0，只处理经过完整 CI 的原提交和完整�
 
 工具只在临时 npm 配置中写 `${NODE_AUTH_TOKEN}` 引用，值由子进程环境提供，结束后移除自己创建的目录。需要代理时在环境中设置 HTTPS_PROXY；工具不把本机代理地址写死，也不会把凭据发到自定义 registry。
 
-依赖顺序为 core、compiler、ssr、vite。先使用候选 tag 发布明确版本，验证四个包均存在，再用注册表上的版本重新安装和运行消费工程。只有声明、CSR/SSR、交互、接管及版本/完整性都核对后，才提升稳定 tag，并创建对应 Git 标签和发布记录。
+清单按 core、compiler、ssr、vite、三个宿主适配包的顺序发布。先使用候选 tag 发布明确版本，验证全部包均存在，再用注册表上的版本重新安装和运行两种消费工程。只有声明、CSR/SSR、交互、接管及版本/完整性都核对后，才提升稳定 tag，并创建对应 Git 标签和发布记录。
 
 发布命令失败或结果不确定时，先查询该版本是否存在及其完整性。已经发布的版本不可被当作可覆盖文件；保留原始产物，查清部分发布状态后再继续，不能盲目重新打包覆盖。
 

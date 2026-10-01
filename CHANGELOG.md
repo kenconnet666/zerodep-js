@@ -2,6 +2,9 @@
 
 ## 未发布
 
+- 新增 zerodep-js-vue、zerodep-js-react、zerodep-js-svelte 三个独立页面宿主包，支持保留实例的输入更新、入口替换、清理与宿主 SSR 空容器。
+- Vite 增加统一的 include/exclude 范围，覆盖开发、预扫描、生产和 SSR；三个宿主复用同一个 TSX/普通 TS 页面，并有独立 tgz 消费和开发热更新验证。
+
 - 破坏性重构：core 根入口与 router/storage 的公开函数统一为单下划线前缀，直接移除旧导出；编译器按统一语义角色识别新名、导入别名和命名空间。
 - 新增 _createPage 页面入口与 update/dispose 契约，宿主输入更新保留页面实例；修复旧 disposer 重复调用可能误删新根登记的问题。
 

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { execute } from './execute.js';
 import { compile } from '../src/index.js';
-import { createRoot, Source } from '../../core/src/runtime/reactivity.js';
+import { _createRoot, Source } from '../../core/src/runtime/reactivity.js';
 import { setupComponent } from '../../core/src/runtime/component.js';
 import type { DynamicTemplate, ElementTemplate } from '../../core/src/runtime/template.js';
 import type { ListTemplate } from '../../core/src/runtime/flow.js';
@@ -16,7 +16,7 @@ describe('For 的实时参数', () => {
         </For>}
       </For>;
     `) as DynamicTemplate;
-    createRoot((dispose) => {
+    _createRoot((dispose) => {
       try {
         const outerElement = view.value.read() as ElementTemplate;
         const outer = setupComponent(
@@ -50,7 +50,7 @@ describe('For 的实时参数', () => {
         {(row, index) => { const initial = row.name; return <input title={row.name} data-index={index} data-initial={initial} />; }}
       </Each>;
     `) as DynamicTemplate;
-    createRoot((dispose) => {
+    _createRoot((dispose) => {
       try {
         const element = view.value.read() as ElementTemplate;
         const list = setupComponent(
@@ -80,7 +80,7 @@ describe('For 的实时参数', () => {
 import { _component } from 'zerodep-js';
 const Generic = _component(({ children }) => children({ name: '真实值' }));
 const result = <Generic>{(row) => <span title={row.name} />}</Generic>;`) as DynamicTemplate;
-    createRoot((dispose) => {
+    _createRoot((dispose) => {
       try {
         const element = view.value.read() as ElementTemplate;
         const result = setupComponent(
@@ -104,7 +104,7 @@ const result = { view, repair() {rows = [{ id: 2 }];} };`) as {
       view: DynamicTemplate;
       repair: () => void;
     };
-    createRoot((dispose) => {
+    _createRoot((dispose) => {
       try {
         const element = result.view.value.read() as ElementTemplate;
         const list = setupComponent(

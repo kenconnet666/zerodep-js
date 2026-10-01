@@ -1,18 +1,24 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Derived, createRoot, effect, flushSync, type Cleanup } from '../src/runtime/reactivity.js';
+import {
+  Derived,
+  _createRoot,
+  _effect,
+  _flushSync,
+  type Cleanup,
+} from '../src/runtime/reactivity.js';
 import { reactive, state } from '../src/runtime/state.js';
 
 const roots: Cleanup[] = [];
 function observe(fn: () => void): void {
-  createRoot((dispose) => {
+  _createRoot((dispose) => {
     roots.push(dispose);
-    effect(fn);
+    _effect(fn);
   });
-  flushSync();
+  _flushSync();
 }
 afterEach(() => {
   for (const dispose of roots.splice(0)) dispose();
-  flushSync();
+  _flushSync();
 });
 
 describe('属性级对象状态', () => {
@@ -32,7 +38,7 @@ describe('属性级对象状态', () => {
     ).toThrow('临时读取失败');
     Object.defineProperty(object, 'value', { configurable: true, enumerable: true, value: 2 });
     expect(cold.read()).toBe(2);
-    flushSync();
+    _flushSync();
     expect(seen).toEqual([2]);
   });
 
@@ -42,18 +48,18 @@ describe('属性级对象状态', () => {
     observe(() => {
       values.push(`${user.read().name}/${user.read().address.city}`);
     });
-    flushSync(() => {
+    _flushSync(() => {
       user.read().age++;
     });
     expect(values).toEqual(['甲/北京']);
     const old = user.read();
-    flushSync(() => {
+    _flushSync(() => {
       old.address.city = '上海';
     });
-    flushSync(() => {
+    _flushSync(() => {
       user.write({ name: '乙', age: 21, address: { city: '成都' } });
     });
-    flushSync(() => {
+    _flushSync(() => {
       old.name = '旧对象';
     });
     expect(values).toEqual(['甲/北京', '甲/上海', '乙/成都']);
@@ -73,18 +79,18 @@ describe('属性级对象状态', () => {
     observe(value);
     observe(has);
     observe(keys);
-    flushSync(() => {
+    _flushSync(() => {
       object.a = 2;
     });
     expect(value).toHaveBeenCalledTimes(2);
     expect(has).toHaveBeenCalledTimes(1);
     expect(keys).toHaveBeenCalledTimes(1);
-    flushSync(() => {
+    _flushSync(() => {
       delete object.a;
     });
     expect(has).toHaveBeenCalledTimes(2);
     expect(keys).toHaveBeenCalledTimes(2);
-    flushSync(() => {
+    _flushSync(() => {
       object.a = undefined;
     });
     expect(value).toHaveBeenCalledTimes(4);
@@ -104,7 +110,7 @@ describe('属性级对象状态', () => {
       cell.read();
     });
     observe(reader);
-    flushSync(() => {
+    _flushSync(() => {
       cell.write(original);
     });
     expect(reader).toHaveBeenCalledTimes(1);
@@ -119,7 +125,7 @@ describe('属性级对象状态', () => {
       void object.n;
     });
     observe(reader);
-    flushSync(() => {
+    _flushSync(() => {
       raw.n = 1;
     });
     expect(reader).toHaveBeenCalledTimes(1);
@@ -144,7 +150,7 @@ describe('属性级对象状态', () => {
     observe(() => {
       seen.push(object.doubled);
     });
-    flushSync(() => {
+    _flushSync(() => {
       object.n = 5;
     });
     expect(seen).toEqual([8, 10]);
@@ -199,13 +205,13 @@ describe('数组状态', () => {
     observe(() => {
       seen.push(`${rows.join(',')}/${rows.length}/${2 in rows}`);
     });
-    flushSync(() => {
+    _flushSync(() => {
       rows.push(4);
     });
-    flushSync(() => {
+    _flushSync(() => {
       rows[0] = 9;
     });
-    flushSync(() => {
+    _flushSync(() => {
       rows.length = 1;
     });
     expect(seen).toEqual(['1,2,3/3/true', '1,2,3,4/4/true', '9,2,3,4/4/true', '9/1/false']);
@@ -218,9 +224,9 @@ describe('数组状态', () => {
       seen.push(rows.join(','));
     });
     expect(rows.sort()).toBe(rows);
-    flushSync();
+    _flushSync();
     expect(rows.splice(1, 1, 4, 5)).toEqual([2]);
-    flushSync();
+    _flushSync();
     expect(seen).toEqual(['3,1,2', '1,2,3', '1,4,5,3']);
     const push = rows.push;
     expect(() => push(7)).toThrow(TypeError);
@@ -231,7 +237,7 @@ describe('数组状态', () => {
     observe(() => {
       rows.push(1);
     });
-    flushSync(() => {
+    _flushSync(() => {
       rows.push(2);
     });
     expect(rows).toEqual([1, 2]);
@@ -245,7 +251,7 @@ describe('数组状态', () => {
       seen.push(`${rows.length}/${rows[2]}`);
     });
     expect(Reflect.set(rows, 'length', 0)).toBe(false);
-    flushSync();
+    _flushSync();
     expect(seen).toEqual(['3/3', '2/undefined']);
   });
 });

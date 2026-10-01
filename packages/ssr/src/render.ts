@@ -14,7 +14,7 @@ import {
   setupComponent,
   element,
   dynamic,
-  untrack,
+  _untrack,
   assertRuntime,
   type AnyComponent,
   type ComponentProps,
@@ -203,7 +203,7 @@ export function renderToString<C extends AnyComponent>(
   let output = '';
   const errors: unknown[] = [];
   try {
-    output = untrack(() =>
+    output = _untrack(() =>
       scope.run(() =>
         render(element(component, (options?.props ?? {}) as Record<PropertyKey, unknown>), scope, {
           namespace: HTML,

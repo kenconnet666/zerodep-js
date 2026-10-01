@@ -1,4 +1,4 @@
-import { snapshot } from '../runtime/snapshot.js';
+import { _snapshot } from '../runtime/snapshot.js';
 import type { Cleanup } from '../runtime/reactivity.js';
 
 export interface HistoryEntry {
@@ -34,8 +34,7 @@ export function internalURL(path: string, base: string, origin: string): URL {
   return url;
 }
 export const urlPath = (url: URL): string => url.pathname + url.search + url.hash;
-
-export function createMemoryHistory(
+export function _createMemoryHistory(
   initial:
     | string
     | { entries: readonly (string | { href: string; state?: unknown })[]; index?: number } = '/',
@@ -53,7 +52,7 @@ export function createMemoryHistory(
   ): HistoryEntry =>
     Object.freeze({
       href: urlPath(internalURL(href, '/', origin)),
-      state: snapshot(state),
+      state: _snapshot(state),
       key,
       index,
       group: 'memory',
@@ -161,7 +160,7 @@ function createWindowHistory(kind: 'browser' | 'hash', target?: Window): RouterH
   const listeners = new Set<(event: HistoryChange) => void>();
   const packet = (entry: HistoryEntry): NativeState => ({
     [marker]: { group: entry.group, key: entry.key, index: entry.index },
-    user: snapshot(entry.state),
+    user: _snapshot(entry.state),
   });
   function read(): HistoryEntry {
     const state: unknown = browser!.history.state;
@@ -206,7 +205,7 @@ function createWindowHistory(kind: 'browser' | 'hash', target?: Window): RouterH
       const next = Object.freeze({
         ...current,
         href: urlPath(internalURL(path, current.href, origin)),
-        state: snapshot(state),
+        state: _snapshot(state),
         key: id(),
         index: current.index + 1,
       });
@@ -221,7 +220,7 @@ function createWindowHistory(kind: 'browser' | 'hash', target?: Window): RouterH
       const next = Object.freeze({
         ...current,
         href: urlPath(internalURL(path, current.href, origin)),
-        state: snapshot(state),
+        state: _snapshot(state),
       });
       browser.history.replaceState(packet(next), '', external(next.href));
       current = next;
@@ -256,7 +255,9 @@ function createWindowHistory(kind: 'browser' | 'hash', target?: Window): RouterH
   };
 }
 
-export const createBrowserHistory = (options: { window?: Window } = {}): RouterHistory =>
+const _createBrowserHistory = (options: { window?: Window } = {}): RouterHistory =>
   createWindowHistory('browser', options.window);
-export const createHashHistory = (options: { window?: Window } = {}): RouterHistory =>
+export { _createBrowserHistory };
+const _createHashHistory = (options: { window?: Window } = {}): RouterHistory =>
   createWindowHistory('hash', options.window);
+export { _createHashHistory };

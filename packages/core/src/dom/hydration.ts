@@ -1,4 +1,4 @@
-import { Scope, dispatchError, getScope, onCleanup, untrack } from '../runtime/reactivity.js';
+import { Scope, dispatchError, getScope, _onCleanup, _untrack } from '../runtime/reactivity.js';
 import {
   nativeAttributes,
   selectionValues,
@@ -46,7 +46,7 @@ export class HydrationSession {
     this.undo.push(undo);
   }
   own(node: Node): void {
-    onCleanup(() => {
+    _onCleanup(() => {
       if (this.committed) node.parentNode?.removeChild(node);
     });
   }
@@ -58,7 +58,7 @@ export class HydrationSession {
       for (const task of this.tasks) {
         if (task.owner.disposed) continue;
         try {
-          untrack(() => task.owner.run(task.run));
+          _untrack(() => task.owner.run(task.run));
         } catch (error) {
           dispatchError(error, task.owner);
         }

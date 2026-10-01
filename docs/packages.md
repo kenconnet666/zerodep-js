@@ -4,6 +4,8 @@
 
 公共名称已经统一为下表中的四个无 scope 包名；开发阶段的 `@zerodep-js/core` 对应 `zerodep-js`，其余旧公共名称对应 `zerodep-js-compiler/vite/ssr`。旧名称未曾发布，不提供重复兼容入口。许可证为 MIT，每个实际 tgz 包含与根目录一致的 LICENSE。
 
+main 新增三个宿主包，发布清单统一维护在 scripts/package-list.mjs；基础框架与宿主有分别的独立消费门槛。独立安装基础框架不会强制安装 React、Vue 或 Svelte。
+
 ## 包边界
 
 | 包或入口                 | 用途                                           | 依赖边界                                                |
@@ -15,6 +17,9 @@
 | `zerodep-js-vite`        | Vite 8 的普通转换和依赖扫描接入                | 依赖 compiler，Vite 作为 peer dependency                |
 | `zerodep-js-ssr`         | 同步组件 SSR 与文档组合                        | core 作为同版本 peer dependency                         |
 | `zerodep-js-ssr/data`    | 独立 JSON 数据编码                             | 不引入渲染器，也不要求 DOM 类型库                       |
+| `zerodep-js-vue`         | Vue 页面宿主                                   | core 与 Vue 为 peer                                     |
+| `zerodep-js-react`       | React 页面宿主                                 | core 与 React 为 peer                                   |
+| `zerodep-js-svelte`      | Svelte attachment 页面宿主                     | core 与 Svelte 为 peer                                  |
 
 应用、SSR 与组件库应共享同一 core 实例。组件身份和作用域不能跨独立副本混用；ssr 因而使用 peer dependency，开发时另在 devDependencies 安装工作区 core。
 
@@ -26,9 +31,10 @@ core 的原生属性类型和 SVG 别名由维护脚本生成，数据源不成�
 
 ```sh
 pnpm test:packages
+pnpm test:hosts:packages
 ```
 
-这个命令先构建框架包，然后执行如下完整过程：
+第一个命令先构建框架包，然后执行如下完整过程；第二个命令在另一个独立目录精确安装七包与三个宿主，验证同一页面在各宿主中的类型、构建、CSR/SSR、更新及清理：
 
 1. 将四个包分别 `pnpm pack` 成真实 tgz，检查文件清单。
 2. 在系统临时目录创建独立项目，以本地 tgz 安装框架及固定版本的 TS7/Vite。目录位于工作区外，无源码 alias，不继承 NODE_PATH，不把工作区 node_modules 当作消费依赖；允许使用普通 pnpm 内容缓存。

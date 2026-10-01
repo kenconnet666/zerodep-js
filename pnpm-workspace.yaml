@@ -16,12 +16,23 @@ catalog:
   '@playwright/test': 1.63.0
   '@types/convert-source-map': 2.0.3
   '@types/node': 24.13.5
+  '@types/react': 19.3.0
+  '@types/react-dom': 19.3.0
+  '@vitejs/plugin-react': 6.1.1
+  '@vitejs/plugin-vue': 6.0.9
+  '@sveltejs/vite-plugin-svelte': 7.3.1
   '@vitest/coverage-v8': 5.0.3
   csstype: 3.2.3
   html-element-attributes: 3.5.0
   oxlint: 1.86.0
   prettier: 3.9.9
+  prettier-plugin-svelte: 4.1.1
   property-information: 7.2.0
+  react: 19.3.0
+  react-dom: 19.3.0
+  vue: 3.5.43
+  '@vue/server-renderer': 3.5.43
+  svelte: 5.57.1
   sirv: 3.0.2
   smol-toml: 1.9.0
   typescript: 7.0.2

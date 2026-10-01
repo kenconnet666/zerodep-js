@@ -1,4 +1,4 @@
-import { Scope, getScope, renderEffect, untrack, type Cleanup } from '../runtime/reactivity.js';
+import { Scope, getScope, renderEffect, _untrack, type Cleanup } from '../runtime/reactivity.js';
 import { setupComponent, type AnyComponent, type ComponentProps } from '../runtime/component.js';
 import { TEMPLATE, element, type DynamicTemplate, type Renderable } from '../runtime/template.js';
 import { attachAttributes, attachRef } from './attributes.js';
@@ -57,7 +57,7 @@ function renderDynamic(
       const cursor = pending;
       const first = cursor.current;
       try {
-        untrack(() =>
+        _untrack(() =>
           next.run(() =>
             renderValue(value, anchor.parentNode as Container, anchor, namespaceParent, cursor),
           ),
@@ -75,7 +75,7 @@ function renderDynamic(
     }
     const fragment = parent.ownerDocument!.createDocumentFragment();
     try {
-      untrack(() => next.run(() => renderValue(value, fragment, null, namespaceParent)));
+      _untrack(() => next.run(() => renderValue(value, fragment, null, namespaceParent)));
     } catch (error) {
       rollback(next, error);
     }
@@ -134,7 +134,7 @@ export function renderValue(
   if (typeof value.tag !== 'string') {
     const scope = new Scope();
     try {
-      untrack(() =>
+      _untrack(() =>
         scope.run(() =>
           renderValue(
             setupComponent(value.tag as AnyComponent, value.props),
@@ -208,8 +208,7 @@ export function renderValue(
   if (hydration) hydration.session.defer(() => attachRef(node, value.props, owner));
   else attachRef(node, value.props, owner);
 }
-
-export function mount<C extends AnyComponent>(component: C, options: MountOptions<C>): Cleanup {
+export function _mount<C extends AnyComponent>(component: C, options: MountOptions<C>): Cleanup {
   const { target } = options;
   if (roots.has(target)) throw new Error('目标容器已挂载，请先调用其 disposer。');
   const scope = new Scope(null);
@@ -234,8 +233,10 @@ export function mount<C extends AnyComponent>(component: C, options: MountOption
   }
   return dispose;
 }
-
-export function hydrate<C extends AnyComponent>(component: C, options: HydrateOptions<C>): Cleanup {
+export function _hydrate<C extends AnyComponent>(
+  component: C,
+  options: HydrateOptions<C>,
+): Cleanup {
   const { target } = options;
   if (roots.has(target)) throw new Error('目标容器已挂载，请先调用其 disposer。');
   const scope = new Scope(null);
@@ -266,7 +267,7 @@ export function hydrate<C extends AnyComponent>(component: C, options: HydrateOp
     if (errors.length > 1) throw new AggregateError(errors, 'Hydration 与清理失败。');
     if (error instanceof HydrationError) {
       options.onMismatch?.(error);
-      if (options.mismatch === 'replace') return mount(component, options);
+      if (options.mismatch === 'replace') return _mount(component, options);
     }
     throw error;
   }

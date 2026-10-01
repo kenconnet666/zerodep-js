@@ -1,10 +1,10 @@
 import {
   Scope,
   getScope,
-  onCleanup,
+  _onCleanup,
   renderEffect,
   propertyEffect,
-  untrack,
+  _untrack,
   unowned,
 } from '../runtime/reactivity.js';
 import type { Props } from '../runtime/props.js';
@@ -51,7 +51,7 @@ export function attachAttributes(
   const control = bindControl(element, input, hydration, (type) =>
     [...events.values()].some((binding) => binding.type === type),
   );
-  onCleanup(() => {
+  _onCleanup(() => {
     for (const binding of events.values())
       element.removeEventListener(binding.type, binding.listener, binding.capture);
     propertyBindings?.dispose();
@@ -122,10 +122,10 @@ export function attachRef(element: Element, input: Props, owner: Scope): void {
     if (typeof reference !== 'function') throw new Error('DOM ref 必须是函数。');
     scope = new Scope(owner);
     try {
-      untrack(() =>
+      _untrack(() =>
         scope!.run(() => {
           const cleanup: unknown = reference(element);
-          if (typeof cleanup === 'function') onCleanup(cleanup as () => void);
+          if (typeof cleanup === 'function') _onCleanup(cleanup as () => void);
         }),
       );
     } catch (error) {

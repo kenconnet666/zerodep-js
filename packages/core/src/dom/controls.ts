@@ -1,8 +1,8 @@
 import {
   Source,
   getScope,
-  onCleanup,
-  untrack,
+  _onCleanup,
+  _untrack,
   dispatchError,
   type Scope,
 } from '../runtime/reactivity.js';
@@ -53,7 +53,7 @@ class Control {
     this.input = input;
     this.owner = getScope()!;
     controls.set(element, this);
-    onCleanup(() => {
+    _onCleanup(() => {
       this.disposed = true;
       controls.delete(element);
       clearTimeout(this.timer);
@@ -228,7 +228,7 @@ class Control {
   invalidate(): void {
     if (!this.disposed && !this.invalidated) {
       this.invalidated = true;
-      this.pulse.write(untrack(() => this.pulse.read()) + 1);
+      this.pulse.write(_untrack(() => this.pulse.read()) + 1);
     }
   }
 
@@ -290,7 +290,7 @@ class Control {
   private restore(): void {
     if (this.disposed || this.owner.disposed) return;
     try {
-      untrack(() => this.owner.run(() => this.sync()));
+      _untrack(() => this.owner.run(() => this.sync()));
     } catch (error) {
       dispatchError(error, this.owner);
     }

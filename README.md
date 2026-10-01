@@ -4,11 +4,11 @@
 
 变量式状态、组件、列表、context、错误恢复、原生表单、CSR 和 SSR/hydration 已接入同一 App。`1.0.0-rc.1` 已发布，完整 CI 与 npm 精确版本安装验收通过；当前仍是发布候选，尚未发布稳定 1.0.0。
 
-使用指南从[开始使用](docs/getting-started.md)和[API 参考](docs/api.md)进入。四个公共包的名称为 `zerodep-js`、`zerodep-js-compiler`、`zerodep-js-vite`、`zerodep-js-ssr`；当前发布状态见 [CHANGELOG](CHANGELOG.md)，支持范围见 [support.md](docs/support.md)。
+使用指南从[开始使用](docs/getting-started.md)和[API 参考](docs/api.md)进入。基础包为 `zerodep-js`、`zerodep-js-compiler`、`zerodep-js-vite`、`zerodep-js-ssr`，另有 Vue、React、Svelte 三个可选页面宿主包；当前发布状态见 [CHANGELOG](CHANGELOG.md)，支持范围见 [support.md](docs/support.md)。
 
 项目使用 [MIT License](LICENSE)，贡献方式见 [CONTRIBUTING](CONTRIBUTING.md)。
 
-main 已按用户决定切换为 `_state`、`_derived`、`_component`、`_effect` 等公开函数命名，不保留旧名。下文是开发版本 API，npm RC1 不能直接运行这些新示例。三种页面宿主包正在按[执行方案](docs/hosting-implementation.md)推进。
+main 已按用户决定切换为 `_state`、`_derived`、`_component`、`_effect` 等公开函数命名，不保留旧名，实现与入口均直接使用新名称。下文是开发版本 API，npm RC1 不能直接运行这些新示例。[Vue、React、Svelte 页面宿主](docs/page-hosts.md)提供三个独立适配包。
 
 ## 工作区
 

@@ -1,6 +1,13 @@
-import { Source, batch, effect, onCleanup, untrack, type Cleanup } from '../runtime/reactivity.js';
-import { getAbortSignal, onMount } from '../runtime/lifecycle.js';
-import { snapshot } from '../runtime/snapshot.js';
+import {
+  Source,
+  _batch,
+  _effect,
+  _onCleanup,
+  _untrack,
+  type Cleanup,
+} from '../runtime/reactivity.js';
+import { _getAbortSignal, _onMount } from '../runtime/lifecycle.js';
+import { _snapshot } from '../runtime/snapshot.js';
 import { storageSubscription, type StorageLike } from './hub.js';
 
 export type { StorageLike } from './hub.js';
@@ -67,7 +74,7 @@ function bindingFor<T>(input: T | StorageBinding<T>): StorageBinding<T> {
       }
       if (Array.isArray(input) && !Object.getOwnPropertyDescriptor(input, 'length')?.writable)
         throw new TypeError('持久化数组的 length 必须可写。');
-      batch(() => {
+      _batch(() => {
         for (const key of Object.keys(input))
           if (!Object.hasOwn(next, key)) Reflect.deleteProperty(input, key);
         if (Array.isArray(input)) input.length = (next as unknown[]).length;
@@ -90,9 +97,9 @@ function persist<T>(
   input: T | StorageBinding<T>,
   options: PersistOptions<T>,
 ): Persistence {
-  getAbortSignal(); // 提前确认所有权，避免在事件或模块顶层留下无主监听。
+  _getAbortSignal(); // 提前确认所有权，避免在事件或模块顶层留下无主监听。
   const binding = bindingFor(input);
-  const initial = untrack(() => snapshot(binding.read()));
+  const initial = _untrack(() => _snapshot(binding.read()));
   const version = options.version ?? 1;
   const delay = options.writeDelay ?? 0;
   if (!Number.isSafeInteger(version) || version < 1 || !Number.isFinite(delay) || delay < 0)
@@ -152,7 +159,7 @@ function persist<T>(
     if (reporting) return;
     reporting = true;
     try {
-      untrack(() => options.onError?.(error));
+      _untrack(() => options.onError?.(error));
     } catch (callbackError) {
       publish(ready, new AggregateError([error, callbackError], '存储与错误回调均失败。'));
     } finally {
@@ -226,13 +233,14 @@ function persist<T>(
       data = synchronous(options.migrate(data, previous));
     }
     const value = synchronous(options.validate ? options.validate(data) : (data as T));
-    return { value: snapshot(value), migrated: previous !== version };
+    return { value: _snapshot(value), migrated: previous !== version };
   }
   function restore(value: string | null, preserveEdits = false): boolean {
     pending = undefined;
     cancelTimer();
     try {
-      const loaded = value === null ? { value: snapshot(initial), migrated: false } : decode(value);
+      const loaded =
+        value === null ? { value: _snapshot(initial), migrated: false } : decode(value);
       const baseline = encode(loaded.value);
       if (!preserveEdits) synchronous(binding.write(loaded.value));
       saved = preserveEdits ? baseline : encode(binding.read());
@@ -247,7 +255,7 @@ function persist<T>(
   const receive = (changed: string | null, value: string | null) => {
     if (stopped || paused || activeKey === undefined || (changed !== null && changed !== activeKey))
       return;
-    untrack(() => {
+    _untrack(() => {
       try {
         restore(changed === null ? storage!.getItem(activeKey!) : value);
       } catch (error) {
@@ -312,19 +320,19 @@ function persist<T>(
       return current.read().error;
     },
     flush: () =>
-      untrack(() => {
+      _untrack(() => {
         if (stopped || paused || !mounted.read()) return false;
         if (!process(false)) return false;
         return flushPending();
       }),
     reset: () =>
-      untrack(() => {
+      _untrack(() => {
         if (stopped || !mounted.read() || !connect()) return false;
         try {
           const nextKey = readKey();
           if (nextKey !== activeKey && !flushPending()) return false;
           activeKey = nextKey;
-          synchronous(binding.write(snapshot(initial)));
+          synchronous(binding.write(_snapshot(initial)));
           publish(true);
           rewrite = true;
           if (paused) return true;
@@ -336,7 +344,7 @@ function persist<T>(
         }
       }),
     remove: () =>
-      untrack(() => {
+      _untrack(() => {
         if (stopped || !mounted.read() || !connect()) return false;
         try {
           const nextKey = readKey();
@@ -354,7 +362,7 @@ function persist<T>(
         }
       }),
     retry: () =>
-      untrack(() => {
+      _untrack(() => {
         if (stopped || paused || !mounted.read()) return false;
         if (state.ready) return handle.flush();
         if (!connect()) return false;
@@ -381,7 +389,7 @@ function persist<T>(
     resume() {
       if (stopped || !paused) return;
       paused = false;
-      untrack(() => {
+      _untrack(() => {
         try {
           if (
             state.ready &&
@@ -415,27 +423,27 @@ function persist<T>(
       }
     },
   });
-  onCleanup(handle.stop);
-  stopWatch = effect(() => {
+  _onCleanup(handle.stop);
+  stopWatch = _effect(() => {
     process();
   });
-  onMount(() => {
+  _onMount(() => {
     mounted.write(true);
   });
   return handle;
 }
 
-export function persistLocal<T>(
+export function _persistLocal<T>(
   key: string | (() => string),
   binding: StorageBinding<T>,
   options?: PersistOptions<T>,
 ): Persistence;
-export function persistLocal<T extends object>(
+export function _persistLocal<T extends object>(
   key: string | (() => string),
   state: T,
   options?: PersistOptions<T>,
 ): Persistence;
-export function persistLocal<T>(
+export function _persistLocal<T>(
   key: string | (() => string),
   state: T | StorageBinding<T>,
   options: PersistOptions<T> = {},
@@ -443,17 +451,17 @@ export function persistLocal<T>(
   return persist('localStorage', key, state, options);
 }
 
-export function persistSession<T>(
+export function _persistSession<T>(
   key: string | (() => string),
   binding: StorageBinding<T>,
   options?: PersistOptions<T>,
 ): Persistence;
-export function persistSession<T extends object>(
+export function _persistSession<T extends object>(
   key: string | (() => string),
   state: T,
   options?: PersistOptions<T>,
 ): Persistence;
-export function persistSession<T>(
+export function _persistSession<T>(
   key: string | (() => string),
   state: T | StorageBinding<T>,
   options: PersistOptions<T> = {},

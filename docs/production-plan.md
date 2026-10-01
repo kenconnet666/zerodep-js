@@ -16,6 +16,8 @@
 
 ## 1. 目标与当前状态
 
+后续实施已包括统一 _ 函数名、直接声明/导出和 Vue/React/Svelte 页面宿主。三个独立适配包与共用页面已完成本地类型、CSR/宿主 SSR、开发 StrictMode/热更新及七包独立消费验证；执行与发布进度见 [hosting-implementation.md](hosting-implementation.md)。此前讨论稿中的兼容过渡期已被用户否决，不保留旧函数导出。
+
 已确认的方向：
 
 - 使用标准 TypeScript/TSX，类型基线为 TypeScript 7，不增加 TypeScript 5/6 兼容层。

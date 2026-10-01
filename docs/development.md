@@ -16,7 +16,7 @@ TypeScript 7 检查原始 TSX 的类型；框架编译器检查被转换绑定�
 
 目录用于说明源码责任，不等于新增公开子包。SSR 仍通过稳定的 internal 协议使用共享语义，不导入浏览器节点实现；不要在 runtime/native 中增加 window/document 访问。生成数据维护入口仍为 scripts/generate-native.mjs，产物在 native/data.ts。改目录时同步检查声明映射、生成脚本、资源验证与独立消费，移除已经失效的旧构建文件。
 
-Vue 工程中的独立页面共存目前只有[讨论方案](../.design/vue-page-coexistence.md)，尚未提供 Vue 适配或 Vite 文件范围选项。
+Vue、React、Svelte 已有独立页面宿主包与 Vite 文件范围选项，使用方式和验证边界见[页面宿主](page-hosts.md)。原讨论稿保留为设计过程记录。
 
 ## 检查入口
 

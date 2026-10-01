@@ -5,12 +5,13 @@ import { access, mkdir, mkdtemp, readFile, realpath, rm, writeFile } from 'node:
 import { tmpdir } from 'node:os';
 import { basename, isAbsolute, relative, resolve, sep } from 'node:path';
 import { parseArgs, promisify } from 'node:util';
+import { packages as packageList } from './package-list.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 const registry = 'https://registry.npmjs.org/';
 const repository = 'kenconnet666/zerodep-js';
-const folders = ['core', 'compiler', 'ssr', 'vite'];
-const names = ['zerodep-js', 'zerodep-js-compiler', 'zerodep-js-ssr', 'zerodep-js-vite'];
+const folders = packageList.map((item) => item.folder);
+const names = packageList.map((item) => item.name);
 const { values, positionals } = parseArgs({
   allowPositionals: true,
   options: { version: { type: 'string' } },
@@ -74,7 +75,7 @@ async function manifests() {
   assert.equal(
     new Set(packages.map(({ manifest }) => manifest.version)).size,
     1,
-    '四个包必须使用同一版本。',
+    '所有发布包必须使用同一版本。',
   );
   return packages;
 }
@@ -123,13 +124,13 @@ function sameArtifact(item, remote) {
   );
 }
 
-function validateLedger(ledger, revision, selectedVersion) {
+function validateLedger(ledger, revision, selectedVersion, expectedNames = names) {
   assert.equal(ledger.repository, repository);
   assert.equal(ledger.revision, revision, '当前提交与产物记录不一致。');
   assert.equal(ledger.version, selectedVersion);
   assert.deepEqual(
     ledger.packages.map((item) => item.name),
-    names,
+    expectedNames,
   );
   for (const item of ledger.packages) {
     assert.equal(item.version, selectedVersion);
@@ -227,7 +228,10 @@ async function main() {
   }
   if (command === 'status') {
     const ledger = await json(ledgerFile);
-    validateLedger(ledger, ledger.revision, selectedVersion);
+    // 历史只读状态允许当时尚未增加的包缺席；发布/复用产物仍严格要求当前全量清单。
+    assert(ledger.packages.length > 0, '发布记录不能为空。');
+    const historical = names.filter((name) => ledger.packages.some((item) => item.name === name));
+    validateLedger(ledger, ledger.revision, selectedVersion, historical);
     for (const item of ledger.packages) {
       assert.equal(await digest(resolve(directory, item.file)), item.integrity);
       const remote = await metadata(item.name, selectedVersion);
@@ -345,6 +349,8 @@ async function main() {
   if (command === 'verify-registry') {
     const result = await manager(['test:packages:registry', '--version', selectedVersion]);
     process.stdout.write(result.stdout);
+    const hosts = await manager(['test:hosts:registry', '--version', selectedVersion]);
+    process.stdout.write(hosts.stdout);
     ledger.registryVerifiedAt = new Date().toISOString();
     await save();
     return;

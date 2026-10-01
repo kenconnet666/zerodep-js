@@ -1,12 +1,12 @@
 import { expect, it } from 'vitest';
-import { snapshot } from '../src/runtime/snapshot.js';
+import { _snapshot } from '../src/runtime/snapshot.js';
 import { reactive, state } from '../src/runtime/state.js';
-import { createRoot, effect, flushSync } from '../src/runtime/reactivity.js';
+import { _createRoot, _effect, _flushSync } from '../src/runtime/reactivity.js';
 
 it('脱开深代理且后续双向修改互不影响', () => {
   const model = reactive({ title: '草稿', child: { count: 1 }, list: [{ done: false }] });
   expect(() => structuredClone(model)).toThrow();
-  const copy = snapshot(model);
+  const copy = _snapshot(model);
   expect(structuredClone(copy)).toEqual(copy);
   model.child.count = 2;
   copy.list[0]!.done = true;
@@ -22,7 +22,7 @@ it('保留循环、共享引用、稀疏数组和安全的特殊属性名', () =
   sparse[2] = shared;
   input.sparse = sparse;
   Object.defineProperty(input, '__proto__', { value: { safe: true }, enumerable: true });
-  const copy = snapshot(input);
+  const copy = _snapshot(input);
   expect(copy.self).toBe(copy);
   expect(copy.a).toBe(copy.b);
   expect((copy.sparse as unknown[])[2]).toBe(copy.a);
@@ -37,7 +37,7 @@ it('Map/Set 的代理键和值与普通属性共享同一快照', () => {
   const set = new Set<unknown>([child]);
   map.set(child, set);
   map.set('self', map);
-  const copy = snapshot({ child, map, set });
+  const copy = _snapshot({ child, map, set });
   expect(copy.map.get(copy.child)).toBe(copy.set);
   expect(copy.set.has(copy.child)).toBe(true);
   expect(copy.map.get('self')).toBe(copy.map);
@@ -48,7 +48,7 @@ it('二进制视图共享克隆 buffer，原始 buffer 不被转移', () => {
   const buffer = new ArrayBuffer(16);
   const view = new Uint8Array(buffer, 4, 4);
   view[0] = 7;
-  const copy = snapshot({
+  const copy = _snapshot({
     buffer,
     view,
     data: new DataView(buffer, 4),
@@ -69,21 +69,21 @@ it('二进制视图共享克隆 buffer，原始 buffer 不被转移', () => {
 
 it('错误 cause 中的代理也被复制，支持 cause 环', () => {
   const error = new TypeError('失败', { cause: reactive({ n: 1 }) });
-  const copy = snapshot(error);
+  const copy = _snapshot(error);
   expect(copy).toBeInstanceOf(TypeError);
   expect(copy.message).toBe('失败');
   expect(copy.cause).toEqual({ n: 1 });
   const circular = new Error('循环');
   circular.cause = circular;
-  expect(snapshot(circular).cause).not.toBe(circular);
-  const cloned = snapshot(circular);
+  expect(_snapshot(circular).cause).not.toBe(circular);
+  const cloned = _snapshot(circular);
   expect(cloned.cause).toBe(cloned);
 });
 
 it('保留平台不可克隆值的错误，不以空对象或 JSON 丢弃替代', () => {
   for (const value of [() => {}, Symbol('x'), new WeakMap(), Promise.resolve(1)])
-    expect(() => snapshot({ nested: value })).toThrow();
-  expect(snapshot({ missing: undefined, number: NaN })).toEqual({
+    expect(() => _snapshot({ nested: value })).toThrow();
+  expect(_snapshot({ missing: undefined, number: NaN })).toEqual({
     missing: undefined,
     number: NaN,
   });
@@ -92,22 +92,22 @@ it('保留平台不可克隆值的错误，不以空对象或 JSON 丢弃替代'
       throw new Error('读取失败');
     },
   };
-  expect(() => snapshot(bad)).toThrow('读取失败');
+  expect(() => _snapshot(bad)).toThrow('读取失败');
 });
 
 it('读取快照的属性参与正常依赖跟踪', () => {
   const source = state({ nested: { n: 0 } });
   const values: number[] = [];
-  const stop = createRoot((dispose) => {
-    effect(() => {
-      values.push(snapshot(source.read()).nested.n);
+  const stop = _createRoot((dispose) => {
+    _effect(() => {
+      values.push(_snapshot(source.read()).nested.n);
     });
     return dispose;
   });
   try {
-    flushSync();
+    _flushSync();
     source.read().nested.n++;
-    flushSync();
+    _flushSync();
     expect(values).toEqual([0, 1]);
   } finally {
     stop();

@@ -1,4 +1,4 @@
-import { Scope, Source, batch, getScope, renderEffect, untrack } from '../runtime/reactivity.js';
+import { Scope, Source, _batch, getScope, renderEffect, _untrack } from '../runtime/reactivity.js';
 import { dynamic } from '../runtime/template.js';
 import type { Key, ListTemplate } from '../runtime/flow.js';
 import type { HydrationCursor } from './hydration.js';
@@ -37,8 +37,8 @@ export function renderList(
   renderEffect(() => {
     // 纯快照先验证 key；错误数据不能先破坏现有行。
     const entries = template.entries.read();
-    untrack(() =>
-      batch(() => {
+    _untrack(() =>
+      _batch(() => {
         const next = new Map<Key, Row>();
         const created: Row[] = [];
         try {

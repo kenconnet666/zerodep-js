@@ -1,12 +1,12 @@
 import { afterEach, expect, it, vi } from 'vitest';
 import {
-  persistLocal,
-  persistSession,
+  _persistLocal,
+  _persistSession,
   type Persistence,
   type StorageLike,
 } from '../src/storage/persist.js';
 import { reactive } from '../src/runtime/state.js';
-import { createRoot, flushSync, Scope, Source } from '../src/runtime/reactivity.js';
+import { _createRoot, _flushSync, Scope, Source } from '../src/runtime/reactivity.js';
 
 class MemoryStorage implements StorageLike {
   data = new Map<string, string>();
@@ -36,7 +36,7 @@ const value = (storage: MemoryStorage, key = 'prefs') => JSON.parse(storage.data
 const cleanups: Array<() => void> = [];
 function owned<T>(setup: () => T): { result: T; stop: () => void } {
   let result!: T;
-  const stop = createRoot((dispose) => {
+  const stop = _createRoot((dispose) => {
     result = setup();
     return dispose;
   });
@@ -56,16 +56,16 @@ it('先恢复已有值，保持根对象身份，深层编辑按批次写入', (
     old?: boolean;
     extra?: boolean;
   });
-  const { result } = owned(() => persistLocal('prefs', model, { storage }));
+  const { result } = owned(() => _persistLocal('prefs', model, { storage }));
   expect(result.ready).toBe(false);
   expect(storage.reads).toBe(0);
-  flushSync();
+  _flushSync();
   expect(model).toEqual({ nested: { n: 3 }, extra: true });
   expect(result.ready).toBe(true);
   expect(storage.writes).toBe(0);
   model.nested.n = 4;
   model.nested.n = 5;
-  flushSync();
+  _flushSync();
   expect(value(storage).nested.n).toBe(5);
   expect(storage.writes).toBe(1);
 });
@@ -73,14 +73,14 @@ it('先恢复已有值，保持根对象身份，深层编辑按批次写入', (
 it('默认值不主动落盘，恢复前的新编辑优先', () => {
   const storage = new MemoryStorage();
   const initial = reactive({ n: 0 });
-  owned(() => persistLocal('missing', initial, { storage }));
-  flushSync();
+  owned(() => _persistLocal('missing', initial, { storage }));
+  _flushSync();
   expect(storage.data.has('missing')).toBe(false);
   storage.data.set('prefs', saved({ n: 8 }));
   const edited = reactive({ n: 0 });
-  owned(() => persistLocal('prefs', edited, { storage }));
+  owned(() => _persistLocal('prefs', edited, { storage }));
   edited.n = 2;
-  flushSync();
+  _flushSync();
   expect(edited.n).toBe(2);
   expect(value(storage)).toEqual({ n: 2 });
 });
@@ -92,7 +92,7 @@ it('read/write 绑定支持普通变量整体替换和动态键', () => {
   const key = new Source('a');
   const model = new Source('默认');
   const { result } = owned(() =>
-    persistLocal(
+    _persistLocal(
       () => key.read(),
       {
         read: () => model.read(),
@@ -103,16 +103,16 @@ it('read/write 绑定支持普通变量整体替换和动态键', () => {
       { storage },
     ),
   );
-  flushSync();
+  _flushSync();
   expect(model.read()).toBe('甲');
   model.write('更新甲');
-  flushSync();
+  _flushSync();
   key.write('b');
-  flushSync();
+  _flushSync();
   expect(model.read()).toBe('乙');
   expect(value(storage, 'a')).toBe('更新甲');
   expect(result.remove()).toBe(true);
-  flushSync();
+  _flushSync();
   expect(model.read()).toBe('默认');
   expect(storage.data.has('b')).toBe(false);
   expect(result.reset()).toBe(true);
@@ -123,16 +123,16 @@ it('同页多个实例同步而不发生写入循环，停止后不再接收', (
   const storage = new MemoryStorage();
   const first = reactive({ n: 0 });
   const second = reactive({ n: 0 });
-  owned(() => persistLocal('prefs', first, { storage }));
-  const { result } = owned(() => persistLocal('prefs', second, { storage }));
-  flushSync();
+  owned(() => _persistLocal('prefs', first, { storage }));
+  const { result } = owned(() => _persistLocal('prefs', second, { storage }));
+  _flushSync();
   first.n = 1;
-  flushSync();
+  _flushSync();
   expect(second.n).toBe(1);
   expect(storage.writes).toBe(1);
   result.stop();
   first.n = 2;
-  flushSync();
+  _flushSync();
   expect(second.n).toBe(1);
   expect(result.status).toBe('stopped');
   expect(result.flush()).toBe(false);
@@ -142,12 +142,12 @@ it('延时写入、手动提交和卸载提交最后一轮尚未刷新状态', (
   vi.useFakeTimers();
   const storage = new MemoryStorage();
   const model = reactive({ n: 0 });
-  const { result, stop } = owned(() => persistLocal('prefs', model, { storage, writeDelay: 100 }));
-  flushSync();
+  const { result, stop } = owned(() => _persistLocal('prefs', model, { storage, writeDelay: 100 }));
+  _flushSync();
   model.n = 1;
-  flushSync();
+  _flushSync();
   model.n = 2;
-  flushSync();
+  _flushSync();
   vi.advanceTimersByTime(99);
   expect(storage.writes).toBe(0);
   expect(result.flush()).toBe(true);
@@ -165,12 +165,12 @@ it('切换键先提交原键的排队快照，不把新值写入旧键', () => {
   storage.data.set('b', saved({ n: 8 }));
   const key = new Source('a');
   const model = reactive({ n: 0 });
-  owned(() => persistLocal(() => key.read(), model, { storage, writeDelay: 100 }));
-  flushSync();
+  owned(() => _persistLocal(() => key.read(), model, { storage, writeDelay: 100 }));
+  _flushSync();
   model.n = 2;
-  flushSync();
+  _flushSync();
   key.write('b');
-  flushSync();
+  _flushSync();
   expect(value(storage, 'a').n).toBe(2);
   expect(model.n).toBe(8);
   vi.advanceTimersByTime(1000);
@@ -180,21 +180,21 @@ it('切换键先提交原键的排队快照，不把新值写入旧键', () => {
 it('暂停不写入，恢复后订阅仍生效', () => {
   const storage = new MemoryStorage();
   const model = reactive({ n: 0 });
-  const { result } = owned(() => persistLocal('prefs', model, { storage }));
-  flushSync();
+  const { result } = owned(() => _persistLocal('prefs', model, { storage }));
+  _flushSync();
   result.pause();
   model.n = 1;
-  flushSync();
+  _flushSync();
   model.n = 2;
-  flushSync();
+  _flushSync();
   expect(result.status).toBe('paused');
   expect(result.flush()).toBe(false);
   expect(storage.writes).toBe(0);
   result.resume();
-  flushSync();
+  _flushSync();
   expect(value(storage).n).toBe(2);
   model.n = 3;
-  flushSync();
+  _flushSync();
   expect(value(storage).n).toBe(3);
 });
 
@@ -202,18 +202,18 @@ it('损坏数据不会被默认值覆盖，显式删除或重置才能清除', (
   const storage = new MemoryStorage();
   storage.data.set('prefs', '{bad');
   const model = reactive({ n: 0 });
-  const { result } = owned(() => persistLocal('prefs', model, { storage }));
-  flushSync();
+  const { result } = owned(() => _persistLocal('prefs', model, { storage }));
+  _flushSync();
   expect(result.ready).toBe(false);
   expect(result.status).toBe('error');
   model.n = 1;
-  flushSync();
+  _flushSync();
   expect(storage.data.get('prefs')).toBe('{bad');
   expect(result.remove()).toBe(true);
-  flushSync();
+  _flushSync();
   expect(storage.data.has('prefs')).toBe(false);
   model.n = 2;
-  flushSync();
+  _flushSync();
   expect(value(storage)).toEqual({ n: 2 });
 });
 
@@ -222,7 +222,7 @@ it('迁移和校验在恢复前完成，未知更高版本禁止覆盖', () => {
   storage.data.set('prefs', saved({ old: 3 }, 1));
   const model = reactive({ n: 0 });
   const { result } = owned(() =>
-    persistLocal('prefs', model, {
+    _persistLocal('prefs', model, {
       storage,
       version: 2,
       migrate: (data, previous) => {
@@ -235,12 +235,12 @@ it('迁移和校验在恢复前完成，未知更高版本禁止覆盖', () => {
       },
     }),
   );
-  flushSync();
+  _flushSync();
   expect(model.n).toBe(3);
   expect(JSON.parse(storage.data.get('prefs')!).version).toBe(2);
   result.stop();
-  const old = owned(() => persistLocal('prefs', reactive({ n: 0 }), { storage }));
-  flushSync();
+  const old = owned(() => _persistLocal('prefs', reactive({ n: 0 }), { storage }));
+  _flushSync();
   expect(old.result.ready).toBe(false);
   expect(String(old.result.error)).toContain('版本比当前应用更新');
   expect(JSON.parse(storage.data.get('prefs')!).version).toBe(2);
@@ -251,7 +251,7 @@ it('旧 JSON 需要明确迁移，不假定它已符合当前数据契约', () =
   storage.data.set('prefs', JSON.stringify({ n: 3 }));
   const model = reactive({ n: 0 });
   owned(() =>
-    persistLocal('prefs', model, {
+    _persistLocal('prefs', model, {
       storage,
       migrate: (value, version) => {
         expect(version).toBe(0);
@@ -259,7 +259,7 @@ it('旧 JSON 需要明确迁移，不假定它已符合当前数据契约', () =
       },
     }),
   );
-  flushSync();
+  _flushSync();
   expect(model.n).toBe(3);
   expect(JSON.parse(storage.data.get('prefs')!).format).toBe('zerodep-js-storage');
 });
@@ -269,17 +269,17 @@ it('读取失败后的新编辑不被重试恢复覆盖，写入失败可明确�
   storage.data.set('prefs', saved({ n: 9 }));
   storage.failRead = true;
   const model = reactive({ n: 0 });
-  const { result } = owned(() => persistLocal('prefs', model, { storage }));
-  flushSync();
+  const { result } = owned(() => _persistLocal('prefs', model, { storage }));
+  _flushSync();
   model.n = 1;
-  flushSync();
+  _flushSync();
   storage.failRead = false;
   expect(result.retry()).toBe(true);
   expect(model.n).toBe(1);
   expect(value(storage).n).toBe(1);
   storage.failWrite = true;
   model.n = 2;
-  flushSync();
+  _flushSync();
   expect(result.ready).toBe(true);
   expect(String(result.error)).toContain('空间不足');
   expect(value(storage).n).toBe(1);
@@ -296,9 +296,9 @@ it('外部 storage 事件、clear 和 pagehide，释放最后监听', () => {
   const remove = vi.spyOn(target, 'removeEventListener');
   const model = reactive({ n: 0 });
   const { stop } = owned(() =>
-    persistLocal('prefs', model, { storage, window: target as Window, writeDelay: 100 }),
+    _persistLocal('prefs', model, { storage, window: target as Window, writeDelay: 100 }),
   );
-  flushSync();
+  _flushSync();
   const event = new Event('storage');
   Object.defineProperties(event, {
     storageArea: { value: storage },
@@ -307,7 +307,7 @@ it('外部 storage 事件、clear 和 pagehide，释放最后监听', () => {
   });
   storage.data.set('prefs', saved({ n: 4 }));
   target.dispatchEvent(event);
-  flushSync();
+  _flushSync();
   expect(model.n).toBe(4);
   expect(storage.writes).toBe(0);
   model.n = 5;
@@ -321,7 +321,7 @@ it('外部 storage 事件、clear 和 pagehide，释放最后监听', () => {
     newValue: { value: null },
   });
   target.dispatchEvent(cleared);
-  flushSync();
+  _flushSync();
   expect(model.n).toBe(0);
   expect(storage.data.size).toBe(0);
   stop();
@@ -335,10 +335,10 @@ it('sessionStorage 使用自己的默认宿主，SSR 完全不访问宿主', () 
   const session = new MemoryStorage();
   const target = Object.assign(new EventTarget(), { localStorage: local, sessionStorage: session });
   const model = reactive({ n: 0 });
-  owned(() => persistSession('prefs', model, { window: target as unknown as Window }));
-  flushSync();
+  owned(() => _persistSession('prefs', model, { window: target as unknown as Window }));
+  _flushSync();
   model.n = 2;
-  flushSync();
+  _flushSync();
   expect(session.data.has('prefs')).toBe(true);
   expect(local.data.size).toBe(0);
   const server = new Scope(null);
@@ -346,9 +346,9 @@ it('sessionStorage 使用自己的默认宿主，SSR 完全不访问宿主', () 
   const resolve = vi.fn(() => local);
   let handle!: Persistence;
   server.run(() => {
-    handle = persistLocal('prefs', reactive({ n: 0 }), { storage: resolve });
+    handle = _persistLocal('prefs', reactive({ n: 0 }), { storage: resolve });
   });
-  flushSync();
+  _flushSync();
   expect(resolve).not.toHaveBeenCalled();
   expect(handle.ready).toBe(false);
   server.dispose();
@@ -359,16 +359,16 @@ it('数组保持根身份，特殊键不会变成原型；验证错误不产生�
   const storage = new MemoryStorage();
   storage.data.set('array', saved([{ n: 2 }]));
   const array = reactive([{ n: 0 }, { n: 1 }]);
-  owned(() => persistLocal('array', array, { storage }));
-  flushSync();
+  owned(() => _persistLocal('array', array, { storage }));
+  _flushSync();
   expect(array).toEqual([{ n: 2 }]);
   storage.data.set('prefs', saved(JSON.parse('{"__proto__":{"safe":true},"n":1}')));
   const model = reactive({ n: 0 });
-  owned(() => persistLocal('prefs', model, { storage }));
-  flushSync();
+  owned(() => _persistLocal('prefs', model, { storage }));
+  _flushSync();
   expect(Object.hasOwn(model, '__proto__')).toBe(true);
   expect(Object.getPrototypeOf(model)).toBe(Object.prototype);
-  expect(() => persistLocal('outside', model, { storage })).toThrow('作用域');
+  expect(() => _persistLocal('outside', model, { storage })).toThrow('作用域');
 });
 
 it('错误回调失败不影响其他订阅，错误仍可观察', () => {
@@ -376,45 +376,45 @@ it('错误回调失败不影响其他订阅，错误仍可观察', () => {
   storage.failWrite = true;
   const model = reactive({ n: 0 });
   const { result } = owned(() =>
-    persistLocal('prefs', model, {
+    _persistLocal('prefs', model, {
       storage,
       onError() {
         throw new Error('处理失败');
       },
     }),
   );
-  flushSync();
+  _flushSync();
   model.n = 1;
-  flushSync();
+  _flushSync();
   expect(result.error).toBeInstanceOf(AggregateError);
 });
 
 it('挂载前停止不会读取或写入，挂载前暂停可正常恢复', () => {
   const storage = new MemoryStorage();
   const model = reactive({ n: 0 });
-  const first = owned(() => persistLocal('prefs', model, { storage }));
+  const first = owned(() => _persistLocal('prefs', model, { storage }));
   first.stop();
-  flushSync();
+  _flushSync();
   expect(storage.reads).toBe(0);
-  const next = owned(() => persistLocal('prefs', model, { storage }));
+  const next = owned(() => _persistLocal('prefs', model, { storage }));
   next.result.pause();
-  flushSync();
+  _flushSync();
   expect(storage.reads).toBe(0);
   next.result.resume();
-  flushSync();
+  _flushSync();
   model.n = 1;
-  flushSync();
+  _flushSync();
   expect(value(storage).n).toBe(1);
 });
 
 it('不可用宿主可以重试，未使用的键不影响活跃键', () => {
   let available: MemoryStorage | undefined;
   const model = reactive({ n: 0 });
-  const { result } = owned(() => persistLocal('prefs', model, { storage: () => available }));
-  flushSync();
+  const { result } = owned(() => _persistLocal('prefs', model, { storage: () => available }));
+  _flushSync();
   expect(result.ready).toBe(false);
   model.n = 3;
-  flushSync();
+  _flushSync();
   available = new MemoryStorage();
   expect(result.retry()).toBe(true);
   expect(value(available).n).toBe(3);
@@ -431,8 +431,8 @@ it('恢复前校验失败和不可替换字段不产生部分状态', () => {
     enumerable: true,
   });
   const model = reactive(raw);
-  const { result } = owned(() => persistLocal('prefs', model, { storage }));
-  flushSync();
+  const { result } = owned(() => _persistLocal('prefs', model, { storage }));
+  _flushSync();
   expect(result.ready).toBe(false);
   expect(model.n).toBe(0);
   expect(model.locked).toBe(1);
@@ -442,13 +442,13 @@ it('恢复前校验失败和不可替换字段不产生部分状态', () => {
 it('暂停中明确 reset 的写入意图不会在恢复时丢失', () => {
   const storage = new MemoryStorage();
   const model = reactive({ n: 0 });
-  const { result } = owned(() => persistLocal('prefs', model, { storage }));
-  flushSync();
+  const { result } = owned(() => _persistLocal('prefs', model, { storage }));
+  _flushSync();
   result.pause();
   expect(result.reset()).toBe(true);
   expect(storage.data.size).toBe(0);
   result.resume();
-  flushSync();
+  _flushSync();
   expect(value(storage)).toEqual({ n: 0 });
 });
 
@@ -458,11 +458,11 @@ it('新键 reset 仍提交旧键待写快照', () => {
   const model = reactive({ n: 0 });
   const key = new Source('a');
   const { result } = owned(() =>
-    persistLocal(() => key.read(), model, { storage, writeDelay: 100 }),
+    _persistLocal(() => key.read(), model, { storage, writeDelay: 100 }),
   );
-  flushSync();
+  _flushSync();
   model.n = 2;
-  flushSync();
+  _flushSync();
   key.write('b');
   expect(result.reset()).toBe(true);
   expect(value(storage, 'a').n).toBe(2);
@@ -474,9 +474,13 @@ it('异步迁移明确报错，不能把 Promise 当空对象持久化', () => {
   storage.data.set('prefs', saved({ n: 1 }));
   const model = reactive({ n: 0 });
   const { result } = owned(() =>
-    persistLocal('prefs', model, { storage, version: 2, migrate: () => Promise.resolve({ n: 2 }) }),
+    _persistLocal('prefs', model, {
+      storage,
+      version: 2,
+      migrate: () => Promise.resolve({ n: 2 }),
+    }),
   );
-  flushSync();
+  _flushSync();
   expect(String(result.error)).toContain('同步');
   expect(model.n).toBe(0);
   expect(storage.writes).toBe(0);

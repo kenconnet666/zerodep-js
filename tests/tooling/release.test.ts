@@ -4,11 +4,12 @@ import { copyFile, mkdir, mkdtemp, readFile, realpath, rm, writeFile } from 'nod
 import { tmpdir } from 'node:os';
 import { isAbsolute, relative, resolve, sep } from 'node:path';
 import { promisify } from 'node:util';
+import { packages as packageList } from '../../scripts/package-list.mjs';
 
 const exec = promisify(execFile);
 const project = resolve(import.meta.dirname, '../..');
-const folders = ['core', 'compiler', 'ssr', 'vite'];
-const names = ['zerodep-js', 'zerodep-js-compiler', 'zerodep-js-ssr', 'zerodep-js-vite'];
+const folders = packageList.map((item) => item.folder);
+const names = packageList.map((item) => item.name);
 
 it('发布工具固定产物、拒绝篡改/越界/私有包，并仅准备明确候选版本', async () => {
   expect(process.env.npm_execpath, '请通过 pnpm test 运行发布工具集成用例').toBeTruthy();
@@ -31,6 +32,10 @@ it('发布工具固定产物、拒绝篡改/越界/私有包，并仅准备明�
     writeFile(resolve(fixture, name), JSON.stringify(value, null, 2) + '\n');
   try {
     await mkdir(resolve(fixture, 'scripts'));
+    await copyFile(
+      resolve(project, 'scripts/package-list.mjs'),
+      resolve(fixture, 'scripts/package-list.mjs'),
+    );
     await copyFile(
       resolve(project, 'scripts/release.mjs'),
       resolve(fixture, 'scripts/release.mjs'),

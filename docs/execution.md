@@ -283,3 +283,12 @@
 - _createPage 提供每次挂载独立的输入视图和 update/dispose。普通对象/数组复制而函数/外部实例保留身份；完整替换、读取失败不部分提交、销毁后更新、环与特殊字段已有验证。
 - mount/hydrate disposer 现在只删除自己的根登记。工作区外消费增加“卸载、重挂、再调旧 disposer、拒绝第三次挂载”的 CSR/SSR 回归。
 - 283 项 Node 和 pnpm check 已通过；独立包与 LSP 验证继续进行，后续实现三个真实宿主。上一提交 db36a9f 的完整 CI 已通过。
+
+## 三宿主适配与直接实现名称
+
+- 用户指出入口不需要 as 重命名中转；已把实际函数声明、内部调用和入口统一为 _ 名称，RouterInstance 也直接声明。core 的四个入口已无导出别名，未保留旧公开函数。
+- 新增 zerodep-js-react、zerodep-js-vue、zerodep-js-svelte；分别提供 ZerodepPage、ZerodepPage、_attachPage。每包仅声明对应宿主与 core 为 peer，基础框架独立消费不安装任何宿主。
+- _createPage 复制普通输入并提供逐字段缓存，等值输入跳过通知；无关字段变化不重跑读取未变化标量的 effect。环/别名区别、字段移除、纯派生拒绝及错误后的正常提交有回归。
+- Vite include/exclude 以应用 root 为基准并贯通 transform/预扫描，额外测试查询、排除项、Windows 路径、虚拟/声明/Svelte 模块。apps/hosts 用一个 TSX 页面与普通 TS 状态模块验证三种原生宿主及各自 SSR 接管。
+- 288 项 Node、pnpm check/build、格式检查与 9 项 Chromium 宿主用例通过；开发 StrictMode/共享页面热更新、七包工作区外 tgz 类型/CSR/SSR/更新/清理消费通过。最后的输入缓存修正又通过 Node 和三宿主浏览器回归。
+- 发布、基础消费与宿主消费共用七包清单；release:verify-registry 同时要求两种注册表消费，历史只读状态仍能查看 RC1 四包记录。完整矩阵交 CI，准备推送前已确认 1bb5927 的完整 CI 成功。

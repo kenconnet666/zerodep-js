@@ -1,11 +1,11 @@
 import { expect, it } from 'vitest';
 import { defineComponent } from '../src/runtime/component.js';
-import { defineRoutes, matchRoutes, routePath } from '../src/router/routes.js';
+import { _defineRoutes, matchRoutes, routePath } from '../src/router/routes.js';
 const Page = defineComponent(() => null);
 const url = (path: string) => new URL(path, 'http://router.test');
 
 it('静态、参数、可选和通配路径按明确优先级匹配并正确编码', () => {
-  const routes = defineRoutes({
+  const routes = _defineRoutes({
     all: { path: '/*rest', component: Page },
     item: { path: '/tasks/:id', component: Page },
     add: { path: '/tasks/new', component: Page },
@@ -24,7 +24,7 @@ it('静态、参数、可选和通配路径按明确优先级匹配并正确编�
 });
 
 it('嵌套布局保留独立参数和索引页，查询只由最终匹配执行', () => {
-  const routes = defineRoutes({
+  const routes = _defineRoutes({
     root: { path: '/', component: Page },
     home: { path: '/', parent: 'root', component: Page },
     projects: { path: '/projects/:project', parent: 'root', component: Page },
@@ -50,19 +50,22 @@ it('嵌套布局保留独立参数和索引页，查询只由最终匹配执行'
 
 it('无效声明、重复模式、父级循环和无效 URI 明确报错', () => {
   for (const path of ['relative', '/a//b', '/a#b', '/a/*rest/b', '/:id/:id', '/%2E'])
-    expect(() => defineRoutes({ bad: { path, component: Page } })).toThrow();
+    expect(() => _defineRoutes({ bad: { path, component: Page } })).toThrow();
   expect(() =>
-    defineRoutes({
+    _defineRoutes({
       a: { path: '/a', parent: 'b', component: Page },
       b: { path: '/b', parent: 'a', component: Page },
     }),
   ).toThrow('循环');
-  expect(() => defineRoutes({ a: { path: '/a', parent: 'missing', component: Page } })).toThrow(
+  expect(() => _defineRoutes({ a: { path: '/a', parent: 'missing', component: Page } })).toThrow(
     '找不到',
   );
   expect(() =>
-    defineRoutes({ a: { path: '/:id', component: Page }, b: { path: '/:other', component: Page } }),
+    _defineRoutes({
+      a: { path: '/:id', component: Page },
+      b: { path: '/:other', component: Page },
+    }),
   ).toThrow('重复');
-  const routes = defineRoutes({ a: { path: '/:id', component: Page } });
+  const routes = _defineRoutes({ a: { path: '/:id', component: Page } });
   expect(() => matchRoutes(routes, url('/%E0%A4'))).toThrow(URIError);
 });

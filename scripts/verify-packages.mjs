@@ -8,6 +8,7 @@ import { tmpdir } from 'node:os';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseArgs, promisify } from 'node:util';
 import { chromium, expect } from '@playwright/test';
+import { packages as packageList } from './package-list.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const { values } = parseArgs({
@@ -64,7 +65,7 @@ try {
     assert(version, `找不到 ${name} 的固定 catalog 版本。`);
     manifest.devDependencies[name] = version;
   }
-  for (const name of ['core', 'compiler', 'vite', 'ssr']) {
+  for (const { folder: name } of packageList.filter((item) => item.kind === 'framework')) {
     const directory = resolve(root, 'packages', name);
     const sourceManifest = await json(resolve(directory, 'package.json'));
     if (values.registry)
@@ -112,6 +113,15 @@ try {
   );
   console.log(`包内容清单通过，开始工作区外的${values.registry ? '注册表' : 'tgz'}独立安装。`);
   await run(['install', '--ignore-scripts', '--prefer-offline']);
+  for (const host of ['react', 'vue', 'svelte'])
+    assert.equal(
+      await access(resolve(consumer, 'node_modules', host)).then(
+        () => true,
+        () => false,
+      ),
+      false,
+      '独立框架消费不能强制安装宿主。',
+    );
   for (const [name, { files, sourceManifest }] of packages) {
     const directory = resolve(consumer, 'node_modules', name);
     const installedPath = await realpath(directory);

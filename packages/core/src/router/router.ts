@@ -1,8 +1,8 @@
 import { COMPONENT, type AnyComponent } from '../runtime/component.js';
-import { Source, tick, unowned, type Cleanup } from '../runtime/reactivity.js';
-import { snapshot } from '../runtime/snapshot.js';
+import { Source, _tick, unowned, type Cleanup } from '../runtime/reactivity.js';
+import { _snapshot } from '../runtime/snapshot.js';
 import {
-  createMemoryHistory,
+  _createMemoryHistory,
   internalURL,
   urlPath,
   type HistoryChange,
@@ -44,7 +44,7 @@ export interface RouterOptions {
   focus?: boolean;
   onError?: (error: unknown) => void;
 }
-export interface Router<T extends object = object> {
+export interface RouterInstance<T extends object = object> {
   readonly routes: T;
   readonly history: RouterHistory;
   readonly state: RouterState;
@@ -87,11 +87,13 @@ interface Cached {
 }
 // 一个历史实例只交给一个控制器；窗口级历史另在适配器中限制所有者。
 const ownedHistories = new WeakSet<RouterHistory>();
-
-export function createRouter<T extends object>(routes: T, options: RouterOptions = {}): Router<T> {
+export function _createRouter<T extends object>(
+  routes: T,
+  options: RouterOptions = {},
+): RouterInstance<T> {
   const definitions = tableRecords(routes);
   const refs = new Set(definitions.map((record) => record.ref));
-  const history = options.history ?? createMemoryHistory();
+  const history = options.history ?? _createMemoryHistory();
   if (ownedHistories.has(history)) throw new Error('history 已被路由器使用，请创建独立实例。');
   const maxAge = options.preloadMaxAge ?? 30_000;
   const maxEntries = options.preloadEntries ?? 32;
@@ -286,7 +288,7 @@ export function createRouter<T extends object>(routes: T, options: RouterOptions
     focus: boolean,
   ) {
     if (!history.window || !stopHistory) return;
-    await tick();
+    await _tick();
     if (signal.aborted || disposed) return;
     const browser = history.window;
     let anchor: HTMLElement | null = null;
@@ -514,7 +516,7 @@ export function createRouter<T extends object>(routes: T, options: RouterOptions
     restoring = undefined;
     void navigation(change.location.href, { state: change.location.state, force: true }, change);
   };
-  const router: Router<T> = {
+  const router: RouterInstance<T> = {
     routes,
     history,
     get state() {
@@ -643,7 +645,7 @@ export function createRouter<T extends object>(routes: T, options: RouterOptions
       const state = current.read();
       if (state.status === 'idle' || pending.read())
         throw new Error('序列化路由前必须 await router.resolve。');
-      return snapshot({
+      return _snapshot({
         version: 1 as const,
         href: state.location.href,
         state: state.location.state,

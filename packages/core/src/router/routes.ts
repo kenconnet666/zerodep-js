@@ -84,7 +84,7 @@ const records = new WeakMap<object, readonly RouteRecord[]>();
 const references = new WeakMap<object, RouteRecord>();
 
 /** 单个路由先按路径和查询解析器推导 loader，避免映射类型的循环上下文推导。 */
-export function defineRoute<const P extends string, S = Search, D = undefined>(
+export function _defineRoute<const P extends string, S = Search, D = undefined>(
   path: P,
   options: Omit<RouteDefinition<P, S, D>, 'path'>,
 ): RouteDefinition<P, S, D> & { readonly [routeType]?: { search: S; data: Awaited<D> } } {
@@ -92,7 +92,7 @@ export function defineRoute<const P extends string, S = Search, D = undefined>(
 }
 
 /** 命名路由表提供稳定引用，普通无 loader 的记录也可以直接声明。 */
-export function defineRoutes<const T extends Record<string, RouteInput>>(
+export function _defineRoutes<const T extends Record<string, RouteInput>>(
   definitions: T,
 ): RouteTable<T> {
   const table: Record<string, AnyRoute> = Object.create(null);

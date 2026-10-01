@@ -6,20 +6,20 @@ import {
   Source,
   Derived,
   Scope,
-  createRoot,
+  _createRoot,
   getScope,
-  effect,
+  _effect,
   renderEffect,
   propertyEffect,
-  flushSync,
-  onCleanup,
-  tick,
+  _flushSync,
+  _onCleanup,
+  _tick,
 } from '../packages/core/dist/runtime/reactivity.js';
 import { reactive } from '../packages/core/dist/runtime/state.js';
 import {
-  createContext,
-  provideContext,
-  useContext,
+  _createContext,
+  _provideContext,
+  _useContext,
 } from '../packages/core/dist/runtime/context.js';
 import { defineComponent, element } from '../packages/core/dist/internal.js';
 import { ErrorBoundary } from '../packages/core/dist/runtime/flow.js';
@@ -73,7 +73,7 @@ await measure('依赖与作用域周转', async () => {
     right.write(-index - 1);
     chooseLeft.write(true);
     const stop = parent.run(() =>
-      createRoot((dispose) => {
+      _createRoot((dispose) => {
         references.push(new WeakRef(getScope()));
         const selected = new Derived(() => (chooseLeft.read() ? left.read() : right.read()));
         const doubled = new Derived(() => selected.read() * 2);
@@ -83,33 +83,33 @@ await measure('依赖与作用域周转', async () => {
         propertyEffect(() => {
           doubled.read();
         });
-        effect(() => {
+        _effect(() => {
           assert.equal(doubled.read(), 2 * (chooseLeft.read() ? left.read() : right.read()));
           runs++;
           return () => {
             cleanups++;
           };
         });
-        onCleanup(() => {
+        _onCleanup(() => {
           roots++;
         });
         return dispose;
       }),
     );
     try {
-      flushSync();
-      flushSync(() => chooseLeft.write(false));
+      _flushSync();
+      _flushSync(() => chooseLeft.write(false));
       right.write(index + 10); // 留下排队更新，再卸载，验证任务撤销。
     } finally {
       stop();
     }
-    flushSync();
+    _flushSync();
     assert.equal(parent.children.size, 0);
     for (const source of [left, right, chooseLeft]) assert.equal(source.subscribers.size, 0);
   }
   try {
     for (let index = 0; index < iterations; index++) cycle(index);
-    await tick();
+    await _tick();
     assert.equal(runs, iterations * 2);
     assert.equal(cleanups, runs);
     assert.equal(roots, iterations);
@@ -127,14 +127,14 @@ await measure('临时字段与冷派生回收', async () => {
   function query() {
     const key = Symbol('一次性查询');
     references.push(new WeakRef(key));
-    const stop = createRoot((dispose) => {
-      effect(() => {
+    const stop = _createRoot((dispose) => {
+      _effect(() => {
         void dictionary[key];
         void (key in dictionary);
       });
       return dispose;
     });
-    flushSync();
+    _flushSync();
     stop();
   }
   for (let index = 0; index < iterations; index++) query();
@@ -155,15 +155,15 @@ await measure('临时字段与冷派生回收', async () => {
   assert.deepEqual(cold.read(), { result: 4 });
   assert.equal(calculations, 2);
   let observed;
-  const stop = createRoot((dispose) => {
-    effect(() => {
+  const stop = _createRoot((dispose) => {
+    _effect(() => {
       observed = cold.read().result;
     });
     return dispose;
   });
   try {
     await collect();
-    flushSync(() => {
+    _flushSync(() => {
       model.value = 3;
     });
     assert.equal(observed, 6, 'GC 后重新订阅没有接入当前字段。');
@@ -177,36 +177,36 @@ await measure('失败清理与后续任务', async () => {
   const source = new Source(0);
   let cleanups = 0;
   let activeRuns = 0;
-  const live = createRoot((dispose) => {
-    effect(() => {
+  const live = _createRoot((dispose) => {
+    _effect(() => {
       source.read();
       activeRuns++;
     });
     return dispose;
   });
   try {
-    flushSync();
+    _flushSync();
     for (let index = 0; index < iterations; index++) {
-      const stop = createRoot((dispose) => {
+      const stop = _createRoot((dispose) => {
         renderEffect(() => {
           source.read();
         });
-        effect(() => {
+        _effect(() => {
           throw new Error('已取消的任务不应执行');
         });
-        onCleanup(() => {
+        _onCleanup(() => {
           cleanups++;
         });
-        onCleanup(() => {
+        _onCleanup(() => {
           throw new Error('预期清理失败');
         });
         return dispose;
       });
       assert.throws(stop, /预期清理失败/);
       assert.equal(source.subscribers.size, 1);
-      flushSync(() => source.write(index + 1));
+      _flushSync(() => source.write(index + 1));
     }
-    await tick();
+    await _tick();
     assert.equal(activeRuns, iterations + 1);
     assert.equal(cleanups, iterations);
   } finally {
@@ -217,33 +217,33 @@ await measure('失败清理与后续任务', async () => {
 });
 
 await measure('SSR 请求隔离与失败恢复', async () => {
-  const Request = createContext('缺少请求');
+  const Request = _createContext('缺少请求');
   let cleanups = 0;
   let effects = 0;
   const scopes = [];
   const Child = defineComponent(({ fail }) => {
     scopes.push(new WeakRef(getScope()));
-    onCleanup(() => {
+    _onCleanup(() => {
       cleanups++;
     });
     if (fail) throw new Error('服务端内部信息');
-    return element('p', { children: useContext(Request) });
+    return element('p', { children: _useContext(Request) });
   });
   const App = defineComponent(({ id, fail }) => {
     scopes.push(new WeakRef(getScope()));
-    provideContext(Request, id);
-    effect(() => {
+    _provideContext(Request, id);
+    _effect(() => {
       effects++;
     });
-    onCleanup(() => {
-      assert.equal(useContext(Request), id);
+    _onCleanup(() => {
+      assert.equal(_useContext(Request), id);
       cleanups++;
     });
     return element('section', {
       'data-request': id,
       children: element(ErrorBoundary, {
         children: element(Child, { fail }),
-        fallback: () => element('p', { children: `恢复 ${useContext(Request)}` }),
+        fallback: () => element('p', { children: `恢复 ${_useContext(Request)}` }),
       }),
     });
   });

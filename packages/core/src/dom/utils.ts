@@ -1,4 +1,4 @@
-import { Scope, onCleanup } from '../runtime/reactivity.js';
+import { Scope, _onCleanup } from '../runtime/reactivity.js';
 import type { Renderable } from '../runtime/template.js';
 import type { HydrationCursor } from './hydration.js';
 import { HTML } from '../native/attributes.js';
@@ -35,7 +35,7 @@ export function rollback(scope: Scope, error: unknown): never {
 
 export function insert(node: Node, parent: Container, before: Node | null): void {
   parent.insertBefore(node, before);
-  onCleanup(() => {
+  _onCleanup(() => {
     node.parentNode?.removeChild(node);
   });
 }

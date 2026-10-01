@@ -1,10 +1,10 @@
 import { expect, it } from 'vitest';
 import {
-  createRoot,
-  effect,
+  _createRoot,
+  _effect,
   renderEffect,
   propertyEffect,
-  flushSync,
+  _flushSync,
   Source,
 } from '../src/runtime/reactivity.js';
 import { nativeAttributes, eventName } from '../src/native/attributes.js';
@@ -38,8 +38,8 @@ it('property 阶段晚于完整 DOM 更新，早于已排队的用户 effect', (
   const order: string[] = [];
   let dom = -1;
   let property = -1;
-  const stop = createRoot((dispose) => {
-    effect(() => {
+  const stop = _createRoot((dispose) => {
+    _effect(() => {
       state.read();
       order.push(`effect:${property}`);
     });
@@ -56,10 +56,10 @@ it('property 阶段晚于完整 DOM 更新，早于已排队的用户 effect', (
   });
   try {
     expect(order).toEqual(['dom']);
-    flushSync();
+    _flushSync();
     expect(order).toEqual(['dom', 'property', 'effect:0']);
     order.length = 0;
-    flushSync(() => state.write(1));
+    _flushSync(() => state.write(1));
     expect(order).toEqual(['dom', 'property', 'effect:1']);
   } finally {
     stop();
@@ -68,13 +68,13 @@ it('property 阶段晚于完整 DOM 更新，早于已排队的用户 effect', (
 
 it('卸载撤销尚未应用的 property 任务', () => {
   let called = false;
-  createRoot((dispose) => {
+  _createRoot((dispose) => {
     propertyEffect(() => {
       called = true;
     });
     dispose();
   });
-  flushSync();
+  _flushSync();
   expect(called).toBe(false);
 });
 

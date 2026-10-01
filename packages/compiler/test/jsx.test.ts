@@ -1,7 +1,7 @@
 import { execute } from './execute.js';
 import { describe, expect, it } from 'vitest';
 import * as runtime from '../../core/src/internal.js';
-import { createRoot } from '../../core/src/runtime/reactivity.js';
+import { _createRoot } from '../../core/src/runtime/reactivity.js';
 import { state } from '../../core/src/runtime/state.js';
 import type {
   DynamicTemplate,
@@ -32,7 +32,7 @@ const result = { view, replace() {data = { open: true, value: 2 };}, hide() {dat
       replace: () => void;
       hide: () => void;
     };
-    createRoot((dispose) => {
+    _createRoot((dispose) => {
       try {
         const descriptor = result.view.value.read() as ElementTemplate;
         const output = runtime.setupComponent(
@@ -61,7 +61,7 @@ const result = { view: <View />, change(next) {value = next;} };`) as {
       view: DynamicTemplate;
       change: (value: unknown) => void;
     };
-    createRoot((dispose) => {
+    _createRoot((dispose) => {
       try {
         const descriptor = result.view.value.read() as ElementTemplate;
         const output = runtime.setupComponent(
@@ -131,7 +131,7 @@ const result = { view, hide() {visible = false;} };`) as { view: Renderable; hid
 import { _component } from 'zerodep-js';
 const View = _component(({ as: Tag, class: className = 'default' }) => <Tag class={className}>内容</Tag>);
 const result = View;`) as Parameters<typeof runtime.setupComponent>[0];
-    createRoot((dispose) => {
+    _createRoot((dispose) => {
       try {
         const result = runtime.setupComponent(View, { as: 'article' });
         expect(text(result)).toBe('内容');

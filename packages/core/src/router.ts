@@ -1,22 +1,15 @@
-export { defineRoute as _defineRoute, defineRoutes as _defineRoutes } from './router/routes.js';
-export { createRouter as _createRouter } from './router/router.js';
-export {
-  Router,
-  Outlet,
-  Link,
-  useRoute as _useRoute,
-  useRouter as _useRouter,
-  onBeforeLeave as _onBeforeLeave,
-} from './router/view.js';
+export { _defineRoute, _defineRoutes } from './router/routes.js';
+export { _createRouter } from './router/router.js';
+export { Router, Outlet, Link, _useRoute, _useRouter, _onBeforeLeave } from './router/view.js';
 export type { RouterProps, LinkProps } from './router/view.js';
-export type { Router as RouterInstance, RouterOptions } from './router/router.js';
+export type { RouterInstance, RouterOptions } from './router/router.js';
 export {
-  createMemoryHistory as _createMemoryHistory,
-  createBrowserHistory as _createBrowserHistory,
-  createHashHistory as _createHashHistory,
+  _createMemoryHistory,
+  _createBrowserHistory,
+  _createHashHistory,
 } from './router/history.js';
 export type { RouterHistory, HistoryEntry, HistoryChange } from './router/history.js';
-export { redirect as _redirect, RouteRedirect, RouteError } from './router/navigation.js';
+export { _redirect, RouteRedirect, RouteError } from './router/navigation.js';
 export type {
   RouterState,
   RouterSnapshot,

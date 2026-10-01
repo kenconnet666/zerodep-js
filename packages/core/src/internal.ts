@@ -12,7 +12,7 @@ export function assertRuntime(expected: number): void {
     );
 }
 
-export { Scope, getScope, renderEffect, untrack } from './runtime/reactivity.js';
+export { Scope, getScope, renderEffect, _untrack } from './runtime/reactivity.js';
 export { state } from './runtime/state.js';
 export { defineComponent, setupComponent } from './runtime/component.js';
 export { prop, props, restProps } from './runtime/props.js';

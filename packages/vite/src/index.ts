@@ -1,17 +1,25 @@
-import type { Plugin, Rolldown } from 'vite';
+import { createFilter, normalizePath, type FilterPattern, type Plugin, type Rolldown } from 'vite';
 import { compile, CompileError } from 'zerodep-js-compiler';
 
-export function zerodep(): Plugin {
+export interface ZerodepOptions {
+  include?: FilterPattern;
+  exclude?: FilterPattern;
+}
+
+export function zerodep(options: ZerodepOptions = {}): Plugin {
+  let filter = createFilter(options.include, options.exclude);
   const compiler = {
     name: 'zerodep-js:compile',
     transform: {
       order: 'pre',
       handler(code, id) {
-        const filename = id.split('?')[0]!;
+        const filename = normalizePath(id.split('?')[0]!.replaceAll('\\', '/'));
         if (
           id.startsWith('\0') ||
           /[/\\]node_modules[/\\]/.test(filename) ||
-          !/\.(?:[jt]sx?|m[jt]s)$/.test(filename)
+          !/\.(?:[jt]sx?|m[jt]s)$/.test(filename) ||
+          /(?:\.svelte\.[jt]s|\.d\.[cm]?ts)$/.test(filename) ||
+          !filter(filename)
         )
           return null;
         // 已发布的 JS 依赖不重编译；应用的 TS/TSX 和显式 JSX 使用同一入口。
@@ -38,6 +46,10 @@ export function zerodep(): Plugin {
     ...compiler,
     name: 'zerodep-js',
     enforce: 'pre',
+    configResolved(config) {
+      // 相对模式按应用 root 解释；常规转换与预扫描共享这个闭包。
+      filter = createFilter(options.include, options.exclude, { resolve: config.root });
+    },
     config() {
       // 依赖扫描不执行 Vite 的常规 transform，必须看到同一份宏/JSX 转换结果。
       return { optimizeDeps: { rolldownOptions: { plugins: [compiler] } } };

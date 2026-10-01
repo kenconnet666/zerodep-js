@@ -1,0 +1,53 @@
+body {
+  margin: 0;
+  font:
+    1rem/1.6 system-ui,
+    sans-serif;
+  color: #26344c;
+  background: #f4f7fb;
+}
+body > nav,
+#app,
+#events {
+  display: block;
+  max-width: 64rem;
+  margin: 1.5rem auto;
+  padding: 0 1rem;
+}
+nav a {
+  margin-right: 1rem;
+  color: #2859b6;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+button,
+input {
+  font: inherit;
+  padding: 0.4rem 0.65rem;
+}
+.host-container {
+  margin-top: 1rem;
+  border: 1px dashed #6582b5;
+  padding: 1rem;
+  border-radius: 0.75rem;
+}
+.shared-page {
+  background: white;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+}
+.shared-page label {
+  display: block;
+  margin-block: 1rem;
+}
+.shared-page input {
+  margin-left: 0.75rem;
+}
+#events {
+  overflow-wrap: anywhere;
+  color: #56657c;
+  font-size: 0.85rem;
+}

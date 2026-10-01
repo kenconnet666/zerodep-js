@@ -1,13 +1,13 @@
 import { defineComponent } from '../runtime/component.js';
-import { createContext, provideContext, useContext } from '../runtime/context.js';
+import { _createContext, _provideContext, _useContext } from '../runtime/context.js';
 import { ErrorBoundary } from '../runtime/flow.js';
-import { effect, getScope, onCleanup } from '../runtime/reactivity.js';
-import { onMount } from '../runtime/lifecycle.js';
+import { _effect, getScope, _onCleanup } from '../runtime/reactivity.js';
+import { _onMount } from '../runtime/lifecycle.js';
 import { props, restProps, type Props } from '../runtime/props.js';
 import { dynamic, dynamicElement, element, type Renderable } from '../runtime/template.js';
 import { attributeValue, HTML } from '../native/attributes.js';
 import type { NativeProps } from '../jsx-runtime.js';
-import type { Router as RouterInstance } from './router.js';
+import type { RouterInstance } from './router.js';
 import type { AnyRoute, RouteRef, Search, RouteRecord } from './routes.js';
 import {
   asRouteError,
@@ -29,19 +29,19 @@ interface Level {
   depth: number;
   input: RouterProps;
 }
-const context = createContext<Level>();
+const context = _createContext<Level>();
 const mounted = new WeakSet<RouterInstance>();
 function currentLevel(): Level {
-  const level = useContext(context);
+  const level = _useContext(context);
   if (!level) throw new Error('路由组件与 hook 必须位于 Router 内部。');
   return level;
 }
-export function useRouter(): RouterInstance {
+export function _useRouter(): RouterInstance {
   return currentLevel().router;
 }
-export function useRoute<R extends AnyRoute>(route: R): RouteView<R>;
-export function useRoute(): RouteView<RouteRef<string, Search, unknown>>;
-export function useRoute(route?: AnyRoute): RouteView<AnyRoute> {
+export function _useRoute<R extends AnyRoute>(route: R): RouteView<R>;
+export function _useRoute(): RouteView<RouteRef<string, Search, unknown>>;
+export function _useRoute(route?: AnyRoute): RouteView<AnyRoute> {
   const level = currentLevel();
   const index = level.depth - 1;
   const read = () => {
@@ -69,7 +69,7 @@ export function useRoute(route?: AnyRoute): RouteView<AnyRoute> {
     },
   });
 }
-export function onBeforeLeave(guard: NavigationGuard): void {
+export function _onBeforeLeave(guard: NavigationGuard): void {
   const level = currentLevel();
   const match = level.router.state.matches[level.depth - 1];
   if (!match) throw new Error('onBeforeLeave 必须在匹配的路由组件中使用。');
@@ -78,7 +78,7 @@ export function onBeforeLeave(guard: NavigationGuard): void {
     if (owner.disposed || owner.clearing) return;
     return owner.run(() => guard(context));
   });
-  onCleanup(stop);
+  _onCleanup(stop);
 }
 
 function errorView(level: Level, error: unknown, retry: () => void): Renderable {
@@ -96,7 +96,7 @@ function errorView(level: Level, error: unknown, retry: () => void): Renderable 
 const RenderFailure = defineComponent(
   (input: { level: Level; error: unknown; reset: () => void }) => {
     const failed = input.level.router.state;
-    effect(() => {
+    _effect(() => {
       if (input.level.router.state !== failed) input.reset();
     });
     return dynamic(() => errorView(input.level, input.error, input.reset));
@@ -166,7 +166,7 @@ export const Outlet = defineComponent(() => {
   let previous: RouteRecord | undefined;
   let previousKey: string | number | symbol | undefined;
   let identity = Symbol('route');
-  provideContext(context, { ...level, depth: level.depth + 1 });
+  _provideContext(context, { ...level, depth: level.depth + 1 });
   return dynamicElement(
     () => RouteHost,
     props([
@@ -198,12 +198,12 @@ const RouterRoot = defineComponent((input: RouterProps) => {
   if (getScope()!.server && (router.state.status === 'idle' || router.pending))
     throw new Error('SSR 渲染 Router 前必须 await router.resolve()。');
   mounted.add(router);
-  onCleanup(() => {
+  _onCleanup(() => {
     mounted.delete(router);
     router.dispose();
   });
-  provideContext(context, { router, depth: 0, input });
-  onMount(() => router.start());
+  _provideContext(context, { router, depth: 0, input });
+  _onMount(() => router.start());
   return element(Outlet, {});
 });
 /** 控制器身份改变时重建其所有权，其他输入仍保持实时。 */
@@ -230,7 +230,7 @@ export type LinkProps<R extends AnyRoute> = Omit<NativeProps<HTMLAnchorElement>,
     reload?: boolean;
   };
 export const Link = defineComponent(<R extends AnyRoute>(input: LinkProps<R>) => {
-  const router = useRouter();
+  const router = _useRouter();
   // 公开 props 已按 to 检查参数，内部组装使用宽泛签名而不扩大公开重载。
   const actions = router as {
     href(to: AnyRoute, options: DestinationOptions): string;

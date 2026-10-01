@@ -1,4 +1,4 @@
-import { Scope, getScope, untrack } from '../runtime/reactivity.js';
+import { Scope, getScope, _untrack } from '../runtime/reactivity.js';
 import { dynamic } from '../runtime/template.js';
 import type { BoundaryTemplate } from '../runtime/flow.js';
 import { HydrationCursor, containsHydrationError } from './hydration.js';
@@ -36,7 +36,7 @@ export function renderBoundary(
     const cursor = pending;
     if (cursor) {
       try {
-        untrack(() =>
+        _untrack(() =>
           next.run(() =>
             render(
               dynamic(() => template.input.children),
@@ -64,7 +64,7 @@ export function renderBoundary(
     }
     const fragment = parent.ownerDocument!.createDocumentFragment();
     try {
-      untrack(() =>
+      _untrack(() =>
         next.run(() =>
           render(
             dynamic(() =>

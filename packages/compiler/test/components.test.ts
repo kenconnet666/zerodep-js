@@ -1,7 +1,7 @@
 import { execute } from './execute.js';
 import { describe, expect, it } from 'vitest';
 import * as runtime from '../../core/src/internal.js';
-import { createRoot } from '../../core/src/runtime/reactivity.js';
+import { _createRoot } from '../../core/src/runtime/reactivity.js';
 import { reactive } from '../../core/src/runtime/state.js';
 import { compile } from '../src/index.js';
 
@@ -33,7 +33,7 @@ const result = Counter;`,
         events.push(`旧:${n}`);
       },
     });
-    const dispose = createRoot((stop) => {
+    const dispose = _createRoot((stop) => {
       runtime.setupComponent(Counter, input);
       return stop;
     });
@@ -70,7 +70,7 @@ const result = View;`,
       },
     ) as Parameters<typeof runtime.setupComponent>[0];
     const input = reactive<Record<string, unknown>>({ min: 1, id: 'A' });
-    const dispose = createRoot((stop) => {
+    const dispose = _createRoot((stop) => {
       runtime.setupComponent(View, input);
       return stop;
     });
@@ -104,7 +104,7 @@ const result = View;`,
         },
       },
     ) as Parameters<typeof runtime.setupComponent>[0];
-    const dispose = createRoot((stop) => {
+    const dispose = _createRoot((stop) => {
       runtime.setupComponent(View, {});
       return stop;
     });
@@ -130,7 +130,7 @@ const result = View;`,
       },
     ) as Parameters<typeof runtime.setupComponent>[0];
     const input = reactive({ value: 1 });
-    const dispose = createRoot((stop) => {
+    const dispose = _createRoot((stop) => {
       runtime.setupComponent(View, input);
       return stop;
     });

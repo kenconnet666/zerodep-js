@@ -75,7 +75,7 @@ export class Scope {
     const previousScope = currentScope;
     currentScope = this;
     try {
-      untrack(() => {
+      _untrack(() => {
         // 先取消异步工作，再调用用户清理；effect 重跑后会取得新的信号。
         this.controller?.abort();
         if (!this.disposed) this.controller = undefined;
@@ -126,7 +126,7 @@ export function dispatchError(error: unknown, scope: Scope | null): void {
     if (!owner.onError || owner.disposed || owner.clearing) continue;
     try {
       const handler = owner.onError;
-      untrack(() => owner.run(() => handler(failure)));
+      _untrack(() => owner.run(() => handler(failure)));
       return;
     } catch (next) {
       failure = next;
@@ -140,17 +140,16 @@ export function unowned<T>(fn: () => T): T {
   const previous = currentScope;
   currentScope = null;
   try {
-    return untrack(fn);
+    return _untrack(fn);
   } finally {
     currentScope = previous;
   }
 }
-
-export function createRoot<T>(fn: (dispose: Cleanup) => T): T {
+export function _createRoot<T>(fn: (dispose: Cleanup) => T): T {
   if (computing) throw new Error('纯派生计算不能创建作用域。');
   const scope = new Scope();
   try {
-    return untrack(() => scope.run(() => fn(() => scope.dispose())));
+    return _untrack(() => scope.run(() => fn(() => scope.dispose())));
   } catch (error) {
     const errors = [error];
     try {
@@ -162,16 +161,14 @@ export function createRoot<T>(fn: (dispose: Cleanup) => T): T {
     throw error;
   }
 }
-
-export function onCleanup(cleanup: Cleanup): void {
+export function _onCleanup(cleanup: Cleanup): void {
   if (computing) throw new Error('纯派生计算不能注册清理操作。');
   if (!currentScope || currentScope.disposed || currentScope.clearing) {
     throw new Error('onCleanup 必须在有效的组件、effect 或 createRoot 作用域中使用。');
   }
   currentScope.cleanups.push(cleanup);
 }
-
-export function untrack<T>(fn: () => T): T {
+export function _untrack<T>(fn: () => T): T {
   const previous = currentObserver;
   currentObserver = null;
   try {
@@ -380,7 +377,7 @@ class ReactiveEffect extends Scope implements Observer {
         const cleanup = this.callback();
         if (typeof cleanup === 'function') {
           // 回调可能卸载自己所属的根，此时返回的资源也必须立即释放。
-          if (this.disposed) untrack(cleanup);
+          if (this.disposed) _untrack(cleanup);
           else this.cleanups.push(cleanup);
         } else if (cleanup !== undefined) {
           throw new Error('effect 必须同步返回清理函数或 undefined，异步任务应显式取消。');
@@ -468,8 +465,7 @@ function makeEffect(callback: EffectCallback, phase: EffectPhase): Cleanup {
   } else task.invalidate();
   return () => task.dispose();
 }
-
-export function effect(callback: EffectCallback): Cleanup {
+export function _effect(callback: EffectCallback): Cleanup {
   return makeEffect(callback, 'effect');
 }
 
@@ -482,8 +478,7 @@ export function renderEffect(callback: EffectCallback): Cleanup {
 export function propertyEffect(callback: EffectCallback): Cleanup {
   return makeEffect(callback, 'property');
 }
-
-export function batch<T>(fn: () => T): T {
+export function _batch<T>(fn: () => T): T {
   batchDepth++;
   try {
     return fn();
@@ -493,17 +488,16 @@ export function batch<T>(fn: () => T): T {
       scheduleFlush();
   }
 }
-
-export function flushSync<T = void>(fn?: () => T): T | undefined {
+export function _flushSync<T = void>(fn?: () => T): T | undefined {
   // SSR 不能顺带冲刷其他根的排队任务，计算内写入限制仍然有效。
-  if (currentScope?.server && !computing) return fn ? batch(fn) : undefined;
+  if (currentScope?.server && !computing) return fn ? _batch(fn) : undefined;
   if (computing || runningEffects || flushing) {
     throw new Error('不能在计算或 effect 内重入 flushSync。');
   }
   let result: T | undefined;
   const errors: unknown[] = [];
   try {
-    result = fn ? batch(fn) : undefined;
+    result = fn ? _batch(fn) : undefined;
   } catch (error) {
     errors.push(error);
   }
@@ -515,7 +509,6 @@ export function flushSync<T = void>(fn?: () => T): T | undefined {
   throwErrors(errors);
   return result;
 }
-
-export function tick(): Promise<void> {
+export function _tick(): Promise<void> {
   return scheduled ?? Promise.resolve().then(() => scheduled ?? undefined);
 }

@@ -1,0 +1,52 @@
+{
+  "name": "zerodep-js-svelte",
+  "version": "1.0.0-rc.1",
+  "type": "module",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=24.11 <25"
+  },
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.js.map",
+    "dist/**/*.d.ts",
+    "dist/**/*.d.ts.map",
+    "src",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "dev": "tsc -b --watch",
+    "check": "tsc -p tsconfig.json --noEmit --incremental false --composite false",
+    "build": "tsc -b"
+  },
+  "peerDependencies": {
+    "zerodep-js": "workspace:*",
+    "svelte": "^5.57.1"
+  },
+  "devDependencies": {
+    "zerodep-js": "workspace:*",
+    "svelte": "catalog:",
+    "typescript": "catalog:"
+  },
+  "license": "MIT",
+  "author": "kenconnet666",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kenconnet666/zerodep-js.git",
+    "directory": "packages/svelte"
+  },
+  "homepage": "https://github.com/kenconnet666/zerodep-js#readme",
+  "bugs": {
+    "url": "https://github.com/kenconnet666/zerodep-js/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

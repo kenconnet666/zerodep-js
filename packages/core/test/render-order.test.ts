@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { Derived, Scope, Source, flushSync, renderEffect } from '../src/runtime/reactivity.js';
+import { Derived, Scope, Source, _flushSync, renderEffect } from '../src/runtime/reactivity.js';
 import { RenderQueue } from '../src/runtime/render-queue.js';
 
 describe('渲染更新顺序', () => {
@@ -24,8 +24,8 @@ describe('渲染更新顺序', () => {
       }),
     );
     try {
-      flushSync(() => refresh.write(1));
-      expect(() => flushSync(() => user.write(undefined))).not.toThrow();
+      _flushSync(() => refresh.write(1));
+      expect(() => _flushSync(() => user.write(undefined))).not.toThrow();
       expect(values).toEqual(['甲']);
       expect(child.disposed).toBe(true);
     } finally {

@@ -1,9 +1,9 @@
 import { expect, it, vi } from 'vitest';
 import { defineComponent } from '../src/runtime/component.js';
-import { defineRoute, defineRoutes } from '../src/router/routes.js';
-import { createRouter } from '../src/router/router.js';
-import { createMemoryHistory } from '../src/router/history.js';
-import { RouteError, redirect } from '../src/router/navigation.js';
+import { _defineRoute, _defineRoutes } from '../src/router/routes.js';
+import { _createRouter } from '../src/router/router.js';
+import { _createMemoryHistory } from '../src/router/history.js';
+import { RouteError, _redirect } from '../src/router/navigation.js';
 
 const Page = defineComponent(() => null);
 function deferred<T>() {
@@ -15,9 +15,9 @@ function deferred<T>() {
 }
 
 it('加载父子数据、查询解析和地址生成，实例分别持有状态', async () => {
-  const routes = defineRoutes({
-    shell: defineRoute('/', { component: Page, load: () => ({ parent: true }) }),
-    task: defineRoute('/tasks/:id', {
+  const routes = _defineRoutes({
+    shell: _defineRoute('/', { component: Page, load: () => ({ parent: true }) }),
+    task: _defineRoute('/tasks/:id', {
       parent: 'shell',
       component: Page,
       parseSearch: (query) => ({ page: Number(query.get('page') ?? 1) }),
@@ -28,8 +28,8 @@ it('加载父子数据、查询解析和地址生成，实例分别持有状态'
       }),
     }),
   });
-  const router = createRouter(routes, { history: createMemoryHistory('/tasks/1?page=2') });
-  const another = createRouter(routes, { history: createMemoryHistory('/tasks/9') });
+  const router = _createRouter(routes, { history: _createMemoryHistory('/tasks/1?page=2') });
+  const another = _createRouter(routes, { history: _createMemoryHistory('/tasks/9') });
   try {
     expect(router.state.status).toBe('idle');
     await Promise.all([router.resolve(), another.resolve()]);
@@ -56,13 +56,13 @@ it('加载父子数据、查询解析和地址生成，实例分别持有状态'
 });
 
 it('取消和重定向不会先破坏当前页面，路径参数变化触发离开守卫', async () => {
-  const routes = defineRoutes({
+  const routes = _defineRoutes({
     home: { path: '/', component: Page },
     task: { path: '/tasks/:id', component: Page },
     alias: { path: '/old', redirect: '/' },
   });
-  const history = createMemoryHistory('/tasks/1');
-  const router = createRouter(routes, { history });
+  const history = _createMemoryHistory('/tasks/1');
+  const router = _createRouter(routes, { history });
   try {
     await router.resolve();
     const leave = vi.fn(() => false);
@@ -73,7 +73,7 @@ it('取消和重定向不会先破坏当前页面，路径参数变化触发离�
     expect(leave).toHaveBeenCalledOnce();
     stop();
     router.beforeEach(({ to }) =>
-      to.location.pathname === '/tasks/2' ? redirect(routes.home) : undefined,
+      to.location.pathname === '/tasks/2' ? _redirect(routes.home) : undefined,
     );
     const result = await router.navigate(routes.task, { params: { id: '2' } });
     expect(result.status).toBe('committed');
@@ -88,9 +88,9 @@ it('取消和重定向不会先破坏当前页面，路径参数变化触发离�
 it('新导航取消忽略 signal 的旧 loader，迟到结果不能覆盖', async () => {
   const slow = deferred<string>();
   let oldSignal!: AbortSignal;
-  const routes = defineRoutes({
+  const routes = _defineRoutes({
     home: { path: '/', component: Page },
-    task: defineRoute('/tasks/:id', {
+    task: _defineRoute('/tasks/:id', {
       component: Page,
       load: ({ params, signal }) => {
         if (params.id === '1') {
@@ -101,7 +101,7 @@ it('新导航取消忽略 signal 的旧 loader，迟到结果不能覆盖', asyn
       },
     }),
   });
-  const router = createRouter(routes);
+  const router = _createRouter(routes);
   try {
     await router.resolve();
     const first = router.navigate(routes.task, { params: { id: '1' } });
@@ -122,9 +122,9 @@ it('新导航取消忽略 signal 的旧 loader，迟到结果不能覆盖', asyn
 it('点回当前地址也会撤销正在进行的其他导航', async () => {
   const slow = deferred<void>();
   let started = false;
-  const routes = defineRoutes({
+  const routes = _defineRoutes({
     home: { path: '/', component: Page },
-    slow: defineRoute('/slow', {
+    slow: _defineRoute('/slow', {
       component: Page,
       load: () => {
         started = true;
@@ -132,7 +132,7 @@ it('点回当前地址也会撤销正在进行的其他导航', async () => {
       },
     }),
   });
-  const router = createRouter(routes);
+  const router = _createRouter(routes);
   try {
     await router.resolve();
     const pending = router.navigate(routes.slow);
@@ -148,12 +148,12 @@ it('点回当前地址也会撤销正在进行的其他导航', async () => {
 });
 
 it('pop 被拒绝时恢复历史位置，接受后正常提交', async () => {
-  const routes = defineRoutes({
+  const routes = _defineRoutes({
     a: { path: '/a', component: Page },
     b: { path: '/b', component: Page },
   });
-  const history = createMemoryHistory('/a');
-  const router = createRouter(routes, { history });
+  const history = _createMemoryHistory('/a');
+  const router = _createRouter(routes, { history });
   try {
     await router.resolve();
     const detach = router.start();
@@ -175,9 +175,9 @@ it('pop 被拒绝时恢复历史位置，接受后正常提交', async () => {
 
 it('loader 错误有状态和可恢复快照，内部异常不自动序列化', async () => {
   let failed = true;
-  const routes = defineRoutes({
+  const routes = _defineRoutes({
     home: { path: '/', component: Page },
-    bad: defineRoute('/bad', {
+    bad: _defineRoute('/bad', {
       component: Page,
       load: () => {
         if (failed) throw new Error('数据库密钥');
@@ -185,7 +185,7 @@ it('loader 错误有状态和可恢复快照，内部异常不自动序列化', 
       },
     }),
   });
-  const router = createRouter(routes);
+  const router = _createRouter(routes);
   try {
     await router.resolve();
     await router.navigate(routes.bad);
@@ -207,8 +207,8 @@ it('loader 错误有状态和可恢复快照，内部异常不自动序列化', 
 
 it('预加载去重并复用数据，失效后再次加载', async () => {
   const load = vi.fn(async ({ params }: { params: { id: string } }) => ({ id: params.id }));
-  const routes = defineRoutes({ task: defineRoute('/tasks/:id', { component: Page, load }) });
-  const router = createRouter(routes);
+  const routes = _defineRoutes({ task: _defineRoute('/tasks/:id', { component: Page, load }) });
+  const router = _createRouter(routes);
   try {
     await Promise.all([
       router.preload(routes.task, { params: { id: '1' } }),
@@ -232,13 +232,13 @@ it('预加载去重并复用数据，失效后再次加载', async () => {
 it('SSR 初始化快照恢复数据而不重新调用 loader，仍加载组件模块', async () => {
   const load = vi.fn(() => ({ value: 2 }));
   const lazy = vi.fn(async () => ({ default: Page }));
-  const routes = defineRoutes({ task: defineRoute('/tasks/:id', { lazy, load }) });
-  const server = createRouter(routes, { history: createMemoryHistory('/tasks/1') });
+  const routes = _defineRoutes({ task: _defineRoute('/tasks/:id', { lazy, load }) });
+  const server = _createRouter(routes, { history: _createMemoryHistory('/tasks/1') });
   await server.resolve();
   const initial = server.dehydrate();
   server.dispose();
-  const client = createRouter(routes, {
-    history: createMemoryHistory('/tasks/1'),
+  const client = _createRouter(routes, {
+    history: _createMemoryHistory('/tasks/1'),
     initial: JSON.parse(JSON.stringify(initial)),
   });
   try {
@@ -253,15 +253,15 @@ it('SSR 初始化快照恢复数据而不重新调用 loader，仍加载组件�
 });
 
 it('解析错误、HTTP 错误、重复重定向和外部地址有明确结果', async () => {
-  const routes = defineRoutes({
+  const routes = _defineRoutes({
     home: { path: '/', component: Page },
-    bad: defineRoute('/bad', {
+    bad: _defineRoute('/bad', {
       component: Page,
       parseSearch() {
         throw new Error('格式');
       },
     }),
-    denied: defineRoute('/denied', {
+    denied: _defineRoute('/denied', {
       component: Page,
       load() {
         throw new RouteError(403, '无权访问');
@@ -269,7 +269,7 @@ it('解析错误、HTTP 错误、重复重定向和外部地址有明确结果',
     }),
     loop: { path: '/loop', redirect: '/loop' },
   });
-  const router = createRouter(routes);
+  const router = _createRouter(routes);
   try {
     await router.resolve();
     await router.navigate(routes.bad);
@@ -288,8 +288,8 @@ it('解析错误、HTTP 错误、重复重定向和外部地址有明确结果',
 it('dispose 撤销未完成导航，后续异步结果不提交', async () => {
   let called = false;
   const deferredLoad = deferred<string>();
-  const routes = defineRoutes({
-    slow: defineRoute('/slow', {
+  const routes = _defineRoutes({
+    slow: _defineRoute('/slow', {
       component: Page,
       load: () => {
         called = true;
@@ -297,7 +297,7 @@ it('dispose 撤销未完成导航，后续异步结果不提交', async () => {
       },
     }),
   });
-  const router = createRouter(routes, { history: createMemoryHistory('/slow') });
+  const router = _createRouter(routes, { history: _createMemoryHistory('/slow') });
   const pending = router.resolve();
   await vi.waitFor(() => expect(called).toBe(true));
   router.dispose();
@@ -309,9 +309,9 @@ it('dispose 撤销未完成导航，后续异步结果不提交', async () => {
 
 it('连续 pop 以已提交页面计算拒绝后的回滚距离', async () => {
   const slow = deferred<boolean>();
-  const routes = defineRoutes({ page: { path: '/:id', component: Page } });
-  const history = createMemoryHistory({ entries: ['/a', '/b', '/c'] });
-  const router = createRouter(routes, { history });
+  const routes = _defineRoutes({ page: { path: '/:id', component: Page } });
+  const history = _createMemoryHistory({ entries: ['/a', '/b', '/c'] });
+  const router = _createRouter(routes, { history });
   try {
     await router.resolve();
     router.start();
@@ -329,9 +329,9 @@ it('连续 pop 以已提交页面计算拒绝后的回滚距离', async () => {
 });
 
 it('历史实例只属于一个路由器，SSR 接管后采用浏览器式历史数据', async () => {
-  const routes = defineRoutes({ page: { path: '/', component: Page } });
-  const history = createMemoryHistory({ entries: [{ href: '/', state: { tab: 2 } }] });
-  const router = createRouter(routes, {
+  const routes = _defineRoutes({ page: { path: '/', component: Page } });
+  const history = _createMemoryHistory({ entries: [{ href: '/', state: { tab: 2 } }] });
+  const router = _createRouter(routes, {
     history,
     initial: {
       version: 1,
@@ -341,7 +341,7 @@ it('历史实例只属于一个路由器，SSR 接管后采用浏览器式历史
     },
   });
   try {
-    expect(() => createRouter(routes, { history })).toThrow('已被');
+    expect(() => _createRouter(routes, { history })).toThrow('已被');
     await router.resolve();
     expect(router.state.location.state).toBeUndefined();
     router.start();
@@ -353,8 +353,8 @@ it('历史实例只属于一个路由器，SSR 接管后采用浏览器式历史
 
 it('错误和 404 快照在客户端保持状态，并允许重试', async () => {
   let failed = true;
-  const routes = defineRoutes({
-    bad: defineRoute('/bad', {
+  const routes = _defineRoutes({
+    bad: _defineRoute('/bad', {
       component: Page,
       load() {
         if (failed) throw new RouteError(403, '暂无权限');
@@ -363,11 +363,11 @@ it('错误和 404 快照在客户端保持状态，并允许重试', async () =>
     }),
   });
   for (const href of ['/bad', '/missing']) {
-    const server = createRouter(routes, { history: createMemoryHistory(href) });
+    const server = _createRouter(routes, { history: _createMemoryHistory(href) });
     await server.resolve();
     const initial = server.dehydrate();
     server.dispose();
-    const client = createRouter(routes, { history: createMemoryHistory(href), initial });
+    const client = _createRouter(routes, { history: _createMemoryHistory(href), initial });
     try {
       await client.resolve();
       expect(client.state.statusCode).toBe(href === '/bad' ? 403 : 404);
@@ -387,8 +387,8 @@ it('取消预加载给出 AbortError，失败代码可在下次导航重新加�
   const slow = deferred<void>();
   let loaded = false;
   let first = true;
-  const routes = defineRoutes({
-    slow: defineRoute('/slow', {
+  const routes = _defineRoutes({
+    slow: _defineRoute('/slow', {
       component: Page,
       load() {
         loaded = true;
@@ -406,7 +406,7 @@ it('取消预加载给出 AbortError，失败代码可在下次导航重新加�
       },
     },
   });
-  const router = createRouter(routes);
+  const router = _createRouter(routes);
   try {
     const preload = router.preload(routes.slow);
     const checked = expect(preload).rejects.toMatchObject({ name: 'AbortError' });
@@ -426,9 +426,9 @@ it('取消预加载给出 AbortError，失败代码可在下次导航重新加�
 it('前台接管预加载后不会被缓存失效取消，停止函数不会误停后续挂载', async () => {
   const slow = deferred<string>();
   let called = 0;
-  const routes = defineRoutes({
+  const routes = _defineRoutes({
     home: { path: '/', component: Page },
-    page: defineRoute('/page', {
+    page: _defineRoute('/page', {
       component: Page,
       load: () => {
         called++;
@@ -436,7 +436,7 @@ it('前台接管预加载后不会被缓存失效取消，停止函数不会误�
       },
     }),
   });
-  const router = createRouter(routes);
+  const router = _createRouter(routes);
   try {
     await router.resolve();
     const stop = router.start();
