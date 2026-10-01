@@ -55,7 +55,7 @@ export function transformComponents(
         report(
           path.node,
           'ZJ1200',
-          'component 接受一个内联的同步函数，组件初始化不能是异步或生成器。',
+          '_component 接受一个内联的同步函数，组件初始化不能是异步或生成器。',
         );
         return;
       }
@@ -246,7 +246,7 @@ export function transformComponents(
           report(
             reference.node,
             'ZJ1206',
-            'component 标记只能直接包装组件函数，不能作为普通值传递。',
+            '_component 标记只能直接包装组件函数，不能作为普通值传递。',
           );
       }
       specifier.remove();

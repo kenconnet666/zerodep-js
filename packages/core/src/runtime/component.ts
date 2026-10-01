@@ -13,7 +13,7 @@ export type ComponentProps<C extends AnyComponent> =
   Parameters<C> extends [infer P, ...unknown[]] ? P : Record<string, never>;
 
 export function component<F extends (...args: never[]) => Renderable>(_setup: F): Component<F> {
-  throw new Error('component 必须经过 zerodep-js 编译器转换。');
+  throw new Error('_component 必须经过 zerodep-js 编译器转换。');
 }
 
 export function defineComponent<F extends (...args: never[]) => Renderable>(
@@ -31,7 +31,7 @@ export function defineComponent<F extends (...args: never[]) => Renderable>(
 export function setupComponent(component: AnyComponent, input: object): Renderable {
   if (!getScope()) throw new Error('组件初始化必须属于渲染作用域。');
   if (typeof component?.[COMPONENT] !== 'function')
-    throw new Error('无效组件，请使用 component 声明。');
+    throw new Error('无效组件，请使用 _component 声明。');
   const setup = component[COMPONENT];
   return setup(readonlyProps(input) as never);
 }

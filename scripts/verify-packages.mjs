@@ -243,6 +243,12 @@ try {
     await expect(page.locator('[data-route-initial]')).toHaveText('one');
     await page.getByRole('link', { name: '记录二' }).click();
     await expect(page.locator('[data-route-initial]')).toHaveText('two');
+    assert.equal(
+      await page.evaluate(() => window.remountFixture()),
+      true,
+      '旧 disposer 不得撤销新根的登记。',
+    );
+    await expect(page.locator('body')).toHaveAttribute('data-fixture-effect', 'active');
     await page.evaluate(() => window.stopFixture());
     await expect(page.locator('#app')).toBeEmpty();
     await expect(page.locator('body')).toHaveAttribute('data-fixture-effect', 'disposed');

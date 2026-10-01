@@ -1,9 +1,9 @@
-import { component, $state } from 'zerodep-js';
-import { persistLocal } from 'zerodep-js/storage';
+import { _component, _state } from 'zerodep-js';
+import { _persistLocal } from 'zerodep-js/storage';
 
-export default component(() => {
-  const preferences = $state({ compact: false });
-  const saved = persistLocal('zerodep.example.workspace-preferences', preferences, {
+export default _component(() => {
+  const preferences = _state({ compact: false });
+  const saved = _persistLocal('zerodep.example.workspace-preferences', preferences, {
     validate(value) {
       if (!value || typeof value !== 'object' || typeof Reflect.get(value, 'compact') !== 'boolean')
         throw new Error('偏好格式无效。');

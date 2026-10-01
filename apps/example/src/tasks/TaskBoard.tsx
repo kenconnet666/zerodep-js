@@ -1,6 +1,6 @@
-import { component, $state, $derived, effect, onCleanup, For } from 'zerodep-js';
+import { _component, _state, _derived, _effect, _onCleanup, For } from 'zerodep-js';
 import type { RenderMode } from 'zerodep-js-ssr';
-import { persistLocal } from 'zerodep-js/storage';
+import { _persistLocal } from 'zerodep-js/storage';
 import { ApiFailure, listTasks, createTask, updateTask, deleteTask } from './api.js';
 import {
   titleSchema,
@@ -14,13 +14,13 @@ import './tasks.css';
 
 type Props = { initial?: TaskPage; mode?: RenderMode; embedded?: boolean };
 
-export const TaskBoard = component(({ initial, mode = 'csr', embedded = false }: Props) => {
+export const TaskBoard = _component(({ initial, mode = 'csr', embedded = false }: Props) => {
   const start = initial;
-  let tasks = $state<Task[]>(start?.tasks ?? []);
-  let search = $state(start?.query ?? '');
-  let filter = $state<TaskFilter>(start?.filter ?? 'all');
-  let newTitle = $state('');
-  const draftStorage = persistLocal(
+  let tasks = _state<Task[]>(start?.tasks ?? []);
+  let search = _state(start?.query ?? '');
+  let filter = _state<TaskFilter>(start?.filter ?? 'all');
+  let newTitle = _state('');
+  const draftStorage = _persistLocal(
     'zerodep.example.task-draft',
     {
       read: () => newTitle,
@@ -36,22 +36,22 @@ export const TaskBoard = component(({ initial, mode = 'csr', embedded = false }:
       },
     },
   );
-  let loading = $state(false);
-  let creating = $state(false);
-  let ready = $state(false);
-  let loadError = $state('');
-  let createError = $state('');
-  let notice = $state('');
-  const query = $derived(search.trim());
-  const completed = $derived(tasks.filter((task) => task.completed).length);
+  let loading = _state(false);
+  let creating = _state(false);
+  let ready = _state(false);
+  let loadError = _state('');
+  let createError = _state('');
+  let notice = _state('');
+  const query = _derived(search.trim());
+  const completed = _derived(tasks.filter((task) => task.completed).length);
   const lifetime = new AbortController();
   let currentQuery: AbortController | undefined;
   let first = true;
-  onCleanup(() => {
+  _onCleanup(() => {
     lifetime.abort();
     currentQuery?.abort();
   });
-  effect(() => {
+  _effect(() => {
     ready = true;
   });
 
@@ -72,7 +72,7 @@ export const TaskBoard = component(({ initial, mode = 'csr', embedded = false }:
     }
   }
 
-  effect(() => {
+  _effect(() => {
     const q = query;
     const selected = filter;
     if (!embedded) {
@@ -202,6 +202,7 @@ export const TaskBoard = component(({ initial, mode = 'csr', embedded = false }:
           autoComplete="off"
           onInput={(event) => (newTitle = event.currentTarget.value)}
         />
+
         <button type="submit" disabled={!ready || creating}>
           {creating ? '添加中…' : '添加任务'}
         </button>

@@ -1,5 +1,7 @@
 # 页面宿主与公开 API 命名：研究建议
 
+后续决策：用户已批准实施，并明确拒绝 deprecated/兼容别名。执行以 docs/hosting-implementation.md 为准；下文保留研究时的取舍，不再将过渡期建议作为实现要求。
+
 2026-10-01。用户已选择页面宿主路线，并提出将 $state/$derived/effect 等改为 _state/_derived/_effect，同时研究在 Vue、React、Svelte 项目中开发独立新页面。本轮仅研究、验证现有边界并记录建议；尚未修改 API 导出、编译器或实现宿主适配。
 
 ## 建议的命名规则

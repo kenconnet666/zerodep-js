@@ -1,4 +1,4 @@
-import { untrack } from 'zerodep-js';
+import { _untrack } from 'zerodep-js';
 import { serializeData } from 'zerodep-js-ssr/data';
 
-export const payload = serializeData({ value: untrack(() => 42) });
+export const payload = serializeData({ value: _untrack(() => 42) });

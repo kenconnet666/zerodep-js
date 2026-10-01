@@ -1,12 +1,12 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
-  createContext,
-  createRoot,
-  effect,
-  flushSync,
-  onCleanup,
-  provideContext,
-  useContext,
+  _createContext,
+  _createRoot,
+  _effect,
+  _flushSync,
+  _onCleanup,
+  _provideContext,
+  _useContext,
 } from 'zerodep-js';
 import { defineComponent, element, props, dynamic, liveRender } from 'zerodep-js/internal';
 import { For, ErrorBoundary } from 'zerodep-js';
@@ -71,18 +71,18 @@ describe('真实组件 SSR', () => {
   });
   it('SSR 中 flush 不会提前运行其他根的任务', () => {
     const callback = vi.fn();
-    const stop = createRoot((dispose) => {
-      effect(callback);
+    const stop = _createRoot((dispose) => {
+      _effect(callback);
       return dispose;
     });
     try {
       const App = defineComponent(() => {
-        flushSync();
+        _flushSync();
         return 'SSR';
       });
       expect(renderToString(App)).toBe('SSR');
       expect(callback).not.toHaveBeenCalled();
-      flushSync();
+      _flushSync();
       expect(callback).toHaveBeenCalledOnce();
     } finally {
       stop();
@@ -112,17 +112,17 @@ describe('真实组件 SSR', () => {
   });
 
   it('每次请求独立 context，服务端跳过 effect，即使主动 flush', () => {
-    const Tenant = createContext('默认');
+    const Tenant = _createContext('默认');
     const callback = vi.fn();
     const cleanups: string[] = [];
     const Read = defineComponent(() =>
-      element('p', props([{ children: () => useContext(Tenant) }])),
+      element('p', props([{ children: () => _useContext(Tenant) }])),
     );
     const App = defineComponent(({ name }: { name: string }) => {
-      provideContext(Tenant, name);
-      effect(callback);
-      flushSync();
-      onCleanup(() => {
+      _provideContext(Tenant, name);
+      _effect(callback);
+      _flushSync();
+      _onCleanup(() => {
         cleanups.push(name);
       });
       expect(renderToString(Read)).toBe('<p>默认</p>');
@@ -162,7 +162,7 @@ describe('真实组件 SSR', () => {
   it('错误边界释放失败子树，只标记降级，不自动泄露异常协议', () => {
     const cleanup = vi.fn();
     const Failed = defineComponent(() => {
-      onCleanup(cleanup);
+      _onCleanup(cleanup);
       throw new Error('内部信息');
     });
     const App = defineComponent(() =>
@@ -185,7 +185,7 @@ describe('真实组件 SSR', () => {
 
   it('普通渲染失败仍释放资源，聚合清理错误', () => {
     const App = defineComponent(() => {
-      onCleanup(() => {
+      _onCleanup(() => {
         throw new Error('清理失败');
       });
       throw new Error('呈现失败');

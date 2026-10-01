@@ -3,12 +3,12 @@
 当前接口在 main 开发版本，尚未包含于 RC1。通过 `zerodep-js/storage` 可选子入口使用；不要求改变变量式状态，也不在根入口加载存储代码。
 
 ```tsx
-import { component, $state } from 'zerodep-js';
-import { persistLocal } from 'zerodep-js/storage';
+import { _component, _state } from 'zerodep-js';
+import { _persistLocal } from 'zerodep-js/storage';
 
-const Preferences = component(() => {
-  const prefs = $state({ compact: false, name: '' });
-  const storage = persistLocal('app.preferences', prefs);
+const Preferences = _component(() => {
+  const prefs = _state({ compact: false, name: '' });
+  const storage = _persistLocal('app.preferences', prefs);
   return (
     <input
       value={prefs.name}
@@ -20,11 +20,11 @@ const Preferences = component(() => {
 });
 ```
 
-直接对象绑定保持根对象/数组身份，通过字段更新恢复内容。使用稳定的 `$state` 普通对象或数组，不在绑定后替换根变量；不可替换字段和形态不匹配会报错。需要整体赋值或保存单个值时明确提供读写：
+直接对象绑定保持根对象/数组身份，通过字段更新恢复内容。使用稳定的 `_state` 普通对象或数组，不在绑定后替换根变量；不可替换字段和形态不匹配会报错。需要整体赋值或保存单个值时明确提供读写：
 
 ```ts
-let theme = $state('system');
-const storage = persistLocal('app.theme', {
+let theme = _state('system');
+const storage = _persistLocal('app.theme', {
   read: () => theme,
   write: (next) => {
     theme = next;
@@ -32,7 +32,7 @@ const storage = persistLocal('app.theme', {
 });
 ```
 
-`persistSession` 使用相同契约，但默认宿主为 sessionStorage。工厂必须在组件或显式作用域中调用；在组件外使用 createScope，并由调用方销毁。动作方法可以在事件里调用。
+`_persistSession` 使用相同契约，但默认宿主为 sessionStorage。工厂必须在组件或显式作用域中调用；在组件外使用 createScope，并由调用方销毁。动作方法可以在事件里调用。
 
 ## 恢复、同步与提交
 
@@ -65,7 +65,7 @@ const storage = persistLocal('app.theme', {
 默认存储是 JSON，支持范围和序列化行为遵循 JSON；需要 Date/Map 等特殊恢复逻辑时由 validate 显式转换，不冒充无损对象数据库。持久化不是 IndexedDB 的替代。
 
 ```ts
-persistLocal('app.preferences', prefs, {
+_persistLocal('app.preferences', prefs, {
   version: 2,
   writeDelay: 100,
   migrate(value, previousVersion) {

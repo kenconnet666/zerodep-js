@@ -13,9 +13,9 @@ type CounterProps = {
   onChange?: (value: number) => void;
 };
 
-export const Counter = component(({ initial = 0, step = 1, onChange }: CounterProps) => {
-  let count = $state(initial);
-  const doubled = $derived(count * 2);
+export const Counter = _component(({ initial = 0, step = 1, onChange }: CounterProps) => {
+  let count = _state(initial);
+  const doubled = _derived(count * 2);
 
   function increment() {
     count += step;
@@ -48,7 +48,7 @@ export const Counter = component(({ initial = 0, step = 1, onChange }: CounterPr
 基础规则建议固定为：只有缺失或 `undefined` 触发默认值；允许的 `null`、false、0、空字符串保留原值。默认值不会让类型声明中的必填属性自动变成可选属性。
 
 ```tsx
-const Range = component(({ min = 0, max = min + 10 }: { min?: number; max?: number }) => (
+const Range = _component(({ min = 0, max = min + 10 }: { min?: number; max?: number }) => (
   <span>
     {min} — {max}
   </span>
@@ -58,7 +58,7 @@ const Range = component(({ min = 0, max = min + 10 }: { min?: number; max?: numb
 | 方案                           | min 从 0 改为 20，max 一直未传 | 特点                                                |
 | ------------------------------ | ------------------------------ | --------------------------------------------------- |
 | A：缓存的响应式 fallback，推荐 | max 变为 30                    | 和实时 props 的关系更一致，动态默认值不需要额外声明 |
-| B：默认值首次计算后固定        | max 仍为 10                    | 初始化规则简单，动态 fallback 必须另写 `$derived`   |
+| B：默认值首次计算后固定        | max 仍为 10                    | 初始化规则简单，动态 fallback 必须另写 `_derived`   |
 
 推荐 A，但必须把成本和边界写清楚：
 
@@ -80,7 +80,7 @@ type ButtonProps = JSX.IntrinsicElements['button'] & {
   tone?: 'primary' | 'neutral';
 };
 
-const Button = component(
+const Button = _component(
   ({ tone = 'primary', type = 'button', children, ...attrs }: ButtonProps) => (
     <button {...attrs} type={type} data-tone={tone}>
       {children}
@@ -100,13 +100,13 @@ const Button = component(
 受控输入保持直接：
 
 ```tsx
-const TextInput = component(
+const TextInput = _component(
   ({ value, onValueChange }: { value: string; onValueChange: (next: string) => void }) => (
     <input value={value} onInput={(event) => onValueChange(event.currentTarget.value)} />
   ),
 );
 
-let name = $state('');
+let name = _state('');
 <TextInput value={name} onValueChange={(next) => (name = next)} />;
 ```
 
@@ -116,7 +116,7 @@ let name = $state('');
 
 ```ts
 function createCounter(initial = 0) {
-  let count = $state(initial);
+  let count = _state(initial);
   return {
     get count() {
       return count;
@@ -129,7 +129,7 @@ function createCounter(initial = 0) {
 
 const counter = createCounter();
 const saved = counter.count;
-const current = $derived(counter.count);
+const current = _derived(counter.count);
 ```
 
 saved 是当时的数字，current 跟随变化。对象读取获得的是对象引用，不能把引用叫作深度快照。普通参数传值、普通对象字面量和普通 return 保持 JavaScript 含义。
@@ -159,8 +159,8 @@ SSR 默认在组件或请求作用域内创建有状态实例。模块级静态�
 推荐普通 children 可以转发；需要重复创建内容时使用普通 render 函数。不要看到函数就一律自动执行，也不增加独立的 slot 语法体系。
 
 ```ts
-const dispose = mount(App, { target, props });
-const disposeHydrated = hydrate(App, { target, props });
+const dispose = _mount(App, { target, props });
+const disposeHydrated = _hydrate(App, { target, props });
 const html = renderToString(App, { props });
 ```
 

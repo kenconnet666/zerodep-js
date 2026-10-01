@@ -1,5 +1,5 @@
-import { component, $state } from 'zerodep-js';
-import { persistLocal } from 'zerodep-js/storage';
+import { _component, _state } from 'zerodep-js';
+import { _persistLocal } from 'zerodep-js/storage';
 
 type Preferences = { name: string; compact: boolean };
 function validate(value: unknown): Preferences {
@@ -15,9 +15,9 @@ function validate(value: unknown): Preferences {
   return { name: value.name, compact: value.compact };
 }
 
-export const StorageExample = component(() => {
-  const prefs = $state<Preferences>({ name: '默认', compact: false });
-  const mirror = $state<Preferences>({ name: '默认', compact: false });
+export const StorageExample = _component(() => {
+  const prefs = _state<Preferences>({ name: '默认', compact: false });
+  const mirror = _state<Preferences>({ name: '默认', compact: false });
   const options = {
     version: 2,
     writeDelay: 80,
@@ -28,8 +28,8 @@ export const StorageExample = component(() => {
       return value;
     },
   };
-  const storage = persistLocal('zerodep.example.preferences', prefs, options);
-  persistLocal('zerodep.example.preferences', mirror, options);
+  const storage = _persistLocal('zerodep.example.preferences', prefs, options);
+  _persistLocal('zerodep.example.preferences', mirror, options);
   return (
     <section aria-label="浏览器持久化">
       <h2>浏览器持久化</h2>

@@ -1,7 +1,8 @@
 import type { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
+import { compilerImports } from './imports.js';
 
-const special = new Set(['$state', '$derived', 'component', 'For']);
+const special = new Set(Object.keys(compilerImports));
 
 /** 静态命名空间成员归一到导入绑定，后续继续使用同一套词法规则。 */
 export function normalizeNamespaces(program: NodePath<t.Program>): void {

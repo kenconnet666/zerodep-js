@@ -1,30 +1,30 @@
 import { expect, it } from 'vitest';
 import { defineComponent, element } from 'zerodep-js/internal';
 import {
-  createRouter,
-  createMemoryHistory,
-  defineRoutes,
+  _createRouter,
+  _createMemoryHistory,
+  _defineRoutes,
   Router,
   Outlet,
-  useRoute,
+  _useRoute,
   RouteError,
 } from 'zerodep-js/router';
 import { renderToString } from '../src/index.js';
 
 it('SSR 必须先准备数据，布局与叶子按各自上下文渲染并释放控制器', async () => {
   const Layout = defineComponent(() => element('section', { children: element(Outlet, {}) }));
-  const Page = defineComponent(() => element('p', { children: useRoute().params.id }));
-  const routes = defineRoutes({
+  const Page = defineComponent(() => element('p', { children: _useRoute().params.id }));
+  const routes = _defineRoutes({
     layout: { path: '/', component: Layout },
     page: { path: '/:id', parent: 'layout', component: Page },
   });
-  const idle = createRouter(routes);
+  const idle = _createRouter(routes);
   try {
     expect(() => renderToString(Router, { props: { router: idle } })).toThrow('resolve');
   } finally {
     idle.dispose();
   }
-  const router = createRouter(routes, { history: createMemoryHistory('/one') });
+  const router = _createRouter(routes, { history: _createMemoryHistory('/one') });
   await router.resolve();
   const html = renderToString(Router, { props: { router } });
   expect(html).toContain('<section>');
@@ -39,7 +39,7 @@ it('显式 null fallback 被保留，SSR 页面渲染失败交还 HTTP 层', asy
     throw new Error('页面初始化失败');
   });
   const Page = defineComponent(() => null);
-  const routes = defineRoutes({
+  const routes = _defineRoutes({
     broken: { path: '/broken', component: Broken },
     denied: {
       path: '/denied',
@@ -50,7 +50,7 @@ it('显式 null fallback 被保留，SSR 页面渲染失败交还 HTTP 层', asy
     },
   });
   for (const path of ['/missing', '/denied', '/broken']) {
-    const router = createRouter(routes, { history: createMemoryHistory(path) });
+    const router = _createRouter(routes, { history: _createMemoryHistory(path) });
     await router.resolve();
     const render = () =>
       renderToString(Router, { props: { router, notFound: null, error: () => null } });

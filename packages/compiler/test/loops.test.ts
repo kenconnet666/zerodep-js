@@ -77,10 +77,9 @@ describe('For 的实时参数', () => {
 
   it('普通 render callback children 仍是函数，不被包装成自动执行内容', () => {
     const view = execute(`
-      import { component } from 'zerodep-js';
-      const Generic = component(({ children }) => children({ name: '真实值' }));
-      const result = <Generic>{(row) => <span title={row.name} />}</Generic>;
-    `) as DynamicTemplate;
+import { _component } from 'zerodep-js';
+const Generic = _component(({ children }) => children({ name: '真实值' }));
+const result = <Generic>{(row) => <span title={row.name} />}</Generic>;`) as DynamicTemplate;
     createRoot((dispose) => {
       try {
         const element = view.value.read() as ElementTemplate;
@@ -98,11 +97,13 @@ describe('For 的实时参数', () => {
 
   it('重复 key 在创建行之前给出错误，修复数据后可重新读取', () => {
     const result = execute(`
-      import { For, $state } from 'zerodep-js';
-      let rows = $state([{ id: 1 }, { id: 1 }]);
-      const view = <For each={rows} keyBy={(row) => row.id}>{(row) => <b>{row.id}</b>}</For>;
-      const result = { view, repair() { rows = [{ id: 2 }]; } };
-    `) as { view: DynamicTemplate; repair: () => void };
+import { For, _state } from 'zerodep-js';
+let rows = _state([{ id: 1 }, { id: 1 }]);
+const view = <For each={rows} keyBy={(row) => row.id}>{(row) => <b>{row.id}</b>}</For>;
+const result = { view, repair() {rows = [{ id: 2 }];} };`) as {
+      view: DynamicTemplate;
+      repair: () => void;
+    };
     createRoot((dispose) => {
       try {
         const element = result.view.value.read() as ElementTemplate;

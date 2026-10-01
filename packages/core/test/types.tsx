@@ -1,20 +1,20 @@
 import {
-  component,
-  mount,
-  hydrate,
+  _component,
+  _mount,
+  _hydrate,
   For,
   ErrorBoundary,
-  createContext,
-  provideContext,
+  _createContext,
+  _provideContext,
   type JSX,
   type Renderable,
 } from 'zerodep-js';
 
-const Required = component(({ label = '默认值' }: { label: string }) => <button>{label}</button>);
-const Generic = component(
+const Required = _component(({ label = '默认值' }: { label: string }) => <button>{label}</button>);
+const Generic = _component(
   <T,>({ item, children }: { item: T; children: (value: T) => Renderable }) => children(item),
 );
-const Button = component(({ type = 'button', ...attrs }: JSX.IntrinsicElements['button']) => (
+const Button = _component(({ type = 'button', ...attrs }: JSX.IntrinsicElements['button']) => (
   <button {...attrs} type={type} />
 ));
 
@@ -29,6 +29,7 @@ export const valid = (
         button.focus();
       }}
     />
+
     <input
       onInput={(event) => {
         const input: HTMLInputElement = event.currentTarget;
@@ -49,11 +50,13 @@ export const list = (
     )}
   </For>
 );
+
 export const boundary = (
   <ErrorBoundary fallback={(error, reset) => <button onClick={reset}>{String(error)}</button>}>
     <span />
   </ErrorBoundary>
 );
+
 export const numericOption = <option value={1}>数字选项</option>;
 export const scalarAttributes = <div hidden="until-found" ariaHidden={false} translate={false} />;
 export const optionalAttribute = <button disabled={undefined} />;
@@ -62,6 +65,7 @@ export const vector = (
     <path fillOpacity={0.5} strokeDasharray={undefined} />
   </svg>
 );
+
 export const mathematics = (
   <math
     displaystyle={false}
@@ -81,6 +85,7 @@ export const mathematics = (
     </annotation-xml>
   </math>
 );
+
 // @ts-expect-error SVG presentation 值不接受任意对象。
 export const invalidPresentation = <path strokeDasharray={{ values: [1, 2] }} />;
 export const nativeInput = (
@@ -95,6 +100,7 @@ export const nativeInput = (
     }}
   />
 );
+
 export const badList = (
   <For each={[{ id: 1 }]} keyBy={(row) => row.id}>
     {(row) => {
@@ -103,9 +109,10 @@ export const badList = (
     }}
   </For>
 );
-const nameContext = createContext<string>();
+
+const nameContext = _createContext<string>();
 // @ts-expect-error provider 不能反向扩大已定义的 context 类型。
-provideContext(nameContext, 123);
+_provideContext(nameContext, 123);
 
 // @ts-expect-error 参数默认值不改变调用方必填契约。
 export const missing = <Required />;
@@ -117,11 +124,11 @@ const Plain = () => <span />;
 // @ts-expect-error 普通函数不冒充框架组件。
 export const unmarked = <Plain />;
 // @ts-expect-error 当前渲染协议不支持 Promise 组件。
-export const asyncComponent = component(async () => '异步');
+export const asyncComponent = _component(async () => '异步');
 
 declare const target: HTMLDivElement;
-mount(Required, { target, props: { label: '正确' } });
+_mount(Required, { target, props: { label: '正确' } });
 // @ts-expect-error 根入口同样要求必填 props。
-mount(Required, { target });
+_mount(Required, { target });
 // @ts-expect-error hydration 也不能省略必填 props。
-hydrate(Required, { target });
+_hydrate(Required, { target });

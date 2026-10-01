@@ -1,9 +1,9 @@
 import { compile, type CompileResult } from 'zerodep-js-compiler';
 import { Counter, Label } from '@zerodep-consumer/counter';
-import { mount, type ComponentProps } from 'zerodep-js';
-import { createScope, snapshot } from 'zerodep-js';
-import { defineRoute, defineRoutes, createRouter, Link } from 'zerodep-js/router';
-import { persistLocal, persistSession } from 'zerodep-js/storage';
+import { _mount, type ComponentProps } from 'zerodep-js';
+import { _createScope, _snapshot } from 'zerodep-js';
+import { _defineRoute, _defineRoutes, _createRouter, Link } from 'zerodep-js/router';
+import { _persistLocal, _persistSession } from 'zerodep-js/storage';
 
 const props: ComponentProps<typeof Counter> = { label: '声明消费', initial: 2 };
 <button popoverTarget="help" />;
@@ -22,7 +22,7 @@ result.map?.sources.forEach((source) => source?.toUpperCase());
 // @ts-expect-error 泛型 children 不会退化成 any。
 <Label value={{ id: 1 }}>{(value) => value.missing}</Label>;
 // @ts-expect-error 根挂载同样要求必填 props。
-mount(Counter, { target: document.body });
+_mount(Counter, { target: document.body });
 <textarea
   onInput={(event) => {
     event.currentTarget.value.toUpperCase();
@@ -31,20 +31,20 @@ mount(Counter, { target: document.body });
   }}
 />;
 
-const routes = defineRoutes({
-  item: defineRoute('/items/:id', {
+const routes = _defineRoutes({
+  item: _defineRoute('/items/:id', {
     load: ({ params }) => ({ id: params.id }),
   }),
 });
-const router = createRouter(routes);
+const router = _createRouter(routes);
 router.href(routes.item, { params: { id: '1' } });
 // @ts-expect-error 独立安装仍保留命名参数类型。
 router.href(routes.item, { params: { id: 1 } });
 // @ts-expect-error 子入口泛型 Link 不丢失必填参数。
 <Link to={routes.item} />;
-const scope = createScope();
+const scope = _createScope();
 export const signal: AbortSignal = scope.signal;
 scope.dispose();
-snapshot({ n: 1 }).n.toFixed();
-persistLocal('typed', { read: () => 1, write: (value) => value.toFixed() });
-persistSession('typed-object', { enabled: true });
+_snapshot({ n: 1 }).n.toFixed();
+_persistLocal('typed', { read: () => 1, write: (value) => value.toFixed() });
+_persistSession('typed-object', { enabled: true });

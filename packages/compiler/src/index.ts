@@ -9,6 +9,7 @@ import { transformJsx } from './jsx.js';
 import { collectForCallbacks, transformForCallbacks } from './loops.js';
 import { normalizeNamespaces } from './namespaces.js';
 import { checkGuards } from './guards.js';
+import { coreImport } from './imports.js';
 
 export { CompileError } from './diagnostics.js';
 export type { Diagnostic } from './diagnostics.js';
@@ -69,7 +70,7 @@ export function compile(
     ]);
   }
   const errors: Diagnostic[] = [];
-  const macros = new Map<Binding, '$state' | '$derived'>();
+  const macros = new Map<Binding, 'state' | 'derived'>();
   const reactive = new Map<Binding, ReactiveBinding>();
   const generated = new WeakSet<t.Node>();
   let program!: NodePath<t.Program>;
@@ -115,10 +116,9 @@ export function compile(
         specifier.node.importKind === 'type'
       )
         continue;
-      const imported = specifier.node.imported;
-      const name = t.isIdentifier(imported) ? imported.name : imported.value;
-      if (name === '$state' || name === '$derived')
-        macros.set(program.scope.getBinding(specifier.node.local.name)!, name);
+      const binding = program.scope.getBinding(specifier.node.local.name)!;
+      const role = coreImport(binding);
+      if (role === 'state' || role === 'derived') macros.set(binding, role);
     }
   }
 
@@ -143,10 +143,10 @@ export function compile(
         : undefined;
       if (
         member !== undefined &&
-        !(macro === '$state' && member === 'raw') &&
-        !(macro === '$derived' && member === 'by')
+        !(macro === 'state' && member === 'raw') &&
+        !(macro === 'derived' && member === 'by')
       ) {
-        report(callee, 'ZJ1001', '不支持的宏成员，只能使用 $state.raw 或 $derived.by。');
+        report(callee, 'ZJ1001', '不支持的宏成员，只能使用 _state.raw 或 _derived.by。');
         return;
       }
       const declaration = path.parentPath;
@@ -161,7 +161,7 @@ export function compile(
       const args = path.node.arguments;
       if (
         args.length > 1 ||
-        (macro === '$derived' && args.length !== 1) ||
+        (macro === 'derived' && args.length !== 1) ||
         (args[0] && !t.isExpression(args[0]))
       ) {
         report(
@@ -174,10 +174,10 @@ export function compile(
       const binding = declaration.scope.getBinding(declaration.node.id.name)!;
       if (binding.kind === 'var')
         report(declaration.node, 'ZJ1004', '响应式声明使用 let 或 const，不使用 var。');
-      reactive.set(binding, { binding, derived: macro === '$derived' });
+      reactive.set(binding, { binding, derived: macro === 'derived' });
       const argument =
         (args[0] as t.Expression | undefined) ?? t.unaryExpression('void', t.numericLiteral(0));
-      if (macro === '$state')
+      if (macro === 'state')
         replace(path, helper(member === 'raw' ? 'source' : 'state', [argument]));
       else
         replace(

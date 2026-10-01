@@ -1,19 +1,19 @@
-import { component } from 'zerodep-js';
+import { _component } from 'zerodep-js';
 import {
-  defineRoute,
-  defineRoutes,
+  _defineRoute,
+  _defineRoutes,
   type ParamsOf,
   type SearchOf,
   type DataOf,
-  createRouter,
+  _createRouter,
   Link,
-  useRoute,
+  _useRoute,
 } from 'zerodep-js/router';
 
-const Page = component(() => <p>路由</p>);
-const routes = defineRoutes({
+const Page = _component(() => <p>路由</p>);
+const routes = _defineRoutes({
   home: { path: '/', component: Page },
-  task: defineRoute('/tasks/:id', {
+  task: _defineRoute('/tasks/:id', {
     component: Page,
     parseSearch: (search) => ({ page: Number(search.get('page') ?? 1) }),
     load: async ({ params, search }) => {
@@ -39,7 +39,7 @@ export const invalidData: DataOf<typeof routes.task> = { id: 1, page: 1, bad: 0 
 export const optionalParams: ParamsOf<typeof routes.optional> = {};
 export const restParams: ParamsOf<typeof routes.files> = { path: ['a', 'b'] };
 
-const router = createRouter(routes);
+const router = _createRouter(routes);
 router.href(routes.home);
 router.href(routes.task, { params: { id: '1' } });
 void router.navigate(routes.optional);
@@ -53,8 +53,8 @@ router.href(routes.home, { params: { id: '1' } });
 // @ts-expect-error 通配参数使用片段数组。
 void router.preload(routes.files, { params: { path: 'a/b' } });
 
-export const TypePage = component(() => {
-  const route = useRoute(routes.task);
+export const TypePage = _component(() => {
+  const route = _useRoute(routes.task);
   const id: string = route.params.id;
   const page: number = route.search.page;
   // @ts-expect-error 查询通过导航更新，不直接改写解析结果。
@@ -82,13 +82,14 @@ export const wrongLink = (
     错误参数
   </Link>
 );
-const Required = component(({ title }: { title: string }) => <p>{title}</p>);
-// @ts-expect-error 页面所需业务参数应由上下文提供，路由器只注入 children。
-defineRoute('/invalid', { component: Required });
 
-const keyed = defineRoute('/keyed/:id', {
+const Required = _component(({ title }: { title: string }) => <p>{title}</p>);
+// @ts-expect-error 页面所需业务参数应由上下文提供，路由器只注入 children。
+_defineRoute('/invalid', { component: Required });
+
+const keyed = _defineRoute('/keyed/:id', {
   component: Page,
   key: ({ params }) => params.id,
   load: ({ params }) => params.id,
 });
-defineRoutes({ keyed });
+_defineRoutes({ keyed });

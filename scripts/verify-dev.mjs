@@ -27,12 +27,12 @@ logger.warn = (message) => {
   logs.push(message);
 };
 const source = (label, invalid = false) => `
-import { component, onCleanup } from 'zerodep-js';
+import { _component, _onCleanup } from 'zerodep-js';
 import { createCounter } from './counter.mts';
-export const App = component(({ onDestroy }: { onDestroy?: () => void }) => {
-  ${invalid ? 'onDestroy = () => {};' : ''}
+export const App = _component(({ onDestroy }: {onDestroy?: () => void;}) => {
+  ${invalid ? 'onDestroy = () => {};' : ''};
   const counter = createCounter();
-  onCleanup(() => onDestroy?.());
+  _onCleanup(() => onDestroy?.());
   return <button onClick={counter.increment}>${label}:{counter.count}</button>;
 });
 `;
@@ -47,10 +47,10 @@ try {
   await writeFile(
     resolve(fixture, 'counter.mts'),
     `
-import { $state } from 'zerodep-js';
+import { _state } from 'zerodep-js';
 export function createCounter() {
-  let count = $state(0);
-  return { get count() { return count; }, increment() { count++; } };
+  let count = _state(0);
+  return { get count() {return count;}, increment() {count++;} };
 }
 `,
   );
@@ -58,14 +58,14 @@ export function createCounter() {
   await writeFile(
     resolve(fixture, 'entry.ts'),
     `
-import { mount } from 'zerodep-js';
+import { _mount } from 'zerodep-js';
 import { App } from './App.tsx';
 globalThis.__loads = (globalThis.__loads ?? 0) + 1;
 globalThis.__disposals = 0;
-const options = { target: document.querySelector('#app'), props: { onDestroy() { globalThis.__disposals++; } } };
-let dispose = mount(App, options);
+const options = { target: document.querySelector('#app'), props: { onDestroy() {globalThis.__disposals++;} } };
+let dispose = _mount(App, options);
 if (import.meta.hot) {
-  import.meta.hot.accept('./App.tsx', (next) => { if (next) { dispose(); dispose = mount(next.App, options); } });
+  import.meta.hot.accept('./App.tsx', (next) => {if (next) {dispose();dispose = _mount(next.App, options);}});
   import.meta.hot.dispose(() => dispose());
 }
 `,

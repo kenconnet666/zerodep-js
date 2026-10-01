@@ -2,7 +2,7 @@ import { renderDocument, renderToString, serializeData, type RenderMode } from '
 import { App } from './App.js';
 import { TaskBoard } from './tasks/TaskBoard.js';
 import type { TaskPage } from './tasks/schema.js';
-import { createRouter, createMemoryHistory } from 'zerodep-js/router';
+import { _createRouter, _createMemoryHistory } from 'zerodep-js/router';
 import { routes } from './workspace/routes.js';
 import { Workspace } from './workspace/App.js';
 
@@ -32,7 +32,7 @@ export async function renderWorkspace(
   url: string,
   signal?: AbortSignal,
 ) {
-  const router = createRouter(routes, { history: createMemoryHistory(url) });
+  const router = _createRouter(routes, { history: _createMemoryHistory(url) });
   const abort = () => router.dispose();
   signal?.addEventListener('abort', abort, { once: true });
   try {

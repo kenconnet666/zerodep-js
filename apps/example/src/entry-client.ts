@@ -1,4 +1,4 @@
-import { mount, hydrate, type MountOptions } from 'zerodep-js';
+import { _mount, _hydrate, type MountOptions } from 'zerodep-js';
 import { App } from './App.js';
 import { registerPropertyElement } from './examples/property-elements.js';
 import './style.css';
@@ -17,8 +17,8 @@ const options: MountOptions<typeof App> = {
 };
 dispose =
   mode === 'csr'
-    ? mount(App, options)
-    : hydrate(App, {
+    ? _mount(App, options)
+    : _hydrate(App, {
         ...options,
         mismatch:
           new URL(location.href).searchParams.get('recover') === 'replace' ? 'replace' : 'throw',
@@ -30,7 +30,7 @@ root.dataset.clientReady = 'true';
 const restart = document.querySelector<HTMLButtonElement>('[data-remount]')!;
 function remount() {
   dispose();
-  dispose = mount(currentApp, options);
+  dispose = _mount(currentApp, options);
 }
 restart.disabled = false;
 restart.addEventListener('click', remount);

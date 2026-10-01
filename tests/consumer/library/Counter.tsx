@@ -1,4 +1,4 @@
-import { component, $state, type Renderable } from 'zerodep-js';
+import { _component, _state, type Renderable } from 'zerodep-js';
 
 export interface CounterProps {
   label: string;
@@ -6,8 +6,8 @@ export interface CounterProps {
   onCount?: (value: number) => void;
 }
 
-export const Counter = component(({ label, initial = 1, onCount }: CounterProps) => {
-  let count = $state(initial);
+export const Counter = _component(({ label, initial = 1, onCount }: CounterProps) => {
+  let count = _state(initial);
   return (
     <button
       data-counter
@@ -21,7 +21,7 @@ export const Counter = component(({ label, initial = 1, onCount }: CounterProps)
   );
 });
 
-export const Label = component(
+export const Label = _component(
   <T,>({ value, children }: { value: T; children: (value: T) => Renderable }) => (
     <span>{children(value)}</span>
   ),

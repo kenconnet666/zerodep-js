@@ -1,26 +1,26 @@
-import { component, $state, For } from 'zerodep-js';
+import { _component, _state, For } from 'zerodep-js';
 
-export const FormExample = component(() => {
-  let normalized = $state('AB');
-  let delegated = $state('AB');
-  let committed = $state('初值');
-  let ime = $state('');
-  let accepted = $state(false);
-  let rejectedEvents = $state(0);
-  let radio = $state('a');
-  let choice = $state('late');
-  let nullable = $state<string | null>(null);
-  let options = $state([{ id: 1, value: 'early', label: '先到' }]);
-  let defaultText = $state('默认值');
-  let resetValue = $state('受控初值');
-  let resetCheck = $state(false);
-  let preventReset = $state(false);
-  let file = $state('');
-  let rangeEvents = $state(0);
-  let handler = $state<(event: MouseEvent) => void>(() => {
+export const FormExample = _component(() => {
+  let normalized = _state('AB');
+  let delegated = _state('AB');
+  let committed = _state('初值');
+  let ime = _state('');
+  let accepted = _state(false);
+  let rejectedEvents = _state(0);
+  let radio = _state('a');
+  let choice = _state('late');
+  let nullable = _state<string | null>(null);
+  let options = _state([{ id: 1, value: 'early', label: '先到' }]);
+  let defaultText = _state('默认值');
+  let resetValue = _state('受控初值');
+  let resetCheck = _state(false);
+  let preventReset = _state(false);
+  let file = _state('');
+  let rangeEvents = _state(0);
+  let handler = _state<(event: MouseEvent) => void>(() => {
     handlerResult = '旧';
   });
-  let handlerResult = $state('');
+  let handlerResult = _state('');
   let handlerButton: HTMLButtonElement | undefined;
 
   return (

@@ -1,14 +1,14 @@
-import { component, $state } from 'zerodep-js';
+import { _component, _state } from 'zerodep-js';
 
-export const AttributeExample = component(() => {
-  let eventOrder = $state('');
-  let first = $state('较早属性');
-  let enabled = $state(true);
-  const aliases = $state<{ className?: string | null; 'aria-label'?: string | null }>({
+export const AttributeExample = _component(() => {
+  let eventOrder = _state('');
+  let first = _state('较早属性');
+  let enabled = _state(true);
+  const aliases = _state<{ className?: string | null; 'aria-label'?: string | null }>({
     className: '较晚属性',
     'aria-label': '较晚标签',
   });
-  const presentation = $state<{ 'stroke-width'?: number }>({ 'stroke-width': 3 });
+  const presentation = _state<{ 'stroke-width'?: number }>({ 'stroke-width': 3 });
   return (
     <section aria-label="属性与命名空间">
       <h2>属性与命名空间</h2>
@@ -83,6 +83,7 @@ export const AttributeExample = component(() => {
           eventOrder += '目标;';
         }}
       />
+
       <output data-metadata-order>{eventOrder}</output>
       <template data-native-template>
         <span data-template-child>{enabled ? '开启' : '关闭'}</span>
@@ -109,6 +110,7 @@ export const AttributeExample = component(() => {
               in="SourceGraphic"
               stdDeviation={enabled ? '1 2' : '2 3'}
             />
+
             <feConvolveMatrix
               data-filter-matrix
               order="3"
@@ -130,11 +132,13 @@ export const AttributeExample = component(() => {
           fillOpacity={enabled ? 0.5 : undefined}
           strokeDasharray={enabled ? '2 1' : undefined}
         />
+
         <use
           data-native-use
           xlinkHref={enabled ? '#attribute-shape' : undefined}
           xmlSpace="preserve"
         />
+
         <foreignObject width="10" height="10">
           <div data-foreign-html>HTML</div>
         </foreignObject>

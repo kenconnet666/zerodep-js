@@ -66,6 +66,7 @@ function fixture(file, valid) {
     `const width = pixels(${valid ? '12' : "'bad'"});`,
     'export const output = count.toFixed() + tone + width;',
   ];
+
   if (file.endsWith('.tsx')) {
     lines.push(
       'declare global { namespace JSX { interface Element {} interface IntrinsicElements { span: { children?: string }; } interface ElementChildrenAttribute { children: {}; } } }',
@@ -144,7 +145,7 @@ try {
   for (const valid of [false, true]) {
     await save(
       frameworkFile,
-      `import { component } from 'zerodep-js';\nexport const Probe = component(({ value }: { value: number }) => { ${valid ? '' : 'value++;'} return <span>{value}</span>; });\n`,
+      `import { _component } from 'zerodep-js';\nexport const Probe = _component(({ value }: { value: number }) => { ${valid ? '' : 'value++;'} return <span>{value}</span>; });\n`,
     );
     const report = await call('diagnostics', { filePath: frameworkFile });
     assert(report.framework.complete);
@@ -162,7 +163,12 @@ try {
   const consumer = 'apps/example/src/' + id + '_consumer.tsx';
   await save(
     definition,
-    `import { component, $state } from 'zerodep-js';\nexport const RenameCounter = component(({ step = 1 }: { step?: number }) => {\n  let count = $state(0);\n  return <button onClick={() => { count += step; }}>{count}</button>;\n});\n`,
+    `import { _component, _state } from 'zerodep-js';
+export const RenameCounter = _component(({ step = 1 }: {step?: number;}) => {
+  let count = _state(0);
+  return <button onClick={() => {count += step;}}>{count}</button>;
+});
+`,
   );
   await save(
     consumer,

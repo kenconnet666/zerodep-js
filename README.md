@@ -8,6 +8,8 @@
 
 项目使用 [MIT License](LICENSE)，贡献方式见 [CONTRIBUTING](CONTRIBUTING.md)。
 
+main 已按用户决定切换为 `_state`、`_derived`、`_component`、`_effect` 等公开函数命名，不保留旧名。下文是开发版本 API，npm RC1 不能直接运行这些新示例。三种页面宿主包正在按[执行方案](docs/hosting-implementation.md)推进。
+
 ## 工作区
 
 | 子项目              | 当前职责                                                  |
@@ -59,11 +61,11 @@ SSR 在服务端生成组件 HTML，浏览器通过 hydrate 认领原节点、�
 ## 已可使用的组件形态
 
 ```tsx
-import { component, $state, $derived } from 'zerodep-js';
+import { _component, _state, _derived } from 'zerodep-js';
 
-export const Counter = component(({ step = 1 }: { step?: number }) => {
-  let count = $state(0);
-  const doubled = $derived(count * 2);
+export const Counter = _component(({ step = 1 }: { step?: number }) => {
+  let count = _state(0);
+  const doubled = _derived(count * 2);
   return (
     <button
       onClick={() => {
@@ -76,7 +78,7 @@ export const Counter = component(({ step = 1 }: { step?: number }) => {
 });
 ```
 
-Vite 使用 `zerodep-js-vite` 的 `zerodep()` 插件。TS 配置保持 `jsx: "preserve"`，并设置 `jsxImportSource: "zerodep-js"`。客户端通过 `mount(App, { target, props })` 挂载，返回的函数负责卸载。未经过编译的宏会明确报错。
+Vite 使用 `zerodep-js-vite` 的 `zerodep()` 插件。TS 配置保持 `jsx: "preserve"`，并设置 `jsxImportSource: "zerodep-js"`。客户端通过 `_mount(App, { target, props })` 挂载，返回的函数负责卸载。未经过编译的宏会明确报错。
 
 ## 验证命令
 

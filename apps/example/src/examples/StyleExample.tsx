@@ -1,4 +1,4 @@
-import { component, $state, ErrorBoundary, type Style } from 'zerodep-js';
+import { _component, _state, ErrorBoundary, type Style } from 'zerodep-js';
 
 const styles: readonly Style[] = [
   {
@@ -19,10 +19,10 @@ const styles: readonly Style[] = [
   false,
 ];
 
-export const StyleExample = component(() => {
-  let step = $state(0);
-  let broken = $state(false);
-  const live = $state<{ color: string; padding?: string }>({ color: 'black', padding: '2px' });
+export const StyleExample = _component(() => {
+  let step = _state(0);
+  let broken = _state(false);
+  const live = _state<{ color: string; padding?: string }>({ color: 'black', padding: '2px' });
   return (
     <section aria-label="内联样式">
       <h2>样式与声明顺序</h2>

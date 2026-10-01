@@ -10,11 +10,11 @@ import { renderToString } from 'zerodep-js-ssr';
 const html = renderToString(App, { props: { mode: 'ssr' } });
 
 // 浏览器选择创建新节点或接管服务端节点，返回值都负责卸载。
-import { mount, hydrate } from 'zerodep-js';
+import { _mount, _hydrate } from 'zerodep-js';
 const dispose =
   mode === 'ssr'
-    ? hydrate(App, { target, props: { mode } })
-    : mount(App, { target, props: { mode } });
+    ? _hydrate(App, { target, props: { mode } })
+    : _mount(App, { target, props: { mode } });
 ```
 
 `renderDocument` 仍负责可信 HTML 模板的组合，`renderToString` 负责组件 HTML。示例的两种模式现在都使用 App.tsx，旧的原生 DOM 探针已删除。模式切换通过新请求完成，不把已挂载的客户端实例搬到服务端。
@@ -58,7 +58,7 @@ const dataText = serializeData(initialData);
 默认不匹配策略为 `throw`，通过 `HydrationError` 和稳定代码 `ZJ_HYDRATION_MISMATCH` 报告问题。应用可以明确选择替换：
 
 ```ts
-hydrate(App, {
+_hydrate(App, {
   target,
   props,
   mismatch: 'replace',

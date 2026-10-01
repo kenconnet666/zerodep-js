@@ -17,10 +17,10 @@ function requireCompiler(name: string): never {
 }
 
 /** 类型入口保持普通值；未编译时立即失败，不能悄悄生成不更新的页面。 */
-export const $state: StateMacro = Object.assign(() => requireCompiler('$state'), {
-  raw: () => requireCompiler('$state.raw'),
+export const _state: StateMacro = Object.assign(() => requireCompiler('_state'), {
+  raw: () => requireCompiler('_state.raw'),
 });
 
-export const $derived: DerivedMacro = Object.assign(() => requireCompiler('$derived'), {
-  by: () => requireCompiler('$derived.by'),
+export const _derived: DerivedMacro = Object.assign(() => requireCompiler('_derived'), {
+  by: () => requireCompiler('_derived.by'),
 });

@@ -5,40 +5,40 @@
 ## 定义和使用
 
 ```tsx
-import { component, $state } from 'zerodep-js';
+import { _component, _state } from 'zerodep-js';
 import {
-  defineRoute,
-  defineRoutes,
-  createRouter,
-  createBrowserHistory,
+  _defineRoute,
+  _defineRoutes,
+  _createRouter,
+  _createBrowserHistory,
   Router,
   Outlet,
   Link,
-  useRoute,
-  useRouter,
-  onBeforeLeave,
+  _useRoute,
+  _useRouter,
+  _onBeforeLeave,
 } from 'zerodep-js/router';
 
-const Layout = component(() => (
+const Layout = _component(() => (
   <div>
     <nav>应用导航</nav>
     <Outlet />
   </div>
 ));
-const Home = component(() => (
+const Home = _component(() => (
   <Link to={routes.task} params={{ id: '123' }}>
     打开任务
   </Link>
 ));
-const Task = component(() => {
-  const route = useRoute(routes.task);
+const Task = _component(() => {
+  const route = _useRoute(routes.task);
   return <h1>{route.data?.title}</h1>;
 });
 
-const routes = defineRoutes({
+const routes = _defineRoutes({
   layout: { path: '/', component: Layout },
   home: { path: '/', parent: 'layout', component: Home },
-  task: defineRoute('/tasks/:id', {
+  task: _defineRoute('/tasks/:id', {
     parent: 'layout',
     component: Task,
     parseSearch: (query) => ({ preview: query.get('preview') === 'true' }),
@@ -46,12 +46,12 @@ const routes = defineRoutes({
   }),
 });
 
-const router = createRouter(routes, { history: createBrowserHistory() });
-const App = component(() => <Router router={router} />);
+const router = _createRouter(routes, { history: _createBrowserHistory() });
+const App = _component(() => <Router router={router} />);
 // 客户端 mount(App, { target })。SSR 的初始化过程见后文。
 ```
 
-无 loader 的记录可以直接写对象；需要 loader 参数/查询的上下文推断时使用 `defineRoute(path, options)`。`routes.task` 保留路径参数、parseSearch 输出和 loader 结果类型，`Link`、`router.href/navigate/preload` 会检查必填参数。`useRoute(routes.task)` 返回 getter 对象，在 JSX、derived 或 effect 中读取字段会持续更新；普通局部解构仍是取值语义。
+无 loader 的记录可以直接写对象；需要 loader 参数/查询的上下文推断时使用 `_defineRoute(path, options)`。`routes.task` 保留路径参数、parseSearch 输出和 loader 结果类型，`Link`、`router.href/navigate/preload` 会检查必填参数。`_useRoute(routes.task)` 返回 getter 对象，在 JSX、derived 或 effect 中读取字段会持续更新；普通局部解构仍是取值语义。
 
 `load` 的返回数据可能为 undefined，因此 `route.data` 保留这一可能性。对于确认已有数据的页面，可以在初始化时验证并抛出明确错误；不要用 any 抹去来源约束。
 
@@ -80,13 +80,13 @@ setSearch 默认合并当前查询并 replace，null/undefined 删除该键；�
 默认复用同一条路由记录的页面和父布局，参数与查询变化不会重跑组件初始化。编辑页需要切换记录即重建时明确声明：
 
 ```ts
-defineRoute('/tasks/:id', {
+_defineRoute('/tasks/:id', {
   component: Task,
   key: ({ params }) => params.id,
 });
 ```
 
-key 返回字符串、数字或 symbol。只在标识变化时重建这一级与其后代，父布局继续保留。不要每次返回新 symbol。本地 `$state(initial)` 始终只是初始化；需要跟随 URL 的输入，可以明确用 effect 同步，或选择合适的页面 key。
+key 返回字符串、数字或 symbol。只在标识变化时重建这一级与其后代，父布局继续保留。不要每次返回新 symbol。本地 `_state(initial)` 始终只是初始化；需要跟随 URL 的输入，可以明确用 effect 同步，或选择合适的页面 key。
 
 ## 导航与加载
 
@@ -97,17 +97,17 @@ loader、parseSearch、全局守卫和通知回调不继承组件资源所有权
 新的导航会取消旧导航。即使旧 loader 忽略 signal，迟到结果也不能提交。加载期间保留当前页面，`router.pending` 提供目标地址；首次未准备时显示 Router 的 pending。数据准备成功后再提交程序导航的 history 与视图；浏览器已发生的 pop 被守卫拒绝时恢复到已提交位置。
 
 ```tsx
-const Editor = component(() => {
-  const router = useRouter();
-  let dirty = $state(false);
-  onBeforeLeave(() => !dirty || window.confirm('确定离开？'));
+const Editor = _component(() => {
+  const router = _useRouter();
+  let dirty = _state(false);
+  _onBeforeLeave(() => !dirty || window.confirm('确定离开？'));
   return <button onClick={() => void router.reload()}>重新加载</button>;
 });
 ```
 
-`onBeforeLeave` 跟随当前页面销毁；离开或该记录的路径参数变化时触发，单纯查询变化不触发。需要拦截查询等所有导航，用 `router.beforeEach(guard)`，返回停止函数。守卫可异步返回 false 取消，或返回 `redirect(route, options)`。内部导航守卫不拦截关闭标签、刷新或外部页面；需要浏览器 beforeunload 提示时由应用在 onMount 注册并释放。
+`_onBeforeLeave` 跟随当前页面销毁；离开或该记录的路径参数变化时触发，单纯查询变化不触发。需要拦截查询等所有导航，用 `router.beforeEach(guard)`，返回停止函数。守卫可异步返回 false 取消，或返回 `_redirect(route, options)`。内部导航守卫不拦截关闭标签、刷新或外部页面；需要浏览器 beforeunload 提示时由应用在 onMount 注册并释放。
 
-`redirect` 可以从 loader 返回/抛出，或由守卫返回；支持同 origin 的字符串和带类型的路由引用。记录级 redirect 适合固定别名，变量目标放在 loader/守卫里。重定向链最多 16 次，不接受外部 origin 或 javascript URL。SSR 能从已提交结果中取得 redirect 信息并发送 301/302/303/307/308；客户端以 replace 完成重定向。
+`_redirect` 可以从 loader 返回/抛出，或由守卫返回；支持同 origin 的字符串和带类型的路由引用。记录级 redirect 适合固定别名，变量目标放在 loader/守卫里。重定向链最多 16 次，不接受外部 origin 或 javascript URL。SSR 能从已提交结果中取得 redirect 信息并发送 301/302/303/307/308；客户端以 replace 完成重定向。
 
 `navigate`/`resolve`/`reload` 的结果是 committed、cancelled、unchanged 或 error。loader 失败会提交带错误状态的目标页面，因此仍为 committed；无法完成导航（如守卫异常、无效目标、history 写入失败）返回 error 并保留原视图，异常也记录于 router.error。不要只检查结果是否抛异常。
 
@@ -140,7 +140,7 @@ Router 的 `notFound` 定义完全未匹配页面；`error(error, retry)` 定义
 服务端流程：
 
 ```ts
-const router = createRouter(routes, { history: createMemoryHistory(requestURL) });
+const router = _createRouter(routes, { history: _createMemoryHistory(requestURL) });
 try {
   const result = await router.resolve();
   // 先处理 result 的 error/cancelled 和 redirect，再发送 HTML。
@@ -156,9 +156,9 @@ try {
 客户端使用同一份表、新 browser history 和解码后的 initial：
 
 ```ts
-const router = createRouter(routes, { history: createBrowserHistory(), initial });
+const router = _createRouter(routes, { history: _createBrowserHistory(), initial });
 await router.resolve(); // 加载页面代码并恢复数据，不重复调用首屏 loader。
-hydrate(Router, { target, props: { router } });
+_hydrate(Router, { target, props: { router } });
 ```
 
 dehydrate 复制明确的加载数据/历史 state/匹配记录，不包含组件、回调或内部堆栈。它保留 structuredClone 语义；用于 HTML 传输时仍须满足 JSON 编码约束，Date/Map/循环等需应用显式编解码。客户端验证版本与匹配记录，可通过 validateData 恢复业务数据。模板、路由表版本、初始 URL 和数据必须一致。hash 不会传到 HTTP 服务端，示例因此将 hash 模式作为 CSR 入口。

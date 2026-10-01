@@ -2,6 +2,9 @@
 
 ## 未发布
 
+- 破坏性重构：core 根入口与 router/storage 的公开函数统一为单下划线前缀，直接移除旧导出；编译器按统一语义角色识别新名、导入别名和命名空间。
+- 新增 _createPage 页面入口与 update/dispose 契约，宿主输入更新保留页面实例；修复旧 disposer 重复调用可能误删新根登记的问题。
+
 - 新增 snapshot，支持脱开深代理、普通对象/数组循环与共享引用、Map/Set、二进制及平台结构化克隆规则。
 - 新增 onMount、createScope、getAbortSignal，明确一次性挂载、同步所有权恢复与作用域取消；新增实际 CSR/SSR 用例。
 - 新增可选 storage 子入口，支持 localStorage/sessionStorage 恢复、迁移、校验、同步、写入合并和清理；实际任务页保存新增草稿。

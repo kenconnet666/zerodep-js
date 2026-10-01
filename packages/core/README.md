@@ -3,14 +3,14 @@
 zerodep-js 的响应式、组件、DOM 与 hydration 运行时。使用标准 TSX 和 TypeScript 7，源码须经过 `zerodep-js-compiler` 或 `zerodep-js-vite` 转换。样式边界采用 CSS Tools tokenizer，CSS 类型采用 csstype 的生成数据；不依赖其他组件框架运行时。
 
 ```tsx
-import { component, $state, mount } from 'zerodep-js';
+import { _component, _state, _mount } from 'zerodep-js';
 
-const Counter = component(({ step = 1 }: { step?: number }) => {
-  let count = $state(0);
+const Counter = _component(({ step = 1 }: { step?: number }) => {
+  let count = _state(0);
   return <button onClick={() => (count += step)}>{count}</button>;
 });
 
-const dispose = mount(Counter, { target: document.querySelector('#app')! });
+const dispose = _mount(Counter, { target: document.querySelector('#app')! });
 // 应用退出时调用 dispose，释放节点、事件与订阅。
 ```
 

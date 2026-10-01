@@ -1,15 +1,15 @@
-import { component, $state, onMount, onCleanup, getAbortSignal, snapshot } from 'zerodep-js';
+import { _component, _state, _onMount, _onCleanup, _getAbortSignal, _snapshot } from 'zerodep-js';
 
-const Mounted = component(({ record }: { record: (message: string) => void }) => {
+const Mounted = _component(({ record }: { record: (message: string) => void }) => {
   let node: HTMLDivElement | undefined;
-  let mounted = $state(false);
-  const signal = getAbortSignal();
-  onMount(() => {
+  let mounted = _state(false);
+  const signal = _getAbortSignal();
+  _onMount(() => {
     record(`mount:${node?.isConnected}`);
     mounted = true;
     return () => record('mount-cleanup');
   });
-  onCleanup(() => record(`cleanup:${signal.aborted}`));
+  _onCleanup(() => record(`cleanup:${signal.aborted}`));
   return (
     <div
       data-lifecycle-child
@@ -22,11 +22,11 @@ const Mounted = component(({ record }: { record: (message: string) => void }) =>
   );
 });
 
-export const LifecycleExample = component(() => {
-  let active = $state(true);
-  let events = $state('');
-  const model = $state({ nested: { count: 1 } });
-  let copied = $state(0);
+export const LifecycleExample = _component(() => {
+  let active = _state(true);
+  let events = _state('');
+  const model = _state({ nested: { count: 1 } });
+  let copied = _state(0);
   return (
     <section aria-label="生命周期与快照">
       <h2>生命周期与快照</h2>
@@ -49,7 +49,7 @@ export const LifecycleExample = component(() => {
       <button
         data-snapshot
         onClick={() => {
-          const copy = snapshot(model);
+          const copy = _snapshot(model);
           copy.nested.count = 10;
           copied = structuredClone(copy).nested.count;
         }}

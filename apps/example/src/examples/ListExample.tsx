@@ -1,8 +1,8 @@
-import { component, $state, For, ErrorBoundary, onCleanup } from 'zerodep-js';
+import { _component, _state, For, ErrorBoundary, _onCleanup } from 'zerodep-js';
 
 type Item = { id: number; name: string };
 
-const EditableRow = component(
+const EditableRow = _component(
   ({
     row,
     index,
@@ -14,8 +14,8 @@ const EditableRow = component(
     remove: (id: number) => void;
     disposed: (id: number) => void;
   }) => {
-    let draft = $state(row.name);
-    onCleanup(() => disposed(row.id));
+    let draft = _state(row.name);
+    _onCleanup(() => disposed(row.id));
     return (
       <li data-row={row.id}>
         <span data-row-index>{index}</span>
@@ -27,6 +27,7 @@ const EditableRow = component(
             draft = event.currentTarget.value;
           }}
         />
+
         <button type="button" onClick={() => remove(row.id)}>
           删除 {row.id}
         </button>
@@ -35,13 +36,13 @@ const EditableRow = component(
   },
 );
 
-export const ListExample = component(() => {
-  let rows = $state<Item[]>([
+export const ListExample = _component(() => {
+  let rows = _state<Item[]>([
     { id: 1, name: '甲' },
     { id: 2, name: '乙' },
     { id: 3, name: '丙' },
   ]);
-  const removed = $state<number[]>([]);
+  const removed = _state<number[]>([]);
   let nextId = 4;
   const remove = (id: number) => {
     rows = rows.filter((row) => row.id !== id);

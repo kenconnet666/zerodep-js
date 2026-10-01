@@ -52,7 +52,7 @@ Linux CI 在完整验证任务中执行此门槛，另有 Windows 的包消费�
 
 ## 组件库怎样交付
 
-组件继续写成普通 TSX 和 `component(...)`，不必给每个返回值补一份冗余声明。库构建需要同时产生两类产物：
+组件继续写成普通 TSX 和 `_component(...)`，不必给每个返回值补一份冗余声明。库构建需要同时产生两类产物：
 
 - 用 compiler 将宏和 JSX 转为 ESM；保存 code 与 map，并给 JS 添加对应的 sourceMappingURL。
 - 用 TS7 对原始 TSX 执行 declaration/emitDeclarationOnly，保留参数、默认值可选性、泛型 children 和 JSX 类型；声明映射的源码需要随包提供。

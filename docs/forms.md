@@ -5,7 +5,7 @@
 ## 受控值与初始化值
 
 ```tsx
-let name = $state('');
+let name = _state('');
 <input
   value={name}
   onInput={(event) => {

@@ -1,17 +1,17 @@
-import { component, $state, createContext, provideContext, useContext } from 'zerodep-js';
+import { _component, _state, _createContext, _provideContext, _useContext } from 'zerodep-js';
 
-const Theme = createContext<{ readonly color: string }>({ color: '默认' });
-const Label = component(({ name }: { name: string }) => {
-  const theme = useContext(Theme);
+const Theme = _createContext<{ readonly color: string }>({ color: '默认' });
+const Label = _component(({ name }: { name: string }) => {
+  const theme = _useContext(Theme);
   return <output data-theme={name}>{theme.color}</output>;
 });
-const Nested = component(() => {
-  provideContext(Theme, { color: '内层' });
+const Nested = _component(() => {
+  _provideContext(Theme, { color: '内层' });
   return <Label name="inner" />;
 });
-const Provider = component(() => {
-  const theme = $state({ color: '蓝' });
-  provideContext(Theme, theme);
+const Provider = _component(() => {
+  const theme = _state({ color: '蓝' });
+  _provideContext(Theme, theme);
   return (
     <div>
       <button
@@ -28,7 +28,7 @@ const Provider = component(() => {
     </div>
   );
 });
-export const ContextExample = component(() => (
+export const ContextExample = _component(() => (
   <section aria-label="上下文">
     <h2>上下文</h2>
     <Label name="default" />

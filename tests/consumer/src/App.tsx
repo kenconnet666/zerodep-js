@@ -1,18 +1,26 @@
-import { component, $state, For, onMount, onCleanup, getAbortSignal, snapshot } from 'zerodep-js';
-import { persistLocal } from 'zerodep-js/storage';
 import {
-  createRouter,
-  createMemoryHistory,
-  defineRoutes,
-  defineRoute,
+  _component,
+  _state,
+  For,
+  _onMount,
+  _onCleanup,
+  _getAbortSignal,
+  _snapshot,
+} from 'zerodep-js';
+import { _persistLocal } from 'zerodep-js/storage';
+import {
+  _createRouter,
+  _createMemoryHistory,
+  _defineRoutes,
+  _defineRoute,
   Router,
   Link,
-  useRoute,
+  _useRoute,
 } from 'zerodep-js/router';
 import { Counter, Label } from '@zerodep-consumer/counter';
 
-const PackedPage = component(() => {
-  const route = useRoute();
+const PackedPage = _component(() => {
+  const route = _useRoute();
   const initial = route.params.id;
   return (
     <section data-packed-page>
@@ -30,17 +38,17 @@ const PackedPage = component(() => {
     </section>
   );
 });
-const packedRoutes = defineRoutes({
+const packedRoutes = _defineRoutes({
   page: { path: '/packed/:id', component: PackedPage },
-  keyed: defineRoute('/keyed/:id', { component: PackedPage, key: ({ params }) => params.id }),
+  keyed: _defineRoute('/keyed/:id', { component: PackedPage, key: ({ params }) => params.id }),
 });
 
-export const App = component(({ title }: { title: string }) => {
-  let message = $state('等待');
-  let routed = $state(false);
-  const router = createRouter(packedRoutes, { history: createMemoryHistory('/packed/start') });
-  onCleanup(() => router.dispose());
-  persistLocal(
+export const App = _component(({ title }: { title: string }) => {
+  let message = _state('等待');
+  let routed = _state(false);
+  const router = _createRouter(packedRoutes, { history: _createMemoryHistory('/packed/start') });
+  _onCleanup(() => router.dispose());
+  _persistLocal(
     'package-message',
     {
       read: () => message,
@@ -55,12 +63,12 @@ export const App = component(({ title }: { title: string }) => {
       },
     },
   );
-  const rows = $state([
+  const rows = _state([
     { id: 1, name: '甲' },
     { id: 2, name: '乙' },
   ]);
-  onMount(() => {
-    const signal = getAbortSignal();
+  _onMount(() => {
+    const signal = _getAbortSignal();
     document.body.dataset.fixtureEffect = 'active';
     return () => {
       document.body.dataset.fixtureEffect = 'disposed';
@@ -78,6 +86,7 @@ export const App = component(({ title }: { title: string }) => {
         value={message}
         onInput={(event) => (message = event.currentTarget.value)}
       />
+
       <output>{message}</output>
       <Label value={{ id: 3 }}>{(value) => value.id}</Label>
       <For each={rows} keyBy={(row) => row.id}>
@@ -86,7 +95,7 @@ export const App = component(({ title }: { title: string }) => {
       <button
         data-copy
         onClick={() => {
-          const copied = snapshot(rows);
+          const copied = _snapshot(rows);
           copied[0]!.name = '副本';
           message = `${copied[0]!.name}/${rows[0]!.name}`;
         }}

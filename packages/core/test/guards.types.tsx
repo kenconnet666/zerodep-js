@@ -1,10 +1,10 @@
-import { component, $state, $derived } from 'zerodep-js';
+import { _component, _state, _derived } from 'zerodep-js';
 
 // 与编译器的条件别名回归配对，确认 TS7 并未跨宏调用提供收窄。
 
-export const MacroConditions = component(({ user }: { user?: { name: string } }) => {
-  const fromState = $state(Boolean(user));
-  const fromDerived = $derived(user !== undefined);
+export const MacroConditions = _component(({ user }: { user?: { name: string } }) => {
+  const fromState = _state(Boolean(user));
+  const fromDerived = _derived(user !== undefined);
   if (fromState) {
     // @ts-expect-error 宏的返回值不会向参数传播条件收窄。
     void user.name;

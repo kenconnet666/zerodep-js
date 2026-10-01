@@ -1,23 +1,23 @@
 import {
-  component,
-  $state,
-  $derived,
+  _component,
+  _state,
+  _derived,
   For,
-  getAbortSignal,
-  snapshot,
-  effect,
+  _getAbortSignal,
+  _snapshot,
+  _effect,
   type Renderable,
 } from 'zerodep-js';
-import { Link, Outlet, useRoute, useRouter, onBeforeLeave } from 'zerodep-js/router';
-import { persistLocal } from 'zerodep-js/storage';
+import { Link, Outlet, _useRoute, _useRouter, _onBeforeLeave } from 'zerodep-js/router';
+import { _persistLocal } from 'zerodep-js/storage';
 import { ApiFailure, updateTask } from '../tasks/api.js';
 import { titleSchema } from '../tasks/schema.js';
 import { routes } from './routes.js';
 import './workspace.css';
 
-export const WorkspaceLayout = component((): Renderable => {
-  const router = useRouter();
-  let label = $state('我的任务');
+export const WorkspaceLayout = _component((): Renderable => {
+  const router = _useRouter();
+  let label = _state('我的任务');
   return (
     <div class="workspace">
       <header>
@@ -62,12 +62,12 @@ export const WorkspaceLayout = component((): Renderable => {
   );
 });
 
-export const TaskList = component((): Renderable => {
-  const route = useRoute(routes.tasks);
-  const router = useRouter();
-  let query = $state(route.search.query);
+export const TaskList = _component((): Renderable => {
+  const route = _useRoute(routes.tasks);
+  const router = _useRouter();
+  let query = _state(route.search.query);
   let previousQuery = route.search.query;
-  effect(() => {
+  _effect(() => {
     const next = route.search.query;
     // 首轮保留接管前的输入；之后浏览器历史改变查询时跟随已提交 URL。
     if (next !== previousQuery) {
@@ -126,18 +126,18 @@ export const TaskList = component((): Renderable => {
   );
 });
 
-export const TaskDetail = component((): Renderable => {
-  const route = useRoute(routes.task);
-  const router = useRouter();
-  const task = snapshot(route.data!);
-  let title = $state(task.title);
-  let savedTitle = $state(task.title);
-  let revision = $state(task.revision);
-  let saving = $state(false);
-  let message = $state('');
-  const dirty = $derived(title !== savedTitle);
-  const signal = getAbortSignal();
-  const draft = persistLocal(
+export const TaskDetail = _component((): Renderable => {
+  const route = _useRoute(routes.task);
+  const router = _useRouter();
+  const task = _snapshot(route.data!);
+  let title = _state(task.title);
+  let savedTitle = _state(task.title);
+  let revision = _state(task.revision);
+  let saving = _state(false);
+  let message = _state('');
+  const dirty = _derived(title !== savedTitle);
+  const signal = _getAbortSignal();
+  const draft = _persistLocal(
     `zerodep.example.task-title:${task.id}`,
     {
       read: () => (title === savedTitle ? null : title),
@@ -153,7 +153,7 @@ export const TaskDetail = component((): Renderable => {
       },
     },
   );
-  onBeforeLeave(() => !dirty || window.confirm('标题尚未提交，确定离开吗？草稿会保留。'));
+  _onBeforeLeave(() => !dirty || window.confirm('标题尚未提交，确定离开吗？草稿会保留。'));
 
   async function save() {
     const entered = title;

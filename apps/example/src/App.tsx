@@ -1,4 +1,4 @@
-import { component, $state, $derived, onCleanup, effect, type JSX } from 'zerodep-js';
+import { _component, _state, _derived, _onCleanup, _effect, type JSX } from 'zerodep-js';
 import type { RenderMode } from 'zerodep-js-ssr';
 import { ListExample } from './examples/ListExample.js';
 import { ContextExample } from './examples/ContextExample.js';
@@ -12,7 +12,7 @@ import { TaskExample } from './examples/TaskExample.js';
 import { LifecycleExample } from './examples/LifecycleExample.js';
 import { StorageExample } from './examples/StorageExample.js';
 
-const Button = component(
+const Button = _component(
   ({ type = 'button', children, ...attrs }: JSX.IntrinsicElements['button']) => (
     <button {...attrs} type={type}>
       {children}
@@ -20,7 +20,7 @@ const Button = component(
   ),
 );
 
-const Counter = component(
+const Counter = _component(
   ({
     initial = 0,
     step = 1,
@@ -34,9 +34,9 @@ const Counter = component(
     onRefDispose?: () => void;
     onChange?: (value: number) => void;
   }) => {
-    let count = $state(initial);
-    const doubled = $derived(count * 2);
-    onCleanup(() => onDispose?.());
+    let count = _state(initial);
+    const doubled = _derived(count * 2);
+    _onCleanup(() => onDispose?.());
     function increment(amount: number) {
       count += amount;
       onChange?.(count);
@@ -72,20 +72,20 @@ const Counter = component(
 
 type AppProps = { mode?: RenderMode; onUnmount?: () => void };
 
-export const App = component(({ mode = 'csr', onUnmount }: AppProps) => {
-  let ready = $state(false);
-  effect(() => {
+export const App = _component(({ mode = 'csr', onUnmount }: AppProps) => {
+  let ready = _state(false);
+  _effect(() => {
     ready = true;
   });
-  let step = $state(1);
-  let initial = $state(0);
-  let counterKey = $state(0);
-  let visible = $state(true);
-  let disposed = $state(0);
-  let refDisposed = $state(0);
-  let lastEvent = $state(0);
-  let name = $state('访客');
-  const attrs = $state<Record<string, string>>({ title: '初始标题' });
+  let step = _state(1);
+  let initial = _state(0);
+  let counterKey = _state(0);
+  let visible = _state(true);
+  let disposed = _state(0);
+  let refDisposed = _state(0);
+  let lastEvent = _state(0);
+  let name = _state('访客');
+  const attrs = _state<Record<string, string>>({ title: '初始标题' });
 
   return (
     <main style={{ '--step': step }}>

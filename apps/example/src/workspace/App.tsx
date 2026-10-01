@@ -1,7 +1,7 @@
-import { component } from 'zerodep-js';
+import { _component } from 'zerodep-js';
 import { Router, type RouterInstance } from 'zerodep-js/router';
 
-export const Workspace = component(({ router }: { router: RouterInstance }) => (
+export const Workspace = _component(({ router }: { router: RouterInstance }) => (
   <Router
     router={router}
     pending={<p role="status">正在打开任务空间…</p>}

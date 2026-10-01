@@ -217,7 +217,8 @@ export function mount<C extends AnyComponent>(component: C, options: MountOption
     try {
       scope.dispose();
     } finally {
-      roots.delete(target);
+      // 旧句柄的重复清理不能撤销同一容器的新实例登记。
+      if (roots.get(target) === dispose) roots.delete(target);
     }
   };
   roots.set(target, dispose);
@@ -243,7 +244,7 @@ export function hydrate<C extends AnyComponent>(component: C, options: HydrateOp
     try {
       scope.dispose();
     } finally {
-      roots.delete(target);
+      if (roots.get(target) === dispose) roots.delete(target);
     }
   };
   roots.set(target, dispose);

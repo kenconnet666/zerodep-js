@@ -1,8 +1,8 @@
-import { hydrate, mount } from 'zerodep-js';
+import { _hydrate, _mount } from 'zerodep-js';
 import {
-  createRouter,
-  createBrowserHistory,
-  createHashHistory,
+  _createRouter,
+  _createBrowserHistory,
+  _createHashHistory,
   type RouterSnapshot,
 } from 'zerodep-js/router';
 import { routes } from './routes.js';
@@ -16,13 +16,13 @@ const hash = new URL(location.href).searchParams.get('history') === 'hash';
 const initial = JSON.parse(
   document.querySelector('#route-data')?.textContent ?? 'null',
 ) as RouterSnapshot | null;
-const router = createRouter(routes, {
-  history: hash ? createHashHistory() : createBrowserHistory(),
+const router = _createRouter(routes, {
+  history: hash ? _createHashHistory() : _createBrowserHistory(),
   ...(initial ? { initial } : {}),
 });
 if (mode === 'ssr') await router.resolve();
 const options = { target: root, props: { router } };
-const dispose = mode === 'ssr' ? hydrate(Workspace, options) : mount(Workspace, options);
+const dispose = mode === 'ssr' ? _hydrate(Workspace, options) : _mount(Workspace, options);
 root.dataset.clientReady = 'true';
 document.querySelector('#unmount')?.addEventListener(
   'click',

@@ -1,8 +1,8 @@
-import { component, $state } from 'zerodep-js';
+import { _component, _state } from 'zerodep-js';
 import { TaskBoard } from '../tasks/TaskBoard.js';
 
-export const TaskExample = component(() => {
-  let visible = $state(false);
+export const TaskExample = _component(() => {
+  let visible = _state(false);
   return (
     <section aria-label="异步组件生命周期">
       <h2>异步组件生命周期</h2>

@@ -66,7 +66,7 @@
 ### 3.1 组件、props 与默认值
 
 ```tsx
-import { component, $state, $derived } from 'zerodep-js';
+import { _component, _state, _derived } from 'zerodep-js';
 
 type CounterProps = {
   initial?: number;
@@ -74,9 +74,9 @@ type CounterProps = {
   onChange?: (value: number) => void;
 };
 
-export const Counter = component(({ initial = 0, step = 1, onChange }: CounterProps) => {
-  let count = $state(initial);
-  const doubled = $derived(count * 2);
+export const Counter = _component(({ initial = 0, step = 1, onChange }: CounterProps) => {
+  let count = _state(initial);
+  const doubled = _derived(count * 2);
 
   function increment() {
     count += step;
@@ -93,11 +93,11 @@ export const Counter = component(({ initial = 0, step = 1, onChange }: CounterPr
 
 已实现的组件规则：
 
-- `component` 明确编译边界，参数解构得到只读的响应式输入绑定。
+- `_component` 明确编译边界，参数解构得到只读的响应式输入绑定。
 - 组件函数初始化执行一次；需要随状态变化的条件结构放在支持的 JSX 动态位置，普通顶层 `if` 和提前返回不会自动重新执行。
 - 支持就近默认值和重命名，例如 `class: className`；不要求单独维护 defaults 对象或运行时 props schema。
 - 小组件允许内联 props 类型；复杂或复用的类型再单独命名，不强制拆文件。
-- 保留 `component((props: Props) => ...)`，复杂关联类型或嵌套数据可以直接访问对象。
+- 保留 `_component((props: Props) => ...)`，复杂关联类型或嵌套数据可以直接访问对象。
 - 泛型包装保留原始函数签名，不把 props 压成 `any`。TypeScript 的泛型、联合、Pick、Omit、NoInfer 等直接使用，不另造类型 DSL。
 - 组件通过 JSX 或根挂载入口创建；直接把组件值当普通函数调用会报错。普通辅助函数继续普通调用。
 
@@ -116,21 +116,21 @@ export const Counter = component(({ initial = 0, step = 1, onChange }: CounterPr
 
 默认值使用统一的缓存 fallback：无依赖结果保持稳定，有依赖时按实际读取更新；显式输入暂时覆盖 fallback。这个规则已落地，不再是待冻结候选。
 
-`$state(initial)` 只在创建状态时取一次初值，后续 initial prop 变化不自动重置用户状态。需要持续计算时使用 `$derived`。
+`_state(initial)` 只在创建状态时取一次初值，后续 initial prop 变化不自动重置用户状态。需要持续计算时使用 `_derived`。
 
 ### 3.2 状态、派生与副作用
 
 ```ts
-let count = $state(0);
-const doubled = $derived(count * 2);
+let count = _state(0);
+const doubled = _derived(count * 2);
 
-const total = $derived.by(() => {
+const total = _derived.by(() => {
   let result = 0;
   for (const item of items) result += item.price * item.quantity;
   return result;
 });
 
-effect(() => {
+_effect(() => {
   const stop = subscribeToSomething(id);
   return stop;
 });
@@ -139,7 +139,7 @@ effect(() => {
 - 普通表达式保存执行时的结果，只有显式派生持续跟随。
 - 派生绑定只读，不引入临时覆盖派生值的双重数据来源。
 - 普通对象与数组按属性跟踪；类实例、DOM、Date、Map/Set 等保留原始对象，不做深代理。
-- 输入对象不隐式深拷贝，通过原始别名绕过代理的修改不承诺通知；`$state.raw` 跟踪整体替换，JSON 传输使用显式数据边界。
+- 输入对象不隐式深拷贝，通过原始别名绕过代理的修改不承诺通知；`_state.raw` 跟踪整体替换，JSON 传输使用显式数据边界。
 - 普通函数传参仍传当前值；需要以后读取最新值时显式传 getter。
 - 副作用跟踪同步读取，重跑前和销毁时清理。不能把任意 async 函数自动当成安全、可取消的响应式任务。
 
@@ -152,7 +152,7 @@ type ButtonProps = JSX.IntrinsicElements['button'] & {
   tone?: 'primary' | 'neutral';
 };
 
-const Button = component(
+const Button = _component(
   ({ tone = 'primary', type = 'button', children, ...attrs }: ButtonProps) => (
     <button {...attrs} type={type} data-tone={tone}>
       {children}
@@ -173,7 +173,7 @@ const Button = component(
 ### 3.4 输入与状态复用
 
 ```tsx
-let name = $state('');
+let name = _state('');
 
 <TextInput value={name} onValueChange={(next) => (name = next)} />;
 ```
@@ -184,7 +184,7 @@ let name = $state('');
 
 ```ts
 function createCounter(initial = 0) {
-  let count = $state(initial);
+  let count = _state(initial);
 
   return {
     get count() {
@@ -216,8 +216,8 @@ JSX 值是可重复插入的渲染描述，每个插入位置建立独立实例�
 ### 3.6 根挂载与服务端入口
 
 ```ts
-const dispose = mount(App, { target, props });
-const disposeHydrated = hydrate(App, { target, props });
+const dispose = _mount(App, { target, props });
+const disposeHydrated = _hydrate(App, { target, props });
 const html = renderToString(App, { props });
 ```
 

@@ -1,11 +1,11 @@
-import { component, $state } from 'zerodep-js';
+import { _component, _state } from 'zerodep-js';
 import { serializeData } from 'zerodep-js-ssr/data';
 
 const payload = { text: '</script><img data-xss-probe src=x>' };
-export const NativeExample = component(() => {
-  let text = $state('\n第一行 <>&');
-  let choice = $state('b');
-  let choices = $state<string[]>(['a', 'c']);
+export const NativeExample = _component(() => {
+  let text = _state('\n第一行 <>&');
+  let choice = _state('b');
+  let choices = _state<string[]>(['a', 'c']);
   return (
     <section aria-label="原生序列化">
       <h2>原生序列化</h2>
@@ -16,6 +16,7 @@ export const NativeExample = component(() => {
           text = event.currentTarget.value;
         }}
       />
+
       <output data-textarea-value>{text}</output>
       <iframe title="原始文本校验" data-raw-frame hidden>
         {text}

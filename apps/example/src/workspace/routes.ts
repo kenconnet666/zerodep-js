@@ -1,6 +1,6 @@
 import {
-  defineRoute,
-  defineRoutes,
+  _defineRoute,
+  _defineRoutes,
   RouteError,
   type LoadContext,
   type RouteComponent,
@@ -29,17 +29,17 @@ async function list(
 }
 
 // 路由表可以共享；加载与历史状态始终属于每次创建的 router。
-export const routes = defineRoutes({
+export const routes = _defineRoutes({
   layout: { path: '/workspace', component: WorkspaceLayout },
   home: { path: '/workspace', parent: 'layout', redirect: '/workspace/tasks' },
-  tasks: defineRoute('/workspace/tasks', {
+  tasks: _defineRoute('/workspace/tasks', {
     parent: 'layout',
     component: TaskList,
     parseSearch,
     load: (context) => list(context, context.search),
     validateData: (data) => pageSchema.parse(data),
   }),
-  task: defineRoute('/workspace/tasks/:id', {
+  task: _defineRoute('/workspace/tasks/:id', {
     parent: 'layout',
     component: TaskDetail,
     key: ({ params }) => params.id,

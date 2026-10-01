@@ -275,3 +275,11 @@
 - 已核对 React effect/StrictMode、Svelte attachment 的官方生命周期规则及本地 Svelte 的 $ 前缀限制。建议顶层 core 函数统一单下划线、JSX/类型和实例方法保持各自命名；这仍是建议，不是已执行的 API 决策。
 - Chromium 探针复现旧 disposer 在重新挂载后误删新 roots 登记的现有边界，正常挂载/清理/重挂序列可用。本轮未修复，记录为正式宿主实现前的具体工作；临时脚本与浏览器均已清理。
 - 方案见 .design/page-hosting-and-naming.md，重点是稳定的 update/dispose 边界、一个 URL 所有者、分开的编译/类型范围和独立验收。没有把名称改变等同于跨框架响应式或组件互操作。
+
+## 直接改名与页面入口实现
+
+- 用户批准直接重构并封装 Vue/React/Svelte 三个适配包，不保留 deprecated 或旧导出。core 顶层函数现已统一为单下划线，JSX/类型/类/对象成员和内部 ABI 保持原职责。
+- compiler 的导入名字统一映射为语义角色，实际源码、夹具、类型与使用文档经 AST 迁移并审阅；旧宏不再识别为公开 API，普通同名函数仍受词法绑定保护。
+- _createPage 提供每次挂载独立的输入视图和 update/dispose。普通对象/数组复制而函数/外部实例保留身份；完整替换、读取失败不部分提交、销毁后更新、环与特殊字段已有验证。
+- mount/hydrate disposer 现在只删除自己的根登记。工作区外消费增加“卸载、重挂、再调旧 disposer、拒绝第三次挂载”的 CSR/SSR 回归。
+- 283 项 Node 和 pnpm check 已通过；独立包与 LSP 验证继续进行，后续实现三个真实宿主。上一提交 db36a9f 的完整 CI 已通过。

@@ -1,4 +1,4 @@
-import { component, $state, $derived, onCleanup } from 'zerodep-js';
+import { _component, _state, _derived, _onCleanup } from 'zerodep-js';
 import { titleSchema, type Task } from './schema.js';
 
 type Props = {
@@ -9,15 +9,15 @@ type Props = {
   onDelete: (id: string, revision: number) => Promise<void>;
 };
 
-export const TaskItem = component(
+export const TaskItem = _component(
   ({ task, disabled = false, onSave, onToggle, onDelete }: Props) => {
-    let draft = $state(task.title);
-    let pending = $state(false);
-    let failure = $state('');
-    let optimisticCompleted = $state<boolean | undefined>(undefined);
-    const dirty = $derived(draft !== task.title);
+    let draft = _state(task.title);
+    let pending = _state(false);
+    let failure = _state('');
+    let optimisticCompleted = _state<boolean | undefined>(undefined);
+    const dirty = _derived(draft !== task.title);
     let alive = true;
-    onCleanup(() => {
+    _onCleanup(() => {
       alive = false;
     });
 
@@ -85,6 +85,7 @@ export const TaskItem = component(
             void toggle(event.currentTarget.checked);
           }}
         />
+
         <div class="task-content">
           <form onSubmit={save} class="task-edit">
             <label class="sr-only" for={`task-${task.id}`}>
@@ -98,6 +99,7 @@ export const TaskItem = component(
               autoComplete="off"
               onInput={(event) => (draft = event.currentTarget.value)}
             />
+
             <button type="submit" disabled={disabled || pending || !dirty}>
               保存
             </button>

@@ -1,4 +1,7 @@
-export { persistLocal, persistSession } from './storage/persist.js';
+export {
+  persistLocal as _persistLocal,
+  persistSession as _persistSession,
+} from './storage/persist.js';
 export type {
   StorageBinding,
   PersistOptions,

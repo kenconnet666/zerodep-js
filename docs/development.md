@@ -39,16 +39,16 @@ pnpm exec zerodep-check --stdin src/Counter.tsx --json
 推荐组件仍是带类型的普通参数解构，没有新增 props 宏：
 
 ```tsx
-import { component, $state, $derived } from 'zerodep-js';
+import { _component, _state, _derived } from 'zerodep-js';
 
-export const Counter = component(({ step = 1 }: { step?: number }) => {
-  let count = $state(0);
-  const doubled = $derived(count * 2);
+export const Counter = _component(({ step = 1 }: { step?: number }) => {
+  let count = _state(0);
+  const doubled = _derived(count * 2);
   return <button onClick={() => (count += step)}>{doubled}</button>;
 });
 ```
 
-命名导入可以重命名；静态命名空间成员也受支持，例如 `import * as Z from 'zerodep-js'` 后使用 `Z.component`、`Z.$state`、`Z.$derived.by` 和 `<Z.For>`。静态字符串成员 `Z['$state']` 也能识别。不支持通过运行时计算的属性名、二次包装或动态导入间接调用宏；宏本身不可当作普通值转交。普通运行时函数不受这个宏限制。
+命名导入可以重命名；静态命名空间成员也受支持，例如 `import * as Z from 'zerodep-js'` 后使用 `Z.component`、`Z._state`、`Z._derived.by` 和 `<Z.For>`。静态字符串成员 `Z['_state']` 也能识别。不支持通过运行时计算的属性名、二次包装或动态导入间接调用宏；宏本身不可当作普通值转交。普通运行时函数不受这个宏限制。
 
 解构 props 及 For 的 row/index 是实时只读绑定。默认表达式只在输入为 undefined 时参与求值，遵循缓存与依赖更新规则；普通函数体中的局部解构、赋值和传参继续是当前取值。详见 [语义契约](semantics.md)。
 
@@ -101,7 +101,7 @@ return user ? <span>{user.name}</span> : null;
 
 ZJ1501 是保守的源码边界检查，不是第二套 TypeScript 类型系统。它识别源码内的 if、条件/逻辑表达式、提前返回、switch 和 await/yield，以及相关局部别名；不会证明任意外部断言、复杂函数的纯度或深层对象不变性，也不替开发者检查所有潜在空值错误。难以证明等价的自定义检查可能需要改成局部取值和明确条件。基础类型错误仍由 TS7 报告；通过所有静态检查也不等于运行时逻辑必然正确。
 
-`$state` / `$derived` 调用不会把输入关系变成 TS 的条件别名。例如 `const dirty = $derived(draft !== task.title)` 可以控制按钮显示，而按钮回调正常读取 `task.title`；检查器不把 dirty 的数据依赖误判为 task 的收窄。若变量自身可空，仍须按照其真实 TS 类型在本次调用判空，派生布尔值不能替代这个检查。
+`_state` / `_derived` 调用不会把输入关系变成 TS 的条件别名。例如 `const dirty = _derived(draft !== task.title)` 可以控制按钮显示，而按钮回调正常读取 `task.title`；检查器不把 dirty 的数据依赖误判为 task 的收窄。若变量自身可空，仍须按照其真实 TS 类型在本次调用判空，派生布尔值不能替代这个检查。
 
 ## 错误码
 

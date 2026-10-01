@@ -60,10 +60,10 @@ export function checkGuards(
   traverse(ast, {
     CallExpression(path) {
       const name = macro(path);
-      if (name === '$state' || name === '$derived') {
+      if (name === 'state' || name === 'derived') {
         if (path.parentPath.isVariableDeclarator() && t.isIdentifier(path.parentPath.node.id)) {
           const binding = path.scope.getBinding(path.parentPath.node.id.name)!;
-          if (name === '$derived' || binding.kind !== 'const') live.add(binding);
+          if (name === 'derived' || binding.kind !== 'const') live.add(binding);
         }
       } else if (name === 'component') {
         const setup = path.get('arguments')[0];
@@ -132,7 +132,7 @@ export function checkGuards(
 
   function related(path: NodePath, binding: Binding, seen = new Set<Binding>()): boolean {
     // 宏调用返回普通类型值，不把其数据依赖变成 TypeScript 的条件别名。
-    if (path.isCallExpression() && ['$state', '$derived'].includes(macro(path) ?? '')) return false;
+    if (path.isCallExpression() && ['state', 'derived'].includes(macro(path) ?? '')) return false;
     let found = false;
     const inspect = (reference: NodePath<t.Identifier>) => {
       const current = reference.scope.getBinding(reference.node.name);
@@ -154,7 +154,7 @@ export function checkGuards(
     if (path.isIdentifier()) inspect(path);
     path.traverse({
       CallExpression(call) {
-        if (['$state', '$derived'].includes(macro(call) ?? '')) call.skip();
+        if (['state', 'derived'].includes(macro(call) ?? '')) call.skip();
       },
       Function(child) {
         child.skip();

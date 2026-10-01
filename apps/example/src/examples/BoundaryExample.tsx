@@ -1,7 +1,7 @@
-import { component, $state, effect, ErrorBoundary } from 'zerodep-js';
+import { _component, _state, _effect, ErrorBoundary } from 'zerodep-js';
 
-const Risky = component(({ mode }: { mode: 'ok' | 'render' | 'effect' }) => {
-  effect(() => {
+const Risky = _component(({ mode }: { mode: 'ok' | 'render' | 'effect' }) => {
+  _effect(() => {
     if (mode === 'effect') throw new Error('副作用失败');
   });
   function label() {
@@ -10,20 +10,20 @@ const Risky = component(({ mode }: { mode: 'ok' | 'render' | 'effect' }) => {
   }
   return <p data-working>{label()}</p>;
 });
-const FailedSetup = component(() => {
+const FailedSetup = _component(() => {
   throw new Error('初始化失败');
 });
-const FailedFallback = component(() => {
+const FailedFallback = _component(() => {
   throw new Error('备用界面失败');
 });
-const ClientOnly = component(() => {
+const ClientOnly = _component(() => {
   if (typeof document === 'undefined') throw new Error('该内容需要浏览器环境');
   return <p data-client-recovered>客户端局部重试成功</p>;
 });
 
-export const BoundaryExample = component(() => {
-  let mode = $state<'ok' | 'render' | 'effect'>('ok');
-  let nested = $state(false);
+export const BoundaryExample = _component(() => {
+  let mode = _state<'ok' | 'render' | 'effect'>('ok');
+  let nested = _state(false);
   return (
     <section aria-label="错误恢复">
       <h2>错误恢复</h2>

@@ -1,4 +1,4 @@
-import { component, $state, effect, ErrorBoundary, type EventHandler } from 'zerodep-js';
+import { _component, _state, _effect, ErrorBoundary, type EventHandler } from 'zerodep-js';
 import {
   registerPropertyElement,
   type ProbeData,
@@ -6,21 +6,21 @@ import {
 } from './property-elements.js';
 
 const invalid: Record<string, unknown> = { 'prop:offsetWidth': 40 };
-export const PropertyExample = component(() => {
-  let active = $state(false);
-  let top = $state(35);
-  let observed = $state('关闭');
-  let data = $state<ProbeData>({ label: '应用对象' });
-  let handled = $state('');
-  let submitted = $state('');
-  let allowReadonlyProbe = $state(true);
+export const PropertyExample = _component(() => {
+  let active = _state(false);
+  let top = _state(35);
+  let observed = _state('关闭');
+  let data = _state<ProbeData>({ label: '应用对象' });
+  let handled = _state('');
+  let submitted = _state('');
+  let allowReadonlyProbe = _state(true);
   let scroller: HTMLDivElement | undefined;
   let stream: MediaStream | undefined;
   const format = (value: string) => `格式化:${value}`;
   const change: EventHandler<PropertyProbeElement, CustomEvent<ProbeData>> = (event) => {
     handled += `目标:${event.detail.label};`;
   };
-  effect(() => {
+  _effect(() => {
     observed = active ? `${top}/${scroller?.scrollTop}` : '关闭';
   });
   return (
@@ -57,6 +57,7 @@ export const PropertyExample = component(() => {
         prop:volume={active ? 0.25 : undefined}
         prop:srcObject={active ? (stream ??= new MediaStream()) : undefined}
       />
+
       <div
         oncapture:ValueChanged={(event: CustomEvent<ProbeData>) => {
           handled += `捕获:${event.detail.label};`;
@@ -109,6 +110,7 @@ export const PropertyExample = component(() => {
           submitted = String(new FormData(event.currentTarget).get('external'));
         }}
       />
+
       <label for="property-field">外部表单字段</label>
       <input id="property-field" name="external" form="property-form" list="property-suggestions" />
       <datalist id="property-suggestions">

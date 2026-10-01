@@ -4,11 +4,11 @@ zerodep-js 使用标准 TSX、显式变量式状态和一次初始化的组件�
 
 ## 安装与构建入口
 
-目标环境是 Node 24、TypeScript 7 和 Vite 8。客户端项目使用已经核对的精确版本：
+目标环境是 Node 24、TypeScript 7 和 Vite 8。本文已更新到新的 _ 函数命名；新候选发布前请通过工作区或本地 tgz 消费，不能将 npm RC1 与下面的新 API 混用。发布后应将以下 VERSION 替换为统一的已验收版本：
 
 ```sh
-pnpm add zerodep-js@1.0.0-rc.1
-pnpm add -D zerodep-js-vite@1.0.0-rc.1 vite@8.3.1 typescript@7.0.2
+pnpm add zerodep-js@VERSION
+pnpm add -D zerodep-js-vite@VERSION vite@8.3.1 typescript@7.0.2
 ```
 
 Vite 插件同时处理普通转换和依赖扫描：
@@ -48,11 +48,11 @@ TypeScript 配置保留 JSX，让框架编译器处理它，并使用框架自�
 
 ```tsx
 // src/App.tsx
-import { component, $state, $derived } from 'zerodep-js';
+import { _component, _state, _derived } from 'zerodep-js';
 
-export const App = component(({ step = 1 }: { step?: number }) => {
-  let count = $state(0);
-  const doubled = $derived(count * 2);
+export const App = _component(({ step = 1 }: { step?: number }) => {
+  let count = _state(0);
+  const doubled = _derived(count * 2);
   return (
     <section>
       <button onClick={() => (count += step)}>增加</button>
@@ -66,25 +66,25 @@ export const App = component(({ step = 1 }: { step?: number }) => {
 
 ```ts
 // src/main.ts
-import { mount } from 'zerodep-js';
+import { _mount } from 'zerodep-js';
 import { App } from './App.js';
 
 const target = document.querySelector('#app');
 if (!target) throw new Error('缺少应用容器');
-const dispose = mount(App, { target });
+const dispose = _mount(App, { target });
 // 宿主移除应用时调用 dispose()。
 ```
 
-HTML 使用 `<div id="app"></div>` 和指向入口的 module script。`mount` 接管整个容器并替换原有内容，同一容器不能重复挂载。
+HTML 使用 `<div id="app"></div>` 和指向入口的 module script。`_mount` 接管整个容器并替换原有内容，同一容器不能重复挂载。
 
-组件函数执行一次，事件、动态文本和属性分别读取最新状态。`const initial = count` 是普通快照；需要派生值时显式使用 `$derived`。条件放在返回表达式或 JSX 内会持续更新，初始化阶段的语句级 if 不会自动重跑。
+组件函数执行一次，事件、动态文本和属性分别读取最新状态。`const initial = count` 是普通快照；需要派生值时显式使用 `_derived`。条件放在返回表达式或 JSX 内会持续更新，初始化阶段的语句级 if 不会自动重跑。
 
 ## props、默认值与转发
 
 ```tsx
-import { component, type JSX } from 'zerodep-js';
+import { _component, type JSX } from 'zerodep-js';
 
-export const Button = component(
+export const Button = _component(
   ({ type = 'button', children, ...attrs }: JSX.IntrinsicElements['button']) => (
     <button {...attrs} type={type}>
       {children}
@@ -93,17 +93,17 @@ export const Button = component(
 );
 ```
 
-参数支持顶层解构、别名、默认值和实时 rest。输入绑定只读，修改交给回调；默认值在输入为 undefined 时使用，并按实例缓存。`$state(initialProp)` 只取初始化值，后续 prop 更新不会重置用户正在编辑的本地状态。
+参数支持顶层解构、别名、默认值和实时 rest。输入绑定只读，修改交给回调；默认值在输入为 undefined 时使用，并按实例缓存。`_state(initialProp)` 只取初始化值，后续 prop 更新不会重置用户正在编辑的本地状态。
 
 复杂嵌套解构不静默变成快照；使用 `props.user.name` 或独立派生。跨回调的可空值需要在本次调用重新检查，详见 [开发诊断](development.md)。
 
 ## 列表与输入
 
 ```tsx
-import { component, $state, For } from 'zerodep-js';
+import { _component, _state, For } from 'zerodep-js';
 
-export const TodoList = component(() => {
-  const rows = $state([{ id: 'first', title: '开始使用', done: false }]);
+export const TodoList = _component(() => {
+  const rows = _state([{ id: 'first', title: '开始使用', done: false }]);
   return (
     <ul>
       <For each={rows} keyBy={(row) => row.id}>
@@ -114,6 +114,7 @@ export const TodoList = component(() => {
               checked={row.done}
               onChange={(event) => (row.done = event.currentTarget.checked)}
             />
+
             <input value={row.title} onInput={(event) => (row.title = event.currentTarget.value)} />
           </li>
         )}
@@ -127,7 +128,7 @@ export const TodoList = component(() => {
 
 ## SSR 与实际应用
 
-SSR 项目额外安装 `zerodep-js-ssr`。先加载请求数据，再用 `renderToString(App, { props })` 生成 HTML；客户端以相同初值调用 `hydrate`。初始化 JSON 通过 `zerodep-js-ssr/data` 的 serializeData 编码。完整文档模板和错误处理见 [SSR 指南](ssr-and-hydration.md)。
+SSR 项目额外安装 `zerodep-js-ssr`。先加载请求数据，再用 `renderToString(App, { props })` 生成 HTML；客户端以相同初值调用 `_hydrate`。初始化 JSON 通过 `zerodep-js-ssr/data` 的 serializeData 编码。完整文档模板和错误处理见 [SSR 指南](ssr-and-hydration.md)。
 
 仓库的 `apps/example` 同时提供框架用例和 `/tasks` 持久化任务页面，可以观察 props、表单、异步请求、取消、并发冲突、SSR/CSR 和开发更新在一起时的实际写法。运行方式见 [任务试点](pilot.md)。
 

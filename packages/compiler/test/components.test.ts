@@ -15,14 +15,14 @@ describe('组件参数转换', () => {
     };
     const Counter = execute(
       `
-      import { component, $state } from 'zerodep-js';
-      const Counter = component(({ initial = 0, step = 1, onChange }: { initial?: number; step?: number; onChange?: (n: number) => void }) => {
-        let count = $state(initial);
-        capture(() => { count += step; onChange?.(count); }, () => [count, step]);
-        return null;
-      });
-      const result = Counter;
-    `,
+import { _component, _state } from 'zerodep-js';
+const Counter = _component(({ initial = 0, step = 1, onChange }: {initial?: number;step?: number;onChange?: (n: number) => void;}) => {
+  let count = _state(initial);
+  capture(() => {count += step;onChange?.(count);}, () => [count, step]);
+  return null;
+});
+const result = Counter;`,
+
       { capture },
     ) as Parameters<typeof runtime.setupComponent>[0];
     const events: string[] = [];
@@ -57,12 +57,12 @@ describe('组件参数转换', () => {
     let read!: () => unknown;
     const View = execute(
       `
-      import { component as define } from 'zerodep-js';
-      const View = define(({ min = 0, max = min + 10, class: className = 'base', ...attrs }) => {
-        capture(() => [min, max, className, { ...attrs }]); return null;
-      });
-      const result = View;
-    `,
+import { _component as define } from 'zerodep-js';
+const View = define(({ min = 0, max = min + 10, class: className = 'base', ...attrs }) => {
+  capture(() => [min, max, className, { ...attrs }]);return null;
+});
+const result = View;`,
+
       {
         capture: (fn: () => unknown) => {
           read = fn;
@@ -90,14 +90,14 @@ describe('组件参数转换', () => {
     let read!: () => unknown;
     const View = execute(
       `
-      import { component } from 'zerodep-js';
-      const Empty = component(() => null);
-      const View = component(function Named({ label = 'A' }) {
-        function local(label: string) { return label + '!'; }
-        capture(() => [label, local('B')]); return null;
-      });
-      const result = View;
-    `,
+import { _component } from 'zerodep-js';
+const Empty = _component(() => null);
+const View = _component(function Named({ label = 'A' }) {
+  function local(label: string) {return label + '!';}
+  capture(() => [label, local('B')]);return null;
+});
+const result = View;`,
+
       {
         capture: (fn: () => unknown) => {
           read = fn;
@@ -119,10 +119,10 @@ describe('组件参数转换', () => {
     let read!: () => unknown;
     const View = execute(
       `
-      import { component } from 'zerodep-js';
-      const View = component((props) => { capture(() => props.value); return null; });
-      const result = View;
-    `,
+import { _component } from 'zerodep-js';
+const View = _component((props) => {capture(() => props.value);return null;});
+const result = View;`,
+
       {
         capture: (fn: () => unknown) => {
           read = fn;
@@ -143,29 +143,30 @@ describe('组件参数转换', () => {
   });
 
   it.each([
-    ['参数赋值', 'component(({ value }) => { value++; return null; });', 'ZJ1203'],
-    ['对象顶层写入', 'component((props) => { props.value = 1; return null; });', 'ZJ1203'],
-    ['嵌套解构', 'component(({ user: { name } }) => null);', 'ZJ1204'],
-    ['引用后序参数', 'component(({ a = b, b = 1 }) => a);', 'ZJ1205'],
-    ['引用自身', 'component(({ a = a }) => a);', 'ZJ1205'],
-    ['引用函数体变量', 'component(({ a = local }) => { const local = 1; return a; });', 'ZJ1205'],
+    ['参数赋值', '_component(({ value }) => {value++;return null;});', 'ZJ1203'],
+    ['对象顶层写入', '_component((props) => {props.value = 1;return null;});', 'ZJ1203'],
+    ['嵌套解构', '_component(({ user: { name } }) => null);', 'ZJ1204'],
+    ['引用后序参数', '_component(({ a = b, b = 1 }) => a);', 'ZJ1205'],
+    ['引用自身', '_component(({ a = a }) => a);', 'ZJ1205'],
+    ['引用函数体变量', '_component(({ a = local }) => {const local = 1;return a;});', 'ZJ1205'],
     [
       '默认值被局部变量遮蔽',
-      'const value = 1; component(({ a = value }) => { const value = 2; return a; });',
+      'const value = 1;_component(({ a = value }) => {const value = 2;return a;});',
       'ZJ1205',
     ],
-    ['异步组件', 'component(async () => null);', 'ZJ1200'],
-    ['间接标记', 'const alias = component;', 'ZJ1206'],
-    ['读取保留 key', 'component(({ key }) => key);', 'ZJ1207'],
-    ['删除 props', 'component((props) => { delete props.title; return null; });', 'ZJ1203'],
+
+    ['异步组件', '_component(async () => null);', 'ZJ1200'],
+    ['间接标记', 'const alias = _component;', 'ZJ1206'],
+    ['读取保留 key', '_component(({ key }) => key);', 'ZJ1207'],
+    ['删除 props', '_component((props) => {delete props.title;return null;});', 'ZJ1203'],
     [
       '写入 rest',
-      'component(({ label, ...attrs }) => { attrs.title = label; return null; });',
+      '_component(({ label, ...attrs }) => {attrs.title = label;return null;});',
       'ZJ1203',
     ],
   ])('明确诊断：%s', (_name, source, code) => {
     expect(() =>
-      compile(`import { component } from 'zerodep-js'; ${source}`, 'invalid.ts'),
+      compile(`import { _component } from 'zerodep-js';${source};`, 'invalid.ts'),
     ).toThrow(code);
   });
 });
