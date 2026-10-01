@@ -1,8 +1,8 @@
 # 变更记录
 
-## 未发布
+## 1.0.0-rc.1 — 发布准备中
 
-当前公开包名为 `zerodep-js`、`zerodep-js-compiler`、`zerodep-js-vite` 和 `zerodep-js-ssr`，尚未发布 npm。开发阶段的 `@zerodep-js/*` 公共包名已统一调整；私有示例项目名称不影响安装入口。
+四个包已准备统一的 `1.0.0-rc.1`：`zerodep-js`、`zerodep-js-compiler`、`zerodep-js-vite` 和 `zerodep-js-ssr`。当前尚未发布 npm；候选将通过 next 分发，不能提升为 latest。开发阶段的 `@zerodep-js/*` 公共包名已统一调整；私有示例项目名称不影响安装入口。
 
 - 变量式状态、深对象/数组、浅状态、派生缓存与作用域清理。
 - 标准 TSX 组件、泛型、props 解构/default/rest、内容转发、稳定列表、context 与错误恢复。
@@ -10,5 +10,7 @@
 - 同步 SSR、安全数据编码、严格 hydration、已有输入与节点保留。
 - Babel/Vite 编译、原生 TS7、框架诊断、开发更新、独立包和组件库消费。
 - 原生属性生成、资源回收验证与持久化任务试点；修复试点反馈的语义问题。
+- 完整 raw-text 规则、HTML/SVG 标签名称规范化和 script 双重转义保护；明确支持与安全边界。
+- 固定产物与完整性、候选 CI、注册表消费及稳定 tag 提升工具；MIT 许可和统一版本策略。
 
 正式版本发布时在这里记录版本、日期、范围、迁移影响和实际验收链接。不能提前把候选版本记为已发布。

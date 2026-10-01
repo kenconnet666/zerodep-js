@@ -2,7 +2,7 @@
 
 面向 TSX 的细粒度响应式框架实验工作区，目标是显式声明响应式变量、直接读写、组件参数解构和自然的默认值。
 
-当前已开始完整生产化目标：变量式状态、组件、列表、context、错误恢复、原生表单、CSR 和 SSR/hydration 已接入同一 App。开发体验、长期稳定性、平台试点及发布验收仍在建设中，尚未达到生产验收。
+变量式状态、组件、列表、context、错误恢复、原生表单、CSR 和 SSR/hydration 已接入同一 App。开发体验、资源稳定性、实际业务和本机输入已有验证，当前准备 `1.0.0-rc.1`，仍需通过最终候选矩阵与 npm 安装验收。
 
 使用指南从[开始使用](docs/getting-started.md)和[API 参考](docs/api.md)进入。四个公共包的名称为 `zerodep-js`、`zerodep-js-compiler`、`zerodep-js-vite`、`zerodep-js-ssr`；当前发布状态见 [CHANGELOG](CHANGELOG.md)，支持范围见 [support.md](docs/support.md)。
 
@@ -138,4 +138,4 @@ pnpm lsp:inspect packages/ssr/src/index.ts apps/example/src/entry-client.ts
 - [基础工程交接](.design/foundation.md)
 - [本轮工作区扩展范围](.design/workspace-expansion.md)
 
-所有包暂为 private，未发布到 npm。许可证已确定为 MIT；支持范围、统一版本和升级/回滚规则已经记录，最终候选验收与发布仍在推进。
+四个公共包已准备统一的 `1.0.0-rc.1`，尚未发布到 npm；工作区根和 example 保持 private。许可为 MIT，支持范围、统一版本和升级/回滚规则已记录；发布状态以 CHANGELOG 为准。

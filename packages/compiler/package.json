@@ -1,7 +1,6 @@
 {
   "name": "zerodep-js-compiler",
-  "version": "0.0.0",
-  "private": true,
+  "version": "1.0.0-rc.1",
   "type": "module",
   "sideEffects": [
     "./dist/cli.js"

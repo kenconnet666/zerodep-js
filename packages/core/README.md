@@ -20,4 +20,4 @@ const dispose = mount(Counter, { target: document.querySelector('#app')! });
 
 [使用契约](https://github.com/kenconnet666/zerodep-js/blob/main/docs/semantics.md) · [开发与诊断](https://github.com/kenconnet666/zerodep-js/blob/main/docs/development.md) · [表单](https://github.com/kenconnet666/zerodep-js/blob/main/docs/forms.md)
 
-当前仍是 private 开发包，未发布 npm，完整生产验收尚未完成。
+当前为 `1.0.0-rc.1` 发布候选。四个框架包使用同一版本，实际发布与验收状态见 [变更记录](https://github.com/kenconnet666/zerodep-js/blob/main/CHANGELOG.md)。
