@@ -10,6 +10,7 @@ import { PropertyExample } from './examples/PropertyExample.js';
 import { StyleExample } from './examples/StyleExample.js';
 import { TaskExample } from './examples/TaskExample.js';
 import { LifecycleExample } from './examples/LifecycleExample.js';
+import { StorageExample } from './examples/StorageExample.js';
 
 const Button = component(
   ({ type = 'button', children, ...attrs }: JSX.IntrinsicElements['button']) => (
@@ -202,6 +203,7 @@ export const App = component(({ mode = 'csr', onUnmount }: AppProps) => {
       <StyleExample />
       <TaskExample />
       <LifecycleExample />
+      <StorageExample />
       <p data-client-status>{ready ? '客户端已接入' : '等待客户端接管'}</p>
       <p class="note">同一 App 验证客户端渲染与服务端渲染接管。</p>
       <button type="button" data-unmount onClick={() => onUnmount?.()}>

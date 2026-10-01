@@ -2,6 +2,8 @@
 
 公共运行时从 `zerodep-js` 导入，Vite 插件来自 `zerodep-js-vite`，独立编译来自 `zerodep-js-compiler`，服务端入口来自 `zerodep-js-ssr`。下面记录当前实际契约；安装与声明消费见 [开始使用](getting-started.md)和[包产物](packages.md)。
 
+main 新增的可选 `zerodep-js/storage` 提供 persistLocal / persistSession，绑定对象或显式 read/write，支持迁移、同步、失败恢复与清理。完整契约见 [浏览器持久化](storage.md)，尚未进入已发布 RC1。
+
 ## 状态宏与组件
 
 | API                         | 用法与行为                                                                                        |

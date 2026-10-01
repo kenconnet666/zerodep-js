@@ -242,3 +242,11 @@
 - onMount 只在客户端提交后执行一次；createScope 提供有限句柄，getAbortSignal 在作用域重跑/销毁时取消，且先于用户 cleanup。SSR 不执行 mount，异步 await 不隐式继承 scope。
 - 37 项相关单元、pnpm check、pnpm build、两项 Chromium CSR/SSR 生命周期与快照页面验证通过；纯派生资源创建、提前销毁、失败清理和类型负例均有覆盖。
 - 暴露标准 AbortSignal 后，SSR 构建补齐 Node 类型声明依赖；没有给服务器混入 DOM lib，数据独立入口契约继续保留。上一提交 dfe566a 的完整 CI 已通过；本阶段完整矩阵提交后核对。
+
+## 应用扩展：浏览器持久化
+
+- 新增可选 zerodep-js/storage，不从核心根入口引入宿主逻辑。persistLocal/persistSession 支持稳定对象或 read/write，动态键、显式版本与迁移/校验，控制状态、写入合并和 flush/reset/remove/retry/pause/resume/stop。
+- 挂载后恢复；默认值不抢先写回，损坏/更高版本数据保持原样并报错。首次恢复前的新编辑优先，同页和原生 storage 事件同步，外部提交取消旧排队写入；暂停不丢订阅，销毁和 pagehide 尝试提交后释放资源。
+- 新增真实双实例/跨标签、SSR 接管前编辑、迁移与错误恢复用例；任务页已经持久化未提交的新任务草稿，切换 CSR/SSR 和重载可恢复。
+- 21 项单元、6 项 Chromium、pnpm check、pnpm build 与后续类型检查通过。同步回调检查、不可替换字段预检、暂停中 reset、旧键待写快照和错误回调隔离都有回归。
+- 上一提交 30d79f7 的 [完整 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/36849104434) 成功。本阶段提交后继续路由，不等待完整矩阵；下一次推送前核对。
