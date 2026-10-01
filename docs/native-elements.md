@@ -79,6 +79,29 @@ property 必须实际存在且可写；只读或未定义成员会报错并可�
 
 form、input.list、label/output 的 for 是字符串 ID 内容属性，虽其 DOM 对应成员为只读元素引用，JSX 仍提供正确输入类型。不要改用 prop:form 或 prop:list。
 
-## 仍需完成的审计
+## 内联样式
 
-对象 style 的 cssFloat、厂商前缀、important、分隔符及字符串边界仍需对齐浏览器和 SSR；原生属性类型还需系统检查覆盖面。继续用具体反例完善实现、类型和文档，不把简单用例通过当作完整标准库，也不重复实现成熟的 CSS 解析基础。
+```tsx
+import type { StyleObject } from '@zerodep-js/core';
+
+const style: StyleObject = {
+  margin: '1rem',
+  marginLeft: 0,
+  color: 'red !important',
+  WebkitTransform: 'translateX(1px)',
+  '--accent': 'teal',
+};
+<div style={style} />;
+```
+
+StyleObject 使用 [csstype](https://github.com/frenic/csstype) 的生成类型，支持 camelCase、连字符、厂商前缀、SVG 样式与 CSS 变量。cssFloat 映射为 float，WebkitTransform 和 webkitTransform 都映射为 -webkit-transform。数值原样输出，不隐式追加 px；长度使用带单位字符串或 0，opacity、zIndex 等单位无关属性允许数字。null、undefined、false 表示移除；cssText 不是 CSS 属性，完整声明列表直接写成 style 字符串。
+
+对象按键顺序生成完整声明。同名别名合并后，最后一个键同时决定值和声明位置，因此 `{ marginLeft: '3px', margin: '4px', 'margin-left': '9px' }` 的左边距为 9px。最后的空值清除这一属性。需要重复声明作为浏览器兼容回退时使用字符串，而不是数组或同名对象键。
+
+CSR、SSR 和接管检查共用同一段序列化文本；客户端在文本变化时替换整个 style 属性。这让 shorthand、longhand、无效属性值、important 和属性删除按同一浏览器规则解释，不留下上一次的长属性或 priority。JSX 拥有该内联 style，后续模型变化会覆盖第三方命令式修改；需要第三方持续拥有样式时，让它负责整个元素或使用独立 CSS class。
+
+对象中的每个值须是完整的单声明值。[CSS Tools tokenizer](https://github.com/csstools/postcss-plugins/tree/main/packages/css-tokenizer) 负责转义、URL、注释和字符串的词法规则；框架只检查声明分隔与括号完整性，不重复实现 CSS 属性语法。合法字符串、data URL 内的分号、嵌套函数、自定义属性 token 与 important 均保留；顶层分号、未闭合注释/字符串/括号或坏 URL 会报错。这些输入不能吞掉后面的声明，错误可通过 ErrorBoundary 恢复。完整 style 字符串则按浏览器声明列表处理，允许多声明和浏览器自身的错误恢复。
+
+普通文本、属性和 style 统一替换 NUL 与孤立 UTF-16 代理项，保持 HTML 传输前后结果一致，完整 Unicode 字符和 emoji 保留。样式的动态对象按实际读取的字段跟踪；读取或删除字段会触发相应更新。
+
+原生 HTML/SVG 属性的类型覆盖仍继续系统审计。已有 property/style 用例不代替全部标准属性覆盖或平台兼容验证。

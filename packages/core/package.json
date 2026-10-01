@@ -33,6 +33,10 @@
     "check": "tsc -p tsconfig.json --noEmit --incremental false --composite false",
     "build": "tsc -b"
   },
+  "dependencies": {
+    "@csstools/css-tokenizer": "catalog:",
+    "csstype": "catalog:"
+  },
   "devDependencies": {
     "typescript": "catalog:"
   }

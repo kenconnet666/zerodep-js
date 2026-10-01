@@ -10,7 +10,7 @@ import {
 import type { Props } from './props.js';
 import type { HydrationSession } from './hydration.js';
 import { bindControl, notifySelect } from './dom-controls.js';
-import { HTML, attributeNamespace, eventName, nativeAttributes, styleEntries } from './native.js';
+import { HTML, attributeNamespace, eventName, nativeAttributes } from './native.js';
 import { PropertyBindings } from './dom-properties.js';
 
 const properties = new Set(['value', 'checked', 'selected', 'muted']);
@@ -19,22 +19,6 @@ interface EventBinding {
   type: string;
   capture: boolean;
   listener: EventListener;
-}
-
-function applyStyle(element: Element, value: unknown, previous: Map<string, string>): void {
-  const style = (element as HTMLElement | SVGElement).style;
-  if (typeof value === 'string') {
-    if (element.getAttribute('style') !== value) element.setAttribute('style', value);
-    previous.clear();
-    return;
-  }
-  const next = styleEntries(value);
-  if (!previous.size && element.hasAttribute('style')) style.cssText = '';
-  for (const key of previous.keys()) if (!next.has(key)) style.removeProperty(key);
-  for (const [key, item] of next) if (previous.get(key) !== item) style.setProperty(key, item);
-  previous.clear();
-  for (const [key, item] of next) previous.set(key, item);
-  if (!next.size) element.removeAttribute('style');
 }
 
 function setAttribute(element: Element, name: string, value: string | null): void {
@@ -61,7 +45,6 @@ export function attachAttributes(
   hydration?: HydrationSession,
 ): void {
   const previous = new Map<string, string>();
-  const styles = new Map<string, string>();
   const events = new Map<string, EventBinding>();
   const owner = getScope()!;
   let propertyBindings: PropertyBindings | undefined;
@@ -86,17 +69,14 @@ export function attachAttributes(
       (left, right) => Number(properties.has(left)) - Number(properties.has(right)),
     );
     for (const name of names) {
-      if (name === 'style' || (control && (name === 'value' || name === 'checked'))) continue;
+      if (control && (name === 'value' || name === 'checked')) continue;
       const value = next.get(name) ?? null;
       if (previous.get(name) !== value) setAttribute(element, name, value);
     }
-    let style: unknown;
     const eventKeys = new Set(events.keys());
     for (const key of Object.keys(input)) {
-      if (key.toLowerCase() === 'style') style = input[key];
-      else if (eventName(key)) eventKeys.add(key);
+      if (eventName(key)) eventKeys.add(key);
     }
-    applyStyle(element, style, styles);
     for (const key of eventKeys) {
       const event = eventName(key)!;
       const value = input[key];

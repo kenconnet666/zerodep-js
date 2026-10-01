@@ -141,9 +141,17 @@ try {
     !clientModules.some((id) => /\/@babel\/|\/@zerodep-js\/(compiler|vite|ssr)\//.test(id)),
     '构建或服务端代码进入客户端。',
   );
+  assert(
+    clientModules.some((id) => id.includes('/@csstools/css-tokenizer/')),
+    '样式依赖未进入实际消费构建。',
+  );
   const treeModules = report.tree.flatMap((chunk) => chunk.modules);
   assert(
-    !treeModules.some((id) => /\/dist\/(dom[^/]*|hydration|render|state|template)\.js$/.test(id)),
+    !treeModules.some(
+      (id) =>
+        /\/dist\/(dom[^/]*|hydration|render|state|template|style)\.js$/.test(id) ||
+        id.includes('/@csstools/css-tokenizer/'),
+    ),
     '按需导入仍包含无关渲染器。',
   );
   // 体积用于观察，依赖隔离仍由上面的模块断言保证，不设置任意字节上限。

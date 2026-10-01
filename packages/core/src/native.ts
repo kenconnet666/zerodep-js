@@ -1,6 +1,10 @@
 import { TEMPLATE, type Renderable } from './template.js';
 import type { Props } from './props.js';
 import { clientProperty, ownsContent, propertyName } from './dom-property-names.js';
+import { styleText } from './style.js';
+import { textValue } from './text.js';
+
+export { textValue } from './text.js';
 
 export const HTML = 'http://www.w3.org/1999/xhtml';
 export const SVG = 'http://www.w3.org/2000/svg';
@@ -136,10 +140,6 @@ export function assertName(name: string): void {
     throw new Error(`无效的 DOM 名称：${name}`);
 }
 
-export function textValue(value: unknown): string {
-  return String(value).replace(/\0/g, '\ufffd');
-}
-
 export function selectionValues(value: unknown): Set<string> {
   const items: unknown[] = Array.isArray(value) ? value : [value ?? ''];
   if (items.some((item) => typeof item !== 'string' && typeof item !== 'number'))
@@ -197,29 +197,6 @@ export function attributeValue(name: string, value: unknown, namespace = HTML): 
     !enumerated.has(lower)
     ? ''
     : textValue(value);
-}
-
-export function styleEntries(value: unknown): Map<string, string> {
-  const entries = new Map<string, string>();
-  if (value == null || value === false) return entries;
-  if (typeof value !== 'object') throw new Error('style 使用 CSS 字符串或属性对象。');
-  for (const key of Object.keys(value)) {
-    const item: unknown = Reflect.get(value, key);
-    if (item == null || item === false) continue;
-    const name = key.startsWith('--')
-      ? key
-      : key.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`).replace(/^ms-/, '-ms-');
-    if (!/^(?:--[-_\p{L}\p{N}]+|-?[a-z][a-z0-9-]*)$/u.test(name))
-      throw new Error(`无效的 CSS 属性名：${key}`);
-    entries.set(name, textValue(item));
-  }
-  return entries;
-}
-
-export function styleText(value: unknown): string {
-  return typeof value === 'string'
-    ? value
-    : [...styleEntries(value)].map(([name, item]) => `${name}:${item}`).join(';');
 }
 
 /** 文本专用元素不能放入结构标记，也不能把模板对象直接转成字符串。 */

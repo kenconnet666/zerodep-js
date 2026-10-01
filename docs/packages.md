@@ -6,7 +6,7 @@
 
 | 包或入口                       | 用途                                           | 依赖边界                                                |
 | ------------------------------ | ---------------------------------------------- | ------------------------------------------------------- |
-| `@zerodep-js/core`             | 响应式、组件、DOM、hydrate、生命周期及公共类型 | 无第三方运行时依赖                                      |
+| `@zerodep-js/core`             | 响应式、组件、DOM、hydrate、生命周期及公共类型 | CSS Tools tokenizer 校验样式边界，csstype 提供生成类型  |
 | `@zerodep-js/core/jsx-runtime` | JSX 类型约定                                   | 配合 `jsx: preserve`，不走 React automatic JSX 输出     |
 | `@zerodep-js/core/internal`    | 编译输出与 SSR 的内部协议                      | 不能作为另一套手写 signal API                           |
 | `@zerodep-js/compiler`         | TSX 编译、映射、诊断及检查命令                 | Babel 仅在构建侧使用，公共结果类型不要求导入 Babel 类型 |

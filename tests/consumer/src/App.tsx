@@ -14,7 +14,9 @@ export const App = component(({ title }: { title: string }) => {
     };
   });
   return (
-    <main>
+    <main
+      style={{ containerType: 'inline-size', '--package-consumer': '1', color: 'black !important' }}
+    >
       <h1>{title}</h1>
       <Counter label="打包" onCount={(value) => (message = String(value))} />
       <input

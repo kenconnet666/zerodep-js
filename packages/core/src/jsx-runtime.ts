@@ -2,6 +2,9 @@ import type { AnyComponent } from './component.js';
 import type { Renderable, Template } from './template.js';
 import type { svgAliases } from './native.js';
 import type { clientProperties, ownedProperties, formProperties } from './dom-property-names.js';
+import type { Style } from './style.js';
+
+export type { Style, StyleObject } from './style.js';
 
 type Equal<X, Y, Yes, No> =
   (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2 ? Yes : No;
@@ -107,13 +110,6 @@ type EventProps<T> = { [K in keyof Events]?: EventHandler<T, Events[K]> | undefi
     | EventHandler<T, K extends 'input' ? NativeInputEvent : GlobalEventHandlersEventMap[K]>
     | undefined;
 };
-export type Style =
-  | string
-  | ({
-      [K in keyof CSSStyleDeclaration as CSSStyleDeclaration[K] extends string ? K : never]?:
-        string | number | null | undefined;
-    } & { [K in `--${string}`]?: string | number | null | undefined });
-
 type InputValue = string | number | null | undefined;
 type SelectValue = InputValue | readonly (string | number)[];
 type ControlValues<T> = T extends HTMLSelectElement
