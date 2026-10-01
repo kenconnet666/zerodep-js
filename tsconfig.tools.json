@@ -3,7 +3,7 @@
   "compilerOptions": {
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "types": ["node"],
-    "jsxImportSource": "@zerodep-js/core",
+    "jsxImportSource": "zerodep-js",
     "allowJs": true,
     "allowImportingTsExtensions": true,
     "checkJs": false,

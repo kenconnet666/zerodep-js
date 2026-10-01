@@ -1,4 +1,4 @@
-import { component, $state, effect, ErrorBoundary } from '@zerodep-js/core';
+import { component, $state, effect, ErrorBoundary } from 'zerodep-js';
 
 const Risky = component(({ mode }: { mode: 'ok' | 'render' | 'effect' }) => {
   effect(() => {

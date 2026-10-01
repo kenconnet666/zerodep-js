@@ -1,5 +1,5 @@
 import type { Plugin, Rolldown } from 'vite';
-import { compile, CompileError } from '@zerodep-js/compiler';
+import { compile, CompileError } from 'zerodep-js-compiler';
 
 export function zerodep(): Plugin {
   const compiler = {
@@ -15,7 +15,7 @@ export function zerodep(): Plugin {
         )
           return null;
         // 已发布的 JS 依赖不重编译；应用的 TS/TSX 和显式 JSX 使用同一入口。
-        if (/\.m?js$/.test(filename) && !code.includes('@zerodep-js/core')) return null;
+        if (/\.m?js$/.test(filename) && !code.includes('zerodep-js')) return null;
         try {
           const result = compile(code, filename);
           // 使用标准 JSON 边界，避免把 Babel 的 readonly 映射类型强制断言成 Rolldown 可变数组。

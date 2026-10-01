@@ -1,4 +1,4 @@
-import { component, $state, For, effect } from '@zerodep-js/core';
+import { component, $state, For, effect } from 'zerodep-js';
 import { Counter, Label } from '@zerodep-consumer/counter';
 
 export const App = component(({ title }: { title: string }) => {

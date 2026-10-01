@@ -92,7 +92,7 @@ form、input.list、label/output 的 for 是字符串 ID 内容属性，虽其 D
 ## 内联样式
 
 ```tsx
-import type { StyleObject } from '@zerodep-js/core';
+import type { StyleObject } from 'zerodep-js';
 
 const style: StyleObject = {
   margin: '1rem',

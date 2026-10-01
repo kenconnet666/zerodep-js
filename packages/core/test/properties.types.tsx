@@ -1,4 +1,4 @@
-import { type EventHandler } from '@zerodep-js/core';
+import { type EventHandler } from 'zerodep-js';
 
 interface TypedWidget extends HTMLElement {
   data: { label: string };

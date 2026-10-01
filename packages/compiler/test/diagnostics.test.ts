@@ -6,7 +6,7 @@ describe('静态命名空间导入', () => {
   it('命名空间 state/derived、raw/by 和 component 使用同一转换', () => {
     expect(
       execute(`
-      import * as Z from '@zerodep-js/core';
+      import * as Z from 'zerodep-js';
       let count = Z.$state(1);
       const doubled = Z.$derived.by(() => count * 2);
       let raw = Z['$state'].raw({ n: 1 });
@@ -20,7 +20,7 @@ describe('静态命名空间导入', () => {
   it('For 标签可以使用命名空间，局部遮蔽保持普通 JS', () => {
     const result = compile(
       `
-      import * as Z from '@zerodep-js/core';
+      import * as Z from 'zerodep-js';
       const view = <Z.For each={[1]} keyBy={(n) => n}>{(row, index) => <b>{row + index}</b>}</Z.For>;
       function local(Z) { return Z.$state(2); }
     `,
@@ -35,12 +35,12 @@ describe('实时绑定与控制流收窄', () => {
   it('同步立即调用不会被误当作延后回调', () => {
     expect(() =>
       compile(
-        `import { component } from '@zerodep-js/core'; const App = component(({ user }) => user ? (() => <span>{user.name}</span>)() : null);`,
+        `import { component } from 'zerodep-js'; const App = component(({ user }) => user ? (() => <span>{user.name}</span>)() : null);`,
         'immediate.tsx',
       ),
     ).not.toThrow();
   });
-  const prefix = `import { component, $state, $derived } from '@zerodep-js/core';`;
+  const prefix = `import { component, $state, $derived } from 'zerodep-js';`;
   it.each([
     [
       '外层 if',

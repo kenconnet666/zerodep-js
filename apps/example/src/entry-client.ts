@@ -1,4 +1,4 @@
-import { mount, hydrate, type MountOptions } from '@zerodep-js/core';
+import { mount, hydrate, type MountOptions } from 'zerodep-js';
 import { App } from './App.js';
 import { registerPropertyElement } from './examples/property-elements.js';
 import './style.css';

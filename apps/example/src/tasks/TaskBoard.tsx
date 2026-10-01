@@ -1,5 +1,5 @@
-import { component, $state, $derived, effect, onCleanup, For } from '@zerodep-js/core';
-import type { RenderMode } from '@zerodep-js/ssr';
+import { component, $state, $derived, effect, onCleanup, For } from 'zerodep-js';
+import type { RenderMode } from 'zerodep-js-ssr';
 import { ApiFailure, listTasks, createTask, updateTask, deleteTask } from './api.js';
 import {
   titleSchema,

@@ -15,6 +15,6 @@
     }
   },
   "peerDependencies": {
-    "@zerodep-js/core": "0.0.0"
+    "zerodep-js": "0.0.0"
   }
 }

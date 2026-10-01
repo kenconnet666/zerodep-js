@@ -5,7 +5,7 @@ import { compile } from '../src/index.js';
 
 it('协议不匹配在应用初始化前报错，匹配协议可以正常执行', () => {
   let initialized = 0;
-  const source = `import { $state } from '@zerodep-js/core';
+  const source = `import { $state } from 'zerodep-js';
     let value = $state(initialize()); const result = value;`;
   const initialize = () => ++initialized;
   expect(() =>

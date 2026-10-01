@@ -1,4 +1,4 @@
-import { component, $state, $derived } from '@zerodep-js/core';
+import { component, $state, $derived } from 'zerodep-js';
 
 // 与编译器的条件别名回归配对，确认 TS7 并未跨宏调用提供收窄。
 

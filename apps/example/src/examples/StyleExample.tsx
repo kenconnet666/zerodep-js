@@ -1,4 +1,4 @@
-import { component, $state, ErrorBoundary, type Style } from '@zerodep-js/core';
+import { component, $state, ErrorBoundary, type Style } from 'zerodep-js';
 
 const styles: readonly Style[] = [
   {

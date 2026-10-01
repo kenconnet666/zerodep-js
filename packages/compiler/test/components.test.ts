@@ -15,7 +15,7 @@ describe('组件参数转换', () => {
     };
     const Counter = execute(
       `
-      import { component, $state } from '@zerodep-js/core';
+      import { component, $state } from 'zerodep-js';
       const Counter = component(({ initial = 0, step = 1, onChange }: { initial?: number; step?: number; onChange?: (n: number) => void }) => {
         let count = $state(initial);
         capture(() => { count += step; onChange?.(count); }, () => [count, step]);
@@ -57,7 +57,7 @@ describe('组件参数转换', () => {
     let read!: () => unknown;
     const View = execute(
       `
-      import { component as define } from '@zerodep-js/core';
+      import { component as define } from 'zerodep-js';
       const View = define(({ min = 0, max = min + 10, class: className = 'base', ...attrs }) => {
         capture(() => [min, max, className, { ...attrs }]); return null;
       });
@@ -90,7 +90,7 @@ describe('组件参数转换', () => {
     let read!: () => unknown;
     const View = execute(
       `
-      import { component } from '@zerodep-js/core';
+      import { component } from 'zerodep-js';
       const Empty = component(() => null);
       const View = component(function Named({ label = 'A' }) {
         function local(label: string) { return label + '!'; }
@@ -119,7 +119,7 @@ describe('组件参数转换', () => {
     let read!: () => unknown;
     const View = execute(
       `
-      import { component } from '@zerodep-js/core';
+      import { component } from 'zerodep-js';
       const View = component((props) => { capture(() => props.value); return null; });
       const result = View;
     `,
@@ -165,7 +165,7 @@ describe('组件参数转换', () => {
     ],
   ])('明确诊断：%s', (_name, source, code) => {
     expect(() =>
-      compile(`import { component } from '@zerodep-js/core'; ${source}`, 'invalid.ts'),
+      compile(`import { component } from 'zerodep-js'; ${source}`, 'invalid.ts'),
     ).toThrow(code);
   });
 });

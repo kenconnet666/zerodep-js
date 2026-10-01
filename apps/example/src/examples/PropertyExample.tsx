@@ -1,4 +1,4 @@
-import { component, $state, effect, ErrorBoundary, type EventHandler } from '@zerodep-js/core';
+import { component, $state, effect, ErrorBoundary, type EventHandler } from 'zerodep-js';
 import {
   registerPropertyElement,
   type ProbeData,

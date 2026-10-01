@@ -17,7 +17,7 @@ export function normalizeNamespaces(program: NodePath<t.Program>): void {
   for (const statement of program.get('body')) {
     if (
       !statement.isImportDeclaration() ||
-      statement.node.source.value !== '@zerodep-js/core' ||
+      statement.node.source.value !== 'zerodep-js' ||
       statement.node.importKind === 'type'
     )
       continue;
@@ -50,7 +50,7 @@ export function normalizeNamespaces(program: NodePath<t.Program>): void {
       'body',
       t.importDeclaration(
         [...aliases].map(([name, identifier]) => t.importSpecifier(identifier, t.identifier(name))),
-        t.stringLiteral('@zerodep-js/core'),
+        t.stringLiteral('zerodep-js'),
       ),
     );
   program.scope.crawl();

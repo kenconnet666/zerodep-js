@@ -23,7 +23,7 @@ pnpm exec zerodep-check --stdin src/Counter.tsx --json
 推荐组件仍是带类型的普通参数解构，没有新增 props 宏：
 
 ```tsx
-import { component, $state, $derived } from '@zerodep-js/core';
+import { component, $state, $derived } from 'zerodep-js';
 
 export const Counter = component(({ step = 1 }: { step?: number }) => {
   let count = $state(0);
@@ -32,7 +32,7 @@ export const Counter = component(({ step = 1 }: { step?: number }) => {
 });
 ```
 
-命名导入可以重命名；静态命名空间成员也受支持，例如 `import * as Z from '@zerodep-js/core'` 后使用 `Z.component`、`Z.$state`、`Z.$derived.by` 和 `<Z.For>`。静态字符串成员 `Z['$state']` 也能识别。不支持通过运行时计算的属性名、二次包装或动态导入间接调用宏；宏本身不可当作普通值转交。普通运行时函数不受这个宏限制。
+命名导入可以重命名；静态命名空间成员也受支持，例如 `import * as Z from 'zerodep-js'` 后使用 `Z.component`、`Z.$state`、`Z.$derived.by` 和 `<Z.For>`。静态字符串成员 `Z['$state']` 也能识别。不支持通过运行时计算的属性名、二次包装或动态导入间接调用宏；宏本身不可当作普通值转交。普通运行时函数不受这个宏限制。
 
 解构 props 及 For 的 row/index 是实时只读绑定。默认表达式只在输入为 undefined 时参与求值，遵循缓存与依赖更新规则；普通函数体中的局部解构、赋值和传参继续是当前取值。详见 [语义契约](semantics.md)。
 
@@ -109,6 +109,12 @@ ZJ1501 是保守的源码边界检查，不是第二套 TypeScript 类型系统�
 TS7 的补全、跳转、引用和原生类型错误继续来自标准语言服务。项目 `zerodep_js_lsp` 的 diagnostics 额外调用已构建的 compiler，并传入同一份源码快照；输出中的 `source: 'zerodep-js'` 和 `framework` 字段标识框架诊断。编译器不可用时报告明确失败，不默默跳过。
 
 运行 `pnpm lsp:verify` 会验证原生错误/修复、框架错误/修复、依赖刷新和项目隔离。这是独立服务验证；已运行的 Codex MCP 进程需要重启后才加载桥接脚本变更。普通 WebStorm/VS Code TS7 服务不会自动获得这个 MCP 扩展，当前可以将 `zerodep-check` 接到外部检查任务，并在 Vite 错误覆盖层看到编译诊断。没有要求安装私有 TS 插件或降级 TS 版本。
+
+验证还通过标准 `textDocument/rename` 检查响应式变量、组件导出、跨文件 import 和 JSX 引用，并仅把编辑应用到本次临时探针。它证明标准 TS7 协议能力，不代替某个 IDE 自身的完整操作验收。
+
+WebStorm 2026.2 已提供 TS7 原生支持，可以选择项目中的 TypeScript，并按需要启用 service-powered type engine；该选择与框架 API 分开。[JetBrains 配置说明](https://www.jetbrains.com/help/webstorm/settings-languages-typescript.html)
+
+当前本机 WebStorm 会话尚未完成错误/修复和重命名复验：打开探针时日志出现 AI 插件类加载异常，相关 MCP 操作随后超时，二者的因果关系尚未证明。原生 TS7 独立验证通过；不能用 IDE 超时后的空结果宣称通过，也不为这个问题降级 TS 或修改其他项目的配置。
 
 ## 开发更新
 

@@ -17,7 +17,7 @@ import {
   type AnyComponent,
   type ComponentProps,
   type Renderable,
-} from '@zerodep-js/core/internal';
+} from 'zerodep-js/internal';
 
 assertRuntime(1);
 

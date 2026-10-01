@@ -1,4 +1,4 @@
-import { component, $state } from '@zerodep-js/core';
+import { component, $state } from 'zerodep-js';
 import { TaskBoard } from '../tasks/TaskBoard.js';
 
 export const TaskExample = component(() => {

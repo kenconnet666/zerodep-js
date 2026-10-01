@@ -5,7 +5,7 @@ import { root } from './environment.mjs';
 
 export async function frameworkDiagnostics(doc) {
   if (/\.d\.[cm]?ts$/.test(doc.path)) return [];
-  if (!/\.[jt]sx$/.test(doc.path) && !doc.text.includes('@zerodep-js/core')) return [];
+  if (!/\.[jt]sx$/.test(doc.path) && !doc.text.includes('zerodep-js')) return [];
   const cli = resolve(root, 'packages/compiler/dist/cli.js');
   try {
     await access(cli);

@@ -9,7 +9,7 @@ import type { ListTemplate } from '../../core/src/flow.js';
 describe('For 的实时参数', () => {
   it('嵌套 For 保持各自参数的词法作用域', () => {
     const view = execute(`
-      import { For } from '@zerodep-js/core';
+      import { For } from 'zerodep-js';
       const result = <For each={[{ id: 1, rows: [{ id: 2, name: '内层' }] }]} keyBy={(row) => row.id}>
         {(row, index) => <For each={row.rows} keyBy={(row) => row.id}>
           {(row, index) => <span title={row.name + index} />}
@@ -45,7 +45,7 @@ describe('For 的实时参数', () => {
   });
   it('row/index 跟随替换，普通局部值保留初始化语义', () => {
     const view = execute(`
-      import { For as Each } from '@zerodep-js/core';
+      import { For as Each } from 'zerodep-js';
       const result = <Each each={[{ id: 1, name: 'A' }]} keyBy={(row) => row.id}>
         {(row, index) => { const initial = row.name; return <input title={row.name} data-index={index} data-initial={initial} />; }}
       </Each>;
@@ -77,7 +77,7 @@ describe('For 的实时参数', () => {
 
   it('普通 render callback children 仍是函数，不被包装成自动执行内容', () => {
     const view = execute(`
-      import { component } from '@zerodep-js/core';
+      import { component } from 'zerodep-js';
       const Generic = component(({ children }) => children({ name: '真实值' }));
       const result = <Generic>{(row) => <span title={row.name} />}</Generic>;
     `) as DynamicTemplate;
@@ -98,7 +98,7 @@ describe('For 的实时参数', () => {
 
   it('重复 key 在创建行之前给出错误，修复数据后可重新读取', () => {
     const result = execute(`
-      import { For, $state } from '@zerodep-js/core';
+      import { For, $state } from 'zerodep-js';
       let rows = $state([{ id: 1 }, { id: 1 }]);
       const view = <For each={rows} keyBy={(row) => row.id}>{(row) => <b>{row.id}</b>}</For>;
       const result = { view, repair() { rows = [{ id: 2 }]; } };
@@ -129,7 +129,7 @@ describe('For 的实时参数', () => {
     ],
   ])('明确诊断：%s', (_name, source, code) => {
     expect(() =>
-      compile(`import { For } from '@zerodep-js/core'; const result = ${source};`, 'list.tsx'),
+      compile(`import { For } from 'zerodep-js'; const result = ${source};`, 'list.tsx'),
     ).toThrow(code);
   });
 });

@@ -8,7 +8,7 @@ export function coreImport(binding: Binding | undefined): string | undefined {
   if (
     !declaration.isImportDeclaration() ||
     declaration.node.importKind === 'type' ||
-    declaration.node.source.value !== '@zerodep-js/core'
+    declaration.node.source.value !== 'zerodep-js'
   )
     return undefined;
   const name = path.node.imported;

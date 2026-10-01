@@ -1,4 +1,4 @@
-import { component, $state, For } from '@zerodep-js/core';
+import { component, $state, For } from 'zerodep-js';
 
 export const FormExample = component(() => {
   let normalized = $state('AB');

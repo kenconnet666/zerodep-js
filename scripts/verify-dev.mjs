@@ -27,7 +27,7 @@ logger.warn = (message) => {
   logs.push(message);
 };
 const source = (label, invalid = false) => `
-import { component, onCleanup } from '@zerodep-js/core';
+import { component, onCleanup } from 'zerodep-js';
 import { createCounter } from './counter.mts';
 export const App = component(({ onDestroy }: { onDestroy?: () => void }) => {
   ${invalid ? 'onDestroy = () => {};' : ''}
@@ -47,7 +47,7 @@ try {
   await writeFile(
     resolve(fixture, 'counter.mts'),
     `
-import { $state } from '@zerodep-js/core';
+import { $state } from 'zerodep-js';
 export function createCounter() {
   let count = $state(0);
   return { get count() { return count; }, increment() { count++; } };
@@ -58,7 +58,7 @@ export function createCounter() {
   await writeFile(
     resolve(fixture, 'entry.ts'),
     `
-import { mount } from '@zerodep-js/core';
+import { mount } from 'zerodep-js';
 import { App } from './App.tsx';
 globalThis.__loads = (globalThis.__loads ?? 0) + 1;
 globalThis.__disposals = 0;
@@ -72,7 +72,7 @@ if (import.meta.hot) {
   );
   await writeFile(
     resolve(fixture, 'server.ts'),
-    `import { renderToString } from '@zerodep-js/ssr'; import { App } from './App.tsx'; export const render = () => renderToString(App);`,
+    `import { renderToString } from 'zerodep-js-ssr'; import { App } from './App.tsx'; export const render = () => renderToString(App);`,
   );
   server = await createServer({
     root: fixture,
@@ -86,7 +86,7 @@ if (import.meta.hot) {
       // 与示例的完整写入策略一致，保证连续的错误与修复都经过真实文件监听。
       watch: { awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 20 } },
     },
-    ssr: { noExternal: ['@zerodep-js/core', '@zerodep-js/ssr'] },
+    ssr: { noExternal: ['zerodep-js', 'zerodep-js-ssr'] },
   });
   await server.listen();
   const address = server.httpServer.address();

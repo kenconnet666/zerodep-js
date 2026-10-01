@@ -1,4 +1,4 @@
-import { component } from '@zerodep-js/core';
+import { component } from 'zerodep-js';
 import { renderToString } from '../src/index.js';
 
 const Required = component(({ label }: { label: string }) => label);

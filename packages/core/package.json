@@ -1,5 +1,5 @@
 {
-  "name": "@zerodep-js/core",
+  "name": "zerodep-js",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -13,7 +13,8 @@
     "dist/**/*.d.ts",
     "dist/**/*.d.ts.map",
     "src",
-    "THIRD_PARTY_NOTICES.md"
+    "THIRD_PARTY_NOTICES.md",
+    "LICENSE"
   ],
   "exports": {
     ".": {
@@ -40,5 +41,20 @@
   },
   "devDependencies": {
     "typescript": "catalog:"
+  },
+  "license": "MIT",
+  "author": "kenconnet666",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kenconnet666/zerodep-js.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/kenconnet666/zerodep-js#readme",
+  "bugs": {
+    "url": "https://github.com/kenconnet666/zerodep-js/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

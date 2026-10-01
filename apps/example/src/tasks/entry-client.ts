@@ -1,4 +1,4 @@
-import { mount, hydrate, type MountOptions } from '@zerodep-js/core';
+import { mount, hydrate, type MountOptions } from 'zerodep-js';
 import { TaskBoard } from './TaskBoard.js';
 import { pageSchema } from './schema.js';
 

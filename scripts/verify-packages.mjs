@@ -63,6 +63,15 @@ try {
     );
     const files = new Set(packed.files.map((file) => file.path));
     assert(files.has('README.md'), `${name} 缺少包级说明。`);
+    assert(
+      files.has('LICENSE') && sourceManifest.license === 'MIT',
+      `${name} 缺少 MIT 许可声明或文件。`,
+    );
+    assert.equal(
+      await readFile(resolve(directory, 'LICENSE'), 'utf8'),
+      await readFile(resolve(root, 'LICENSE'), 'utf8'),
+      `${name} 的许可证与项目根不一致。`,
+    );
     if (name === 'core')
       assert(files.has('THIRD_PARTY_NOTICES.md'), 'core 缺少生成数据的第三方许可。');
     assert(
@@ -112,8 +121,8 @@ try {
   }
   // 先用已安装的编译器和 TS7 生成组件库，再真正打包、安装它。
   const libraryManifest = await json(resolve(consumer, 'library/package.json'));
-  libraryManifest.peerDependencies['@zerodep-js/core'] =
-    packages.get('@zerodep-js/core').sourceManifest.version;
+  libraryManifest.peerDependencies['zerodep-js'] =
+    packages.get('zerodep-js').sourceManifest.version;
   await writeFile(
     resolve(consumer, 'library/package.json'),
     JSON.stringify(libraryManifest, null, 2),
@@ -140,7 +149,7 @@ try {
     '客户端没有消费预编译依赖。',
   );
   assert(
-    !clientModules.some((id) => /\/@babel\/|\/@zerodep-js\/(compiler|vite|ssr)\//.test(id)),
+    !clientModules.some((id) => /\/@babel\/|\/zerodep-js-(compiler|vite|ssr)\//.test(id)),
     '构建或服务端代码进入客户端。',
   );
   assert(

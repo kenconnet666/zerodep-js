@@ -107,8 +107,7 @@ export function compile(
   program.scope.crawl();
   const hasComponents = transformComponents(ast, program, helper, report);
   for (const statement of program.get('body')) {
-    if (!statement.isImportDeclaration() || statement.node.source.value !== '@zerodep-js/core')
-      continue;
+    if (!statement.isImportDeclaration() || statement.node.source.value !== 'zerodep-js') continue;
     for (const specifier of statement.get('specifiers')) {
       if (
         !specifier.isImportSpecifier() ||
@@ -329,7 +328,7 @@ export function compile(
     program.node.body = [
       t.importDeclaration(
         [t.importNamespaceSpecifier(runtime)],
-        t.stringLiteral(options.runtimeModule ?? '@zerodep-js/core/internal'),
+        t.stringLiteral(options.runtimeModule ?? 'zerodep-js/internal'),
       ),
       ...statements.filter((node) => t.isImportDeclaration(node)),
       t.expressionStatement(helper('assertRuntime', [t.numericLiteral(RUNTIME_ABI)])),

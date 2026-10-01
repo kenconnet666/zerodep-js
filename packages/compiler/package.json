@@ -1,5 +1,5 @@
 {
-  "name": "@zerodep-js/compiler",
+  "name": "zerodep-js-compiler",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -17,7 +17,8 @@
     "dist/**/*.js.map",
     "dist/**/*.d.ts",
     "dist/**/*.d.ts.map",
-    "src"
+    "src",
+    "LICENSE"
   ],
   "exports": {
     ".": {
@@ -42,5 +43,20 @@
     "@types/convert-source-map": "catalog:",
     "@types/node": "catalog:",
     "typescript": "catalog:"
+  },
+  "license": "MIT",
+  "author": "kenconnet666",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kenconnet666/zerodep-js.git",
+    "directory": "packages/compiler"
+  },
+  "homepage": "https://github.com/kenconnet666/zerodep-js#readme",
+  "bugs": {
+    "url": "https://github.com/kenconnet666/zerodep-js/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

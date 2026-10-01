@@ -1,4 +1,4 @@
-import { component, $state } from '@zerodep-js/core';
+import { component, $state } from 'zerodep-js';
 
 export const AttributeExample = component(() => {
   let eventOrder = $state('');

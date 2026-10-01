@@ -1,6 +1,6 @@
 import { writeFile } from 'node:fs/promises';
 import { build } from 'vite';
-import { zerodep } from '@zerodep-js/vite';
+import { zerodep } from 'zerodep-js-vite';
 
 const reports = {};
 function inspect(name) {

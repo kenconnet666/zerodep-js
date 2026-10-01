@@ -7,9 +7,9 @@ import {
   onCleanup,
   provideContext,
   useContext,
-} from '@zerodep-js/core';
-import { defineComponent, element, props, dynamic, liveRender } from '@zerodep-js/core/internal';
-import { For, ErrorBoundary } from '@zerodep-js/core';
+} from 'zerodep-js';
+import { defineComponent, element, props, dynamic, liveRender } from 'zerodep-js/internal';
+import { For, ErrorBoundary } from 'zerodep-js';
 import { renderToString, serializeData } from '../src/index.js';
 
 describe('真实组件 SSR', () => {

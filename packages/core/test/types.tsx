@@ -8,7 +8,7 @@ import {
   provideContext,
   type JSX,
   type Renderable,
-} from '@zerodep-js/core';
+} from 'zerodep-js';
 
 const Required = component(({ label = '默认值' }: { label: string }) => <button>{label}</button>);
 const Generic = component(

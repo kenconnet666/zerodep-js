@@ -1,4 +1,4 @@
-import { component, $state, createContext, provideContext, useContext } from '@zerodep-js/core';
+import { component, $state, createContext, provideContext, useContext } from 'zerodep-js';
 
 const Theme = createContext<{ readonly color: string }>({ color: '默认' });
 const Label = component(({ name }: { name: string }) => {

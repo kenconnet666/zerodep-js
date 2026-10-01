@@ -5,7 +5,7 @@
     "module": "Preserve",
     "moduleResolution": "Bundler",
     "jsx": "preserve",
-    "jsxImportSource": "@zerodep-js/core",
+    "jsxImportSource": "zerodep-js",
     "strict": true,
     "exactOptionalPropertyTypes": true,
     "noUncheckedIndexedAccess": true,

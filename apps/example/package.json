@@ -12,13 +12,13 @@
     "preview": "node server.ts --production"
   },
   "dependencies": {
-    "@zerodep-js/core": "workspace:*",
-    "@zerodep-js/ssr": "workspace:*",
+    "zerodep-js": "workspace:*",
+    "zerodep-js-ssr": "workspace:*",
     "sirv": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@zerodep-js/vite": "workspace:*",
+    "zerodep-js-vite": "workspace:*",
     "typescript": "catalog:",
     "vite": "catalog:"
   }

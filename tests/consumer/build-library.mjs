@@ -1,5 +1,5 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import { compile } from '@zerodep-js/compiler';
+import { compile } from 'zerodep-js-compiler';
 
 const source = await readFile('library/Counter.tsx', 'utf8');
 const result = compile(source, 'Counter.tsx');

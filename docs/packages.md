@@ -2,17 +2,19 @@
 
 所有包仍为 private、版本 0.0.0，尚未发布 npm。本文记录已经实际验证的本地安装包契约，不把打包成功视为生产验收完成。
 
+公共名称已经统一为下表中的四个无 scope 包名；开发阶段的 `@zerodep-js/core` 对应 `zerodep-js`，其余旧公共名称对应 `zerodep-js-compiler/vite/ssr`。尚未有已发布使用者需要兼容旧名。许可证为 MIT，每个实际 tgz 都应包含与根目录一致的 LICENSE。
+
 ## 包边界
 
-| 包或入口                       | 用途                                           | 依赖边界                                                |
-| ------------------------------ | ---------------------------------------------- | ------------------------------------------------------- |
-| `@zerodep-js/core`             | 响应式、组件、DOM、hydrate、生命周期及公共类型 | CSS Tools tokenizer 校验样式边界，csstype 提供生成类型  |
-| `@zerodep-js/core/jsx-runtime` | JSX 类型约定                                   | 配合 `jsx: preserve`，不走 React automatic JSX 输出     |
-| `@zerodep-js/core/internal`    | 编译输出与 SSR 的内部协议                      | 不能作为另一套手写 signal API                           |
-| `@zerodep-js/compiler`         | TSX 编译、映射、诊断及检查命令                 | Babel 仅在构建侧使用，公共结果类型不要求导入 Babel 类型 |
-| `@zerodep-js/vite`             | Vite 8 的普通转换和依赖扫描接入                | 依赖 compiler，Vite 作为 peer dependency                |
-| `@zerodep-js/ssr`              | 同步组件 SSR 与文档组合                        | core 作为同版本 peer dependency                         |
-| `@zerodep-js/ssr/data`         | 独立 JSON 数据编码                             | 不引入渲染器，也不要求 DOM 类型库                       |
+| 包或入口                 | 用途                                           | 依赖边界                                                |
+| ------------------------ | ---------------------------------------------- | ------------------------------------------------------- |
+| `zerodep-js`             | 响应式、组件、DOM、hydrate、生命周期及公共类型 | CSS Tools tokenizer 校验样式边界，csstype 提供生成类型  |
+| `zerodep-js/jsx-runtime` | JSX 类型约定                                   | 配合 `jsx: preserve`，不走 React automatic JSX 输出     |
+| `zerodep-js/internal`    | 编译输出与 SSR 的内部协议                      | 不能作为另一套手写 signal API                           |
+| `zerodep-js-compiler`    | TSX 编译、映射、诊断及检查命令                 | Babel 仅在构建侧使用，公共结果类型不要求导入 Babel 类型 |
+| `zerodep-js-vite`        | Vite 8 的普通转换和依赖扫描接入                | 依赖 compiler，Vite 作为 peer dependency                |
+| `zerodep-js-ssr`         | 同步组件 SSR 与文档组合                        | core 作为同版本 peer dependency                         |
+| `zerodep-js-ssr/data`    | 独立 JSON 数据编码                             | 不引入渲染器，也不要求 DOM 类型库                       |
 
 应用、SSR 与组件库应共享同一 core 实例。组件身份和作用域不能跨独立副本混用；ssr 因而使用 peer dependency，开发时另在 devDependencies 安装工作区 core。
 
@@ -61,4 +63,4 @@ Vite 的依赖扫描和普通源码转换必须使用同一个 compiler。扫描
 
 ## 剩余发布门槛
 
-独立包消费解决的是安装与产物正确性。生产版本还要完成原生属性审计、资源与性能压力、真实业务和平台输入法试点、完整 API 参考、许可证与贡献规则、变更及回滚说明，以及最终候选版本的 CI 矩阵。用户已授权完成后使用环境变量中的 npm token 发布相关包；发布须核对注册表与实际安装结果，凭据不进入仓库或日志，验证脚本本身不发布。生产部署不包含在此授权中。
+独立包消费解决的是安装与产物正确性。资源和业务基线已有验证，入门/API/支持文档、MIT 许可证与贡献规则、发布及回滚约定已准备；当前仍需收尾实际平台输入、IDE 会话和最终候选矩阵。用户已授权完成后使用环境变量中的 npm token 发布相关包；发布须核对注册表与实际安装结果，凭据不进入仓库或日志，验证脚本本身不发布。生产部署不包含在此授权中。具体步骤见 [发布与回滚](releasing.md)。

@@ -1,4 +1,4 @@
-import type { Style, StyleObject } from '@zerodep-js/core';
+import type { Style, StyleObject } from 'zerodep-js';
 
 export const style: StyleObject = {
   margin: '1rem',

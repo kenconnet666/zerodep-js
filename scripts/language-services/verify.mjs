@@ -4,6 +4,9 @@ import { resolve } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { parse } from 'smol-toml';
 import { requireProject, root } from './environment.mjs';
+import { service, stopAll } from './language-client.mjs';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { relative } from 'node:path';
 
 const { Client } = requireProject('@modelcontextprotocol/sdk/client/index.js');
 const { StdioClientTransport } = requireProject('@modelcontextprotocol/sdk/client/stdio.js');
@@ -141,7 +144,7 @@ try {
   for (const valid of [false, true]) {
     await save(
       frameworkFile,
-      `import { component } from '@zerodep-js/core';\nexport const Probe = component(({ value }: { value: number }) => { ${valid ? '' : 'value++;'} return <span>{value}</span>; });\n`,
+      `import { component } from 'zerodep-js';\nexport const Probe = component(({ value }: { value: number }) => { ${valid ? '' : 'value++;'} return <span>{value}</span>; });\n`,
     );
     const report = await call('diagnostics', { filePath: frameworkFile });
     assert(report.framework.complete);
@@ -153,6 +156,77 @@ try {
       );
   }
   console.log('框架诊断与原生类型诊断的错误/修复循环通过。');
+
+  // 使用标准 LSP 重命名协议，只把编辑应用到本次创建的探针，绝不改动真实源码。
+  const definition = 'apps/example/src/' + id + '_rename.tsx';
+  const consumer = 'apps/example/src/' + id + '_consumer.tsx';
+  await save(
+    definition,
+    `import { component, $state } from 'zerodep-js';\nexport const RenameCounter = component(({ step = 1 }: { step?: number }) => {\n  let count = $state(0);\n  return <button onClick={() => { count += step; }}>{count}</button>;\n});\n`,
+  );
+  await save(
+    consumer,
+    `import { RenameCounter } from './${id}_rename.js';\nexport const view = <RenameCounter step={2} />;\n`,
+  );
+  const language = await service('typescript');
+  assert(language.capabilities.renameProvider, 'TS7 服务需要提供标准重命名能力。');
+  async function rename(needle, newName) {
+    const location = await point(definition, needle);
+    const doc = {
+      uri: pathToFileURL(resolve(root, definition)).href,
+      languageId: 'typescriptreact',
+      text: await readFile(resolve(root, definition), 'utf8'),
+    };
+    const edit = await language.run(doc, () =>
+      language.request('textDocument/rename', {
+        textDocument: { uri: doc.uri },
+        position: { line: location.line - 1, character: location.column - 1 },
+        newName,
+      }),
+    );
+    assert(edit, '重命名没有返回编辑结果。');
+    const updates = edit.changes
+      ? Object.entries(edit.changes)
+      : (edit.documentChanges ?? []).map((change) => [change.textDocument.uri, change.edits]);
+    assert(updates.length > 0);
+    for (const [uri, edits] of updates) {
+      const file = relative(root, fileURLToPath(uri)).replaceAll('\\', '/');
+      assert(created.has(file), '拒绝把重命名编辑应用到探针之外：' + file);
+      let text = await readFile(resolve(root, file), 'utf8');
+      const lines = text.split('\n');
+      const offset = (position) =>
+        lines.slice(0, position.line).reduce((sum, line) => sum + line.length + 1, 0) +
+        position.character;
+      const replacements = edits
+        .map((edit) => ({
+          start: offset(edit.range.start),
+          end: offset(edit.range.end),
+          text: edit.newText,
+        }))
+        .sort((a, b) => b.start - a.start);
+      for (const edit of replacements)
+        text = text.slice(0, edit.start) + edit.text + text.slice(edit.end);
+      await save(file, text);
+    }
+  }
+  await rename('count =', 'quantity');
+  const renamedState = await readFile(resolve(root, definition), 'utf8');
+  assert(!/\bcount\b/.test(renamedState));
+  assert.equal(renamedState.match(/\bquantity\b/g)?.length, 3);
+  await rename('RenameCounter =', 'RenamedCounter');
+  const renamedConsumer = await readFile(resolve(root, consumer), 'utf8');
+  assert(
+    renamedConsumer.includes('import { RenamedCounter }') &&
+      renamedConsumer.includes('<RenamedCounter'),
+  );
+  for (const filePath of [definition, consumer]) {
+    const report = await call('diagnostics', { filePath });
+    assert(
+      report.complete && report.framework.complete && report.errors === 0,
+      JSON.stringify(report),
+    );
+  }
+  console.log('标准 TS7 重命名通过：响应式变量、组件导出、跨文件导入和 JSX 引用。');
   const core = await call('diagnostics', { filePath: 'packages/core/src/index.ts' });
   assert(core.complete && core.errors === 0, JSON.stringify(core));
   console.log(
@@ -160,8 +234,9 @@ try {
       core.server.version +
       ': dependency refresh, workspace isolation, and core diagnostics passed.',
   );
-  console.log('Restart Codex to verify native MCP tool exposure in a fresh session.');
+  console.log('独立服务验证完成；若桌面 MCP 进程已运行，脚本缓存需在新会话中另行核对。');
 } finally {
+  stopAll();
   await client.close();
   await transport.close();
   for (const file of created) await unlink(resolve(root, file));

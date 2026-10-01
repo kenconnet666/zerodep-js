@@ -6,11 +6,11 @@
 
 ```ts
 // 服务端先准备请求数据，再同步渲染组件。
-import { renderToString } from '@zerodep-js/ssr';
+import { renderToString } from 'zerodep-js-ssr';
 const html = renderToString(App, { props: { mode: 'ssr' } });
 
 // 浏览器选择创建新节点或接管服务端节点，返回值都负责卸载。
-import { mount, hydrate } from '@zerodep-js/core';
+import { mount, hydrate } from 'zerodep-js';
 const dispose =
   mode === 'ssr'
     ? hydrate(App, { target, props: { mode } })
@@ -35,7 +35,7 @@ noscript 用于服务端备用内容。脚本启用时浏览器会将其内容�
 如需传输初始化数据，显式选择数据并编码：
 
 ```ts
-import { serializeData } from '@zerodep-js/ssr/data';
+import { serializeData } from 'zerodep-js-ssr/data';
 const dataText = serializeData(initialData);
 ```
 

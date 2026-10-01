@@ -14,7 +14,7 @@ it('独立检查入口返回源码位置与退出码，修正后清零', async (
   try {
     await writeFile(
       file,
-      `import { component } from '@zerodep-js/core';\nconst App = component(({ value }) => { value++; return null; });`,
+      `import { component } from 'zerodep-js';\nconst App = component(({ value }) => { value++; return null; });`,
     );
     try {
       await run(process.execPath, [cli, file, '--json']);
@@ -30,12 +30,12 @@ it('独立检查入口返回源码位置与退出码，修正后清零', async (
     }
     await writeFile(
       file,
-      `import { component } from '@zerodep-js/core';\nconst App = component(({ value }) => value);`,
+      `import { component } from 'zerodep-js';\nconst App = component(({ value }) => value);`,
     );
     expect(JSON.parse((await run(process.execPath, [cli, file, '--json'])).stdout)).toEqual([]);
     const stdin = spawnSync(process.execPath, [cli, '--stdin', 'buffer.tsx', '--json'], {
       encoding: 'utf8',
-      input: `import { $derived } from '@zerodep-js/core'; const value = $derived(1); value++;`,
+      input: `import { $derived } from 'zerodep-js'; const value = $derived(1); value++;`,
     });
     expect(stdin.status).toBe(1);
     expect(JSON.parse(stdin.stdout)[0]).toMatchObject({ filename: 'buffer.tsx', code: 'ZJ1005' });

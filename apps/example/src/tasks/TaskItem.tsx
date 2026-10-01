@@ -1,4 +1,4 @@
-import { component, $state, $derived, onCleanup } from '@zerodep-js/core';
+import { component, $state, $derived, onCleanup } from 'zerodep-js';
 import { titleSchema, type Task } from './schema.js';
 
 type Props = {

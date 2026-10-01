@@ -1,4 +1,4 @@
-import { component, $state, For, ErrorBoundary, onCleanup } from '@zerodep-js/core';
+import { component, $state, For, ErrorBoundary, onCleanup } from 'zerodep-js';
 
 type Item = { id: number; name: string };
 

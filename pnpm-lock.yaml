@@ -155,28 +155,28 @@ importers:
 
   apps/example:
     dependencies:
-      '@zerodep-js/core':
-        specifier: workspace:*
-        version: link:../../packages/core
-      '@zerodep-js/ssr':
-        specifier: workspace:*
-        version: link:../../packages/ssr
       sirv:
         specifier: 'catalog:'
         version: 3.0.2
+      zerodep-js:
+        specifier: workspace:*
+        version: link:../../packages/core
+      zerodep-js-ssr:
+        specifier: workspace:*
+        version: link:../../packages/ssr
       zod:
         specifier: 'catalog:'
         version: 4.6.5
     devDependencies:
-      '@zerodep-js/vite':
-        specifier: workspace:*
-        version: link:../../packages/vite
       typescript:
         specifier: 'catalog:'
         version: 7.0.2
       vite:
         specifier: 'catalog:'
         version: 8.3.1(@types/node@24.13.5)
+      zerodep-js-vite:
+        specifier: workspace:*
+        version: link:../../packages/vite
 
   packages/compiler:
     dependencies:
@@ -224,16 +224,16 @@ importers:
 
   packages/ssr:
     devDependencies:
-      '@zerodep-js/core':
-        specifier: workspace:*
-        version: link:../core
       typescript:
         specifier: 'catalog:'
         version: 7.0.2
+      zerodep-js:
+        specifier: workspace:*
+        version: link:../core
 
   packages/vite:
     dependencies:
-      '@zerodep-js/compiler':
+      zerodep-js-compiler:
         specifier: workspace:*
         version: link:../compiler
     devDependencies:

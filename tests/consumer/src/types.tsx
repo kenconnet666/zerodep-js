@@ -1,6 +1,6 @@
-import { compile, type CompileResult } from '@zerodep-js/compiler';
+import { compile, type CompileResult } from 'zerodep-js-compiler';
 import { Counter, Label } from '@zerodep-consumer/counter';
-import { mount, type ComponentProps } from '@zerodep-js/core';
+import { mount, type ComponentProps } from 'zerodep-js';
 
 const props: ComponentProps<typeof Counter> = { label: '声明消费', initial: 2 };
 <button popoverTarget="help" />;

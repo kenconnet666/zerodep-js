@@ -1,4 +1,4 @@
-import { component, $state, type Renderable } from '@zerodep-js/core';
+import { component, $state, type Renderable } from 'zerodep-js';
 
 export interface CounterProps {
   label: string;

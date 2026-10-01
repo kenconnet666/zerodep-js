@@ -8,18 +8,15 @@ export function execute(source: string, extra: Record<string, unknown> = {}): un
   // 仅接线测试沙盒的模块导入，变量转换、严格模式与运行时都按真实模块执行。
   const code = output.code
     .replace(/import \* as (\w+) from ["']test-runtime["'];?/, 'const $1 = runtime;')
-    .replace(
-      /^import \{([^}]+)\} from ["']@zerodep-js\/core["'];?/gm,
-      (_statement, names: string) => {
-        const bindings = names
-          .split(',')
-          .map((name) => name.trim().replace(/\s+as\s+/, ': '))
-          .join(', ');
-        return `const { ${bindings} } = publicRuntime;`;
-      },
-    );
+    .replace(/^import \{([^}]+)\} from ["']zerodep-js["'];?/gm, (_statement, names: string) => {
+      const bindings = names
+        .split(',')
+        .map((name) => name.trim().replace(/\s+as\s+/, ': '))
+        .join(', ');
+      return `const { ${bindings} } = publicRuntime;`;
+    });
   const linked = code.replace(
-    /^import \* as (\w+) from ["']@zerodep-js\/core["'];?/gm,
+    /^import \* as (\w+) from ["']zerodep-js["'];?/gm,
     'const $1 = publicRuntime;',
   );
   return runInNewContext(`"use strict";\n${linked}\nresult;`, { runtime, publicRuntime, ...extra });

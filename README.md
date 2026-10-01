@@ -4,6 +4,10 @@
 
 当前已开始完整生产化目标：变量式状态、组件、列表、context、错误恢复、原生表单、CSR 和 SSR/hydration 已接入同一 App。开发体验、长期稳定性、平台试点及发布验收仍在建设中，尚未达到生产验收。
 
+使用指南从[开始使用](docs/getting-started.md)和[API 参考](docs/api.md)进入。四个公共包的名称为 `zerodep-js`、`zerodep-js-compiler`、`zerodep-js-vite`、`zerodep-js-ssr`；当前发布状态见 [CHANGELOG](CHANGELOG.md)，支持范围见 [support.md](docs/support.md)。
+
+项目使用 [MIT License](LICENSE)，贡献方式见 [CONTRIBUTING](CONTRIBUTING.md)。
+
 ## 工作区
 
 | 子项目              | 当前职责                                                  |
@@ -53,7 +57,7 @@ SSR 在服务端生成组件 HTML，浏览器通过 hydrate 认领原节点、�
 ## 已可使用的组件形态
 
 ```tsx
-import { component, $state, $derived } from '@zerodep-js/core';
+import { component, $state, $derived } from 'zerodep-js';
 
 export const Counter = component(({ step = 1 }: { step?: number }) => {
   let count = $state(0);
@@ -70,7 +74,7 @@ export const Counter = component(({ step = 1 }: { step?: number }) => {
 });
 ```
 
-Vite 使用 `@zerodep-js/vite` 的 `zerodep()` 插件。TS 配置保持 `jsx: "preserve"`，并设置 `jsxImportSource: "@zerodep-js/core"`。客户端通过 `mount(App, { target, props })` 挂载，返回的函数负责卸载。未经过编译的宏会明确报错。
+Vite 使用 `zerodep-js-vite` 的 `zerodep()` 插件。TS 配置保持 `jsx: "preserve"`，并设置 `jsxImportSource: "zerodep-js"`。客户端通过 `mount(App, { target, props })` 挂载，返回的函数负责卸载。未经过编译的宏会明确报错。
 
 ## 验证命令
 
@@ -115,6 +119,10 @@ pnpm lsp:inspect packages/ssr/src/index.ts apps/example/src/entry-client.ts
 - [从基础工程到生产可用的主计划](docs/production-plan.md)
 - [执行中的语义契约](docs/semantics.md)
 - [目标执行记录](docs/execution.md)
+- [开始使用](docs/getting-started.md)
+- [API 参考](docs/api.md)
+- [支持范围](docs/support.md)
+- [发布、升级与回滚](docs/releasing.md)
 - [稳定性验证与观察基线](docs/stability.md)
 - [持久化任务管理试点](docs/pilot.md)
 - [开发、类型检查与框架诊断](docs/development.md)

@@ -1,4 +1,4 @@
-import { mount, hydrate } from '@zerodep-js/core';
+import { mount, hydrate } from 'zerodep-js';
 import { App } from './App.js';
 
 declare global {

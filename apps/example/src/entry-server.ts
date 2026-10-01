@@ -1,4 +1,4 @@
-import { renderDocument, renderToString, serializeData, type RenderMode } from '@zerodep-js/ssr';
+import { renderDocument, renderToString, serializeData, type RenderMode } from 'zerodep-js-ssr';
 import { App } from './App.js';
 import { TaskBoard } from './tasks/TaskBoard.js';
 import type { TaskPage } from './tasks/schema.js';

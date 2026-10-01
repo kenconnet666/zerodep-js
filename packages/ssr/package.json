@@ -1,5 +1,5 @@
 {
-  "name": "@zerodep-js/ssr",
+  "name": "zerodep-js-ssr",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -12,7 +12,8 @@
     "dist/**/*.js.map",
     "dist/**/*.d.ts",
     "dist/**/*.d.ts.map",
-    "src"
+    "src",
+    "LICENSE"
   ],
   "exports": {
     ".": {
@@ -30,10 +31,25 @@
     "build": "tsc -b"
   },
   "peerDependencies": {
-    "@zerodep-js/core": "workspace:*"
+    "zerodep-js": "workspace:*"
   },
   "devDependencies": {
-    "@zerodep-js/core": "workspace:*",
+    "zerodep-js": "workspace:*",
     "typescript": "catalog:"
+  },
+  "license": "MIT",
+  "author": "kenconnet666",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kenconnet666/zerodep-js.git",
+    "directory": "packages/ssr"
+  },
+  "homepage": "https://github.com/kenconnet666/zerodep-js#readme",
+  "bugs": {
+    "url": "https://github.com/kenconnet666/zerodep-js/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

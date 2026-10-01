@@ -1,5 +1,5 @@
-import { component, $state, $derived, onCleanup, effect, type JSX } from '@zerodep-js/core';
-import type { RenderMode } from '@zerodep-js/ssr';
+import { component, $state, $derived, onCleanup, effect, type JSX } from 'zerodep-js';
+import type { RenderMode } from 'zerodep-js-ssr';
 import { ListExample } from './examples/ListExample.js';
 import { ContextExample } from './examples/ContextExample.js';
 import { BoundaryExample } from './examples/BoundaryExample.js';

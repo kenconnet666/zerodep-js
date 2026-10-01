@@ -19,7 +19,7 @@ function text(value: Renderable): string {
 describe('JSX 惰性输出', () => {
   it('组件直接返回值、条件和数组时仍保持细粒度更新', () => {
     const result = execute(`
-      import { component, $state } from '@zerodep-js/core';
+      import { component, $state } from 'zerodep-js';
       let data = $state({ open: true, value: 1 });
       const View = component(({ data }) => data.open ? [data.value, <span title="稳定" />] : '隐藏');
       const view = <View data={data} />;
@@ -47,7 +47,7 @@ describe('JSX 惰性输出', () => {
 
   it('逻辑表达式保留 0、空字符串和 nullish 的原始含义', () => {
     const result = execute(`
-      import { component, $state } from '@zerodep-js/core';
+      import { component, $state } from 'zerodep-js';
       let value = $state(0);
       const View = component(() => [value && <b>真</b>, value || '默认', value ?? '空']);
       const result = { view: <View />, change(next) { value = next; } };
@@ -92,7 +92,7 @@ describe('JSX 惰性输出', () => {
 
   it('属性与子内容按读取跟踪，静态节点不建立多余动态区域', () => {
     const result = execute(`
-      import { $state } from '@zerodep-js/core';
+      import { $state } from 'zerodep-js';
       let count = $state(1);
       const view = <main title={String(count)}><span>静态</span><b>{count}</b></main>;
       const result = { view, change() { count = 2; } };
@@ -109,7 +109,7 @@ describe('JSX 惰性输出', () => {
 
   it('Fragment、条件、空内容和实体文本保留正确语义', () => {
     const result = execute(`
-      import { $state } from '@zerodep-js/core';
+      import { $state } from 'zerodep-js';
       let visible = $state(true);
       const view = <>A &amp; B{visible ? <b>可见</b> : null}{false}{0}</>;
       const result = { view, hide() { visible = false; } };
@@ -121,7 +121,7 @@ describe('JSX 惰性输出', () => {
 
   it('解构得到的组件标签和属性别名可以出现在 JSX 中', () => {
     const View = execute(`
-      import { component } from '@zerodep-js/core';
+      import { component } from 'zerodep-js';
       const View = component(({ as: Tag, class: className = 'default' }) => <Tag class={className}>内容</Tag>);
       const result = View;
     `) as Parameters<typeof runtime.setupComponent>[0];
@@ -137,7 +137,7 @@ describe('JSX 惰性输出', () => {
 
   it('JSX 中的事件处理函数不会在构建属性时执行', () => {
     const result = execute(`
-      import { $state } from '@zerodep-js/core';
+      import { $state } from 'zerodep-js';
       let count = $state(0);
       const view = <button onClick={() => count++}>{count}</button>;
       const result = { view, read: () => count };
