@@ -8,6 +8,12 @@ body {
   margin: 0;
 }
 
+.example-controls {
+  max-width: 48rem;
+  margin: 1rem auto;
+  padding-inline: 2rem;
+}
+
 main {
   max-width: 48rem;
   margin: 8vh auto;

@@ -88,6 +88,8 @@ pnpm format:check
 - `pnpm test:e2e:chromium`：只运行 Chromium。
 - `pnpm test:dev`：实际 Vite 热更新、错误恢复、作用域清理与 SSR 模块更新。
 - `pnpm test:packages`：打包后在工作区外安装，验证声明、预编译组件库、CSR/SSR、接管和按需打包。
+- `pnpm test:stability`：独立 Node 进程验证反复销毁、临时字段回收、清理失败和 SSR 请求隔离；可用 `--iterations 5000` 指定轮数。
+- `pnpm native:generate` / `pnpm native:check`：生成或核对原生属性类型与 SVG 别名，保留人工语义修正。
 - `pnpm browsers:install`：安装测试所需浏览器。
 
 Playwright 使用独立的 4175 端口，测试完成后关闭服务。失败时将 trace 和截图保存到被 Git 忽略的 `test-results`。基础 CI 在 push 和 pull request 时运行这些检查。
@@ -111,6 +113,7 @@ pnpm lsp:inspect packages/ssr/src/index.ts apps/example/src/entry-client.ts
 - [从基础工程到生产可用的主计划](docs/production-plan.md)
 - [执行中的语义契约](docs/semantics.md)
 - [目标执行记录](docs/execution.md)
+- [稳定性验证与观察基线](docs/stability.md)
 - [开发、类型检查与框架诊断](docs/development.md)
 - [包产物与独立消费](docs/packages.md)
 - [SSR 与 hydration 使用及边界](docs/ssr-and-hydration.md)

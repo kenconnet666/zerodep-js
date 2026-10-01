@@ -16,6 +16,26 @@ afterEach(() => {
 });
 
 describe('属性级对象状态', () => {
+  it('getter 在读取其他依赖前抛错，替换字段后冷派生和 effect 都能恢复', () => {
+    const object = reactive({
+      get value(): number {
+        throw new Error('临时读取失败');
+      },
+    });
+    const cold = new Derived(() => object.value);
+    const seen: number[] = [];
+    expect(() => cold.read()).toThrow('临时读取失败');
+    expect(() =>
+      observe(() => {
+        seen.push(object.value);
+      }),
+    ).toThrow('临时读取失败');
+    Object.defineProperty(object, 'value', { configurable: true, enumerable: true, value: 2 });
+    expect(cold.read()).toBe(2);
+    flushSync();
+    expect(seen).toEqual([2]);
+  });
+
   it('只跟踪读到的属性，整体替换后重新收集依赖', () => {
     const user = state({ name: '甲', age: 20, address: { city: '北京' } });
     const values: string[] = [];

@@ -4,6 +4,7 @@ node_modules
 *.tsbuildinfo
 coverage/
 test-results/
+reports/stability/
 playwright-report/
 .codex/config.toml
 .idea

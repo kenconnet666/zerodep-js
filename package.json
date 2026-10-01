@@ -26,6 +26,7 @@
     "test:e2e:chromium": "pnpm test:e2e --project=chromium",
     "test:dev": "node scripts/verify-dev.mjs",
     "test:packages": "pnpm build:packages && node scripts/verify-packages.mjs",
+    "test:stability": "pnpm build:packages && node --expose-gc scripts/verify-stability.mjs",
     "browsers:install": "playwright install chromium firefox webkit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

@@ -2,6 +2,15 @@ import { Source, assertCanWrite, batch, isTracking, untrack } from './reactivity
 
 const proxies = new WeakMap<object, object>();
 const originals = new WeakMap<object, object>();
+type Signals = Map<PropertyKey, WeakRef<Source<number>>>;
+const releasedSignals = new FinalizationRegistry<{
+  map: Signals;
+  key: PropertyKey;
+  reference: WeakRef<Source<number>>;
+}>(({ map, key, reference }) => {
+  // 同名字段可能已被重新订阅，旧节点的回收不能删除新节点。
+  if (map.get(key) === reference) map.delete(key);
+});
 const mutators = new Set<PropertyKey>([
   'push',
   'pop',
@@ -44,15 +53,23 @@ export function reactive<T>(value: T): T {
   const cached = proxies.get(value);
   if (cached) return cached as T;
 
-  const values = new Map<PropertyKey, Source<number>>();
-  const existence = new Map<PropertyKey, Source<number>>();
+  const values: Signals = new Map();
+  const existence: Signals = new Map();
   const keys = new Source(0);
   const isArray = Array.isArray(value);
 
-  function track(map: Map<PropertyKey, Source<number>>, key: PropertyKey): void {
+  function track(map: Signals, key: PropertyKey): void {
     if (!isTracking()) return;
-    let source = map.get(key);
-    if (!source) map.set(key, (source = new Source(0)));
+    const previous = map.get(key);
+    let source = previous?.deref();
+    if (!source) {
+      if (previous) releasedSignals.unregister(previous);
+      source = new Source(0);
+      const reference = new WeakRef(source);
+      map.set(key, reference);
+      // 真实观察者（包括冷派生）持有依赖；缓存本身不能让临时查询键永久存活。
+      releasedSignals.register(source, { map, key, reference }, reference);
+    }
     source.read();
   }
 
@@ -60,12 +77,16 @@ export function reactive<T>(value: T): T {
     source.write(untrack(() => source.read()) + 1);
   }
 
-  function changed(map: Map<PropertyKey, Source<number>>, key: PropertyKey): void {
-    const source = map.get(key);
-    if (!source) return;
-    bump(source);
+  function changed(map: Signals, key: PropertyKey): void {
+    const reference = map.get(key);
+    if (!reference) return;
+    const source = reference.deref();
+    if (source) bump(source);
     // 冷派生仍持有旧版本，因此删除无订阅节点也能使其下次读取失效。
-    if (!source.subscribers.size) map.delete(key);
+    if (!source?.subscribers.size) {
+      map.delete(key);
+      releasedSignals.unregister(reference);
+    }
   }
 
   function updateLength(previous: number): void {
@@ -86,7 +107,14 @@ export function reactive<T>(value: T): T {
 
   const proxy = new Proxy(value, {
     get(target, key, receiver) {
-      const result: unknown = Reflect.get(target, key, receiver);
+      let result: unknown;
+      try {
+        result = Reflect.get(target, key, receiver);
+      } catch (error) {
+        // 读取失败仍依赖这个字段，否则替换 getter 后冷派生会永久缓存旧异常。
+        track(values, key);
+        throw error;
+      }
       if (isArray && mutators.has(key) && result === Reflect.get(Array.prototype, key)) {
         let method = arrayMethods.get(key);
         if (!method) {
