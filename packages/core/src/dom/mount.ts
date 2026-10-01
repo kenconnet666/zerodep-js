@@ -1,12 +1,12 @@
-import { Scope, getScope, renderEffect, untrack, type Cleanup } from './reactivity.js';
-import { setupComponent, type AnyComponent, type ComponentProps } from './component.js';
-import { TEMPLATE, element, type DynamicTemplate, type Renderable } from './template.js';
-import { attachAttributes, attachRef } from './dom-attributes.js';
-import { notifySelect } from './dom-controls.js';
-import type { Props } from './props.js';
-import { childContainer, createRange, insert, rollback, type Container } from './dom-utils.js';
-import { renderList } from './dom-list.js';
-import { renderBoundary } from './dom-boundary.js';
+import { Scope, getScope, renderEffect, untrack, type Cleanup } from '../runtime/reactivity.js';
+import { setupComponent, type AnyComponent, type ComponentProps } from '../runtime/component.js';
+import { TEMPLATE, element, type DynamicTemplate, type Renderable } from '../runtime/template.js';
+import { attachAttributes, attachRef } from './attributes.js';
+import { notifySelect } from './controls.js';
+import type { Props } from '../runtime/props.js';
+import { childContainer, createRange, insert, rollback, type Container } from './utils.js';
+import { renderList } from './list.js';
+import { renderBoundary } from './boundary.js';
 import { HydrationError, HydrationCursor, hydrationRoot } from './hydration.js';
 import {
   HTML,
@@ -16,7 +16,7 @@ import {
   elementText,
   voidTags,
   elementName,
-} from './native.js';
+} from '../native/attributes.js';
 
 export type MountOptions<C extends AnyComponent> = {
   target: Container;

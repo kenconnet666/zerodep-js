@@ -174,8 +174,8 @@ try {
   assert(
     !treeModules.some(
       (id) =>
-        /\/dist\/(dom[^/]*|hydration|render|state|template|style|router|storage)\.js$/.test(id) ||
-        id.includes('/dist/router/') ||
+        /\/dist\/(dom|router|storage)\//.test(id) ||
+        /\/dist\/(runtime\/(state|template)|native\/style|router|storage)\.js$/.test(id) ||
         id.includes('/@csstools/css-tokenizer/'),
     ),
     '按需导入仍包含无关渲染器。',

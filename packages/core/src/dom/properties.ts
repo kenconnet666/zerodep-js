@@ -1,7 +1,7 @@
-import { unowned } from './reactivity.js';
-import { HTML } from './native.js';
-import { propertyName } from './dom-property-names.js';
-import type { Props } from './props.js';
+import { unowned } from '../runtime/reactivity.js';
+import { HTML } from '../native/attributes.js';
+import { propertyName } from '../native/properties.js';
+import type { Props } from '../runtime/props.js';
 
 interface AttributeSnapshot {
   namespace: string | null;

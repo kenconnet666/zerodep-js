@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createContext, provideContext, useContext } from '../src/context.js';
+import { createContext, provideContext, useContext } from '../src/runtime/context.js';
 import {
   Derived,
   Scope,
@@ -10,7 +10,7 @@ import {
   getScope,
   onCleanup,
   unowned,
-} from '../src/reactivity.js';
+} from '../src/runtime/reactivity.js';
 
 describe('作用域 context', () => {
   it('子作用域清理时仍能读取父级 context', () => {

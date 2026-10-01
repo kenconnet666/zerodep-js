@@ -1,7 +1,7 @@
-import { Scope, onCleanup } from './reactivity.js';
-import type { Renderable } from './template.js';
+import { Scope, onCleanup } from '../runtime/reactivity.js';
+import type { Renderable } from '../runtime/template.js';
 import type { HydrationCursor } from './hydration.js';
-import { HTML } from './native.js';
+import { HTML } from '../native/attributes.js';
 
 export type Container = Element | DocumentFragment;
 /** template 的子节点属于惰性文档片段，CSR 和接管必须走同一容器。 */

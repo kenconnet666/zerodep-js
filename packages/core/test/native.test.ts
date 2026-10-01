@@ -8,7 +8,7 @@ import {
   attributeNamespace,
   elementName,
   elementText,
-} from '../src/native.js';
+} from '../src/native/attributes.js';
 
 it('原生标签与 HTML 解析保持相同的名称和命名空间', () => {
   expect(elementName('BUTTON', HTML)).toBe('button');

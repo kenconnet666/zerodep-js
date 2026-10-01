@@ -1,9 +1,9 @@
-import { Scope, getScope, untrack } from './reactivity.js';
-import { dynamic } from './template.js';
-import type { BoundaryTemplate } from './flow.js';
+import { Scope, getScope, untrack } from '../runtime/reactivity.js';
+import { dynamic } from '../runtime/template.js';
+import type { BoundaryTemplate } from '../runtime/flow.js';
 import { HydrationCursor, containsHydrationError } from './hydration.js';
-import { createRange, rollback, type Container, type Render } from './dom-utils.js';
-import { notifySelect } from './dom-controls.js';
+import { createRange, rollback, type Container, type Render } from './utils.js';
+import { notifySelect } from './controls.js';
 
 export function renderBoundary(
   template: BoundaryTemplate,

@@ -1,8 +1,8 @@
-import { Scope, Source, batch, getScope, renderEffect, untrack } from './reactivity.js';
-import { dynamic } from './template.js';
-import type { Key, ListTemplate } from './flow.js';
+import { Scope, Source, batch, getScope, renderEffect, untrack } from '../runtime/reactivity.js';
+import { dynamic } from '../runtime/template.js';
+import type { Key, ListTemplate } from '../runtime/flow.js';
 import type { HydrationCursor } from './hydration.js';
-import { notifySelect } from './dom-controls.js';
+import { notifySelect } from './controls.js';
 import {
   createRange,
   moveRange,
@@ -11,7 +11,7 @@ import {
   type Container,
   type NodeRange,
   type Render,
-} from './dom-utils.js';
+} from './utils.js';
 
 interface Row {
   scope: Scope;

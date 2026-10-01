@@ -1,7 +1,7 @@
 import { expect, it } from 'vitest';
-import { styleText } from '../src/style.js';
-import { nativeAttributes } from '../src/native.js';
-import { textValue } from '../src/text.js';
+import { styleText } from '../src/native/style.js';
+import { nativeAttributes } from '../src/native/attributes.js';
+import { textValue } from '../src/native/text.js';
 
 it('CSS 名称、厂商前缀和自定义属性使用同一段声明', () => {
   expect(

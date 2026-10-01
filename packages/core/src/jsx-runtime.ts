@@ -1,15 +1,15 @@
-import type { AnyComponent } from './component.js';
-import type { Renderable, Template } from './template.js';
+import type { AnyComponent } from './runtime/component.js';
+import type { Renderable, Template } from './runtime/template.js';
 import type {
   HtmlAttributeValues,
   HtmlAttributeNames,
   SvgAttributeValues,
   NativeEventAliases,
-} from './native-data.js';
-import type { clientProperties, ownedProperties, formProperties } from './dom-property-names.js';
-import type { Style } from './style.js';
+} from './native/data.js';
+import type { clientProperties, ownedProperties, formProperties } from './native/properties.js';
+import type { Style } from './native/style.js';
 
-export type { Style, StyleObject } from './style.js';
+export type { Style, StyleObject } from './native/style.js';
 
 type Equal<X, Y, Yes, No> =
   (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2 ? Yes : No;

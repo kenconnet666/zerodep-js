@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { Derived, Scope, Source, flushSync, renderEffect } from '../src/reactivity.js';
-import { RenderQueue } from '../src/render-queue.js';
+import { Derived, Scope, Source, flushSync, renderEffect } from '../src/runtime/reactivity.js';
+import { RenderQueue } from '../src/runtime/render-queue.js';
 
 describe('渲染更新顺序', () => {
   it('父条件重新订阅后，仍先销毁子树再处理子读取', () => {

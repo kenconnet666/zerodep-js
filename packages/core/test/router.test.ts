@@ -1,5 +1,5 @@
 import { expect, it, vi } from 'vitest';
-import { defineComponent } from '../src/component.js';
+import { defineComponent } from '../src/runtime/component.js';
 import { defineRoute, defineRoutes } from '../src/router/routes.js';
 import { createRouter } from '../src/router/router.js';
 import { createMemoryHistory } from '../src/router/history.js';

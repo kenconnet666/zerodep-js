@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Derived, createRoot, effect, flushSync, type Cleanup } from '../src/reactivity.js';
-import { reactive, state } from '../src/state.js';
+import { Derived, createRoot, effect, flushSync, type Cleanup } from '../src/runtime/reactivity.js';
+import { reactive, state } from '../src/runtime/state.js';
 
 const roots: Cleanup[] = [];
 function observe(fn: () => void): void {

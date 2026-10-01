@@ -6,12 +6,12 @@ import {
   propertyEffect,
   untrack,
   unowned,
-} from './reactivity.js';
-import type { Props } from './props.js';
+} from '../runtime/reactivity.js';
+import type { Props } from '../runtime/props.js';
 import type { HydrationSession } from './hydration.js';
-import { bindControl, notifySelect } from './dom-controls.js';
-import { HTML, attributeNamespace, eventName, nativeAttributes } from './native.js';
-import { PropertyBindings } from './dom-properties.js';
+import { bindControl, notifySelect } from './controls.js';
+import { HTML, attributeNamespace, eventName, nativeAttributes } from '../native/attributes.js';
+import { PropertyBindings } from './properties.js';
 
 const properties = new Set(['value', 'checked', 'selected', 'muted']);
 

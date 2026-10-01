@@ -11,7 +11,7 @@ import {
   tick,
   untrack,
   type Cleanup,
-} from '../src/reactivity.js';
+} from '../src/runtime/reactivity.js';
 
 const roots: Cleanup[] = [];
 function root(fn: () => void): void {

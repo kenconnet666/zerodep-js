@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
-import { prop, props, restProps } from '../src/props.js';
-import { reactive } from '../src/state.js';
-import { createRoot, effect, flushSync } from '../src/reactivity.js';
+import { prop, props, restProps } from '../src/runtime/props.js';
+import { reactive } from '../src/runtime/state.js';
+import { createRoot, effect, flushSync } from '../src/runtime/reactivity.js';
 
 describe('组件输入视图', () => {
   it('默认值按实例缓存，依赖更新和显式覆盖保持一致', () => {

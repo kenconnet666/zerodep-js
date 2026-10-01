@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest';
-import { defineComponent } from '../src/component.js';
+import { defineComponent } from '../src/runtime/component.js';
 import { defineRoutes, matchRoutes, routePath } from '../src/router/routes.js';
 const Page = defineComponent(() => null);
 const url = (path: string) => new URL(path, 'http://router.test');

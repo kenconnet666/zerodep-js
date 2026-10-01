@@ -1,9 +1,9 @@
-import { TEMPLATE, type Renderable } from './template.js';
-import type { Props } from './props.js';
-import { clientProperty, ownsContent, propertyName } from './dom-property-names.js';
+import { TEMPLATE, type Renderable } from '../runtime/template.js';
+import type { Props } from '../runtime/props.js';
+import { clientProperty, ownsContent, propertyName } from './properties.js';
 import { styleText } from './style.js';
 import { textValue } from './text.js';
-import { svgAliases } from './native-data.js';
+import { svgAliases } from './data.js';
 
 export { textValue } from './text.js';
 

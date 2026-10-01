@@ -14,11 +14,15 @@ import {
   flushSync,
   onCleanup,
   tick,
-} from '../packages/core/dist/reactivity.js';
-import { reactive } from '../packages/core/dist/state.js';
-import { createContext, provideContext, useContext } from '../packages/core/dist/context.js';
+} from '../packages/core/dist/runtime/reactivity.js';
+import { reactive } from '../packages/core/dist/runtime/state.js';
+import {
+  createContext,
+  provideContext,
+  useContext,
+} from '../packages/core/dist/runtime/context.js';
 import { defineComponent, element } from '../packages/core/dist/internal.js';
-import { ErrorBoundary } from '../packages/core/dist/flow.js';
+import { ErrorBoundary } from '../packages/core/dist/runtime/flow.js';
 import { renderToString } from '../packages/ssr/dist/index.js';
 
 const { values } = parseArgs({

@@ -1,5 +1,5 @@
 import { expect, it, vi } from 'vitest';
-import { createScope, getAbortSignal, onMount } from '../src/lifecycle.js';
+import { createScope, getAbortSignal, onMount } from '../src/runtime/lifecycle.js';
 import {
   createRoot,
   effect,
@@ -8,8 +8,8 @@ import {
   Source,
   Derived,
   Scope,
-} from '../src/reactivity.js';
-import { createContext, provideContext, useContext } from '../src/context.js';
+} from '../src/runtime/reactivity.js';
+import { createContext, provideContext, useContext } from '../src/runtime/context.js';
 
 it('onMount 排队执行一次，不跟踪内部读取，并回收返回资源', () => {
   const count = new Source(0);

@@ -1,5 +1,5 @@
-import { snapshot } from '../snapshot.js';
-import type { Cleanup } from '../reactivity.js';
+import { snapshot } from '../runtime/snapshot.js';
+import type { Cleanup } from '../runtime/reactivity.js';
 
 export interface HistoryEntry {
   readonly href: string;

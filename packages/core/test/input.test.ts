@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { mapCaret } from '../src/dom-input.js';
+import { mapCaret } from '../src/dom/input.js';
 
 describe('输入归一化的选区映射', () => {
   it.each([

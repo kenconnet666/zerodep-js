@@ -6,9 +6,9 @@ import {
   propertyEffect,
   flushSync,
   Source,
-} from '../src/reactivity.js';
-import { nativeAttributes, eventName } from '../src/native.js';
-import { PropertyBindings } from '../src/dom-properties.js';
+} from '../src/runtime/reactivity.js';
+import { nativeAttributes, eventName } from '../src/native/attributes.js';
+import { PropertyBindings } from '../src/dom/properties.js';
 
 it('自定义 setter 同步卸载后才写入的引用也会恢复', () => {
   // 这里只模拟同步 JS setter；真实 HTMLElement 与事件链由浏览器用例验证。

@@ -1,7 +1,12 @@
-import { Scope, dispatchError, getScope, onCleanup, untrack } from './reactivity.js';
-import { nativeAttributes, selectionValues, attributeNamespace, HTML } from './native.js';
-import type { Props } from './props.js';
-import { childContainer, type Container, type NodeRange } from './dom-utils.js';
+import { Scope, dispatchError, getScope, onCleanup, untrack } from '../runtime/reactivity.js';
+import {
+  nativeAttributes,
+  selectionValues,
+  attributeNamespace,
+  HTML,
+} from '../native/attributes.js';
+import type { Props } from '../runtime/props.js';
+import { childContainer, type Container, type NodeRange } from './utils.js';
 
 export class HydrationError extends Error {
   readonly code = 'ZJ_HYDRATION_MISMATCH';

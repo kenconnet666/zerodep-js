@@ -259,3 +259,11 @@
 - 23 项相关 Node、8 项 Chromium 路由用例、pnpm check/build 通过。TS7 原生 LSP 对实际页面返回完整零错误诊断；独立 tgz 的声明、子入口、快照/存储/路由、CSR/SSR、卸载与按需导入通过，补充默认复用/显式 key 的消费回归。
 - 核对 [a8535b6 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/36852404610)：277 项浏览器通过，6 项因新增输入让旧“名字”模糊定位歧义而失败。定位已改为 exact，两项本地 CSR/SSR 回归通过；保留全部原有断言，完整矩阵交当前提交复验。
 - 用户新增要求：完成这四项后整理 core 的 dom/runtime/storage 目录，再讨论 Vue 项目的独立新页面共存；不要求组件互用，不直接实现 Vue 适配或 CSS 接入。
+
+## core 目录整理与 Vue 页面共存研究
+
+- 上一功能提交 4715059 的[完整 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/36865635529) 已通过，覆盖三浏览器与 Windows 独立包消费；原有输入定位问题也已通过远端复验。
+- 27 个源码文件按责任移入 runtime/dom/native/storage，保留 router 分组与根级公共入口。runtime 含通用调度队列，native 是 SSR/客户端共用的文本、属性、样式和生成数据；没有新增空包或运行时抽象。
+- 用 Babel AST 读取字符串位置更新相对模块路径，移动均针对已核对的普通源码文件；逐项审阅测试/脚本路径，修正非模块字符串的末尾斜线后删除一次性脚本。移除旧位置的构建文件并重建，避免陈旧 .d.ts.map/source 混进 npm 包。
+- 同步原生数据生成目标、单元/编译测试导入、资源验证脚本与按需打包断言，公开导出路径和内部 ABI 均不变。279 项 Node、类型/构建与新路径 TS7 完整诊断通过，独立包消费核对整理后的产物。
+- Vue 接入目前只研究。已阅读当前 Vite 插件以及 Vue 生命周期、Vue Router 参数复用、Vue JSX 范围与 Vite 多页面官方资料；推荐独立页面宿主、一个 URL 所有者、编译和类型边界明确。当前 zerodep() 缺少 include/exclude，不能声称已支持同一工程的两种 TSX；方案见 .design/vue-page-coexistence.md。

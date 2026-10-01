@@ -6,7 +6,7 @@ import { find, html, svg } from 'property-information';
 import { htmlElementAttributes } from 'html-element-attributes';
 
 const root = resolve(import.meta.dirname, '..');
-const output = resolve(root, 'packages/core/src/native-data.ts');
+const output = resolve(root, 'packages/core/src/native/data.ts');
 const check = process.argv.includes('--check');
 const config = await resolveConfig(output);
 const sources = await Promise.all(

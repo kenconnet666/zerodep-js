@@ -1,9 +1,13 @@
 import { execute } from './execute.js';
 import { describe, expect, it } from 'vitest';
 import * as runtime from '../../core/src/internal.js';
-import { createRoot } from '../../core/src/reactivity.js';
-import { state } from '../../core/src/state.js';
-import type { DynamicTemplate, ElementTemplate, Renderable } from '../../core/src/template.js';
+import { createRoot } from '../../core/src/runtime/reactivity.js';
+import { state } from '../../core/src/runtime/state.js';
+import type {
+  DynamicTemplate,
+  ElementTemplate,
+  Renderable,
+} from '../../core/src/runtime/template.js';
 
 function text(value: Renderable): string {
   if (value == null || typeof value === 'boolean') return '';

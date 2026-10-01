@@ -1,7 +1,7 @@
 import { execute } from './execute.js';
 import { TraceMap, originalPositionFor } from '@jridgewell/trace-mapping';
 import { describe, expect, it } from 'vitest';
-import { $derived, $state } from '../../core/src/macros.js';
+import { $derived, $state } from '../../core/src/runtime/macros.js';
 import { CompileError, compile } from '../src/index.js';
 
 describe('变量宏的绑定转换', () => {

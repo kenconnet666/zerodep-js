@@ -1,6 +1,6 @@
-import { COMPONENT, type AnyComponent } from '../component.js';
-import { Source, tick, unowned, type Cleanup } from '../reactivity.js';
-import { snapshot } from '../snapshot.js';
+import { COMPONENT, type AnyComponent } from '../runtime/component.js';
+import { Source, tick, unowned, type Cleanup } from '../runtime/reactivity.js';
+import { snapshot } from '../runtime/snapshot.js';
 import {
   createMemoryHistory,
   internalURL,

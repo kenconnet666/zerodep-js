@@ -24,7 +24,7 @@
 
 最后登记器保留 101 条类规则。这不是计时基准，也不是任意应用的内存结论；它明确区分了框架依赖缓存和 CSS 内容登记缓存。稳定类可复用，而连续尺寸/位置/颜色会持续生成不同内容。
 
-源码依据：packages/core/src/props.ts 为每个显式 JSX 属性创建 Derived；dom-attributes.ts 可以重新检查属性，但缓存未失效的 class 不重新求值。CSS core/src/registry.ts 按内容登记不可变普通类，普通类保留在宿主缓存中；bx 的私有绑定另有释放协议。
+源码依据：packages/core/src/runtime/props.ts 为每个显式 JSX 属性创建 Derived；dom/attributes.ts 可以重新检查属性，但缓存未失效的 class 不重新求值。CSS core/src/registry.ts 按内容登记不可变普通类，普通类保留在宿主缓存中；bx 的私有绑定另有释放协议。
 
 Svelte 的 class 编译入口同样进入 memoizer；官方 derived 说明其依赖变化后按需重算，而非每次刷新都调用。[Svelte derived](https://svelte.dev/docs/svelte/$derived)
 

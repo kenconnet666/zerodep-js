@@ -1,7 +1,7 @@
 import { expect, it } from 'vitest';
-import { snapshot } from '../src/snapshot.js';
-import { reactive, state } from '../src/state.js';
-import { createRoot, effect, flushSync } from '../src/reactivity.js';
+import { snapshot } from '../src/runtime/snapshot.js';
+import { reactive, state } from '../src/runtime/state.js';
+import { createRoot, effect, flushSync } from '../src/runtime/reactivity.js';
 
 it('脱开深代理且后续双向修改互不影响', () => {
   const model = reactive({ title: '草稿', child: { count: 1 }, list: [{ done: false }] });

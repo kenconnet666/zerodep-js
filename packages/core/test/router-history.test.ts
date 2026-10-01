@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest';
 import { createMemoryHistory, createBrowserHistory, internalURL } from '../src/router/history.js';
-import { reactive } from '../src/state.js';
+import { reactive } from '../src/runtime/state.js';
 
 it('memory 历史支持前后退、替换和截断前进分支', () => {
   const history = createMemoryHistory({ entries: ['/a', '/b'], index: 0 });

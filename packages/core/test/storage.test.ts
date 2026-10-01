@@ -4,9 +4,9 @@ import {
   persistSession,
   type Persistence,
   type StorageLike,
-} from '../src/storage.js';
-import { reactive } from '../src/state.js';
-import { createRoot, flushSync, Scope, Source } from '../src/reactivity.js';
+} from '../src/storage/persist.js';
+import { reactive } from '../src/runtime/state.js';
+import { createRoot, flushSync, Scope, Source } from '../src/runtime/reactivity.js';
 
 class MemoryStorage implements StorageLike {
   data = new Map<string, string>();

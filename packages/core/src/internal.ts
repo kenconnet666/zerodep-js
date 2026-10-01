@@ -1,4 +1,4 @@
-import { Derived, Source } from './reactivity.js';
+import { Derived, Source } from './runtime/reactivity.js';
 
 /** 与编译输出保持稳定的协议入口；不兼容改动才递增，补丁修复不必递增。 */
 export function assertRuntime(expected: number): void {
@@ -12,15 +12,22 @@ export function assertRuntime(expected: number): void {
     );
 }
 
-export { Scope, getScope, renderEffect, untrack } from './reactivity.js';
-export { state } from './state.js';
-export { defineComponent, setupComponent } from './component.js';
-export { prop, props, restProps } from './props.js';
-export { element, dynamic, dynamicElement, fragment, conditional, logical } from './template.js';
-export { liveRender } from './flow.js';
-export { TEMPLATE } from './template.js';
-export type { Renderable, Template } from './template.js';
-export type { AnyComponent, ComponentProps } from './component.js';
+export { Scope, getScope, renderEffect, untrack } from './runtime/reactivity.js';
+export { state } from './runtime/state.js';
+export { defineComponent, setupComponent } from './runtime/component.js';
+export { prop, props, restProps } from './runtime/props.js';
+export {
+  element,
+  dynamic,
+  dynamicElement,
+  fragment,
+  conditional,
+  logical,
+} from './runtime/template.js';
+export { liveRender } from './runtime/flow.js';
+export { TEMPLATE } from './runtime/template.js';
+export type { Renderable, Template } from './runtime/template.js';
+export type { AnyComponent, ComponentProps } from './runtime/component.js';
 export {
   HTML,
   SVG,
@@ -35,7 +42,7 @@ export {
   elementText,
   nativeAttributes,
   selectionValues,
-} from './native.js';
+} from './native/attributes.js';
 
 export function source<T>(initial: T): Source<T> {
   return new Source(initial);

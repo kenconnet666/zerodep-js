@@ -1,6 +1,6 @@
-import type { Component } from '../component.js';
-import type { Renderable } from '../template.js';
-import { unowned } from '../reactivity.js';
+import type { Component } from '../runtime/component.js';
+import type { Renderable } from '../runtime/template.js';
+import { unowned } from '../runtime/reactivity.js';
 
 export type ParamValue = string | readonly string[];
 export type Params = Readonly<Record<string, ParamValue | undefined>>;

@@ -1,7 +1,14 @@
-import { Source, getScope, onCleanup, untrack, dispatchError, type Scope } from './reactivity.js';
-import type { Props } from './props.js';
+import {
+  Source,
+  getScope,
+  onCleanup,
+  untrack,
+  dispatchError,
+  type Scope,
+} from '../runtime/reactivity.js';
+import type { Props } from '../runtime/props.js';
 import type { HydrationSession } from './hydration.js';
-import { HTML, textValue, selectionValues } from './native.js';
+import { HTML, textValue, selectionValues } from '../native/attributes.js';
 import {
   defaultOptions,
   normalizedValue,
@@ -9,7 +16,7 @@ import {
   setSelection,
   writeValue,
   type InputControl,
-} from './dom-input.js';
+} from './input.js';
 
 const controls = new WeakMap<Element, Control>();
 class Control {
