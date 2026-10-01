@@ -224,6 +224,9 @@ importers:
 
   packages/ssr:
     devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.13.5
       typescript:
         specifier: 'catalog:'
         version: 7.0.2

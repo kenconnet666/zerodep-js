@@ -234,3 +234,11 @@
 - 用户明确本轮收尾为 RC1 后的 zerodep-css 接入研究与讨论，不直接执行接入；稳定 1.0.0 与接入实现均留待后续。研究已基于两个仓库当前源码完成，CSS 仓库保持干净，未新增 CSS 依赖或实现。
 - 探针证明逐属性 Derived 已阻止无关更新重复调用 css：首次 1 次，100 次 title 更新仍 1 次，color 变化增为 2 次，同值不增加；100 个不同颜色累计 101 条规则。另验证普通外部 className 不会被 css 自动合并，以及 raw 转 var 会改变无效值、important 和 initial 的层叠结果。
 - TS7 直接导入实验确认 7.0.2 没有 createSourceFile；现有 CSS compiler 依赖该旧 JS AST API，且其可选 peer 限制 <7。讨论稿建议保留当前 Babel 8 路径并调整实际包边界，不用扩大版本声明冒充兼容。完整写法与取舍见 [.design/zerodep-css-integration.md](../.design/zerodep-css-integration.md)。
+
+## 应用扩展：快照与生命周期
+
+- 用户新增授权直接完善快照、生命周期、路由和 localStorage，CSS 暂不接入。方案写入 application-extensions.md，按现有核心加可选子入口组织，不新增无用途的包。
+- snapshot 复制可枚举数据中的代理，再交平台 structuredClone；支持普通环/别名、Map/Set、错误 cause 与二进制视图，不能克隆的值仍报错，不用 JSON 代替结构化克隆。
+- onMount 只在客户端提交后执行一次；createScope 提供有限句柄，getAbortSignal 在作用域重跑/销毁时取消，且先于用户 cleanup。SSR 不执行 mount，异步 await 不隐式继承 scope。
+- 37 项相关单元、pnpm check、pnpm build、两项 Chromium CSR/SSR 生命周期与快照页面验证通过；纯派生资源创建、提前销毁、失败清理和类型负例均有覆盖。
+- 暴露标准 AbortSignal 后，SSR 构建补齐 Node 类型声明依赖；没有给服务器混入 DOM lib，数据独立入口契约继续保留。上一提交 dfe566a 的完整 CI 已通过；本阶段完整矩阵提交后核对。

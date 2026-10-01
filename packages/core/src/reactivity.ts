@@ -37,14 +37,24 @@ export class Scope {
   context: Map<symbol, unknown> | undefined;
   onError: ((error: unknown) => void) | undefined;
   server: boolean;
+  private controller: AbortController | undefined;
 
   constructor(parent = currentScope) {
+    if (computing) throw new Error('纯派生计算不能创建作用域。');
     if (parent?.disposed || parent?.clearing)
       throw new Error('不能在已销毁或正在清理的作用域中创建资源。');
     this.parent = parent;
     this.depth = parent ? parent.depth + 1 : 0;
     this.server = parent?.server ?? false;
     parent?.children.add(this);
+  }
+
+  get signal(): AbortSignal {
+    if (!this.controller) {
+      this.controller = new AbortController();
+      if (this.disposed || this.clearing) this.controller.abort();
+    }
+    return this.controller.signal;
   }
 
   run<T>(fn: () => T): T {
@@ -66,6 +76,9 @@ export class Scope {
     currentScope = this;
     try {
       untrack(() => {
+        // 先取消异步工作，再调用用户清理；effect 重跑后会取得新的信号。
+        this.controller?.abort();
+        if (!this.disposed) this.controller = undefined;
         for (const child of [...this.children].reverse()) {
           try {
             child.dispose();

@@ -33,6 +33,7 @@
     "zerodep-js": "workspace:*"
   },
   "devDependencies": {
+    "@types/node": "catalog:",
     "zerodep-js": "workspace:*",
     "typescript": "catalog:"
   },

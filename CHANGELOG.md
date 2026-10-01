@@ -1,5 +1,11 @@
 # 变更记录
 
+## 未发布
+
+- 新增 snapshot，支持脱开深代理、普通对象/数组循环与共享引用、Map/Set、二进制及平台结构化克隆规则。
+- 新增 onMount、createScope、getAbortSignal，明确一次性挂载、同步所有权恢复与作用域取消；新增实际 CSR/SSR 用例。
+- 路由与浏览器持久化正在同一轮应用扩展中实现，完成后的新版本另行记录，不覆盖 RC1。
+
 ## 1.0.0-rc.1 — 2026-10-01
 
 四个包已发布统一的 `1.0.0-rc.1`：[zerodep-js](https://www.npmjs.com/package/zerodep-js/v/1.0.0-rc.1)、[zerodep-js-compiler](https://www.npmjs.com/package/zerodep-js-compiler/v/1.0.0-rc.1)、[zerodep-js-vite](https://www.npmjs.com/package/zerodep-js-vite/v/1.0.0-rc.1)、[zerodep-js-ssr](https://www.npmjs.com/package/zerodep-js-ssr/v/1.0.0-rc.1)。源码为 a29419625773bfb4c6bdedf136496fbf6e7e2624，[GitHub 预发布与原始产物](https://github.com/kenconnet666/zerodep-js/releases/tag/v1.0.0-rc.1) 已建立。

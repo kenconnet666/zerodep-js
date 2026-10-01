@@ -29,6 +29,21 @@
 | `flushSync(fn?)` | 执行可选工作并立即处理排队更新。不能在计算、effect 或刷新中重入。                                                                               |
 | `tick()`         | 等待当前刷新批次；不会等待所有网络请求。                                                                                                        |
 
+下面新增的生命周期和快照入口当前位于 main 开发版本，尚不包含在已发布的 RC1 中。
+
+`onMount(fn)` 在客户端 DOM 提交后执行一次，内部读取不建立重跑依赖，可返回同步清理函数；SSR 不执行。返回的停止函数可撤销尚未执行的回调或提前释放其资源。
+
+`createScope()` 返回只包含 `run`、`dispose`、`signal`、`active` 的句柄，默认属于当前作用域；在组件外创建时调用方负责 dispose。run 只恢复同步回调的上下文，不让所有权跨 await 隐式传播。`getAbortSignal()` 获取当前有效作用域的取消信号：在 effect 内每轮独立，重跑和销毁时先取消，再执行清理。
+
+```ts
+onMount(() => {
+  const signal = getAbortSignal();
+  void fetch('/api/settings', { signal }).catch(handleFailure);
+});
+```
+
+`snapshot(value)` 将可枚举普通数据中的代理脱开，再按原生 structuredClone 规则复制。支持普通对象/数组的环和共享引用，以及 Map/Set 内的代理；二进制视图共享克隆后的 buffer，原输入不被转移。Date、RegExp、Blob 等由平台复制，函数、WeakMap 等不可克隆值报错。类原型、属性描述符、符号键及 SharedArrayBuffer 遵循平台克隆语义，不是任意类实例复制器。普通属性的读取参与当前依赖跟踪，快照本身没有响应性。
+
 异步工作使用明确的取消与过期结果检查，跟踪和作用域不跨 await 隐式传播。事件回调不继承触发者的临时跟踪上下文；需使用 context 时在组件初始化中读取并捕获它。
 
 ```tsx

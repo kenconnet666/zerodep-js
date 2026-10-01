@@ -1,5 +1,8 @@
 export { batch, createRoot, effect, flushSync, onCleanup, tick, untrack } from './reactivity.js';
 export type { Cleanup, EffectCallback } from './reactivity.js';
+export { snapshot } from './snapshot.js';
+export { onMount, createScope, getAbortSignal } from './lifecycle.js';
+export type { ScopeHandle } from './lifecycle.js';
 export { $state, $derived } from './macros.js';
 export { component } from './component.js';
 export type { Component, ComponentProps } from './component.js';
