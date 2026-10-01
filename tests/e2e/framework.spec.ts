@@ -39,7 +39,7 @@ for (const mode of ['csr', 'ssr']) {
       await expect(button).toHaveAttribute('title', '更新标题');
       await page.locator('[data-remove-title]').click();
       await expect(button).not.toHaveAttribute('title');
-      await page.getByRole('textbox', { name: '名字' }).fill('框架');
+      await page.getByRole('textbox', { name: '名字', exact: true }).fill('框架');
       await expect(page.locator('[data-greeting]')).toHaveText('你好，框架');
     });
 

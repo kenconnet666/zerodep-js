@@ -174,7 +174,8 @@ try {
   assert(
     !treeModules.some(
       (id) =>
-        /\/dist\/(dom[^/]*|hydration|render|state|template|style)\.js$/.test(id) ||
+        /\/dist\/(dom[^/]*|hydration|render|state|template|style|router|storage)\.js$/.test(id) ||
+        id.includes('/dist/router/') ||
         id.includes('/@csstools/css-tokenizer/'),
     ),
     '按需导入仍包含无关渲染器。',
@@ -231,9 +232,25 @@ try {
     await page.getByLabel('消息').fill('独立输入');
     await expect(page.locator('output')).toHaveText('独立输入');
     await expect(page.locator('body')).toHaveAttribute('data-fixture-effect', 'active');
+    await page.locator('[data-copy]').click();
+    await expect(page.locator('output')).toHaveText('副本/甲');
+    await page.locator('[data-open-router]').click();
+    await expect(page.locator('[data-route-id]')).toHaveText('start');
+    await page.getByRole('link', { name: '下一页' }).click();
+    await expect(page.locator('[data-route-id]')).toHaveText('next');
+    await expect(page.locator('[data-route-initial]')).toHaveText('start');
+    await page.getByRole('link', { name: '记录一' }).click();
+    await expect(page.locator('[data-route-initial]')).toHaveText('one');
+    await page.getByRole('link', { name: '记录二' }).click();
+    await expect(page.locator('[data-route-initial]')).toHaveText('two');
     await page.evaluate(() => window.stopFixture());
     await expect(page.locator('#app')).toBeEmpty();
     await expect(page.locator('body')).toHaveAttribute('data-fixture-effect', 'disposed');
+    await expect(page.locator('body')).toHaveAttribute('data-fixture-aborted', 'true');
+    assert.equal(
+      await page.evaluate(() => JSON.parse(localStorage.getItem('package-message')).value),
+      '副本/甲',
+    );
     assert.deepEqual(failures, []);
     await page.close();
   }

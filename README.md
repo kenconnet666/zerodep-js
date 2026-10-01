@@ -36,6 +36,8 @@ pnpm dev
 
 `/tasks` 是带持久化数据的任务工作台，验证搜索、编辑、并发冲突和异步清理；同样支持 `?render=csr` / `?render=ssr`。日常数据保存在被 Git 忽略的 `apps/example/.data`，浏览器测试使用独立内存数据库。操作与支持边界见[业务试点](docs/pilot.md)。
 
+main 新增快照、挂载/取消生命周期、[浏览器持久化](docs/storage.md)和[路由](docs/routing.md)，尚未进入 RC1。`/workspace/tasks?render=ssr` / `?render=csr` 是使用相同任务数据的路由应用，包含嵌套布局、详情编辑、草稿、离开确认与偏好页；`/workspace?render=csr&history=hash#/workspace/tasks` 验证 hash 导航。
+
 `pnpm dev` 同时监听各库和示例；`pnpm dev:csr` 与 `pnpm dev:ssr` 分别启动两种默认模式。这两个命令先构建库，再启动示例服务。
 
 生产入口：

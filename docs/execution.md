@@ -250,3 +250,12 @@
 - 新增真实双实例/跨标签、SSR 接管前编辑、迁移与错误恢复用例；任务页已经持久化未提交的新任务草稿，切换 CSR/SSR 和重载可恢复。
 - 21 项单元、6 项 Chromium、pnpm check、pnpm build 与后续类型检查通过。同步回调检查、不可替换字段预检、暂停中 reset、旧键待写快照和错误回调隔离都有回归。
 - 上一提交 30d79f7 的 [完整 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/36849104434) 成功。本阶段提交后继续路由，不等待完整矩阵；下一次推送前核对。
+
+## 应用扩展：路由与实际任务空间
+
+- 新增可选 router 子入口：defineRoute/defineRoutes、browser/hash/memory history、Router/Outlet/Link、route 上下文、守卫与重定向、取消/预加载、错误恢复和 SSR 数据快照。默认复用页面与布局，可用 key 明确重建编辑页。
+- 控制器与 history 明确所有权；连续 pop 被拒绝时回到已提交索引，前台导航接管预加载后不受缓存淘汰影响，重复停止不误停后续挂载。SSR 客户端恢复首屏数据而不重复 loader，HTTP 状态/重定向由宿主发送。
+- /workspace/tasks 使用既有任务 API，实现查询、编辑、草稿、离开确认和独立加载偏好页；保存响应不覆盖请求期间的新输入。SSR 连接断开会取消路由准备，整个应用卸载释放监听与资源。
+- 23 项相关 Node、8 项 Chromium 路由用例、pnpm check/build 通过。TS7 原生 LSP 对实际页面返回完整零错误诊断；独立 tgz 的声明、子入口、快照/存储/路由、CSR/SSR、卸载与按需导入通过，补充默认复用/显式 key 的消费回归。
+- 核对 [a8535b6 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/36852404610)：277 项浏览器通过，6 项因新增输入让旧“名字”模糊定位歧义而失败。定位已改为 exact，两项本地 CSR/SSR 回归通过；保留全部原有断言，完整矩阵交当前提交复验。
+- 用户新增要求：完成这四项后整理 core 的 dom/runtime/storage 目录，再讨论 Vue 项目的独立新页面共存；不要求组件互用，不直接实现 Vue 适配或 CSS 接入。

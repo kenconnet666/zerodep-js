@@ -15,6 +15,7 @@ export default defineConfig(({ isSsrBuild }) => ({
           input: {
             example: resolve(import.meta.dirname, 'index.html'),
             tasks: resolve(import.meta.dirname, 'tasks.html'),
+            workspace: resolve(import.meta.dirname, 'workspace.html'),
           },
         },
       },

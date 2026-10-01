@@ -1,6 +1,9 @@
 import { compile, type CompileResult } from 'zerodep-js-compiler';
 import { Counter, Label } from '@zerodep-consumer/counter';
 import { mount, type ComponentProps } from 'zerodep-js';
+import { createScope, snapshot } from 'zerodep-js';
+import { defineRoute, defineRoutes, createRouter, Link } from 'zerodep-js/router';
+import { persistLocal, persistSession } from 'zerodep-js/storage';
 
 const props: ComponentProps<typeof Counter> = { label: '声明消费', initial: 2 };
 <button popoverTarget="help" />;
@@ -27,3 +30,21 @@ mount(Counter, { target: document.body });
     event.currentTarget.checked = true;
   }}
 />;
+
+const routes = defineRoutes({
+  item: defineRoute('/items/:id', {
+    load: ({ params }) => ({ id: params.id }),
+  }),
+});
+const router = createRouter(routes);
+router.href(routes.item, { params: { id: '1' } });
+// @ts-expect-error 独立安装仍保留命名参数类型。
+router.href(routes.item, { params: { id: 1 } });
+// @ts-expect-error 子入口泛型 Link 不丢失必填参数。
+<Link to={routes.item} />;
+const scope = createScope();
+export const signal: AbortSignal = scope.signal;
+scope.dispose();
+snapshot({ n: 1 }).n.toFixed();
+persistLocal('typed', { read: () => 1, write: (value) => value.toFixed() });
+persistSession('typed-object', { enabled: true });

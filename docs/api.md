@@ -4,6 +4,8 @@
 
 main 新增的可选 `zerodep-js/storage` 提供 persistLocal / persistSession，绑定对象或显式 read/write，支持迁移、同步、失败恢复与清理。完整契约见 [浏览器持久化](storage.md)，尚未进入已发布 RC1。
 
+可选 `zerodep-js/router` 提供 defineRoute/defineRoutes、createRouter、browser/hash/memory history、Router/Outlet/Link、useRoute/useRouter、onBeforeLeave、redirect/RouteError。包含类型化参数、取消/预加载、布局复用、错误恢复和 SSR 数据准备，详见 [路由](routing.md)。这些扩展均不改变状态宏写法。
+
 ## 状态宏与组件
 
 | API                         | 用法与行为                                                                                        |

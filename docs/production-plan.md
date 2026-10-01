@@ -12,6 +12,8 @@
 
 后续新增授权：直接完善快照、生命周期、路由和 localStorage，执行范围及阶段证据见 [应用扩展方案](application-extensions.md)。CSS 继续暂不接入；此前 RC1 发布记录仍保留，不把正在开发的扩展记入已发布版本。
 
+应用扩展实现已完成本地验收：快照/生命周期 37 项相关 Node 与 2 项浏览器用例；持久化 21 项 Node 与 6 项浏览器用例；路由 23 项 Node 与 8 项浏览器用例。路由支持命名参数、嵌套布局、history、取消/预加载、错误恢复与 SSR 快照，任务空间使用真实任务数据；新增子入口有工作区外 tgz 消费证据。上一轮 CI 的输入名称模糊匹配已修正，当前完整矩阵随提交核对。上述扩展尚未包含于 npm RC1。接下来整理 core 目录并讨论 Vue 独立页面共存。
+
 ## 1. 目标与当前状态
 
 已确认的方向：
@@ -454,6 +456,6 @@ mount、hydrate 与组件 renderToString 均已实现，前两个返回清理函
 - 提交号、是否已经推送、远程结果是否仍待完成。
 - 下一项可直接开始的工作，或需要用户解决的具体阻碍。
 
-当前停靠点：a294196 对应的 RC1 已发布，完整 CI、npm 精确安装、四包完整性、GitHub 标签与附件均已验证。CSS 接入研究已完成并形成讨论稿，没有修改 CSS 仓库或实现接入。npm latest 标签清理返回 403，作为外部权限例外保留记录；本轮按用户要求进入方案讨论并结束自主实现。
+当前停靠点：a294196 对应的 RC1 已发布；用户后续授权的快照、生命周期、持久化和路由已在 main 完成本地实现与验收，正在交付新的完整矩阵。CSS 接入继续暂停；目录整理已授权，Vue 新页面共存仅进入方案讨论。npm RC1 latest 标签清理返回 403 的历史例外继续保留；扩展发布需要使用新的版本与对应验收记录。
 
 参考资料：[Svelte props](https://svelte.dev/docs/svelte/$props)、[Vue props](https://vuejs.org/guide/components/props.html)、[TypeScript JSX](https://www.typescriptlang.org/docs/handbook/jsx.html)、[Vite SSR](https://vite.dev/guide/ssr.html)。本项目以已确认契约和实测结果为准，不把参考框架的全部行为默认搬入。
