@@ -170,7 +170,9 @@ export function renderValue(
     else attributes();
   }
   const child = hydration?.child(node);
-  if (namespace === HTML && textTags.has(node.localName)) {
+  if (namespace === HTML && node.localName === 'noscript') {
+    // 脚本启用时，HTML 解析器把备用内容当作文本；客户端不初始化其中的组件。
+  } else if (namespace === HTML && textTags.has(node.localName)) {
     const fixed =
       node.localName === 'textarea' &&
       (value.props.value !== undefined || value.props.defaultValue !== undefined);

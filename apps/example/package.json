@@ -14,7 +14,8 @@
   "dependencies": {
     "@zerodep-js/core": "workspace:*",
     "@zerodep-js/ssr": "workspace:*",
-    "sirv": "catalog:"
+    "sirv": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@zerodep-js/vite": "workspace:*",

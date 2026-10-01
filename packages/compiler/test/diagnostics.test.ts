@@ -93,6 +93,14 @@ describe('实时绑定与控制流收窄', () => {
 
   it.each([
     [
+      '派生布尔值不是其输入的 TypeScript 条件别名',
+      `const App = component(({ task }) => { let draft = $state(''); const dirty = $derived(draft !== task.title); return dirty && <button onClick={() => { draft = task.title; }} />; });`,
+    ],
+    [
+      '状态初始化不建立 TypeScript 条件别名',
+      `const App = component(({ user }) => { const enabled = $state(Boolean(user)); return enabled && <button onClick={() => user.name} />; });`,
+    ],
+    [
       '回调内重新读取和检查',
       `const App = component(({ user }) => user ? <button onClick={() => { const current = user; if (current) return current.name; }} /> : null);`,
     ],

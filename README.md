@@ -30,6 +30,8 @@ pnpm dev
 - `/?render=ssr`：响应 HTML 已包含页面内容。
 - `/?render=csr`：响应包含空应用容器，由客户端入口创建页面。
 
+`/tasks` 是带持久化数据的任务工作台，验证搜索、编辑、并发冲突和异步清理；同样支持 `?render=csr` / `?render=ssr`。日常数据保存在被 Git 忽略的 `apps/example/.data`，浏览器测试使用独立内存数据库。操作与支持边界见[业务试点](docs/pilot.md)。
+
 `pnpm dev` 同时监听各库和示例；`pnpm dev:csr` 与 `pnpm dev:ssr` 分别启动两种默认模式。这两个命令先构建库，再启动示例服务。
 
 生产入口：
@@ -114,6 +116,7 @@ pnpm lsp:inspect packages/ssr/src/index.ts apps/example/src/entry-client.ts
 - [执行中的语义契约](docs/semantics.md)
 - [目标执行记录](docs/execution.md)
 - [稳定性验证与观察基线](docs/stability.md)
+- [持久化任务管理试点](docs/pilot.md)
 - [开发、类型检查与框架诊断](docs/development.md)
 - [包产物与独立消费](docs/packages.md)
 - [SSR 与 hydration 使用及边界](docs/ssr-and-hydration.md)

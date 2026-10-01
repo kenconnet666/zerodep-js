@@ -5,6 +5,7 @@
     "types": ["node"],
     "jsxImportSource": "@zerodep-js/core",
     "allowJs": true,
+    "allowImportingTsExtensions": true,
     "checkJs": false,
     "noEmit": true
   },
@@ -14,6 +15,7 @@
     "babel.config.mjs",
     "apps/*/vite.config.ts",
     "apps/*/server.ts",
+    "apps/*/src/**/*.d.ts",
     "scripts/**/*.mjs",
     "tests/**/*.ts",
     "packages/*/test/**/*.ts",

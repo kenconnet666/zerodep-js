@@ -61,6 +61,8 @@ form.encoding 映射为 enctype；表格相关元素的 ch/chOff 映射为 char/
 
 普通 template 的内容渲染和接管使用 template.content，动态更新及卸载仍属于当前实例；直接 cloneNode 不会复制框架绑定。定制内建元素的 is 和声明式 shadow root 尚不在支持范围，类型与运行时明确拒绝；普通独立自定义元素可使用下述 property/event 协议。
 
+noscript 是服务端备用内容：SSR 输出其 HTML，CSR 不初始化子树；hydration 保留浏览器按脚本模式解析的内容，不把其中的标记认领为客户端组件。服务端会拒绝可提前结束该区域的原始结束标签，包括通过嵌套 raw text 元素带入的情况。普通插值仍按文本转义。[HTML noscript 解析约定](https://html.spec.whatwg.org/multipage/scripting.html#the-noscript-element)
+
 ## 客户端 property 与自定义元素
 
 ```tsx

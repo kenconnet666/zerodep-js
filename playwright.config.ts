@@ -21,7 +21,7 @@ export default defineConfig({
     { name: 'webkit', use: { ...devices['Desktop Safari'] } },
   ],
   webServer: {
-    command: 'pnpm --filter @zerodep-js/example preview --port 4175',
+    command: 'pnpm --filter @zerodep-js/example preview --port 4175 --tasks-file :memory:',
     url: baseURL,
     reuseExistingServer: false,
     timeout: 30_000,

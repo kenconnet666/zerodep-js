@@ -9,6 +9,7 @@ playwright-report/
 .codex/config.toml
 .idea
 apps/example/.dev-check-*/
+apps/example/.data/
 .DS_Store
 .env
 .env.*

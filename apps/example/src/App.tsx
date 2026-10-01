@@ -8,6 +8,7 @@ import { FormExample } from './examples/FormExample.js';
 import { AttributeExample } from './examples/AttributeExample.js';
 import { PropertyExample } from './examples/PropertyExample.js';
 import { StyleExample } from './examples/StyleExample.js';
+import { TaskExample } from './examples/TaskExample.js';
 
 const Button = component(
   ({ type = 'button', children, ...attrs }: JSX.IntrinsicElements['button']) => (
@@ -198,6 +199,7 @@ export const App = component(({ mode = 'csr', onUnmount }: AppProps) => {
       <AttributeExample />
       <PropertyExample />
       <StyleExample />
+      <TaskExample />
       <p data-client-status>{ready ? '客户端已接入' : '等待客户端接管'}</p>
       <p class="note">同一 App 验证客户端渲染与服务端渲染接管。</p>
       <button type="button" data-unmount onClick={() => onUnmount?.()}>

@@ -13,6 +13,22 @@ import { For, ErrorBoundary } from '@zerodep-js/core';
 import { renderToString, serializeData } from '../src/index.js';
 
 describe('真实组件 SSR', () => {
+  it('noscript 输出备用 HTML，并拒绝原始文本提前结束备用区域', () => {
+    const App = defineComponent(() =>
+      element('noscript', { children: element('p', { children: '无需脚本也可阅读' }) }),
+    );
+    expect(renderToString(App)).toBe('<noscript><p>无需脚本也可阅读</p></noscript>');
+    const Literal = defineComponent(() =>
+      element('noscript', { children: '</noscript><img src=x>' }),
+    );
+    expect(renderToString(Literal)).toContain('&lt;/noscript&gt;&lt;img src=x&gt;');
+    const Unsafe = defineComponent(() =>
+      element('noscript', {
+        children: element('style', { children: '</NOSCRIPT ><img src=x onerror=alert(1)>' }),
+      }),
+    );
+    expect(() => renderToString(Unsafe)).toThrow('noscript 子内容包含结束标签');
+  });
   it('undefined 模型不会遮蔽首次默认值和默认勾选', () => {
     const App = defineComponent(() =>
       element('input', {

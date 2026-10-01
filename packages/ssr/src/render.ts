@@ -188,6 +188,8 @@ function render(value: Renderable, owner: Scope, context: Context): string {
             };
     }
     const body = render(value.props.children as Renderable, owner, childContext);
+    if (namespace === HTML && tag === 'noscript' && /<\/noscript(?:[\t\n\f\r />])/i.test(body))
+      throw new Error('noscript 子内容包含结束标签，可能提前退出服务端备用内容。');
     output += namespace === HTML && tag === 'pre' && body.startsWith('\n') ? '\n' + body : body;
   }
   return `${output}</${tag}>`;
