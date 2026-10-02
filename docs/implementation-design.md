@@ -2,6 +2,8 @@
 
 更新时间：2026-10-01。本文补充[生产化主计划](production-plan.md)的实现思路，保留[API 评审用例](api-review.md)的方案比较。目标模式已授权开始，当前选定契约见 [semantics.md](semantics.md)，实际交付和验证见 [execution.md](execution.md)。
 
+2026-10-02 维护说明：这是设计取舍记录，备选语法和早期阶段建议不表示尚欠实现。RC2 使用统一模板描述供 DOM 与 SSR 消费，公开 compile 返回 code/map，诊断通过 CompileError.diagnostics 提供；实际接口和支持范围以 [API 参考](api.md)及[包契约](packages.md)为准。
+
 ## 1. 必须接受的基本取舍
 
 目标是 `let count = _state(0); count++`，同时保持合法 TSX 和细粒度更新。这需要编译步骤：普通 JavaScript 函数无法拦截局部数字变量的后续读取和赋值，Proxy 只能处理经由对象的操作。类型声明也不会给变量增加运行时能力。
@@ -49,7 +51,7 @@
 
 建议的编译契约：
 
-- 独立 `compile(source, filename, options)` 返回代码、source map 和结构化诊断；参数名和返回形态尚未冻结。
+- 独立 `compile(source, filename, options)` 返回 code/map；无法编译时抛出带结构化 diagnostics 的 CompileError。具体公开类型随包声明分发。
 - 在 JSX 被提前降成普通调用之前完成动态表达式分析；避免与其他 JSX 转换重复处理。
 - 编译依赖写在构建侧；浏览器运行时代码不得引入 Babel 或 Node API。
 - 导出的函数、泛型组件、宏声明都用源代码生成可消费类型，不从私有 helper 输出反推用户 API。

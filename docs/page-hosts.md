@@ -8,7 +8,7 @@
 | zerodep-js-react  | ZerodepPage | React / React DOM 19.3.0 |
 | zerodep-js-svelte | _attachPage | Svelte 5.57.1            |
 
-按实际宿主只安装对应适配包，并与 core 使用相同的框架发布版本。当前 main 的新 API 已移除旧名字；RC1 不包含这些适配包或新命名。
+按实际宿主只安装对应适配包，并与 core 使用相同版本 `1.0.0-rc.2`。七包已经完成真实 npm 安装验收；RC1 不包含这些适配包或新命名。例：Vue 项目安装 `zerodep-js@1.0.0-rc.2` 与 `zerodep-js-vue@1.0.0-rc.2`，构建侧安装相同版本的 `zerodep-js-vite`。
 
 ## 一份页面入口
 

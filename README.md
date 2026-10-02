@@ -1,24 +1,26 @@
 # zerodep-js
 
-面向 TSX 的细粒度响应式框架实验工作区，目标是显式声明响应式变量、直接读写、组件参数解构和自然的默认值。
+面向 TSX 的细粒度响应式框架，使用显式声明的响应式变量、直接读写、组件参数解构和自然的默认值。
 
-变量式状态、组件、列表、context、错误恢复、原生表单、CSR 和 SSR/hydration 已接入同一 App。`1.0.0-rc.1` 已发布，完整 CI 与 npm 精确版本安装验收通过；当前仍是发布候选，尚未发布稳定 1.0.0。
+`1.0.0-rc.2` 的七个包已发布，完整 CI 与 npm 精确版本安装验收通过。包含变量式状态、组件、表单、SSR/hydration、快照、生命周期、路由、浏览器持久化及 Vue/React/Svelte 页面宿主；当前仍是发布候选，尚未发布稳定 1.0.0。
 
 使用指南从[开始使用](docs/getting-started.md)和[API 参考](docs/api.md)进入。基础包为 `zerodep-js`、`zerodep-js-compiler`、`zerodep-js-vite`、`zerodep-js-ssr`，另有 Vue、React、Svelte 三个可选页面宿主包；当前发布状态见 [CHANGELOG](CHANGELOG.md)，支持范围见 [support.md](docs/support.md)。
 
 项目使用 [MIT License](LICENSE)，贡献方式见 [CONTRIBUTING](CONTRIBUTING.md)。
 
-main 已按用户决定切换为 `_state`、`_derived`、`_component`、`_effect` 等公开函数命名，不保留旧名，实现与入口均直接使用新名称。下文是开发版本 API，npm RC1 不能直接运行这些新示例。[Vue、React、Svelte 页面宿主](docs/page-hosts.md)提供三个独立适配包。
+RC2 直接使用 `_state`、`_derived`、`_component`、`_effect` 等公开函数名，实现与入口名称一致，不保留旧名或导出重命名中转。下面的示例安装时统一指定 `1.0.0-rc.2`。[Vue、React、Svelte 页面宿主](docs/page-hosts.md)提供三个独立适配包。
 
 ## 工作区
 
-| 子项目              | 当前职责                                                  |
-| ------------------- | --------------------------------------------------------- |
-| `packages/core`     | 状态、组件、DOM、生命周期、JSX 类型与内部 helper          |
-| `packages/compiler` | 变量宏、组件参数和 JSX 编译，源码映射与绑定诊断           |
-| `packages/vite`     | Vite 8 接入，保持源码映射并展示编译诊断                   |
-| `packages/ssr`      | 请求内组件渲染、HTML 转义、数据编码与文档模板组合         |
-| `apps/example`      | 真实 workspace 消费项目，包含客户端、服务端和模式切换入口 |
+| 子项目                              | 当前职责                                                  |
+| ----------------------------------- | --------------------------------------------------------- |
+| `packages/core`                     | 状态、组件、DOM、生命周期、JSX 类型与内部 helper          |
+| `packages/compiler`                 | 变量宏、组件参数和 JSX 编译，源码映射与绑定诊断           |
+| `packages/vite`                     | Vite 8 接入，保持源码映射并展示编译诊断                   |
+| `packages/ssr`                      | 请求内组件渲染、HTML 转义、数据编码与文档模板组合         |
+| `packages/vue` / `react` / `svelte` | 连接各宿主生命周期与独立页面入口，按需安装                |
+| `apps/example`                      | 真实 workspace 消费项目，包含客户端、服务端和模式切换入口 |
+| `apps/hosts`                        | 三宿主复用同一 TSX 页面，验证宿主 SSR 与 CSR              |
 
 示例依赖包的构建产物，不使用指向源码的别名。原 `apps/playground` 已整理为 `apps/example`。
 
@@ -38,7 +40,7 @@ pnpm dev
 
 `/tasks` 是带持久化数据的任务工作台，验证搜索、编辑、并发冲突和异步清理；同样支持 `?render=csr` / `?render=ssr`。日常数据保存在被 Git 忽略的 `apps/example/.data`，浏览器测试使用独立内存数据库。操作与支持边界见[业务试点](docs/pilot.md)。
 
-main 新增快照、挂载/取消生命周期、[浏览器持久化](docs/storage.md)和[路由](docs/routing.md)，尚未进入 RC1。`/workspace/tasks?render=ssr` / `?render=csr` 是使用相同任务数据的路由应用，包含嵌套布局、详情编辑、草稿、离开确认与偏好页；`/workspace?render=csr&history=hash#/workspace/tasks` 验证 hash 导航。
+RC2 提供快照、挂载/取消生命周期、[浏览器持久化](docs/storage.md)和[路由](docs/routing.md)。`/workspace/tasks?render=ssr` / `?render=csr` 是使用相同任务数据的路由应用，包含嵌套布局、详情编辑、草稿、离开确认与偏好页；`/workspace?render=csr&history=hash#/workspace/tasks` 验证 hash 导航。
 
 `pnpm dev` 同时监听各库和示例；`pnpm dev:csr` 与 `pnpm dev:ssr` 分别启动两种默认模式。这两个命令先构建库，再启动示例服务。
 
@@ -56,7 +58,7 @@ pnpm preview --render-mode csr
 
 两种模式都运行 [App.tsx](apps/example/src/App.tsx)，包含状态、props、输入、条件、key、ref、CSS 变量和 SVG；[examples](apps/example/src/examples) 另有列表、context、错误恢复和原生序列化用例。它通过 workspace 包产物和真实 Vite 插件消费框架。
 
-SSR 在服务端生成组件 HTML，浏览器通过 hydrate 认领原节点、建立绑定和监听器；禁用 JavaScript 仍可阅读。旧的 view.ts 探针已删除。默认严格报告不匹配，示例可用 `?render=ssr&recover=replace` 显式选择重建。具体边界见 [SSR 与 hydration](docs/ssr-and-hydration.md)。
+SSR 在服务端生成组件 HTML，浏览器通过 _hydrate 认领原节点、建立绑定和监听器；禁用 JavaScript 仍可阅读。旧的 view.ts 探针已删除。默认严格报告不匹配，示例可用 `?render=ssr&recover=replace` 显式选择重建。具体边界见 [SSR 与 hydration](docs/ssr-and-hydration.md)。
 
 ## 已可使用的组件形态
 

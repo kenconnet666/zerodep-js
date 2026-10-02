@@ -1,6 +1,6 @@
 # 浏览器持久化
 
-当前接口在 main 开发版本，尚未包含于 RC1。通过 `zerodep-js/storage` 可选子入口使用；不要求改变变量式状态，也不在根入口加载存储代码。
+从 1.0.0-rc.2 起通过 `zerodep-js/storage` 可选子入口使用；不要求改变变量式状态，也不在根入口加载存储代码。
 
 ```tsx
 import { _component, _state } from 'zerodep-js';
@@ -32,7 +32,7 @@ const storage = _persistLocal('app.theme', {
 });
 ```
 
-`_persistSession` 使用相同契约，但默认宿主为 sessionStorage。工厂必须在组件或显式作用域中调用；在组件外使用 createScope，并由调用方销毁。动作方法可以在事件里调用。
+`_persistSession` 使用相同契约，但默认宿主为 sessionStorage。工厂必须在组件或显式作用域中调用；在组件外使用 _createScope，并由调用方销毁。动作方法可以在事件里调用。
 
 ## 恢复、同步与提交
 

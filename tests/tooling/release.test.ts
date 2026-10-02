@@ -32,14 +32,8 @@ it('发布工具固定产物、拒绝篡改/越界/私有包，并仅准备明�
     writeFile(resolve(fixture, name), JSON.stringify(value, null, 2) + '\n');
   try {
     await mkdir(resolve(fixture, 'scripts'));
-    await copyFile(
-      resolve(project, 'scripts/package-list.mjs'),
-      resolve(fixture, 'scripts/package-list.mjs'),
-    );
-    await copyFile(
-      resolve(project, 'scripts/release.mjs'),
-      resolve(fixture, 'scripts/release.mjs'),
-    );
+    for (const file of ['package-list.mjs', 'release-publication.mjs', 'release.mjs'])
+      await copyFile(resolve(project, 'scripts', file), resolve(fixture, 'scripts', file));
     await copyFile(resolve(project, 'LICENSE'), resolve(fixture, 'LICENSE'));
     const workspace = JSON.parse(await readFile(resolve(project, 'package.json'), 'utf8'));
     await save('package.json', {

@@ -1,12 +1,12 @@
 # API 参考
 
-main 已直接切换为单下划线函数名，不保留旧导出或 deprecated 别名。本文对应开发版本，已发布 RC1 的旧导出不能运行下面的新写法。JSX 组件、类型/类和实例方法保持原名。
+本文对应已发布的 1.0.0-rc.2。core 顶层函数直接使用单下划线名称，不保留旧导出、deprecated 或导出改名中转；JSX 组件、类型/类和实例方法保持原名。
 
 公共运行时从 `zerodep-js` 导入，Vite 插件来自 `zerodep-js-vite`，独立编译来自 `zerodep-js-compiler`，服务端入口来自 `zerodep-js-ssr`。下面记录当前实际契约；安装与声明消费见 [开始使用](getting-started.md)和[包产物](packages.md)。
 
-main 新增的可选 `zerodep-js/storage` 提供 persistLocal / persistSession，绑定对象或显式 read/write，支持迁移、同步、失败恢复与清理。完整契约见 [浏览器持久化](storage.md)，尚未进入已发布 RC1。
+可选 `zerodep-js/storage` 提供 _persistLocal / _persistSession，绑定对象或显式 read/write，支持迁移、同步、失败恢复与清理。完整契约见 [浏览器持久化](storage.md)。
 
-可选 `zerodep-js/router` 提供 defineRoute/defineRoutes、createRouter、browser/hash/memory history、Router/Outlet/Link、useRoute/useRouter、onBeforeLeave、redirect/RouteError。包含类型化参数、取消/预加载、布局复用、错误恢复和 SSR 数据准备，详见 [路由](routing.md)。这些扩展均不改变状态宏写法。
+可选 `zerodep-js/router` 提供 _defineRoute/_defineRoutes、_createRouter、browser/hash/memory history、Router/Outlet/Link、_useRoute/_useRouter、_onBeforeLeave、_redirect/RouteError。包含类型化参数、取消/预加载、布局复用、错误恢复和 SSR 数据准备，详见 [路由](routing.md)。这些扩展均不改变状态宏写法。
 
 ## 状态宏与组件
 
@@ -25,17 +25,17 @@ main 新增的可选 `zerodep-js/storage` 提供 persistLocal / persistSession�
 
 ## 作用域与调度
 
-| API               | 契约                                                                                                                                            |
-| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `_effect(fn)`     | 必须在组件或 createRoot 作用域中创建；首次与更新均排入微任务，在 DOM 和 property 提交后执行。可同步返回清理函数，返回值是停止此 effect 的函数。 |
-| `_onCleanup(fn)`  | 注册到当前作用域。重跑或卸载时执行，清理不收集依赖，重复销毁不重复清理。                                                                        |
-| `_createRoot(fn)` | 给 fn 一个 disposer，返回 fn 的结果。手动创建的根由调用方持有并销毁；嵌套根也属于父级。                                                         |
-| `_batch(fn)`      | 合并通知，返回 fn 的结果；写入值和派生值立即可读。                                                                                              |
-| `_untrack(fn)`    | 同步执行且不登记读取依赖；不豁免纯派生的写入限制。                                                                                              |
-| `_flushSync(fn?)` | 执行可选工作并立即处理排队更新。不能在计算、effect 或刷新中重入。                                                                               |
-| `_tick()`         | 等待当前刷新批次；不会等待所有网络请求。                                                                                                        |
+| API               | 契约                                                                                                                                             |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `_effect(fn)`     | 必须在组件或 _createRoot 作用域中创建；首次与更新均排入微任务，在 DOM 和 property 提交后执行。可同步返回清理函数，返回值是停止此 effect 的函数。 |
+| `_onCleanup(fn)`  | 注册到当前作用域。重跑或卸载时执行，清理不收集依赖，重复销毁不重复清理。                                                                         |
+| `_createRoot(fn)` | 给 fn 一个 disposer，返回 fn 的结果。手动创建的根由调用方持有并销毁；嵌套根也属于父级。                                                          |
+| `_batch(fn)`      | 合并通知，返回 fn 的结果；写入值和派生值立即可读。                                                                                               |
+| `_untrack(fn)`    | 同步执行且不登记读取依赖；不豁免纯派生的写入限制。                                                                                               |
+| `_flushSync(fn?)` | 执行可选工作并立即处理排队更新。不能在计算、effect 或刷新中重入。                                                                                |
+| `_tick()`         | 等待当前刷新批次；不会等待所有网络请求。                                                                                                         |
 
-下面新增的生命周期和快照入口当前位于 main 开发版本，尚不包含在已发布的 RC1 中。
+以下生命周期和快照接口从 RC2 起提供。
 
 `_onMount(fn)` 在客户端 DOM 提交后执行一次，内部读取不建立重跑依赖，可返回同步清理函数；SSR 不执行。返回的停止函数可撤销尚未执行的回调或提前释放其资源。
 

@@ -1,11 +1,21 @@
 import assert from 'node:assert/strict';
 import { execFile, execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { access, mkdir, mkdtemp, readFile, realpath, rm, writeFile } from 'node:fs/promises';
+import {
+  access,
+  mkdir,
+  mkdtemp,
+  readFile,
+  realpath,
+  rename,
+  rm,
+  writeFile,
+} from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { basename, isAbsolute, relative, resolve, sep } from 'node:path';
 import { parseArgs, promisify } from 'node:util';
 import { packages as packageList } from './package-list.mjs';
+import { publishCandidates, sameArtifact } from './release-publication.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 const registry = 'https://registry.npmjs.org/';
@@ -82,10 +92,20 @@ async function manifests() {
 async function metadata(name, selectedVersion) {
   const response = await fetch(
     `${registry}${encodeURIComponent(name)}${selectedVersion ? '/' + encodeURIComponent(selectedVersion) : ''}`,
-    { signal: AbortSignal.timeout(15000) },
+    { signal: AbortSignal.timeout(15000), cache: 'no-store' },
   );
   if (response.status === 404) return null;
   assert(response.ok, `注册表查询失败：${name}，HTTP ${response.status}`);
+  return response.json();
+}
+async function tags(name) {
+  // 独立标签接口与版本元数据的缓存更新可能不同步，不能用旧 packument 判断发布结果。
+  const response = await fetch(`${registry}-/package/${encodeURIComponent(name)}/dist-tags`, {
+    signal: AbortSignal.timeout(15000),
+    cache: 'no-store',
+  });
+  if (response.status === 404) return {};
+  assert(response.ok, `标签查询失败：${name}，HTTP ${response.status}`);
   return response.json();
 }
 async function ciPassed(revision) {
@@ -114,16 +134,6 @@ async function ciPassed(revision) {
   );
   return run.url;
 }
-function sameArtifact(item, remote) {
-  assert.equal(remote.name, item.name);
-  assert.equal(remote.version, item.version);
-  assert.equal(
-    remote.dist?.integrity,
-    item.integrity,
-    `${item.name}@${item.version} 已存在但完整性不同，禁止覆盖或继续提升 tag。`,
-  );
-}
-
 function validateLedger(ledger, revision, selectedVersion, expectedNames = names) {
   assert.equal(ledger.repository, repository);
   assert.equal(ledger.revision, revision, '当前提交与产物记录不一致。');
@@ -236,8 +246,15 @@ async function main() {
       assert.equal(await digest(resolve(directory, item.file)), item.integrity);
       const remote = await metadata(item.name, selectedVersion);
       if (remote) sameArtifact(item, remote);
-      console.log(`${item.name}@${selectedVersion}: ${remote ? '注册表完整性一致' : '尚未发布'}`);
-      if (remote) console.log(JSON.stringify((await metadata(item.name))?.['dist-tags'] ?? {}));
+      const state = remote
+        ? '注册表完整性一致'
+        : item.acceptedAt
+          ? '已受理，尚未公开'
+          : item.attemptedAt
+            ? '上传结果待核实，不自动重试'
+            : '尚未上传';
+      console.log(`${item.name}@${selectedVersion}: ${state}`);
+      if (remote) console.log(JSON.stringify(await tags(item.name)));
     }
     return;
   }
@@ -301,7 +318,12 @@ async function main() {
   validateLedger(ledger, revision, selectedVersion);
   for (const item of ledger.packages)
     assert.equal(await digest(resolve(directory, item.file)), item.integrity, '本地产物已经变化。');
-  const save = () => writeFile(ledgerFile, JSON.stringify(ledger, null, 2) + '\n');
+  const save = async () => {
+    // 先完整写临时记录再替换，进程中断不会把已受理回执截成半个 JSON。
+    const temporary = ledgerFile + '.tmp';
+    await writeFile(temporary, JSON.stringify(ledger, null, 2) + '\n');
+    await rename(temporary, ledgerFile);
+  };
   assert(['publish', 'verify-registry', 'promote'].includes(command), '未知发布操作。');
   assert(
     selectedVersion !== '0.0.0' && ledger.packages.every((item) => !item.private),
@@ -310,12 +332,14 @@ async function main() {
   ledger.ci = await ciPassed(revision);
   await save();
   if (command === 'publish') {
-    await authenticated(async (publish) => {
-      for (const item of ledger.packages) {
-        let remote = await metadata(item.name, selectedVersion);
-        if (!remote) {
+    const results = await authenticated((publish) =>
+      publishCandidates(ledger.packages, {
+        readVersion: (item) => metadata(item.name, selectedVersion),
+        readTags: (item) => tags(item.name),
+        save,
+        async upload(item) {
           // 发布的是已记录的原始 tgz，避免中途重新打包得到不同内容。
-          await publish([
+          const result = await publish([
             'publish',
             resolve(directory, item.file),
             '--access',
@@ -325,20 +349,24 @@ async function main() {
             '--ignore-scripts',
             '--no-git-checks',
           ]);
-          remote = await metadata(item.name, selectedVersion);
-          assert(remote, '发布命令返回后版本尚未可读，请先重新查询 status，保留现有产物。');
-        }
-        sameArtifact(item, remote);
-        // 首次发包时注册表可能同时初始化 latest，不能把 --tag next 当作最终标签证据。
-        item.tags = (await metadata(item.name))?.['dist-tags'] ?? {};
-        assert.equal(item.tags.next, selectedVersion, 'next 标签没有指向本次候选版本。');
-        if (selectedVersion.includes('-') && item.tags.latest === selectedVersion)
-          console.warn(`${item.name} 的 latest 也指向预发布版本，请单独确认并记录标签策略。`);
-        item.published = true;
-        await save();
-        console.log(`候选已核对：${item.name}@${selectedVersion}`);
-      }
-    });
+          assert(
+            (result.stdout + result.stderr).includes(`${item.name}@${selectedVersion}`),
+            '发布输出未确认包身份，请核对 npm 回执后恢复，不能盲目重试。',
+          );
+        },
+      }),
+    );
+    const descriptions = {
+      ready: '版本完整性与 next 已核对',
+      pending: '请求已受理，等待 npm 公开版本；不会重复上传',
+      unknown: '上传结果待核实；保留原产物和记录，不自动重试',
+      'tags-pending': '版本完整性已核对，next 标签尚未就绪',
+    };
+    for (const result of results) console.log(`${result.name}: ${descriptions[result.state]}`);
+    for (const item of ledger.packages)
+      if (selectedVersion.includes('-') && item.tags?.latest === selectedVersion)
+        console.warn(`${item.name} 的 latest 也指向预发布版本，请单独确认并记录标签策略。`);
+    if (results.some((result) => result.state !== 'ready')) process.exitCode = 2;
     return;
   }
   for (const item of ledger.packages) {
@@ -360,13 +388,13 @@ async function main() {
   if (!ledger.previousLatest) {
     ledger.previousLatest = {};
     for (const item of ledger.packages)
-      ledger.previousLatest[item.name] = (await metadata(item.name))?.['dist-tags']?.latest ?? null;
+      ledger.previousLatest[item.name] = (await tags(item.name)).latest ?? null;
     await save();
   }
   await authenticated(async (publish) => {
     for (const item of ledger.packages) {
       await publish(['dist-tag', 'add', `${item.name}@${selectedVersion}`, 'latest']);
-      assert.equal((await metadata(item.name))?.['dist-tags']?.latest, selectedVersion);
+      assert.equal((await tags(item.name)).latest, selectedVersion);
       console.log(`稳定 tag 已核对：${item.name}@${selectedVersion}`);
     }
   });

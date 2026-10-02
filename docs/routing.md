@@ -1,6 +1,6 @@
 # 路由
 
-通过可选入口 `zerodep-js/router` 使用。当前在 main 开发版本，尚未包含于已发布 RC1；根入口不加载路由实现。路由表是普通 TypeScript 定义，组件仍使用同一套 TSX、变量式状态和生命周期。
+从 1.0.0-rc.2 起通过可选入口 `zerodep-js/router` 使用；根入口不加载路由实现。路由表是普通 TypeScript 定义，组件仍使用同一套 TSX、变量式状态和生命周期。
 
 ## 定义和使用
 
@@ -48,7 +48,7 @@ const routes = _defineRoutes({
 
 const router = _createRouter(routes, { history: _createBrowserHistory() });
 const App = _component(() => <Router router={router} />);
-// 客户端 mount(App, { target })。SSR 的初始化过程见后文。
+// 客户端 _mount(App, { target })。SSR 的初始化过程见后文。
 ```
 
 无 loader 的记录可以直接写对象；需要 loader 参数/查询的上下文推断时使用 `_defineRoute(path, options)`。`routes.task` 保留路径参数、parseSearch 输出和 loader 结果类型，`Link`、`router.href/navigate/preload` 会检查必填参数。`_useRoute(routes.task)` 返回 getter 对象，在 JSX、derived 或 effect 中读取字段会持续更新；普通局部解构仍是取值语义。
@@ -105,7 +105,7 @@ const Editor = _component(() => {
 });
 ```
 
-`_onBeforeLeave` 跟随当前页面销毁；离开或该记录的路径参数变化时触发，单纯查询变化不触发。需要拦截查询等所有导航，用 `router.beforeEach(guard)`，返回停止函数。守卫可异步返回 false 取消，或返回 `_redirect(route, options)`。内部导航守卫不拦截关闭标签、刷新或外部页面；需要浏览器 beforeunload 提示时由应用在 onMount 注册并释放。
+`_onBeforeLeave` 跟随当前页面销毁；离开或该记录的路径参数变化时触发，单纯查询变化不触发。需要拦截查询等所有导航，用 `router.beforeEach(guard)`，返回停止函数。守卫可异步返回 false 取消，或返回 `_redirect(route, options)`。内部导航守卫不拦截关闭标签、刷新或外部页面；需要浏览器 beforeunload 提示时由应用在 _onMount 注册并释放。
 
 `_redirect` 可以从 loader 返回/抛出，或由守卫返回；支持同 origin 的字符串和带类型的路由引用。记录级 redirect 适合固定别名，变量目标放在 loader/守卫里。重定向链最多 16 次，不接受外部 origin 或 javascript URL。SSR 能从已提交结果中取得 redirect 信息并发送 301/302/303/307/308；客户端以 replace 完成重定向。
 
@@ -119,13 +119,13 @@ const Editor = _component(() => {
 
 `preload` 是可选的鼠标意图/键盘聚焦预加载，不默认抓取全页。可手动 `await router.preload(route, options)`；只预备当前目标的数据和代码，不执行导航守卫、跟随重定向或修改视图。因此 loader 应以读取为主，不把写入业务放在预加载路径。并发相同 URL 去重，缓存默认最多 32 项、有效期 30 秒，可通过 preloadEntries/preloadMaxAge 设置；导航取走一份缓存后，后续访问正常重载。取消预加载返回 AbortError，失败不污染下次加载。
 
-| history                       | 用途                                                                  |
-| ----------------------------- | --------------------------------------------------------------------- |
-| createBrowserHistory()        | history API；服务端必须将应用路径交给 SSR/CSR 入口                    |
-| createHashHistory()           | 外层地址保留，fragment 内管理路由；适合静态部署，首屏数据在客户端加载 |
-| createMemoryHistory(initial?) | 测试、嵌入和每请求 SSR；默认 `/`，也可传 entries/index                |
+| history                        | 用途                                                                  |
+| ------------------------------ | --------------------------------------------------------------------- |
+| _createBrowserHistory()        | history API；服务端必须将应用路径交给 SSR/CSR 入口                    |
+| _createHashHistory()           | 外层地址保留，fragment 内管理路由；适合静态部署，首屏数据在客户端加载 |
+| _createMemoryHistory(initial?) | 测试、嵌入和每请求 SSR；默认 `/`，也可传 entries/index                |
 
-createRouter 默认使用内存历史，不根据环境偷偷切换。browser/hash 可指定 window，要求 HTTP(S) origin；一个窗口同时只有一个原生 history 实例，一个 history 实例只属于一个路由器。底层通过原生 history.state 中的专用字段保存位置，业务 state 单独保存；不要自行覆盖受管理历史的内部字段。
+_createRouter 默认使用内存历史，不根据环境偷偷切换。browser/hash 可指定 window，要求 HTTP(S) origin；一个窗口同时只有一个原生 history 实例，一个 history 实例只属于一个路由器。底层通过原生 history.state 中的专用字段保存位置，业务 state 单独保存；不要自行覆盖受管理历史的内部字段。
 
 Router 组件自动启动并拥有控制器，卸载时取消加载、停止监听并 dispose。手工调用 router.start() 适用于自己管理呈现的场合，返回停止监听的函数；最终仍需 router.dispose()。SSR 在 HTTP 连接中止时也应 dispose 正在加载的控制器。不要把同一控制器挂到两个 Router，也不要复用已销毁的实例。模块级路由定义可以共享，控制器与可变数据必须按应用/请求创建。
 

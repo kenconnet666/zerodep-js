@@ -1,10 +1,10 @@
 # 包产物与独立消费
 
-四个公共包已发布 1.0.0-rc.1，实际 npm 安装验收通过。工作区根与 example 保持 private。本文记录已经验证的安装包契约，候选与稳定版本状态见 [发布记录](../CHANGELOG.md)。
+七个公共包已发布 1.0.0-rc.2，实际 npm 安装验收通过。工作区根与两个示例保持 private。本文记录已经验证的安装包契约，候选与稳定版本状态见 [发布记录](../CHANGELOG.md)。
 
-公共名称已经统一为下表中的四个无 scope 包名；开发阶段的 `@zerodep-js/core` 对应 `zerodep-js`，其余旧公共名称对应 `zerodep-js-compiler/vite/ssr`。旧名称未曾发布，不提供重复兼容入口。许可证为 MIT，每个实际 tgz 包含与根目录一致的 LICENSE。
+公共名称统一为下表中的无 scope 包名；开发阶段的 `@zerodep-js/core` 对应 `zerodep-js`，其余旧公共名称对应 `zerodep-js-compiler/vite/ssr`。旧名称未曾发布，不提供重复兼容入口。许可证为 MIT，每个实际 tgz 包含与根目录一致的 LICENSE。
 
-main 新增三个宿主包，发布清单统一维护在 scripts/package-list.mjs；基础框架与宿主有分别的独立消费门槛。独立安装基础框架不会强制安装 React、Vue 或 Svelte。
+RC2 新增三个宿主包，发布清单统一维护在 scripts/package-list.mjs；基础框架与宿主有分别的独立消费门槛。独立安装基础框架不会强制安装 React、Vue 或 Svelte。
 
 ## 包边界
 
@@ -12,6 +12,8 @@ main 新增三个宿主包，发布清单统一维护在 scripts/package-list.mj
 | ------------------------ | ---------------------------------------------- | ------------------------------------------------------- |
 | `zerodep-js`             | 响应式、组件、DOM、hydrate、生命周期及公共类型 | CSS Tools tokenizer 校验样式边界，csstype 提供生成类型  |
 | `zerodep-js/jsx-runtime` | JSX 类型约定                                   | 配合 `jsx: preserve`，不走 React automatic JSX 输出     |
+| `zerodep-js/router`      | 命名路由、历史、布局与数据准备                 | 可选子入口，根入口不加载路由                            |
+| `zerodep-js/storage`     | localStorage/sessionStorage 持久化             | 可选子入口，SSR 不访问存储                              |
 | `zerodep-js/internal`    | 编译输出与 SSR 的内部协议                      | 不能作为另一套手写 signal API                           |
 | `zerodep-js-compiler`    | TSX 编译、映射、诊断及检查命令                 | Babel 仅在构建侧使用，公共结果类型不要求导入 Babel 类型 |
 | `zerodep-js-vite`        | Vite 8 的普通转换和依赖扫描接入                | 依赖 compiler，Vite 作为 peer dependency                |
@@ -69,4 +71,4 @@ Vite 的依赖扫描和普通源码转换必须使用同一个 compiler。扫描
 
 ## 注册表验收
 
-1.0.0-rc.1 已通过候选完整矩阵，并由 release:verify-registry 从官方 registry 精确安装四包重新完成同一消费流程；原始 tgz 完整性和 CI 见 GitHub 预发布的 release.json。资源、业务、编辑器、本机输入、文档与许可已有证据。候选的 npm latest 标签例外在 CHANGELOG 中单独说明，不能把标签名当作稳定性承诺。生产部署不包含在本次发布中，稳定版和后续 CSS 接入留待讨论。
+1.0.0-rc.2 已通过候选完整矩阵，2026-10-02 由 release:verify-registry 从官方 registry 精确安装七包，分别完成基础框架与三宿主消费流程；原始 tgz 完整性、CI 和 registryVerifiedAt 见 [GitHub 预发布的 release.json](https://github.com/kenconnet666/zerodep-js/releases/tag/v1.0.0-rc.2)。资源、业务、编辑器、本机输入、文档与许可已有证据。npm latest 标签例外在 CHANGELOG 中单独说明，不能把标签名当作稳定性承诺。应用生产部署与 CSS 接入不包含在此次交付范围。

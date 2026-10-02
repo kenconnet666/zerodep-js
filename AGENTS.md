@@ -8,6 +8,7 @@
 - 2026-10-01 用户新增实现授权：完善快照、生命周期、路由和 localStorage 相关能力。执行方案见 docs/application-extensions.md；CSS 由其他人维护，继续暂不接入，IndexedDB 等尚未授权的扩展不随本轮加入。
 - 2026-10-01 用户已批准统一 core 顶层公开函数为单下划线前缀，并封装 Vue、React、Svelte 三种页面宿主适配包。直接删除旧导出，不保留 deprecated 或兼容别名；JSX 组件、类型、类和对象成员保持常规命名。执行方案见 docs/hosting-implementation.md。
 - 新 API 的实现声明本身使用下划线名称，入口直接导出；不使用 effect as _effect 一类导出重命名中转。
+- 2026-10-02 用户要求本轮全部实现完成后再做完整性检查：补齐已承诺支持范围的半成品，按维护成本合理取舍，不把所有生态扩展都列为必需。检查结果见 docs/completeness-audit.md。
 - 以 `docs/production-plan.md` 和 `docs/semantics.md` 为执行依据。允许根据证据调整目标细节、实现手段和测试；记录取舍及影响，不为形式或减少工作量降低正确性门槛。
 - `packages/ssr` 负责服务端适配，`apps/example` 通过 `workspace:*` 使用 core 与 ssr。不引入 React 或其他框架作为临时运行时；原生 DOM 工程探针也不能冒充框架实现。
 - `packages/core` 提供响应式与运行时；按实际职责增加其他包，不提前创建无用途的抽象层或空包。
