@@ -19,4 +19,4 @@ const html = await renderDocument({
 
 `zerodep-js-ssr/data` 单独导出 `serializeData`，浏览器只需要编码 JSON 时使用此入口，不加载服务端渲染器。它返回适合 HTML script 数据位置的 JSON 文本，不自动传输组件 props；不要把含有敏感字段的整个服务端对象直接发给客户端。
 
-[SSR 与接管约定](https://github.com/kenconnet666/zerodep-js/blob/main/docs/ssr-and-hydration.md)。暂不提供流式 SSR。本文对应 `1.0.0-rc.2` API，框架与适配包统一版本，实际发布与验收状态见 [变更记录](https://github.com/kenconnet666/zerodep-js/blob/main/CHANGELOG.md)。
+[SSR 与接管约定](https://github.com/kenconnet666/zerodep-js/blob/main/docs/ssr-and-hydration.md)。暂不提供流式 SSR。本文对应 `1.0.0-rc.3` API，框架与适配包统一版本，实际发布与验收状态见 [变更记录](https://github.com/kenconnet666/zerodep-js/blob/main/CHANGELOG.md)。

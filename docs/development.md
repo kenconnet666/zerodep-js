@@ -2,19 +2,18 @@
 
 TypeScript 7 检查原始 TSX 的类型；框架编译器检查被转换绑定的额外约束。二者一起使用，不能以一种检查通过代替另一种。Vite 接入、独立检查命令和项目诊断桥复用同一个编译器。
 
-## core 源码职责
+## 运行时与应用工具源码职责
 
 | 目录/入口                               | 职责                                                                                  |
 | --------------------------------------- | ------------------------------------------------------------------------------------- |
 | runtime/                                | 响应式图、状态、调度队列、组件、props、模板描述、上下文、生命周期和快照，不操作 DOM   |
 | dom/                                    | 节点挂载、hydration、列表/错误区域、属性/property、表单与原生事件清理                 |
 | native/                                 | 客户端与 SSR 共用的名称、文本、样式、序列化和 property 所有权规则，以及生成的属性数据 |
-| storage/                                | 持久化绑定、版本/校验/写入控制与同页/跨页同步                                         |
-| router/                                 | 匹配/URL、历史、导航控制、SSR 数据和页面呈现                                          |
 | index.ts / internal.ts / jsx-runtime.ts | 公共运行时、编译 ABI 与 JSX 类型入口                                                  |
-| storage.ts / router.ts                  | 可选功能的公共入口；保持现有包导出路径                                                |
 
-目录用于说明源码责任，不等于新增公开子包。SSR 仍通过稳定的 internal 协议使用共享语义，不导入浏览器节点实现；不要在 runtime/native 中增加 window/document 访问。生成数据维护入口仍为 scripts/generate-native.mjs，产物在 native/data.ts。改目录时同步检查声明映射、生成脚本、资源验证与独立消费，移除已经失效的旧构建文件。
+上表均位于 packages/core/src。应用工具独立位于 packages/use/src：storage/ 管理持久化、版本/校验及同页/跨页同步；router/ 管理匹配、历史、导航、SSR 数据与页面呈现；storage.ts/router.ts 是对应的公开子入口。
+
+use 和 SSR 均通过同版本 core 的公开 API 与必要的 internal 协议共享组件身份、调度和所有权，不能跨包导入 core/src 或复制状态内核；core 不反向依赖 use。不要在 runtime/native 中增加 window/document 访问。生成数据维护入口仍为 scripts/generate-native.mjs，产物在 native/data.ts。改目录时同步检查声明映射、生成脚本、资源验证与独立消费，移除已经失效的旧构建文件。
 
 Vue、React、Svelte 已有独立页面宿主包与 Vite 文件范围选项，使用方式和验证边界见[页面宿主](page-hosts.md)。原讨论稿保留为设计过程记录。
 

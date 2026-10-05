@@ -1,10 +1,10 @@
 # 浏览器持久化
 
-从 1.0.0-rc.2 起通过 `zerodep-js/storage` 可选子入口使用；不要求改变变量式状态，也不在根入口加载存储代码。
+当前 main 从 1.0.0-rc.3 起改用独立包入口 `zerodep-use/storage`，与 core 安装相同版本。候选尚未发布，当前先通过工作区或本地 tgz 消费；RC2 使用原 core 子入口。变量式状态和持久化格式保持不变，迁移导入不清空已有草稿或偏好。
 
 ```tsx
 import { _component, _state } from 'zerodep-js';
-import { _persistLocal } from 'zerodep-js/storage';
+import { _persistLocal } from 'zerodep-use/storage';
 
 const Preferences = _component(() => {
   const prefs = _state({ compact: false, name: '' });

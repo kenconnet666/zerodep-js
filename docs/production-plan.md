@@ -1,6 +1,6 @@
 # zerodep-js 从基础工程到生产可用
 
-更新时间：2026-10-02。七包 1.0.0-rc.2 已按提交 3d44ae7 发布，完整 CI、注册表完整性及两种工作区外 npm 消费验收通过，GitHub 预发布已建立。交付后完整性检查见 [completeness-audit.md](completeness-audit.md)。
+更新时间：2026-10-05。已发布基线仍为七包 1.0.0-rc.2，源码 3d44ae7，完整 CI 和真实 npm 消费通过。zerodep-use 拆包与本地验收已完成，八包统一准备 1.0.0-rc.3；候选尚未发布，相关 70 项 Node、14 项 Chromium、类型/构建、两条独立 tgz 消费与新路径 LSP 通过。实施及后续 CI 证据见 [use-extraction.md](use-extraction.md)。RC2 交付审查保留于 [completeness-audit.md](completeness-audit.md)。
 
 本文是后续讨论与执行的主计划，终点是有明确支持范围、可安装、可维护、经过真实使用验证的生产版本。它不是当前功能清单，也不因写入文档就把候选 API 视为已经实现或全部批准。
 
@@ -12,7 +12,7 @@
 
 用户新增授权包括快照、生命周期、路由、localStorage、core 目录整理、统一 _ 函数命名及 Vue/React/Svelte 页面宿主，现均进入 RC2。2026-10-02 进一步要求收尾后检查完整性：补齐已承诺范围的缺口，移除或收窄不合理内容，不将全部生态功能都列为必需。
 
-应用扩展此前随 4715059 通过[完整 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/36865635529)，现已随 RC2 再次通过最终矩阵和真实 registry 消费。core 源码已按 runtime/dom/native/storage/router 组织，三个宿主使用稳定的 _createPage 入口。阶段证据见 [应用扩展方案](application-extensions.md)和[宿主执行方案](hosting-implementation.md)。
+应用扩展此前随 4715059 通过[完整 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/36865635529)，后随 RC2 再次通过最终矩阵和真实 registry 消费。当前 core 只保留 runtime/dom/native，router/storage 迁入 use；三个宿主继续使用 core 的 _createPage。阶段证据见 [应用扩展方案](application-extensions.md)和[宿主执行方案](hosting-implementation.md)。
 
 ## 1. 目标与当前状态
 
@@ -461,6 +461,6 @@ mount、hydrate 与组件 renderToString 均已实现，前两个返回清理函
 - 提交号、是否已经推送、远程结果是否仍待完成。
 - 下一项可直接开始的工作，或需要用户解决的具体阻碍。
 
-当前停靠点：3d44ae7 对应的 RC2 七包已发布，完整矩阵与真实 registry 消费通过；目录整理、直接命名、应用扩展及三宿主全部交付。完整性审查结果单独记录，发布恢复与文档修正留在维护提交中，RC2 原始产物不重打包覆盖。CSS 接入继续暂停；npm 标签差异按事实保留。
+当前停靠点：已发布的 RC2 保持不变，当前 main 实施 zerodep-use 拆包并准备 rc.3；旧入口移除，相关测试、类型、示例与包消费同步迁移。对应结果见 use-extraction.md。Go/Rust 编译仅有研究结论，CSS 接入继续暂停，不随本轮扩大范围。
 
 参考资料：[Svelte props](https://svelte.dev/docs/svelte/$props)、[Vue props](https://vuejs.org/guide/components/props.html)、[TypeScript JSX](https://www.typescriptlang.org/docs/handbook/jsx.html)、[Vite SSR](https://vite.dev/guide/ssr.html)。本项目以已确认契约和实测结果为准，不把参考框架的全部行为默认搬入。

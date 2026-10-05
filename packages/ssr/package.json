@@ -1,6 +1,6 @@
 {
   "name": "zerodep-js-ssr",
-  "version": "1.0.0-rc.2",
+  "version": "1.0.0-rc.3",
   "type": "module",
   "sideEffects": false,
   "engines": {

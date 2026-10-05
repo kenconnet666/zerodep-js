@@ -16,10 +16,10 @@ const dispose = _mount(Counter, { target: document.querySelector('#app')! });
 
 公共入口包含变量宏、_component、_mount/_hydrate、_effect 与生命周期、For、context 和 ErrorBoundary。`jsx-runtime` 提供 JSX 类型，配置 `jsx: "preserve"` 与 `jsxImportSource: "zerodep-js"`；不使用 React JSX 转换。`internal` 是编译输出协议，不作为手写 signal API。
 
-新增 _snapshot、_onMount/_createScope/_getAbortSignal、_createPage，以及可选 `zerodep-js/storage` 和 `zerodep-js/router`。这些接口从 RC2 开始使用；RC1 的旧函数名已移除。持久化绑定现有状态，路由按应用/请求创建，页面入口可由 Vue/React/Svelte 适配包消费。完整用法见[持久化](https://github.com/kenconnet666/zerodep-js/blob/main/docs/storage.md)、[路由](https://github.com/kenconnet666/zerodep-js/blob/main/docs/routing.md)和[页面宿主](https://github.com/kenconnet666/zerodep-js/blob/main/docs/page-hosts.md)。
+_snapshot、_onMount/_createScope/_getAbortSignal 与 _createPage 留在 core。路由与持久化从 RC3 起改由独立的 `zerodep-use/router`、`zerodep-use/storage` 提供，core 旧子入口已移除。按需安装相同版本的 zerodep-use；独立页面宿主只需 core。完整用法见[持久化](https://github.com/kenconnet666/zerodep-js/blob/main/docs/storage.md)、[路由](https://github.com/kenconnet666/zerodep-js/blob/main/docs/routing.md)和[页面宿主](https://github.com/kenconnet666/zerodep-js/blob/main/docs/page-hosts.md)。
 
 源码随声明映射一起打包供编辑器导航；执行入口仅导出编译后的 ESM。SSR 包及预编译组件库应通过 peer dependency 共享同一 core，避免产生相互隔离的响应式图和组件身份。
 
 [使用契约](https://github.com/kenconnet666/zerodep-js/blob/main/docs/semantics.md) · [开发与诊断](https://github.com/kenconnet666/zerodep-js/blob/main/docs/development.md) · [表单](https://github.com/kenconnet666/zerodep-js/blob/main/docs/forms.md)
 
-本文对应 `1.0.0-rc.2` API。框架与适配包统一版本，实际发布与验收状态见 [变更记录](https://github.com/kenconnet666/zerodep-js/blob/main/CHANGELOG.md)。
+本文对应 `1.0.0-rc.3` API。框架与适配包统一版本，实际发布与验收状态见 [变更记录](https://github.com/kenconnet666/zerodep-js/blob/main/CHANGELOG.md)。

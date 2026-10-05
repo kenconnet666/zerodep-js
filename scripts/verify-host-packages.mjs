@@ -6,7 +6,10 @@ import { basename, isAbsolute, relative, resolve, sep } from 'node:path';
 import { tmpdir } from 'node:os';
 import { parseArgs, promisify } from 'node:util';
 import { chromium, expect } from '@playwright/test';
-import { packages } from './package-list.mjs';
+import { packages as packageList } from './package-list.mjs';
+
+// 宿主只需要页面内核；这条独立消费专门验证不安装可选应用工具也能工作。
+const packages = packageList.filter((item) => item.kind !== 'extension');
 
 const root = resolve(import.meta.dirname, '..');
 const { values } = parseArgs({
@@ -111,9 +114,17 @@ try {
     'engine-strict=true\nnode-linker=isolated\nstrict-peer-dependencies=true\nauto-install-peers=false\nregistry=https://registry.npmjs.org/\n',
   );
   console.log(
-    `七包清单与宿主 peer 通过，开始工作区外 ${values.registry ? 'registry' : 'tgz'} 安装。`,
+    `${packages.length} 个基础/宿主包与 peer 通过，开始工作区外 ${values.registry ? 'registry' : 'tgz'} 安装。`,
   );
   await run(['install', '--ignore-scripts', '--prefer-offline']);
+  assert.equal(
+    await access(resolve(consumer, 'node_modules/zerodep-use')).then(
+      () => true,
+      () => false,
+    ),
+    false,
+    '基础框架和宿主不能强制安装应用工具包。',
+  );
   for (const item of packages) {
     const directory = resolve(consumer, 'node_modules', item.name);
     assert((await realpath(directory)).startsWith(consumer + sep), '不能链接回工作区。');

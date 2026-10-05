@@ -1,5 +1,4 @@
-import { _snapshot } from '../runtime/snapshot.js';
-import type { Cleanup } from '../runtime/reactivity.js';
+import { _snapshot, type Cleanup } from 'zerodep-js';
 
 export interface HistoryEntry {
   readonly href: string;

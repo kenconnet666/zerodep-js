@@ -1,5 +1,5 @@
 import { _component, _state } from 'zerodep-js';
-import { _persistLocal } from 'zerodep-js/storage';
+import { _persistLocal } from 'zerodep-use/storage';
 
 export default _component(() => {
   const preferences = _state({ compact: false });

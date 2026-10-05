@@ -7,7 +7,7 @@ import {
   _getAbortSignal,
   _snapshot,
 } from 'zerodep-js';
-import { _persistLocal } from 'zerodep-js/storage';
+import { _persistLocal } from 'zerodep-use/storage';
 import {
   _createRouter,
   _createMemoryHistory,
@@ -16,7 +16,7 @@ import {
   Router,
   Link,
   _useRoute,
-} from 'zerodep-js/router';
+} from 'zerodep-use/router';
 import { Counter, Label } from '@zerodep-consumer/counter';
 
 const PackedPage = _component(() => {

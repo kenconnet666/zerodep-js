@@ -2,8 +2,8 @@ import { compile, type CompileResult } from 'zerodep-js-compiler';
 import { Counter, Label } from '@zerodep-consumer/counter';
 import { _mount, type ComponentProps } from 'zerodep-js';
 import { _createScope, _snapshot } from 'zerodep-js';
-import { _defineRoute, _defineRoutes, _createRouter, Link } from 'zerodep-js/router';
-import { _persistLocal, _persistSession } from 'zerodep-js/storage';
+import { _defineRoute, _defineRoutes, _createRouter, Link } from 'zerodep-use/router';
+import { _persistLocal, _persistSession } from 'zerodep-use/storage';
 
 const props: ComponentProps<typeof Counter> = { label: '声明消费', initial: 2 };
 <button popoverTarget="help" />;

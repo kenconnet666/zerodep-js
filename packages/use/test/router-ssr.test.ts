@@ -8,8 +8,8 @@ import {
   Outlet,
   _useRoute,
   RouteError,
-} from 'zerodep-js/router';
-import { renderToString } from '../src/index.js';
+} from 'zerodep-use/router';
+import { renderToString } from 'zerodep-js-ssr';
 
 it('SSR 必须先准备数据，布局与叶子按各自上下文渲染并释放控制器', async () => {
   const Layout = defineComponent(() => element('section', { children: element(Outlet, {}) }));

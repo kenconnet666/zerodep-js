@@ -1,12 +1,26 @@
-import { defineComponent } from '../runtime/component.js';
-import { _createContext, _provideContext, _useContext } from '../runtime/context.js';
-import { ErrorBoundary } from '../runtime/flow.js';
-import { _effect, getScope, _onCleanup } from '../runtime/reactivity.js';
-import { _onMount } from '../runtime/lifecycle.js';
-import { props, restProps, type Props } from '../runtime/props.js';
-import { dynamic, dynamicElement, element, type Renderable } from '../runtime/template.js';
-import { attributeValue, HTML } from '../native/attributes.js';
-import type { NativeProps } from '../jsx-runtime.js';
+import {
+  _createContext,
+  _provideContext,
+  _useContext,
+  ErrorBoundary,
+  _effect,
+  _onCleanup,
+  _onMount,
+  type Renderable,
+  type NativeProps,
+} from 'zerodep-js';
+import {
+  defineComponent,
+  getScope,
+  props,
+  restProps,
+  dynamic,
+  dynamicElement,
+  element,
+  attributeValue,
+  HTML,
+  type Props,
+} from 'zerodep-js/internal';
 import type { RouterInstance } from './router.js';
 import type { AnyRoute, RouteRef, Search, RouteRecord } from './routes.js';
 import {
@@ -161,7 +175,8 @@ const RouteHost = defineComponent((input: { level: Level }) => {
   );
 });
 
-export const Outlet = defineComponent(() => {
+// 包边界使用公开返回类型，避免声明文件泄漏 core 私有模板类型的磁盘路径。
+export const Outlet = defineComponent((): Renderable => {
   const level = currentLevel();
   let previous: RouteRecord | undefined;
   let previousKey: string | number | symbol | undefined;
@@ -207,7 +222,7 @@ const RouterRoot = defineComponent((input: RouterProps) => {
   return element(Outlet, {});
 });
 /** 控制器身份改变时重建其所有权，其他输入仍保持实时。 */
-export const Router = defineComponent((input: RouterProps) => {
+export const Router = defineComponent((input: RouterProps): Renderable => {
   let previous: RouterInstance | undefined;
   let view: Renderable;
   return dynamic(() => {
@@ -229,7 +244,7 @@ export type LinkProps<R extends AnyRoute> = Omit<NativeProps<HTMLAnchorElement>,
     preload?: boolean;
     reload?: boolean;
   };
-export const Link = defineComponent(<R extends AnyRoute>(input: LinkProps<R>) => {
+export const Link = defineComponent(<R extends AnyRoute>(input: LinkProps<R>): Renderable => {
   const router = _useRouter();
   // 公开 props 已按 to 检查参数，内部组装使用宽泛签名而不扩大公开重载。
   const actions = router as {

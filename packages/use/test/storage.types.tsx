@@ -1,5 +1,5 @@
 import { _state } from 'zerodep-js';
-import { _persistLocal, _persistSession } from 'zerodep-js/storage';
+import { _persistLocal, _persistSession } from 'zerodep-use/storage';
 
 export function storageTypes() {
   const prefs = _state({ compact: false });

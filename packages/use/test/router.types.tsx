@@ -8,7 +8,7 @@ import {
   _createRouter,
   Link,
   _useRoute,
-} from 'zerodep-js/router';
+} from 'zerodep-use/router';
 
 const Page = _component(() => <p>路由</p>);
 const routes = _defineRoutes({

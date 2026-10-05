@@ -1,5 +1,5 @@
 import { expect, it, vi } from 'vitest';
-import { defineComponent } from '../src/runtime/component.js';
+import { defineComponent } from 'zerodep-js/internal';
 import { _defineRoute, _defineRoutes } from '../src/router/routes.js';
 import { _createRouter } from '../src/router/router.js';
 import { _createMemoryHistory } from '../src/router/history.js';

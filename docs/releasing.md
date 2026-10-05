@@ -13,8 +13,9 @@
 | packages/vue      | zerodep-js-vue      |
 | packages/react    | zerodep-js-react    |
 | packages/svelte   | zerodep-js-svelte   |
+| packages/use      | zerodep-use         |
 
-当前七个包使用同一版本，清单来自 scripts/package-list.mjs；内部 workspace 依赖打包后必须成为确定版本。RC1 的四包记录保留不变。第一次稳定版本拟为 1.0.0，只有门槛通过后才更新发布状态。内部 helper ABI 与包版本分开管理：修改不兼容输出协议须同步调整 ABI，普通修复不通过伪造 ABI 号制造兼容性。
+当前 main 的八个包使用同一候选版本 1.0.0-rc.3，清单来自 scripts/package-list.mjs；内部 workspace 依赖打包后必须成为确定版本。新增 use 的版本尚未发布，RC1 四包与 RC2 七包的历史记录保留不变。第一次稳定版本拟为 1.0.0，只有门槛通过后才更新发布状态。内部 helper ABI 与包版本分开管理：修改不兼容输出协议须同步调整 ABI，普通修复或兼容的新增 helper 不通过伪造 ABI 号制造兼容性。
 
 ## 发布前
 
@@ -22,7 +23,7 @@
 
 ```sh
 pnpm release:check
-pnpm release:prepare --version 1.0.0-rc.2
+pnpm release:prepare --version 1.0.0-rc.3
 # 检查、提交并推送候选，核对对应 CI 后继续。
 pnpm release:pack
 pnpm release:status
@@ -48,7 +49,7 @@ publish 拒绝 private / 0.0.0，只处理经过完整 CI 的原提交和完整�
 
 工具只在临时 npm 配置中写 `${NODE_AUTH_TOKEN}` 引用，值由子进程环境提供，结束后移除自己创建的目录。需要代理时在环境中设置 HTTPS_PROXY；工具不把本机代理地址写死，也不会把凭据发到自定义 registry。
 
-清单按 core、compiler、ssr、vite、三个宿主适配包的顺序发布。先使用候选 tag 发布明确版本，验证全部包均存在，再用注册表上的版本重新安装和运行两种消费工程。只有声明、CSR/SSR、交互、接管及版本/完整性都核对后，才提升稳定 tag，并创建对应 Git 标签和发布记录。
+清单按 core、compiler、ssr、use、vite、三个宿主适配包的顺序发布。先使用候选 tag 发布明确版本，验证全部包均存在，再用注册表上的版本重新安装和运行两种消费工程。只有声明、CSR/SSR、交互、接管及版本/完整性都核对后，才提升稳定 tag，并创建对应 Git 标签和发布记录。
 
 发布命令失败或结果不确定时，先查询该版本是否存在及其完整性。已经发布的版本不可被当作可覆盖文件；保留原始产物，查清部分发布状态后再继续，不能盲目重新打包覆盖。
 

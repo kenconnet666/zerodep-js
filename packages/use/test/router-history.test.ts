@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest';
 import { _createMemoryHistory, _createBrowserHistory, internalURL } from '../src/router/history.js';
-import { reactive } from '../src/runtime/state.js';
+import { state } from 'zerodep-js/internal';
 
 it('memory 历史支持前后退、替换和截断前进分支', () => {
   const history = _createMemoryHistory({ entries: ['/a', '/b'], index: 0 });
@@ -26,9 +26,9 @@ it('memory 历史支持前后退、替换和截断前进分支', () => {
 
 it('history state 脱开代理并保持浏览器式快照语义', () => {
   const history = _createMemoryHistory('https://example.test/app');
-  const state = reactive({ nested: { n: 1 } });
-  history.push('next?q=中文#section', state);
-  state.nested.n = 2;
+  const model = state({ nested: { n: 1 } }).read();
+  history.push('next?q=中文#section', model);
+  model.nested.n = 2;
   expect(history.location.state).toEqual({ nested: { n: 1 } });
   expect(history.location.href).toBe('/next?q=%E4%B8%AD%E6%96%87#section');
   expect(history.origin).toBe('https://example.test');

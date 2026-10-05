@@ -1,4 +1,4 @@
-import type { AnyComponent } from '../runtime/component.js';
+import type { AnyComponent } from 'zerodep-js/internal';
 import type { DataOf, Match, Params, ParamsOf, RouteRef, SearchOf, AnyRoute } from './routes.js';
 
 export interface DestinationOptions {

@@ -65,7 +65,7 @@ try {
     assert(version, `找不到 ${name} 的固定 catalog 版本。`);
     manifest.devDependencies[name] = version;
   }
-  for (const { folder: name } of packageList.filter((item) => item.kind === 'framework')) {
+  for (const { folder: name } of packageList.filter((item) => item.kind !== 'host')) {
     const directory = resolve(root, 'packages', name);
     const sourceManifest = await json(resolve(directory, 'package.json'));
     if (values.registry)
@@ -84,22 +84,36 @@ try {
       await readFile(resolve(root, 'LICENSE'), 'utf8'),
       `${name} 的许可证与项目根不一致。`,
     );
-    if (name === 'core')
+    if (name === 'core') {
       assert(files.has('THIRD_PARTY_NOTICES.md'), 'core 缺少生成数据的第三方许可。');
+      assert(
+        ![...files].some((file) => /^(src|dist)\/(router|storage)(\/|\.)/.test(file)),
+        'core 包不能残留拆出能力的源码或旧构建文件。',
+      );
+      assert(!sourceManifest.exports['./router'] && !sourceManifest.exports['./storage']);
+      assert(!sourceManifest.dependencies['zerodep-use'], 'core 不能反向依赖应用工具。');
+    }
+    if (name === 'use') {
+      assert.deepEqual(Object.keys(sourceManifest.exports).sort(), ['./router', './storage']);
+      assert.deepEqual(Object.keys(sourceManifest.peerDependencies), ['zerodep-js']);
+      assert.equal(Object.keys(sourceManifest.dependencies ?? {}).length, 0);
+    }
     assert(
       [...files].every((file) => !/tsbuildinfo|(^|\/)(test|node_modules|\.codex)(\/|$)/.test(file)),
       `${name} 混入构建缓存或测试。`,
     );
     assert(
-      files.has('src/index.ts') && files.has('dist/index.d.ts.map'),
+      [...files].some((file) => file.startsWith('src/')),
       `${name} 缺少源码导航产物。`,
     );
+    for (const target of Object.values(sourceManifest.exports))
+      assert(files.has(target.types.slice(2) + '.map'), `${name} 缺少入口声明映射。`);
     const file = resolve(archives, basename(packed.filename));
     await access(file);
     const dependency = values.registry
       ? values.version
       : 'file:' + relative(consumer, file).replaceAll('\\', '/');
-    (name === 'core' || name === 'ssr' ? manifest.dependencies : manifest.devDependencies)[
+    (['core', 'ssr', 'use'].includes(name) ? manifest.dependencies : manifest.devDependencies)[
       packed.name
     ] = dependency;
     manifest.pnpm.overrides[packed.name] = dependency;
@@ -143,6 +157,34 @@ try {
           await access(resolve(directory, dirname(file), map.sourceRoot ?? '', source));
       }
   }
+  // 真正用 Node 的包解析验证边界，避免工作区工具对不存在的旧入口作隐式回退。
+  await exec(
+    process.execPath,
+    [
+      '--input-type=module',
+      '--eval',
+      `
+    import assert from 'node:assert/strict';
+    import { _createRoot, _flushSync } from 'zerodep-js';
+    import { _persistLocal } from 'zerodep-use/storage';
+    import { _createRouter } from 'zerodep-use/router';
+    for (const specifier of ['zerodep-js/router', 'zerodep-js/storage', 'zerodep-use']) {
+      await assert.rejects(import(specifier), { code: 'ERR_PACKAGE_PATH_NOT_EXPORTED' });
+    }
+    assert.equal(typeof _createRouter, 'function');
+    _createRoot(dispose => {
+      try {
+        const persistence = _persistLocal('probe', { n: 0 }, {
+          storage: { getItem: () => null, setItem() {}, removeItem() {} },
+        });
+        _flushSync();
+        assert.equal(persistence.ready, true, 'use 必须共享调用方的 core 所有权和调度器');
+      } finally { dispose(); }
+    });
+  `,
+    ],
+    { cwd: consumer, env, windowsHide: true, encoding: 'utf8' },
+  );
   // 先用已安装的编译器和 TS7 生成组件库，再真正打包、安装它。
   const libraryManifest = await json(resolve(consumer, 'library/package.json'));
   libraryManifest.peerDependencies['zerodep-js'] =

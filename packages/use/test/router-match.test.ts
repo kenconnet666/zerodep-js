@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest';
-import { defineComponent } from '../src/runtime/component.js';
+import { defineComponent } from 'zerodep-js/internal';
 import { _defineRoutes, matchRoutes, routePath } from '../src/router/routes.js';
 const Page = defineComponent(() => null);
 const url = (path: string) => new URL(path, 'http://router.test');

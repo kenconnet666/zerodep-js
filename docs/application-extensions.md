@@ -1,11 +1,11 @@
 # 应用扩展执行方案
 
-2026-10-01：用户授权直接完善快照、生命周期、路由和 localStorage。实施起点为 RC1 与 dfe566a；这些扩展现已随 RC2 发布并通过完整 CI 与真实 npm 消费。zerodep-css 继续等待另一边的新版本，本轮不修改或接入。
+2026-10-01：用户授权直接完善快照、生命周期、路由和 localStorage。实施起点为 RC1 与 dfe566a；这些扩展已随 RC2 发布并通过完整 CI 与真实 npm 消费。2026-10-05 用户进一步批准将路由/存储拆到 zerodep-use，当前路径与新阶段进度见 [拆包方案](use-extraction.md)。zerodep-css 继续等待另一边的新版本，本轮不修改或接入。
 
 ## 职责与 API
 
 - 核心提供 snapshot、onMount、createScope、getAbortSignal；已有 effect/onCleanup/createRoot 保持语义，不另造一套信号容器。
-- 路由与持久化先使用 zerodep-js/router、zerodep-js/storage 可选子入口，源码按职责独立。根入口不导出它们；不为同一版本多造两个发布流程，也不引入框架依赖。
+- RC2 的路由与持久化先使用 core 可选子入口。按后续授权，RC3 统一迁入一个 zerodep-use 包的 router/storage 子入口，不再保留 core 旧入口；发布清单与版本继续统一维护。
 - 状态仍显式声明并按变量或对象字段使用。变化输入使用 getter，跨异步不隐式保留作用域；getter/setter 绑定用于可整体替换的持久状态。
 
 ## 实施顺序与门槛

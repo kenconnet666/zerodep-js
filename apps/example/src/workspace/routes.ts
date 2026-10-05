@@ -4,7 +4,7 @@ import {
   RouteError,
   type LoadContext,
   type RouteComponent,
-} from 'zerodep-js/router';
+} from 'zerodep-use/router';
 import { pageSchema, querySchema, type TaskQuery, type TaskPage } from '../tasks/schema.js';
 import { WorkspaceLayout, TaskList, TaskDetail } from './Pages.js';
 

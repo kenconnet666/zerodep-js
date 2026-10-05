@@ -1,13 +1,14 @@
 import {
-  Source,
   _batch,
   _effect,
   _onCleanup,
   _untrack,
+  _getAbortSignal,
+  _onMount,
+  _snapshot,
   type Cleanup,
-} from '../runtime/reactivity.js';
-import { _getAbortSignal, _onMount } from '../runtime/lifecycle.js';
-import { _snapshot } from '../runtime/snapshot.js';
+} from 'zerodep-js';
+import { source } from 'zerodep-js/internal';
 import { storageSubscription, type StorageLike } from './hub.js';
 
 export type { StorageLike } from './hub.js';
@@ -39,6 +40,7 @@ export interface Persistence {
   stop(): void;
 }
 
+// 包名迁移不改变持久化协议，已有偏好与草稿继续按原版本读取。
 const format = 'zerodep-js-storage';
 const record = (value: unknown): value is Record<string, unknown> =>
   value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -121,8 +123,8 @@ function persist<T>(
     /* 挂载后的状态句柄报告编码错误。 */
   }
   let state = { ready: false, status: 'idle' as PersistStatus, error: undefined as unknown };
-  const current = new Source(state);
-  const mounted = new Source(false);
+  const current = source(state);
+  const mounted = source(false);
   let storage: StorageLike | undefined;
   let target: Window | undefined;
   let subscription: ReturnType<typeof storageSubscription> | undefined;

@@ -1,6 +1,6 @@
 {
   "name": "zerodep-js",
-  "version": "1.0.0-rc.2",
+  "version": "1.0.0-rc.3",
   "type": "module",
   "sideEffects": false,
   "engines": {
@@ -27,14 +27,6 @@
     "./jsx-runtime": {
       "types": "./dist/jsx-runtime.d.ts",
       "import": "./dist/jsx-runtime.js"
-    },
-    "./storage": {
-      "types": "./dist/storage.d.ts",
-      "import": "./dist/storage.js"
-    },
-    "./router": {
-      "types": "./dist/router.d.ts",
-      "import": "./dist/router.js"
     }
   },
   "scripts": {

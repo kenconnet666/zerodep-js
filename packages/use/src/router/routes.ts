@@ -1,6 +1,5 @@
-import type { Component } from '../runtime/component.js';
-import type { Renderable } from '../runtime/template.js';
-import { unowned } from '../runtime/reactivity.js';
+import type { Component, Renderable } from 'zerodep-js';
+import { unowned } from 'zerodep-js/internal';
 
 export type ParamValue = string | readonly string[];
 export type Params = Readonly<Record<string, ParamValue | undefined>>;

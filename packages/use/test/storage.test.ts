@@ -5,8 +5,10 @@ import {
   type Persistence,
   type StorageLike,
 } from '../src/storage/persist.js';
-import { reactive } from '../src/runtime/state.js';
-import { _createRoot, _flushSync, Scope, Source } from '../src/runtime/reactivity.js';
+import { _createRoot, _flushSync } from 'zerodep-js';
+import { Scope, source, state } from 'zerodep-js/internal';
+
+const reactive = <T>(value: T): T => state(value).read();
 
 class MemoryStorage implements StorageLike {
   data = new Map<string, string>();
@@ -89,8 +91,8 @@ it('read/write 绑定支持普通变量整体替换和动态键', () => {
   const storage = new MemoryStorage();
   storage.data.set('a', saved('甲'));
   storage.data.set('b', saved('乙'));
-  const key = new Source('a');
-  const model = new Source('默认');
+  const key = source('a');
+  const model = source('默认');
   const { result } = owned(() =>
     _persistLocal(
       () => key.read(),
@@ -163,7 +165,7 @@ it('切换键先提交原键的排队快照，不把新值写入旧键', () => {
   vi.useFakeTimers();
   const storage = new MemoryStorage();
   storage.data.set('b', saved({ n: 8 }));
-  const key = new Source('a');
+  const key = source('a');
   const model = reactive({ n: 0 });
   owned(() => _persistLocal(() => key.read(), model, { storage, writeDelay: 100 }));
   _flushSync();
@@ -456,7 +458,7 @@ it('新键 reset 仍提交旧键待写快照', () => {
   vi.useFakeTimers();
   const storage = new MemoryStorage();
   const model = reactive({ n: 0 });
-  const key = new Source('a');
+  const key = source('a');
   const { result } = owned(() =>
     _persistLocal(() => key.read(), model, { storage, writeDelay: 100 }),
   );

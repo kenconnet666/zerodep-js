@@ -1,5 +1,5 @@
 import { _component } from 'zerodep-js';
-import { Router, type RouterInstance } from 'zerodep-js/router';
+import { Router, type RouterInstance } from 'zerodep-use/router';
 
 export const Workspace = _component(({ router }: { router: RouterInstance }) => (
   <Router

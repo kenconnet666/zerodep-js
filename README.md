@@ -6,6 +6,8 @@
 
 使用指南从[开始使用](docs/getting-started.md)和[API 参考](docs/api.md)进入。基础包为 `zerodep-js`、`zerodep-js-compiler`、`zerodep-js-vite`、`zerodep-js-ssr`，另有 Vue、React、Svelte 三个可选页面宿主包；当前发布状态见 [CHANGELOG](CHANGELOG.md)，支持范围见 [support.md](docs/support.md)。
 
+当前 main 已准备八包统一的 `1.0.0-rc.3` 拆包候选：路由和持久化移到独立 `zerodep-use/router`、`zerodep-use/storage`，core 的旧入口直接移除。拆包版本尚未发布，使用当前源码时通过工作区或本地 tgz 安装；迁移与验收见 [zerodep-use 拆包](docs/use-extraction.md)。RC2 的原始 npm 产物保持不变。
+
 项目使用 [MIT License](LICENSE)，贡献方式见 [CONTRIBUTING](CONTRIBUTING.md)。
 
 RC2 直接使用 `_state`、`_derived`、`_component`、`_effect` 等公开函数名，实现与入口名称一致，不保留旧名或导出重命名中转。下面的示例安装时统一指定 `1.0.0-rc.2`。[Vue、React、Svelte 页面宿主](docs/page-hosts.md)提供三个独立适配包。
@@ -15,6 +17,7 @@ RC2 直接使用 `_state`、`_derived`、`_component`、`_effect` 等公开函�
 | 子项目                              | 当前职责                                                  |
 | ----------------------------------- | --------------------------------------------------------- |
 | `packages/core`                     | 状态、组件、DOM、生命周期、JSX 类型与内部 helper          |
+| `packages/use`                      | 可选的路由与浏览器持久化，通过 peer 共享 core             |
 | `packages/compiler`                 | 变量宏、组件参数和 JSX 编译，源码映射与绑定诊断           |
 | `packages/vite`                     | Vite 8 接入，保持源码映射并展示编译诊断                   |
 | `packages/ssr`                      | 请求内组件渲染、HTML 转义、数据编码与文档模板组合         |

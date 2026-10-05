@@ -4,7 +4,7 @@ import {
   _createBrowserHistory,
   _createHashHistory,
   type RouterSnapshot,
-} from 'zerodep-js/router';
+} from 'zerodep-use/router';
 import { routes } from './routes.js';
 import { Workspace } from './App.js';
 

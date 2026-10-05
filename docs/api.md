@@ -1,12 +1,12 @@
 # API 参考
 
-本文对应已发布的 1.0.0-rc.2。core 顶层函数直接使用单下划线名称，不保留旧导出、deprecated 或导出改名中转；JSX 组件、类型/类和实例方法保持原名。
+本文对应 main 的 1.0.0-rc.3 拆包候选，发布状态见 CHANGELOG。core 顶层函数直接使用单下划线名称；路由和持久化来自独立 zerodep-use，旧 core 子入口直接移除，不保留转发或 deprecated。JSX 组件、类型/类和实例方法保持原名。
 
 公共运行时从 `zerodep-js` 导入，Vite 插件来自 `zerodep-js-vite`，独立编译来自 `zerodep-js-compiler`，服务端入口来自 `zerodep-js-ssr`。下面记录当前实际契约；安装与声明消费见 [开始使用](getting-started.md)和[包产物](packages.md)。
 
-可选 `zerodep-js/storage` 提供 _persistLocal / _persistSession，绑定对象或显式 read/write，支持迁移、同步、失败恢复与清理。完整契约见 [浏览器持久化](storage.md)。
+可选 `zerodep-use/storage` 提供 _persistLocal / _persistSession，绑定对象或显式 read/write，支持迁移、同步、失败恢复与清理。完整契约见 [浏览器持久化](storage.md)。
 
-可选 `zerodep-js/router` 提供 _defineRoute/_defineRoutes、_createRouter、browser/hash/memory history、Router/Outlet/Link、_useRoute/_useRouter、_onBeforeLeave、_redirect/RouteError。包含类型化参数、取消/预加载、布局复用、错误恢复和 SSR 数据准备，详见 [路由](routing.md)。这些扩展均不改变状态宏写法。
+可选 `zerodep-use/router` 提供 _defineRoute/_defineRoutes、_createRouter、browser/hash/memory history、Router/Outlet/Link、_useRoute/_useRouter、_onBeforeLeave、_redirect/RouteError。包含类型化参数、取消/预加载、布局复用、错误恢复和 SSR 数据准备，详见 [路由](routing.md)。这些扩展均不改变状态宏写法。
 
 ## 状态宏与组件
 

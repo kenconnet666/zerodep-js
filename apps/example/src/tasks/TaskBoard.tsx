@@ -1,6 +1,6 @@
 import { _component, _state, _derived, _effect, _onCleanup, For } from 'zerodep-js';
 import type { RenderMode } from 'zerodep-js-ssr';
-import { _persistLocal } from 'zerodep-js/storage';
+import { _persistLocal } from 'zerodep-use/storage';
 import { ApiFailure, listTasks, createTask, updateTask, deleteTask } from './api.js';
 import {
   titleSchema,

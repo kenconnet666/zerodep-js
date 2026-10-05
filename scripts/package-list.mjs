@@ -3,6 +3,7 @@ export const packages = [
   { folder: 'core', name: 'zerodep-js', kind: 'framework' },
   { folder: 'compiler', name: 'zerodep-js-compiler', kind: 'framework' },
   { folder: 'ssr', name: 'zerodep-js-ssr', kind: 'framework' },
+  { folder: 'use', name: 'zerodep-use', kind: 'extension' },
   { folder: 'vite', name: 'zerodep-js-vite', kind: 'framework' },
   { folder: 'react', name: 'zerodep-js-react', kind: 'host' },
   { folder: 'vue', name: 'zerodep-js-vue', kind: 'host' },

@@ -203,6 +203,9 @@ importers:
       zerodep-js-ssr:
         specifier: workspace:*
         version: link:../../packages/ssr
+      zerodep-use:
+        specifier: workspace:*
+        version: link:../../packages/use
       zod:
         specifier: 'catalog:'
         version: 4.6.5
@@ -360,6 +363,18 @@ importers:
       zerodep-js:
         specifier: workspace:*
         version: link:../core
+
+  packages/use:
+    devDependencies:
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+      zerodep-js:
+        specifier: workspace:*
+        version: link:../core
+      zerodep-js-ssr:
+        specifier: workspace:*
+        version: link:../ssr
 
   packages/vite:
     dependencies:

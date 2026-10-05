@@ -27,6 +27,8 @@
 
 RC2 通过可选 router/storage 子入口提供路由与浏览器持久化，核心根入口不会主动加载它们。Vue 3.5.43、React 19.3.0、Svelte 5.57.1 的独立页面宿主已有类型、构建、CSR/原生 SSR、开发更新及真实 npm 消费证据，具体约束见 [页面宿主](page-hosts.md)。数据库/鉴权框架、RSC、流式或异步组件 SSR、通用请求缓存、动画系统和 UI 组件库继续由应用组合；任务工作台的数据库与 HTTP 服务属于消费示例。
 
+当前 main 的 rc.3 候选已把相同行为迁入 zerodep-use/router 和 zerodep-use/storage，并移除 core 旧子入口；存储数据协议保持兼容。新版本尚未发布，当前消费与验收边界见 [拆包记录](use-extraction.md)。
+
 ## 必须遵守的边界
 
 - 响应式声明不是对整个 JavaScript 语言的改写。普通传参/return/局部变量保持取值语义；跨函数或模块的持续读取用 getter、读取函数或状态对象表达。

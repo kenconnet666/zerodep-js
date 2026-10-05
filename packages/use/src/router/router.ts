@@ -1,6 +1,5 @@
-import { COMPONENT, type AnyComponent } from '../runtime/component.js';
-import { Source, _tick, unowned, type Cleanup } from '../runtime/reactivity.js';
-import { _snapshot } from '../runtime/snapshot.js';
+import { _tick, _snapshot, type Cleanup } from 'zerodep-js';
+import { COMPONENT, source, unowned, type AnyComponent } from 'zerodep-js/internal';
 import {
   _createMemoryHistory,
   internalURL,
@@ -109,7 +108,7 @@ export function _createRouter<T extends object>(
   )
     throw new TypeError('无效的路由初始化快照。');
   const firstURL = internalURL(initial?.href ?? history.location.href, '/', history.origin);
-  const current = new Source<RouterState>(
+  const current = source<RouterState>(
     Object.freeze({
       location: location(firstURL, initial ? initial.state : history.location.state),
       matches: [],
@@ -119,8 +118,8 @@ export function _createRouter<T extends object>(
       errorIndex: undefined,
     }),
   );
-  const pending = new Source<RouteLocation | undefined>(undefined);
-  const failure = new Source<RouteError | undefined>(undefined);
+  const pending = source<RouteLocation | undefined>(undefined);
+  const failure = source<RouteError | undefined>(undefined);
   const guards = new Set<NavigationGuard>();
   const leaveGuards = new Set<{ route: AnyRoute; guard: NavigationGuard }>();
   const after = new Set<(state: RouterState) => void>();

@@ -1,5 +1,5 @@
 import { _component, _state } from 'zerodep-js';
-import { _persistLocal } from 'zerodep-js/storage';
+import { _persistLocal } from 'zerodep-use/storage';
 
 type Preferences = { name: string; compact: boolean };
 function validate(value: unknown): Preferences {
