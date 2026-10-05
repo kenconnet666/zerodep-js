@@ -1,10 +1,11 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { z } from 'zod';
 import {
   createSchema,
   updateSchema,
   deleteSchema,
   querySchema,
+  idSchema,
+  ValidationError,
   type TaskQuery,
 } from '../src/tasks/schema.ts';
 import { TaskFailure, type TasksDatabase } from './tasks-database.ts';
@@ -14,8 +15,7 @@ export function taskQuery(url: URL): TaskQuery {
     query: url.searchParams.get('q') ?? '',
     filter: url.searchParams.get('filter') ?? 'all',
   });
-  if (!parsed.success)
-    throw new TaskFailure(400, parsed.error.issues[0]?.message ?? '查询参数无效。');
+  if (!parsed.success) throw new TaskFailure(400, parsed.error.message);
   return parsed.data;
 }
 
@@ -81,7 +81,7 @@ export async function handleTasksApi(
       json(response, 201, database.create(data.title));
       return;
     }
-    const id = z.uuid().parse(url.pathname.slice('/api/tasks/'.length));
+    const id = idSchema.parse(url.pathname.slice('/api/tasks/'.length));
     if (method === 'PATCH') json(response, 200, database.update(id, updateSchema.parse(input)));
     else {
       database.delete(id, deleteSchema.parse(input).revision);
@@ -90,8 +90,7 @@ export async function handleTasksApi(
   } catch (error) {
     if (error instanceof TaskFailure)
       json(response, error.status, { error: error.message, current: error.current });
-    else if (error instanceof z.ZodError)
-      json(response, 400, { error: error.issues[0]?.message ?? '输入数据无效。' });
+    else if (error instanceof ValidationError) json(response, 400, { error: error.message });
     else throw error;
   }
 }

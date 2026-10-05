@@ -72,7 +72,9 @@ try {
     for (const [name, version] of Object.entries(group))
       if (version === 'catalog:') {
         const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const selected = catalog.match(new RegExp(`^  ['"]?${escaped}['"]?: ([0-9.]+)$`, 'm'))?.[1];
+        const selected = catalog.match(
+          new RegExp(`^  ['"]?${escaped}['"]?: ([0-9.]+(?:-[0-9A-Za-z.-]+)?)$`, 'm'),
+        )?.[1];
         assert(selected, `找不到 catalog：${name}`);
         group[name] = selected;
       }

@@ -159,7 +159,7 @@ export const TaskDetail = _component((): Renderable => {
     const entered = title;
     const parsed = titleSchema.safeParse(title);
     if (!parsed.success) {
-      message = parsed.error.issues[0]?.message ?? '标题无效。';
+      message = parsed.error.message;
       return;
     }
     saving = true;

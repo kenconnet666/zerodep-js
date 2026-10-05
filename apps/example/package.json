@@ -15,7 +15,6 @@
     "zerodep-js": "workspace:*",
     "zerodep-js-ssr": "workspace:*",
     "sirv": "catalog:",
-    "zod": "catalog:",
     "zerodep-use": "workspace:*"
   },
   "devDependencies": {

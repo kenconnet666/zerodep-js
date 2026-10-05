@@ -7,7 +7,7 @@ import { pathToFileURL } from 'node:url';
 import { watchDirectory } from './watch-directory.mjs';
 
 const { createMessageConnection, StreamMessageReader, StreamMessageWriter } =
-  requireProject('vscode-jsonrpc/node.js');
+  requireProject('vscode-jsonrpc/node');
 const services = new Map();
 const activeChildren = new Map();
 const children = new Set();

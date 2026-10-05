@@ -26,7 +26,7 @@ export const TaskItem = _component(
       if (pending || disabled) return;
       const parsed = titleSchema.safeParse(draft);
       if (!parsed.success) {
-        failure = parsed.error.issues[0]!.message;
+        failure = parsed.error.message;
         return;
       }
       const submitted = draft;

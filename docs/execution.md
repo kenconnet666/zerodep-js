@@ -321,3 +321,13 @@
 - 用户报告 bind 补全不显示，独立 TS7 能返回候选；Computer Use 实测 WebStorm 菜单补全和英文按键自动补全均显示三项，用户随后确认正常。未改 IDE 配置或臆断为缓存；清理临时探针，补中文属性说明与 LSP 回归。
 - pnpm check/build 的首轮验证通过；随后相关 14 项 Node、7 项 Chromium、工具类型、lint、独立 LSP 与真实 tgz 消费通过。独立消费同时检查声明、预编译组件、CSR/SSR、bind、history、lazy 及卸载；修正一个负例误写成不可赋值字面量的问题，保留真实类型错误验证。
 - 使用说明与其余候选的具体例子写入 authoring.md 和 enhancement-discussion.md。开发诊断/HMR 保留状态仍在实施；此阶段未发布 npm，完整矩阵交 CI，下次推送前核对。
+
+## 2026-10-06：采用 TS7.1 nightly 并移除 Zod 与 MCP SDK
+
+- 官方 npm `typescript@next` 核对为 `7.1.0-dev.20261005.1`，`gitHead` 为本地 TypeScript 仓库的 `50d70a3f5f453a79a4323b263165da51f656a4e3`。工作区 catalog 与锁文件固定该精确版本，不使用浮动标签或旧版兼容分支；主目录实际 `tsc --version` 已核对。
+- 初次升级在 Zod 4.6.5 声明中复现 TS5115。用户明确移除 Zod，随后要求连 MCP SDK 引入的传递依赖一并移除。示例改用普通 TypeScript 数据校验，保留字段限制、Unicode、UUID、revision、错误响应与 SSR 初始数据边界；根和 example 不再依赖 Zod。
+- 项目五个只读 MCP 工具使用标准 JSON Schema 与 MCP 2025-11-25 stdio 协议，复用 vscode-jsonrpc 的请求调度；新增按行传输适配和独立检查客户端，移除 MCP SDK。vscode-jsonrpc 更新到 9.0.3 并使用其 node 导出，避免旧声明与新 TypeScript 的 MapIterator 冲突。锁文件及 pnpm why 均确认 Zod、zod-to-json-schema、MCP SDK 已无依赖路径。
+- 在 e7b43e8 加本阶段变更的隔离工作树验证，未混入主目录并行开发诊断/HMR 改动。pnpm check、pnpm build、9 项相关 Node、3 项 Chromium（CSR/SSR 增删改查与 HTTP 输入校验）、基础和三宿主两条工作区外 tgz 消费均通过。两个消费脚本同步支持 catalog 中的精确 nightly 后缀。
+- 独立 MCP 握手、工具发现、非法参数、错误帧恢复通过；实际原生服务对 core 和新数据校验文件返回完整零错误诊断。完整 pnpm lsp:verify 仍在 bind 补全断言失败，未跳过或降低门槛，因此此阶段不构成完整生产验收。
+- 用户要求研究补全修复。已用不依赖框架的 TSX 复现候选消失及冒号后退回全局补全，定位上游 a6fab636 / #63996 后的语言服务缺口。修复建议、原生回归矩阵和交付边界见 [.design/typescript71-jsx-completions.md](../.design/typescript71-jsx-completions.md)；未修改或构建 TypeScript 原生补丁。
+- 临时探针、独立消费工程、测试服务、浏览器和语言服务子进程由各验证器清理；保留研究材料。上一阶段 e7b43e8 的完整 CI 已核对成功，本阶段后续 CI 不记为已通过。

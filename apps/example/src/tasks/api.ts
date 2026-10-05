@@ -1,8 +1,8 @@
-import { z } from 'zod';
 import {
   pageSchema,
   taskSchema,
   errorSchema,
+  ValidationError,
   type Task,
   type TaskQuery,
   type TaskUpdate,
@@ -18,7 +18,11 @@ export class ApiFailure extends Error {
   }
 }
 
-async function request<T>(path: string, options: RequestInit, schema: z.ZodType<T>): Promise<T> {
+async function request<T>(
+  path: string,
+  options: RequestInit,
+  parse: (input: unknown) => T,
+): Promise<T> {
   let response: Response;
   try {
     response = await fetch(path, options);
@@ -35,10 +39,12 @@ async function request<T>(path: string, options: RequestInit, schema: z.ZodType<
       failure.success ? failure.data.current : undefined,
     );
   }
-  const parsed = schema.safeParse(data);
-  if (!parsed.success)
-    throw new Error('服务器返回的数据格式不正确，请刷新重试。', { cause: parsed.error });
-  return parsed.data;
+  try {
+    return parse(data);
+  } catch (error) {
+    if (!(error instanceof ValidationError)) throw error;
+    throw new Error('服务器返回的数据格式不正确，请刷新重试。', { cause: error });
+  }
 }
 
 function write(method: string, data: unknown, signal: AbortSignal): RequestInit {
@@ -52,18 +58,24 @@ function write(method: string, data: unknown, signal: AbortSignal): RequestInit 
 
 export function listTasks(query: TaskQuery, signal: AbortSignal) {
   const search = new URLSearchParams({ q: query.query, filter: query.filter });
-  return request(`/api/tasks?${search}`, { signal, cache: 'no-store' }, pageSchema);
+  return request(`/api/tasks?${search}`, { signal, cache: 'no-store' }, pageSchema.parse);
 }
 export function createTask(title: string, signal: AbortSignal) {
-  return request('/api/tasks', write('POST', { title }, signal), taskSchema);
+  return request('/api/tasks', write('POST', { title }, signal), taskSchema.parse);
 }
 export function updateTask(id: string, data: TaskUpdate, signal: AbortSignal) {
-  return request(`/api/tasks/${encodeURIComponent(id)}`, write('PATCH', data, signal), taskSchema);
+  return request(
+    `/api/tasks/${encodeURIComponent(id)}`,
+    write('PATCH', data, signal),
+    taskSchema.parse,
+  );
 }
 export async function deleteTask(id: string, revision: number, signal: AbortSignal): Promise<void> {
   await request(
     `/api/tasks/${encodeURIComponent(id)}`,
     write('DELETE', { revision }, signal),
-    z.null(),
+    (input) => {
+      if (input !== null) throw new ValidationError('删除响应应为空。');
+    },
   );
 }

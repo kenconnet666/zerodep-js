@@ -1,13 +1,11 @@
-import { requireProject, root } from './environment.mjs';
+import { root } from './environment.mjs';
 import { service, restart, stopAll } from './language-client.mjs';
 import { readFile, realpath } from 'node:fs/promises';
 import { extname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { frameworkDiagnostics } from './framework.mjs';
-
-const { McpServer } = requireProject('@modelcontextprotocol/sdk/server/mcp.js');
-const { StdioServerTransport } = requireProject('@modelcontextprotocol/sdk/server/stdio.js');
-const { z } = requireProject('zod');
+import { jsonLineConnection } from './json-lines.mjs';
+import { ResponseError } from 'vscode-jsonrpc/node';
 
 const supported = new Set(['.ts', '.tsx', '.mts', '.cts', '.js', '.jsx', '.mjs', '.cjs']);
 
@@ -49,19 +47,92 @@ function position(doc, line, column) {
     throw new Error('Position is outside the document.');
   return { line: line - 1, character: column - 1 };
 }
-const server = new McpServer({ name: 'zerodep-js-language-services', version: '0.0.0' });
-const file = { filePath: z.string().describe('Project-relative path inside ' + root) };
-const location = { ...file, line: z.number().int().min(1), column: z.number().int().min(1) };
-function tool(name, description, inputSchema, read) {
-  server.registerTool(
-    name,
-    {
+const server = jsonLineConnection(process.stdin, process.stdout);
+const tools = new Map();
+let initialized = false;
+let ready = false;
+server.onRequest('initialize', (params) => {
+  if (
+    initialized ||
+    typeof params?.protocolVersion !== 'string' ||
+    !params.clientInfo ||
+    typeof params.clientInfo.name !== 'string' ||
+    typeof params.clientInfo.version !== 'string' ||
+    !params.capabilities ||
+    typeof params.capabilities !== 'object' ||
+    Array.isArray(params.capabilities)
+  )
+    throw new ResponseError(-32602, 'Invalid initialize request');
+  initialized = true;
+  return {
+    protocolVersion: '2025-11-25',
+    capabilities: { tools: {} },
+    serverInfo: { name: 'zerodep-js-language-services', version: '0.0.0' },
+  };
+});
+server.onNotification('notifications/initialized', () => {
+  ready = initialized;
+});
+server.onRequest('ping', () => ({}));
+function requireReady() {
+  if (!ready) throw new ResponseError(-32000, 'MCP initialization is incomplete');
+}
+const file = { filePath: { type: 'string', description: 'Project-relative path inside ' + root } };
+const location = {
+  ...file,
+  line: { type: 'integer', minimum: 1 },
+  column: { type: 'integer', minimum: 1 },
+};
+server.onRequest('tools/list', () => {
+  requireReady();
+  return { tools: [...tools.values()].map((tool) => tool.definition) };
+});
+server.onRequest('tools/call', async (params) => {
+  requireReady();
+  if (typeof params?.name !== 'string') throw new ResponseError(-32602, 'Tool name is required');
+  const selected = tools.get(params.name);
+  if (!selected) throw new ResponseError(-32602, 'Unknown tool: ' + params.name);
+  return selected.run(params.arguments ?? {});
+});
+function tool(name, description, properties, read) {
+  const inputSchema = {
+    type: 'object',
+    properties,
+    required: Object.keys(properties).filter((key) => !Object.hasOwn(properties[key], 'default')),
+    additionalProperties: false,
+  };
+  const defaults = Object.fromEntries(
+    Object.entries(properties)
+      .filter(([, property]) => Object.hasOwn(property, 'default'))
+      .map(([key, property]) => [key, property.default]),
+  );
+  tools.set(name, {
+    definition: {
+      name,
       description,
       inputSchema,
       annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
     },
-    async (args) => {
+    async run(input) {
       try {
+        if (
+          !input ||
+          typeof input !== 'object' ||
+          Array.isArray(input) ||
+          Object.keys(input).some((key) => !Object.hasOwn(properties, key))
+        )
+          throw new Error('Invalid tool arguments');
+        const args = { ...defaults, ...input };
+        for (const [key, property] of Object.entries(properties)) {
+          const value = args[key];
+          const valid =
+            property.type === 'string'
+              ? typeof value === 'string'
+              : Number.isSafeInteger(value) &&
+                value >= property.minimum &&
+                (property.maximum === undefined || value <= property.maximum);
+          if (!valid) throw new Error('Invalid tool argument: ' + key);
+        }
         const doc = await document(args.filePath);
         for (let attempt = 0; ; attempt++) {
           try {
@@ -87,7 +158,7 @@ function tool(name, description, inputSchema, read) {
         return { isError: true, content: [{ type: 'text', text: String(error) }] };
       }
     },
-  );
+  });
 }
 
 tool(
@@ -114,7 +185,7 @@ for (const [name, method] of [
   tool(
     name,
     'Find ' + name + ' using the project language service. Positions are 1-based.',
-    { ...location, limit: z.number().int().min(1).max(500).default(100) },
+    { ...location, limit: { type: 'integer', minimum: 1, maximum: 500, default: 100 } },
     async (args, doc, language) => {
       const result = await language.request(method, {
         textDocument: { uri: doc.uri },
@@ -141,15 +212,15 @@ tool(
   'Get native TypeScript 7 completions; optionally filter by prefix. Positions are 1-based.',
   {
     ...location,
-    prefix: z.string().default(''),
-    limit: z.number().int().min(1).max(200).default(40),
-    resolveLimit: z
-      .number()
-      .int()
-      .min(0)
-      .max(20)
-      .default(0)
-      .describe('Resolve documentation/details for at most this many returned items.'),
+    prefix: { type: 'string', default: '' },
+    limit: { type: 'integer', minimum: 1, maximum: 200, default: 40 },
+    resolveLimit: {
+      type: 'integer',
+      minimum: 0,
+      maximum: 20,
+      default: 0,
+      description: 'Resolve documentation/details for at most this many returned items.',
+    },
   },
   async (args, doc, language) => {
     const result = await language.request('textDocument/completion', {
@@ -247,7 +318,8 @@ function close() {
   if (closing) return;
   closing = true;
   stopAll();
-  void server.close().finally(() => process.exit(0));
+  server.dispose();
+  process.exit(0);
 }
 process.stdin.on('end', close);
 process.on('SIGINT', close);
@@ -255,4 +327,6 @@ process.on('SIGTERM', close);
 process.on('exit', () => {
   stopAll();
 });
-await server.connect(new StdioServerTransport());
+server.onError(([error]) => process.stderr.write(String(error) + '\n'));
+server.onClose(close);
+server.listen();

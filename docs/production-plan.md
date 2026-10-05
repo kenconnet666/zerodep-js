@@ -20,7 +20,7 @@
 
 已确认的方向：
 
-- 使用标准 TypeScript/TSX，类型基线为 TypeScript 7，不增加 TypeScript 5/6 兼容层。
+- 使用标准 TypeScript/TSX，当前类型基线固定为 npm 官方 `7.1.0-dev.20261005.1`。Go 编译路线只面向选定的新版本，不增加旧版或多版本兼容层；双编译器仍处研究阶段。
 - 状态显式声明，之后像普通变量一样读取和赋值，不暴露状态容器 `.value`。
 - 组件支持直接解构 props，并就近使用默认值。
 - API 简洁、职责明确，不为形式增加 model、controller、factory、通用配置对象等层次。

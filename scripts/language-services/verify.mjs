@@ -3,26 +3,18 @@ import { readFile, writeFile, unlink } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { parse } from 'smol-toml';
-import { requireProject, root } from './environment.mjs';
+import { root } from './environment.mjs';
+import { connectMcp } from './mcp-client.mjs';
 import { service, stopAll } from './language-client.mjs';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { relative } from 'node:path';
 
-const { Client } = requireProject('@modelcontextprotocol/sdk/client/index.js');
-const { StdioClientTransport } = requireProject('@modelcontextprotocol/sdk/client/stdio.js');
 const config = parse(await readFile(resolve(root, '.codex/config.toml'), 'utf8'));
 const registered = config.mcp_servers?.zerodep_js_lsp;
 assert(registered, 'Run pnpm lsp:setup first.');
 assert.equal(resolve(registered.cwd), root);
-const client = new Client({ name: 'zerodep-js-lsp-verification', version: '1' });
-const transport = new StdioClientTransport({
-  command: registered.command,
-  args: registered.args,
-  cwd: registered.cwd,
-  stderr: 'pipe',
-});
 let log = '';
-transport.stderr?.on('data', (data) => {
+const client = await connectMcp(registered, 'zerodep-js-lsp-verification', (data) => {
   log = (log + data).slice(-8000);
 });
 const created = new Set();
@@ -40,7 +32,7 @@ async function save(file, text) {
   created.add(file);
 }
 async function call(name, args) {
-  const response = await client.callTool({ name, arguments: args }, undefined, { timeout: 90000 });
+  const response = await client.request('tools/call', { name, arguments: args });
   assert(!response.isError, response.content?.[0]?.text);
   return JSON.parse(response.content[0].text);
 }
@@ -81,8 +73,7 @@ const dependency = (valid) =>
 try {
   await save(shared, dependency(true));
   for (const file of files) await save(file, fixture(file, false));
-  await client.connect(transport, { timeout: 60000 });
-  assert.deepEqual((await client.listTools()).tools.map((tool) => tool.name).sort(), [
+  assert.deepEqual((await client.request('tools/list')).tools.map((tool) => tool.name).sort(), [
     'completions',
     'definitions',
     'diagnostics',
@@ -136,7 +127,7 @@ try {
         JSON.stringify(report),
       );
   }
-  const denied = await client.callTool({
+  const denied = await client.request('tools/call', {
     name: 'diagnostics',
     arguments: { filePath: '../solid/package.json' },
   });
@@ -280,7 +271,6 @@ export const RenameCounter = _component(({ step = 1 }: {step?: number;}) => {
 } finally {
   stopAll();
   await client.close();
-  await transport.close();
   for (const file of created) await unlink(resolve(root, file));
   if (log) process.stderr.write(log);
 }

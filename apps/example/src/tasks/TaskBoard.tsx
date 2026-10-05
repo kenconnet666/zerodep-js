@@ -145,7 +145,7 @@ export const TaskBoard = _component(({ initial, mode = 'csr', embedded = false }
     if (creating) return;
     const parsed = titleSchema.safeParse(newTitle);
     if (!parsed.success) {
-      createError = parsed.error.issues[0]!.message;
+      createError = parsed.error.message;
       return;
     }
     const submitted = newTitle;

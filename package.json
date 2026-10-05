@@ -55,7 +55,6 @@
     "@babel/preset-typescript": "catalog:",
     "@babel/traverse": "catalog:",
     "@babel/types": "catalog:",
-    "@modelcontextprotocol/sdk": "catalog:",
     "@playwright/test": "catalog:",
     "@types/convert-source-map": "catalog:",
     "@types/node": "catalog:",
@@ -69,7 +68,6 @@
     "smol-toml": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:",
-    "vscode-jsonrpc": "catalog:",
-    "zod": "catalog:"
+    "vscode-jsonrpc": "catalog:"
   }
 }

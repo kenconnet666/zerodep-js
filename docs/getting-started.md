@@ -4,6 +4,8 @@ zerodep-js 使用标准 TSX、显式变量式状态和一次初始化的组件�
 
 当前 main 的 rc.3 候选将路由与持久化迁到 `zerodep-use`，其他基础写法保持不变。下方 npm 命令仍安装已发布 RC2；若使用新的 router/storage 导入，需统一消费当前工作区或本地 rc.3 tgz。候选实际发布前不混用不同版本，具体迁移见 [拆包方案](use-extraction.md)。
 
+当前工作区的 TypeScript 已固定为官方 npm `7.1.0-dev.20261005.1`，由 `pnpm install` 按 catalog 和锁文件安装。下方 RC2 命令保留发布时的验收组合；Go 编译路线以新的精确版本为基线，仍在研究阶段。
+
 ## 安装与构建入口
 
 目标环境是 Node 24、TypeScript 7 和 Vite 8。框架包统一安装精确版本，避免 next/latest 的候选标签差异；RC2 的下划线 API 与 RC1 不兼容，需要同步更新导入并重新编译应用：

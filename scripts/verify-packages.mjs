@@ -59,9 +59,11 @@ try {
   manifest.devDependencies = {};
   manifest.pnpm = { overrides: {} };
   const catalog = await readFile(resolve(root, 'pnpm-workspace.yaml'), 'utf8');
-  // 只读取本项目已有的固定数字版本，不引入另一套版本列表或 YAML 依赖。
+  // 读取 catalog 中的精确版本，包含当前 TypeScript nightly 的预发布后缀。
   for (const name of ['typescript', 'vite', '@types/node']) {
-    const version = catalog.match(new RegExp(`^  ['"]?${name}['"]?: ([0-9.]+)$`, 'm'))?.[1];
+    const version = catalog.match(
+      new RegExp(`^  ['"]?${name}['"]?: ([0-9.]+(?:-[0-9A-Za-z.-]+)?)$`, 'm'),
+    )?.[1];
     assert(version, `找不到 ${name} 的固定 catalog 版本。`);
     manifest.devDependencies[name] = version;
   }
@@ -214,6 +216,13 @@ try {
   await run(['run', 'build']);
   const report = await json(resolve(consumer, 'dist/build-report.json'));
   const clientModules = report.client.flatMap((chunk) => chunk.modules);
+  for (const build of ['client', 'server', 'tree'])
+    assert(
+      report[build].every((chunk) =>
+        chunk.modules.every((id) => !/\/dist\/(dev\/|devtools\.js)/.test(id)),
+      ),
+      `开发检查或 HMR 代码进入 ${build} 生产构建。`,
+    );
   assert(
     clientModules.some((id) => id.includes('/@zerodep-consumer/counter/')),
     '客户端没有消费预编译依赖。',
