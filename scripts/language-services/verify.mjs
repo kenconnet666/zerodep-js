@@ -158,6 +158,42 @@ try {
   }
   console.log('框架诊断与原生类型诊断的错误/修复循环通过。');
 
+  // 合法属性不代表一定能补全：直接询问原生 TS7，不在 MCP 中补造候选。
+  const bindingFile = 'apps/example/src/' + id + '_bindings.tsx';
+  await save(
+    bindingFile,
+    `import { _component, _state } from 'zerodep-js';
+export const BindingProbe = _component(() => {
+  let text = _state('');
+  return <input bind />;
+});
+`,
+  );
+  const bindingCompletions = await call('completions', {
+    ...(await point(bindingFile, 'bind />', 4)),
+    prefix: 'bind',
+    resolveLimit: 3,
+  });
+  assert.deepEqual(bindingCompletions.items.map((item) => item.insertText).sort(), [
+    'bind:checked',
+    'bind:value',
+    'bind:valueAsNumber',
+  ]);
+  assert(
+    bindingCompletions.items.every((item) => item.detail && item.documentation),
+    '绑定候选需要同时提供类型和使用说明。',
+  );
+  await save(
+    bindingFile,
+    (await readFile(resolve(root, bindingFile), 'utf8')).replace(
+      '<input bind />',
+      '<input bind:value={text} />',
+    ),
+  );
+  const bindingReport = await call('diagnostics', { filePath: bindingFile });
+  assert(bindingReport.complete && bindingReport.errors === 0, JSON.stringify(bindingReport));
+  console.log('TS7 JSX 绑定补全通过：三个原生输入候选、类型、说明和完整写法。');
+
   // 使用标准 LSP 重命名协议，只把编辑应用到本次创建的探针，绝不改动真实源码。
   const definition = 'apps/example/src/' + id + '_rename.tsx';
   const consumer = 'apps/example/src/' + id + '_consumer.tsx';

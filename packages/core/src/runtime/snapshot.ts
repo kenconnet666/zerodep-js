@@ -1,5 +1,5 @@
-export /** 脱开可枚举数据中的响应式代理，平台仍决定哪些值可以被结构化克隆。 */
-function _snapshot<T>(value: T): T {
+/** 脱开可枚举数据中的响应式代理，平台仍决定哪些值可以被结构化克隆。 */
+export function _snapshot<T>(value: T): T {
   const copies = new WeakMap<object, unknown>();
   const tag = Object.prototype.toString;
 

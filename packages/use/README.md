@@ -1,6 +1,6 @@
 # zerodep-use
 
-zerodep-js 的可选应用工具，提供路由和浏览器持久化。通过同版本 `zerodep-js` peer 共享响应式与组件所有权；不依赖 Vue、React 或 Svelte。
+zerodep-js 的可选应用工具，提供路由、浏览器持久化和编辑历史。通过同版本 `zerodep-js` peer 共享响应式与组件所有权；不依赖 Vue、React 或 Svelte。
 
 ```tsx
 import { _component, _state } from 'zerodep-js';
@@ -13,7 +13,7 @@ export const Preferences = _component(() => {
 });
 ```
 
-`zerodep-use/router` 提供 _defineRoute/_defineRoutes、_createRouter、三种 history、Router/Outlet/Link、路由数据和导航生命周期。`zerodep-use/storage` 提供 _persistLocal/_persistSession、版本迁移、校验、同步和释放。只导入需要的子入口，没有聚合根入口。
+`zerodep-use/router` 提供 _defineRoute/_defineRoutes、_createRouter、三种 history、Router/Outlet/Link、路由数据和导航生命周期。`zerodep-use/storage` 提供 _persistLocal/_persistSession、版本迁移、校验、同步和释放。`zerodep-use/history` 提供 _history，通过 read/write、commit/undo/redo/reset/clear 管理有限的编辑历史；默认跟随当前作用域释放。只导入需要的子入口，没有聚合根入口。
 
 这些能力从 `1.0.0-rc.3` 起由本包提供；原 core 的 router/storage 入口直接移除。状态宏、快照、通用生命周期和 _createPage 仍来自 `zerodep-js`。存储封装格式与之前版本兼容，拆包不重置已有草稿或偏好。
 

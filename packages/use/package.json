@@ -15,6 +15,10 @@
     "LICENSE"
   ],
   "exports": {
+    "./history": {
+      "types": "./dist/history.d.ts",
+      "import": "./dist/history.js"
+    },
     "./router": {
       "types": "./dist/router.d.ts",
       "import": "./dist/router.js"

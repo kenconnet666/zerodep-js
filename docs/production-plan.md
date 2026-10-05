@@ -1,6 +1,6 @@
 # zerodep-js 从基础工程到生产可用
 
-更新时间：2026-10-05。已发布基线仍为七包 1.0.0-rc.2，源码 3d44ae7，完整 CI 和真实 npm 消费通过。zerodep-use 拆包与本地验收已完成，八包统一准备 1.0.0-rc.3；候选尚未发布，相关 70 项 Node、14 项 Chromium、类型/构建、两条独立 tgz 消费与新路径 LSP 通过。实施及后续 CI 证据见 [use-extraction.md](use-extraction.md)。RC2 交付审查保留于 [completeness-audit.md](completeness-audit.md)。
+更新时间：2026-10-06。已发布基线仍为七包 1.0.0-rc.2。zerodep-use 拆包提交 5578f7e 的完整 CI 已通过，八包统一准备 1.0.0-rc.3，尚未发布。新增输入 bind、_history 编辑历史与 _lazy 已完成实现及首轮类型/构建、12 项单元和 7 项 Chromium 验证，正在完成独立包消费及文档；WebStorm 补全已实测并由用户确认。开发诊断与 HMR 状态保留尚在实施，不能记为完成。当前执行边界见 [编写体验增强](authoring-enhancements.md)，使用形态见[编写指南](authoring.md)，RC2 交付审查保留于 [完整性审查](completeness-audit.md)。
 
 本文是后续讨论与执行的主计划，终点是有明确支持范围、可安装、可维护、经过真实使用验证的生产版本。它不是当前功能清单，也不因写入文档就把候选 API 视为已经实现或全部批准。
 

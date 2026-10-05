@@ -235,6 +235,8 @@ export function nativeAttributes(input: Props, tag: string, namespace = HTML): M
   const propertyAttributes = new Set<string>();
   for (const key of Object.keys(input)) {
     if (key === 'children' || key === 'ref' || key === 'key' || eventName(key)) continue;
+    if (key.startsWith('bind:'))
+      throw new Error('bind:* 必须直接写在经过编译的 JSX 属性中，不能作为普通值 spread。');
     if (
       namespace === HTML &&
       (key.toLowerCase() === 'is' ||

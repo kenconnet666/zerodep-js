@@ -6,7 +6,9 @@ import {
   _onCleanup,
   _getAbortSignal,
   _snapshot,
+  _lazy,
 } from 'zerodep-js';
+import { _history } from 'zerodep-use/history';
 import { _persistLocal } from 'zerodep-use/storage';
 import {
   _createRouter,
@@ -18,6 +20,10 @@ import {
   _useRoute,
 } from 'zerodep-use/router';
 import { Counter, Label } from '@zerodep-consumer/counter';
+
+const LazyCounter = _lazy(() =>
+  import('@zerodep-consumer/counter').then((module) => module.Counter),
+);
 
 const PackedPage = _component(() => {
   const route = _useRoute();
@@ -46,6 +52,13 @@ const packedRoutes = _defineRoutes({
 export const App = _component(({ title }: { title: string }) => {
   let message = _state('等待');
   let routed = _state(false);
+  let lazyVisible = _state(false);
+  const history = _history({
+    read: () => message,
+    write: (next) => {
+      message = next;
+    },
+  });
   const router = _createRouter(packedRoutes, { history: _createMemoryHistory('/packed/start') });
   _onCleanup(() => router.dispose());
   _persistLocal(
@@ -81,11 +94,25 @@ export const App = _component(({ title }: { title: string }) => {
     >
       <h1>{title}</h1>
       <Counter label="打包" onCount={(value) => (message = String(value))} />
-      <input
-        aria-label="消息"
-        value={message}
-        onInput={(event) => (message = event.currentTarget.value)}
-      />
+      <input aria-label="消息" bind:value={message} />
+      <button data-history-commit onClick={() => history.commit()}>
+        记录消息
+      </button>
+      <button data-history-undo onClick={() => history.undo()}>
+        撤销消息
+      </button>
+      <button data-history-redo onClick={() => history.redo()}>
+        重做消息
+      </button>
+      <button
+        data-lazy-open
+        onClick={() => {
+          lazyVisible = true;
+        }}
+      >
+        加载打包组件
+      </button>
+      {lazyVisible && <LazyCounter label="按需打包" />}
 
       <output>{message}</output>
       <Label value={{ id: 3 }}>{(value) => value.id}</Label>

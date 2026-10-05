@@ -4,6 +4,24 @@ import { _mount, type ComponentProps } from 'zerodep-js';
 import { _createScope, _snapshot } from 'zerodep-js';
 import { _defineRoute, _defineRoutes, _createRouter, Link } from 'zerodep-use/router';
 import { _persistLocal, _persistSession } from 'zerodep-use/storage';
+import { _history } from 'zerodep-use/history';
+import { _lazy } from 'zerodep-js';
+
+let boundText = '';
+let boundNumber = 123;
+<input bind:value={boundText} />;
+// @ts-expect-error 文本绑定不会把 number 偷换成 string。
+<input bind:value={boundNumber} />;
+_history({
+  read: () => boundText,
+  write: (next) => {
+    boundText = next;
+  },
+}).undo();
+const LazyCounter = _lazy(async () => Counter);
+<LazyCounter label="按需" />;
+// @ts-expect-error 按需包装保留原组件的必填 props。
+<LazyCounter />;
 
 const props: ComponentProps<typeof Counter> = { label: '声明消费', initial: 2 };
 <button popoverTarget="help" />;

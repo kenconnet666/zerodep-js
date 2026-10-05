@@ -10,6 +10,7 @@
 - 新 API 的实现声明本身使用下划线名称，入口直接导出；不使用 effect as _effect 一类导出重命名中转。
 - 2026-10-02 用户要求本轮全部实现完成后再做完整性检查：补齐已承诺支持范围的半成品，按维护成本合理取舍，不把所有生态扩展都列为必需。检查结果见 docs/completeness-audit.md。
 - 2026-10-05 用户批准拆出 packages/use，发布名 zerodep-use；路由与持久化使用其 router/storage 子入口，直接移除 core 旧入口，不保留兼容转发。快照、生命周期和页面入口留在 core，实施边界见 docs/use-extraction.md。
+- 2026-10-06 用户批准快照历史（撤销/重做/重置）、bind、_lazy、开发诊断与 HMR 状态保留；要求参考 Vue Devtools，并用具体前后写法解释所有候选。_watch、异步/浏览器工具等仍待讨论，不把待考察当成不做。执行边界见 docs/authoring-enhancements.md。
 - 以 `docs/production-plan.md` 和 `docs/semantics.md` 为执行依据。允许根据证据调整目标细节、实现手段和测试；记录取舍及影响，不为形式或减少工作量降低正确性门槛。
 - `packages/ssr` 负责服务端适配，`apps/example` 通过 `workspace:*` 使用 core 与 ssr。不引入 React 或其他框架作为临时运行时；原生 DOM 工程探针也不能冒充框架实现。
 - `packages/core` 提供响应式与运行时；按实际职责增加其他包，不提前创建无用途的抽象层或空包。

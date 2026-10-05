@@ -94,7 +94,11 @@ try {
       assert(!sourceManifest.dependencies['zerodep-use'], 'core 不能反向依赖应用工具。');
     }
     if (name === 'use') {
-      assert.deepEqual(Object.keys(sourceManifest.exports).sort(), ['./router', './storage']);
+      assert.deepEqual(Object.keys(sourceManifest.exports).sort(), [
+        './history',
+        './router',
+        './storage',
+      ]);
       assert.deepEqual(Object.keys(sourceManifest.peerDependencies), ['zerodep-js']);
       assert.equal(Object.keys(sourceManifest.dependencies ?? {}).length, 0);
     }
@@ -283,6 +287,15 @@ try {
     await expect(page.locator('output')).toHaveText('2');
     await page.getByLabel('消息').fill('独立输入');
     await expect(page.locator('output')).toHaveText('独立输入');
+    await page.locator('[data-history-commit]').click();
+    await page.getByLabel('消息').fill('下一次输入');
+    await page.locator('[data-history-commit]').click();
+    await page.locator('[data-history-undo]').click();
+    await expect(page.getByLabel('消息')).toHaveValue('独立输入');
+    await page.locator('[data-history-redo]').click();
+    await expect(page.getByLabel('消息')).toHaveValue('下一次输入');
+    await page.locator('[data-lazy-open]').click();
+    await expect(page.getByRole('button', { name: /^按需打包/ })).toBeVisible();
     await expect(page.locator('body')).toHaveAttribute('data-fixture-effect', 'active');
     await page.locator('[data-copy]').click();
     await expect(page.locator('output')).toHaveText('副本/甲');

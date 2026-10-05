@@ -2,6 +2,7 @@ import { Derived } from './reactivity.js';
 import { COMPONENT, type AnyComponent } from './component.js';
 import { restProps, type Props } from './props.js';
 import type { ListTemplate, BoundaryTemplate } from './flow.js';
+import { resolveBindings } from '../native/bindings.js';
 
 export const TEMPLATE = Symbol('zerodep.template');
 
@@ -34,7 +35,7 @@ export function element(tag: string | AnyComponent, props: Props): ElementTempla
   if (typeof tag !== 'string' && typeof tag?.[COMPONENT] !== 'function') {
     throw new Error('JSX 标签必须是原生标签名或 component 声明的组件。');
   }
-  return { [TEMPLATE]: true, kind: 'element', tag, props };
+  return { [TEMPLATE]: true, kind: 'element', tag, props: resolveBindings(tag, props) };
 }
 
 export function dynamic(read: () => Renderable): DynamicTemplate {

@@ -21,7 +21,7 @@ import {
   type Renderable,
 } from 'zerodep-js/internal';
 
-assertRuntime(1);
+assertRuntime(2);
 
 export type RenderOptions<C extends AnyComponent> =
   {} extends ComponentProps<C> ? { props?: ComponentProps<C> } : { props: ComponentProps<C> };

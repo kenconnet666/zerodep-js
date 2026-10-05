@@ -3,9 +3,10 @@ import * as t from '@babel/types';
 import { renderExpression } from './render.js';
 
 type Helper = (name: string, args: t.Expression[]) => t.CallExpression;
+type Report = (node: t.Node, code: string, message: string) => void;
 
 /** JSX 先变为惰性描述，再处理变量绑定，避免在组件初始化时读取动态属性。 */
-export function transformJsx(ast: t.File, helper: Helper): boolean {
+export function transformJsx(ast: t.File, helper: Helper, report: Report): boolean {
   let transformed = false;
   const templates = new WeakSet<t.Node>();
   function tagName(
@@ -40,6 +41,8 @@ export function transformJsx(ast: t.File, helper: Helper): boolean {
       exit(path) {
         const node = path.node;
         const sources: t.Expression[] = [];
+        const bindings: t.Expression[] = [];
+        const boundNames = new Set<string>();
         let chunk: t.ObjectProperty[] = [];
         const flush = () => {
           if (chunk.length) sources.push(t.objectExpression(chunk));
@@ -61,6 +64,66 @@ export function transformJsx(ast: t.File, helper: Helper): boolean {
             if (t.isJSXEmptyExpression(attributeValue.expression)) continue;
             value = attributeValue.expression;
           } else value = attributeValue as t.Expression;
+          if (name.startsWith('bind:')) {
+            const property = name.slice(5);
+            if (!property || !/^[A-Za-z_$][\w$]*$/.test(property)) {
+              report(attribute, 'ZJ1400', 'bind 属性需要明确的属性名。');
+              continue;
+            }
+            if (!t.isIdentifier(value) && !t.isMemberExpression(value)) {
+              report(attribute, 'ZJ1401', 'bind 需要可以赋值的变量或对象属性。');
+              continue;
+            }
+            if (['key', 'children', 'ref'].includes(property))
+              report(attribute, 'ZJ1403', `bind:${property} 不能接管框架保留属性。`);
+            if (t.isIdentifier(value)) {
+              const binding = path.scope.getBinding(value.name);
+              if (!binding || ['const', 'module'].includes(binding.kind))
+                report(
+                  value,
+                  'ZJ1401',
+                  'bind 的变量必须是当前可写绑定；对象的可写属性可单独绑定。',
+                );
+            }
+            if (boundNames.has(property))
+              report(attribute, 'ZJ1402', `bind:${property} 重复声明。`);
+            boundNames.add(property);
+            const tag = node.openingElement.name;
+            if (t.isJSXIdentifier(tag) && /^[a-z]/.test(tag.name)) {
+              if (!(
+                (property === 'value' && ['input', 'textarea', 'select'].includes(tag.name)) ||
+                (['checked', 'valueAsNumber'].includes(property) && tag.name === 'input')
+              ))
+                report(attribute, 'ZJ1403', `<${tag.name}> 不支持 bind:${property}。`);
+              const owned = property === 'valueAsNumber' ? 'value' : property;
+              if (
+                node.openingElement.attributes.some(
+                  (other) =>
+                    t.isJSXAttribute(other) &&
+                    t.isJSXIdentifier(other.name) &&
+                    [owned, owned === 'checked' ? 'defaultChecked' : 'defaultValue'].includes(
+                      other.name.name,
+                    ),
+                )
+              )
+                report(attribute, 'ZJ1404', `bind:${property} 与普通模型属性冲突。`);
+            }
+            const next = path.scope.generateUidIdentifier('value');
+            bindings.push(
+              t.arrayExpression([
+                t.stringLiteral(property),
+                t.arrowFunctionExpression([], t.cloneNode(value, true)),
+                t.arrowFunctionExpression(
+                  [next],
+                  t.inherits(
+                    t.assignmentExpression('=', t.cloneNode(value, true), t.cloneNode(next)),
+                    value,
+                  ),
+                ),
+              ]),
+            );
+            continue;
+          }
           chunk.push(
             t.objectProperty(
               t.stringLiteral(name),
@@ -84,7 +147,10 @@ export function transformJsx(ast: t.File, helper: Helper): boolean {
         const tag = node.openingElement.name;
         const native = t.isJSXIdentifier(tag) && /^[a-z]/.test(tag.name);
         const tagValue = native ? t.stringLiteral(tag.name) : tagName(tag);
-        const attributes = helper('props', [t.arrayExpression(sources)]);
+        const original = helper('props', [t.arrayExpression(sources)]);
+        const attributes = bindings.length
+          ? helper('bindProps', [original, t.arrayExpression(bindings)])
+          : original;
         const hasKey = node.openingElement.attributes.some(
           (attribute) =>
             t.isJSXSpreadAttribute(attribute) ||

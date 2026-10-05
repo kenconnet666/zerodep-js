@@ -137,6 +137,58 @@ type EventProps<T> = {
 };
 type InputValue = string | number | null | undefined;
 type SelectValue = InputValue | readonly (string | number)[];
+interface TextBindings {
+  /** 双向文本绑定：输入时写回字符串。必须绑定可赋值的变量或对象属性。 */
+  'bind:value'?: string | null | undefined;
+}
+interface InputBindings extends TextBindings {
+  /** checkbox/radio 的选中状态；输入时写回 boolean。 */
+  'bind:checked'?: boolean;
+  /** number/range 的数值；清空或无有效数字时写回 undefined。 */
+  'bind:valueAsNumber'?: number | undefined;
+}
+interface SelectBindings {
+  /** 单选写回字符串；multiple 多选写回字符串数组。 */
+  'bind:value'?: string | readonly string[] | null | undefined;
+}
+type NativeBindings<T> = T extends HTMLInputElement
+  ? InputBindings
+  : T extends HTMLTextAreaElement
+    ? TextBindings
+    : T extends HTMLSelectElement
+      ? SelectBindings
+      : {};
+
+type ChangeName<K extends string> = `on${Capitalize<K>}Change`;
+type FirstArgument<F> = F extends (...args: infer Args) => unknown
+  ? Args extends [infer Value, ...unknown[]]
+    ? Value
+    : never
+  : never;
+type BindableKeys<P> = {
+  [K in keyof P & string]: ChangeName<K> extends keyof P
+    ? [FirstArgument<NonNullable<P[ChangeName<K>]>>] extends [never]
+      ? never
+      : FirstArgument<NonNullable<P[ChangeName<K>]>> extends P[K]
+        ? K
+        : never
+    : never;
+}[keyof P & string];
+type BindingChoice<P, K extends keyof P & string> =
+  | (Pick<P, K | Extract<ChangeName<K>, keyof P>> & { [B in `bind:${K}`]?: never })
+  | ({ [B in `bind:${K}`]: P[K] } & { [V in K]?: never } & Partial<
+        Pick<P, Extract<ChangeName<K>, keyof P>>
+      >);
+// 每个可绑定属性保持“普通 props 或 bind”二选一；函数参数的逆变合并支持同时绑定多个属性。
+type BindingConditions<P> = {
+  [K in BindableKeys<P>]: (value: BindingChoice<P, K>) => void;
+}[BindableKeys<P>];
+type ComponentBindings<P> = P extends unknown
+  ? [BindableKeys<P>] extends [never]
+    ? P
+    : Omit<P, BindableKeys<P> | ChangeName<BindableKeys<P>>> &
+        (BindingConditions<P> extends (value: infer Conditions) => void ? Conditions : never)
+  : never;
 type ControlValues<T> = T extends HTMLSelectElement
   ? Omit<NativeValues<T>, 'value'> & { value?: SelectValue; defaultValue?: SelectValue }
   : T extends HTMLInputElement | HTMLTextAreaElement
@@ -197,6 +249,7 @@ export type NativeProps<T extends Element> = (T extends Element
   EventProps<T> &
   ExternalEvents &
   PropertyProps<T> &
+  NativeBindings<T> &
   AttributeLinks<T> & {
     children?: Renderable;
     class?: string | false | null | undefined;
@@ -313,6 +366,7 @@ type Elements = {
 export declare namespace JSX {
   type Element = Template;
   type ElementType = keyof IntrinsicElements | AnyComponent;
+  type LibraryManagedAttributes<C, P> = C extends AnyComponent ? ComponentBindings<P> : P;
   interface ElementChildrenAttribute {
     children: unknown;
   }

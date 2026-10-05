@@ -2,7 +2,7 @@ import { Derived, Source } from './runtime/reactivity.js';
 
 /** 与编译输出保持稳定的协议入口；不兼容改动才递增，补丁修复不必递增。 */
 export function assertRuntime(expected: number): void {
-  const actual = 1;
+  const actual = 2;
   if (expected !== actual)
     throw Object.assign(
       new Error(
@@ -12,11 +12,19 @@ export function assertRuntime(expected: number): void {
     );
 }
 
-export { Scope, getScope, renderEffect, _untrack, unowned } from './runtime/reactivity.js';
+export {
+  Scope,
+  getScope,
+  renderEffect,
+  _untrack,
+  unowned,
+  assertCanWrite,
+} from './runtime/reactivity.js';
 export { state } from './runtime/state.js';
 export { defineComponent, setupComponent, COMPONENT } from './runtime/component.js';
 export { prop, props, restProps } from './runtime/props.js';
 export type { Props } from './runtime/props.js';
+export { bindProps } from './native/bindings.js';
 export {
   element,
   dynamic,

@@ -14,6 +14,8 @@ export type { ScopeHandle } from './runtime/lifecycle.js';
 export { _state, _derived } from './runtime/macros.js';
 export { _component } from './runtime/component.js';
 export type { Component, ComponentProps } from './runtime/component.js';
+export { _lazy } from './runtime/lazy.js';
+export type { LazyComponent, LazyOptions } from './runtime/lazy.js';
 export { _mount, _hydrate } from './dom/mount.js';
 export type { MountOptions, HydrateOptions } from './dom/mount.js';
 export { _createPage } from './dom/page.js';
