@@ -8,6 +8,10 @@ reports/stability/
 .release/
 playwright-report/
 .codex/config.toml
+.codex/toolchains/
+.codex/typescript-sdk/
+.codex/typescript-source/
+.codex/ts-native-build-*/
 .idea
 apps/example/.dev-check-*/
 apps/hosts/.dev-check-*/

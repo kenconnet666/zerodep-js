@@ -250,6 +250,7 @@ export type NativeProps<T extends Element> = (T extends Element
   ExternalEvents &
   PropertyProps<T> &
   NativeBindings<T> &
+  Pick<HtmlAttributeValues, Extract<keyof HtmlAttributeValues, `aria-${string}`>> &
   AttributeLinks<T> & {
     children?: Renderable;
     class?: string | false | null | undefined;

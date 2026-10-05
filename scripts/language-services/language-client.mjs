@@ -28,8 +28,7 @@ function stop(child) {
   } else child.kill();
 }
 
-async function start(kind) {
-  const config = serviceConfig(kind);
+async function start(kind, config = serviceConfig()) {
   const child = spawn(config.bin, config.args, { cwd: root, stdio: 'pipe', windowsHide: true });
   children.add(child);
   activeChildren.set(kind, child);
@@ -246,10 +245,10 @@ async function start(kind) {
   }
 }
 
-export async function service(kind) {
+export async function service(kind, config) {
   let pending = services.get(kind);
   if (!pending) {
-    pending = start(kind).catch((error) => {
+    pending = start(kind, config).catch((error) => {
       if (services.get(kind) === pending) services.delete(kind);
       throw error;
     });

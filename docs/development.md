@@ -125,7 +125,18 @@ TS7 的补全、跳转、引用和原生类型错误继续来自标准语言服�
 
 项目桥接器使用 MCP `2025-11-25` 的 stdio JSON-RPC：按行传输 JSON，公开五个只读工具，参数用 JSON Schema 描述并在服务端校验。传输和请求调度复用 `vscode-jsonrpc`，不依赖 MCP SDK 或 Zod；`json-lines.mjs` 负责分帧，`mcp-client.mjs` 服务独立检查脚本。协议依据为 [MCP stdio](https://modelcontextprotocol.io/specification/2025-11-25/basic/transports) 和[生命周期](https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle)。
 
-2026-10-06 升级官方 npm `typescript@7.1.0-dev.20261005.1` 后，原生服务未返回 `bind:` JSX 属性补全；直接调用原生 LSP 也能复现，不是桥接器过滤导致。`pnpm lsp:verify` 保留该断言并明确失败，不补造候选、不降级编译器，也不把部分 LSP 检查通过记为完整验收。已定位上游 scanner 重构后的名称筛选和光标上下文缺口，见[原生补全修复研究](../.design/typescript71-jsx-completions.md)。
+官方 npm `typescript@7.1.0-dev.20261005.1` 有 JSX 命名空间属性的补全回归。项目维护固定上游提交的原生补丁，修复候选筛选、冒号上下文、编辑范围及自动触发；MCP 直接调用修复后的服务，不补造候选。core 同时显式保留已生成的 ARIA 属性以提供候选，见[原生补全修复记录](../.design/typescript71-jsx-completions.md)。
+
+首次设置语言服务先准备 Go 1.27 和包含固定提交的 TypeScript 源码，再运行：
+
+```sh
+pnpm typescript:build --source <TypeScript源代码路径> --go <Go可执行文件路径>
+pnpm lsp:setup
+pnpm lsp:verify
+pnpm lsp:completions
+```
+
+Go 已在 PATH 时可省略 `--go`。生成的 `.codex/typescript-sdk` 保留官方 SDK 与标准库布局，版本为 `7.1.0-dev.20261005.1+zerodep.1`；在 WebStorm 的 TypeScript 设置中选择这个包目录。SDK 缺失或补丁不匹配会明确要求重新构建，不回退到缺少修复的服务。`lsp:completions` 同时核对候选、文档、实际插入/自动导入编辑及插入后的类型诊断。
 
 运行 `pnpm lsp:verify` 会验证原生错误/修复、框架错误/修复、依赖刷新和项目隔离。这是独立服务验证；已运行的 Codex MCP 进程需要重启后才加载桥接脚本变更。普通 WebStorm/VS Code TS7 服务不会自动获得这个 MCP 扩展，当前可以将 `zerodep-check` 接到外部检查任务，并在 Vite 错误覆盖层看到编译诊断。没有要求安装私有 TS 插件或降级 TS 版本。
 

@@ -33,8 +33,23 @@ jobs:
       - run: pnpm check
       - run: pnpm test
       - run: pnpm test:stability
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: microsoft/TypeScript
+          ref: 50d70a3f5f453a79a4323b263165da51f656a4e3
+          path: .codex/typescript-source
+          persist-credentials: false
+          sparse-checkout: |
+            tsc/cmd
+            tsc/internal
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: 1.27.1
+          cache: false
+      - run: pnpm typescript:build --source .codex/typescript-source
       - run: pnpm lsp:setup
       - run: pnpm lsp:verify
+      - run: pnpm lsp:completions
       - run: pnpm exec playwright install --with-deps chromium firefox webkit
       - run: pnpm test:packages
       - run: pnpm test:dev

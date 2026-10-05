@@ -340,3 +340,13 @@
 - 独立 MCP 握手、工具发现、非法参数、错误帧恢复通过；实际原生服务对 core 和新数据校验文件返回完整零错误诊断。完整 pnpm lsp:verify 仍在 bind 补全断言失败，未跳过或降低门槛，因此此阶段不构成完整生产验收。
 - 用户要求研究补全修复。已用不依赖框架的 TSX 复现候选消失及冒号后退回全局补全，定位上游 a6fab636 / #63996 后的语言服务缺口。修复建议、原生回归矩阵和交付边界见 [.design/typescript71-jsx-completions.md](../.design/typescript71-jsx-completions.md)；未修改或构建 TypeScript 原生补丁。
 - 临时探针、独立消费工程、测试服务、浏览器和语言服务子进程由各验证器清理；保留研究材料。上一阶段 e7b43e8 的完整 CI 已核对成功，本阶段后续 CI 不记为已通过。
+
+## 2026-10-06：修复原生补全并扩展编辑回归
+
+- 用户要求其他语法补全也仔细校验，发现问题直接修复。新增 `pnpm lsp:completions`，覆盖宏/命名空间/自动导入、状态类型、props/解构、HTML/SVG/MathML、自定义元素、事件/currentTarget/ref、ARIA/style、bind/prop、For、泛型、联合收窄、子入口、Unicode、编辑范围及冒号自动触发，共 48 个场景；逐项应用候选和自动导入编辑，再检查完整类型诊断。
+- 固定 TypeScript 上游 `50d70a3f`，原生补丁修复合法命名空间名称筛选、光标上下文、完整属性替换、snippet filterText 与冒号触发。另修复 `value=te` 补全遗漏 JSX 大括号，恢复上游曾跳过的属性 initializer 用例。16 个原生 Go 测试及 plain/snippet 子用例通过，无新增跳过。上游本地分支提交 `87e319dc`，未推送 Microsoft 仓库；完整补丁保存在本项目 patches 目录。
+- core 从既有生成数据显式引入已知 ARIA 名称，修复 aria-label 候选缺失，开放的 aria-* 输入范围保持不变。
+- 构建脚本从固定提交创建临时 worktree 并应用补丁，生成独立 `.codex/typescript-sdk`，保留官方 SDK/平台库布局与许可，校验入口和摘要；缓存失效可重建，替换失败恢复旧 SDK。Go 1.27.1 位于主项目 `.codex/toolchains`，未修改全局 Go/Node 配置或 pnpm store。
+- 在整合 ccb5070 后，pnpm check、pnpm build、完整 pnpm lsp:verify 均通过；补全矩阵 46 项全跑和补充的两个 Unicode/连字符用例均通过。协议测试、配置检查、格式检查和 actionlint 通过。CI 增加固定上游 checkout、Go 1.27.1、SDK 构建和补全矩阵。
+- 主目录 SDK 版本及源码/补丁/二进制摘要已核对，WebStorm 项目 compiler.xml 选择该 SDK。检查时 IDE 仍运行旧 7.0.2 服务进程，需重启 TypeScript 服务或重开项目后加载；不把磁盘配置等同于已完成的界面实测。
+- 已核对上一轮 ccb5070 的 CI 失败只有原生 bind 候选断言，本阶段修复该原因，未放宽验收。新一轮 CI 留给远端运行，不等待或把未结束的结果记为通过。临时检出、源码探针及子进程已清理；自动审批拒绝递归删除本任务 Go 缓存/分片目录，仅单独清理明确路径的下载归档与旧探针可执行文件，隔离工作树的 .codex/toolchains 缓存保留。

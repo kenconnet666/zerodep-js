@@ -1,1 +1,5 @@
 * text=auto eol=lf
+# 补丁上下文的空格/制表符与上游许可原文需要原样保留。
+patches/*.patch -whitespace
+patches/LICENSE.typescript -whitespace
+patches/NOTICE.typescript -whitespace

@@ -44,7 +44,9 @@
     "native:generate": "node scripts/generate-native.mjs",
     "native:check": "node scripts/generate-native.mjs --check",
     "lsp:setup": "node scripts/language-services/setup.mjs",
+    "typescript:build": "node scripts/language-services/build-typescript.mjs",
     "lsp:verify": "node scripts/language-services/verify.mjs",
+    "lsp:completions": "node scripts/language-services/completions.mjs .",
     "lsp:inspect": "node scripts/language-services/inspect.mjs ."
   },
   "devDependencies": {

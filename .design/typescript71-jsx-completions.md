@@ -1,13 +1,13 @@
 # TypeScript 7.1 原生 JSX 命名空间补全研究
 
-日期：2026-10-06。状态：已复现并定位，原生修复方案尚未实现或构建验证。
+日期：2026-10-06。状态：用户随后授权全面校验并修复；原生补丁、项目 SDK 构建和补全回归矩阵已实现。
 
 ## 基线和范围
 
 - 项目使用官方 npm `typescript@7.1.0-dev.20261005.1`。
 - npm `gitHead` 与本地 TypeScript 仓库一致：`50d70a3f5f453a79a4323b263165da51f656a4e3`。
 - 用户明确只面向选定的新版本，不增加旧版或多版本兼容分支。
-- 本轮只研究原生语言服务修复，不更改 bind API，不替换已安装编译器，不修改 TypeScript 仓库，也不向上游发布问题或 PR。
+- 原生修复位于 `patches/typescript-7.1.0-dev.20261005.1.patch`，只支持该提交与 npm 版本；不更改 bind API，不向上游发布问题或 PR。
 
 ## 独立复现
 
@@ -31,7 +31,7 @@ declare global {
 }
 ```
 
-直接请求原生 `textDocument/completion`，以下 `|` 为光标，不是实际源码：
+修复前直接请求原生 `textDocument/completion`，以下 `|` 为光标，不是实际源码：
 
 | 位置                                                         | 实际结果 |
 | ------------------------------------------------------------ | -------- |
@@ -61,7 +61,7 @@ declare global {
 
 后续 `getCompletionEntryDisplayNameForSymbol` 使用 `scanner.IsIdentifierText(name, LanguageVariantJSX)` 过滤。`bind:value` 现在不再通过该检查，又不是其 computed-name 特例，因此 MemberLike 分支返回空名称，候选被删除。
 
-推荐在 JSX 名称位置接受合法 `JSXNamespacedName`。判定逻辑可复用两个现有 JSX 标识符检查：
+补丁在 JSX 名称位置接受合法 `JSXNamespacedName`。判定逻辑复用两个现有 JSX 标识符检查：
 
 ```go
 func isJsxNamespacedNameText(name string) bool {
@@ -78,9 +78,9 @@ func isJsxNamespacedNameText(name string) bool {
 
 `tryGetContainingJsxElement` 已处理命名空间标签，但对子标识符到 `JsxNamespacedName`、再到 `JsxAttribute` 的路径缺少归一化，且冒号 token 未进入相关分支。
 
-补全上下文判断中的 `isJsxIdentifierExpected` 也需要覆盖名称后半段和未完成的 `bind:`。应把光标所在位置归一化到完整属性名称，再复用已有 JSX 属性类型和候选过滤，避免退回全局符号补全。
+补丁在补全数据收集阶段把光标归一化到完整属性名称，覆盖名称后半段和未完成的 `bind:`，并复用已有 JSX 属性类型和候选过滤。注册冒号自动触发，仅在 JSX 命名空间属性上下文启用。
 
-修复还必须统一替换范围：在 `bind:v|` 位置接受候选时，替换完整的 `bind:v` 并插入 `bind:value`。不能只替换 `v` 却插入完整名称，产生 `bind:bind:value`。原生 completion resolve 应继续使用原始符号名来返回类型和 JSDoc。
+补丁统一替换完整名称：在 `bind:v|` 位置接受候选时，替换完整的 `bind:v` 并插入 `bind:value`；明确返回 textEdit，不依赖客户端自行推测单词范围。filterText 保持原始属性名，不混入 snippet 占位符。原生 completion resolve 继续使用原始符号名返回类型和 JSDoc。
 
 ## 验证范围
 
@@ -95,10 +95,18 @@ func isJsxNamespacedNameText(name string) bool {
 7. plain text 与 snippet 两种客户端能力下的 textEdit、filterText、详情和文档。
 8. 重跑 zerodep-js 的 `pnpm lsp:verify`；不能删除、放宽或把 bind 补全断言改成跳过。
 
-## 接入判断
+## 项目内交付
 
-推荐在选定 TypeScript 7.1 源码的语言服务中修复，并随后续原生编译器共用同一份受控源码和版本。源码改动集中于补全逻辑，但真正交付仍需构建平台二进制和执行上述测试。
+`scripts/language-services/typescript-target.json` 固定 npm 版本、上游提交和补丁版本。`pnpm typescript:build --source <TypeScript Git 仓库> [--go <Go 1.27 可执行文件>]` 在临时 worktree 中应用补丁并构建，不污染源码仓库或 pnpm store。它复制官方 npm SDK/平台包布局和许可，将新的原生可执行文件安装到 `.codex/typescript-sdk`，并记录源码、补丁及二进制摘要。重复执行核对缓存和 SDK 入口，缺失或损坏会重新构建。
+
+项目 MCP 固定使用生成的 SDK，WebStorm 的 TypeScript 包目录也选择该 SDK。CI 从固定上游提交构建 Linux SDK，再执行完整 LSP 检查和 `pnpm lsp:completions`。这只是语言服务补丁，框架的 Go 转换后端仍未实施。
 
 只在项目 MCP 中追加候选不能修复 WebStorm 直接调用的原生服务，也会重复维护类型、文档和编辑范围，因此不推荐作为主方案。修改 JSX 声明或把 bind 改名，也不能修复原生语言服务对合法命名空间属性的通用问题。
 
-本轮没有 Go 补丁的执行验证，因此只确认根因和修复方向，不将它标记为已修复。
+## 其他补全检查
+
+项目矩阵覆盖宏导入、自动导入、命名空间、raw/by、状态变量、props 与解构、HTML 标签/闭合标签/属性/事件、currentTarget/ref、ARIA、SVG、bind/prop/自定义命名空间、For 行/索引参数、泛型组件、字面量、style、可选链、联合收窄及 router/storage 子入口。每个候选都实际应用主编辑和自动导入编辑，并再次请求完整类型诊断。
+
+检查另发现 ARIA 已知名称被开放的 `aria-*` 索引签名吞掉候选。core 的 NativeProps 现显式纳入已有生成数据中的 ARIA 属性，不手写另一套属性清单；仍允许任意合法的 `aria-*` 值。
+
+另一个原生遗漏出现在未写大括号的 JSX 属性表达式：`value=te` 选择 text 时原先生成 `value=text`。原生代码登记了 initializer 节点，却漏设 isInitializer；补丁恢复该标记，使编辑生成 `value={text}`。对应上游原先跳过的 `TestCompletionsJsxAttributeInitializer2` 已恢复并通过，项目也增加实际插入及类型检查用例。

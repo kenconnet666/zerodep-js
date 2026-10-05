@@ -16,7 +16,7 @@
 
 包的体积和速度没有硬性上限，仍保留资源回收、压力和按需打包观察。验证脚本的运行超时用于发现挂起，不是性能排名或用户负载承诺。
 
-当前 TypeScript 7.1 nightly 已复现原生 `bind:` JSX 补全缺失，独立 LSP 全量验证因此未通过。上表的既有编辑器验收不覆盖这一升级回归；最新证据见[开发诊断说明](development.md)。
+当前 TypeScript 7.1 nightly 的 JSX 命名空间补全回归由项目固定版本的原生 SDK 补丁修复；语言服务设置和补全回归入口见[开发诊断说明](development.md)。普通 npm `typescript` 仍是类型检查和声明构建基线，编辑器与 MCP 使用 `.codex/typescript-sdk`。
 
 ## 正式设计范围
 
