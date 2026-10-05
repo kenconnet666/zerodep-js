@@ -10,12 +10,17 @@ import { collectForCallbacks, transformForCallbacks } from './loops.js';
 import { normalizeNamespaces } from './namespaces.js';
 import { checkGuards } from './guards.js';
 import { coreImport } from './imports.js';
+import { Development } from './development.js';
 
 export { CompileError } from './diagnostics.js';
 export type { Diagnostic } from './diagnostics.js';
 
 export interface CompileOptions {
   runtimeModule?: string;
+  /** Vite 开发转换使用；生产和预编译库默认不注入调试/HMR 协议。 */
+  development?: boolean;
+  /** 服务端保留相同开发模板结构，但让 SSR 模块正常失效，不接收组件热更新。 */
+  hmr?: boolean;
 }
 
 /** 公共结果只依赖源码映射格式，不把 Babel 的整套类型带给消费者。 */
@@ -34,6 +39,7 @@ export interface SourceMap {
 export interface CompileResult {
   code: string;
   map: SourceMap | null;
+  hasDevelopment: boolean;
 }
 
 // 这是输出协议版本，不跟随普通修复版本变化；修改时须同步 core/internal。
@@ -82,6 +88,9 @@ export function compile(
   });
   const runtime = program.scope.generateUidIdentifier('zj');
   normalizeNamespaces(program);
+  const development = options.development
+    ? new Development(program, filename, options.hmr !== false)
+    : undefined;
   const helper = (name: string, args: t.Expression[]) =>
     t.callExpression(t.memberExpression(t.cloneNode(runtime), t.identifier(name)), args);
   const cell = (entry: ReactiveBinding) => {
@@ -178,7 +187,13 @@ export function compile(
       const argument =
         (args[0] as t.Expression | undefined) ?? t.unaryExpression('void', t.numericLiteral(0));
       if (macro === 'state')
-        replace(path, helper(member === 'raw' ? 'source' : 'state', [argument]));
+        replace(
+          path,
+          development?.state(
+            path.node,
+            helper(member === 'raw' ? 'source' : 'state', [argument]),
+          ) ?? helper(member === 'raw' ? 'source' : 'state', [argument]),
+        );
       else
         replace(
           path,
@@ -323,6 +338,7 @@ export function compile(
     }
   }
   if (errors.length) throw new CompileError(errors);
+  development?.finish(ast);
   if (reactive.size || hasComponents || hasJsx) {
     const statements = program.node.body;
     program.node.body = [
@@ -344,7 +360,11 @@ export function compile(
     presets: [[presetTypescript, { ignoreExtensions: true }]],
   });
   if (typeof result?.code !== 'string') throw new Error('编译器未生成代码。');
-  return { code: result.code, map: result.map ?? null };
+  return {
+    code: result.code,
+    map: result.map ?? null,
+    hasDevelopment: development?.enabled ?? false,
+  };
 }
 
 export function diagnose(source: string, filename: string): Diagnostic[] {

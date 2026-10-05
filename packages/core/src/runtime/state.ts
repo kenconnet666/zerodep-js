@@ -24,7 +24,7 @@ const mutators = new Set<PropertyKey>([
 ]);
 const arrayMethods = new Map<PropertyKey, (...args: unknown[]) => unknown>();
 
-function raw<T>(value: T): T {
+export function raw<T>(value: T): T {
   return value !== null && typeof value === 'object'
     ? ((originals.get(value) as T | undefined) ?? value)
     : value;

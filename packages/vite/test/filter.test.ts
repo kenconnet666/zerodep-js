@@ -1,4 +1,4 @@
-import { expect, it } from 'vitest';
+import { expect, it, vi } from 'vitest';
 import { resolve } from 'node:path';
 import { zerodep, type ZerodepOptions } from '../src/index.js';
 
@@ -58,4 +58,35 @@ it('Windows 路径与虚拟模块在两条管线中的行为一致', () => {
   for (const result of run(source, 'C:\\project\\src\\page\\counter.mts?direct'))
     expect(result?.code).toContain('.state(');
   expect(run(source, '\0virtual:src/page/view.tsx')).toEqual([null, null]);
+});
+
+it('删除已登记组件文件直接刷新，不再读取已不存在的文件', async () => {
+  const plugin = zerodep();
+  if (typeof plugin.configResolved !== 'function' || typeof plugin.hotUpdate !== 'function')
+    throw new Error('预期为函数钩子。');
+  const root = resolve('fixture-app').replaceAll('\\', '/');
+  const file = root + '/App.tsx';
+  Reflect.apply(plugin.configResolved, undefined, [{ root, command: 'serve' }]);
+  const handler = (plugin.transform as { handler: Transform }).handler;
+  handler.call(
+    {
+      error(error) {
+        throw new Error(error.message);
+      },
+    },
+    `import {_component} from 'zerodep-js';export const App=_component(()=><p/>);`,
+    file,
+  );
+  const send = vi.fn();
+  const read = vi.fn(() => {
+    throw new Error('文件已删除');
+  });
+  const result = await Reflect.apply(
+    plugin.hotUpdate,
+    { environment: { config: { consumer: 'client' }, hot: { send } } },
+    [{ file, type: 'delete', read }],
+  );
+  expect(result).toEqual([]);
+  expect(read).not.toHaveBeenCalled();
+  expect(send).toHaveBeenCalledWith({ type: 'full-reload' });
 });

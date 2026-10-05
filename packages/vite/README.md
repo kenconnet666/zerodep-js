@@ -11,7 +11,7 @@ export default defineConfig({ plugins: [zerodep()] });
 
 TS 配置使用 `jsx: "preserve"`、`jsxImportSource: "zerodep-js"`。应用安装 core，SSR 应用另装 ssr；插件及 TypeScript 是开发依赖。Vite 插件不替代 TS7 的类型检查。
 
-依赖包应发布预编译 ESM；插件跳过 node_modules。开发 HMR 在应用入口明确接收根组件更新并调用旧 disposer，局部状态重置；完整示例与诊断规则见 [开发指南](https://github.com/kenconnet666/zerodep-js/blob/main/docs/development.md)。
+依赖包应发布预编译 ESM；插件跳过 node_modules。开发模式自动接入组件检查和兼容的本地状态保留；修改状态声明、组件身份或导出结构时按规则重置或重建。检查面板只读查看本地状态和有限事件，生产构建不注入。支持范围与 SSR 边界见 [开发检查](https://github.com/kenconnet666/zerodep-js/blob/main/docs/devtools.md)。
 
 `zerodep({ include, exclude })` 可为多框架工程指定文件范围，相对模式以应用 root 为基准；开发、依赖扫描、生产与 SSR 共用规则。完整示例见[页面宿主](https://github.com/kenconnet666/zerodep-js/blob/main/docs/page-hosts.md)。
 
