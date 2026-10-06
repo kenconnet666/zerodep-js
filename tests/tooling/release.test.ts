@@ -34,6 +34,11 @@ it('发布工具固定产物、拒绝篡改/越界/私有包，并仅准备明�
     await mkdir(resolve(fixture, 'scripts'));
     for (const file of ['package-list.mjs', 'release-publication.mjs', 'release.mjs'])
       await copyFile(resolve(project, 'scripts', file), resolve(fixture, 'scripts', file));
+    await mkdir(resolve(fixture, 'scripts/native'));
+    await copyFile(
+      resolve(project, 'scripts/native/platforms.mjs'),
+      resolve(fixture, 'scripts/native/platforms.mjs'),
+    );
     await copyFile(resolve(project, 'LICENSE'), resolve(fixture, 'LICENSE'));
     await mkdir(resolve(fixture, 'patches'));
     await copyFile(
@@ -54,7 +59,7 @@ it('发布工具固定产物、拒绝篡改/越界/私有包，并仅准备明�
       const directory = resolve(fixture, 'packages', folder);
       await mkdir(directory, { recursive: true });
       const platformPackage = packageList[index]!.kind === 'native-platform';
-      const platform = folder.startsWith('native-win32') ? 'win32' : 'linux';
+      const platform = folder.split('-')[1] ?? 'linux';
       await copyFile(
         resolve(project, platformPackage ? 'patches/LICENSE.typescript' : 'LICENSE'),
         resolve(directory, 'LICENSE'),

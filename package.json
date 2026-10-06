@@ -32,6 +32,7 @@
     "test:hosts:registry": "node scripts/verify-host-packages.mjs --registry",
     "test:hosts:dev": "node scripts/verify-host-dev.mjs",
     "release:check": "node --use-env-proxy scripts/release.mjs check",
+    "release:ci": "node --use-env-proxy scripts/release-ci.mjs",
     "release:prepare": "node --use-env-proxy scripts/release.mjs prepare",
     "release:pack": "node --use-env-proxy scripts/release.mjs pack",
     "release:status": "node --use-env-proxy scripts/release.mjs status",

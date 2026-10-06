@@ -14,6 +14,7 @@ playwright-report/
 packages/native/bin/
 packages/native-*/typescript/
 .codex/ts-native-build-*/
+.codex/native-artifacts/
 .idea
 apps/example/.dev-check-*/
 apps/example/.native-check-*/

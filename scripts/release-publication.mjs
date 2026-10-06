@@ -17,6 +17,10 @@ export async function publishCandidates(items, operations) {
   for (const item of items) {
     let remote = await operations.readVersion(item);
     if (!remote && !item.acceptedAt && !item.attemptedAt) {
+      if (operations.readyToUpload && !operations.readyToUpload(item)) {
+        results.push({ name: item.name, state: 'blocked' });
+        continue;
+      }
       item.attemptedAt = now();
       await operations.save();
       await operations.upload(item);

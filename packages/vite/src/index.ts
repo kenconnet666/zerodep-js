@@ -91,7 +91,8 @@ export function zerodep(options: ZerodepOptions = {}): Plugin {
       if (backend) (await backend).invalidate?.(id, change.event);
     },
     async closeBundle() {
-      if (!this.meta.watchMode) await close();
+      // Vite 开发关闭也带 watchMode；中间件模式没有 httpServer/closeWatcher 兜底。
+      if (development || !this.meta.watchMode) await close();
     },
     async closeWatcher() {
       await close();

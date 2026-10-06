@@ -332,14 +332,34 @@ importers:
         specifier: 'catalog:'
         version: 24.13.5
     optionalDependencies:
+      zerodep-js-native-darwin-arm64:
+        specifier: workspace:*
+        version: link:../native-darwin-arm64
+      zerodep-js-native-darwin-x64:
+        specifier: workspace:*
+        version: link:../native-darwin-x64
+      zerodep-js-native-linux-arm64:
+        specifier: workspace:*
+        version: link:../native-linux-arm64
       zerodep-js-native-linux-x64:
         specifier: workspace:*
         version: link:../native-linux-x64
+      zerodep-js-native-win32-arm64:
+        specifier: workspace:*
+        version: link:../native-win32-arm64
       zerodep-js-native-win32-x64:
         specifier: workspace:*
         version: link:../native-win32-x64
 
+  packages/native-darwin-arm64: {}
+
+  packages/native-darwin-x64: {}
+
+  packages/native-linux-arm64: {}
+
   packages/native-linux-x64: {}
+
+  packages/native-win32-arm64: {}
 
   packages/native-win32-x64: {}
 

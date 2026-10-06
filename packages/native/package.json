@@ -35,7 +35,11 @@
   },
   "optionalDependencies": {
     "zerodep-js-native-win32-x64": "workspace:*",
-    "zerodep-js-native-linux-x64": "workspace:*"
+    "zerodep-js-native-win32-arm64": "workspace:*",
+    "zerodep-js-native-linux-x64": "workspace:*",
+    "zerodep-js-native-linux-arm64": "workspace:*",
+    "zerodep-js-native-darwin-x64": "workspace:*",
+    "zerodep-js-native-darwin-arm64": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "catalog:"

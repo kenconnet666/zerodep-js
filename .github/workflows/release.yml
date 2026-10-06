@@ -1,0 +1,107 @@
+name: 发布 npm 候选
+
+on:
+  workflow_run:
+    workflows: [工程与框架验证]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: 已通过的工程与框架验证运行 ID（恢复同一批产物）
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: npm-candidate-release
+  cancel-in-progress: false
+
+jobs:
+  gate:
+    if: >-
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_repository.full_name == github.repository &&
+       github.event.workflow_run.event != 'pull_request')
+    runs-on: ubuntu-24.04
+    outputs:
+      sha: ${{ steps.gate.outputs.sha }}
+      run_id: ${{ steps.gate.outputs.run_id }}
+    steps:
+      - id: gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ github.event.workflow_run.id || inputs.run_id }}
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import { execFileSync } from 'node:child_process';
+          import { appendFileSync } from 'node:fs';
+          const id = process.env.RUN_ID;
+          assert(/^d+$/.test(id));
+          const repository = process.env.GITHUB_REPOSITORY;
+          const run = JSON.parse(execFileSync('gh', ['api', `repos/${repository}/actions/runs/${id}`], { encoding: 'utf8' }));
+          assert.equal(run.path, '.github/workflows/ci.yml');
+          assert.equal(run.head_repository.full_name, repository);
+          assert.equal(run.head_branch, 'main');
+          assert(['push', 'workflow_dispatch'].includes(run.event));
+          assert.equal(run.status, 'completed');
+          assert.equal(run.conclusion, 'success');
+          appendFileSync(process.env.GITHUB_OUTPUT, `sha=${run.head_sha}
+          run_id=${id}
+          `);
+          NODE
+
+  publish:
+    needs: gate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.gate.outputs.sha }}
+          persist-credentials: false
+      - uses: pnpm/action-setup@d9184bf108216479bc5a137cc391f4d7b14c870b # v6.1.0
+        with:
+          version: 10.34.5
+          cache: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ needs.gate.outputs.run_id }}
+          pattern: native-sdk-*
+          path: .codex/native-artifacts
+          merge-multiple: true
+      - run: node scripts/native/artifacts.mjs restore
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ needs.gate.outputs.run_id }}
+          name: release-candidate
+          path: .release
+      - run: pnpm build:packages
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm release:ci
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: release-state-${{ github.run_attempt }}
+          path: .release/
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 30

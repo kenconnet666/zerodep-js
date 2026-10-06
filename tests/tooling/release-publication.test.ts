@@ -111,3 +111,21 @@ it('一个包等待 npm 公开时仍处理清单中的后续包', async () => {
   ]);
   expect(upload).toHaveBeenCalledTimes(2);
 });
+
+it('原生入口等待平台包就绪，阻塞不留下上传尝试记录', async () => {
+  const items = [candidate('platform'), candidate('entry')];
+  const upload = vi.fn(async () => {});
+  const results = await publishCandidates(items, {
+    readVersion: async () => null,
+    readTags: async () => ({}),
+    readyToUpload: (item: Candidate) => item.name !== 'entry',
+    upload,
+    save: async () => {},
+  });
+  expect(results).toEqual([
+    { name: 'platform', state: 'pending' },
+    { name: 'entry', state: 'blocked' },
+  ]);
+  expect(items[1]?.attemptedAt).toBeUndefined();
+  expect(upload).toHaveBeenCalledTimes(1);
+});

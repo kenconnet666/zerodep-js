@@ -8,7 +8,7 @@
 
 当前 main 已准备统一的 `1.0.0-rc.3` 拆包候选：路由和持久化移到独立 `zerodep-use/router`、`zerodep-use/storage`，core 的旧入口直接移除。拆包版本尚未发布，使用当前源码时通过工作区或本地 tgz 安装；迁移与验收见 [zerodep-use 拆包](docs/use-extraction.md)。RC2 的原始 npm 产物保持不变。
 
-当前源码另提供 `zerodep-js-native` 及 Windows/Linux x64 平台包，与 Babel 后端共用运行时。原生 CLI 在一次 TS7 编译中完成检查、JS、声明和映射；Vite 使用 `zerodep({ compiler: 'native' })` 选择。平台包与 RC3 尚未发布，构建、测试和性能结果见[原生实施记录](docs/native-compiler-implementation.md)。
+当前源码另提供 `zerodep-js-native` 及 Windows/Linux/macOS 的 x64/ARM64 平台包，与 Babel 后端共用运行时。原生 CLI 在一次 TS7 编译中完成检查、JS、声明和映射；Vite 使用 `zerodep({ compiler: 'native' })` 选择。平台包与 RC3 尚未发布，构建、测试和性能结果见[原生实施记录](docs/native-compiler-implementation.md)。
 
 项目框架代码使用 [MIT License](LICENSE)，原生包所含 TypeScript 上游使用 Apache-2.0，许可随平台包提供。贡献方式见 [CONTRIBUTING](CONTRIBUTING.md)。
 

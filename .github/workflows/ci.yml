@@ -13,7 +13,68 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  native-matrix:
+    runs-on: ubuntu-24.04
+    outputs:
+      matrix: ${{ steps.platforms.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - id: platforms
+        run: |
+          node --input-type=module -e "import { platforms } from './scripts/native/platforms.mjs'; import { appendFileSync } from 'node:fs'; appendFileSync(process.env.GITHUB_OUTPUT, 'matrix=' + JSON.stringify({ include: platforms }) + '\n');"
+
+  native-platforms:
+    needs: native-matrix
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.native-matrix.outputs.matrix) }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@d9184bf108216479bc5a137cc391f4d7b14c870b # v6.1.0
+        with:
+          version: 10.34.5
+          cache: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+          architecture: ${{ matrix.arch }}
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: node -e "if(process.platform+'-'+process.arch !== process.env.EXPECTED_PLATFORM) throw Error('Runner architecture mismatch')"
+        env:
+          EXPECTED_PLATFORM: ${{ matrix.platform }}
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: microsoft/TypeScript
+          ref: 50d70a3f5f453a79a4323b263165da51f656a4e3
+          path: .codex/typescript-source
+          persist-credentials: false
+          sparse-checkout: |
+            tsc/cmd
+            tsc/internal
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: 1.27.1
+          cache: false
+      - run: pnpm compiler:native:build --source .codex/typescript-source --test
+      - run: pnpm build:packages
+      - run: pnpm test:native
+      - run: node scripts/native/artifacts.mjs pack
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: native-sdk-${{ matrix.platform }}
+          path: .codex/native-artifacts/*.tar.gz
+          if-no-files-found: error
+          retention-days: 14
+
   verify:
+    needs: native-platforms
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -33,21 +94,12 @@ jobs:
       - run: pnpm check
       - run: pnpm test
       - run: pnpm test:stability
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
-          repository: microsoft/TypeScript
-          ref: 50d70a3f5f453a79a4323b263165da51f656a4e3
-          path: .codex/typescript-source
-          persist-credentials: false
-          sparse-checkout: |
-            tsc/cmd
-            tsc/internal
-      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
-        with:
-          go-version: 1.27.1
-          cache: false
-      - run: pnpm compiler:native:build --source .codex/typescript-source --test
-      - run: pnpm compiler:native:build --source .codex/typescript-source --platform win32-x64
+          pattern: native-sdk-*
+          path: .codex/native-artifacts
+          merge-multiple: true
+      - run: node scripts/native/artifacts.mjs restore
       - run: pnpm test:native
       - run: pnpm lsp:setup
       - run: pnpm lsp:verify
@@ -86,6 +138,7 @@ jobs:
           retention-days: 7
 
   package-consumer-windows:
+    needs: native-platforms
     runs-on: windows-latest
     timeout-minutes: 45
     steps:
@@ -101,21 +154,12 @@ jobs:
           node-version-file: .node-version
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
-          repository: microsoft/TypeScript
-          ref: 50d70a3f5f453a79a4323b263165da51f656a4e3
-          path: .codex/typescript-source
-          persist-credentials: false
-          sparse-checkout: |
-            tsc/cmd
-            tsc/internal
-      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
-        with:
-          go-version: 1.27.1
-          cache: false
-      - run: pnpm compiler:native:build --source .codex/typescript-source --test
-      - run: pnpm compiler:native:build --source .codex/typescript-source --platform linux-x64
+          pattern: native-sdk-*
+          path: .codex/native-artifacts
+          merge-multiple: true
+      - run: node scripts/native/artifacts.mjs restore
       - run: pnpm exec playwright install chromium
       - run: pnpm test:packages
       - run: pnpm test:hosts:packages
@@ -127,3 +171,36 @@ jobs:
           path: test-results/
           if-no-files-found: ignore
           retention-days: 7
+
+  release-artifacts:
+    needs: [verify, package-consumer-windows, native-platforms]
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@d9184bf108216479bc5a137cc391f4d7b14c870b # v6.1.0
+        with:
+          version: 10.34.5
+          cache: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          pattern: native-sdk-*
+          path: .codex/native-artifacts
+          merge-multiple: true
+      - run: node scripts/native/artifacts.mjs restore
+      - run: pnpm release:pack
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: release-candidate
+          path: .release/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30

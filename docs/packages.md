@@ -2,11 +2,11 @@
 
 七个公共包已发布 1.0.0-rc.2，实际 npm 安装验收通过。工作区根与两个示例保持 private。本文记录已经验证的安装包契约，候选与稳定版本状态见 [发布记录](../CHANGELOG.md)。
 
-当前源码增加 `zerodep-use`、`zerodep-js-native` 及 Windows/Linux x64 两个平台包，共十一包统一准备为 1.0.0-rc.3，尚未发布。下表与消费门槛按拆包后的结构维护；RC2 的历史验收继续保留。use 只提供 router/storage/history 子入口，没有聚合根入口；core 不依赖 use。
+当前源码增加 `zerodep-use`、`zerodep-js-native` 及 Windows/Linux/macOS 的 x64/ARM64 六个平台包，共十五包统一准备为 1.0.0-rc.3，尚未发布。下表与消费门槛按拆包后的结构维护；RC2 的历史验收继续保留。use 只提供 router/storage/history 子入口，没有聚合根入口；core 不依赖 use。
 
 公共名称统一为下表中的无 scope 包名；开发阶段的 `@zerodep-js/core` 对应 `zerodep-js`，其余旧公共名称对应 `zerodep-js-compiler/vite/ssr`。旧名称未曾发布，不提供重复兼容入口。框架代码许可证为 MIT，每个框架 tgz 包含与根目录一致的 LICENSE。原生平台包含 Apache-2.0 上游 LICENSE、MIT 框架 LICENSE.zerodep 与 NOTICE。
 
-RC2 新增三个宿主包，发布清单统一维护在 scripts/package-list.mjs 的 releasePackages，包含三个原生包，平台包先于 Node 包发布；基础框架与宿主有分别的独立消费门槛。独立安装基础框架不会强制安装 React、Vue 或 Svelte。
+RC2 新增三个宿主包，发布清单统一维护在 scripts/package-list.mjs 的 releasePackages，包含原生入口和六个平台包，平台包先于 Node 包发布；基础框架与宿主有分别的独立消费门槛。独立安装基础框架不会强制安装 React、Vue 或 Svelte。
 
 ## 包边界
 

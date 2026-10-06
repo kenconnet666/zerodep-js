@@ -1,0 +1,51 @@
+/** 与官方 TS7 npm 支持范围的 64 位平台对齐；每个平台由对应架构 CI 实际执行。 */
+export const platforms = [
+  {
+    platform: 'win32-x64',
+    os: 'win32',
+    arch: 'x64',
+    goos: 'windows',
+    goarch: 'amd64',
+    runner: 'windows-2025',
+  },
+  {
+    platform: 'win32-arm64',
+    os: 'win32',
+    arch: 'arm64',
+    goos: 'windows',
+    goarch: 'arm64',
+    runner: 'windows-11-arm',
+  },
+  {
+    platform: 'linux-x64',
+    os: 'linux',
+    arch: 'x64',
+    goos: 'linux',
+    goarch: 'amd64',
+    runner: 'ubuntu-24.04',
+  },
+  {
+    platform: 'linux-arm64',
+    os: 'linux',
+    arch: 'arm64',
+    goos: 'linux',
+    goarch: 'arm64',
+    runner: 'ubuntu-24.04-arm',
+  },
+  {
+    platform: 'darwin-x64',
+    os: 'darwin',
+    arch: 'x64',
+    goos: 'darwin',
+    goarch: 'amd64',
+    runner: 'macos-15-intel',
+  },
+  {
+    platform: 'darwin-arm64',
+    os: 'darwin',
+    arch: 'arm64',
+    goos: 'darwin',
+    goarch: 'arm64',
+    runner: 'macos-15',
+  },
+];

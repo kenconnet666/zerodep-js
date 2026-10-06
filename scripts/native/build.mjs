@@ -6,6 +6,7 @@ import { cp, mkdir, mkdtemp, readFile, rename, rm, writeFile } from 'node:fs/pro
 import { basename, dirname, resolve } from 'node:path';
 import { parseArgs, promisify } from 'node:util';
 import { nativeInputs } from './inputs.mjs';
+import { platforms } from './platforms.mjs';
 
 const root = resolve(import.meta.dirname, '../..');
 const { values } = parseArgs({
@@ -21,10 +22,8 @@ const source = resolve(values.source);
 const { target, goSource, patches, sourceHash, version } = nativeInputs(root);
 const hostPlatform = `${process.platform}-${process.arch}`;
 const platform = values.platform ?? hostPlatform;
-assert(
-  ['win32-x64', 'linux-x64'].includes(platform),
-  `当前原生分发支持 Windows/Linux x64，收到 ${platform}`,
-);
+const targetPlatform = platforms.find((item) => item.platform === platform);
+assert(targetPlatform, `不支持的原生平台：${platform}`);
 const packageRoot = resolve(root, 'packages/native-' + platform);
 const destination = resolve(packageRoot, 'typescript');
 assert(!values.test || platform === hostPlatform, '交叉构建不能在宿主执行目标平台测试。');
@@ -42,8 +41,8 @@ const env = {
   GOTOOLCHAIN: 'local',
   GOWORK: 'off',
   CGO_ENABLED: '0',
-  GOOS: platform.startsWith('win32') ? 'windows' : 'linux',
-  GOARCH: 'amd64',
+  GOOS: targetPlatform.goos,
+  GOARCH: targetPlatform.goarch,
   GOCACHE: process.env.GOCACHE ?? resolve(root, '.codex/toolchains/build-cache'),
   GOMODCACHE: process.env.GOMODCACHE ?? resolve(root, '.codex/toolchains/module-cache'),
 };
@@ -162,7 +161,11 @@ try {
   else
     assert.equal(
       (await readFile(binary)).subarray(0, 4).toString('hex'),
-      platform.startsWith('linux') ? '7f454c46' : '4d5a9000',
+      targetPlatform.os === 'linux'
+        ? '7f454c46'
+        : targetPlatform.os === 'darwin'
+          ? 'cffaedfe'
+          : '4d5a9000',
     );
   const manifest = JSON.parse(await readFile(resolve(staged, 'package.json'), 'utf8'));
   await writeFile(
@@ -173,8 +176,8 @@ try {
         name: `@typescript/typescript-${platform}`,
         version,
         private: true,
-        os: [platform.split('-')[0]],
-        cpu: ['x64'],
+        os: [targetPlatform.os],
+        cpu: [targetPlatform.arch],
       },
       null,
       2,

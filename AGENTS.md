@@ -17,11 +17,13 @@
 
 ## 工具与质量
 
+- 2026-10-06 用户确认可使用当前 npm 环境变量发布，并要求其他架构依赖 CI/CD 构建发版。Windows/Linux/macOS 的 x64/ARM64 由对应 runner 构建并验证，同一提交完整 CI 通过后发布固定 tgz 到 next；凭据只在发布步骤使用。流程与恢复见 docs/native-release.md。
+
 - 2026-10-06 用户批准按 .design/native-compiler.md 实施原生 Go 后端，并要求完成后测试性能。保留 Babel 可选后端、共用 ABI 2、固定 TS7.1；完成现有语义及 CLI/Vite/诊断/开发态验证后再比较等价工作量的性能，不以研究探针或局部试点代替完整交付。
 
-- 使用 Node 24、package.json 固定的 pnpm 和 TypeScript 7。2026-10-06 用户批准直接使用 npm 官方 `7.1.0-dev.20261005.1`；Go 编译路线只面向选定的新版本，不增加旧版或多版本兼容分支。双编译器仍处于研究阶段，版本升级不代表原生框架转换已实现。共享版本放在 catalog，包间依赖使用 `workspace:*`，不添加 npm/yarn 锁文件或旧版 TypeScript 兼容层。
+- 使用 Node 24、package.json 固定的 pnpm 和 TypeScript 7。2026-10-06 用户批准直接使用 npm 官方 `7.1.0-dev.20261005.1`；Go 编译路线只面向选定的新版本，不增加旧版或多版本兼容分支。双编译器已实现，Babel 与原生 Go 共用 ABI 2；实现和本机性能证据见 docs/native-compiler-implementation.md。共享版本放在 catalog，包间依赖使用 `workspace:*`，不添加 npm/yarn 锁文件或旧版 TypeScript 兼容层。
 - 2026-10-06 用户明确不为 Zod 调整编译器版本，并要求连 MCP SDK 引入的间接 Zod 依赖一并移除。示例使用普通 TypeScript 数据校验，项目只读 MCP 工具使用 JSON Schema 与标准 stdio JSON-RPC，保留完整校验和独立服务验证。
-- 2026-10-06 用户授权全面校验其他语法补全并修复问题。语言服务使用固定上游提交及项目补丁生成的 `.codex/typescript-sdk`；构建入口 `pnpm typescript:build`，补全矩阵 `pnpm lsp:completions`。不在 MCP 中硬编码候选，不修改 pnpm store，也不把原生语言服务补丁等同于框架 Go 编译后端已完成。
+- 2026-10-06 用户授权全面校验其他语法补全并修复问题。语言服务使用固定上游提交及项目补丁生成的 `packages/native-<平台>/typescript`；构建入口 `pnpm compiler:native:build`，补全矩阵 `pnpm lsp:completions`。不在 MCP 中硬编码候选，不修改 pnpm store，也不把原生语言服务补丁等同于框架 Go 编译后端已完成。
 - 保持简洁、人工可维护的结构，优先原生语言能力；适当中文注释解释不明显的原因和生命周期责任。执行中持续整理目录、文件职责和 API 命名，不囤积废弃入口。
 - 允许用可重复脚本生成类型等内容，或引入能改善完整性与维护性的依赖；记录来源与人工维护入口，不机械追求零依赖。包大小和运行速度没有硬性指标，记录基线与明显退化，优先正确性和可维护性。
 - 配置变更运行 `pnpm check`、`pnpm build`；LSP 改动运行 `pnpm lsp:verify`。根据影响选择验证，不用空测试代表框架功能完成。

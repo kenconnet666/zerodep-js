@@ -9,6 +9,7 @@ playwright-report/
 .codex/typescript-sdk/
 .codex/typescript-source/
 .codex/ts-native-build-*/
+.codex/native-artifacts/
 packages/native-*/typescript/
 .design/ts7-tsx-probe-results.json
 pnpm-lock.yaml

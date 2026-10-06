@@ -24,7 +24,7 @@ const folders = packageList.map((item) => item.folder);
 const names = packageList.map((item) => item.name);
 const { values, positionals } = parseArgs({
   allowPositionals: true,
-  options: { version: { type: 'string' } },
+  options: { version: { type: 'string' }, 'github-release': { type: 'boolean', default: false } },
 });
 const command = positionals[0] ?? 'check';
 assert(
@@ -340,6 +340,14 @@ async function main() {
     const temporary = ledgerFile + '.tmp';
     await writeFile(temporary, JSON.stringify(ledger, null, 2) + '\n');
     await rename(temporary, ledgerFile);
+    if (values['github-release']) {
+      // CI 先持久化尝试记录到已建立的草稿发布，取消或失败后仍可恢复同一批 tgz。
+      await exec(
+        'gh',
+        ['release', 'upload', 'v' + selectedVersion, ledgerFile, '--clobber', '--repo', repository],
+        { cwd: root, windowsHide: true, encoding: 'utf8' },
+      );
+    }
   };
   assert(['publish', 'verify-registry', 'promote'].includes(command), '未知发布操作。');
   assert(
@@ -351,6 +359,11 @@ async function main() {
   if (command === 'publish') {
     const results = await authenticated((publish) =>
       publishCandidates(ledger.packages, {
+        readyToUpload: (item) =>
+          item.name !== 'zerodep-js-native' ||
+          ledger.packages
+            .filter((p) => p.name.startsWith('zerodep-js-native-'))
+            .every((p) => p.published),
         readVersion: (item) => metadata(item.name, selectedVersion),
         readTags: (item) => tags(item.name),
         save,
@@ -375,6 +388,7 @@ async function main() {
     );
     const descriptions = {
       ready: '版本完整性与 next 已核对',
+      blocked: '等待全部平台包公开并完成完整性核对，再发布原生入口',
       pending: '请求已受理，等待 npm 公开版本；不会重复上传',
       unknown: '上传结果待核实；保留原产物和记录，不自动重试',
       'tags-pending': '版本完整性已核对，next 标签尚未就绪',
