@@ -17,6 +17,8 @@
 
 Prettier/Oxc 与 Oxlint 暂作为独立工程工具保留；删除 Svelte 格式插件。未使用的 coverage 插件因间接引入 Babel 也已移除，测试用例保留。关闭 peer 自动安装，显式声明根 Vite 依赖，防止已删除工具通过可选 peer 回流；锁文件的实际包清单不再含 Babel、Vue、React、Svelte 或 coverage 插件。这些保留工具没有共享定制 TS-Go 的 AST，不将清理依赖等同于跨工具共享已完成。
 
+后续工具接入的源码核对、只读实验与优先级见 [定制 TS7 工具共享研究](native-tooling.md)。
+
 ## 本地验证结果
 
 - 定制 SDK 的全仓构建、类型和框架诊断、生成数据及 lint 通过。
