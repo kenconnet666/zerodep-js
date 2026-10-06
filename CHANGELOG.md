@@ -1,6 +1,8 @@
 # 变更记录
 
-## 1.0.0-rc.6 — 编译缓存修正，验收中
+## 1.0.0-rc.6 — 编译缓存修正，2026-10-07
+
+十一包已发布到 next。源码 `cd49382` 的[完整 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/37501732117)通过：六平台原生专项各 113 项、Node 336 项、三浏览器 328 项，严格抖动门禁通过。[发布任务](https://github.com/kenconnet666/zerodep-js/actions/runs/37504139849)完成真实注册表消费；十一份原始 tgz、npm SHA-512 和 next 标签一致。[GitHub 预发布](https://github.com/kenconnet666/zerodep-js/releases/tag/v1.0.0-rc.6)保留冻结产物与发布记录。
 
 - 编译会话区分已读取的磁盘文本与内存覆盖，忽略内容未变化的迟到监听通知，显式 invalidate 仍然生效。
 - 包元数据只使相关项目失效，避免其他临时项目的删除事件清空当前编译缓存。

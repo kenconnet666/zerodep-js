@@ -39,6 +39,8 @@
 
 浏览器日志、失败 trace 和稳定性记录按浏览器区分，避免 artifact 同名覆盖。CI 将重试后才通过的用例计为失败，保留重试供定位。发布的 npm 元数据等待另采用有界退避，最长单次等待 60 秒；只查询已有回执，不重新上传已经尝试的版本。
 
+实际运行对比：RC5 的 SDK 就绪后验收阶段为 16 分 17 秒，RC6 的并行阶段为 5 分 39 秒，墙钟时间减少约 65.3%。RC6 三浏览器共 328 项在严格抖动门禁下通过。这里不计 SDK 构建和发布打包，也不把两台 runner 环境的观察值当作固定性能保证；旧流程还包含一次用例重试。[原始任务时间](../reports/ci-parallel-performance.json)保留各任务起止时间。
+
 已发布并完成验收的同一 RC 后续不会因普通 main 提交重复发布。准备下一候选应统一提升十一个包的版本；不重新上传已使用的版本，也不修改其原始 tgz。
 
 ## 日常命令
@@ -73,3 +75,5 @@ RC3 恢复任务的第二次尝试仍在创建 GitHub Release 时返回 403，�
 RC4 的[六平台完整 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/37452811866)通过。首次发布在等待平台包公开及标签同步时耗尽有限重试，留下可恢复草稿；注册表就绪后，恢复同一批固定产物的[第二次发布运行](https://github.com/kenconnet666/zerodep-js/actions/runs/37455845240/attempts/2)通过，包含 npm 注册表真实安装验收。下一批工具共享改动使用 RC5，绝不以新内容覆盖 RC4。
 
 RC5 也在首次上传受理后遇到 npm 元数据延迟；恢复原运行并沿用 `052a51e` 的冻结产物后，[第二次发布](https://github.com/kenconnet666/zerodep-js/actions/runs/37489398562/attempts/2)通过实际注册表安装，随后公开 [v1.0.0-rc.5](https://github.com/kenconnet666/zerodep-js/releases/tag/v1.0.0-rc.5)。后续测试编排与文档维护不重打包或覆盖该版本。
+
+RC6 的[并行 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/37501732117)与[发布运行](https://github.com/kenconnet666/zerodep-js/actions/runs/37504139849)均通过。十一包已在 next 公开，原始 tgz 与注册表完整性相同，注册表真实消费回执为 `2026-10-06T17:41:34.441Z`。[公开预发布](https://github.com/kenconnet666/zerodep-js/releases/tag/v1.0.0-rc.6)绑定 `cd493829f87f9e6fad4d3f4e41e87b56074d7060`，保存全部固定产物与最终 release.json。

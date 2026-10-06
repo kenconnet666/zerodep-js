@@ -1,0 +1,68 @@
+{
+  "baseline": {
+    "runId": 37485656478,
+    "jobs": [
+      {
+        "name": "verify",
+        "start": "2026-10-06T15:22:49Z",
+        "end": "2026-10-06T15:39:06Z",
+        "result": "success"
+      },
+      {
+        "name": "package-consumer-windows",
+        "start": "2026-10-06T15:22:49Z",
+        "end": "2026-10-06T15:25:34Z",
+        "result": "success"
+      }
+    ],
+    "validationWallSeconds": 977
+  },
+  "parallel": {
+    "runId": 37501732117,
+    "jobs": [
+      {
+        "name": "package-consumer-linux",
+        "start": "2026-10-06T17:24:24Z",
+        "end": "2026-10-06T17:26:03Z",
+        "result": "success"
+      },
+      {
+        "name": "browser (webkit)",
+        "start": "2026-10-06T17:24:24Z",
+        "end": "2026-10-06T17:29:34Z",
+        "result": "success"
+      },
+      {
+        "name": "browser (firefox)",
+        "start": "2026-10-06T17:24:24Z",
+        "end": "2026-10-06T17:30:03Z",
+        "result": "success"
+      },
+      {
+        "name": "verify",
+        "start": "2026-10-06T17:24:24Z",
+        "end": "2026-10-06T17:27:16Z",
+        "result": "success"
+      },
+      {
+        "name": "browser (chromium)",
+        "start": "2026-10-06T17:24:24Z",
+        "end": "2026-10-06T17:27:29Z",
+        "result": "success"
+      },
+      {
+        "name": "package-consumer-windows",
+        "start": "2026-10-06T17:24:27Z",
+        "end": "2026-10-06T17:26:50Z",
+        "result": "success"
+      }
+    ],
+    "validationWallSeconds": 339
+  },
+  "validationWallReductionPercent": 65.3,
+  "notes": [
+    "从 SDK 就绪后的验收任务启动到最后一个验收任务结束，不包含 SDK 构建或发布产物打包。",
+    "两次实际运行，包含安装与 runner 差异，不是受控性能基准。",
+    "旧流程有一个浏览器用例重试后通过；新流程启用 failOnFlakyTests，328 项均通过。"
+  ]
+}

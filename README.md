@@ -2,7 +2,7 @@
 
 使用标准 TSX、显式变量式状态和细粒度更新的独立框架。项目只维护固定的定制 TypeScript 7.1 Go 编译器：检查原始源码，在同一编译器内完成框架转换、JS、声明、映射和语言服务诊断。
 
-已发布基线为十一包 **1.0.0-rc.5**，通过六平台 CI 与 npm 实际消费；当前源码正在验收 **RC6 编译缓存修正**。传统编译器及 Vue、React、Svelte 页面宿主已移除，core 保留一份源码和一套产物。历史版本与发布证据见 [CHANGELOG](CHANGELOG.md)，当前工具与共享边界见 [原生工具说明](docs/native-tooling.md)。
+当前十一包 **1.0.0-rc.6 已发布到 next**，通过六平台原生验证、并行三浏览器验证与 npm 实际消费。传统编译器及 Vue、React、Svelte 页面宿主已移除，core 保留一份源码和一套产物。历史版本与发布证据见 [CHANGELOG](CHANGELOG.md)，当前工具与共享边界见 [原生工具说明](docs/native-tooling.md)。
 
 ## 工作区
 
