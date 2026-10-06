@@ -42,7 +42,7 @@ jobs:
           import { execFileSync } from 'node:child_process';
           import { appendFileSync } from 'node:fs';
           const id = process.env.RUN_ID;
-          assert(/^d+$/.test(id));
+          assert(/^[0-9]+$/.test(id));
           const repository = process.env.GITHUB_REPOSITORY;
           const run = JSON.parse(execFileSync('gh', ['api', `repos/${repository}/actions/runs/${id}`], { encoding: 'utf8' }));
           assert.equal(run.path, '.github/workflows/ci.yml');

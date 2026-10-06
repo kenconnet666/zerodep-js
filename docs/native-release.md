@@ -49,3 +49,5 @@ gh workflow run release.yml --ref main -f run_id=<原成功CI运行ID>
 前一提交的 Linux CI 已完成原生三宿主 HMR 断言，但开发服务器没有退出。Vite 中间件模式没有独立 httpServer，开发关闭时 closeBundle 的 watchMode 仍为 true，旧逻辑因此跳过原生服务关闭。现在开发态 closeBundle 始终释放服务，生产构建 watch 仍保留服务到 watcher 关闭；新增生命周期测试区分这两个行为。
 
 实际发布版本、成功运行链接及 registry 验收以 CHANGELOG 和对应 GitHub Release 中的 release.json 为准。配置了流程不等于某次发布已经成功。
+
+2026-10-06，提交 `c140e8e` 的[完整 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/37439243840) 已通过；随后的[发布运行](https://github.com/kenconnet666/zerodep-js/actions/runs/37443207385) 在门禁校验 run ID 时失败，尚未进入 npm 发布。原因是数字正则漏写反斜线，实际成为 `/^d+$/`。修复改用 `/^[0-9]+$/`，并执行工作流原始 JavaScript 验证十种接受和拒绝场景，包括数字 ID、错误分支、外部仓库、PR 事件和失败 CI。恢复时可手动指定上述已通过的运行 ID，继续使用原提交的固定产物，不重新打包候选。
