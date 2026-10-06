@@ -18,6 +18,15 @@ const UnionField = _component(
   ) => <span>{props.value}</span>,
 );
 
+const OptionalField = _component(
+  (props: { readonly value?: string; onValueChange: (value: string | undefined) => void }) => (
+    <span>{props.value}</span>
+  ),
+);
+const GenericField = _component(<T,>(props: { value: T; onValueChange: (value: T) => void }) => (
+  <span>{String(props.value)}</span>
+));
+
 export const BindingTypes = _component(() => {
   let text = _state('');
   let flag = _state(false);
@@ -29,6 +38,16 @@ export const BindingTypes = _component(() => {
   const select = <select multiple bind:value={selected} />;
   const component = <Field label="字段" bind:value={text} bind:checked={flag} />;
   const union = <UnionField kind="text" bind:value={text} />;
+  let optional = _state<string>();
+  const optionalBinding = <OptionalField bind:value={optional} />;
+  const optionalPlain = <OptionalField onValueChange={() => {}} />;
+  const genericBinding = <GenericField<string> bind:value={text} />;
+  // @ts-expect-error 可选 value 不能使必填的回调和绑定同时缺失。
+  const missingOptionalBinding = <OptionalField />;
+  // @ts-expect-error 可选绑定仍然约束非空值的类型。
+  const wrongOptionalBinding = <OptionalField bind:value={flag} />;
+  // @ts-expect-error 泛型实参仍然约束绑定值。
+  const wrongGenericBinding = <GenericField<number> bind:value={text} />;
   // @ts-expect-error 绑定不能破坏判别联合的 kind/value 对应关系。
   const wrongUnion = <UnionField kind="number" bind:value={text} />;
   const mixed = (
@@ -62,6 +81,12 @@ export const BindingTypes = _component(() => {
     select,
     component,
     union,
+    optionalBinding,
+    optionalPlain,
+    genericBinding,
+    missingOptionalBinding,
+    wrongOptionalBinding,
+    wrongGenericBinding,
     wrongUnion,
     mixed,
     missingLabel,

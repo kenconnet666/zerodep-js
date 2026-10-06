@@ -10,6 +10,47 @@ index 159e49f6..1f231a25 100644
  	t.Parallel()
  	defer testutil.RecoverAndFail(t, "Panic on fourslash test")
  	const content = `// @Filename: /a.tsx
+diff --git a/tsc/internal/fourslash/tests/goToDefinitionJsxNamespacedAttribute_test.go b/tsc/internal/fourslash/tests/goToDefinitionJsxNamespacedAttribute_test.go
+new file mode 100644
+index 00000000..565a6e68
+--- /dev/null
++++ b/tsc/internal/fourslash/tests/goToDefinitionJsxNamespacedAttribute_test.go
+@@ -0,0 +1,35 @@
++package fourslash_test
++
++import (
++	"testing"
++
++	"github.com/microsoft/TypeScript/tsc/internal/fourslash"
++	"github.com/microsoft/TypeScript/tsc/internal/testutil"
++)
++
++func TestGoToDefinitionJsxNamespacedAttribute(t *testing.T) {
++	t.Parallel()
++	defer testutil.RecoverAndFail(t, "Panic on fourslash test")
++	const content = `// @jsx: preserve
++// @Filename: /a.tsx
++declare namespace JSX {
++    interface Element {}
++    interface IntrinsicElements {
++        input: { "bind:value": string; "prop:custom": number };
++        "svg:path": {};
++    }
++}
++interface Props { value: string }
++declare function Explicit(props: { "bind:value": string }): JSX.Element;
++declare function Mapped(props: { [K in keyof Props as ` + "`bind:${K}`" + `]: Props[K] }): JSX.Element;
++<input bi/*nativeNamespace*/nd:va/*nativeLocal*/lue="text" prop:cus/*custom*/tom={1} />;
++<Explicit bi/*explicitNamespace*/nd:va/*explicitLocal*/lue="text" />;
++<Mapped bi/*mappedNamespace*/nd:va/*mappedLocal*/lue="text" />;
++<svg:pa/*tag*/th />;`
++	f, done := fourslash.NewFourslash(t, nil, content)
++	defer done()
++	f.VerifyNoErrors(t)
++	f.VerifyBaselineGoToDefinition(t, true,
++		"nativeNamespace", "nativeLocal", "custom", "explicitNamespace", "explicitLocal",
++		"mappedNamespace", "mappedLocal", "tag")
++}
 diff --git a/tsc/internal/fourslash/tests/jsxNamespacedAttributeCompletions_test.go b/tsc/internal/fourslash/tests/jsxNamespacedAttributeCompletions_test.go
 new file mode 100644
 index 00000000..cde7f32c
@@ -215,3 +256,185 @@ index be8e2d09..1a92dbcd 100644
  		start := astnav.GetStartOfNode(location, file, false /*includeJSDoc*/)
  		lspRange, fidelity := l.createLspRangeFromBounds(start, location.End(), file)
  		if fidelity.IsExact() {
+diff --git a/tsc/internal/ls/definition.go b/tsc/internal/ls/definition.go
+index c1d3d4b6..85078b2a 100644
+--- a/tsc/internal/ls/definition.go
++++ b/tsc/internal/ls/definition.go
+@@ -193,6 +193,9 @@ func combineDefinitionResponses(results []lsproto.DefinitionResponse, links bool
+ }
+ 
+ func getDeclarationNameForKeyword(node *ast.Node) *ast.Node {
++	if node.Parent != nil && ast.IsJsxNamespacedName(node.Parent) {
++		return node.Parent
++	}
+ 	if node.Kind >= ast.KindFirstKeyword && node.Kind <= ast.KindLastKeyword {
+ 		if ast.IsVariableDeclarationList(node.Parent) {
+ 			if decl := core.FirstOrNil(node.Parent.AsVariableDeclarationList().Declarations.Nodes); decl != nil && decl.Name() != nil {
+@@ -350,6 +353,9 @@ func getDeclarationsFromLocation(c *checker.Checker, node *ast.Node) []*ast.Node
+ 	}
+ 
+ 	node = getDeclarationNameForKeyword(node)
++	if ast.IsJsxNamespacedName(node) && node.Parent != nil && ast.IsJsxAttribute(node.Parent) {
++		return getDeclarationsFromObjectLiteralElement(c, node)
++	}
+ 	if symbol := c.GetSymbolAtLocation(node); symbol != nil {
+ 		if symbol.Flags&ast.SymbolFlagsClass != 0 && symbol.Flags&(ast.SymbolFlagsFunction|ast.SymbolFlagsVariable) == 0 && node.Kind == ast.KindConstructorKeyword {
+ 			if constructor := symbol.Members[ast.InternalSymbolNameConstructor]; constructor != nil {
+@@ -401,7 +407,14 @@ func getDeclarationsFromObjectLiteralElement(c *checker.Checker, node *ast.Node)
+ 
+ 	var result []*ast.Node
+ 	for _, prop := range properties {
+-		result = append(result, prop.Declarations...)
++		if len(prop.Declarations) > 0 {
++			result = append(result, prop.Declarations...)
++		} else {
++			// Renamed mapped properties keep their source in root symbols, not declarations.
++			for _, root := range c.GetRootSymbols(prop) {
++				result = append(result, root.Declarations...)
++			}
++		}
+ 	}
+ 	return result
+ }
+diff --git a/tsc/testdata/baselines/reference/fourslash/goToDefinition/goToDefinitionJsxNamespacedAttribute.baseline.jsonc b/tsc/testdata/baselines/reference/fourslash/goToDefinition/goToDefinitionJsxNamespacedAttribute.baseline.jsonc
+new file mode 100644
+index 00000000..1912a85a
+--- /dev/null
++++ b/tsc/testdata/baselines/reference/fourslash/goToDefinition/goToDefinitionJsxNamespacedAttribute.baseline.jsonc
+@@ -0,0 +1,135 @@
++// === goToDefinition ===
++// === /a.tsx ===
++// declare namespace JSX {
++//     interface Element {}
++//     interface IntrinsicElements {
++//         input: { <|[|"bind:value"|]: string;|> "prop:custom": number };
++//         "svg:path": {};
++//     }
++// }
++// interface Props { value: string }
++// declare function Explicit(props: { "bind:value": string }): JSX.Element;
++// declare function Mapped(props: { [K in keyof Props as `bind:${K}`]: Props[K] }): JSX.Element;
++// <input bi/*GOTO DEF*/nd:value="text" prop:custom={1} />;
++// <Explicit bind:value="text" />;
++// <Mapped bind:value="text" />;
++// <svg:path />;
++
++
++
++// === goToDefinition ===
++// === /a.tsx ===
++// declare namespace JSX {
++//     interface Element {}
++//     interface IntrinsicElements {
++//         input: { <|[|"bind:value"|]: string;|> "prop:custom": number };
++//         "svg:path": {};
++//     }
++// }
++// interface Props { value: string }
++// declare function Explicit(props: { "bind:value": string }): JSX.Element;
++// declare function Mapped(props: { [K in keyof Props as `bind:${K}`]: Props[K] }): JSX.Element;
++// <input bind:va/*GOTO DEF*/lue="text" prop:custom={1} />;
++// <Explicit bind:value="text" />;
++// <Mapped bind:value="text" />;
++// <svg:path />;
++
++
++
++// === goToDefinition ===
++// === /a.tsx ===
++// declare namespace JSX {
++//     interface Element {}
++//     interface IntrinsicElements {
++//         input: { "bind:value": string; <|[|"prop:custom"|]: number|> };
++//         "svg:path": {};
++//     }
++// }
++// interface Props { value: string }
++// declare function Explicit(props: { "bind:value": string }): JSX.Element;
++// declare function Mapped(props: { [K in keyof Props as `bind:${K}`]: Props[K] }): JSX.Element;
++// <input bind:value="text" prop:cus/*GOTO DEF*/tom={1} />;
++// <Explicit bind:value="text" />;
++// <Mapped bind:value="text" />;
++// <svg:path />;
++
++
++
++// === goToDefinition ===
++// === /a.tsx ===
++// --- (line: 5) skipped ---
++//     }
++// }
++// interface Props { value: string }
++// declare function Explicit(props: { <|[|"bind:value"|]: string|> }): JSX.Element;
++// declare function Mapped(props: { [K in keyof Props as `bind:${K}`]: Props[K] }): JSX.Element;
++// <input bind:value="text" prop:custom={1} />;
++// <Explicit bi/*GOTO DEF*/nd:value="text" />;
++// <Mapped bind:value="text" />;
++// <svg:path />;
++
++
++
++// === goToDefinition ===
++// === /a.tsx ===
++// --- (line: 5) skipped ---
++//     }
++// }
++// interface Props { value: string }
++// declare function Explicit(props: { <|[|"bind:value"|]: string|> }): JSX.Element;
++// declare function Mapped(props: { [K in keyof Props as `bind:${K}`]: Props[K] }): JSX.Element;
++// <input bind:value="text" prop:custom={1} />;
++// <Explicit bind:va/*GOTO DEF*/lue="text" />;
++// <Mapped bind:value="text" />;
++// <svg:path />;
++
++
++
++// === goToDefinition ===
++// === /a.tsx ===
++// --- (line: 4) skipped ---
++//         "svg:path": {};
++//     }
++// }
++// interface Props { <|[|value|]: string|> }
++// declare function Explicit(props: { "bind:value": string }): JSX.Element;
++// declare function Mapped(props: { [K in keyof Props as `bind:${K}`]: Props[K] }): JSX.Element;
++// <input bind:value="text" prop:custom={1} />;
++// <Explicit bind:value="text" />;
++// <Mapped bi/*GOTO DEF*/nd:value="text" />;
++// <svg:path />;
++
++
++
++// === goToDefinition ===
++// === /a.tsx ===
++// --- (line: 4) skipped ---
++//         "svg:path": {};
++//     }
++// }
++// interface Props { <|[|value|]: string|> }
++// declare function Explicit(props: { "bind:value": string }): JSX.Element;
++// declare function Mapped(props: { [K in keyof Props as `bind:${K}`]: Props[K] }): JSX.Element;
++// <input bind:value="text" prop:custom={1} />;
++// <Explicit bind:value="text" />;
++// <Mapped bind:va/*GOTO DEF*/lue="text" />;
++// <svg:path />;
++
++
++
++// === goToDefinition ===
++// === /a.tsx ===
++// declare namespace JSX {
++//     interface Element {}
++//     interface IntrinsicElements {
++//         input: { "bind:value": string; "prop:custom": number };
++//         <|[|"svg:path"|]: {};|>
++//     }
++// }
++// interface Props { value: string }
++// declare function Explicit(props: { "bind:value": string }): JSX.Element;
++// declare function Mapped(props: { [K in keyof Props as `bind:${K}`]: Props[K] }): JSX.Element;
++// <input bind:value="text" prop:custom={1} />;
++// <Explicit bind:value="text" />;
++// <Mapped bind:value="text" />;
++// <svg:pa/*GOTO DEF*/th />;
+\ No newline at end of file

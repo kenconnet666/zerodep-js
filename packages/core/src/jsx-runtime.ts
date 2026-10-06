@@ -176,9 +176,10 @@ type BindableKeys<P> = {
 }[keyof P & string];
 type BindingChoice<P, K extends keyof P & string> =
   | (Pick<P, K | Extract<ChangeName<K>, keyof P>> & { [B in `bind:${K}`]?: never })
-  | ({ [B in `bind:${K}`]: P[K] } & { [V in K]?: never } & Partial<
-        Pick<P, Extract<ChangeName<K>, keyof P>>
-      >);
+  | ({
+      // 重映射原属性以保留导航来源；绑定必须提供，值类型仍取原 P（包括 undefined）。
+      -readonly [B in keyof Required<Pick<P, K>> as `bind:${B & string}`]: P[B];
+    } & { [V in K]?: never } & Partial<Pick<P, Extract<ChangeName<K>, keyof P>>>);
 // 每个可绑定属性保持“普通 props 或 bind”二选一；函数参数的逆变合并支持同时绑定多个属性。
 type BindingConditions<P> = {
   [K in BindableKeys<P>]: (value: BindingChoice<P, K>) => void;

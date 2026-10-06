@@ -350,3 +350,12 @@
 - 在整合 ccb5070 后，pnpm check、pnpm build、完整 pnpm lsp:verify 均通过；补全矩阵 46 项全跑和补充的两个 Unicode/连字符用例均通过。协议测试、配置检查、格式检查和 actionlint 通过。CI 增加固定上游 checkout、Go 1.27.1、SDK 构建和补全矩阵。
 - 主目录 SDK 版本及源码/补丁/二进制摘要已核对，WebStorm 项目 compiler.xml 选择该 SDK。检查时 IDE 仍运行旧 7.0.2 服务进程，需重启 TypeScript 服务或重开项目后加载；不把磁盘配置等同于已完成的界面实测。
 - 已核对上一轮 ccb5070 的 CI 失败只有原生 bind 候选断言，本阶段修复该原因，未放宽验收。新一轮 CI 留给远端运行，不等待或把未结束的结果记为通过。临时检出、源码探针及子进程已清理；自动审批拒绝递归删除本任务 Go 缓存/分片目录，仅单独清理明确路径的下载归档与旧探针可执行文件，隔离工作树的 .codex/toolchains 缓存保留。
+
+## 2026-10-06：补齐 bind 定义导航
+
+- 用户报告 NameField 的 bind:value 无法跳转。独立 `+zerodep.1` 服务复现组件和原生 input 的 namespace/local 两部分均返回空定义，确认是原生导航缺口；不是绑定表达式错误，也不能仅凭补全、hover 成功判定导航正常。
+- 原生服务归一化 JSX 命名空间属性并读取上下文属性声明，对无直接声明的映射属性追溯 root symbols。core 正向绑定分支保留原 props 键的映射来源，使组件绑定准确跳到业务 value；必填、undefined、readonly 修饰符和互斥条件保留原语义。
+- TypeScript 本地提交 `9e15df30`，未推送上游；项目保留完整基线补丁，SDK 修订升为 `+zerodep.2`。10 项相关 Go 测试及 plain/snippet 子用例通过，新导航基线包含 8 个位置。
+- pnpm check/build 与完整 pnpm lsp:verify 通过；新增 14 个导航位置严格比对原生、实际 NameField 和跨文件可选/泛型 props 的源声明。新增类型正负例检查可选值、必填回调和泛型约束，原有重命名与诊断回归仍通过。
+- 48 个补全场景均通过，首轮收尾因 Windows 临时占用一个探针返回 EBUSY。两个验证器共用仅处理自建文件的 unlink 清理，有限重试 EBUSY/EPERM 并汇总持续失败；清理本次明确残留后重跑组件绑定用例确认正常退出，不递归删除目录或共享缓存。
+- 推送前确认上一阶段 `19d29f3` 的完整 CI 成功。WebStorm 原有项目 SDK 路径保持不变，检查时旧 7.0.2 服务仍在运行，SDK 磁盘更新与编辑器重载分别确认。

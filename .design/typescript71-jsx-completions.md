@@ -110,3 +110,15 @@ func isJsxNamespacedNameText(name string) bool {
 检查另发现 ARIA 已知名称被开放的 `aria-*` 索引签名吞掉候选。core 的 NativeProps 现显式纳入已有生成数据中的 ARIA 属性，不手写另一套属性清单；仍允许任意合法的 `aria-*` 值。
 
 另一个原生遗漏出现在未写大括号的 JSX 属性表达式：`value=te` 选择 text 时原先生成 `value=text`。原生代码登记了 initializer 节点，却漏设 isInitializer；补丁恢复该标记，使编辑生成 `value={text}`。对应上游原先跳过的 `TestCompletionsJsxAttributeInitializer2` 已恢复并通过，项目也增加实际插入及类型检查用例。
+
+## 命名空间属性的定义导航
+
+用户随后在 WebStorm 报告 `<NameField bind:value={custom} />` 无法跳转。用独立的 `+zerodep.1` 原生服务复现：`bind` 与 `value` 均返回空定义，原生 input 也一样；组件名、普通 value 属性和 custom 变量正常。补全和 hover 成功不代表定义导航已实现。
+
+缺口分两层：原生定义服务未把 namespace/local 子节点归一化到 `JsxNamespacedName`，也没有像 hover 一样按 JSX 上下文读取完整属性名；组件原先按新字符串集合生成 `bind:${K}`，类型中没有保留原 value 属性的来源。
+
+修复后的定义服务复用既有上下文属性查询，对没有直接声明的映射属性使用 `GetRootSymbols` 追溯来源，不改变 checker 的重命名行为。core 的正向绑定分支改为重映射 `Required<Pick<P, K>>` 的键，值仍取 `P[B]`，因此绑定保持必填且保留原值的 undefined。去除原属性的 readonly 修饰，保持此前生成绑定键的修饰符语义；普通属性与绑定的互斥条件不变。
+
+`+zerodep.2` 下，原生绑定跳到 jsx-runtime 的具体属性声明，组件绑定跳到业务 props 中的原 value。原生回归覆盖 namespace/local、直接与映射组件属性、自定义 prop、命名空间标签；项目 LSP 回归验证 14 个位置，包括实际 AuthoringExample、跨文件可选/泛型 props，严格比对目标文件和源属性位置。类型回归继续检查可选值、readonly、泛型实参、必填回调和错误值类型。
+
+这一阶段仍是项目 SDK 修复，官方 npm 包本身没有修改。WebStorm 必须加载项目 SDK 后才具备此能力；原生协议验证与 IDE 实际加载状态分别记录。

@@ -1,11 +1,12 @@
 import assert from 'node:assert/strict';
-import { readFile, writeFile, unlink } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
 import { root } from './environment.mjs';
 import { service, stopAll } from './language-client.mjs';
+import { removeProbes } from './probe-files.mjs';
 
 const { values } = parseArgs({
   args: process.argv.slice(3),
@@ -453,5 +454,5 @@ try {
   assert.equal(failures.length, 0, '原生补全矩阵存在失败');
 } finally {
   stopAll();
-  await Promise.all(created.map((file) => unlink(file)));
+  await removeProbes(created);
 }

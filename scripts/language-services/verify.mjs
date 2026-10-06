@@ -1,11 +1,12 @@
 import assert from 'node:assert/strict';
-import { readFile, writeFile, unlink } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { parse } from 'smol-toml';
 import { root } from './environment.mjs';
 import { connectMcp } from './mcp-client.mjs';
 import { service, stopAll } from './language-client.mjs';
+import { removeProbes } from './probe-files.mjs';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { relative } from 'node:path';
 
@@ -185,6 +186,72 @@ export const BindingProbe = _component(() => {
   assert(bindingReport.complete && bindingReport.errors === 0, JSON.stringify(bindingReport));
   console.log('TS7 JSX 绑定补全通过：三个原生输入候选、类型、说明和完整写法。');
 
+  // 必须命中源属性本身，非空结果或跳到框架的条件类型都不算导航成功。
+  let navigationChecks = 0;
+  async function definitionAt(file, needle, offset, targetFile, targetNeedle) {
+    const report = await call('definitions', await point(file, needle, offset));
+    const expected = await point(targetFile, targetNeedle);
+    assert.equal(report.total, 1, JSON.stringify(report));
+    const actual = report.items[0];
+    assert.equal(relative(root, actual.filePath).replaceAll('\\', '/'), targetFile);
+    assert.deepEqual(actual.range.start, { line: expected.line, column: expected.column });
+    navigationChecks++;
+  }
+  const authoring = 'apps/example/src/examples/AuthoringExample.tsx';
+  const jsxTypes = 'packages/core/src/jsx-runtime.ts';
+  for (const offset of [1, 6]) {
+    for (const [needle, declaration] of [
+      ['bind:value={text}', "'bind:value'?: string | null"],
+      ['bind:checked={checked}', "'bind:checked'?: boolean"],
+      ['bind:valueAsNumber={amount}', "'bind:valueAsNumber'?: number"],
+      ['bind:value={selected}', "'bind:value'?: string | readonly"],
+    ])
+      await definitionAt(authoring, needle, offset, jsxTypes, declaration);
+    await definitionAt(authoring, 'bind:value={custom}', offset, authoring, 'value: string;');
+  }
+  const bindingDefinition = 'apps/example/src/' + id + '_binding_definition.tsx';
+  await save(
+    bindingDefinition,
+    `import { _component } from 'zerodep-js';
+export interface OptionalProps {
+  readonly value?: string;
+  onValueChange: (value: string | undefined) => void;
+}
+export const OptionalField = _component((props: OptionalProps) => <span>{props.value}</span>);
+export interface GenericProps<T> { value: T; onValueChange: (value: T) => void }
+export const GenericField = _component(<T,>(props: GenericProps<T>) => <span>{String(props.value)}</span>);
+`,
+  );
+  await save(
+    bindingFile,
+    `import { _component, _state } from 'zerodep-js';
+import { OptionalField, GenericField } from './${id}_binding_definition.js';
+export const BindingProbe = _component(() => {
+  let optional = _state<string>();
+  let text = _state('');
+  return <><OptionalField bind:value={optional} /><GenericField<string> bind:value={text} /></>;
+});
+`,
+  );
+  const navigationReport = await call('diagnostics', { filePath: bindingFile });
+  assert(
+    navigationReport.complete && navigationReport.errors === 0,
+    JSON.stringify(navigationReport),
+  );
+  for (const offset of [1, 6]) {
+    await definitionAt(
+      bindingFile,
+      'bind:value={optional}',
+      offset,
+      bindingDefinition,
+      'value?: string',
+    );
+    await definitionAt(bindingFile, 'bind:value={text}', offset, bindingDefinition, 'value: T;');
+  }
+  console.log(
+    `TS7 绑定导航通过：${navigationChecks} 个位置准确命中原生、组件及跨文件可选/泛型源属性。`,
+  );
+
   // 使用标准 LSP 重命名协议，只把编辑应用到本次创建的探针，绝不改动真实源码。
   const definition = 'apps/example/src/' + id + '_rename.tsx';
   const consumer = 'apps/example/src/' + id + '_consumer.tsx';
@@ -271,6 +338,6 @@ export const RenameCounter = _component(({ step = 1 }: {step?: number;}) => {
 } finally {
   stopAll();
   await client.close();
-  for (const file of created) await unlink(resolve(root, file));
+  await removeProbes([...created].map((file) => resolve(root, file)));
   if (log) process.stderr.write(log);
 }
