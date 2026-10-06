@@ -3,7 +3,6 @@ import { service, restart, stopAll } from './language-client.mjs';
 import { readFile, realpath } from 'node:fs/promises';
 import { extname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { frameworkDiagnostics } from './framework.mjs';
 import { jsonLineConnection } from './json-lines.mjs';
 import { ResponseError } from 'vscode-jsonrpc/node';
 
@@ -291,22 +290,28 @@ tool(
     });
     if (result?.kind !== 'full' || !Array.isArray(result.items))
       throw new Error('TypeScript 7 did not return a complete diagnostic report.');
-    const diagnostics = result.items.map((item) => ({
-      code: item.code,
-      severity: item.severity,
-      message: item.message,
-      range: range(item.range),
-      source: item.source,
-    }));
-    const framework = await frameworkDiagnostics(doc);
-    diagnostics.push(...framework);
+    const diagnostics = result.items.map((item) => {
+      const code = item.message.match(/^ZJ(\d+): /)?.[1];
+      const framework = code && Number(item.code) === 900000 + Number(code);
+      return {
+        code: framework ? 'ZJ' + code : item.code,
+        severity: item.severity,
+        message: framework ? item.message.replace(/^ZJ\d+: /, '') : item.message,
+        range: range(item.range),
+        source: framework ? 'zerodep-js' : item.source,
+      };
+    });
     return {
       filePath: doc.relativePath,
       language: doc.kind,
       server: language.serverInfo,
       documentVersion: version,
       complete: true,
-      framework: { complete: true, errors: framework.length },
+      framework: {
+        complete: true,
+        errors: diagnostics.filter((item) => item.source === 'zerodep-js' && item.severity === 1)
+          .length,
+      },
       errors: diagnostics.filter((item) => item.severity === 1).length,
       diagnostics,
     };

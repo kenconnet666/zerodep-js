@@ -2,28 +2,30 @@
 
 七个公共包已发布 1.0.0-rc.2，实际 npm 安装验收通过。工作区根与两个示例保持 private。本文记录已经验证的安装包契约，候选与稳定版本状态见 [发布记录](../CHANGELOG.md)。
 
-当前 main 增加第八个包 `zerodep-use`，统一版本准备为 1.0.0-rc.3，尚未发布。下表与消费门槛按拆包后的结构维护；RC2 的历史验收继续保留。use 只提供 router/storage 子入口，没有聚合根入口；core 不依赖 use。
+当前源码增加 `zerodep-use`、`zerodep-js-native` 及 Windows/Linux x64 两个平台包，共十一包统一准备为 1.0.0-rc.3，尚未发布。下表与消费门槛按拆包后的结构维护；RC2 的历史验收继续保留。use 只提供 router/storage/history 子入口，没有聚合根入口；core 不依赖 use。
 
-公共名称统一为下表中的无 scope 包名；开发阶段的 `@zerodep-js/core` 对应 `zerodep-js`，其余旧公共名称对应 `zerodep-js-compiler/vite/ssr`。旧名称未曾发布，不提供重复兼容入口。许可证为 MIT，每个实际 tgz 包含与根目录一致的 LICENSE。
+公共名称统一为下表中的无 scope 包名；开发阶段的 `@zerodep-js/core` 对应 `zerodep-js`，其余旧公共名称对应 `zerodep-js-compiler/vite/ssr`。旧名称未曾发布，不提供重复兼容入口。框架代码许可证为 MIT，每个框架 tgz 包含与根目录一致的 LICENSE。原生平台包含 Apache-2.0 上游 LICENSE、MIT 框架 LICENSE.zerodep 与 NOTICE。
 
-RC2 新增三个宿主包，发布清单统一维护在 scripts/package-list.mjs；基础框架与宿主有分别的独立消费门槛。独立安装基础框架不会强制安装 React、Vue 或 Svelte。
+RC2 新增三个宿主包，发布清单统一维护在 scripts/package-list.mjs 的 releasePackages，包含三个原生包，平台包先于 Node 包发布；基础框架与宿主有分别的独立消费门槛。独立安装基础框架不会强制安装 React、Vue 或 Svelte。
 
 ## 包边界
 
-| 包或入口                 | 用途                                           | 依赖边界                                                |
-| ------------------------ | ---------------------------------------------- | ------------------------------------------------------- |
-| `zerodep-js`             | 响应式、组件、DOM、hydrate、生命周期及公共类型 | CSS Tools tokenizer 校验样式边界，csstype 提供生成类型  |
-| `zerodep-js/jsx-runtime` | JSX 类型约定                                   | 配合 `jsx: preserve`，不走 React automatic JSX 输出     |
-| `zerodep-use/router`     | 命名路由、历史、布局与数据准备                 | 可选子入口，根入口不加载路由                            |
-| `zerodep-use/storage`    | localStorage/sessionStorage 持久化             | 可选子入口，SSR 不访问存储                              |
-| `zerodep-js/internal`    | 编译输出与 SSR 的内部协议                      | 不能作为另一套手写 signal API                           |
-| `zerodep-js-compiler`    | TSX 编译、映射、诊断及检查命令                 | Babel 仅在构建侧使用，公共结果类型不要求导入 Babel 类型 |
-| `zerodep-js-vite`        | Vite 8 的普通转换和依赖扫描接入                | 依赖 compiler，Vite 作为 peer dependency                |
-| `zerodep-js-ssr`         | 同步组件 SSR 与文档组合                        | core 作为同版本 peer dependency                         |
-| `zerodep-js-ssr/data`    | 独立 JSON 数据编码                             | 不引入渲染器，也不要求 DOM 类型库                       |
-| `zerodep-js-vue`         | Vue 页面宿主                                   | core 与 Vue 为 peer                                     |
-| `zerodep-js-react`       | React 页面宿主                                 | core 与 React 为 peer                                   |
-| `zerodep-js-svelte`      | Svelte attachment 页面宿主                     | core 与 Svelte 为 peer                                  |
+| 包或入口                                                      | 用途                                           | 依赖边界                                                |
+| ------------------------------------------------------------- | ---------------------------------------------- | ------------------------------------------------------- |
+| `zerodep-js`                                                  | 响应式、组件、DOM、hydrate、生命周期及公共类型 | CSS Tools tokenizer 校验样式边界，csstype 提供生成类型  |
+| `zerodep-js/jsx-runtime`                                      | JSX 类型约定                                   | `jsxImportSource: zerodep-js`；框架完成 JSX 转换        |
+| `zerodep-use/router`                                          | 命名路由、历史、布局与数据准备                 | 可选子入口，根入口不加载路由                            |
+| `zerodep-use/storage`                                         | localStorage/sessionStorage 持久化             | 可选子入口，SSR 不访问存储                              |
+| `zerodep-js/internal`                                         | 编译输出与 SSR 的内部协议                      | 不能作为另一套手写 signal API                           |
+| `zerodep-js-compiler`                                         | TSX 编译、映射、诊断及检查命令                 | Babel 仅在构建侧使用，公共结果类型不要求导入 Babel 类型 |
+| `zerodep-js-vite`                                             | Vite 8 的普通转换和依赖扫描接入                | 两种后端为可选 peer，按配置加载                         |
+| `zerodep-js-native`                                           | 原生 TS7 CLI、单文件转换、常驻项目服务         | 官方 TS7 API 与可选平台包，不依赖 Babel                 |
+| `zerodep-js-native-win32-x64` / `zerodep-js-native-linux-x64` | Go 二进制、标准库、SDK 与构建摘要              | Apache-2.0 上游加 MIT 框架代码；用户不需要 Go           |
+| `zerodep-js-ssr`                                              | 同步组件 SSR 与文档组合                        | core 作为同版本 peer dependency                         |
+| `zerodep-js-ssr/data`                                         | 独立 JSON 数据编码                             | 不引入渲染器，也不要求 DOM 类型库                       |
+| `zerodep-js-vue`                                              | Vue 页面宿主                                   | core 与 Vue 为 peer                                     |
+| `zerodep-js-react`                                            | React 页面宿主                                 | core 与 React 为 peer                                   |
+| `zerodep-js-svelte`                                           | Svelte attachment 页面宿主                     | core 与 Svelte 为 peer                                  |
 
 应用、SSR 与组件库应共享同一 core 实例。组件身份和作用域不能跨独立副本混用；ssr 因而使用 peer dependency，开发时另在 devDependencies 安装工作区 core。
 
@@ -36,6 +38,7 @@ core 的原生属性类型和 SVG 别名由维护脚本生成，数据源不成�
 ```sh
 pnpm test:packages
 pnpm test:hosts:packages
+pnpm test:native:packages
 ```
 
 第一个命令先构建框架包，然后执行如下完整过程，包含可选 use；第二个命令在另一个独立目录只安装四个基础包与三个宿主适配包，验证不安装 use 时同一页面仍能完成类型检查、构建、CSR/SSR、更新及清理：
@@ -54,7 +57,7 @@ Linux CI 在完整验证任务中执行此门槛，另有 Windows 的包消费�
 
 ## 编译器与运行时配合
 
-编译器生成的框架模块会在自身初始化语句前调用内部协议检查，SSR 渲染模块也验证协议。当前协议号为 1；不兼容的 helper 行为变更才需要递增，普通补丁修复不需要改变协议号。
+编译器生成的框架模块会在自身初始化语句前调用内部协议检查，SSR 渲染模块也验证协议。当前协议号为 2；不兼容的 helper 行为变更才需要递增，普通补丁修复不需要改变协议号。
 
 协议不匹配时抛出带 `ZJ_RUNTIME_ABI` 的明确错误。处理方式是统一框架版本并重建应用及预编译组件库；不能只更换页面上的某一个运行时文件。框架各包暂采用统一发布版本，compiler 与 Vite 之间的包依赖也保持确定版本。内部检查不是跨任意版本的兼容层。
 
@@ -66,6 +69,8 @@ Linux CI 在完整验证任务中执行此门槛，另有 Windows 的包消费�
 
 - 用 compiler 将宏和 JSX 转为 ESM；保存 code 与 map，并给 JS 添加对应的 sourceMappingURL。
 - 用 TS7 对原始 TSX 执行 declaration/emitDeclarationOnly，保留参数、默认值可选性、泛型 children 和 JSX 类型；声明映射的源码需要随包提供。
+
+原生后端直接运行 `zerodep-tsc -p tsconfig.json`，在同一进程、同一原始语法树完成检查和 JS/声明/映射输出，不再额外执行 Babel。开启 `declaration`、`declarationMap`、`sourceMap`，并关闭 `emitDeclarationOnly`。`test:native:packages` 在工作区外只装原生后端，验证真实组件库、声明、SSR/CSR、绑定和清理，并断言依赖图不含 Babel。
 
 库的 exports 使用 types 与 import 条件分别指向声明和 ESM；core 声明为 peer dependency。对外只暴露自己的组件与类型，不复制框架内部 helper，也不把 core 打入库包形成第二套状态图。可运行的最小例子见 `tests/consumer/library` 和 `tests/consumer/build-library.mjs`。
 

@@ -102,6 +102,10 @@ describe('实时绑定与控制流收窄', () => {
 
   it.each([
     [
+      'await 后纯写入不读取旧的收窄值',
+      `let busy = _state(false); async function save() {if (busy) return; busy = true; await work(); busy = false;}`,
+    ],
+    [
       '派生布尔值不是其输入的 TypeScript 条件别名',
       `const App = _component(({ task }) => {let draft = _state('');const dirty = _derived(draft !== task.title);return dirty && <button onClick={() => {draft = task.title;}} />;});`,
     ],

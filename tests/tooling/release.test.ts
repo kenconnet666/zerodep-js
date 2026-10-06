@@ -4,7 +4,7 @@ import { copyFile, mkdir, mkdtemp, readFile, realpath, rm, writeFile } from 'nod
 import { tmpdir } from 'node:os';
 import { isAbsolute, relative, resolve, sep } from 'node:path';
 import { promisify } from 'node:util';
-import { packages as packageList } from '../../scripts/package-list.mjs';
+import { releasePackages as packageList } from '../../scripts/package-list.mjs';
 
 const exec = promisify(execFile);
 const project = resolve(import.meta.dirname, '../..');
@@ -35,6 +35,11 @@ it('发布工具固定产物、拒绝篡改/越界/私有包，并仅准备明�
     for (const file of ['package-list.mjs', 'release-publication.mjs', 'release.mjs'])
       await copyFile(resolve(project, 'scripts', file), resolve(fixture, 'scripts', file));
     await copyFile(resolve(project, 'LICENSE'), resolve(fixture, 'LICENSE'));
+    await mkdir(resolve(fixture, 'patches'));
+    await copyFile(
+      resolve(project, 'patches/LICENSE.typescript'),
+      resolve(fixture, 'patches/LICENSE.typescript'),
+    );
     const workspace = JSON.parse(await readFile(resolve(project, 'package.json'), 'utf8'));
     await save('package.json', {
       name: 'release-fixture',
@@ -48,15 +53,31 @@ it('发布工具固定产物、拒绝篡改/越界/私有包，并仅准备明�
     for (const [index, folder] of folders.entries()) {
       const directory = resolve(fixture, 'packages', folder);
       await mkdir(directory, { recursive: true });
-      await copyFile(resolve(project, 'LICENSE'), resolve(directory, 'LICENSE'));
+      const platformPackage = packageList[index]!.kind === 'native-platform';
+      const platform = folder.startsWith('native-win32') ? 'win32' : 'linux';
+      await copyFile(
+        resolve(project, platformPackage ? 'patches/LICENSE.typescript' : 'LICENSE'),
+        resolve(directory, 'LICENSE'),
+      );
+      if (platformPackage) {
+        await mkdir(resolve(directory, 'typescript/lib'), { recursive: true });
+        await writeFile(
+          resolve(directory, 'typescript/lib', platform === 'win32' ? 'tsc.exe' : 'tsc'),
+          'fixture',
+        );
+        await writeFile(resolve(directory, 'typescript/zerodep-build.json'), '{}');
+        await writeFile(resolve(directory, 'NOTICE.txt'), 'fixture');
+        await copyFile(resolve(project, 'LICENSE'), resolve(directory, 'LICENSE.zerodep'));
+      }
       await writeFile(resolve(directory, 'index.js'), 'export const fixture = true;\n');
       await save(`packages/${folder}/package.json`, {
         name: names[index],
         version: '0.0.0',
         private: true,
         type: 'module',
-        license: 'MIT',
-        files: ['index.js', 'LICENSE'],
+        license: platformPackage ? 'Apache-2.0 AND MIT' : 'MIT',
+        ...(platformPackage ? { os: [platform], cpu: ['x64'] } : {}),
+        files: ['index.js', 'LICENSE', 'LICENSE.zerodep', 'NOTICE.txt', 'typescript'],
         publishConfig: { access: 'public', registry: 'https://registry.npmjs.org/' },
       });
     }

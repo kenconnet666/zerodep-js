@@ -6,7 +6,7 @@ type Transform = (
   this: { error(error: { message: string }): never },
   code: string,
   id: string,
-) => { code: string } | null;
+) => Promise<{ code: string } | null>;
 function transforms(options: ZerodepOptions) {
   const plugin = zerodep(options);
   const root = resolve('fixture-app').replaceAll('\\', '/');
@@ -24,24 +24,26 @@ function transforms(options: ZerodepOptions) {
   return {
     root,
     run: (code: string, id: string) =>
-      handlers.map((handler) =>
-        handler.call(
-          {
-            error(error) {
-              throw new Error(error.message);
+      Promise.all(
+        handlers.map((handler) =>
+          handler.call(
+            {
+              error(error) {
+                throw new Error(error.message);
+              },
             },
-          },
-          code,
-          id,
+            code,
+            id,
+          ),
         ),
       ),
   };
 }
 const source = `import { _state } from 'zerodep-js'; let count = _state(0); count++;`;
 
-it('目录范围按项目 root 解释，查询不影响选择，排除其他 JSX 和宿主模块', () => {
+it('目录范围按项目 root 解释，查询不影响选择，排除其他 JSX 和宿主模块', async () => {
   const { root, run } = transforms({ include: 'src/page/**', exclude: '**/*.skip.tsx' });
-  for (const result of run(source, `${root}/src/page/state.ts?import`))
+  for (const result of await run(source, `${root}/src/page/state.ts?import`))
     expect(result?.code).toContain('.state(');
   for (const path of [
     'src/react/App.tsx',
@@ -50,14 +52,14 @@ it('目录范围按项目 root 解释，查询不影响选择，排除其他 JSX
     'src/page/types.d.ts',
     'node_modules/pkg/state.ts',
   ])
-    expect(run(source, `${root}/${path}`)).toEqual([null, null]);
+    expect(await run(source, `${root}/${path}`)).toEqual([null, null]);
 });
 
-it('Windows 路径与虚拟模块在两条管线中的行为一致', () => {
+it('Windows 路径与虚拟模块在两条管线中的行为一致', async () => {
   const { run } = transforms({ include: /\/src\/page\// });
-  for (const result of run(source, 'C:\\project\\src\\page\\counter.mts?direct'))
+  for (const result of await run(source, 'C:\\project\\src\\page\\counter.mts?direct'))
     expect(result?.code).toContain('.state(');
-  expect(run(source, '\0virtual:src/page/view.tsx')).toEqual([null, null]);
+  expect(await run(source, '\0virtual:src/page/view.tsx')).toEqual([null, null]);
 });
 
 it('删除已登记组件文件直接刷新，不再读取已不存在的文件', async () => {
@@ -68,7 +70,7 @@ it('删除已登记组件文件直接刷新，不再读取已不存在的文件'
   const file = root + '/App.tsx';
   Reflect.apply(plugin.configResolved, undefined, [{ root, command: 'serve' }]);
   const handler = (plugin.transform as { handler: Transform }).handler;
-  handler.call(
+  await handler.call(
     {
       error(error) {
         throw new Error(error.message);

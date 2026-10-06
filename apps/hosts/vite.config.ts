@@ -5,10 +5,14 @@ import vue from '@vitejs/plugin-vue';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { zerodep } from 'zerodep-js-vite';
 
+const compiler = process.env.ZERODEP_COMPILER ?? 'babel';
+if (compiler !== 'babel' && compiler !== 'native')
+  throw new Error('ZERODEP_COMPILER 必须为 babel 或 native。');
+
 export default defineConfig(({ isSsrBuild }) => ({
   appType: 'custom',
   plugins: [
-    zerodep({ include: 'src/page/**' }),
+    zerodep({ include: 'src/page/**', compiler }),
     react({ include: /\/src\/react\/.*\.[jt]sx?$/, jsxImportSource: 'react' }),
     vue(),
     svelte({ compilerOptions: { runes: true } }),

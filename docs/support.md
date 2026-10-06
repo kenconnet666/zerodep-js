@@ -8,7 +8,7 @@
 | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | TypeScript      | 当前工作区固定官方 npm `7.1.0-dev.20261005.1`，升级验证见执行记录。Go 编译路线仅面向选定的新版本，不增加旧版或多版本兼容层。                                               |
 | Node            | Node 24，工程固定 24.18.0，包 engines 为 `>=24.11 <25`。不把未验证的大版本写入支持范围。                                                                                   |
-| 构建            | ESM、Babel 8 编译、Vite 8 插件；固定版本由 catalog 管理，不提供 React runtime 或旧版 TS 兼容层。                                                                           |
+| 构建            | ESM、Babel 8 或固定 TS7 Go 原生编译、Vite 8 插件；固定版本由 catalog 管理，不提供 React runtime 或旧版 TS 兼容层。                                                         |
 | 浏览器          | 面向现代 DOM、Proxy、WeakRef/FinalizationRegistry 和 AbortController 环境。CI 使用固定 Playwright 版本的 Chromium、Firefox、WebKit；状态保留移动提供 moveBefore 兼容路径。 |
 | Windows / Linux | Windows 本地与独立包消费、Linux 完整 CI 均有证据。WebKit 自动化不等于实机 Safari 或所有平台输入法验证。                                                                    |
 | 输入法          | 三浏览器组合事件序列已验证；Chromium CDP 编辑管线已覆盖候选、提交、取消、外部更新及 Unicode 选区。协议输入不等于 OS 输入法实测。                                           |
@@ -16,7 +16,7 @@
 
 包的体积和速度没有硬性上限，仍保留资源回收、压力和按需打包观察。验证脚本的运行超时用于发现挂起，不是性能排名或用户负载承诺。
 
-当前 TypeScript 7.1 nightly 的 JSX 命名空间补全回归由项目固定版本的原生 SDK 补丁修复；语言服务设置和补全回归入口见[开发诊断说明](development.md)。普通 npm `typescript` 仍是类型检查和声明构建基线，编辑器与 MCP 使用 `.codex/typescript-sdk`。
+当前 TypeScript 7.1 nightly 的 JSX 命名空间补全回归由项目固定版本的原生 SDK 补丁修复；语言服务设置和补全回归入口见[开发诊断说明](development.md)。普通 npm `typescript` 仍是类型检查和声明构建基线，Babel 编译配合官方检查器；原生后端的 CLI、编辑器与 MCP 使用 `packages/native-<平台>/typescript`，同时提供框架诊断。原生包当前支持 Windows/Linux x64，其他平台未列入本轮分发。
 
 ## 正式设计范围
 

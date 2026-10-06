@@ -9,6 +9,7 @@
     "pnpm": "10.34.5"
   },
   "scripts": {
+    "test:native:packages": "pnpm build:packages && node scripts/verify-packages.mjs --compiler native",
     "dev": "pnpm build:packages && pnpm -r --parallel dev",
     "dev:csr": "pnpm build:packages && pnpm --filter @zerodep-js/example dev --render-mode csr",
     "dev:ssr": "pnpm build:packages && pnpm --filter @zerodep-js/example dev --render-mode ssr",
@@ -47,7 +48,10 @@
     "typescript:build": "node scripts/language-services/build-typescript.mjs",
     "lsp:verify": "node scripts/language-services/verify.mjs",
     "lsp:completions": "node scripts/language-services/completions.mjs .",
-    "lsp:inspect": "node scripts/language-services/inspect.mjs ."
+    "lsp:inspect": "node scripts/language-services/inspect.mjs .",
+    "compiler:native:build": "node scripts/native/build.mjs",
+    "benchmark:native": "node scripts/native/benchmark.mjs",
+    "test:native": "pnpm --filter zerodep-js-native build && vitest run --config vitest.native.config.ts"
   },
   "devDependencies": {
     "@babel/cli": "catalog:",

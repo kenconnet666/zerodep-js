@@ -9,3 +9,22 @@ export const packages = [
   { folder: 'vue', name: 'zerodep-js-vue', kind: 'host' },
   { folder: 'svelte', name: 'zerodep-js-svelte', kind: 'host' },
 ];
+
+/** 原生后端的独立分发清单；平台包先于 Node 入口发布。 */
+export const nativePackages = [
+  {
+    folder: 'native-win32-x64',
+    name: 'zerodep-js-native-win32-x64',
+    kind: 'native-platform',
+    platform: 'win32-x64',
+  },
+  {
+    folder: 'native-linux-x64',
+    name: 'zerodep-js-native-linux-x64',
+    kind: 'native-platform',
+    platform: 'linux-x64',
+  },
+  { folder: 'native', name: 'zerodep-js-native', kind: 'native', platform: null },
+];
+
+export const releasePackages = [...packages, ...nativePackages];

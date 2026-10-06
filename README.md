@@ -6,9 +6,11 @@
 
 使用指南从[开始使用](docs/getting-started.md)和[API 参考](docs/api.md)进入。基础包为 `zerodep-js`、`zerodep-js-compiler`、`zerodep-js-vite`、`zerodep-js-ssr`，另有 Vue、React、Svelte 三个可选页面宿主包；当前发布状态见 [CHANGELOG](CHANGELOG.md)，支持范围见 [support.md](docs/support.md)。
 
-当前 main 已准备八包统一的 `1.0.0-rc.3` 拆包候选：路由和持久化移到独立 `zerodep-use/router`、`zerodep-use/storage`，core 的旧入口直接移除。拆包版本尚未发布，使用当前源码时通过工作区或本地 tgz 安装；迁移与验收见 [zerodep-use 拆包](docs/use-extraction.md)。RC2 的原始 npm 产物保持不变。
+当前 main 已准备统一的 `1.0.0-rc.3` 拆包候选：路由和持久化移到独立 `zerodep-use/router`、`zerodep-use/storage`，core 的旧入口直接移除。拆包版本尚未发布，使用当前源码时通过工作区或本地 tgz 安装；迁移与验收见 [zerodep-use 拆包](docs/use-extraction.md)。RC2 的原始 npm 产物保持不变。
 
-项目使用 [MIT License](LICENSE)，贡献方式见 [CONTRIBUTING](CONTRIBUTING.md)。
+当前源码另提供 `zerodep-js-native` 及 Windows/Linux x64 平台包，与 Babel 后端共用运行时。原生 CLI 在一次 TS7 编译中完成检查、JS、声明和映射；Vite 使用 `zerodep({ compiler: 'native' })` 选择。平台包与 RC3 尚未发布，构建、测试和性能结果见[原生实施记录](docs/native-compiler-implementation.md)。
+
+项目框架代码使用 [MIT License](LICENSE)，原生包所含 TypeScript 上游使用 Apache-2.0，许可随平台包提供。贡献方式见 [CONTRIBUTING](CONTRIBUTING.md)。
 
 RC2 直接使用 `_state`、`_derived`、`_component`、`_effect` 等公开函数名，实现与入口名称一致，不保留旧名或导出重命名中转。下面的示例安装时统一指定 `1.0.0-rc.2`。[Vue、React、Svelte 页面宿主](docs/page-hosts.md)提供三个独立适配包。
 
@@ -29,7 +31,7 @@ RC2 直接使用 `_state`、`_derived`、`_component`、`_effect` 等公开函�
 
 ## 环境与安装
 
-使用 Node 24.18.0、pnpm 10.34.5、TypeScript 7.0.2、Vite 8.3.1。共享依赖固定在 `pnpm-workspace.yaml` catalog。
+使用 Node 24.18.0、pnpm 10.34.5、TypeScript 7.1.0-dev.20261005.1、Vite 8.3.1。共享依赖固定在 `pnpm-workspace.yaml` catalog。
 
 ```sh
 pnpm install --frozen-lockfile

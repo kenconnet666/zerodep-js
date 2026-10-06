@@ -1,0 +1,195 @@
+diff --git a/tsc/internal/compiler/emitter.go b/tsc/internal/compiler/emitter.go
+index 4e3b697a..39af99d9 100644
+--- a/tsc/internal/compiler/emitter.go
++++ b/tsc/internal/compiler/emitter.go
+@@ -19,6 +19,7 @@ import (
+ 	"github.com/microsoft/TypeScript/tsc/internal/transformers/tstransforms"
+ 	"github.com/microsoft/TypeScript/tsc/internal/tsoptions"
+ 	"github.com/microsoft/TypeScript/tsc/internal/tspath"
++	"github.com/microsoft/TypeScript/tsc/internal/zerodep"
+ )
+ 
+ type EmitOnly byte
+@@ -134,6 +135,9 @@ func getScriptTransformers(emitContext *printer.EmitContext, host printer.EmitHo
+ 		GetEmitModuleFormatOfFile: host.GetEmitModuleFormatOfFile,
+ 	}
+ 
++	// 框架转换共享原始解析树和官方 EmitContext，声明输出仍使用原始树。
++	tx = append(tx, zerodep.NewTransformer(&opts, sourceFile))
++
+ 	// transform TypeScript syntax
+ 	{
+ 		// use type nodes to add metadata decorators
+@@ -194,6 +198,13 @@ func (e *emitter) emitJSFile(sourceFile *ast.SourceFile, jsFilePath tspath.Roote
+ 		defer e.tr.Push(tracing.PhaseEmit, "emitJsFileOrBundle", map[string]any{"jsFilePath": jsFilePath}, true)()
+ 	}
+ 
++	if frameworkDiagnostics := zerodep.Diagnostics(sourceFile, options); len(frameworkDiagnostics) > 0 {
++		for _, diagnostic := range frameworkDiagnostics {
++			e.emitterDiagnostics.Add(diagnostic)
++		}
++		e.emitResult.EmitSkipped = true
++		return
++	}
+ 	emitContext, putEmitContext := printer.GetEmitContext()
+ 	defer putEmitContext()
+ 
+diff --git a/tsc/internal/compiler/program.go b/tsc/internal/compiler/program.go
+index 31363f95..d0cdc8af 100644
+--- a/tsc/internal/compiler/program.go
++++ b/tsc/internal/compiler/program.go
+@@ -32,6 +32,7 @@ import (
+ 	"github.com/microsoft/TypeScript/tsc/internal/tracing"
+ 	"github.com/microsoft/TypeScript/tsc/internal/tsoptions"
+ 	"github.com/microsoft/TypeScript/tsc/internal/tspath"
++	"github.com/microsoft/TypeScript/tsc/internal/zerodep"
+ )
+ 
+ type ProgramOptions struct {
+@@ -1561,7 +1562,8 @@ func (p *Program) getBindAndCheckDiagnosticsWithChecker(ctx context.Context, fil
+ 		}
+ 	}
+ 	filtered = applyContentMapperDiagnosticDirectives(sourceFile, filtered)
+-	return filtered
++	// 框架约束不由 @ts-ignore 绕过，noEmit、增量检查和 LSP 共用这里。
++	return append(filtered, zerodep.Diagnostics(sourceFile, compilerOptions)...)
+ }
+ 
+ func applyContentMapperDiagnosticDirectives(sourceFile *ast.SourceFile, diags []*ast.Diagnostic) []*ast.Diagnostic {
+diff --git a/tsc/internal/core/options_generated.go b/tsc/internal/core/options_generated.go
+index 911b2d6a..a738793e 100644
+--- a/tsc/internal/core/options_generated.go
++++ b/tsc/internal/core/options_generated.go
+@@ -17,6 +17,9 @@ type PluginImport struct {
+ 
+ // CompilerOptions contains the compiler options exposed by the API.
+ type CompilerOptions struct {
++	ZerodepDevelopment                        Tristate `json:"zerodepDevelopment,omitzero"`
++	ZerodepHmr                                Tristate `json:"zerodepHmr,omitzero"`
++	ZerodepRuntimeModule                      string   `json:"zerodepRuntimeModule,omitzero"`
+ 	_                                         noCopy
+ 	AllowJs                                   Tristate                                  `json:"allowJs,omitzero"`
+ 	AllowArbitraryExtensions                  Tristate                                  `json:"allowArbitraryExtensions,omitzero"`
+@@ -165,6 +168,9 @@ type CompilerOptions struct {
+ // Clone creates a shallow copy of the CompilerOptions.
+ func (options *CompilerOptions) Clone() *CompilerOptions {
+ 	return &CompilerOptions{
++		ZerodepDevelopment:                        options.ZerodepDevelopment,
++		ZerodepHmr:                                options.ZerodepHmr,
++		ZerodepRuntimeModule:                      options.ZerodepRuntimeModule,
+ 		AllowJs:                                   options.AllowJs,
+ 		AllowArbitraryExtensions:                  options.AllowArbitraryExtensions,
+ 		AllowImportingTsExtensions:                options.AllowImportingTsExtensions,
+@@ -309,6 +315,9 @@ func (options *CompilerOptions) Equals(other *CompilerOptions) bool {
+ 	if options == nil || other == nil {
+ 		return false
+ 	}
++	if options.ZerodepDevelopment != other.ZerodepDevelopment || options.ZerodepHmr != other.ZerodepHmr || options.ZerodepRuntimeModule != other.ZerodepRuntimeModule {
++		return false
++	}
+ 	if options.AllowJs != other.AllowJs {
+ 		return false
+ 	}
+diff --git a/tsc/internal/transpile/transpile.go b/tsc/internal/transpile/transpile.go
+index a7e040e4..443dd4b6 100644
+--- a/tsc/internal/transpile/transpile.go
++++ b/tsc/internal/transpile/transpile.go
+@@ -195,6 +195,9 @@ func transpileWorker(ctx context.Context, input string, options Options, declara
+ 	// always included, regardless of ReportDiagnostics.
+ 	allDiagnostics = append(allDiagnostics, result.Diagnostics...)
+ 
++	if !hasOutputText && result.EmitSkipped {
++		return &Output{Diagnostics: allDiagnostics}
++	}
+ 	debug.Assert(hasOutputText, "Output generation failed")
+ 
+ 	return &Output{
+diff --git a/tsc/internal/tsoptions/declarations_generated.go b/tsc/internal/tsoptions/declarations_generated.go
+index a3d52a02..462a56e2 100644
+--- a/tsc/internal/tsoptions/declarations_generated.go
++++ b/tsc/internal/tsoptions/declarations_generated.go
+@@ -245,6 +245,9 @@ var commonOptionsWithBuild = []*CommandLineOption{
+ }
+ 
+ var optionsForCompiler = []*CommandLineOption{
++	{Name: "zerodepDevelopment", Kind: CommandLineOptionTypeBoolean},
++	{Name: "zerodepHmr", Kind: CommandLineOptionTypeBoolean},
++	{Name: "zerodepRuntimeModule", Kind: CommandLineOptionTypeString},
+ 	{
+ 		Name:                     "all",
+ 		Kind:                     CommandLineOptionTypeBoolean,
+diff --git a/tsc/internal/tsoptions/options_generated.go b/tsc/internal/tsoptions/options_generated.go
+index 97591327..4c39bef1 100644
+--- a/tsc/internal/tsoptions/options_generated.go
++++ b/tsc/internal/tsoptions/options_generated.go
+@@ -13,6 +13,12 @@ func parseCompilerOptions(key string, value any, allOptions *core.CompilerOption
+ 		key = option.Name
+ 	}
+ 	switch key {
++	case "zerodepDevelopment":
++		allOptions.ZerodepDevelopment = ParseTristate(value)
++	case "zerodepHmr":
++		allOptions.ZerodepHmr = ParseTristate(value)
++	case "zerodepRuntimeModule":
++		allOptions.ZerodepRuntimeModule = ParseString(value)
+ 	case "allowJs":
+ 		allOptions.AllowJs = ParseTristate(value)
+ 	case "allowArbitraryExtensions":
+@@ -424,6 +430,9 @@ func CompilerOptionsAffectDeclarationPath(oldOptions *core.CompilerOptions, newO
+ }
+ 
+ func CompilerOptionsAffectEmit(oldOptions *core.CompilerOptions, newOptions *core.CompilerOptions) bool {
++	if oldOptions != nil && newOptions != nil && (oldOptions.ZerodepDevelopment != newOptions.ZerodepDevelopment || oldOptions.ZerodepHmr != newOptions.ZerodepHmr || oldOptions.ZerodepRuntimeModule != newOptions.ZerodepRuntimeModule) {
++		return true
++	}
+ 	if oldOptions == newOptions {
+ 		return false
+ 	}
+@@ -463,6 +472,15 @@ func CompilerOptionsAffectEmit(oldOptions *core.CompilerOptions, newOptions *cor
+ 
+ // ForEachCompilerOptionAffectingBuildInfo visits nonzero options in CompilerOptions field order.
+ func ForEachCompilerOptionAffectingBuildInfo(options *core.CompilerOptions, fn func(option *CommandLineOption, value any)) {
++	if options.ZerodepDevelopment != core.TSUnknown {
++		fn(CommandLineCompilerOptionsMap.Get("zerodepDevelopment"), options.ZerodepDevelopment)
++	}
++	if options.ZerodepHmr != core.TSUnknown {
++		fn(CommandLineCompilerOptionsMap.Get("zerodepHmr"), options.ZerodepHmr)
++	}
++	if options.ZerodepRuntimeModule != "" {
++		fn(CommandLineCompilerOptionsMap.Get("zerodepRuntimeModule"), options.ZerodepRuntimeModule)
++	}
+ 	if options.AllowJs != core.TSUnknown {
+ 		fn(CommandLineCompilerOptionsMap.Get("allowJs"), options.AllowJs)
+ 	}
+@@ -667,6 +685,15 @@ func ForEachCompilerOptionAffectingBuildInfo(options *core.CompilerOptions, fn f
+ }
+ 
+ func mergeCompilerOptionFields(targetOptions, sourceOptions *core.CompilerOptions, explicitNullFields collections.Set[string]) {
++	if sourceOptions.ZerodepDevelopment != core.TSUnknown || explicitNullFields.Has("zerodepDevelopment") {
++		targetOptions.ZerodepDevelopment = sourceOptions.ZerodepDevelopment
++	}
++	if sourceOptions.ZerodepHmr != core.TSUnknown || explicitNullFields.Has("zerodepHmr") {
++		targetOptions.ZerodepHmr = sourceOptions.ZerodepHmr
++	}
++	if sourceOptions.ZerodepRuntimeModule != "" || explicitNullFields.Has("zerodepRuntimeModule") {
++		targetOptions.ZerodepRuntimeModule = sourceOptions.ZerodepRuntimeModule
++	}
+ 	if explicitNullFields.Has("allowJs") {
+ 		targetOptions.AllowJs = core.TSUnknown
+ 	} else if sourceOptions.AllowJs != core.TSUnknown {
+@@ -1361,6 +1388,15 @@ func handleOptionConfigDirTemplateSubstitution(compilerOptions *parsedCompilerOp
+ 
+ func serializeCompilerOptions(options *core.CompilerOptions, configFilePath tspath.RootedFilePath, caseSensitivity tspath.CaseSensitivity) *collections.OrderedMap[string, any] {
+ 	result := collections.NewOrderedMapWithSizeHint[string, any](32)
++	if options.ZerodepDevelopment != core.TSUnknown {
++		result.Set("zerodepDevelopment", options.ZerodepDevelopment == core.TSTrue)
++	}
++	if options.ZerodepHmr != core.TSUnknown {
++		result.Set("zerodepHmr", options.ZerodepHmr == core.TSTrue)
++	}
++	if options.ZerodepRuntimeModule != "" {
++		result.Set("zerodepRuntimeModule", options.ZerodepRuntimeModule)
++	}
+ 	if options.AllowJs == core.TSTrue || options.AllowJs == core.TSFalse {
+ 		result.Set("allowJs", options.AllowJs == core.TSTrue)
+ 	}

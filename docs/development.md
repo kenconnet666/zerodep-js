@@ -121,7 +121,7 @@ ZJ1501 是保守的源码边界检查，不是第二套 TypeScript 类型系统�
 
 ## 编辑器和 Codex 诊断桥
 
-TS7 的补全、跳转、引用和原生类型错误继续来自标准语言服务。项目 `zerodep_js_lsp` 的 diagnostics 额外调用已构建的 compiler，并传入同一份源码快照；输出中的 `source: 'zerodep-js'` 和 `framework` 字段标识框架诊断。编译器不可用时报告明确失败，不默默跳过。
+TS7 的补全、跳转、引用、原生类型错误和框架语义错误来自同一个原生语言服务。框架分析直接挂在原始 SourceFile 与检查流程中，项目桥接器不再调用 Babel 诊断进程。MCP 输出中的 `source: 'zerodep-js'` 和 `framework` 字段标识框架诊断；普通 LSP 客户端能直接收到带 ZJ 编号的错误。
 
 项目桥接器使用 MCP `2025-11-25` 的 stdio JSON-RPC：按行传输 JSON，公开五个只读工具，参数用 JSON Schema 描述并在服务端校验。传输和请求调度复用 `vscode-jsonrpc`，不依赖 MCP SDK 或 Zod；`json-lines.mjs` 负责分帧，`mcp-client.mjs` 服务独立检查脚本。协议依据为 [MCP stdio](https://modelcontextprotocol.io/specification/2025-11-25/basic/transports) 和[生命周期](https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle)。
 
@@ -130,17 +130,17 @@ TS7 的补全、跳转、引用和原生类型错误继续来自标准语言服�
 首次设置语言服务先准备 Go 1.27 和包含固定提交的 TypeScript 源码，再运行：
 
 ```sh
-pnpm typescript:build --source <TypeScript源代码路径> --go <Go可执行文件路径>
+pnpm compiler:native:build --source <TypeScript源代码路径> --go <Go可执行文件路径> --test
 pnpm lsp:setup
 pnpm lsp:verify
 pnpm lsp:completions
 ```
 
-Go 已在 PATH 时可省略 `--go`。生成的 `.codex/typescript-sdk` 保留官方 SDK 与标准库布局，版本为 `7.1.0-dev.20261005.1+zerodep.2`。项目 MCP 在 SDK 缺失或补丁不匹配时明确要求重新构建，不回退到缺少修复的服务。`lsp:completions` 同时核对候选、文档、实际插入/自动导入编辑及插入后的类型诊断。
+Go 已在 PATH 时可省略 `--go`。生成的 `packages/native-<平台>/typescript` 保留官方平台 SDK 与标准库布局，版本为 `7.1.0-dev.20261005.1+zerodep.native.<源码摘要>`，同时包含框架转换、框架诊断和补全修复。项目 MCP 在 SDK 缺失或补丁不匹配时明确要求重新构建，不回退到缺少修复的服务。`lsp:completions` 同时核对候选、文档、实际插入/自动导入编辑及插入后的类型诊断。
 
-WebStorm 的 TypeScript 设置需要选择构建命令输出的**平台包目录**。Windows x64 为 `.codex/typescript-sdk/node_modules/@typescript/typescript-win32-x64`。WebStorm 2026.2.3 从 SDK 根目录的同级查找平台包，不会按 Node 的规则进入根目录内的 node_modules；直接选择 `.codex/typescript-sdk` 虽然显示正确版本，实际服务却可能回退到内置 TypeScript 6.0.3。应用设置后，点击状态栏的语言服务图标，确认当前文件运行的是 `TypeScript-Go 7.1.0-dev.20261005.1+zerodep.2`；只看设置页的版本号不够。
+WebStorm 的 TypeScript 设置需要选择构建命令输出的**平台包目录**。Windows x64 为 `packages/native-win32-x64/typescript`。WebStorm 2026.2.3 从 SDK 根目录的同级查找平台包，不会按 Node 的规则进入根目录内的 node_modules；直接选择 `.codex/typescript-sdk` 虽然显示正确版本，实际服务却可能回退到内置 TypeScript 6.0.3。应用设置后，点击状态栏的语言服务图标，确认当前文件运行的是 `TypeScript-Go 7.1.0-dev.20261005.1+zerodep.native.<摘要>`；只看设置页的版本号不够。
 
-运行 `pnpm lsp:verify` 会验证原生错误/修复、框架错误/修复、依赖刷新和项目隔离。这是独立服务验证；已运行的 Codex MCP 进程需要重启后才加载桥接脚本变更。普通 WebStorm/VS Code TS7 服务不会自动获得这个 MCP 扩展，当前可以将 `zerodep-check` 接到外部检查任务，并在 Vite 错误覆盖层看到编译诊断。没有要求安装私有 TS 插件或降级 TS 版本。
+运行 `pnpm lsp:verify` 会验证原生错误/修复、框架错误/修复、依赖刷新和项目隔离。这是独立服务验证；已运行的 Codex MCP 进程需要重启后才加载桥接脚本变更。选择项目原生 SDK 的 WebStorm/VS Code 会直接得到框架诊断；选择官方 SDK 时只能得到官方 TS 诊断，此时可使用 Babel 的 `zerodep-check` 独立检查。没有要求安装私有 TS 插件或降级 TS 版本。
 
 验证还通过标准 `textDocument/rename` 检查响应式变量、组件导出、跨文件 import 和 JSX 引用，并仅把编辑应用到本次临时探针。它证明标准 TS7 协议能力，不代替某个 IDE 自身的完整操作验收。
 

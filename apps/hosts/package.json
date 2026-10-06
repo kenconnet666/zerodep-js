@@ -22,6 +22,8 @@
     "sirv": "catalog:"
   },
   "devDependencies": {
+    "zerodep-js-compiler": "workspace:*",
+    "zerodep-js-native": "workspace:*",
     "@types/node": "catalog:",
     "zerodep-js-vite": "workspace:*",
     "vite": "catalog:",

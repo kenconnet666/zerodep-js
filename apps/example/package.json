@@ -18,6 +18,8 @@
     "zerodep-use": "workspace:*"
   },
   "devDependencies": {
+    "zerodep-js-compiler": "workspace:*",
+    "zerodep-js-native": "workspace:*",
     "zerodep-js-vite": "workspace:*",
     "typescript": "catalog:",
     "vite": "catalog:"

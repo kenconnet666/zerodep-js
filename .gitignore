@@ -11,9 +11,13 @@ playwright-report/
 .codex/toolchains/
 .codex/typescript-sdk/
 .codex/typescript-source/
+packages/native/bin/
+packages/native-*/typescript/
 .codex/ts-native-build-*/
 .idea
 apps/example/.dev-check-*/
+apps/example/.native-check-*/
+apps/example/.native-bench-*/
 apps/hosts/.dev-check-*/
 apps/example/.data/
 .DS_Store

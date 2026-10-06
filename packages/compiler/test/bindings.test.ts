@@ -1,5 +1,16 @@
 import { expect, it } from 'vitest';
 import { execute } from './execute.js';
+
+it('绑定写入也检查在闭包之后声明的只读派生', () => {
+  expect(() =>
+    compile(
+      `import {_derived} from 'zerodep-js';
+function view() { return <input bind:value={text}/>; }
+let text = _derived('只读');`,
+      'late.tsx',
+    ),
+  ).toThrow('ZJ1005');
+});
 import { compile } from '../src/index.js';
 import type { ElementTemplate } from '../../core/src/runtime/template.js';
 

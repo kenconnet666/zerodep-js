@@ -201,6 +201,12 @@ importers:
       vite:
         specifier: 'catalog:'
         version: 8.3.1(@types/node@24.13.5)
+      zerodep-js-compiler:
+        specifier: workspace:*
+        version: link:../../packages/compiler
+      zerodep-js-native:
+        specifier: workspace:*
+        version: link:../../packages/native
       zerodep-js-vite:
         specifier: workspace:*
         version: link:../../packages/vite
@@ -262,6 +268,12 @@ importers:
       vite:
         specifier: 'catalog:'
         version: 8.3.1(@types/node@24.13.5)
+      zerodep-js-compiler:
+        specifier: workspace:*
+        version: link:../../packages/compiler
+      zerodep-js-native:
+        specifier: workspace:*
+        version: link:../../packages/native
       zerodep-js-vite:
         specifier: workspace:*
         version: link:../../packages/vite
@@ -309,6 +321,27 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 7.1.0-dev.20261005.1
+
+  packages/native:
+    dependencies:
+      typescript:
+        specifier: 'catalog:'
+        version: 7.1.0-dev.20261005.1
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.13.5
+    optionalDependencies:
+      zerodep-js-native-linux-x64:
+        specifier: workspace:*
+        version: link:../native-linux-x64
+      zerodep-js-native-win32-x64:
+        specifier: workspace:*
+        version: link:../native-win32-x64
+
+  packages/native-linux-x64: {}
+
+  packages/native-win32-x64: {}
 
   packages/react:
     devDependencies:
@@ -362,10 +395,6 @@ importers:
         version: link:../ssr
 
   packages/vite:
-    dependencies:
-      zerodep-js-compiler:
-        specifier: workspace:*
-        version: link:../compiler
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -376,6 +405,12 @@ importers:
       vite:
         specifier: 'catalog:'
         version: 8.3.1(@types/node@24.13.5)
+      zerodep-js-compiler:
+        specifier: workspace:*
+        version: link:../compiler
+      zerodep-js-native:
+        specifier: workspace:*
+        version: link:../native
 
   packages/vue:
     devDependencies:

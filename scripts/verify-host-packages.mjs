@@ -65,6 +65,8 @@ try {
   await writeFile(resolve(consumer, 'tsconfig.json'), JSON.stringify(config));
   const manifest = await json(resolve(root, 'apps/hosts/package.json'));
   manifest.name = 'zerodep-host-consumer';
+  // 此入口检验 Babel 分发；原生分发由 test:native:packages 单独安装验证。
+  delete manifest.devDependencies['zerodep-js-native'];
   manifest.packageManager = (await json(resolve(root, 'package.json'))).packageManager;
   manifest.pnpm = { overrides: {} };
   const catalog = await readFile(resolve(root, 'pnpm-workspace.yaml'), 'utf8');

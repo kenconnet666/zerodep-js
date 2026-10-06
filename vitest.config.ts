@@ -11,6 +11,7 @@ export default defineConfig({
     ],
     clearMocks: true,
     restoreMocks: true,
+    exclude: ['packages/native/test/**'],
     coverage: {
       provider: 'v8',
       include: ['packages/*/src/**/*.ts'],

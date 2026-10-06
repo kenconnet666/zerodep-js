@@ -13,6 +13,8 @@ assert(inside.startsWith('.dev-check-') && !inside.includes(sep));
 let browser;
 let server;
 let output = '';
+const pages = [];
+const errors = [];
 try {
   for (const file of [
     'src',
@@ -55,8 +57,6 @@ try {
     });
   });
   browser = await chromium.launch();
-  const pages = [];
-  const errors = [];
   for (const host of ['vue', 'react', 'svelte']) {
     const page = await browser.newPage();
     page.on('pageerror', (error) => errors.push(`${host}: ${error.message}`));
@@ -93,12 +93,21 @@ try {
   console.log('开发宿主通过：React StrictMode、普通 TS 宏预扫描、三种编译器分工和共享页面热更新。');
   await rm(resolve(root, 'test-results/hosts-dev-failure.log'), { force: true });
 } catch (error) {
+  const states = await Promise.all(
+    pages.map(async (page) => ({
+      url: page.url(),
+      headings: await page
+        .locator('h2')
+        .allTextContents()
+        .catch(() => []),
+    })),
+  );
   await mkdir(resolve(root, 'test-results'), { recursive: true });
   await writeFile(
     resolve(root, 'test-results/hosts-dev-failure.log'),
-    [error.stack, output].join('\n'),
+    [error.stack, output, JSON.stringify({ states, errors }, null, 2)].join('\n'),
   );
-  console.error(error.stack, output);
+  console.error(error.stack, output, JSON.stringify({ states, errors }));
   process.exitCode = 1;
 } finally {
   await browser?.close();

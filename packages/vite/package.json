@@ -25,13 +25,22 @@
     "check": "tsc -p tsconfig.json --noEmit --incremental false --composite false",
     "build": "tsc -b"
   },
-  "dependencies": {
-    "zerodep-js-compiler": "workspace:*"
-  },
   "peerDependencies": {
-    "vite": "^8.3.1"
+    "vite": "^8.3.1",
+    "zerodep-js-compiler": "workspace:*",
+    "zerodep-js-native": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "zerodep-js-compiler": {
+      "optional": true
+    },
+    "zerodep-js-native": {
+      "optional": true
+    }
   },
   "devDependencies": {
+    "zerodep-js-compiler": "workspace:*",
+    "zerodep-js-native": "workspace:*",
     "typescript": "catalog:",
     "vite": "catalog:",
     "@types/node": "catalog:"

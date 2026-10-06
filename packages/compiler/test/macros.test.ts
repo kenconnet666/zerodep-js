@@ -137,7 +137,8 @@ const result = counter(10);`),
   });
 
   it('空模块仍生成有效的空输出', () => {
-    expect(compile('', 'empty.ts').code).toBe('');
+    // TypeScript 7 为脚本保留 strict 指令，Babel 输出空字符串；两者均无执行内容。
+    expect(compile('', 'empty.ts').code).toMatch(/^(?:["']use strict["'];)?\s*$/);
   });
 
   it('保留源文件内容和有效位置映射', () => {

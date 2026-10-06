@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { execFile } from 'node:child_process';
+import { createRequire } from 'node:module';
 import { createServer } from 'node:http';
 import { once } from 'node:events';
 import { access, cp, mkdir, mkdtemp, readFile, realpath, rm, writeFile } from 'node:fs/promises';
@@ -8,12 +9,22 @@ import { tmpdir } from 'node:os';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseArgs, promisify } from 'node:util';
 import { chromium, expect } from '@playwright/test';
-import { packages as packageList } from './package-list.mjs';
+import { packages as packageList, nativePackages } from './package-list.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const { values } = parseArgs({
-  options: { registry: { type: 'boolean', default: false }, version: { type: 'string' } },
+  options: {
+    registry: { type: 'boolean', default: false },
+    version: { type: 'string' },
+    compiler: { type: 'string', default: 'babel' },
+  },
 });
+assert(['babel', 'native'].includes(values.compiler));
+const native = values.compiler === 'native';
+const selectedPackages = packageList.filter(
+  (item) => item.kind !== 'host' && (!native || item.folder !== 'compiler'),
+);
+if (native) selectedPackages.push(...nativePackages);
 if (values.registry)
   assert(
     values.version && /^\d+\.\d+\.\d+(?:-rc\.\d+)?$/.test(values.version),
@@ -30,6 +41,7 @@ const archives = resolve(fixture, 'archives');
 const executable = /\.[cm]?js$/.test(pnpm) ? process.execPath : pnpm;
 const prefix = executable === pnpm ? [] : [pnpm];
 const env = { ...process.env, CI: 'true' };
+env.ZERODEP_COMPILER = values.compiler;
 if (values.registry) env.npm_config_registry = 'https://registry.npmjs.org/';
 delete env.NODE_PATH;
 const exec = promisify(execFile);
@@ -58,6 +70,16 @@ try {
   manifest.dependencies = {};
   manifest.devDependencies = {};
   manifest.pnpm = { overrides: {} };
+  if (native) {
+    const typeFixture = resolve(consumer, 'src/types.tsx');
+    await writeFile(
+      typeFixture,
+      (await readFile(typeFixture, 'utf8')).replaceAll('zerodep-js-compiler', 'zerodep-js-native'),
+    );
+    manifest.scripts.library =
+      'zerodep-tsc -p tsconfig.library.json --emitDeclarationOnly false --jsx react-jsx --sourceMap';
+    manifest.scripts.check = 'zerodep-tsc -p tsconfig.json && zerodep-tsc -p tsconfig.data.json';
+  }
   const catalog = await readFile(resolve(root, 'pnpm-workspace.yaml'), 'utf8');
   // 读取 catalog 中的精确版本，包含当前 TypeScript nightly 的预发布后缀。
   for (const name of ['typescript', 'vite', '@types/node']) {
@@ -67,7 +89,9 @@ try {
     assert(version, `找不到 ${name} 的固定 catalog 版本。`);
     manifest.devDependencies[name] = version;
   }
-  for (const { folder: name } of packageList.filter((item) => item.kind !== 'host')) {
+  for (const item of selectedPackages) {
+    const name = item.folder;
+    const platformPackage = item.kind === 'native-platform';
     const directory = resolve(root, 'packages', name);
     const sourceManifest = await json(resolve(directory, 'package.json'));
     if (values.registry)
@@ -78,12 +102,16 @@ try {
     const files = new Set(packed.files.map((file) => file.path));
     assert(files.has('README.md'), `${name} 缺少包级说明。`);
     assert(
-      files.has('LICENSE') && sourceManifest.license === 'MIT',
+      files.has('LICENSE') &&
+        sourceManifest.license === (platformPackage ? 'Apache-2.0 AND MIT' : 'MIT'),
       `${name} 缺少 MIT 许可声明或文件。`,
     );
     assert.equal(
       await readFile(resolve(directory, 'LICENSE'), 'utf8'),
-      await readFile(resolve(root, 'LICENSE'), 'utf8'),
+      await readFile(
+        resolve(root, platformPackage ? 'patches/LICENSE.typescript' : 'LICENSE'),
+        'utf8',
+      ),
       `${name} 的许可证与项目根不一致。`,
     );
     if (name === 'core') {
@@ -104,26 +132,38 @@ try {
       assert.deepEqual(Object.keys(sourceManifest.peerDependencies), ['zerodep-js']);
       assert.equal(Object.keys(sourceManifest.dependencies ?? {}).length, 0);
     }
+    if (platformPackage) {
+      assert(
+        files.has('typescript/zerodep-build.json') && files.has('NOTICE.txt'),
+        `${name} 缺少原生产物或许可。`,
+      );
+      assert(
+        files.has(`typescript/lib/${item.platform.startsWith('win32') ? 'tsc.exe' : 'tsc'}`),
+        `${name} 缺少可执行文件。`,
+      );
+    }
     assert(
       [...files].every((file) => !/tsbuildinfo|(^|\/)(test|node_modules|\.codex)(\/|$)/.test(file)),
       `${name} 混入构建缓存或测试。`,
     );
     assert(
-      [...files].some((file) => file.startsWith('src/')),
+      platformPackage || [...files].some((file) => file.startsWith('src/')),
       `${name} 缺少源码导航产物。`,
     );
-    for (const target of Object.values(sourceManifest.exports))
+    for (const target of Object.values(sourceManifest.exports ?? {}))
       assert(files.has(target.types.slice(2) + '.map'), `${name} 缺少入口声明映射。`);
     const file = resolve(archives, basename(packed.filename));
     await access(file);
     const dependency = values.registry
       ? values.version
       : 'file:' + relative(consumer, file).replaceAll('\\', '/');
-    (['core', 'ssr', 'use'].includes(name) ? manifest.dependencies : manifest.devDependencies)[
-      packed.name
-    ] = dependency;
+    if (!platformPackage)
+      (['core', 'ssr', 'use'].includes(name) ? manifest.dependencies : manifest.devDependencies)[
+        packed.name
+      ] = dependency;
     manifest.pnpm.overrides[packed.name] = dependency;
-    packages.set(packed.name, { files, sourceManifest });
+    if (!platformPackage || item.platform === `${process.platform}-${process.arch}`)
+      packages.set(packed.name, { files, sourceManifest });
   }
   await writeFile(resolve(consumer, 'package.json'), JSON.stringify(manifest, null, 2));
   await writeFile(
@@ -133,6 +173,17 @@ try {
   );
   console.log(`包内容清单通过，开始工作区外的${values.registry ? '注册表' : 'tgz'}独立安装。`);
   await run(['install', '--ignore-scripts', '--prefer-offline']);
+  if (native) {
+    assert(
+      !(await access(resolve(consumer, 'node_modules/zerodep-js-compiler')).then(
+        () => true,
+        () => false,
+      )),
+      '原生消费不能安装 Babel 后端。',
+    );
+    const lock = await readFile(resolve(consumer, 'pnpm-lock.yaml'), 'utf8');
+    assert(!lock.includes('@babel/'), '原生依赖图仍含 Babel。');
+  }
   for (const host of ['react', 'vue', 'svelte'])
     assert.equal(
       await access(resolve(consumer, 'node_modules', host)).then(
@@ -143,7 +194,13 @@ try {
       '独立框架消费不能强制安装宿主。',
     );
   for (const [name, { files, sourceManifest }] of packages) {
-    const directory = resolve(consumer, 'node_modules', name);
+    const directory = name.startsWith('zerodep-js-native-')
+      ? dirname(
+          createRequire(
+            await realpath(resolve(consumer, 'node_modules/zerodep-js-native/package.json')),
+          ).resolve(name + '/package.json'),
+        )
+      : resolve(consumer, 'node_modules', name);
     const installedPath = await realpath(directory);
     assert(installedPath.startsWith(consumer + sep), `${name} 仍链接到工作区。`);
     const installed = await json(resolve(directory, 'package.json'));
@@ -154,7 +211,7 @@ try {
           !/^(workspace:|catalog:|link:|file:)/.test(version),
           `${name} 的 ${kind} 含本地协议。`,
         );
-    for (const target of Object.values(installed.exports))
+    for (const target of Object.values(installed.exports ?? {}))
       for (const file of Object.values(target)) await access(resolve(directory, file));
     for (const file of files)
       if (file.endsWith('.map')) {

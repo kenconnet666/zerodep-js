@@ -1,0 +1,25 @@
+{
+  "name": "zerodep-js-native-linux-x64",
+  "version": "1.0.0-rc.3",
+  "type": "module",
+  "license": "Apache-2.0 AND MIT",
+  "bin": {
+    "zerodep-tsc-linux-x64": "./typescript/lib/tsc"
+  },
+  "os": [
+    "linux"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "files": [
+    "typescript",
+    "LICENSE",
+    "LICENSE.zerodep",
+    "NOTICE.txt"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

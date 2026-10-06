@@ -32,8 +32,18 @@ const cases = [
     expected: '_component',
     word: '',
   },
-  { name: '浅状态宏成员', source: header + `_state.ra¦({});`, expected: 'raw', word: 'ra' },
-  { name: '派生宏成员', source: header + `_derived.b¦(() => count);`, expected: 'by', word: 'b' },
+  {
+    name: '浅状态宏成员',
+    source: header + `let shallow = _state.ra¦({});`,
+    expected: 'raw',
+    word: 'ra',
+  },
+  {
+    name: '派生宏成员',
+    source: header + `const computed = _derived.b¦(() => count);`,
+    expected: 'by',
+    word: 'b',
+  },
   { name: '状态变量类型', source: header + `count.toFi¦();`, expected: 'toFixed', word: 'toFi' },
   {
     name: '组件 props 读取',

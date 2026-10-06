@@ -14,7 +14,7 @@ import {
 import { tmpdir } from 'node:os';
 import { basename, isAbsolute, relative, resolve, sep } from 'node:path';
 import { parseArgs, promisify } from 'node:util';
-import { packages as packageList } from './package-list.mjs';
+import { releasePackages as packageList } from './package-list.mjs';
 import { publishCandidates, sameArtifact } from './release-publication.mjs';
 
 const root = resolve(import.meta.dirname, '..');
@@ -71,13 +71,17 @@ async function manifests() {
     folders.map(async (folder, index) => {
       const path = resolve(root, 'packages', folder, 'package.json');
       const manifest = await json(path);
+      const platformPackage = packageList[index].kind === 'native-platform';
       assert.equal(manifest.name, names[index], '发布名称不符合本项目约定。');
-      assert.equal(manifest.license, 'MIT');
+      assert.equal(manifest.license, platformPackage ? 'Apache-2.0 AND MIT' : 'MIT');
       assert.equal(manifest.publishConfig?.registry, registry);
       assert.equal(manifest.publishConfig?.access, 'public');
       assert.equal(
         await readFile(resolve(root, 'packages', folder, 'LICENSE'), 'utf8'),
-        await readFile(resolve(root, 'LICENSE'), 'utf8'),
+        await readFile(
+          resolve(root, platformPackage ? 'patches/LICENSE.typescript' : 'LICENSE'),
+          'utf8',
+        ),
       );
       return { folder, path, manifest };
     }),
@@ -296,6 +300,19 @@ async function main() {
       const file = basename(packed.filename);
       await access(resolve(directory, file));
       assert(packed.files.some((entry) => entry.path === 'LICENSE'));
+      if (manifest.license === 'Apache-2.0 AND MIT') {
+        const binary = manifest.os[0] === 'win32' ? 'tsc.exe' : 'tsc';
+        for (const required of [
+          'LICENSE.zerodep',
+          'NOTICE.txt',
+          'typescript/zerodep-build.json',
+          `typescript/lib/${binary}`,
+        ])
+          assert(
+            packed.files.some((entry) => entry.path === required),
+            `原生平台包需要先构建：${folder}/${required}`,
+          );
+      }
       assert(
         !packed.files.some((entry) =>
           /tsbuildinfo|(^|\/)(test|node_modules|\.codex)(\/|$)/.test(entry.path),
@@ -379,6 +396,14 @@ async function main() {
     process.stdout.write(result.stdout);
     const hosts = await manager(['test:hosts:registry', '--version', selectedVersion]);
     process.stdout.write(hosts.stdout);
+    const native = await manager([
+      'test:packages:registry',
+      '--compiler',
+      'native',
+      '--version',
+      selectedVersion,
+    ]);
+    process.stdout.write(native.stdout);
     ledger.registryVerifiedAt = new Date().toISOString();
     await save();
     return;

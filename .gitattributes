@@ -3,3 +3,5 @@
 patches/*.patch -whitespace
 patches/LICENSE.typescript -whitespace
 patches/NOTICE.typescript -whitespace
+packages/native-*/LICENSE -whitespace
+packages/native-*/NOTICE.txt -whitespace
