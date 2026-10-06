@@ -25,6 +25,20 @@
 6. 按固定清单发布 npm `next`，每次远端动作前将尝试记录同步到草稿。原生 Node 入口等待六个平台包公开、SHA-512 和 next 标签都确认后发布。网络响应不确定时不盲目重传，有限次数恢复查询后仍不确定则保留草稿并失败。
 7. 从 npm 精确安装本次版本，完成原生框架、组件库与主应用真实消费，记录 registryVerifiedAt 后再公开 GitHub 预发布。不自动提升稳定 latest。
 
+## 并行验证
+
+2026-10-07 根据实际日志调整：原三浏览器串行阶段约 12 分钟，现在分为三个独立任务。每个任务只安装自己的浏览器，沿用完整项目用例与独立服务器；没有提高单个测试进程的并发来争抢同一 runner。
+
+| 任务                             | 并行数量 | 内容                                         |
+| -------------------------------- | -------: | -------------------------------------------- |
+| native-platforms                 |        6 | 各实际架构的 SDK 构建、Go 与原生工具测试     |
+| verify                           |        1 | 格式、类型、Node、稳定性、LSP                |
+| browser                          |        3 | Chromium 112、Firefox 108、WebKit 108 个用例 |
+| package-consumer-linux / windows |        2 | 各自独立安装消费；Linux 另运行开发更新验证   |
+| release-artifacts                |        1 | 等待上面所有任务成功，再冻结统一产物         |
+
+浏览器日志、失败 trace 和稳定性记录按浏览器区分，避免 artifact 同名覆盖。CI 将重试后才通过的用例计为失败，保留重试供定位。发布的 npm 元数据等待另采用有界退避，最长单次等待 60 秒；只查询已有回执，不重新上传已经尝试的版本。
+
 已发布并完成验收的同一 RC 后续不会因普通 main 提交重复发布。准备下一候选应统一提升十一个包的版本；不重新上传已使用的版本，也不修改其原始 tgz。
 
 ## 日常命令
@@ -57,3 +71,5 @@ gh workflow run release.yml --ref main -f run_id=<原成功CI运行ID>
 RC3 恢复任务的第二次尝试仍在创建 GitHub Release 时返回 403，未进入 npm 上传；现存 tag 不能作为已发布证据。用户随后撤销旧编译器与宿主路线，当前清单使用新的 RC4，不继续发布旧清单，也不覆盖旧 tag 或产物。
 
 RC4 的[六平台完整 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/37452811866)通过。首次发布在等待平台包公开及标签同步时耗尽有限重试，留下可恢复草稿；注册表就绪后，恢复同一批固定产物的[第二次发布运行](https://github.com/kenconnet666/zerodep-js/actions/runs/37455845240/attempts/2)通过，包含 npm 注册表真实安装验收。下一批工具共享改动使用 RC5，绝不以新内容覆盖 RC4。
+
+RC5 也在首次上传受理后遇到 npm 元数据延迟；恢复原运行并沿用 `052a51e` 的冻结产物后，[第二次发布](https://github.com/kenconnet666/zerodep-js/actions/runs/37489398562/attempts/2)通过实际注册表安装，随后公开 [v1.0.0-rc.5](https://github.com/kenconnet666/zerodep-js/releases/tag/v1.0.0-rc.5)。后续测试编排与文档维护不重打包或覆盖该版本。

@@ -127,9 +127,12 @@ try {
       await manager(['release:publish', '--github-release'], true);
       break;
     } catch (error) {
-      if (error.code !== 2 || attempt === 5) throw error;
-      console.log('注册表或平台入口尚未就绪，10 秒后恢复同一份发布记录；不重复上传已尝试的包。');
-      await new Promise((done) => setTimeout(done, 10000));
+      if (error.code !== 2 || attempt === 7) throw error;
+      const delay = Math.min((attempt + 1) * 15000, 60000);
+      console.log(
+        `注册表或平台入口尚未就绪，${delay / 1000} 秒后恢复同一份发布记录；不重复上传已尝试的包。`,
+      );
+      await new Promise((done) => setTimeout(done, delay));
     }
   }
   // 检查步骤不继承 npm 发布凭据，也不重打包任何将要发布的文件。

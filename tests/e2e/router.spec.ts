@@ -222,11 +222,14 @@ test('正常链接修饰键保留原生行为，后退恢复滚动', async ({ pa
   await page.goto('/workspace/tasks?render=ssr');
   await expect(page.locator('#app')).toHaveAttribute('data-client-ready', 'true');
   const original = page.url();
-  const opened = context.waitForEvent('page');
-  await page
-    .getByRole('link', { name: '偏好设置', exact: true })
-    .click({ modifiers: ['ControlOrMeta'] });
-  const other = await opened;
+  // 修饰键的原生开页依赖活跃页面，先明确激活，再发出可信鼠标事件。
+  await page.bringToFront();
+  const [other] = await Promise.all([
+    context.waitForEvent('page'),
+    page
+      .getByRole('link', { name: '偏好设置', exact: true })
+      .click({ modifiers: ['ControlOrMeta'] }),
+  ]);
   await other.waitForLoadState();
   await expect(other.getByRole('heading', { name: '偏好设置' })).toBeVisible();
   expect(page.url()).toBe(original);

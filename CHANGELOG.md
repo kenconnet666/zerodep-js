@@ -1,6 +1,8 @@
 # 变更记录
 
-## 1.0.0-rc.5 — 原生工具共享候选，验收中
+## 1.0.0-rc.5 — 原生工具共享，2026-10-07
+
+十一包已发布到 next。发布源码为 `052a51e`，[六平台 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/37485656478)与[发布恢复和注册表消费](https://github.com/kenconnet666/zerodep-js/actions/runs/37489398562/attempts/2)通过，[GitHub 预发布](https://github.com/kenconnet666/zerodep-js/releases/tag/v1.0.0-rc.5)保存原始 tgz 与 release.json。未提升稳定 latest。
 
 - 自有 Vite、异步编译接口与 MCP 共用工作区 Go 进程；加入项目缓存、内存文本隔离、连接租约、异常重连和退出清理。
 - Go checker 增加三项可选类型规则，与类型诊断一起执行；补全 import 整理、状态声明 quick fix、模块边界与 API 报告入口。
