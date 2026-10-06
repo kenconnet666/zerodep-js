@@ -101,32 +101,28 @@ await mkdir(resolve(root, '.codex'), { recursive: true });
 const temporary = await mkdtemp(resolve(root, '.codex/ts-native-build-framework-'));
 const checkout = resolve(temporary, 'source');
 const staged = resolve(temporary, 'typescript');
-let registered = false;
 try {
+  // 固定提交导出到临时目录，不再创建或登记 Git 工作树。
+  await mkdir(checkout);
+  const archive = resolve(temporary, 'source.tar');
   await run('git', [
     '-C',
     source,
-    'worktree',
-    'add',
-    '--detach',
-    '--no-checkout',
-    checkout,
+    'archive',
+    '--format=tar',
+    '--output',
+    archive,
     target.commit,
-  ]);
-  registered = true;
-  await run('git', [
-    '-C',
-    checkout,
-    '-c',
-    'core.longpaths=true',
-    'sparse-checkout',
-    'set',
+    'tsc/go.mod',
+    'tsc/go.sum',
     'tsc/cmd',
     'tsc/internal',
   ]);
-  await run('git', ['-C', checkout, '-c', 'core.longpaths=true', 'checkout', target.commit]);
+  await run('tar', ['-xf', archive, '-C', checkout]);
+  // 防止 git apply 向上发现框架仓库并把临时目录外的 patch 路径静默跳过。
+  await run('git', ['-C', checkout, 'init', '--quiet']);
   for (const patch of patches) await run('git', ['-C', checkout, 'apply', patch]);
-  await cp(goSource, resolve(checkout, 'tsc/internal/zerodep'), { recursive: true });
+  await cp(goSource, resolve(checkout, 'tsc/internal'), { recursive: true });
   if (values.test)
     console.log(
       await run(values.go, [
@@ -211,8 +207,23 @@ try {
   }
   console.log('原生框架编译器构建完成。WebStorm 平台包目录：' + destination);
 } finally {
-  if (registered) await run('git', ['-C', source, 'worktree', 'remove', '--force', checkout]);
   assert.equal(dirname(temporary), resolve(root, '.codex'));
   assert(basename(temporary).startsWith('ts-native-build-framework-'));
-  await rm(temporary, { recursive: true, force: true });
+  try {
+    await rm(temporary, { recursive: true, force: true });
+  } catch (error) {
+    if (
+      process.platform !== 'win32' ||
+      !['EPERM', 'EBUSY'].includes(error.code) ||
+      !String(error.path).startsWith(resolve(temporary, 'previous'))
+    ) {
+      console.error('构建临时目录清理失败：' + error.message);
+      process.exitCode = 1;
+    } else {
+      console.warn(
+        '新 SDK 已验证并安装；旧语言服务仍占用其二进制，保留待释放目录：' +
+          resolve(temporary, 'previous'),
+      );
+    }
+  }
 }

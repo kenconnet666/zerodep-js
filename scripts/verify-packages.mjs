@@ -242,6 +242,17 @@ try {
       relative(consumer, resolve(archives, basename(library.filename))).replaceAll('\\', '/'),
   ]);
   await run(['run', 'check']);
+  const checked = JSON.parse(
+    (await run(['exec', 'zerodep-tools', 'check', '-p', 'tsconfig.json', '--json'])).stdout,
+  );
+  assert(checked.complete && checked.diagnostics.length === 0, '安装后的共享原生检查失败。');
+  assert.deepEqual(
+    JSON.parse(
+      (await run(['exec', 'zerodep-tools', 'boundary', 'src/App.tsx', '--browser'])).stdout,
+    ),
+    [],
+    '安装后的 Go 模块检查失败。',
+  );
   console.log('独立安装、声明、泛型/事件类型与预编译组件库通过。');
   await run(['run', 'build']);
   const report = await json(resolve(consumer, 'dist/build-report.json'));

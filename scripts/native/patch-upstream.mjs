@@ -14,6 +14,7 @@ async function edit(file, changes) {
   await writeFile(path, text);
 }
 const fields = [
+  ['ZerodepLint', 'zerodepLint', 'Tristate', 'ParseTristate', 'CommandLineOptionTypeBoolean'],
   [
     'ZerodepDevelopment',
     'zerodepDevelopment',
@@ -56,6 +57,10 @@ await edit('tsoptions/declarations_generated.go', [
   ],
 ]);
 await edit('tsoptions/options_generated.go', [
+  [
+    'func CompilerOptionsAffectSemanticDiagnostics(oldOptions *core.CompilerOptions, newOptions *core.CompilerOptions) bool {',
+    'func CompilerOptionsAffectSemanticDiagnostics(oldOptions *core.CompilerOptions, newOptions *core.CompilerOptions) bool {\n\tif oldOptions != nil && newOptions != nil && oldOptions.ZerodepLint != newOptions.ZerodepLint { return true }',
+  ],
   [
     'switch key {',
     'switch key {\n' +
@@ -122,11 +127,31 @@ await edit('transpile/transpile.go', [
 ]);
 await edit('compiler/program.go', [
   [
+    '\t\treturn diags\n\t})\n}\n\n// getAdditionalJSSyntacticDiagnostics',
+    '\t\t// 未启用类型检查的 JS 仍遵守框架绑定约束。\n\t\tif p.SkipTypeChecking(file, false) { diags = append(diags, zerodep.Diagnostics(file, p.Options())...) }\n\t\treturn diags\n\t})\n}\n\n// getAdditionalJSSyntacticDiagnostics',
+  ],
+  [
+    'type Program struct {',
+    'type Program struct {\n\tzerodepLintDiagnostics sync.Map // 每个不可变 Program 缓存纯诊断，不持有 checker。',
+  ],
+  [
     '"github.com/microsoft/TypeScript/tsc/internal/tsoptions"',
     '"github.com/microsoft/TypeScript/tsc/internal/tsoptions"\n\t"github.com/microsoft/TypeScript/tsc/internal/zerodep"',
   ],
   [
     'filtered = applyContentMapperDiagnosticDirectives(sourceFile, filtered)\n\treturn filtered',
-    'filtered = applyContentMapperDiagnosticDirectives(sourceFile, filtered)\n\t// 框架约束不由 @ts-ignore 绕过，noEmit、增量检查和 LSP 共用这里。\n\treturn append(filtered, zerodep.Diagnostics(sourceFile, compilerOptions)...)',
+    'filtered = applyContentMapperDiagnosticDirectives(sourceFile, filtered)\n\t// 框架约束不由 @ts-ignore 绕过，noEmit、增量检查和 LSP 共用这里。\n\tfiltered = append(filtered, zerodep.Diagnostics(sourceFile, compilerOptions)...)\n\tif compilerOptions.ZerodepLint.IsTrue() && ctx.Err() == nil && !fileChecker.WasCanceled() {\n\t\tcached, ok := p.zerodepLintDiagnostics.Load(sourceFile)\n\t\tif !ok {\n\t\t\titems := zerodep.Lint(ctx, sourceFile, fileChecker, compilerOptions)\n\t\t\tif ctx.Err() != nil || fileChecker.WasCanceled() { return filtered }\n\t\t\tcached, _ = p.zerodepLintDiagnostics.LoadOrStore(sourceFile, items)\n\t\t}\n\t\tfiltered = append(filtered, cached.([]*ast.Diagnostic)...)\n\t}\n\treturn filtered',
+  ],
+]);
+await edit('ls/codeactions.go', [
+  [
+    'var codeFixProviders = []*CodeFixProvider{',
+    'var codeFixProviders = []*CodeFixProvider{\n\tZerodepFixProvider,',
+  ],
+]);
+await edit('lsp/server.go', [
+  [
+    'handlers.registerLanguageServiceDocumentRequestHandler(lsproto.TextDocumentDiagnosticInfo,',
+    'handlers.registerLanguageServiceDocumentRequestHandler(zerodepInspectInfo, (*Server).handleZerodepInspect)\n\thandlers.registerLanguageServiceDocumentRequestHandler(lsproto.TextDocumentDiagnosticInfo,',
   ],
 ]);

@@ -17,8 +17,8 @@ packages/native-*/typescript/
 .idea
 apps/example/.dev-check-*/
 apps/example/.native-check-*/
+apps/example/.native-tools-*/
 apps/example/.native-bench-*/
-apps/hosts/.dev-check-*/
 apps/example/.data/
 .DS_Store
 .env

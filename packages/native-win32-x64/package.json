@@ -1,6 +1,6 @@
 {
   "name": "zerodep-js-native-win32-x64",
-  "version": "1.0.0-rc.4",
+  "version": "1.0.0-rc.5",
   "type": "module",
   "license": "Apache-2.0 AND MIT",
   "bin": {

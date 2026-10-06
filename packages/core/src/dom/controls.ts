@@ -178,7 +178,7 @@ class Control {
       }, 0);
     };
     this.listen(element.ownerDocument, 'reset', reset, true);
-    Promise.resolve().then(() => {
+    void Promise.resolve().then(() => {
       if (this.disposed) return;
       const root = element.getRootNode();
       if (root !== element.ownerDocument && root.nodeType === 11)
@@ -206,7 +206,7 @@ class Control {
   private afterEvent(event: Event, delayed = false): void {
     if (this.queued || this.disposed) return;
     this.queued = true;
-    Promise.resolve().then(() => {
+    void Promise.resolve().then(() => {
       if (this.disposed) {
         this.queued = false;
         return;

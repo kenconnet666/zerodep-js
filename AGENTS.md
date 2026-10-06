@@ -18,6 +18,7 @@
 
 ## 工具与质量
 
+- 2026-10-06 用户要求进入生产可用目标模式：围绕单一定制 TS7-Go 持续完善，但不一开始锁定全部扩展方向。以正确性、性能、资源生命周期和真实消费测试决定保留、简化或撤回方案；当前工具优化的试验与取舍见 `.design/native-tooling-implementation.md`。
 - 2026-10-06 用户明确改为只维护定制 TS7-Go：删除传统编译器、Vue/React/Svelte 适配、宿主演示、专属测试、脚本和依赖。TS6 双线路及 core 双产物计划撤销，相关失效文件直接删除。实施范围见 `.design/native-only.md`。core 保留同一运行时和 ABI 2，主示例只用原生编译器。
 
 - 2026-10-06 用户确认可使用当前 npm 环境变量发布，并要求其他架构依赖 CI/CD 构建发版。Windows/Linux/macOS 的 x64/ARM64 由对应 runner 构建并验证，同一提交完整 CI 通过后发布固定 tgz 到 next；凭据只在发布步骤使用。流程与恢复见 docs/native-release.md。

@@ -1,5 +1,5 @@
 diff --git a/tsc/internal/compiler/emitter.go b/tsc/internal/compiler/emitter.go
-index 4e3b697a..39af99d9 100644
+index 4e3b697..7c44ffa 100644
 --- a/tsc/internal/compiler/emitter.go
 +++ b/tsc/internal/compiler/emitter.go
 @@ -19,6 +19,7 @@ import (
@@ -20,7 +20,7 @@ index 4e3b697a..39af99d9 100644
  	// transform TypeScript syntax
  	{
  		// use type nodes to add metadata decorators
-@@ -194,6 +198,13 @@ func (e *emitter) emitJSFile(sourceFile *ast.SourceFile, jsFilePath tspath.Roote
+@@ -194,6 +198,14 @@ func (e *emitter) emitJSFile(sourceFile *ast.SourceFile, jsFilePath tspath.Roote
  		defer e.tr.Push(tracing.PhaseEmit, "emitJsFileOrBundle", map[string]any{"jsFilePath": jsFilePath}, true)()
  	}
  
@@ -31,11 +31,12 @@ index 4e3b697a..39af99d9 100644
 +		e.emitResult.EmitSkipped = true
 +		return
 +	}
++
  	emitContext, putEmitContext := printer.GetEmitContext()
  	defer putEmitContext()
  
 diff --git a/tsc/internal/compiler/program.go b/tsc/internal/compiler/program.go
-index 31363f95..d0cdc8af 100644
+index 31363f9..ffdd4da 100644
 --- a/tsc/internal/compiler/program.go
 +++ b/tsc/internal/compiler/program.go
 @@ -32,6 +32,7 @@ import (
@@ -46,52 +47,133 @@ index 31363f95..d0cdc8af 100644
  )
  
  type ProgramOptions struct {
-@@ -1561,7 +1562,8 @@ func (p *Program) getBindAndCheckDiagnosticsWithChecker(ctx context.Context, fil
+@@ -95,12 +96,13 @@ type packageNamesInfo struct {
+ }
+ 
+ type Program struct {
+-	opts                  ProgramConfig
+-	hosts                 ProgramHosts
+-	resolutionData        *module.ResolutionData
+-	checkerPool           CheckerPool // always set; used as fallback for project system pools
+-	includeProcessor      includeProcessor
+-	moduleResolutionError error
++	zerodepLintDiagnostics sync.Map // 每个不可变 Program 缓存纯诊断，不持有 checker。
++	opts                   ProgramConfig
++	hosts                  ProgramHosts
++	resolutionData         *module.ResolutionData
++	checkerPool            CheckerPool // always set; used as fallback for project system pools
++	includeProcessor       includeProcessor
++	moduleResolutionError  error
+ 
+ 	// compilerCheckerPool is set only when the built-in compiler checker pool is in use
+ 	// (i.e. CreateCheckerPool was not provided). It enables grouped parallel iteration,
+@@ -773,6 +775,10 @@ func (p *Program) GetSyntacticDiagnostics(ctx context.Context, sourceFile *ast.S
+ 		if ast.IsSourceFileJS(file) && !ast.IsCheckJSEnabledForFile(file, p.Options()) {
+ 			diags = append(diags, getAdditionalJSSyntacticDiagnostics(file, p.Options())...)
+ 		}
++		// 未启用类型检查的 JS 仍遵守框架绑定约束。
++		if p.SkipTypeChecking(file, false) {
++			diags = append(diags, zerodep.Diagnostics(file, p.Options())...)
++		}
+ 		return diags
+ 	})
+ }
+@@ -1561,6 +1567,19 @@ func (p *Program) getBindAndCheckDiagnosticsWithChecker(ctx context.Context, fil
  		}
  	}
  	filtered = applyContentMapperDiagnosticDirectives(sourceFile, filtered)
--	return filtered
 +	// 框架约束不由 @ts-ignore 绕过，noEmit、增量检查和 LSP 共用这里。
-+	return append(filtered, zerodep.Diagnostics(sourceFile, compilerOptions)...)
++	filtered = append(filtered, zerodep.Diagnostics(sourceFile, compilerOptions)...)
++	if compilerOptions.ZerodepLint.IsTrue() && ctx.Err() == nil && !fileChecker.WasCanceled() {
++		cached, ok := p.zerodepLintDiagnostics.Load(sourceFile)
++		if !ok {
++			items := zerodep.Lint(ctx, sourceFile, fileChecker, compilerOptions)
++			if ctx.Err() != nil || fileChecker.WasCanceled() {
++				return filtered
++			}
++			cached, _ = p.zerodepLintDiagnostics.LoadOrStore(sourceFile, items)
++		}
++		filtered = append(filtered, cached.([]*ast.Diagnostic)...)
++	}
+ 	return filtered
  }
  
- func applyContentMapperDiagnosticDirectives(sourceFile *ast.SourceFile, diags []*ast.Diagnostic) []*ast.Diagnostic {
 diff --git a/tsc/internal/core/options_generated.go b/tsc/internal/core/options_generated.go
-index 911b2d6a..a738793e 100644
+index 911b2d6..7a20d54 100644
 --- a/tsc/internal/core/options_generated.go
 +++ b/tsc/internal/core/options_generated.go
-@@ -17,6 +17,9 @@ type PluginImport struct {
+@@ -17,6 +17,10 @@ type PluginImport struct {
  
  // CompilerOptions contains the compiler options exposed by the API.
  type CompilerOptions struct {
++	ZerodepLint                               Tristate `json:"zerodepLint,omitzero"`
 +	ZerodepDevelopment                        Tristate `json:"zerodepDevelopment,omitzero"`
 +	ZerodepHmr                                Tristate `json:"zerodepHmr,omitzero"`
 +	ZerodepRuntimeModule                      string   `json:"zerodepRuntimeModule,omitzero"`
  	_                                         noCopy
  	AllowJs                                   Tristate                                  `json:"allowJs,omitzero"`
  	AllowArbitraryExtensions                  Tristate                                  `json:"allowArbitraryExtensions,omitzero"`
-@@ -165,6 +168,9 @@ type CompilerOptions struct {
+@@ -165,13 +169,17 @@ type CompilerOptions struct {
  // Clone creates a shallow copy of the CompilerOptions.
  func (options *CompilerOptions) Clone() *CompilerOptions {
  	return &CompilerOptions{
-+		ZerodepDevelopment:                        options.ZerodepDevelopment,
-+		ZerodepHmr:                                options.ZerodepHmr,
-+		ZerodepRuntimeModule:                      options.ZerodepRuntimeModule,
- 		AllowJs:                                   options.AllowJs,
- 		AllowArbitraryExtensions:                  options.AllowArbitraryExtensions,
- 		AllowImportingTsExtensions:                options.AllowImportingTsExtensions,
-@@ -309,6 +315,9 @@ func (options *CompilerOptions) Equals(other *CompilerOptions) bool {
+-		AllowJs:                                   options.AllowJs,
+-		AllowArbitraryExtensions:                  options.AllowArbitraryExtensions,
+-		AllowImportingTsExtensions:                options.AllowImportingTsExtensions,
+-		AllowNonTsExtensions:                      options.AllowNonTsExtensions,
+-		AllowUmdGlobalAccess:                      options.AllowUmdGlobalAccess,
+-		AllowUnreachableCode:                      options.AllowUnreachableCode,
+-		AllowUnusedLabels:                         options.AllowUnusedLabels,
++		ZerodepLint:                options.ZerodepLint,
++		ZerodepDevelopment:         options.ZerodepDevelopment,
++		ZerodepHmr:                 options.ZerodepHmr,
++		ZerodepRuntimeModule:       options.ZerodepRuntimeModule,
++		AllowJs:                    options.AllowJs,
++		AllowArbitraryExtensions:   options.AllowArbitraryExtensions,
++		AllowImportingTsExtensions: options.AllowImportingTsExtensions,
++		AllowNonTsExtensions:       options.AllowNonTsExtensions,
++		AllowUmdGlobalAccess:       options.AllowUmdGlobalAccess,
++		AllowUnreachableCode:       options.AllowUnreachableCode,
++		AllowUnusedLabels:          options.AllowUnusedLabels,
+ 		AssumeChangesOnlyAffectDirectDependencies: options.AssumeChangesOnlyAffectDirectDependencies,
+ 		CheckJs:                                 options.CheckJs,
+ 		CustomConditions:                        options.CustomConditions,
+@@ -309,6 +317,9 @@ func (options *CompilerOptions) Equals(other *CompilerOptions) bool {
  	if options == nil || other == nil {
  		return false
  	}
-+	if options.ZerodepDevelopment != other.ZerodepDevelopment || options.ZerodepHmr != other.ZerodepHmr || options.ZerodepRuntimeModule != other.ZerodepRuntimeModule {
++	if options.ZerodepLint != other.ZerodepLint || options.ZerodepDevelopment != other.ZerodepDevelopment || options.ZerodepHmr != other.ZerodepHmr || options.ZerodepRuntimeModule != other.ZerodepRuntimeModule {
 +		return false
 +	}
  	if options.AllowJs != other.AllowJs {
  		return false
  	}
+diff --git a/tsc/internal/ls/codeactions.go b/tsc/internal/ls/codeactions.go
+index a95b8bb..b17397c 100644
+--- a/tsc/internal/ls/codeactions.go
++++ b/tsc/internal/ls/codeactions.go
+@@ -69,6 +69,7 @@ type CombinedCodeActions struct {
+ 
+ // codeFixProviders is the list of all registered code fix providers
+ var codeFixProviders = []*CodeFixProvider{
++	ZerodepFixProvider,
+ 	ImportFixProvider,
+ 	IsolatedDeclarationsFixProvider,
+ 	FixClassIncorrectlyImplementsInterfaceProvider,
+diff --git a/tsc/internal/lsp/server.go b/tsc/internal/lsp/server.go
+index dc90637..b5080cd 100644
+--- a/tsc/internal/lsp/server.go
++++ b/tsc/internal/lsp/server.go
+@@ -1280,6 +1280,7 @@ var handlers = sync.OnceValue(func() handlerMap {
+ 	handlers.registerNotificationHandler(lsproto.CustomSetLogVerbosityInfo, (*Server).handleSetLogVerbosity)
+ 	handlers.registerRequestHandler(lsproto.WorkspaceWillRenameFilesInfo, (*Server).handleWillRenameFiles)
+ 
++	handlers.registerLanguageServiceDocumentRequestHandler(zerodepInspectInfo, (*Server).handleZerodepInspect)
+ 	handlers.registerLanguageServiceDocumentRequestHandler(lsproto.TextDocumentDiagnosticInfo, (*Server).handleDocumentDiagnostic)
+ 	handlers.registerLanguageServiceDocumentRequestHandler(lsproto.TextDocumentHoverInfo, (*Server).handleHover)
+ 	handlers.registerLanguageServiceDocumentRequestHandler(lsproto.TextDocumentDefinitionInfo, (*Server).handleDefinition)
 diff --git a/tsc/internal/transpile/transpile.go b/tsc/internal/transpile/transpile.go
-index a7e040e4..443dd4b6 100644
+index a7e040e..443dd4b 100644
 --- a/tsc/internal/transpile/transpile.go
 +++ b/tsc/internal/transpile/transpile.go
 @@ -195,6 +195,9 @@ func transpileWorker(ctx context.Context, input string, options Options, declara
@@ -105,13 +187,14 @@ index a7e040e4..443dd4b6 100644
  
  	return &Output{
 diff --git a/tsc/internal/tsoptions/declarations_generated.go b/tsc/internal/tsoptions/declarations_generated.go
-index a3d52a02..462a56e2 100644
+index a3d52a0..7bc69cb 100644
 --- a/tsc/internal/tsoptions/declarations_generated.go
 +++ b/tsc/internal/tsoptions/declarations_generated.go
-@@ -245,6 +245,9 @@ var commonOptionsWithBuild = []*CommandLineOption{
+@@ -245,6 +245,10 @@ var commonOptionsWithBuild = []*CommandLineOption{
  }
  
  var optionsForCompiler = []*CommandLineOption{
++	{Name: "zerodepLint", Kind: CommandLineOptionTypeBoolean},
 +	{Name: "zerodepDevelopment", Kind: CommandLineOptionTypeBoolean},
 +	{Name: "zerodepHmr", Kind: CommandLineOptionTypeBoolean},
 +	{Name: "zerodepRuntimeModule", Kind: CommandLineOptionTypeString},
@@ -119,13 +202,15 @@ index a3d52a02..462a56e2 100644
  		Name:                     "all",
  		Kind:                     CommandLineOptionTypeBoolean,
 diff --git a/tsc/internal/tsoptions/options_generated.go b/tsc/internal/tsoptions/options_generated.go
-index 97591327..4c39bef1 100644
+index 9759132..5163c67 100644
 --- a/tsc/internal/tsoptions/options_generated.go
 +++ b/tsc/internal/tsoptions/options_generated.go
-@@ -13,6 +13,12 @@ func parseCompilerOptions(key string, value any, allOptions *core.CompilerOption
+@@ -13,6 +13,14 @@ func parseCompilerOptions(key string, value any, allOptions *core.CompilerOption
  		key = option.Name
  	}
  	switch key {
++	case "zerodepLint":
++		allOptions.ZerodepLint = ParseTristate(value)
 +	case "zerodepDevelopment":
 +		allOptions.ZerodepDevelopment = ParseTristate(value)
 +	case "zerodepHmr":
@@ -135,20 +220,33 @@ index 97591327..4c39bef1 100644
  	case "allowJs":
  		allOptions.AllowJs = ParseTristate(value)
  	case "allowArbitraryExtensions":
-@@ -424,6 +430,9 @@ func CompilerOptionsAffectDeclarationPath(oldOptions *core.CompilerOptions, newO
+@@ -366,6 +374,9 @@ func ParseBuildOptions(key string, value any, allOptions *core.BuildOptions) {
  }
  
- func CompilerOptionsAffectEmit(oldOptions *core.CompilerOptions, newOptions *core.CompilerOptions) bool {
-+	if oldOptions != nil && newOptions != nil && (oldOptions.ZerodepDevelopment != newOptions.ZerodepDevelopment || oldOptions.ZerodepHmr != newOptions.ZerodepHmr || oldOptions.ZerodepRuntimeModule != newOptions.ZerodepRuntimeModule) {
+ func CompilerOptionsAffectSemanticDiagnostics(oldOptions *core.CompilerOptions, newOptions *core.CompilerOptions) bool {
++	if oldOptions != nil && newOptions != nil && oldOptions.ZerodepLint != newOptions.ZerodepLint {
 +		return true
 +	}
  	if oldOptions == newOptions {
  		return false
  	}
-@@ -463,6 +472,15 @@ func CompilerOptionsAffectEmit(oldOptions *core.CompilerOptions, newOptions *cor
+@@ -424,6 +435,9 @@ func CompilerOptionsAffectDeclarationPath(oldOptions *core.CompilerOptions, newO
+ }
+ 
+ func CompilerOptionsAffectEmit(oldOptions *core.CompilerOptions, newOptions *core.CompilerOptions) bool {
++	if oldOptions != nil && newOptions != nil && (oldOptions.ZerodepLint != newOptions.ZerodepLint || oldOptions.ZerodepDevelopment != newOptions.ZerodepDevelopment || oldOptions.ZerodepHmr != newOptions.ZerodepHmr || oldOptions.ZerodepRuntimeModule != newOptions.ZerodepRuntimeModule) {
++		return true
++	}
+ 	if oldOptions == newOptions {
+ 		return false
+ 	}
+@@ -463,6 +477,18 @@ func CompilerOptionsAffectEmit(oldOptions *core.CompilerOptions, newOptions *cor
  
  // ForEachCompilerOptionAffectingBuildInfo visits nonzero options in CompilerOptions field order.
  func ForEachCompilerOptionAffectingBuildInfo(options *core.CompilerOptions, fn func(option *CommandLineOption, value any)) {
++	if options.ZerodepLint != core.TSUnknown {
++		fn(CommandLineCompilerOptionsMap.Get("zerodepLint"), options.ZerodepLint)
++	}
 +	if options.ZerodepDevelopment != core.TSUnknown {
 +		fn(CommandLineCompilerOptionsMap.Get("zerodepDevelopment"), options.ZerodepDevelopment)
 +	}
@@ -161,10 +259,13 @@ index 97591327..4c39bef1 100644
  	if options.AllowJs != core.TSUnknown {
  		fn(CommandLineCompilerOptionsMap.Get("allowJs"), options.AllowJs)
  	}
-@@ -667,6 +685,15 @@ func ForEachCompilerOptionAffectingBuildInfo(options *core.CompilerOptions, fn f
+@@ -667,6 +693,18 @@ func ForEachCompilerOptionAffectingBuildInfo(options *core.CompilerOptions, fn f
  }
  
  func mergeCompilerOptionFields(targetOptions, sourceOptions *core.CompilerOptions, explicitNullFields collections.Set[string]) {
++	if sourceOptions.ZerodepLint != core.TSUnknown || explicitNullFields.Has("zerodepLint") {
++		targetOptions.ZerodepLint = sourceOptions.ZerodepLint
++	}
 +	if sourceOptions.ZerodepDevelopment != core.TSUnknown || explicitNullFields.Has("zerodepDevelopment") {
 +		targetOptions.ZerodepDevelopment = sourceOptions.ZerodepDevelopment
 +	}
@@ -177,10 +278,13 @@ index 97591327..4c39bef1 100644
  	if explicitNullFields.Has("allowJs") {
  		targetOptions.AllowJs = core.TSUnknown
  	} else if sourceOptions.AllowJs != core.TSUnknown {
-@@ -1361,6 +1388,15 @@ func handleOptionConfigDirTemplateSubstitution(compilerOptions *parsedCompilerOp
+@@ -1361,6 +1399,18 @@ func handleOptionConfigDirTemplateSubstitution(compilerOptions *parsedCompilerOp
  
  func serializeCompilerOptions(options *core.CompilerOptions, configFilePath tspath.RootedFilePath, caseSensitivity tspath.CaseSensitivity) *collections.OrderedMap[string, any] {
  	result := collections.NewOrderedMapWithSizeHint[string, any](32)
++	if options.ZerodepLint != core.TSUnknown {
++		result.Set("zerodepLint", options.ZerodepLint == core.TSTrue)
++	}
 +	if options.ZerodepDevelopment != core.TSUnknown {
 +		result.Set("zerodepDevelopment", options.ZerodepDevelopment == core.TSTrue)
 +	}

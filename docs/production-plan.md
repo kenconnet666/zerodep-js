@@ -2,7 +2,7 @@
 
 2026-10-06 最新范围：只维护定制 TS7-Go，传统编译器、外部框架适配及宿主演示已经删除。下文历史阶段不代表当前包清单；现行范围见 [原生工具链收敛](../.design/native-only.md)。
 
-更新时间：2026-10-06。已发布基线仍为七包 1.0.0-rc.2，八包 RC3 候选尚未发布。输入 bind、_history 和 _lazy 已提交为 e7b43e8，完整 CI 与独立包消费通过；当时的 TS7 7.0.2/WebStorm 补全已验证。开发检查/HMR 已完成本地实现、类型/构建、相关单元、开发浏览器、三宿主开发更新与生产独立消费，具体范围见[开发检查](devtools.md)，本阶段完整矩阵仍交 CI。工作区当前另有 TS7.1 nightly 升级及原生 bind 补全回归修复，由另一个工作负责，不沿用旧版验收结果。阶段进度见[编写体验增强](authoring-enhancements.md)，使用形态见[编写指南](authoring.md)，取舍见[完整性审查](completeness-audit.md)。
+更新时间：2026-10-06。已发布基线为单一定制 TS7-Go 的十一包 RC4，六平台完整 CI 与 npm 注册表实际消费均通过，证据见 [CHANGELOG](../CHANGELOG.md)。用户再次要求进入生产可用目标模式，并明确通过测试逐步取舍，不能一开始锁定全部扩展方向。当前 RC5 工具共享候选正在验收：已修复实际生命周期、类型规则及 Vite 兼容问题，按实测保留一次性 CLI、连续请求共享服务、按需 API 报告和试验性原生排版。范围见 [原生工具](native-tooling.md)与[实施取舍](../.design/native-tooling-implementation.md)。RC4 的成功不代替 RC5 验收，当前不宣称稳定 1.0.0 已发布。
 
 本文是后续讨论与执行的主计划，终点是有明确支持范围、可安装、可维护、经过真实使用验证的生产版本。它不是当前功能清单，也不因写入文档就把候选 API 视为已经实现或全部批准。
 
@@ -10,7 +10,7 @@
 
 2026-10-01 用户已授权进入目标模式，持续实现完整生产可用框架，并允许依据证据调整目标细节、实现手段和测试。执行契约见 [semantics.md](semantics.md)，进度见 [execution.md](execution.md)。早期候选表述保留供比较，已选定语义以执行契约为准。
 
-历史目标模式已在 RC1 交付与 CSS 研究讨论后收尾。后续工作来自用户新增的明确实现请求；CSS 接入仍暂停，讨论稿见 [zerodep-css 接入研究](../.design/zerodep-css-integration.md)。下方完整生产路线保留，RC 交付不改称稳定 1.0.0。
+早期目标模式曾在 RC1 交付与 CSS 研究讨论后收尾，本轮已按用户新请求重新进入持续生产验收。CSS 接入仍暂停，讨论稿见 [zerodep-css 接入研究](../.design/zerodep-css-integration.md)。下方历史路线保留供参考，不把其中所有候选都变成当前承诺，RC 交付不改称稳定 1.0.0。
 
 用户新增授权包括快照、生命周期、路由、localStorage、core 目录整理、统一 _ 函数命名及 Vue/React/Svelte 页面宿主，现均进入 RC2。2026-10-02 进一步要求收尾后检查完整性：补齐已承诺范围的缺口，移除或收窄不合理内容，不将全部生态功能都列为必需。
 
@@ -18,7 +18,7 @@
 
 ## 1. 目标与当前状态
 
-后续实施已包括统一 _ 函数名、直接声明/导出和 Vue/React/Svelte 页面宿主。三个独立适配包与共用页面已完成本地类型、CSR/宿主 SSR、开发 StrictMode/热更新及七包独立消费验证；执行与发布进度见 [当前工具链范围](../.design/native-only.md)。此前讨论稿中的兼容过渡期已被用户否决，不保留旧函数导出。
+统一 _ 函数名与直接声明/导出继续保留；Vue/React/Svelte 页面宿主及传统编译器已按用户指示删除。执行与发布范围见 [当前工具链范围](../.design/native-only.md)。此前讨论稿中的兼容过渡期已被用户否决，不保留旧函数导出。
 
 已确认的方向：
 
@@ -42,7 +42,7 @@
 
 示例现在使用真正的组件 SSR 与节点接管，旧的原生探针已移除。验证覆盖节点身份、状态更新、请求隔离和不匹配行为；这仍不代替后续完整生产门槛。
 
-### 当前交付位置与证据
+### RC2 历史交付证据
 
 - 发布源码：[3d44ae7](https://github.com/kenconnet666/zerodep-js/commit/3d44ae7)。[完整 CI 已通过](https://github.com/kenconnet666/zerodep-js/actions/runs/36887698421)，含 288 项 Node、业务、资源、LSP、三浏览器、开发更新及 Linux/Windows 独立消费。[GitHub 预发布](https://github.com/kenconnet666/zerodep-js/releases/tag/v1.0.0-rc.2) 含七个原始 tgz 及最终 release.json。
 - 七包 SHA-512 与固定产物一致；2026-10-02 的 registry 精确版本验收覆盖 TS7 声明、预编译库、CSR/SSR、接管、表单、卸载、模块隔离及三宿主输入更新/重建。工作区根、example、hosts 继续 private。

@@ -9,6 +9,9 @@ export type { CompileOptions, CompileResult, SourceMap } from './types.js';
 import { nativeOptions, result } from './output.js';
 import type { CompileOptions, CompileResult } from './types.js';
 export { CompilerSession, createCompiler, type CompilerSessionOptions } from './session.js';
+export { NativeTools, applyTextEdits, writeEdits, fileEdits } from './tools.js';
+export type { ApiReport, BoundaryOptions, CodeAction, EditResult } from './tools.js';
+export type { CheckResult, FileInfo, Position, TextEdit, WorkspaceStats } from './protocol.js';
 
 let standalone: SyncAPI | undefined;
 

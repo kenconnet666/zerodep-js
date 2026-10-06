@@ -25,7 +25,7 @@
 6. 按固定清单发布 npm `next`，每次远端动作前将尝试记录同步到草稿。原生 Node 入口等待六个平台包公开、SHA-512 和 next 标签都确认后发布。网络响应不确定时不盲目重传，有限次数恢复查询后仍不确定则保留草稿并失败。
 7. 从 npm 精确安装本次版本，完成原生框架、组件库与主应用真实消费，记录 registryVerifiedAt 后再公开 GitHub 预发布。不自动提升稳定 latest。
 
-已发布并完成验收的同一 RC 后续不会因普通 main 提交重复发布。准备下一候选应统一提升十五个包的版本；不重新上传已使用的版本，也不修改其原始 tgz。
+已发布并完成验收的同一 RC 后续不会因普通 main 提交重复发布。准备下一候选应统一提升十一个包的版本；不重新上传已使用的版本，也不修改其原始 tgz。
 
 ## 日常命令
 
@@ -55,3 +55,5 @@ gh workflow run release.yml --ref main -f run_id=<原成功CI运行ID>
 [恢复运行](https://github.com/kenconnet666/zerodep-js/actions/runs/37448439386) 通过门禁后，首次在创建 GitHub 草稿 Release 时遇到 403，仍未进入 npm 上传。任务的 `contents: write` 已生效，但发布目标已不是分支头，且没有现存 tag；GitHub 对特定历史工作流提交的 Release 创建另有 [workflow 权限要求](https://github.blog/changelog/2023-11-02-github-actions-enforcing-workflow-scope-when-creating-a-release/)。已用现有本机授权创建 `v1.0.0-rc.3`，严格指向通过 CI 的 `c140e8eb07067f410b9ceaafe6e91c8864a09fe9`，随后恢复失败任务。没有给 Actions 增加个人凭据或改动候选产物。tag 存在不代表 npm 发布和注册表验收已经完成，仍以运行结果和发布记录为准。
 
 RC3 恢复任务的第二次尝试仍在创建 GitHub Release 时返回 403，未进入 npm 上传；现存 tag 不能作为已发布证据。用户随后撤销旧编译器与宿主路线，当前清单使用新的 RC4，不继续发布旧清单，也不覆盖旧 tag 或产物。
+
+RC4 的[六平台完整 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/37452811866)通过。首次发布在等待平台包公开及标签同步时耗尽有限重试，留下可恢复草稿；注册表就绪后，恢复同一批固定产物的[第二次发布运行](https://github.com/kenconnet666/zerodep-js/actions/runs/37455845240/attempts/2)通过，包含 npm 注册表真实安装验收。下一批工具共享改动使用 RC5，绝不以新内容覆盖 RC4。

@@ -12,10 +12,12 @@
     "dev": "pnpm build:packages && pnpm -r --parallel dev",
     "dev:csr": "pnpm build:packages && pnpm --filter @zerodep-js/example dev --render-mode csr",
     "dev:ssr": "pnpm build:packages && pnpm --filter @zerodep-js/example dev --render-mode ssr",
-    "build:packages": "pnpm --filter \"./packages/*\" --fail-if-no-match build",
-    "check": "pnpm native:check && pnpm build:packages && pnpm -r check && pnpm check:config && pnpm lint",
+    "build:packages": "node scripts/native/tsc.mjs -b tsconfig.build.json",
+    "check": "pnpm native:check && pnpm build:packages && pnpm check:projects && pnpm lint",
+    "check:projects": "node scripts/native/tsc.mjs -p apps/example/tsconfig.json && node scripts/native/tsc.mjs -p tsconfig.tools.json",
+    "check:shared": "node packages/native/dist/tool-cli.js check -p apps/example/tsconfig.json -p tsconfig.tools.json",
     "check:config": "node scripts/native/tsc.mjs -p tsconfig.tools.json",
-    "build": "pnpm -r build",
+    "build": "pnpm build:packages && pnpm --filter @zerodep-js/example build",
     "preview": "pnpm --filter @zerodep-js/example preview",
     "lint": "oxlint . --deny-warnings",
     "test": "pnpm build:packages && vitest run",
@@ -45,6 +47,7 @@
     "lsp:inspect": "node scripts/language-services/inspect.mjs .",
     "compiler:native:build": "node scripts/native/build.mjs",
     "benchmark:native": "node scripts/native/benchmark.mjs",
+    "benchmark:tools": "pnpm build:packages && node scripts/native/benchmark-tools.mjs",
     "test:native": "pnpm --filter zerodep-js-native build && vitest run --config vitest.native.config.ts"
   },
   "devDependencies": {

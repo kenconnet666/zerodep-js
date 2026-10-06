@@ -1,6 +1,15 @@
 # 变更记录
 
-## 1.0.0-rc.4 — 单一定制 TS7-Go 路线，尚未发布
+## 1.0.0-rc.5 — 原生工具共享候选，验收中
+
+- 自有 Vite、异步编译接口与 MCP 共用工作区 Go 进程；加入项目缓存、内存文本隔离、连接租约、异常重连和退出清理。
+- Go checker 增加三项可选类型规则，与类型诊断一起执行；补全 import 整理、状态声明 quick fix、模块边界与 API 报告入口。
+- 五包使用原生项目引用一次调度构建，移除构建之后的重复包级检查。保留 Oxlint 与 Prettier/Oxc；原生排版和 API 报告按需运行。
+- 原生 SDK 构建使用固定提交的临时源码归档，直接在主项目维护，不再创建 Git worktree。完整共享边界见 [原生工具说明](docs/native-tooling.md)。
+
+## 1.0.0-rc.4 — 单一定制 TS7-Go 路线，2026-10-06
+
+十一包已通过[六平台完整 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/37452811866)与[发布恢复及 npm 消费](https://github.com/kenconnet666/zerodep-js/actions/runs/37455845240/attempts/2)。发布到 next，未提升稳定版。
 
 - 删除 Babel 编译器、Vue/React/Svelte 适配、宿主演示、专属测试、验证脚本及直接依赖；不保留后端选择或回退。
 - Vite、主示例、工作区类型检查、声明构建和 CLI 统一调用项目定制 TS7 SDK。编译语义用例迁入 native，直接验证真实 Go 实现。

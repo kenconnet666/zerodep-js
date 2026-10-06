@@ -142,6 +142,9 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 7.1.0-dev.20261005.1
+      vscode-jsonrpc:
+        specifier: 'catalog:'
+        version: 9.0.3
     devDependencies:
       '@jridgewell/trace-mapping':
         specifier: 'catalog:'
