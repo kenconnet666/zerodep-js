@@ -1,0 +1,824 @@
+{
+  "measuredAt": "2026-10-06T19:21:59.684Z",
+  "sourceCommit": "853d39da4dc3c5086cc7c010dc2cbafbf6ada371",
+  "environment": {
+    "node": "v24.18.0",
+    "platform": "win32",
+    "arch": "x64",
+    "cpu": "Intel(R) Xeon(R) CPU E5-2698B v3 @ 2.00GHz",
+    "logicalCpus": 32,
+    "memoryGiB": 127.84711456298828
+  },
+  "sdk": {
+    "version": "7.1.0-dev.20261005.1+zerodep.native.52064eee65b8",
+    "baseVersion": "7.1.0-dev.20261005.1",
+    "commit": "50d70a3f5f453a79a4323b263165da51f656a4e3",
+    "sourceHash": "52064eee65b88977eb6b3378104569c372add5c72ca5a74e3ebd25a18128e560",
+    "goVersion": "go version go1.27.1 windows/amd64",
+    "platform": "win32-x64",
+    "binaryHash": "efd58842c98cf5b123692520b7098bdb9f91faa9482fe0a96d7ea03b91f3c2fe"
+  },
+  "methodology": {
+    "scope": "Research only. Production source, declarations, SDK, and configuration remained unchanged. All variants used task-owned copied declarations or temporary native binaries, directly in the primary checkout, without a worktree.",
+    "ablations": "Removing binding/readonly/generic logic weakens the contract and is diagnostic only. Every raw exit status is retained. Costs interact and cannot be added or subtracted as independent stage times.",
+    "repeatTiming": "Compiler and type-probe workloads ran sequentially; OS caches were not flushed. Current desktop hardware, not an isolated machine. Three samples per main compiler variant; exploratory cases mostly one sample.",
+    "statisticsCaveat": "--extendedDiagnostics performs two explicit runtime.GC calls AFTER recording Total time. Diagnostic wall timings and profiles therefore include extra collection; reported Memory used is live Alloc after those collections, not peak RSS. Plain measurements exclude the flag.",
+    "control": "Original installed RC6 binary copied beside prototype binaries, using the same standard-library directory; compare fresh processes. Plain and compiler-probe runs use the actual apps/example/tsconfig.json."
+  },
+  "ablation": [
+    {
+      "variant": "control",
+      "exitCode": 0,
+      "wallMilliseconds": 11961.277900000001,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          620170\nTypes:           1256929\nInstantiations: 10436278\nMemory used:     730635K\nMemory allocs:  27718012\nConfig time:      0.006s\nParse time:       0.089s\nBind time:        0.024s\nCheck time:      11.010s\nTotal time:      11.131s\n"
+    },
+    {
+      "variant": "skip-dts",
+      "exitCode": 0,
+      "wallMilliseconds": 10945.792999999998,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          519680\nTypes:           1025366\nInstantiations:  8991197\nMemory used:     581756K\nMemory allocs:  25238102\nConfig time:      0.005s\nParse time:       0.086s\nBind time:        0.025s\nCheck time:      10.087s\nTotal time:      10.205s\n"
+    },
+    {
+      "variant": "no-readonly",
+      "exitCode": 0,
+      "wallMilliseconds": 10725.737499999996,
+      "output": "Files:               135\nLines:             85300\nIdentifiers:       66605\nSymbols:          290629\nTypes:            224605\nInstantiations:  5870601\nMemory used:     222532K\nMemory allocs:  22568495\nConfig time:      0.005s\nParse time:       0.082s\nBind time:        0.033s\nCheck time:      10.067s\nTotal time:      10.191s\n"
+    },
+    {
+      "variant": "no-binding",
+      "exitCode": 0,
+      "wallMilliseconds": 6058.2486999999965,
+      "output": "Files:               135\nLines:             85306\nIdentifiers:       66604\nSymbols:          612290\nTypes:           1163303\nInstantiations:  9306023\nMemory used:     711804K\nMemory allocs:  15645499\nConfig time:      0.004s\nParse time:       0.077s\nBind time:        0.023s\nCheck time:       5.216s\nTotal time:       5.324s\n"
+    },
+    {
+      "variant": "link-nongeneric",
+      "exitCode": 0,
+      "wallMilliseconds": 6189.478499999997,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66615\nSymbols:          612771\nTypes:           1167530\nInstantiations: 10103907\nMemory used:     712604K\nMemory allocs:  17451050\nConfig time:      0.006s\nParse time:       0.082s\nBind time:        0.025s\nCheck time:       5.268s\nTotal time:       5.384s\n"
+    },
+    {
+      "variant": "link-interface",
+      "exitCode": 0,
+      "wallMilliseconds": 10718.490700000002,
+      "output": "Files:               135\nLines:             85306\nIdentifiers:       66623\nSymbols:          620164\nTypes:           1217900\nInstantiations: 10270404\nMemory used:     724303K\nMemory allocs:  19706806\nConfig time:      0.006s\nParse time:       0.086s\nBind time:        0.028s\nCheck time:       9.766s\nTotal time:       9.890s\n"
+    },
+    {
+      "variant": "no-binding-no-readonly",
+      "exitCode": 0,
+      "wallMilliseconds": 2901.9334000000017,
+      "output": "Files:              135\nLines:            85301\nIdentifiers:      66592\nSymbols:         277891\nTypes:           119769\nInstantiations: 4504041\nMemory used:    196587K\nMemory allocs:  8627939\nConfig time:     0.006s\nParse time:      0.077s\nBind time:       0.024s\nCheck time:      2.294s\nTotal time:      2.403s\n"
+    },
+    {
+      "variant": "link-interface-no-readonly",
+      "exitCode": 0,
+      "wallMilliseconds": 10013.8324,
+      "output": "Files:               135\nLines:             85301\nIdentifiers:       66611\nSymbols:          290623\nTypes:            180956\nInstantiations:  5684861\nMemory used:     214610K\nMemory allocs:  13574453\nConfig time:      0.005s\nParse time:       0.077s\nBind time:        0.021s\nCheck time:       9.307s\nTotal time:       9.416s\n"
+    },
+    {
+      "variant": "control",
+      "exitCode": 0,
+      "wallMilliseconds": 11149.794900000008,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          620170\nTypes:           1256929\nInstantiations: 10436278\nMemory used:     730257K\nMemory allocs:  27717746\nConfig time:      0.005s\nParse time:       0.081s\nBind time:        0.022s\nCheck time:      10.204s\nTotal time:      10.313s\n"
+    }
+  ],
+  "bindingProbes": [
+    {
+      "variant": "control",
+      "exitCode": 0,
+      "wallMilliseconds": 11479.2162,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          620170\nTypes:           1256929\nInstantiations: 10436278\nMemory used:     730225K\nMemory allocs:  27718555\nConfig time:      0.005s\nParse time:       0.101s\nBind time:        0.026s\nCheck time:      10.422s\nTotal time:      10.556s\n"
+    },
+    {
+      "variant": "no-link-binding",
+      "exitCode": 0,
+      "wallMilliseconds": 8939.814699999999,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66619\nSymbols:          612261\nTypes:           1248996\nInstantiations: 10382026\nMemory used:     728188K\nMemory allocs:  27404159\nConfig time:      0.006s\nParse time:       0.081s\nBind time:        0.021s\nCheck time:       7.950s\nTotal time:       8.060s\n"
+    },
+    {
+      "variant": "key-remap",
+      "exitCode": 0,
+      "wallMilliseconds": 15361.597299999998,
+      "output": "Files:               135\nLines:             85304\nIdentifiers:       66617\nSymbols:          611696\nTypes:           1715639\nInstantiations: 10517088\nMemory used:     926086K\nMemory allocs:  34755763\nConfig time:      0.005s\nParse time:       0.079s\nBind time:        0.024s\nCheck time:      14.403s\nTotal time:      14.514s\n"
+    },
+    {
+      "variant": "callback-intersection",
+      "exitCode": 0,
+      "wallMilliseconds": 10911.787900000003,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          620180\nTypes:           1227475\nInstantiations: 10383350\nMemory used:     724983K\nMemory allocs:  22305443\nConfig time:      0.005s\nParse time:       0.084s\nBind time:        0.048s\nCheck time:       9.919s\nTotal time:      10.061s\n"
+    },
+    {
+      "variant": "cached-keys",
+      "exitCode": 0,
+      "wallMilliseconds": 10437.022500000006,
+      "output": "Files:               135\nLines:             85306\nIdentifiers:       66623\nSymbols:          616283\nTypes:           1252899\nInstantiations: 10408262\nMemory used:     729335K\nMemory allocs:  27560834\nConfig time:      0.005s\nParse time:       0.088s\nBind time:        0.029s\nCheck time:       9.466s\nTotal time:       9.592s\n"
+    },
+    {
+      "variant": "control",
+      "exitCode": 0,
+      "wallMilliseconds": 11652.881300000008,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          620170\nTypes:           1256929\nInstantiations: 10436278\nMemory used:     730373K\nMemory allocs:  27717407\nConfig time:      0.006s\nParse time:       0.081s\nBind time:        0.022s\nCheck time:      10.588s\nTotal time:      10.700s\n"
+    }
+  ],
+  "bindingVariants": {
+    "key-remap": "Use keyof of a key-remapped object for BindableKeys, retaining callback compatibility checks.",
+    "callback-intersection": "ChangeName<K> extends (keyof P & `on${string}Change`).",
+    "cached-keys": "Pass computed BindableKeys<P> into a helper and reuse it for Omit and BindingConditions.",
+    "no-link-binding": "Diagnostic-only bypass of ComponentBindings when keyof P contains to."
+  },
+  "scopeProbes": [
+    {
+      "name": "exact-no-binding",
+      "exitCode": 2,
+      "wallMilliseconds": 5885.5396,
+      "source": null,
+      "output": "apps/example/src/examples/AuthoringExample.tsx(85,18): error TS2322: Type '{ \"bind:value\": string; }' is not assignable to type 'IntrinsicAttributes & { value: string; onValueChange: (value: string) => void; }'.\n  Property 'bind:value' does not exist on type 'IntrinsicAttributes & { value: string; onValueChange: (value: string) => void; }'.\nFiles:               135\nLines:             85306\nIdentifiers:       66602\nSymbols:          610878\nTypes:           1163174\nInstantiations:  9304437\nMemory used:     711803K\nMemory allocs:  15675515\nConfig time:      0.005s\nParse time:       0.077s\nBind time:        0.020s\nCheck time:       5.014s\nTotal time:       5.119s\n"
+    },
+    {
+      "name": "only-value-binding",
+      "exitCode": 0,
+      "wallMilliseconds": 10786.858,
+      "source": null,
+      "output": "Files:               135\nLines:             85307\nIdentifiers:       66623\nSymbols:          617294\nTypes:           1252661\nInstantiations:  9629035\nMemory used:     729562K\nMemory allocs:  25896314\nConfig time:      0.005s\nParse time:       0.076s\nBind time:        0.022s\nCheck time:       9.791s\nTotal time:       9.897s\n"
+    },
+    {
+      "name": "empty",
+      "exitCode": 0,
+      "wallMilliseconds": 5031.123,
+      "source": "export const value = 1;\n",
+      "output": "Files:               74\nLines:            81121\nIdentifiers:      59838\nSymbols:         284348\nTypes:           568586\nInstantiations: 4169189\nMemory used:    355051K\nMemory allocs:  6416065\nConfig time:     0.003s\nParse time:      0.055s\nBind time:       0.028s\nCheck time:      4.323s\nTotal time:      4.411s\n"
+    },
+    {
+      "name": "core-import",
+      "exitCode": 0,
+      "wallMilliseconds": 4724.348700000002,
+      "source": "import 'zerodep-js';\n",
+      "output": "Files:               84\nLines:            81291\nIdentifiers:      60258\nSymbols:         284681\nTypes:           568731\nInstantiations: 4169314\nMemory used:    355239K\nMemory allocs:  6419111\nConfig time:     0.003s\nParse time:      0.051s\nBind time:       0.022s\nCheck time:      4.059s\nTotal time:      4.138s\n"
+    },
+    {
+      "name": "intrinsic",
+      "exitCode": 0,
+      "wallMilliseconds": 5211.459999999999,
+      "source": "export const content = <div>内容</div>;\n",
+      "output": "Files:               74\nLines:            81121\nIdentifiers:      59840\nSymbols:         402443\nTypes:           838644\nInstantiations: 6461040\nMemory used:    502252K\nMemory allocs:  9679489\nConfig time:     0.002s\nParse time:      0.051s\nBind time:       0.021s\nCheck time:      4.449s\nTotal time:      4.525s\n"
+    },
+    {
+      "name": "wrapper",
+      "exitCode": 2,
+      "wallMilliseconds": 13565.689999999999,
+      "source": "import {_component, type JSX} from 'zerodep-js';\nconst Anchor = _component((props: JSX.IntrinsicElements['a']) => <a {...props} />);\nexport const content = <Anchor href='/'>内容</Anchor>;\n",
+      "output": ".codex/ts-native-build-typecost-20261007/scope.tsx(3,24): error TS2589: Type instantiation is excessively deep and possibly infinite.\nFiles:                84\nLines:             81293\nIdentifiers:       60272\nSymbols:          295126\nTypes:            571100\nInstantiations:  9175737\nMemory used:     361375K\nMemory allocs:  17551648\nConfig time:      0.003s\nParse time:       0.069s\nBind time:        0.029s\nCheck time:      12.816s\nTotal time:      12.919s\n"
+    },
+    {
+      "name": "route-only",
+      "exitCode": 0,
+      "wallMilliseconds": 5004.3822,
+      "source": "import {_component} from 'zerodep-js';\nimport {_defineRoutes, _createRouter} from 'zerodep-use/router';\nconst Page = _component(() => <div/>);\nconst routes = _defineRoutes({home: {path:'/',component:Page}});\nexport const router = _createRouter(routes);\nexport const href = router.href(routes.home);\n",
+      "output": "Files:               95\nLines:            81715\nIdentifiers:      61313\nSymbols:         285718\nTypes:           572027\nInstantiations: 4223625\nMemory used:    357814K\nMemory allocs:  6496669\nConfig time:     0.002s\nParse time:      0.055s\nBind time:       0.022s\nCheck time:      4.338s\nTotal time:      4.420s\n"
+    },
+    {
+      "name": "one-link",
+      "exitCode": 0,
+      "wallMilliseconds": 11765.894999999997,
+      "source": "import {_component} from 'zerodep-js';\nimport {_defineRoutes, Link} from 'zerodep-use/router';\nconst Page = _component(() => <div/>);\nconst routes = _defineRoutes({home: {path:'/',component:Page}});\nexport const content = <Link to={routes.home}>首页</Link>;\n",
+      "output": "Files:                95\nLines:             81714\nIdentifiers:       61311\nSymbols:          293512\nTypes:            661986\nInstantiations:  4554803\nMemory used:     377466K\nMemory allocs:  16746372\nConfig time:      0.003s\nParse time:       0.060s\nBind time:        0.025s\nCheck time:      10.955s\nTotal time:      11.044s\n"
+    },
+    {
+      "name": "one-link-no-binding",
+      "exitCode": 0,
+      "wallMilliseconds": 5021.805899999999,
+      "source": "import {_component} from 'zerodep-js';\nimport {_defineRoutes, Link} from 'zerodep-use/router';\nconst Page = _component(() => <div/>);\nconst routes = _defineRoutes({home: {path:'/',component:Page}});\nexport const content = <Link to={routes.home}>首页</Link>;\n",
+      "output": "Files:               95\nLines:            81715\nIdentifiers:      61296\nSymbols:         286654\nTypes:           572036\nInstantiations: 4227304\nMemory used:    358399K\nMemory allocs:  6502760\nConfig time:     0.003s\nParse time:      0.057s\nBind time:       0.022s\nCheck time:      4.327s\nTotal time:      4.410s\n"
+    }
+  ],
+  "domProbes": [
+    {
+      "name": "dom-fast-path",
+      "exitCode": 0,
+      "wallMilliseconds": 11028.481,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66625\nSymbols:          534592\nTypes:           1256603\nInstantiations:  7833588\nMemory used:     708515K\nMemory allocs:  23644158\nConfig time:      0.005s\nParse time:       0.072s\nBind time:        0.025s\nCheck time:      10.028s\nTotal time:      10.132s\n"
+    },
+    {
+      "name": "dom-fast-path-repeat",
+      "exitCode": 0,
+      "wallMilliseconds": 11371.6492,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66625\nSymbols:          534592\nTypes:           1256603\nInstantiations:  7833588\nMemory used:     708335K\nMemory allocs:  23643907\nConfig time:      0.005s\nParse time:       0.081s\nBind time:        0.023s\nCheck time:      10.384s\nTotal time:      10.496s\n"
+    },
+    {
+      "name": "empty-ts",
+      "exitCode": 0,
+      "wallMilliseconds": 917.0107000000025,
+      "output": "Files:              64\nLines:           56786\nIdentifiers:     48635\nSymbols:         55640\nTypes:           31998\nInstantiations:  28166\nMemory used:    59687K\nMemory allocs:  251344\nConfig time:    0.003s\nParse time:     0.053s\nBind time:      0.032s\nCheck time:     0.384s\nTotal time:     0.474s\n"
+    },
+    {
+      "name": "empty-tsx-fast",
+      "exitCode": 0,
+      "wallMilliseconds": 4441.8465,
+      "output": "Files:               74\nLines:            81121\nIdentifiers:      59846\nSymbols:         243922\nTypes:           568341\nInstantiations: 3023915\nMemory used:    345827K\nMemory allocs:  4649919\nConfig time:     0.002s\nParse time:      0.059s\nBind time:       0.021s\nCheck time:      3.732s\nTotal time:      3.817s\n"
+    },
+    {
+      "name": "wrapper-fast",
+      "exitCode": 2,
+      "wallMilliseconds": 12615.520800000002,
+      "output": ".codex/ts-native-build-typecost-20261007/dom-scope.tsx(3,24): error TS2589: Type instantiation is excessively deep and possibly infinite.\nFiles:                84\nLines:             81293\nIdentifiers:       60280\nSymbols:          254700\nTypes:            570855\nInstantiations:  8029835\nMemory used:     352141K\nMemory allocs:  15784530\nConfig time:      0.003s\nParse time:       0.056s\nBind time:        0.022s\nCheck time:      11.856s\nTotal time:      11.938s\n"
+    }
+  ],
+  "domVariant": "Use T directly instead of DeclaredMembers<T> only when T has no broad string, number, or symbol index signature.",
+  "eagerDeclarationProbes": [
+    {
+      "variant": "control",
+      "exitCode": 0,
+      "wallMilliseconds": 4565.851000000001,
+      "output": "Files:               74\nLines:            81121\nIdentifiers:      59838\nSymbols:         284348\nTypes:           568586\nInstantiations: 4169189\nMemory used:    354980K\nMemory allocs:  6416139\nConfig time:     0.003s\nParse time:      0.048s\nBind time:       0.024s\nCheck time:      4.170s\nTotal time:      4.248s\n"
+    },
+    {
+      "variant": "no-readonly",
+      "exitCode": 0,
+      "wallMilliseconds": 2126.3035,
+      "output": "Files:               74\nLines:            81116\nIdentifiers:      59826\nSymbols:         125314\nTypes:            76634\nInstantiations: 1926301\nMemory used:    114446K\nMemory allocs:  3141138\nConfig time:     0.003s\nParse time:      0.053s\nBind time:       0.024s\nCheck time:      1.843s\nTotal time:      1.927s\n"
+    },
+    {
+      "variant": "no-intrinsic-base",
+      "exitCode": 0,
+      "wallMilliseconds": 2854.0912000000008,
+      "output": "Files:               74\nLines:            81121\nIdentifiers:      59837\nSymbols:         200864\nTypes:           327494\nInstantiations: 2421354\nMemory used:    232063K\nMemory allocs:  3975210\nConfig time:     0.002s\nParse time:      0.055s\nBind time:       0.019s\nCheck time:      2.495s\nTotal time:      2.577s\n"
+    },
+    {
+      "variant": "skip-dts",
+      "exitCode": 0,
+      "wallMilliseconds": 275.78420000000006,
+      "output": "Files:              74\nLines:           81121\nIdentifiers:     59838\nSymbols:         38651\nTypes:             342\nInstantiations:      0\nMemory used:    30734K\nMemory allocs:   47434\nConfig time:    0.003s\nParse time:     0.066s\nBind time:      0.028s\nCheck time:     0.001s\nTotal time:     0.099s\n"
+    }
+  ],
+  "emptyFileDifference": {
+    "extra": [
+      "C:/Users/lionheart/WebstormProjects/zerodep-js/.codex/ts-native-build-typecost-20261007/core/runtime/reactivity.d.ts",
+      "C:/Users/lionheart/WebstormProjects/zerodep-js/.codex/ts-native-build-typecost-20261007/core/runtime/props.d.ts",
+      "C:/Users/lionheart/WebstormProjects/zerodep-js/.codex/ts-native-build-typecost-20261007/core/runtime/flow.d.ts",
+      "C:/Users/lionheart/WebstormProjects/zerodep-js/.codex/ts-native-build-typecost-20261007/core/runtime/template.d.ts",
+      "C:/Users/lionheart/WebstormProjects/zerodep-js/.codex/ts-native-build-typecost-20261007/core/runtime/component.d.ts",
+      "C:/Users/lionheart/WebstormProjects/zerodep-js/.codex/ts-native-build-typecost-20261007/core/native/data.d.ts",
+      "C:/Users/lionheart/WebstormProjects/zerodep-js/.codex/ts-native-build-typecost-20261007/core/native/properties.d.ts",
+      "C:/Users/lionheart/WebstormProjects/zerodep-js/node_modules/.pnpm/csstype@3.2.3/node_modules/csstype/index.d.ts",
+      "C:/Users/lionheart/WebstormProjects/zerodep-js/.codex/ts-native-build-typecost-20261007/core/native/style.d.ts",
+      "C:/Users/lionheart/WebstormProjects/zerodep-js/.codex/ts-native-build-typecost-20261007/core/jsx-runtime.d.ts",
+      "C:/Users/lionheart/WebstormProjects/zerodep-js/.codex/ts-native-build-typecost-20261007/empty.tsx"
+    ],
+    "countTS": 64,
+    "countTSX": 74
+  },
+  "compilerProbes": [
+    {
+      "name": "control",
+      "exitCode": 0,
+      "wallMilliseconds": 11741.8347,
+      "args": [],
+      "environment": {},
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          620170\nTypes:           1256929\nInstantiations: 10436278\nMemory used:     730623K\nMemory allocs:  27723131\nConfig time:      0.005s\nParse time:       0.094s\nBind time:        0.023s\nCheck time:      10.939s\nTotal time:      11.067s\n"
+    },
+    {
+      "name": "fast",
+      "exitCode": 0,
+      "wallMilliseconds": 6001.3215,
+      "args": [],
+      "environment": {},
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          611132\nTypes:           1164643\nInstantiations: 10095895\nMemory used:     711855K\nMemory allocs:  17419534\nConfig time:      0.005s\nParse time:       0.097s\nBind time:        0.025s\nCheck time:       5.373s\nTotal time:       5.503s\n"
+    },
+    {
+      "name": "fast",
+      "exitCode": 0,
+      "wallMilliseconds": 6047.067700000003,
+      "args": [],
+      "environment": {},
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          611132\nTypes:           1164643\nInstantiations: 10095895\nMemory used:     712037K\nMemory allocs:  17419153\nConfig time:      0.004s\nParse time:       0.088s\nBind time:        0.024s\nCheck time:       5.436s\nTotal time:       5.555s\n"
+    },
+    {
+      "name": "control",
+      "exitCode": 0,
+      "wallMilliseconds": 11831.913700000001,
+      "args": [],
+      "environment": {},
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          620170\nTypes:           1256929\nInstantiations: 10436278\nMemory used:     730393K\nMemory allocs:  27722943\nConfig time:      0.004s\nParse time:       0.093s\nBind time:        0.027s\nCheck time:      11.113s\nTotal time:      11.240s\n"
+    },
+    {
+      "name": "fast",
+      "exitCode": 0,
+      "wallMilliseconds": 6004.379099999998,
+      "args": [],
+      "environment": {},
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          611132\nTypes:           1164643\nInstantiations: 10095895\nMemory used:     711833K\nMemory allocs:  17417648\nConfig time:      0.005s\nParse time:       0.091s\nBind time:        0.030s\nCheck time:       5.393s\nTotal time:       5.521s\n"
+    },
+    {
+      "name": "control",
+      "exitCode": 0,
+      "wallMilliseconds": 11791.989999999998,
+      "args": [],
+      "environment": {},
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          620170\nTypes:           1256929\nInstantiations: 10436278\nMemory used:     730527K\nMemory allocs:  27723714\nConfig time:      0.005s\nParse time:       0.092s\nBind time:        0.024s\nCheck time:      11.107s\nTotal time:      11.230s\n"
+    },
+    {
+      "name": "type-fixtures-fast",
+      "exitCode": 0,
+      "wallMilliseconds": 5964.131600000001,
+      "args": [],
+      "environment": {},
+      "output": "Files:               114\nLines:             82999\nIdentifiers:       62942\nSymbols:          564246\nTypes:           1147704\nInstantiations:  9108546\nMemory used:     687993K\nMemory allocs:  13880268\nConfig time:      0.006s\nParse time:       0.071s\nBind time:        0.022s\nCheck time:       5.340s\nTotal time:       5.442s\n"
+    },
+    {
+      "name": "wrapper-fast",
+      "exitCode": 0,
+      "wallMilliseconds": 4926.160800000005,
+      "args": [],
+      "environment": {},
+      "output": "Files:               84\nLines:            81293\nIdentifiers:      60272\nSymbols:         289477\nTypes:           568795\nInstantiations: 4175925\nMemory used:    359228K\nMemory allocs:  6499165\nConfig time:     0.003s\nParse time:      0.062s\nBind time:       0.022s\nCheck time:      4.533s\nTotal time:      4.623s\n"
+    },
+    {
+      "name": "avx2-default",
+      "exitCode": 0,
+      "wallMilliseconds": 6193.653200000008,
+      "args": [],
+      "environment": {},
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          611132\nTypes:           1164643\nInstantiations: 10095895\nMemory used:     711919K\nMemory allocs:  17417957\nConfig time:      0.005s\nParse time:       0.087s\nBind time:        0.026s\nCheck time:       5.564s\nTotal time:       5.685s\n"
+    },
+    {
+      "name": "avx2-disabled",
+      "exitCode": 0,
+      "wallMilliseconds": 6029.948299999989,
+      "args": [],
+      "environment": {
+        "GODEBUG": "cpu.avx2=off"
+      },
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          611132\nTypes:           1164643\nInstantiations: 10095895\nMemory used:     711837K\nMemory allocs:  17418493\nConfig time:      0.005s\nParse time:       0.097s\nBind time:        0.027s\nCheck time:       5.386s\nTotal time:       5.518s\n"
+    },
+    {
+      "name": "avx2-disabled",
+      "exitCode": 0,
+      "wallMilliseconds": 6164.697499999995,
+      "args": [],
+      "environment": {
+        "GODEBUG": "cpu.avx2=off"
+      },
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          611132\nTypes:           1164643\nInstantiations: 10095895\nMemory used:     711862K\nMemory allocs:  17419760\nConfig time:      0.004s\nParse time:       0.093s\nBind time:        0.027s\nCheck time:       5.453s\nTotal time:       5.579s\n"
+    },
+    {
+      "name": "avx2-default",
+      "exitCode": 0,
+      "wallMilliseconds": 6147.330499999996,
+      "args": [],
+      "environment": {},
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          611132\nTypes:           1164643\nInstantiations: 10095895\nMemory used:     712034K\nMemory allocs:  17419198\nConfig time:      0.005s\nParse time:       0.098s\nBind time:        0.026s\nCheck time:       5.520s\nTotal time:       5.652s\n"
+    },
+    {
+      "name": "fast-checkers-1",
+      "exitCode": 0,
+      "wallMilliseconds": 7313.305299999993,
+      "args": ["--checkers", "1"],
+      "environment": {},
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          310082\nTypes:            557819\nInstantiations:  5072958\nMemory used:     359618K\nMemory allocs:  10092930\nConfig time:      0.008s\nParse time:       0.097s\nBind time:        0.025s\nCheck time:       6.818s\nTotal time:       6.950s\n"
+    },
+    {
+      "name": "fast-checkers-2",
+      "exitCode": 0,
+      "wallMilliseconds": 6840.8589000000065,
+      "args": ["--checkers", "2"],
+      "environment": {},
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          449153\nTypes:            846458\nInstantiations:  7511750\nMemory used:     525705K\nMemory allocs:  13616944\nConfig time:      0.005s\nParse time:       0.106s\nBind time:        0.024s\nCheck time:       6.262s\nTotal time:       6.400s\n"
+    },
+    {
+      "name": "fast-checkers-8",
+      "exitCode": 0,
+      "wallMilliseconds": 6456.138400000011,
+      "args": ["--checkers", "8"],
+      "environment": {},
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:         1038230\nTypes:           2081798\nInstantiations: 17720557\nMemory used:    1236227K\nMemory allocs:  28398819\nConfig time:      0.004s\nParse time:       0.089s\nBind time:        0.022s\nCheck time:       5.511s\nTotal time:       5.631s\n"
+    }
+  ],
+  "refinedProbes": [
+    {
+      "name": "example",
+      "binary": "diagnostic-fast",
+      "exitCode": 0,
+      "args": [],
+      "wallMilliseconds": 6025.1368999999995,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          611138\nTypes:           1164696\nInstantiations: 10096024\nMemory used:     711743K\nMemory allocs:  17419055\nConfig time:      0.005s\nParse time:       0.087s\nBind time:        0.032s\nCheck time:       5.306s\nTotal time:       5.433s\n"
+    },
+    {
+      "name": "example",
+      "binary": "readonly-fast",
+      "exitCode": 0,
+      "args": [],
+      "wallMilliseconds": 5862.6338000000005,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          611138\nTypes:           1164696\nInstantiations:  9743829\nMemory used:     711935K\nMemory allocs:  16875992\nConfig time:      0.005s\nParse time:       0.109s\nBind time:        0.021s\nCheck time:       5.162s\nTotal time:       5.300s\n"
+    },
+    {
+      "name": "example",
+      "binary": "readonly-fast",
+      "exitCode": 0,
+      "args": [],
+      "wallMilliseconds": 5443.428299999998,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          611138\nTypes:           1164696\nInstantiations:  9743829\nMemory used:     711958K\nMemory allocs:  16876971\nConfig time:      0.004s\nParse time:       0.095s\nBind time:        0.022s\nCheck time:       4.869s\nTotal time:       4.993s\n"
+    },
+    {
+      "name": "example",
+      "binary": "diagnostic-fast",
+      "exitCode": 0,
+      "args": [],
+      "wallMilliseconds": 6151.127699999997,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          611138\nTypes:           1164696\nInstantiations: 10096024\nMemory used:     712065K\nMemory allocs:  17417948\nConfig time:      0.005s\nParse time:       0.083s\nBind time:        0.024s\nCheck time:       5.535s\nTotal time:       5.649s\n"
+    },
+    {
+      "name": "example",
+      "binary": "diagnostic-fast",
+      "exitCode": 0,
+      "args": [],
+      "wallMilliseconds": 5991.510600000001,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          611138\nTypes:           1164696\nInstantiations: 10096024\nMemory used:     711949K\nMemory allocs:  17419097\nConfig time:      0.004s\nParse time:       0.098s\nBind time:        0.026s\nCheck time:       5.284s\nTotal time:       5.416s\n"
+    },
+    {
+      "name": "example",
+      "binary": "readonly-fast",
+      "exitCode": 0,
+      "args": [],
+      "wallMilliseconds": 5950.673599999998,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          611138\nTypes:           1164696\nInstantiations:  9743829\nMemory used:     712097K\nMemory allocs:  16875834\nConfig time:      0.009s\nParse time:       0.110s\nBind time:        0.029s\nCheck time:       5.240s\nTotal time:       5.393s\n"
+    },
+    {
+      "name": "type-fixtures",
+      "binary": "diagnostic-fast",
+      "exitCode": 0,
+      "args": [],
+      "wallMilliseconds": 6003.2209,
+      "output": "Files:               114\nLines:             82999\nIdentifiers:       62942\nSymbols:          564246\nTypes:           1147704\nInstantiations:  9108546\nMemory used:     687993K\nMemory allocs:  13880176\nConfig time:      0.005s\nParse time:       0.065s\nBind time:        0.029s\nCheck time:       5.185s\nTotal time:       5.286s\n"
+    },
+    {
+      "name": "readonly-equivalence",
+      "binary": "diagnostic-fast",
+      "exitCode": 2,
+      "args": [],
+      "wallMilliseconds": 5244.7837,
+      "output": ".codex/ts-native-build-typecost-20261007/readonly-equivalence.tsx(42,34): error TS2344: Type 'false' does not satisfy the constraint 'true'.\nFiles:               90\nLines:            82002\nIdentifiers:      60868\nSymbols:         306385\nTypes:           629112\nInstantiations: 4571510\nMemory used:    383523K\nMemory allocs:  6971937\nConfig time:     0.004s\nParse time:      0.057s\nBind time:       0.024s\nCheck time:      4.700s\nTotal time:      4.787s\n"
+    },
+    {
+      "name": "skip-dts",
+      "binary": "diagnostic-fast",
+      "exitCode": 0,
+      "args": ["--skipLibCheck"],
+      "wallMilliseconds": 4649.569299999996,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          510627\nTypes:            933128\nInstantiations:  8650943\nMemory used:     563199K\nMemory allocs:  14939139\nConfig time:      0.004s\nParse time:       0.081s\nBind time:        0.022s\nCheck time:       3.938s\nTotal time:       4.047s\n"
+    },
+    {
+      "name": "type-fixtures",
+      "binary": "readonly-fast",
+      "exitCode": 0,
+      "args": [],
+      "wallMilliseconds": 6049.929599999996,
+      "output": "Files:               114\nLines:             82999\nIdentifiers:       62942\nSymbols:          564246\nTypes:           1147704\nInstantiations:  8762589\nMemory used:     688007K\nMemory allocs:  13345492\nConfig time:      0.006s\nParse time:       0.141s\nBind time:        0.024s\nCheck time:       5.198s\nTotal time:       5.371s\n"
+    },
+    {
+      "name": "readonly-equivalence",
+      "binary": "readonly-fast",
+      "exitCode": 2,
+      "args": [],
+      "wallMilliseconds": 5378.440600000002,
+      "output": ".codex/ts-native-build-typecost-20261007/readonly-equivalence.tsx(42,34): error TS2344: Type 'false' does not satisfy the constraint 'true'.\nFiles:               90\nLines:            82002\nIdentifiers:      60868\nSymbols:         306385\nTypes:           629112\nInstantiations: 4397856\nMemory used:    383553K\nMemory allocs:  6703725\nConfig time:     0.004s\nParse time:      0.071s\nBind time:       0.029s\nCheck time:      4.665s\nTotal time:      4.772s\n"
+    },
+    {
+      "name": "skip-dts",
+      "binary": "readonly-fast",
+      "exitCode": 0,
+      "args": ["--skipLibCheck"],
+      "wallMilliseconds": 4853.6823,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          510627\nTypes:            933128\nInstantiations:  8360111\nMemory used:     563586K\nMemory allocs:  14489225\nConfig time:      0.005s\nParse time:       0.080s\nBind time:        0.028s\nCheck time:       4.070s\nTotal time:       4.184s\n"
+    }
+  ],
+  "initialLspProbe": {
+    "results": [
+      {
+        "compiler": "tsc-control.exe",
+        "server": {
+          "name": "typescript",
+          "version": "7.1.0-dev.20261005.1+zerodep.native.52064eee65b8"
+        },
+        "name": "blank",
+        "hasBindValue": true,
+        "candidates": ["key", "value", "onValueChange", "bind:value"]
+      },
+      {
+        "compiler": "tsc-control.exe",
+        "server": {
+          "name": "typescript",
+          "version": "7.1.0-dev.20261005.1+zerodep.native.52064eee65b8"
+        },
+        "name": "prefix",
+        "hasBindValue": true,
+        "candidates": ["value", "onValueChange", "bind:value", "key"]
+      },
+      {
+        "compiler": "tsc-control.exe",
+        "server": {
+          "name": "typescript",
+          "version": "7.1.0-dev.20261005.1+zerodep.native.52064eee65b8"
+        },
+        "name": "colon",
+        "hasBindValue": true,
+        "candidates": ["key", "value", "onValueChange", "bind:value"]
+      },
+      {
+        "compiler": "tsc.exe",
+        "server": {
+          "name": "typescript",
+          "version": "7.1.0-dev.20261005.1+zerodep.research"
+        },
+        "name": "blank",
+        "hasBindValue": false,
+        "candidates": ["key", "value", "onValueChange"]
+      },
+      {
+        "compiler": "tsc.exe",
+        "server": {
+          "name": "typescript",
+          "version": "7.1.0-dev.20261005.1+zerodep.research"
+        },
+        "name": "prefix",
+        "hasBindValue": false,
+        "candidates": ["key", "value", "onValueChange"]
+      },
+      {
+        "compiler": "tsc.exe",
+        "server": {
+          "name": "typescript",
+          "version": "7.1.0-dev.20261005.1+zerodep.research"
+        },
+        "name": "colon",
+        "hasBindValue": true,
+        "candidates": ["onValueChange", "bind:value", "key", "value"]
+      }
+    ]
+  },
+  "refinedLspProbe": {
+    "results": [
+      {
+        "compiler": "diagnostic-fast.exe",
+        "server": {
+          "name": "typescript",
+          "version": "7.1.0-dev.20261005.1+zerodep.diagnostic-fast"
+        },
+        "name": "blank",
+        "hasBindValue": true,
+        "candidates": ["key", "value", "onValueChange", "bind:value"]
+      },
+      {
+        "compiler": "diagnostic-fast.exe",
+        "name": "blank",
+        "afterDiagnostic": true,
+        "hasBindValue": true,
+        "candidates": ["value", "onValueChange", "bind:value", "key"]
+      },
+      {
+        "compiler": "diagnostic-fast.exe",
+        "server": {
+          "name": "typescript",
+          "version": "7.1.0-dev.20261005.1+zerodep.diagnostic-fast"
+        },
+        "name": "prefix",
+        "hasBindValue": true,
+        "candidates": ["key", "value", "onValueChange", "bind:value"]
+      },
+      {
+        "compiler": "diagnostic-fast.exe",
+        "name": "prefix",
+        "afterDiagnostic": true,
+        "hasBindValue": true,
+        "candidates": ["key", "value", "onValueChange", "bind:value"]
+      },
+      {
+        "compiler": "diagnostic-fast.exe",
+        "server": {
+          "name": "typescript",
+          "version": "7.1.0-dev.20261005.1+zerodep.diagnostic-fast"
+        },
+        "name": "colon",
+        "hasBindValue": true,
+        "candidates": ["key", "value", "onValueChange", "bind:value"]
+      },
+      {
+        "compiler": "diagnostic-fast.exe",
+        "name": "colon",
+        "afterDiagnostic": true,
+        "hasBindValue": true,
+        "candidates": ["key", "value", "onValueChange", "bind:value"]
+      },
+      {
+        "compiler": "readonly-fast.exe",
+        "server": {
+          "name": "typescript",
+          "version": "7.1.0-dev.20261005.1+zerodep.readonly-fast"
+        },
+        "name": "blank",
+        "hasBindValue": true,
+        "candidates": ["key", "value", "onValueChange", "bind:value"]
+      },
+      {
+        "compiler": "readonly-fast.exe",
+        "name": "blank",
+        "afterDiagnostic": true,
+        "hasBindValue": true,
+        "candidates": ["value", "onValueChange", "bind:value", "key"]
+      },
+      {
+        "compiler": "readonly-fast.exe",
+        "server": {
+          "name": "typescript",
+          "version": "7.1.0-dev.20261005.1+zerodep.readonly-fast"
+        },
+        "name": "prefix",
+        "hasBindValue": true,
+        "candidates": ["bind:value", "key", "value", "onValueChange"]
+      },
+      {
+        "compiler": "readonly-fast.exe",
+        "name": "prefix",
+        "afterDiagnostic": true,
+        "hasBindValue": true,
+        "candidates": ["key", "value", "onValueChange", "bind:value"]
+      },
+      {
+        "compiler": "readonly-fast.exe",
+        "server": {
+          "name": "typescript",
+          "version": "7.1.0-dev.20261005.1+zerodep.readonly-fast"
+        },
+        "name": "colon",
+        "hasBindValue": true,
+        "candidates": ["onValueChange", "bind:value", "key", "value"]
+      },
+      {
+        "compiler": "readonly-fast.exe",
+        "name": "colon",
+        "afterDiagnostic": true,
+        "hasBindValue": true,
+        "candidates": ["key", "value", "onValueChange", "bind:value"]
+      }
+    ]
+  },
+  "runtimeProbes": [
+    {
+      "GOGC": "100",
+      "exitCode": 0,
+      "wallMilliseconds": 6550.535900000001,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          611138\nTypes:           1164696\nInstantiations: 10096024\nMemory used:     711817K\nMemory allocs:  17420157\nConfig time:      0.005s\nParse time:       0.099s\nBind time:        0.025s\nCheck time:       5.831s\nTotal time:       5.963s\n"
+    },
+    {
+      "GOGC": "200",
+      "exitCode": 0,
+      "wallMilliseconds": 6449.4781,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          611138\nTypes:           1164696\nInstantiations: 10096024\nMemory used:     711819K\nMemory allocs:  17419521\nConfig time:      0.005s\nParse time:       0.085s\nBind time:        0.029s\nCheck time:       5.746s\nTotal time:       5.868s\n"
+    },
+    {
+      "GOGC": "200",
+      "exitCode": 0,
+      "wallMilliseconds": 6076.673099999998,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          611138\nTypes:           1164696\nInstantiations: 10096024\nMemory used:     711885K\nMemory allocs:  17417479\nConfig time:      0.007s\nParse time:       0.105s\nBind time:        0.030s\nCheck time:       5.395s\nTotal time:       5.541s\n"
+    },
+    {
+      "GOGC": "100",
+      "exitCode": 0,
+      "wallMilliseconds": 5854.064699999999,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          611138\nTypes:           1164696\nInstantiations: 10096024\nMemory used:     711789K\nMemory allocs:  17418169\nConfig time:      0.005s\nParse time:       0.095s\nBind time:        0.022s\nCheck time:       5.157s\nTotal time:       5.282s\n"
+    }
+  ],
+  "plainMeasurements": [
+    {
+      "binary": "tsc-control",
+      "exitCode": 0,
+      "wallMilliseconds": 11513.6789,
+      "output": ""
+    },
+    {
+      "binary": "diagnostic-fast",
+      "exitCode": 0,
+      "wallMilliseconds": 5728.906700000001,
+      "output": ""
+    },
+    {
+      "binary": "diagnostic-fast",
+      "exitCode": 0,
+      "wallMilliseconds": 5813.1882000000005,
+      "output": ""
+    },
+    {
+      "binary": "tsc-control",
+      "exitCode": 0,
+      "wallMilliseconds": 11564.567300000002,
+      "output": ""
+    },
+    {
+      "binary": "tsc-control",
+      "exitCode": 0,
+      "wallMilliseconds": 11354.2252,
+      "output": ""
+    },
+    {
+      "binary": "diagnostic-fast",
+      "exitCode": 0,
+      "wallMilliseconds": 5567.721700000002,
+      "output": ""
+    }
+  ],
+  "readonlyEquivalence": {
+    "source": "import type { NativeProps } from 'zerodep-js';\n\ntype Equal<X, Y, Yes = true, No = false> =\n  (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2 ? Yes : No;\ntype Declared<T> = {\n  [K in keyof T as string extends K ? never : number extends K ? never : symbol extends K ? never : K]: T[K];\n};\ntype ReferenceWritable<T, N = Declared<T>> = {\n  [K in keyof N]-?: Equal<{ [P in K]: N[K] }, { -readonly [P in K]: N[K] }, K, never>;\n}[keyof N] & keyof T;\ntype Assert<T extends true> = T;\ntype Expected<T, K extends string> = `prop:${Extract<ReferenceWritable<T>, K>}`;\ntype Actual<T extends Element, K extends string> = Extract<keyof NativeProps<T>, `prop:${K}`>;\n\ninterface Widget extends HTMLElement {\n  mutable: string;\n  readonly immutable: number;\n  optional?: string;\n  readonly optionalReadonly?: string;\n  nested: { label: string };\n  callback(value: string): string;\n}\ntype WidgetKeys = 'mutable' | 'immutable' | 'optional' | 'optionalReadonly' | 'nested' | 'callback';\nexport type ObjectKeys = Assert<Equal<Expected<Widget, WidgetKeys>, Actual<Widget, WidgetKeys>>>;\ndeclare class Accessors extends HTMLElement {\n  get getterOnly(): string;\n  get getterSetter(): string;\n  set getterSetter(value: string);\n  mutable: string;\n  readonly immutable: string;\n}\ntype AccessorKeys = 'getterOnly' | 'getterSetter' | 'mutable' | 'immutable';\nexport type AccessorCheck = Assert<Equal<Expected<Accessors, AccessorKeys>, Actual<Accessors, AccessorKeys>>>;\ninterface StringIndex extends Widget { [name: string]: unknown }\ninterface NumberIndex extends Widget { [index: number]: unknown }\ninterface SymbolIndex extends Widget { [index: symbol]: unknown }\nexport type StringIndexCheck = Assert<Equal<Expected<StringIndex, WidgetKeys>, Actual<StringIndex, WidgetKeys>>>;\nexport type NumberIndexCheck = Assert<Equal<Expected<NumberIndex, WidgetKeys>, Actual<NumberIndex, WidgetKeys>>>;\nexport type SymbolIndexCheck = Assert<Equal<Expected<SymbolIndex, WidgetKeys>, Actual<SymbolIndex, WidgetKeys>>>;\nexport type IntersectionCheck = Assert<Equal<Expected<Widget & { readonly extra: string }, WidgetKeys | 'extra'>, Actual<Widget & { readonly extra: string }, WidgetKeys | 'extra'>>>;\nexport type FormCheck = Assert<Equal<Expected<HTMLFormElement, 'offsetWidth' | 'scrollTop' | 'name'>, Actual<HTMLFormElement, 'offsetWidth' | 'scrollTop' | 'name'>>>;\n// select.name 属于模型保留属性，不作为 prop:name 公开；这里只比较非保留键。\nexport type SelectCheck = Assert<Equal<Expected<HTMLSelectElement, 'offsetWidth' | 'scrollTop'>, Actual<HTMLSelectElement, 'offsetWidth' | 'scrollTop'>>>;\n",
+    "initialFixtureError": "SelectCheck originally expected prop:name, but select.name is a model-owned property and is intentionally excluded. Both binaries failed that incorrect expectation. Corrected to compare only non-reserved keys.",
+    "corrected": {
+      "diagnostic-fast": {
+        "exitCode": 0,
+        "checkSeconds": 4.939,
+        "totalSeconds": 5.029
+      },
+      "readonly-fast": {
+        "exitCode": 0,
+        "checkSeconds": 4.444,
+        "totalSeconds": 4.526
+      }
+    }
+  },
+  "profileWithStatistics": {
+    "durationSeconds": 6.01,
+    "sampledCpuSeconds": 21.76,
+    "instantiateTypeWithAliasCumulativePercent": 50.41,
+    "gcDrainCumulativePercent": 33.87,
+    "cmpbodyFlatPercent": 0.97,
+    "limitations": "Cumulative samples overlap; CPU time sums multiple threads. This profile includes the two collections triggered by extendedDiagnostics; do not interpret its GC percentage as the ordinary CLI fraction."
+  },
+  "profileWithoutStatistics": {
+    "durationSeconds": 5.5,
+    "sampledCpuSeconds": 18.15,
+    "instantiateTypeWithAliasCumulativePercent": 56.75,
+    "conditionalTypeInstantiationCumulativePercent": 53.94,
+    "gcDrainCumulativePercent": 23.69,
+    "cmpbodyFlatPercent": 1.49,
+    "limitations": "Separate CPU profile of diagnostic-fast without extendedDiagnostics. Profile overhead remains. Cumulative call trees overlap and do not partition wall time."
+  },
+  "sourcePointers": {
+    "managedAttributes": "tsc/internal/checker/jsx.go:getJsxManagedAttributesFromLocatedAttributes",
+    "writableKeys": "packages/core/src/jsx-runtime.ts:28",
+    "componentBindings": "packages/core/src/jsx-runtime.ts:187",
+    "readonlyPredicate": "tsc/internal/checker/checker.go:isReadonlySymbol",
+    "statisticsGc": "tsc/internal/execute/tsc/emit.go:55",
+    "simdCompare": "Go 1.27.1 src/internal/bytealg/compare_amd64.s:48"
+  },
+  "summary": {
+    "plain": {
+      "tsc-control": {
+        "count": 3,
+        "min": 11354.2252,
+        "median": 11513.6789,
+        "max": 11564.567300000002
+      },
+      "diagnostic-fast": {
+        "count": 3,
+        "min": 5567.721700000002,
+        "median": 5728.906700000001,
+        "max": 5813.1882000000005
+      }
+    },
+    "refined": {
+      "diagnostic-fast": {
+        "wallMilliseconds": {
+          "count": 3,
+          "min": 5991.510600000001,
+          "median": 6025.1368999999995,
+          "max": 6151.127699999997
+        },
+        "checkSeconds": {
+          "count": 3,
+          "min": 5.284,
+          "median": 5.306,
+          "max": 5.535
+        },
+        "instantiations": 10096024,
+        "types": 1164696
+      },
+      "readonly-fast": {
+        "wallMilliseconds": {
+          "count": 3,
+          "min": 5443.428299999998,
+          "median": 5862.6338000000005,
+          "max": 5950.673599999998
+        },
+        "checkSeconds": {
+          "count": 3,
+          "min": 4.869,
+          "median": 5.162,
+          "max": 5.24
+        },
+        "instantiations": 9743829,
+        "types": 1164696
+      }
+    }
+  },
+  "prototypeHashes": {
+    "tsc-control": "efd58842c98cf5b123692520b7098bdb9f91faa9482fe0a96d7ea03b91f3c2fe",
+    "tsc": "78e8f409d8e3ec290d63056390609f49b0a297d970154fa810ade2b53a0fe231",
+    "diagnostic-fast": "142b422ccc5d5775c46b8de2c137d991d7f7eb14701190c0215f2ce6fb22d852",
+    "readonly-fast": "4eda3d7903a5050b592a48024f9c83033dece45aa9c030396a617d6276c222e4"
+  }
+}

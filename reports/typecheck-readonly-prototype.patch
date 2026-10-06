@@ -1,0 +1,38 @@
+diff --git a/tsc/internal/checker/checker.go b/tsc/internal/checker/checker.go
+index 8c9c7d6..ac189b8 100644
+--- a/tsc/internal/checker/checker.go
++++ b/tsc/internal/checker/checker.go
+@@ -22535,6 +22535,33 @@ func (c *Checker) instantiateType(t *Type, m *TypeMapper) *Type {
+ }
+ 
+ func (c *Checker) instantiateTypeWithAlias(t *Type, m *TypeMapper, alias *TypeAlias) *Type {
++	// 研究原型：只对固定 JSX 声明中的已具体化 DOM 属性键读取符号只读信息。
++	if c.compilerOptions.JsxImportSource == "zerodep-js" && t != nil && m != nil && t.alias != nil && t.alias.symbol.Name == "WritableKeys" && len(t.alias.typeArguments) > 0 {
++		var decl *ast.Node
++		if len(t.alias.symbol.Declarations) > 0 {
++			decl = t.alias.symbol.Declarations[0]
++		}
++		if decl != nil && strings.HasSuffix(ast.GetSourceFileOfNode(decl).FileName().AsString(), "/jsx-runtime.d.ts") {
++			target := m.Map(t.alias.typeArguments[0])
++			if target != nil && target.flags&TypeFlagsObject != 0 && !c.couldContainTypeVariables(target) {
++				if cached := c.zerodepWritableCache[target]; cached != nil {
++					return cached
++				}
++				var keys []*Type
++				for _, property := range c.getPropertiesOfType(target) {
++					if !c.isReadonlySymbol(property) {
++						keys = append(keys, c.getLiteralTypeFromProperty(property, TypeFlagsStringOrNumberLiteralOrUnique, false))
++					}
++				}
++				result := c.getUnionType(keys)
++				if c.zerodepWritableCache == nil {
++					c.zerodepWritableCache = make(map[*Type]*Type)
++				}
++				c.zerodepWritableCache[target] = result
++				return result
++			}
++		}
++	}
+ 	// Check for type variables in the alias, so things like `type Brand<T> = number & {}` can potentially be copied with new alias type args, despite them being unreferenced.
+ 	// This is the behavior most people using aliases expect, and prevents the cache from leaking type parameters outside their scope of validity.
+ 	// tests/cases/compiler/declarationEmitArrowFunctionNoRenaming.ts contains an example of this, which previously only worked in strada via some input node reuse logic instead.

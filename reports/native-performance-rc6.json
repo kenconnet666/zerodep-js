@@ -1,0 +1,470 @@
+{
+  "measuredAt": "2026-10-06T18:05:53.407Z",
+  "environment": {
+    "node": "v24.18.0",
+    "platform": "win32",
+    "arch": "x64",
+    "cpu": "Intel(R) Xeon(R) CPU E5-2698B v3 @ 2.00GHz",
+    "logicalCpus": 32,
+    "memoryGiB": 127.84711456298828
+  },
+  "sdk": {
+    "version": "7.1.0-dev.20261005.1+zerodep.native.52064eee65b8",
+    "baseVersion": "7.1.0-dev.20261005.1",
+    "commit": "50d70a3f5f453a79a4323b263165da51f656a4e3",
+    "sourceHash": "52064eee65b88977eb6b3378104569c372add5c72ca5a74e3ebd25a18128e560",
+    "goVersion": "go version go1.27.1 windows/amd64",
+    "platform": "win32-x64",
+    "binaryHash": "efd58842c98cf5b123692520b7098bdb9f91faa9482fe0a96d7ea03b91f3c2fe"
+  },
+  "checks": [
+    {
+      "checkers": 4,
+      "wallMilliseconds": 11397.690700000001,
+      "exitCode": 0,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          620170\nTypes:           1256929\nInstantiations: 10436278\nMemory used:     730547K\nMemory allocs:  27723274\nConfig time:      0.005s\nParse time:       0.097s\nBind time:        0.024s\nCheck time:      10.430s\nTotal time:      10.558s\n"
+    },
+    {
+      "checkers": 2,
+      "wallMilliseconds": 11063.8682,
+      "exitCode": 0,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          458189\nTypes:            938729\nInstantiations:  7852054\nMemory used:     544344K\nMemory allocs:  23919922\nConfig time:      0.004s\nParse time:       0.089s\nBind time:        0.022s\nCheck time:      10.227s\nTotal time:      10.344s\n"
+    },
+    {
+      "checkers": 8,
+      "wallMilliseconds": 12702.448399999997,
+      "exitCode": 0,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:         1047304\nTypes:           2174175\nInstantiations: 18061134\nMemory used:    1254336K\nMemory allocs:  38700652\nConfig time:      0.004s\nParse time:       0.087s\nBind time:        0.023s\nCheck time:      11.392s\nTotal time:      11.509s\n"
+    },
+    {
+      "checkers": 4,
+      "wallMilliseconds": 11708.604,
+      "exitCode": 0,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          620170\nTypes:           1256929\nInstantiations: 10436278\nMemory used:     730475K\nMemory allocs:  27723486\nConfig time:      0.006s\nParse time:       0.097s\nBind time:        0.026s\nCheck time:      10.736s\nTotal time:      10.867s\n"
+    },
+    {
+      "checkers": 8,
+      "wallMilliseconds": 12850.323799999998,
+      "exitCode": 0,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:         1047304\nTypes:           2174175\nInstantiations: 18061134\nMemory used:    1254001K\nMemory allocs:  38701384\nConfig time:      0.004s\nParse time:       0.088s\nBind time:        0.025s\nCheck time:      11.586s\nTotal time:      11.705s\n"
+    },
+    {
+      "checkers": 2,
+      "wallMilliseconds": 11513.986299999997,
+      "exitCode": 0,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          458189\nTypes:            938729\nInstantiations:  7852054\nMemory used:     544313K\nMemory allocs:  23919099\nConfig time:      0.004s\nParse time:       0.093s\nBind time:        0.024s\nCheck time:      10.644s\nTotal time:      10.768s\n"
+    },
+    {
+      "checkers": 2,
+      "wallMilliseconds": 11538.558099999995,
+      "exitCode": 0,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          458189\nTypes:            938729\nInstantiations:  7852054\nMemory used:     544069K\nMemory allocs:  23918370\nConfig time:      0.004s\nParse time:       0.095s\nBind time:        0.024s\nCheck time:      10.622s\nTotal time:      10.747s\n"
+    },
+    {
+      "checkers": 4,
+      "wallMilliseconds": 11870.098400000003,
+      "exitCode": 0,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          620170\nTypes:           1256929\nInstantiations: 10436278\nMemory used:     730822K\nMemory allocs:  27722709\nConfig time:      0.004s\nParse time:       0.090s\nBind time:        0.025s\nCheck time:      10.812s\nTotal time:      10.933s\n"
+    },
+    {
+      "checkers": 8,
+      "wallMilliseconds": 12786.089000000007,
+      "exitCode": 0,
+      "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:         1047304\nTypes:           2174175\nInstantiations: 18061134\nMemory used:    1254245K\nMemory allocs:  38702296\nConfig time:      0.004s\nParse time:       0.101s\nBind time:        0.022s\nCheck time:      11.535s\nTotal time:      11.668s\n"
+    }
+  ],
+  "transforms": [
+    {
+      "mode": "cold",
+      "milliseconds": 404.2962,
+      "bytes": 39356,
+      "files": 4
+    },
+    {
+      "mode": "warm",
+      "milliseconds": 375.9642,
+      "bytes": 39356,
+      "files": 4,
+      "samples": [
+        22.56600000000003, 22.771499999999946, 24.39659999999992, 21.121899999999982,
+        22.47860000000003, 20.870400000000018, 23.832899999999995, 22.758299999999963,
+        21.65980000000002, 24.062799999999925, 21.77189999999996, 20.753000000000043,
+        23.529699999999934, 25.24440000000004, 24.317099999999982, 27.221499999999992,
+        24.468599999999924, 23.21169999999995, 21.15510000000006, 23.476400000000012
+      ]
+    },
+    {
+      "mode": "cold",
+      "milliseconds": 401.1016,
+      "bytes": 39356,
+      "files": 4
+    },
+    {
+      "mode": "warm",
+      "milliseconds": 402.40779999999995,
+      "bytes": 39356,
+      "files": 4,
+      "samples": [
+        27.474500000000035, 23.919899999999984, 27.528799999999933, 24.438600000000065,
+        23.747999999999934, 25.965100000000007, 25.239900000000034, 22.574799999999982,
+        28.999500000000012, 23.924499999999966, 23.136999999999944, 27.167100000000005,
+        22.540200000000027, 38.84749999999997, 24.352699999999913, 24.474500000000035,
+        26.067999999999984, 25.54239999999993, 25.145399999999995, 22.747299999999996
+      ]
+    },
+    {
+      "mode": "cold",
+      "milliseconds": 394.91880000000003,
+      "bytes": 39356,
+      "files": 4
+    },
+    {
+      "mode": "warm",
+      "milliseconds": 399.7374,
+      "bytes": 39356,
+      "files": 4,
+      "samples": [
+        26.07409999999993, 22.711099999999988, 25.4538, 22.889200000000073, 23.54639999999995,
+        22.90459999999996, 21.708600000000047, 22.04589999999996, 23.01030000000003,
+        26.344600000000014, 22.63620000000003, 27.082599999999957, 23.7115, 24.621399999999994,
+        24.358600000000024, 22.64160000000004, 23.648500000000013, 24.230899999999906,
+        23.247400000000084, 23.056499999999915
+      ]
+    },
+    {
+      "mode": "incremental",
+      "samples": [
+        2102.3049, 2193.8958000000002, 1978.152, 2165.644599999998, 2029.2616000000016,
+        2040.6320000000014
+      ],
+      "bytes": 6731,
+      "files": 1
+    }
+  ],
+  "sourceCommit": "853d39da4dc3c5086cc7c010dc2cbafbf6ada371",
+  "methodology": {
+    "dateLocal": "2026-10-07 Asia/Shanghai",
+    "checkCommand": "node scripts/native/tsc.mjs -p apps/example/tsconfig.json --noEmit --extendedDiagnostics --checkers N",
+    "checkersOrder": [4, 2, 8, 4, 8, 2, 2, 4, 8],
+    "checkWallTime": "Includes the Node CLI wrapper and Go child process, from spawn to close. Diagnostics Total time excludes wrapper/startup/teardown overhead.",
+    "coldTransform": "Existing benchmark-worker.mjs cold mode, four real TSX files; fresh process, timed compiler module load and first transformation, excludes process creation and source reads.",
+    "warmTransform": "Existing benchmark-worker.mjs warm mode, three processes, three warm-up batches plus twenty measured four-file batches per process; no type checking.",
+    "incremental": "Existing benchmark-worker.mjs incremental mode, one persistent session, initial check plus two discarded edits and six measured changes. Each edit appends a different export to AuthoringExample.tsx. Includes checking that file and emitting JS/map, not full-project revalidation.",
+    "limitations": "Normal desktop machine; OS caches were not flushed; no concurrent task-owned compiler workloads during retained timing samples. CPU/heap/trace collection ran separately. One early interrupted sweep overlapped trace serialization and was discarded. Memory used is extendedDiagnostics, not process-tree peak RSS. Three repeats do not establish a long-term distribution."
+  },
+  "summary": {
+    "checkers": {
+      "2": {
+        "wallMilliseconds": {
+          "count": 3,
+          "min": 11063.8682,
+          "median": 11513.986299999997,
+          "max": 11538.558099999995
+        },
+        "compilerSeconds": {
+          "count": 3,
+          "min": 10.344,
+          "median": 10.747,
+          "max": 10.768
+        },
+        "memoryKiB": {
+          "count": 3,
+          "min": 544069,
+          "median": 544313,
+          "max": 544344
+        },
+        "instantiations": 7852054
+      },
+      "4": {
+        "wallMilliseconds": {
+          "count": 3,
+          "min": 11397.690700000001,
+          "median": 11708.604,
+          "max": 11870.098400000003
+        },
+        "compilerSeconds": {
+          "count": 3,
+          "min": 10.558,
+          "median": 10.867,
+          "max": 10.933
+        },
+        "memoryKiB": {
+          "count": 3,
+          "min": 730475,
+          "median": 730547,
+          "max": 730822
+        },
+        "instantiations": 10436278
+      },
+      "8": {
+        "wallMilliseconds": {
+          "count": 3,
+          "min": 12702.448399999997,
+          "median": 12786.089000000007,
+          "max": 12850.323799999998
+        },
+        "compilerSeconds": {
+          "count": 3,
+          "min": 11.509,
+          "median": 11.668,
+          "max": 11.705
+        },
+        "memoryKiB": {
+          "count": 3,
+          "min": 1254001,
+          "median": 1254245,
+          "max": 1254336
+        },
+        "instantiations": 18061134
+      }
+    },
+    "transforms": {
+      "cold": {
+        "count": 3,
+        "min": 394.91880000000003,
+        "median": 401.1016,
+        "max": 404.2962
+      },
+      "warm": {
+        "count": 60,
+        "min": 20.753000000000043,
+        "median": 23.729749999999967,
+        "max": 38.84749999999997
+      },
+      "incremental": {
+        "count": 6,
+        "min": 1978.152,
+        "median": 2071.4684500000008,
+        "max": 2193.8958000000002
+      }
+    }
+  },
+  "additionalSamples": {
+    "checkersOne": {
+      "repeats": 1,
+      "exitCode": 0,
+      "compilerSeconds": 13.399,
+      "checkSeconds": 13.277,
+      "memoryKiB": 379935,
+      "instantiations": 5412910
+    },
+    "lintDisabled": {
+      "repeats": 1,
+      "exitCode": 0,
+      "compilerSeconds": 11.368,
+      "checkSeconds": 11.236,
+      "memoryKiB": 730573,
+      "instantiations": 10436278,
+      "conclusion": "No observed improvement in this single probe; keep lint enabled. Not a precise overhead estimate."
+    },
+    "fullEmit": {
+      "repeats": 1,
+      "exitCode": 0,
+      "command": "node scripts/native/tsc.mjs -p apps/example/tsconfig.json --noEmit false --incremental false --declaration --declarationMap --sourceMap --inlineSources --outDir TEMP/output --rootDir apps/example/src --extendedDiagnostics",
+      "compilerSeconds": 11.311,
+      "parseSeconds": 0.089,
+      "bindSeconds": 0.022,
+      "checkSeconds": 11.105,
+      "emitSeconds": 0.087,
+      "files": 108,
+      "bytes": 293420,
+      "limitation": "Complete example type checking and JS/declarations/two maps written to disk, no bundling/minification/Vite."
+    }
+  },
+  "profile": {
+    "command": "node scripts/native/tsc.mjs -p apps/example/tsconfig.json --noEmit --extendedDiagnostics --pprofDir TEMP",
+    "compilerSeconds": 11.354,
+    "parseSeconds": 0.105,
+    "bindSeconds": 0.026,
+    "checkSeconds": 11.212,
+    "sampledCpuSeconds": 30.49,
+    "cpuProfileDurationSeconds": 11.68,
+    "instantiateTypeWithAlias": {
+      "cumulativeCpuSeconds": 17.95,
+      "cumulativeCpuPercent": 58.87,
+      "cumulativeAllocationMiB": 1960.72,
+      "cumulativeAllocationPercent": 87.24
+    },
+    "totalSampledAllocationMiB": 2247.4,
+    "limitation": "CPU samples sum work across threads, not elapsed wall time; cumulative entries overlap. Alloc_space measures total allocations, not retained heap or peak RSS."
+  },
+  "trace": {
+    "command": "node scripts/native/tsc.mjs -p apps/example/tsconfig.json --noEmit --extendedDiagnostics --checkers 1 --generateTrace TEMP/trace",
+    "compilerSeconds": 14.612,
+    "largestCheckEvents": [
+      {
+        "pid": 1,
+        "tid": 2,
+        "ph": "X",
+        "cat": "check",
+        "ts": 7367074.1,
+        "name": "checkDeferredNode",
+        "dur": 6665206.7,
+        "args": {
+          "checkerId": 0,
+          "end": 6780,
+          "kind": 286,
+          "path": "C:/Users/lionheart/WebstormProjects/zerodep-js/apps/example/src/workspace/Pages.tsx",
+          "pos": 6737
+        }
+      },
+      {
+        "pid": 1,
+        "tid": 2,
+        "ph": "X",
+        "cat": "check",
+        "ts": 7367074.1,
+        "name": "checkExpression",
+        "dur": 1992747.1,
+        "args": {
+          "checkerId": 0,
+          "end": 6760,
+          "kind": 294,
+          "path": "C:/Users/lionheart/WebstormProjects/zerodep-js/apps/example/src/workspace/Pages.tsx",
+          "pos": 6742
+        }
+      },
+      {
+        "pid": 1,
+        "tid": 2,
+        "ph": "X",
+        "cat": "check",
+        "ts": 6507020.8,
+        "name": "checkDeferredNode",
+        "dur": 761989.7,
+        "args": {
+          "checkerId": 0,
+          "end": 1844,
+          "kind": 286,
+          "path": "C:/Users/lionheart/WebstormProjects/zerodep-js/apps/example/src/App.tsx",
+          "pos": 1751
+        }
+      },
+      {
+        "pid": 1,
+        "tid": 2,
+        "ph": "X",
+        "cat": "check",
+        "ts": 14288785,
+        "name": "checkDeferredNode",
+        "dur": 227241.9,
+        "args": {
+          "checkerId": 0,
+          "end": 3582,
+          "kind": 286,
+          "path": "C:/Users/lionheart/WebstormProjects/zerodep-js/apps/example/src/workspace/Pages.tsx",
+          "pos": 3475
+        }
+      },
+      {
+        "pid": 1,
+        "tid": 2,
+        "ph": "X",
+        "cat": "check",
+        "ts": 14059915.7,
+        "name": "checkDeferredNode",
+        "dur": 216130.9,
+        "args": {
+          "checkerId": 0,
+          "end": 964,
+          "kind": 286,
+          "path": "C:/Users/lionheart/WebstormProjects/zerodep-js/apps/example/src/workspace/Pages.tsx",
+          "pos": 862
+        }
+      }
+    ],
+    "typeDeclarationObservation": "Each of the two generic function types in Equal (core/dist/jsx-runtime.d.ts line 7) appears as the first declaration of 41,308 traced type records. WritableKeys mapped-property declarations also produce roughly 41,306 records each. These counts are traced type records, not the extendedDiagnostics instantiation counter.",
+    "limitation": "Single checker with tracing overhead. The 6.665-second Link event is inclusive and may pay shared-cache construction costs; not a per-Link fixed cost. Raw 223 MB type trace removed after extracting findings."
+  },
+  "linkInterfaceProbe": {
+    "change": "Extract concrete native anchor props into a named interface before intersecting with generic RouteOptions. Temporary copied declarations only; production code unchanged.",
+    "results": [
+      {
+        "kind": "control",
+        "wallMilliseconds": 11757.8537,
+        "exitCode": 0,
+        "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          620170\nTypes:           1256929\nInstantiations: 10436278\nMemory used:     730430K\nMemory allocs:  27718453\nConfig time:      0.005s\nParse time:       0.099s\nBind time:        0.027s\nCheck time:      10.717s\nTotal time:      10.850s\n"
+      },
+      {
+        "kind": "interface",
+        "wallMilliseconds": 10698.066799999999,
+        "exitCode": 0,
+        "output": "Files:               135\nLines:             85306\nIdentifiers:       66623\nSymbols:          620164\nTypes:           1217900\nInstantiations: 10270404\nMemory used:     724120K\nMemory allocs:  19707184\nConfig time:      0.005s\nParse time:       0.076s\nBind time:        0.024s\nCheck time:       9.746s\nTotal time:       9.854s\n"
+      },
+      {
+        "kind": "interface",
+        "wallMilliseconds": 10811.038199999999,
+        "exitCode": 0,
+        "output": "Files:               135\nLines:             85306\nIdentifiers:       66623\nSymbols:          620164\nTypes:           1217900\nInstantiations: 10270404\nMemory used:     724335K\nMemory allocs:  19707611\nConfig time:      0.005s\nParse time:       0.081s\nBind time:        0.026s\nCheck time:       9.910s\nTotal time:      10.024s\n"
+      },
+      {
+        "kind": "control",
+        "wallMilliseconds": 11502.757600000004,
+        "exitCode": 0,
+        "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          620170\nTypes:           1256929\nInstantiations: 10436278\nMemory used:     730441K\nMemory allocs:  27717736\nConfig time:      0.006s\nParse time:       0.086s\nBind time:        0.026s\nCheck time:      10.508s\nTotal time:      10.629s\n"
+      },
+      {
+        "kind": "control",
+        "wallMilliseconds": 11743.2805,
+        "exitCode": 0,
+        "output": "Files:               135\nLines:             85305\nIdentifiers:       66617\nSymbols:          620170\nTypes:           1256929\nInstantiations: 10436278\nMemory used:     730626K\nMemory allocs:  27718505\nConfig time:      0.006s\nParse time:       0.087s\nBind time:        0.023s\nCheck time:      10.731s\nTotal time:      10.849s\n"
+      },
+      {
+        "kind": "interface",
+        "wallMilliseconds": 10381.962800000001,
+        "exitCode": 0,
+        "output": "Files:               135\nLines:             85306\nIdentifiers:       66623\nSymbols:          620164\nTypes:           1217900\nInstantiations: 10270404\nMemory used:     724595K\nMemory allocs:  19707082\nConfig time:      0.004s\nParse time:       0.098s\nBind time:        0.025s\nCheck time:       9.454s\nTotal time:       9.584s\n"
+      }
+    ],
+    "before": "export type LinkProps<R extends AnyRoute> = Omit<NativeProps<HTMLAnchorElement>, 'href'> & RouteOptions<NoInfer<R>> & { /* unchanged fields */ };",
+    "after": "interface LinkAttributes extends Omit<NativeProps<HTMLAnchorElement>, 'href'> {}\nexport type LinkProps<R extends AnyRoute> = LinkAttributes & RouteOptions<NoInfer<R>> & { /* unchanged fields */ };",
+    "configuration": "Copied packages/use/dist into a task-owned temporary directory; temporary tsconfig extends apps/example and maps zerodep-use/* to that copy. Both control and candidate use identical paths. Core declarations map to the original dist. No production source, dist, or SDK changed.",
+    "summary": {
+      "control": {
+        "wallMilliseconds": {
+          "count": 3,
+          "min": 11502.757600000004,
+          "median": 11743.2805,
+          "max": 11757.8537
+        },
+        "compilerSeconds": {
+          "count": 3,
+          "min": 10.629,
+          "median": 10.849,
+          "max": 10.85
+        },
+        "allocationCount": {
+          "count": 3,
+          "min": 27717736,
+          "median": 27718453,
+          "max": 27718505
+        }
+      },
+      "interface": {
+        "wallMilliseconds": {
+          "count": 3,
+          "min": 10381.962800000001,
+          "median": 10698.066799999999,
+          "max": 10811.038199999999
+        },
+        "compilerSeconds": {
+          "count": 3,
+          "min": 9.584,
+          "median": 9.854,
+          "max": 10.024
+        },
+        "allocationCount": {
+          "count": 3,
+          "min": 19707082,
+          "median": 19707184,
+          "max": 19707611
+        }
+      }
+    },
+    "validation": {
+      "exampleChecks": "All three candidate and three control checks exited 0.",
+      "routerTypeFixture": "Existing packages/use/test/router.types.tsx compiled against candidate declarations, exit 0, including @ts-expect-error cases and event.currentTarget typing.",
+      "productionReadiness": "Research prototype only. No completed declaration-compatibility, LSP completion/navigation, or cross-platform CI acceptance for this change."
+    }
+  }
+}

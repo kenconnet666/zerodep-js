@@ -1,0 +1,48 @@
+diff --git a/tsc/internal/checker/checker.go b/tsc/internal/checker/checker.go
+index 9b52a55..8c9c7d6 100644
+--- a/tsc/internal/checker/checker.go
++++ b/tsc/internal/checker/checker.go
+@@ -582,6 +582,8 @@ type Host interface {
+ var nextCheckerID atomic.Uint32
+ 
+ type Checker struct {
++	zerodepDiagnosticPass                       bool
++	zerodepWritableCache                        map[*Type]*Type
+ 	id                                          uint32
+ 	program                                     Program
+ 	compilerOptions                             *core.CompilerOptions
+@@ -2237,6 +2239,9 @@ func (c *Checker) getSymbol(symbols ast.SymbolTable, name string, meaning ast.Sy
+ }
+ 
+ func (c *Checker) checkSourceFile(ctx context.Context, sourceFile *ast.SourceFile, checkUnused bool) {
++	previousDiagnosticPass := c.zerodepDiagnosticPass
++	c.zerodepDiagnosticPass = true
++	defer func() { c.zerodepDiagnosticPass = previousDiagnosticPass }()
+ 	c.ctx = ctx
+ 	links := c.sourceFileLinks.Get(sourceFile)
+ 	if !links.typeChecked {
+diff --git a/tsc/internal/checker/jsx.go b/tsc/internal/checker/jsx.go
+index e05f246..908580c 100644
+--- a/tsc/internal/checker/jsx.go
++++ b/tsc/internal/checker/jsx.go
+@@ -1016,6 +1016,20 @@ func (c *Checker) getJsxPropsTypeForSignatureFromMember(sig *Signature, forcedLo
+ }
+ 
+ func (c *Checker) getJsxManagedAttributesFromLocatedAttributes(context *ast.Node, ns *ast.Symbol, attributesType *Type) *Type {
++	// Research-only: this workspace's managed attributes only implement component bindings.
++	// Keep the complete path for bindings and spreads; do not install this prototype SDK.
++	if c.zerodepDiagnosticPass && c.compilerOptions.JsxImportSource == "zerodep-js" && context.Attributes() != nil {
++		needsManaged := false
++		for _, attribute := range context.Attributes().Properties() {
++			if ast.IsJsxSpreadAttribute(attribute) || (attribute.Name() != nil && attribute.Name().Kind == ast.KindJsxNamespacedName && attribute.Name().AsJsxNamespacedName().Namespace.Text() == "bind") {
++				needsManaged = true
++				break
++			}
++		}
++		if !needsManaged {
++			return attributesType
++		}
++	}
+ 	managedSym := c.getJsxLibraryManagedAttributes(ns)
+ 	if managedSym != nil {
+ 		ctorType := c.getStaticTypeOfReferencedJsxConstructor(context)
