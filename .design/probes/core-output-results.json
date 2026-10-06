@@ -1,0 +1,531 @@
+{
+  "typescript6": "6.0.3",
+  "nativeBinary": "packages/native-win32-x64/typescript/lib/tsc.exe",
+  "coreSourceOverlay": "const component: AnyComponent = defineComponent(...)",
+  "sourceFilesModified": false,
+  "options": {
+    "target": "ES2023",
+    "module": "Preserve",
+    "declaration": true,
+    "sourceMap": false,
+    "declarationMap": false
+  },
+  "diagnostics": {
+    "ts6": 0,
+    "ts7": 0
+  },
+  "outputCounts": {
+    "ts6": 70,
+    "ts7": 70
+  },
+  "equalText": 66,
+  "equalAst": 70,
+  "consumersOfTs6Declarations": [
+    {
+      "project": "apps/hosts",
+      "compiler": "TS6",
+      "diagnostics": 0
+    },
+    {
+      "project": "apps/example",
+      "compiler": "custom TS7",
+      "diagnostics": 0
+    }
+  ],
+  "limitations": [
+    "Comparison excludes source maps and declaration maps.",
+    "AST comparison ignores comments, locations and literal spelling metadata; runtime and browser tests remain separate."
+  ],
+  "details": [
+    {
+      "file": "runtime/render-queue.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "runtime/render-queue.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "runtime/reactivity.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "runtime/reactivity.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "runtime/props.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "runtime/props.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "runtime/flow.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "runtime/flow.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": false,
+      "astEqual": true
+    },
+    {
+      "file": "native/properties.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "native/properties.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": false,
+      "astEqual": true
+    },
+    {
+      "file": "native/text.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "native/text.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "native/style.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "native/style.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "native/data.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "native/data.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": false,
+      "astEqual": true
+    },
+    {
+      "file": "native/attributes.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "native/attributes.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "native/bindings.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "native/bindings.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "runtime/template.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "runtime/template.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "runtime/component.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "runtime/component.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "runtime/state.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "runtime/state.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "dev/values.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "dev/values.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "dev/runtime.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "dev/runtime.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "dev/inspector.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "dev/inspector.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "devtools.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "devtools.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "runtime/snapshot.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "runtime/snapshot.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "runtime/lifecycle.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "runtime/lifecycle.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "runtime/macros.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "runtime/macros.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "runtime/lazy.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "runtime/lazy.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "dom/utils.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "dom/utils.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "dom/hydration.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "dom/hydration.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "dom/input.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "dom/input.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "dom/controls.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "dom/controls.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "dom/properties.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "dom/properties.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "dom/attributes.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "dom/attributes.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "dom/list.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "dom/list.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "dom/boundary.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "dom/boundary.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "dom/mount.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "dom/mount.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "dom/page.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "dom/page.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "jsx-runtime.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "jsx-runtime.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": false,
+      "astEqual": true
+    },
+    {
+      "file": "runtime/context.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "runtime/context.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "index.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "index.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "internal.js",
+      "kind": "javascript",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    },
+    {
+      "file": "internal.d.ts",
+      "kind": "declaration",
+      "existsInNative": true,
+      "textEqual": true,
+      "astEqual": true
+    }
+  ]
+}

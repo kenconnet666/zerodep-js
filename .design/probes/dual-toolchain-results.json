@@ -1,0 +1,115 @@
+{
+  "date": "2026-10-06",
+  "sourceRevision": "c140e8eb07067f410b9ceaafe6e91c8864a09fe9",
+  "scope": "Research only; no dependency, build configuration or source migration",
+  "versions": {
+    "node": "24.18.0",
+    "pnpm": "10.34.5",
+    "typescript": "6.0.3",
+    "vueTsc": "3.3.12",
+    "svelteCheck": "4.7.6",
+    "svelte": "5.57.1"
+  },
+  "traditional": {
+    "command": "node <isolated>/node_modules/typescript/bin/tsc -p <project>/tsconfig.json --noEmit --incremental false --composite false --pretty false",
+    "results": [
+      {
+        "project": "packages/core",
+        "status": 2,
+        "diagnostics": "packages/core/src/dev/runtime.ts(224,11): error TS7022: 'component' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer.\r\npackages/core/src/dev/runtime.ts(224,39): error TS7024: Function implicitly has return type 'any' because it does not have a return type annotation and is referenced directly or indirectly in one of its return expressions.\r\npackages/core/src/dev/runtime.ts(229,13): error TS7022: 'selector' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer.\r\npackages/core/src/dev/runtime.ts(256,29): error TS7024: Function implicitly has return type 'any' because it does not have a return type annotation and is referenced directly or indirectly in one of its return expressions."
+      },
+      {
+        "project": "packages/use",
+        "status": 0,
+        "diagnostics": ""
+      },
+      {
+        "project": "packages/ssr",
+        "status": 0,
+        "diagnostics": ""
+      },
+      {
+        "project": "packages/compiler",
+        "status": 0,
+        "diagnostics": ""
+      },
+      {
+        "project": "packages/vite",
+        "status": 0,
+        "diagnostics": ""
+      },
+      {
+        "project": "packages/vue",
+        "status": 0,
+        "diagnostics": ""
+      },
+      {
+        "project": "packages/react",
+        "status": 0,
+        "diagnostics": ""
+      },
+      {
+        "project": "packages/svelte",
+        "status": 0,
+        "diagnostics": ""
+      },
+      {
+        "project": "apps/hosts",
+        "status": 0,
+        "diagnostics": ""
+      }
+    ],
+    "coreOverlay": {
+      "typescript": "6.0.3",
+      "project": "packages/core",
+      "diskModified": false,
+      "overlay": "const component: AnyComponent = defineComponent(...)",
+      "diagnosticCount": 0,
+      "diagnostics": []
+    },
+    "sfc": [
+      {
+        "tool": "vue-tsc",
+        "status": 0,
+        "output": ""
+      },
+      {
+        "tool": "svelte-check",
+        "status": 0,
+        "output": "Loading svelte-check in workspace: <workspace>\\apps\\hosts\nGetting Svelte diagnostics...\n\nsvelte-check found 0 errors and 0 warnings"
+      }
+    ]
+  },
+  "nativeSharedSession": {
+    "version": "7.1.0-dev.20261005.1+zerodep.native.3e8b0d4352f9",
+    "goProcessesStarted": 1,
+    "apiClients": 2,
+    "results": [
+      {
+        "client": 1,
+        "projectId": "<workspace>/apps/example/tsconfig.json",
+        "snapshotId": 2,
+        "errors": 0,
+        "diagnosticsMilliseconds": 2689.92
+      },
+      {
+        "client": 2,
+        "projectId": "<workspace>/apps/example/tsconfig.json",
+        "snapshotId": 3,
+        "errors": 0,
+        "diagnosticsMilliseconds": 0.83
+      }
+    ],
+    "note": "Both API clients attach to one owned LSP process and its canonical project snapshot. This is a functional/cache smoke test, not an instrumented parser-count benchmark."
+  },
+  "limitations": [
+    "TS6 checks consumed current workspace sources and existing built declarations; clean build and package/browser acceptance remain for migration.",
+    "Vue and Svelte checks used a temporary tsconfig extending apps/hosts/tsconfig.json and including TS, TSX, declaration, Vue and Svelte files.",
+    "Shared-session timings are a functional cache smoke test, not a parser-count or comparative performance benchmark.",
+    "The two API clients were attached to a task-owned LSP, not the running WebStorm service."
+  ],
+  "cleanup": {
+    "temporaryHostsConfigRemoved": true,
+    "ownedLspAndApiClientsClosed": true
+  }
+}

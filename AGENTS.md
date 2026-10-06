@@ -17,11 +17,14 @@
 
 ## 工具与质量
 
+- 2026-10-06 用户更新工具链目标并确认研究分工：传统编译器、Vue/React/Svelte 适配和 `apps/hosts` 使用稳定 TS6，其安装、构建、检查、IDE 和测试均不依赖定制 TS-Go；`apps/example` 与原生工具走固定的定制 TS7-Go，优先共享 AST、Program 和类型检查结果。研究及隔离验证见 `.design/dual-toolchain.md`。此目标替代此前全仓 TS7 的方向；依赖与构建入口尚未迁移，不把研究结论记为已实现。
+- 2026-10-06 用户允许必要时准备 core 的 TS6、TS7 两种产物。先验证 JS、声明及消费结果是否需要分离；保留同一份源码与明确入口，传统消费者仍不依赖 Go。不要仅因编译器版本不同就复制运行时，尤其要避免同一应用加载两个响应式运行时实例。
+
 - 2026-10-06 用户确认可使用当前 npm 环境变量发布，并要求其他架构依赖 CI/CD 构建发版。Windows/Linux/macOS 的 x64/ARM64 由对应 runner 构建并验证，同一提交完整 CI 通过后发布固定 tgz 到 next；凭据只在发布步骤使用。流程与恢复见 docs/native-release.md。
 
 - 2026-10-06 用户批准按 .design/native-compiler.md 实施原生 Go 后端，并要求完成后测试性能。保留 Babel 可选后端、共用 ABI 2、固定 TS7.1；完成现有语义及 CLI/Vite/诊断/开发态验证后再比较等价工作量的性能，不以研究探针或局部试点代替完整交付。
 
-- 使用 Node 24、package.json 固定的 pnpm 和 TypeScript 7。2026-10-06 用户批准直接使用 npm 官方 `7.1.0-dev.20261005.1`；Go 编译路线只面向选定的新版本，不增加旧版或多版本兼容分支。双编译器已实现，Babel 与原生 Go 共用 ABI 2；实现和本机性能证据见 docs/native-compiler-implementation.md。共享版本放在 catalog，包间依赖使用 `workspace:*`，不添加 npm/yarn 锁文件或旧版 TypeScript 兼容层。
+- 使用 Node 24、package.json 固定的 pnpm。当前落地工具链仍为 TypeScript 7，后续按上面的双线路目标迁移。2026-10-06 用户批准原生线路使用 npm 官方 `7.1.0-dev.20261005.1` 的 API 客户端；Go 编译路线只面向选定的新版本，不增加旧版或多版本兼容分支。双编译器已实现，Babel 与原生 Go 共用 ABI 2；实现和本机性能证据见 docs/native-compiler-implementation.md。共享版本放在 catalog，包间依赖使用 `workspace:*`，不添加 npm/yarn 锁文件。
 - 2026-10-06 用户明确不为 Zod 调整编译器版本，并要求连 MCP SDK 引入的间接 Zod 依赖一并移除。示例使用普通 TypeScript 数据校验，项目只读 MCP 工具使用 JSON Schema 与标准 stdio JSON-RPC，保留完整校验和独立服务验证。
 - 2026-10-06 用户授权全面校验其他语法补全并修复问题。语言服务使用固定上游提交及项目补丁生成的 `packages/native-<平台>/typescript`；构建入口 `pnpm compiler:native:build`，补全矩阵 `pnpm lsp:completions`。不在 MCP 中硬编码候选，不修改 pnpm store，也不把原生语言服务补丁等同于框架 Go 编译后端已完成。
 - 保持简洁、人工可维护的结构，优先原生语言能力；适当中文注释解释不明显的原因和生命周期责任。执行中持续整理目录、文件职责和 API 命名，不囤积废弃入口。
