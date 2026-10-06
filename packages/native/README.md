@@ -2,7 +2,7 @@
 
 固定 TypeScript 7.1 的 zerodep-js 原生 Go 编译器。框架分析与输出编入 TypeScript，保留原始源码类型检查、声明、源码映射和语言服务。运行时协议为 ABI 2，项目只维护这一编译路线。
 
-当前为 RC5 发布候选，实际注册表状态与发布记录见仓库 CHANGELOG；以下安装方式适用于已发布的对应版本。源码工作区先运行 `pnpm compiler:native:build --source <TypeScript仓库> --go <Go路径>`；验收使用实际 tgz 独立安装。
+当前源码为 RC6 发布候选，实际注册表状态与发布记录见仓库 CHANGELOG；以下安装方式适用于已发布的对应版本。源码工作区先运行 `pnpm compiler:native:build --source <TypeScript仓库> --go <Go路径>`；验收使用实际 tgz 独立安装。
 
 当前分发平台：Windows、Linux、macOS 的 x64/ARM64 六种组合，由对应架构 CI runner 构建和执行验证。安装者无需 Go；维护者使用 Go 1.27.1 构建平台包。依赖官方精确版本的 TypeScript JavaScript API，不依赖 Babel、Zod 或 MCP SDK。
 

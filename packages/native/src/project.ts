@@ -29,6 +29,7 @@ export class ProjectCompiler {
   private readonly files = new Map<string, Set<string>>();
   private readonly roots = new Map<string, Set<string>>();
   private readonly contents = new Map<string, string>();
+  private readonly diskContents = new Map<string, string>();
   private readonly outputs = new Map<string, CompileResult>();
   private readonly changes = new Set<string>();
   private readonly deleted = new Set<string>();
@@ -50,20 +51,40 @@ export class ProjectCompiler {
     this.api = api;
   }
 
-  invalidate(file: string, event: 'create' | 'update' | 'delete' = 'update'): void {
+  invalidate(
+    file: string,
+    event: 'create' | 'update' | 'delete' = 'update',
+    fromWatcher = false,
+  ): void {
     const filename = resolve(file);
     this.queue = this.queue
       .catch(() => {})
-      .then(() => {
+      .then(async () => {
         const canonical = process.platform === 'win32' ? filename.toLowerCase() : filename;
         const fromRoot = relative(this.root, filename);
         const inside =
           !isAbsolute(fromRoot) && fromRoot !== '..' && !fromRoot.startsWith('..' + sep);
+        const metadata = filename.endsWith('package.json') || filename.endsWith('pnpm-lock.yaml');
+        const affectedMetadata =
+          metadata &&
+          [this.root, ...[...this.files.values()].flatMap((files) => [...files])].some((path) => {
+            const child = relative(dirname(filename), path);
+            return !isAbsolute(child) && child !== '..' && !child.startsWith('..' + sep);
+          });
         if (
           !inside &&
-          !filename.endsWith('package.json') &&
-          !filename.endsWith('pnpm-lock.yaml') &&
+          !affectedMetadata &&
+          !this.configs.has(filename) &&
           ![...this.files.values()].some((files) => files.has(canonical))
+        )
+          return;
+        // macOS 可能延迟送达创建/变更通知。只忽略已读磁盘内容相同的事件；显式失效仍强制执行。
+        const previous = this.diskContents.get(filename);
+        if (
+          fromWatcher &&
+          event !== 'delete' &&
+          previous !== undefined &&
+          (await readFile(filename, 'utf8').catch(() => undefined)) === previous
         )
           return;
         this.changes.add(filename);
@@ -73,8 +94,15 @@ export class ProjectCompiler {
         if (event === 'create') this.created.add(filename);
         this.outputs.clear();
         this.checked.clear();
-        if (filename.endsWith('.json')) this.configChanged = true;
+        if (filename.endsWith('.json') || metadata || event === 'create' || event === 'delete')
+          this.configChanged = true;
       });
+  }
+
+  private async readDisk(file: string): Promise<string> {
+    const text = await readFile(file, 'utf8');
+    this.diskContents.set(file, text);
+    return text;
   }
 
   compile(
@@ -111,9 +139,12 @@ export class ProjectCompiler {
   ): Promise<CompileResult> {
     // 显式覆盖旧快照的层；只删本地缓存会让依赖回落到旧的内存文本。
     for (const path of this.changes) {
-      if (this.deleted.has(path)) continue;
+      if (this.deleted.has(path)) {
+        this.diskContents.delete(path);
+        continue;
+      }
       try {
-        this.contents.set(path, await readFile(path, 'utf8'));
+        this.contents.set(path, await this.readDisk(path));
       } catch (error) {
         if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
         this.deleted.add(path);
@@ -147,6 +178,7 @@ export class ProjectCompiler {
     }
     let config = configPath ? this.configs.get(configPath) : undefined;
     if (configPath && !config) {
+      await this.readDisk(configPath);
       config = await this.api.parseConfigFile(configPath);
       throwDiagnostics(config.errors, configPath);
       this.configs.set(configPath, config);
@@ -177,7 +209,7 @@ export class ProjectCompiler {
     };
     const previousSource =
       this.contents.get(filename) ??
-      (await readFile(filename, 'utf8').catch((error: NodeJS.ErrnoException) => {
+      (await this.readDisk(filename).catch((error: NodeJS.ErrnoException) => {
         if (error.code === 'ENOENT') return undefined;
         throw error;
       }));
@@ -266,6 +298,7 @@ export class ProjectCompiler {
     await this.snapshot?.dispose();
     this.snapshot = undefined;
     this.contents.clear();
+    this.diskContents.clear();
     this.deleted.clear();
     this.created.clear();
     this.outputs.clear();

@@ -1,5 +1,12 @@
 # 变更记录
 
+## 1.0.0-rc.6 — 编译缓存修正，验收中
+
+- 编译会话区分已读取的磁盘文本与内存覆盖，忽略内容未变化的迟到监听通知，显式 invalidate 仍然生效。
+- 包元数据只使相关项目失效，避免其他临时项目的删除事件清空当前编译缓存。
+- 新增或删除源文件时重新读取项目根文件列表，覆盖全局声明文件的增删与错误恢复。
+- 保留三浏览器、工程检查与独立消费的并行 CI，以及重试后成功仍报失败的浏览器门禁；RC5 原始发布产物不变。
+
 ## 1.0.0-rc.5 — 原生工具共享，2026-10-07
 
 十一包已发布到 next。发布源码为 `052a51e`，[六平台 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/37485656478)与[发布恢复和注册表消费](https://github.com/kenconnet666/zerodep-js/actions/runs/37489398562/attempts/2)通过，[GitHub 预发布](https://github.com/kenconnet666/zerodep-js/releases/tag/v1.0.0-rc.5)保存原始 tgz 与 release.json。未提升稳定 latest。

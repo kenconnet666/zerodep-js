@@ -5,6 +5,8 @@ import { resolve } from 'node:path';
 import { promisify } from 'node:util';
 import { expect, it } from 'vitest';
 import { compilerPath, createCompiler } from '../src/index.js';
+import { API } from 'typescript/unstable/async';
+import { ProjectCompiler } from '../src/project.js';
 
 const execute = promisify(execFile);
 const example = resolve('apps/example');
@@ -71,6 +73,51 @@ it('同一项目支持错误修复、依赖失效、串行快照和关闭', asyn
     expect((await compiler.compile(valid, file)).code).toBe(first.code);
     await compiler.close();
     await expect(compiler.compile(valid, file)).rejects.toThrow('已关闭');
+  } finally {
+    await compiler.close();
+    await rm(root, { recursive: true, force: true });
+  }
+}, 30000);
+
+it('迟到的相同内容通知保留编译缓存，显式失效仍执行检查', async () => {
+  const root = await fixture();
+  const api = new API({ tsserverPath: compilerPath() });
+  const compiler = new ProjectCompiler(api, { root });
+  const file = resolve(root, 'main.ts');
+  try {
+    const first = await compiler.compile(valid, file);
+    const checks = compiler.stats.semanticChecks;
+    compiler.invalidate(file, 'create', true);
+    compiler.invalidate(resolve(root, 'tsconfig.json'), 'create', true);
+    compiler.invalidate(resolve(root, '../unrelated-project/package.json'), 'delete', true);
+    expect((await compiler.compile(valid, file)).code).toBe(first.code);
+    expect(compiler.stats.outputCacheHits).toBe(1);
+    expect(compiler.stats.semanticChecks).toBe(checks);
+    compiler.invalidate(file);
+    await compiler.compile(valid, file);
+    expect(compiler.stats.semanticChecks).toBe(checks + 1);
+  } finally {
+    await compiler.close();
+    await api.close();
+    await rm(root, { recursive: true, force: true });
+  }
+}, 30000);
+
+it('新增与删除全局声明文件会刷新编译项目根文件列表', async () => {
+  const root = await fixture();
+  const compiler = createCompiler({ root });
+  const file = resolve(root, 'main.ts');
+  const ambient = resolve(root, 'ambient.d.ts');
+  const source = 'export const value:number=injectedValue;';
+  try {
+    await writeFile(file, source);
+    await expect(compiler.compile(source, file)).rejects.toThrow('TS2304');
+    await writeFile(ambient, 'export {}; declare global { const injectedValue:number; }');
+    compiler.invalidate(ambient, 'create');
+    expect((await compiler.compile(source, file)).code).toContain('injectedValue');
+    await rm(ambient);
+    compiler.invalidate(ambient, 'delete');
+    await expect(compiler.compile(source, file)).rejects.toThrow('TS2304');
   } finally {
     await compiler.close();
     await rm(root, { recursive: true, force: true });

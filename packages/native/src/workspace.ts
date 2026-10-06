@@ -66,8 +66,7 @@ export class NativeWorkspace {
           const path = relative(dirname(project.configFile), file);
           if (
             (!isAbsolute(path) && path !== '..' && !path.startsWith('..' + sep)) ||
-            file.endsWith('package.json') ||
-            file.endsWith('pnpm-lock.yaml')
+            project.stamps.has(canonical(file))
           )
             project.pendingChanges.add(canonical(file));
         }
@@ -75,7 +74,7 @@ export class NativeWorkspace {
           ...this.shared.values(),
           ...[...this.leases.values()].map((item) => item.engine),
         ]))
-          engine.invalidate(file, event);
+          engine.invalidate(file, event, true);
       }
     };
   }
