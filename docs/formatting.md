@@ -16,6 +16,8 @@ pnpm format:check --no-cache
 
 WebStorm 保留“自动 Prettier 配置”、保存时运行、粘贴时运行以及优先 Prettier 的设置即可。项目安装依赖后，现有 Prettier 服务会加载原生解析插件；不需要安装新的 IDE 插件，也不需要把格式化入口改为 Go。状态栏继续显示 Prettier 版本，不能仅靠这个标签判断内部解析器；可用配置、实际格式化结果和进程加载的原生模块共同核对。
 
+2026-10-06 已在 WebStorm 2026.2.3 主项目实际执行菜单“重新设置代码格式”、粘贴未排版语句、插入多余空格后保存。三条入口的结果均与 CLI 一致；`bind:value`、中文和 emoji 保留正确。IDE 的 Prettier 进程实际加载 `parser.win32-x64-msvc.node`（oxc-parser 0.139.0），不只依据状态栏名称判断。临时探针已关闭并清理。
+
 ## 已测效果
 
 同一批 198 个 TS/TSX 文件，三轮本机检查的中位数：
