@@ -136,13 +136,17 @@ pnpm lsp:verify
 pnpm lsp:completions
 ```
 
-Go 已在 PATH 时可省略 `--go`。生成的 `.codex/typescript-sdk` 保留官方 SDK 与标准库布局，版本为 `7.1.0-dev.20261005.1+zerodep.1`；在 WebStorm 的 TypeScript 设置中选择这个包目录。SDK 缺失或补丁不匹配会明确要求重新构建，不回退到缺少修复的服务。`lsp:completions` 同时核对候选、文档、实际插入/自动导入编辑及插入后的类型诊断。
+Go 已在 PATH 时可省略 `--go`。生成的 `.codex/typescript-sdk` 保留官方 SDK 与标准库布局，版本为 `7.1.0-dev.20261005.1+zerodep.2`。项目 MCP 在 SDK 缺失或补丁不匹配时明确要求重新构建，不回退到缺少修复的服务。`lsp:completions` 同时核对候选、文档、实际插入/自动导入编辑及插入后的类型诊断。
+
+WebStorm 的 TypeScript 设置需要选择构建命令输出的**平台包目录**。Windows x64 为 `.codex/typescript-sdk/node_modules/@typescript/typescript-win32-x64`。WebStorm 2026.2.3 从 SDK 根目录的同级查找平台包，不会按 Node 的规则进入根目录内的 node_modules；直接选择 `.codex/typescript-sdk` 虽然显示正确版本，实际服务却可能回退到内置 TypeScript 6.0.3。应用设置后，点击状态栏的语言服务图标，确认当前文件运行的是 `TypeScript-Go 7.1.0-dev.20261005.1+zerodep.2`；只看设置页的版本号不够。
 
 运行 `pnpm lsp:verify` 会验证原生错误/修复、框架错误/修复、依赖刷新和项目隔离。这是独立服务验证；已运行的 Codex MCP 进程需要重启后才加载桥接脚本变更。普通 WebStorm/VS Code TS7 服务不会自动获得这个 MCP 扩展，当前可以将 `zerodep-check` 接到外部检查任务，并在 Vite 错误覆盖层看到编译诊断。没有要求安装私有 TS 插件或降级 TS 版本。
 
 验证还通过标准 `textDocument/rename` 检查响应式变量、组件导出、跨文件 import 和 JSX 引用，并仅把编辑应用到本次临时探针。它证明标准 TS7 协议能力，不代替某个 IDE 自身的完整操作验收。
 
-WebStorm 2026.2 已提供 TS7 原生支持，可以选择项目中的 TypeScript，并按需要启用 service-powered type engine；该选择与框架 API 分开。[JetBrains 配置说明](https://www.jetbrains.com/help/webstorm/settings-languages-typescript.html)
+WebStorm 2026.2 已提供 TS7 原生支持；选择上述平台包后，本机的 service-powered type engine 控件由 IDE 自动禁用，不手动改注册表或退回旧版 TS。[JetBrains 配置说明](https://www.jetbrains.com/help/webstorm/settings-languages-typescript.html)
+
+2026-10-06 在 WebStorm 2026.2.3 实测项目 `+zerodep.2`：NameField 的 bind:value 可用 Ctrl+B 跳到业务 value 声明，基本补全把 bind 插入为 bind:value，英文输入 bind:va 自动显示同一候选且 Tab 接受后的属性名正确。中文输入法可能拦截 Ctrl+空格并输入全角冒号 `：`，这与语言服务候选缺失不同；代码使用 ASCII `:`，必要时通过“代码 → 代码补全 → 基本”检查。
 
 本机 WebStorm 2026.2 重启后，事件提示正确给出 MouseEvent 与 HTMLButtonElement；响应式变量、组件导出、跨文件 import 与 JSX 重命名均实际执行并核对。用户确认故意类型错误在编辑器中显示 TS2322，修复后独立 TS7 对定义和使用文件均返回完整的零错误报告。临时文件在核对后清理。
 

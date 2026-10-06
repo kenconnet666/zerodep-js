@@ -50,7 +50,8 @@ assert.equal(
   await run('git', ['-C', source, 'rev-parse', target.commit + '^{commit}']),
   target.commit,
 );
-const binaryPath = resolve(sdk, 'node_modules', platformName, 'lib', binaryName);
+const platformPackagePath = resolve(sdk, 'node_modules', platformName);
+const binaryPath = resolve(platformPackagePath, 'lib', binaryName);
 const existing = await readFile(resolve(sdk, 'zerodep-build.json'), 'utf8')
   .then(JSON.parse)
   .catch((error) => {
@@ -77,6 +78,7 @@ if (
   }
   if (healthy) {
     console.log('原生 TypeScript SDK 已是当前补丁版本：' + sdk);
+    console.log('WebStorm 的 TypeScript 包目录请选择：' + platformPackagePath);
     process.exit(0);
   }
 }
@@ -182,6 +184,7 @@ try {
     throw error;
   }
   console.log('原生 TypeScript SDK 构建完成：' + sdk);
+  console.log('WebStorm 的 TypeScript 包目录请选择：' + platformPackagePath);
 } finally {
   if (registered) await run('git', ['-C', source, 'worktree', 'remove', '--force', checkout]);
   assert.equal(dirname(temporary), resolve(root, '.codex'));

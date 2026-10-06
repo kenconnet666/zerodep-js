@@ -60,7 +60,7 @@ const NameField = _component(
 
 其他字段遵循相同规则：open 对应 onOpenChange，checked 对应 onCheckedChange。组件可以绑定多个字段，无关必填 props 仍必须提供；父组件拥有数据，子组件通过回调请求改变。
 
-2026-10-06 已实测 TS7 7.0.2 返回三个 input 绑定候选，WebStorm 英文按键输入 bind 可自动显示相应类型，用户也已确认提示正常。输入冒号可能收起候选，输入 bind 后直接选择完整候选即可。Ctrl+空格可能被输入法截获，必要时使用“代码 → 代码补全 → 基本”；不把 MCP 查询到候选等同于编辑器 UI 已验证。
+2026-10-06 已在 WebStorm 2026.2.3 实测项目 TS7.1 `+zerodep.2`：NameField 的 bind:value 可跳到原 value 声明，手动补全和英文输入 bind:va 的自动候选均有效。TypeScript 设置选择 SDK 内的平台包，不能只看 SDK 根的版本显示，详见[开发环境设置](development.md)。Ctrl+空格可能被输入法截获，必要时使用“代码 → 代码补全 → 基本”；代码中的冒号使用 ASCII `:`，不使用输入法生成的 `：`。
 
 ## 快照和撤销
 

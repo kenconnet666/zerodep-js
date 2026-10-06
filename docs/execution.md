@@ -359,3 +359,10 @@
 - pnpm check/build 与完整 pnpm lsp:verify 通过；新增 14 个导航位置严格比对原生、实际 NameField 和跨文件可选/泛型 props 的源声明。新增类型正负例检查可选值、必填回调和泛型约束，原有重命名与诊断回归仍通过。
 - 48 个补全场景均通过，首轮收尾因 Windows 临时占用一个探针返回 EBUSY。两个验证器共用仅处理自建文件的 unlink 清理，有限重试 EBUSY/EPERM 并汇总持续失败；清理本次明确残留后重跑组件绑定用例确认正常退出，不递归删除目录或共享缓存。
 - 推送前确认上一阶段 `19d29f3` 的完整 CI 成功。WebStorm 原有项目 SDK 路径保持不变，检查时旧 7.0.2 服务仍在运行，SDK 磁盘更新与编辑器重载分别确认。
+
+## 2026-10-06：修正 WebStorm 实际 SDK 选择
+
+- 用户再次反馈组件绑定没有补全。直接检查 WebStorm 2026.2.3 的设置、语言服务状态栏和进程：设置显示项目 `+zerodep.2`，当前文件实际使用内置 TypeScript 6.0.3。历史只按旧原生进程推断 IDE 版本不充分，本次以 IDE 启动的进程及状态栏为准。
+- 从本机插件 `TypeScriptGoPackageInfoKt` 确认，wrapper 平台解析只查同级目录，当前 SDK 的嵌套 node_modules 布局未被识别。通过 IDE 设置把 TypeScript 包改为 `.codex/typescript-sdk/node_modules/@typescript/typescript-win32-x64` 后，IDE 直接启动其中的 tsc.exe，状态栏显示 TypeScript-Go 7.1.0-dev.20261005.1+zerodep.2。
+- 真实 AuthoringExample 的 bind:value 用 Ctrl+B 跳到第 5 行 value: string；临时副本中，菜单基本补全把 bind 插入为 bind:value，英文按键输入 bind:va 自动出现候选，Tab 接受后属性名正确。输入法曾截获 Ctrl+空格并产生全角冒号，排除后完成自动提示验证。探针已关闭并按精确文件路径清理，业务文件无改动。
+- 构建命令在构建成功或缓存命中时输出当前平台的 IDE 包目录；更新开发和编写说明，明确设置版本显示、运行服务和实际编辑验证的区别。上一阶段 ba32a40 的完整 CI 已确认成功。

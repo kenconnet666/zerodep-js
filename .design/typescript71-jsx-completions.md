@@ -99,7 +99,7 @@ func isJsxNamespacedNameText(name string) bool {
 
 `scripts/language-services/typescript-target.json` 固定 npm 版本、上游提交和补丁版本。`pnpm typescript:build --source <TypeScript Git 仓库> [--go <Go 1.27 可执行文件>]` 在临时 worktree 中应用补丁并构建，不污染源码仓库或 pnpm store。它复制官方 npm SDK/平台包布局和许可，将新的原生可执行文件安装到 `.codex/typescript-sdk`，并记录源码、补丁及二进制摘要。重复执行核对缓存和 SDK 入口，缺失或损坏会重新构建。
 
-项目 MCP 固定使用生成的 SDK，WebStorm 的 TypeScript 包目录也选择该 SDK。CI 从固定上游提交构建 Linux SDK，再执行完整 LSP 检查和 `pnpm lsp:completions`。这只是语言服务补丁，框架的 Go 转换后端仍未实施。
+项目 MCP 固定使用生成的 SDK，WebStorm 的 TypeScript 包目录选择 SDK 内的 `node_modules/@typescript/typescript-<platform>-<arch>` 平台包，具体路径由构建脚本输出。CI 从固定上游提交构建 Linux SDK，再执行完整 LSP 检查和 `pnpm lsp:completions`。这只是语言服务补丁，框架的 Go 转换后端仍未实施。
 
 只在项目 MCP 中追加候选不能修复 WebStorm 直接调用的原生服务，也会重复维护类型、文档和编辑范围，因此不推荐作为主方案。修改 JSX 声明或把 bind 改名，也不能修复原生语言服务对合法命名空间属性的通用问题。
 
@@ -122,3 +122,5 @@ func isJsxNamespacedNameText(name string) bool {
 `+zerodep.2` 下，原生绑定跳到 jsx-runtime 的具体属性声明，组件绑定跳到业务 props 中的原 value。原生回归覆盖 namespace/local、直接与映射组件属性、自定义 prop、命名空间标签；项目 LSP 回归验证 14 个位置，包括实际 AuthoringExample、跨文件可选/泛型 props，严格比对目标文件和源属性位置。类型回归继续检查可选值、readonly、泛型实参、必填回调和错误值类型。
 
 这一阶段仍是项目 SDK 修复，官方 npm 包本身没有修改。WebStorm 必须加载项目 SDK 后才具备此能力；原生协议验证与 IDE 实际加载状态分别记录。
+
+后续界面复核发现，本机 WebStorm 2026.2.3 的 `TypeScriptGoPackageInfoKt` 仅从 wrapper 的父目录及其 `@typescript` 同级目录查找平台包，无法识别当前 SDK 根内嵌套的平台包。因此设置页虽显示 `+zerodep.2`，状态栏和进程实际是内置 TS6.0.3。直接选择 Windows 平台包后，状态栏显示 TypeScript-Go `+zerodep.2`，IDE 直接启动该包的 `lib/tsc.exe`，真实 NameField 的 Ctrl+B、手动补全和英文自动补全均通过。历史观察到的旧 TS7 进程不能作为 IDE 使用该版本的证据。
