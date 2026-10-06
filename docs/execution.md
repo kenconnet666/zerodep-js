@@ -366,3 +366,10 @@
 - 从本机插件 `TypeScriptGoPackageInfoKt` 确认，wrapper 平台解析只查同级目录，当前 SDK 的嵌套 node_modules 布局未被识别。通过 IDE 设置把 TypeScript 包改为 `.codex/typescript-sdk/node_modules/@typescript/typescript-win32-x64` 后，IDE 直接启动其中的 tsc.exe，状态栏显示 TypeScript-Go 7.1.0-dev.20261005.1+zerodep.2。
 - 真实 AuthoringExample 的 bind:value 用 Ctrl+B 跳到第 5 行 value: string；临时副本中，菜单基本补全把 bind 插入为 bind:value，英文按键输入 bind:va 自动出现候选，Tab 接受后属性名正确。输入法曾截获 Ctrl+空格并产生全角冒号，排除后完成自动提示验证。探针已关闭并按精确文件路径清理，业务文件无改动。
 - 构建命令在构建成功或缓存命中时输出当前平台的 IDE 包目录；更新开发和编写说明，明确设置版本显示、运行服务和实际编辑验证的区别。上一阶段 ba32a40 的完整 CI 已确认成功。
+
+## 2026-10-06：原生 Go 编译器接入考察
+
+- 用户要求继续考察原生编译器。核对当前 Babel 的实际职责、Vite 静态依赖、ABI 2 与固定 TS7.1 的 compiler/transformers/printer/API 源码；比较 Effect-TS/tsgo 的诊断补丁及 TTSC 的原生 EmitTransformPlugin、输出调度和 checker 所有权，不直接安装或采用第三方宿主。
+- 在固定上游加既有语言服务补丁的临时检出中，给 getScriptTransformers 加入研究挂钩。两项 Go 实验通过：有效源码解析一次、transform 一次，同次 Program.Emit 输出 JS/DTS/两份 map；状态读取变为 read()，同名参数保持普通读取，声明仍为 number。有类型错误时 noEmitOnError 阻止 transform 和输出。
+- 保留实验源码与结果于 .design/probes，方案见 .design/native-compiler.md。推荐共用运行时、独立原生 npm 后端和原 emitter 接线；框架诊断覆盖 noEmit/LSP，Vite 采用常驻服务与显式后端选择。研究没有完成真实宏导入、写入、JSX、HMR 等 Go 转换，不把小型接入实验记为原生框架完成。
+- 正式源码、当前 SDK、锁文件和框架运行行为未改变。临时 TypeScript worktree 在留存实验后清理，已有 Go 缓存保留；生产实现待方案确认。

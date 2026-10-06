@@ -2,6 +2,8 @@
 
 研究日期：2026-09-30，Asia/Shanghai。
 
+后续更新：Babel 框架编译器现已实现并分包；2026-10-06 用户要求考察第二种 Go 后端，固定 TS7.1 的接入点、现有项目比较和单次解析/双路输出实验见[原生编译器研究](native-compiler.md)。本文保留早期研究结论，不代表当前实现状态。
+
 本记录服务于 zerodep-js 的设计讨论。它不是已批准的实现规范。已确认的方向是标准 TSX、Svelte 风格的显式响应式变量、不暴露 `.value`、只支持 TypeScript 7。组件标记、props 解构、默认值、编译器后端和运行时细节仍为候选。
 
 本轮实际运行 TypeScript 7.0.2 的 CLI 类型检查与声明生成实验。没有实现响应式编译器、DOM 运行时或编辑器插件，也没有做编译性能基准。实验使用最小自定义 JSX 类型，不依赖 React 类型。结果见 [ts7-tsx-probe-results.json](./ts7-tsx-probe-results.json)。
