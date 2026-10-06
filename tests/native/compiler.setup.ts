@@ -1,6 +1,5 @@
-import { afterAll, vi } from 'vitest';
+import { afterAll } from 'vitest';
 import { closeCompiler } from '../../packages/native/src/index.js';
 
-// 两种后端运行同一份语义、诊断与映射断言；CLI 另做项目级集成验证。
-vi.mock('../../packages/compiler/src/index.js', () => import('../../packages/native/src/index.js'));
+// 每个测试文件释放自己使用的单文件编译服务，避免工作进程退出前残留 Go 子进程。
 afterAll(() => closeCompiler());

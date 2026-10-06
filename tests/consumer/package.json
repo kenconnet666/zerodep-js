@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "library": "node build-library.mjs && tsc -p tsconfig.library.json",
-    "check": "tsc -p tsconfig.json && tsc -p tsconfig.data.json && zerodep-check src",
+    "library": "zerodep-tsc -p tsconfig.library.json --emitDeclarationOnly false --jsx react-jsx --sourceMap",
+    "check": "zerodep-tsc -p tsconfig.json && zerodep-tsc -p tsconfig.data.json",
     "build": "node build.mjs"
   }
 }

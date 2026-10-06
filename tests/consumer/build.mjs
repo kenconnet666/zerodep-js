@@ -3,8 +3,6 @@ import { build } from 'vite';
 import { zerodep } from 'zerodep-js-vite';
 
 const reports = {};
-const compiler = process.env.ZERODEP_COMPILER ?? 'babel';
-if (!['babel', 'native'].includes(compiler)) throw new Error('无效的编译器选择。');
 function inspect(name) {
   return {
     name: 'consumer-package-evidence',
@@ -25,18 +23,18 @@ function inspect(name) {
 const common = { root: import.meta.dirname, configFile: false, logLevel: 'warn' };
 await build({
   ...common,
-  plugins: [zerodep({ compiler }), inspect('client')],
+  plugins: [zerodep(), inspect('client')],
   build: { outDir: 'dist/client', sourcemap: true },
 });
 await build({
   ...common,
-  plugins: [zerodep({ compiler }), inspect('server')],
+  plugins: [zerodep(), inspect('server')],
   // 保持包 external，验证发布后的 Node ESM 解析及运行时单例。
   build: { ssr: 'src/server.ts', outDir: 'dist/server', sourcemap: true },
 });
 await build({
   ...common,
-  plugins: [zerodep({ compiler }), inspect('tree')],
+  plugins: [zerodep(), inspect('tree')],
   build: {
     lib: { entry: 'src/tree.ts', formats: ['es'], fileName: 'tree' },
     outDir: 'dist/tree',

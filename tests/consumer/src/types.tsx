@@ -1,4 +1,4 @@
-import { compile, type CompileResult } from 'zerodep-js-compiler';
+import { compile, type CompileResult } from 'zerodep-js-native';
 import { Counter, Label } from '@zerodep-consumer/counter';
 import { _mount, type ComponentProps } from 'zerodep-js';
 import { _createScope, _snapshot } from 'zerodep-js';

@@ -9,7 +9,6 @@ reports/stability/
 playwright-report/
 .codex/config.toml
 .codex/toolchains/
-.codex/typescript-sdk/
 .codex/typescript-source/
 packages/native/bin/
 packages/native-*/typescript/

@@ -12,7 +12,6 @@
   "exclude": ["tests/consumer"],
   "include": [
     "*.config.ts",
-    "babel.config.mjs",
     "apps/*/vite.config.ts",
     "apps/*/server.ts",
     "apps/*/src/**/*.d.ts",

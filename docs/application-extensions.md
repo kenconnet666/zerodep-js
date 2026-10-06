@@ -49,6 +49,6 @@ SSR 不访问浏览器存储；客户端初次接管保持服务端初值，挂�
 - 独立 tgz 已验证新增 API、子入口声明、CSR/SSR、快照、存储及路由消费。实现提交 4715059 的[完整 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/36865635529) 已通过，包含三浏览器和 Windows 消费；上一轮名称定位问题也已通过远端复验。
 - 新增能力现已进入 1.0.0-rc.2，候选 3d44ae7 完整 CI 和七包真实 registry 安装验收通过；RC1 原始包保持不变。
 - 按用户新要求将 core 归入 dom/runtime/native/storage/router，保留公开入口与 ABI；生成脚本、测试导入、资源脚本与包隔离断言已同步。整理后的 279 项 Node、类型/构建和新路径 LSP 通过，独立包消费再核对产物与行为。
-- 后续用户批准的 Vue/React/Svelte 页面宿主均已随 RC2 交付；最终范围见 [页面宿主](page-hosts.md)。早期[讨论稿](../.design/vue-page-coexistence.md)仅保留方案选择历史。
+- 当前只维护独立框架主示例；原外部框架适配、演示和研究稿已删除，见 [原生工具链范围](../.design/native-only.md)。
 - 未创建新目标模式；本轮执行来自用户的明确实现请求。
 - 本文中的能力在相应实现和验证完成前不记为已交付。

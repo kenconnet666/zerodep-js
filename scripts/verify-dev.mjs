@@ -19,8 +19,6 @@ assert(
   '拒绝使用范围外的开发夹具。',
 );
 const logs = [];
-const compiler = process.env.ZERODEP_COMPILER ?? 'babel';
-assert(['babel', 'native'].includes(compiler));
 const logger = createLogger();
 logger.error = (message) => {
   logs.push(message);
@@ -111,7 +109,7 @@ if(import.meta.hot)import.meta.hot.dispose(stop);
     customLogger: logger,
     plugins: [
       // 这些运行时/HMR 夹具含故意的动态全局，不把它们当作项目类型检查用例。
-      zerodep({ compiler, typeCheck: false }),
+      zerodep({ typeCheck: false }),
       {
         name: 'hydration-probe',
         configureServer(vite) {

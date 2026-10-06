@@ -1,6 +1,6 @@
 # zerodep-js
 
-zerodep-js 的响应式、组件、DOM 与 hydration 运行时。使用标准 TSX 和 TypeScript 7，源码须经过 `zerodep-js-compiler` 或 `zerodep-js-vite` 转换。样式边界采用 CSS Tools tokenizer，CSS 类型采用 csstype 的生成数据；不依赖其他组件框架运行时。
+zerodep-js 的响应式、组件、DOM 与 hydration 运行时。使用标准 TSX 和 TypeScript 7，源码须经过 `zerodep-js-native` 或 `zerodep-js-vite` 转换。样式边界采用 CSS Tools tokenizer，CSS 类型采用 csstype 的生成数据；不依赖其他组件框架运行时。
 
 ```tsx
 import { _component, _state, _mount } from 'zerodep-js';
@@ -16,7 +16,7 @@ const dispose = _mount(Counter, { target: document.querySelector('#app')! });
 
 公共入口包含变量宏、_component、_mount/_hydrate、_effect 与生命周期、For、context 和 ErrorBoundary。`jsx-runtime` 提供 JSX 类型，配置 `jsx: "preserve"` 与 `jsxImportSource: "zerodep-js"`；不使用 React JSX 转换。`internal` 是编译输出协议，不作为手写 signal API。
 
-_snapshot、_onMount/_createScope/_getAbortSignal 与 _createPage 留在 core。路由与持久化从 RC3 起改由独立的 `zerodep-use/router`、`zerodep-use/storage` 提供，core 旧子入口已移除。按需安装相同版本的 zerodep-use；独立页面宿主只需 core。完整用法见[持久化](https://github.com/kenconnet666/zerodep-js/blob/main/docs/storage.md)、[路由](https://github.com/kenconnet666/zerodep-js/blob/main/docs/routing.md)和[页面宿主](https://github.com/kenconnet666/zerodep-js/blob/main/docs/page-hosts.md)。
+_snapshot、_onMount/_createScope/_getAbortSignal 与 _createPage 留在 core。路由与持久化从 RC3 起改由独立的 `zerodep-use/router`、`zerodep-use/storage` 提供，core 旧子入口已移除。按需安装相同版本的 zerodep-use。完整用法见[持久化](https://github.com/kenconnet666/zerodep-js/blob/main/docs/storage.md)、[路由](https://github.com/kenconnet666/zerodep-js/blob/main/docs/routing.md)。
 
 源码随声明映射一起打包供编辑器导航；执行入口仅导出编译后的 ESM。SSR 包及预编译组件库应通过 peer dependency 共享同一 core，避免产生相互隔离的响应式图和组件身份。
 

@@ -112,9 +112,9 @@ SSR 使用 `renderToString(App, { props })` 同步生成组件 HTML；每请求�
 
 `_createPage(Component)` 创建可重复使用的页面入口 `(target, initial) => handle`。handle.update(next) 完整替换输入并保留页面实例，handle.dispose() 幂等释放，销毁后 update 不再生效。普通对象/数组会形成独立数据副本并保留环和共享引用；回调、类实例、Map/Set 等不透明值保持引用，应用应以替换或自己的方法管理它们。初始 input 必须为普通对象。
 
-该入口供页面宿主适配使用，不改变 `_mount` 返回清理函数的契约。页面输入更新不是重新执行组件初始化，本地状态重置仍通过明确的实例身份决定。
+该入口用于独立页面的创建、输入更新和销毁，不改变 `_mount` 返回清理函数的契约。页面输入更新不是重新执行组件初始化，本地状态重置仍通过明确的实例身份决定。
 
-`compile(source, filename, options?)` 返回 `{ code, map }`，编译失败抛出 CompileError，其 diagnostics 包含代码、文件和位置。`diagnose(source, filename)` 返回诊断数组。CLI 为 `zerodep-check`，可与 TS7 检查并行提供框架语义反馈，见[开发指南](development.md)。
+`zerodep-js-native` 的 `compile(source, filename, options?)` 返回代码、映射与开发标记，编译失败抛出 CompileError，其 diagnostics 包含代码、文件和位置。`diagnose(source, filename)` 返回单文件框架诊断数组。项目检查与 JS/声明输出使用 `zerodep-tsc`；持续编辑使用 `createCompiler` 共享项目快照，见[开发指南](development.md)。
 
 常用类型包括 `ComponentProps<typeof App>`、`JSX.IntrinsicElements['button']`、`Renderable`、`Template`、`Style`、`StyleObject`、`EventHandler<Element, Event>`、`MountOptions`、`HydrateOptions`、`Context<T>` 和 `Cleanup`。优先让 component 保留函数与泛型推断，不需要为每个返回值手写接口。
 

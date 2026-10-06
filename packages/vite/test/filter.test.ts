@@ -1,4 +1,4 @@
-import { expect, it, vi } from 'vitest';
+import { afterEach, expect, it, vi } from 'vitest';
 import { resolve } from 'node:path';
 import { zerodep, type ZerodepOptions } from '../src/index.js';
 
@@ -7,13 +7,22 @@ type Transform = (
   code: string,
   id: string,
 ) => Promise<{ code: string } | null>;
+const cleanup: Array<() => Promise<unknown>> = [];
+afterEach(async () => {
+  for (const close of cleanup.splice(0)) await close();
+});
+function managedPlugin(options: ZerodepOptions = {}) {
+  const plugin = zerodep({ ...options, typeCheck: false });
+  cleanup.push(() => Reflect.apply(plugin.closeWatcher as Function, undefined, []));
+  return plugin;
+}
 function transforms(options: ZerodepOptions) {
-  const plugin = zerodep(options);
-  const root = resolve('fixture-app').replaceAll('\\', '/');
+  const plugin = managedPlugin(options);
+  const root = resolve('apps/example').replaceAll('\\', '/');
   // 仅传入这两个钩子实际需要的配置，验证预扫描和常规转换持有同一规则。
   if (typeof plugin.configResolved !== 'function' || typeof plugin.config !== 'function')
     throw new Error('预期为同步配置钩子。');
-  Reflect.apply(plugin.configResolved, undefined, [{ root }]);
+  Reflect.apply(plugin.configResolved, undefined, [{ root, command: 'serve' }]);
   const config: {
     optimizeDeps: { rolldownOptions: { plugins: Array<{ transform: { handler: Transform } }> } };
   } = Reflect.apply(plugin.config, undefined, [{}, { command: 'serve', mode: 'development' }]);
@@ -41,14 +50,13 @@ function transforms(options: ZerodepOptions) {
 }
 const source = `import { _state } from 'zerodep-js'; let count = _state(0); count++;`;
 
-it('目录范围按项目 root 解释，查询不影响选择，排除其他 JSX 和宿主模块', async () => {
+it('目录范围按项目 root 解释，查询不影响选择，排除范围外文件与声明', async () => {
   const { root, run } = transforms({ include: 'src/page/**', exclude: '**/*.skip.tsx' });
   for (const result of await run(source, `${root}/src/page/state.ts?import`))
     expect(result?.code).toContain('.state(');
   for (const path of [
-    'src/react/App.tsx',
+    'src/other/App.tsx',
     'src/page/ignored.skip.tsx',
-    'src/page/native.svelte.ts',
     'src/page/types.d.ts',
     'node_modules/pkg/state.ts',
   ])
@@ -63,10 +71,10 @@ it('Windows 路径与虚拟模块在两条管线中的行为一致', async () =>
 });
 
 it('删除已登记组件文件直接刷新，不再读取已不存在的文件', async () => {
-  const plugin = zerodep();
+  const plugin = managedPlugin();
   if (typeof plugin.configResolved !== 'function' || typeof plugin.hotUpdate !== 'function')
     throw new Error('预期为函数钩子。');
-  const root = resolve('fixture-app').replaceAll('\\', '/');
+  const root = resolve('apps/example').replaceAll('\\', '/');
   const file = root + '/App.tsx';
   Reflect.apply(plugin.configResolved, undefined, [{ root, command: 'serve' }]);
   const handler = (plugin.transform as { handler: Transform }).handler;

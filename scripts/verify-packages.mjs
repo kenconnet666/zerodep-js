@@ -9,22 +9,15 @@ import { tmpdir } from 'node:os';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseArgs, promisify } from 'node:util';
 import { chromium, expect } from '@playwright/test';
-import { packages as packageList, nativePackages } from './package-list.mjs';
+import { releasePackages as selectedPackages } from './package-list.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const { values } = parseArgs({
   options: {
     registry: { type: 'boolean', default: false },
     version: { type: 'string' },
-    compiler: { type: 'string', default: 'babel' },
   },
 });
-assert(['babel', 'native'].includes(values.compiler));
-const native = values.compiler === 'native';
-const selectedPackages = packageList.filter(
-  (item) => item.kind !== 'host' && (!native || item.folder !== 'compiler'),
-);
-if (native) selectedPackages.push(...nativePackages);
 if (values.registry)
   assert(
     values.version && /^\d+\.\d+\.\d+(?:-rc\.\d+)?$/.test(values.version),
@@ -41,7 +34,6 @@ const archives = resolve(fixture, 'archives');
 const executable = /\.[cm]?js$/.test(pnpm) ? process.execPath : pnpm;
 const prefix = executable === pnpm ? [] : [pnpm];
 const env = { ...process.env, CI: 'true' };
-env.ZERODEP_COMPILER = values.compiler;
 if (values.registry) env.npm_config_registry = 'https://registry.npmjs.org/';
 delete env.NODE_PATH;
 const exec = promisify(execFile);
@@ -70,16 +62,6 @@ try {
   manifest.dependencies = {};
   manifest.devDependencies = {};
   manifest.pnpm = { overrides: {} };
-  if (native) {
-    const typeFixture = resolve(consumer, 'src/types.tsx');
-    await writeFile(
-      typeFixture,
-      (await readFile(typeFixture, 'utf8')).replaceAll('zerodep-js-compiler', 'zerodep-js-native'),
-    );
-    manifest.scripts.library =
-      'zerodep-tsc -p tsconfig.library.json --emitDeclarationOnly false --jsx react-jsx --sourceMap';
-    manifest.scripts.check = 'zerodep-tsc -p tsconfig.json && zerodep-tsc -p tsconfig.data.json';
-  }
   const catalog = await readFile(resolve(root, 'pnpm-workspace.yaml'), 'utf8');
   // 读取 catalog 中的精确版本，包含当前 TypeScript nightly 的预发布后缀。
   for (const name of ['typescript', 'vite', '@types/node']) {
@@ -173,25 +155,16 @@ try {
   );
   console.log(`包内容清单通过，开始工作区外的${values.registry ? '注册表' : 'tgz'}独立安装。`);
   await run(['install', '--ignore-scripts', '--prefer-offline']);
-  if (native) {
-    assert(
-      !(await access(resolve(consumer, 'node_modules/zerodep-js-compiler')).then(
-        () => true,
-        () => false,
-      )),
-      '原生消费不能安装 Babel 后端。',
-    );
-    const lock = await readFile(resolve(consumer, 'pnpm-lock.yaml'), 'utf8');
-    assert(!lock.includes('@babel/'), '原生依赖图仍含 Babel。');
-  }
-  for (const host of ['react', 'vue', 'svelte'])
+  const lock = await readFile(resolve(consumer, 'pnpm-lock.yaml'), 'utf8');
+  assert(!lock.includes('@babel/'), '原生依赖图仍含 Babel。');
+  for (const host of ['zerodep-js-compiler', 'react', 'react-dom', 'vue', 'svelte'])
     assert.equal(
       await access(resolve(consumer, 'node_modules', host)).then(
         () => true,
         () => false,
       ),
       false,
-      '独立框架消费不能强制安装宿主。',
+      '原生消费不能安装传统编译器或外部宿主。',
     );
   for (const [name, { files, sourceManifest }] of packages) {
     const directory = name.startsWith('zerodep-js-native-')
@@ -285,7 +258,9 @@ try {
     '客户端没有消费预编译依赖。',
   );
   assert(
-    !clientModules.some((id) => /\/@babel\/|\/zerodep-js-(compiler|vite|ssr)\//.test(id)),
+    !clientModules.some((id) =>
+      /\/@babel\/|\/typescript\/|\/zerodep-js-(native|vite|ssr)\//.test(id),
+    ),
     '构建或服务端代码进入客户端。',
   );
   assert(

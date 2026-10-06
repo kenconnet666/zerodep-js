@@ -10,7 +10,7 @@ vi.mock('zerodep-js-native', () => ({ createCompiler }));
 beforeEach(() => vi.clearAllMocks());
 
 async function open(command: 'serve' | 'build') {
-  const plugin = zerodep({ compiler: 'native' });
+  const plugin = zerodep();
   Reflect.apply(plugin.configResolved as Function, undefined, [{ root: process.cwd(), command }]);
   const transform = plugin.transform as { handler: Function };
   await Reflect.apply(

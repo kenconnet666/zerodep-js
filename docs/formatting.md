@@ -1,6 +1,6 @@
 # 原生解析与 WebStorm 格式化
 
-项目保留 Prettier 3.9.9 的排版器，JS/TS/JSX/TSX 使用官方 `@prettier/plugin-oxc@0.2.3` 的 Rust 原生解析器。Svelte 继续使用现有官方插件。`.prettierrc.json` 显式选择 `oxc` / `oxc-ts`，编辑器、命令行及原生属性生成脚本读取同一份配置。
+项目保留 Prettier 3.9.9 的排版器，JS/TS/JSX/TSX 使用官方 `@prettier/plugin-oxc@0.2.3` 的 Rust 原生解析器。Svelte 格式插件与对应配置已删除。`.prettierrc.json` 显式选择 `oxc` / `oxc-ts`，编辑器、命令行及原生属性生成脚本读取同一份配置。
 
 这与 Go 编译器分工不同：Go 负责 TypeScript 类型检查、框架转换和诊断；格式化不嵌入编译过程。TS7 的 Go LSP 已有格式化接口，但其换行、引号等规则不等同于本项目的 Prettier 配置。
 
@@ -12,7 +12,7 @@ pnpm format:check
 pnpm format:check --no-cache
 ```
 
-命令通过 `scripts/format.mjs` 调用稳定 Prettier CLI，使用内容缓存。缓存目录按 pnpm 锁文件摘要区分，更新解析插件、Svelte 插件或其传递依赖后不会复用旧缓存。文件内容变化仍必须重新检查，已有回归用例验证缓存命中后的错误修改。
+命令通过 `scripts/format.mjs` 调用稳定 Prettier CLI，使用内容缓存。缓存目录按 pnpm 锁文件摘要区分，更新解析插件或其传递依赖后不会复用旧缓存。文件内容变化仍必须重新检查，已有回归用例验证缓存命中后的错误修改。
 
 WebStorm 保留“自动 Prettier 配置”、保存时运行、粘贴时运行以及优先 Prettier 的设置即可。项目安装依赖后，现有 Prettier 服务会加载原生解析插件；不需要安装新的 IDE 插件，也不需要把格式化入口改为 Go。状态栏继续显示 Prettier 版本，不能仅靠这个标签判断内部解析器；可用配置、实际格式化结果和进程加载的原生模块共同核对。
 

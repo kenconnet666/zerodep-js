@@ -11,13 +11,7 @@ export default defineConfig({
     ],
     clearMocks: true,
     restoreMocks: true,
-    exclude: ['packages/native/test/**'],
-    coverage: {
-      provider: 'v8',
-      include: ['packages/*/src/**/*.ts'],
-      exclude: ['**/*.d.ts'],
-      reportsDirectory: './coverage',
-      reporter: ['text', 'html', 'json-summary'],
-    },
+    setupFiles: ['./tests/native/compiler.setup.ts'],
+    maxWorkers: 2,
   },
 });

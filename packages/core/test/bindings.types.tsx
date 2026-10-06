@@ -1,4 +1,4 @@
-import { _component, _state } from 'zerodep-js';
+import { _component, _state, type JSX } from 'zerodep-js';
 
 const Field = _component(
   (props: {
@@ -72,8 +72,10 @@ export const BindingTypes = _component(() => {
   const wrongNative = <input bind:value={number} />;
   // @ts-expect-error checked 是 boolean。
   const wrongChecked = <input type="checkbox" bind:checked={text} />;
+  // 类型层验证属性集合；实际 JSX 的 ZJ1403 由原生编译器测试验证。
   // @ts-expect-error 非表单元素不提供 value 绑定。
-  const wrongElement = <div bind:value={text} />;
+  const wrongElement: JSX.IntrinsicElements['div'] = { 'bind:value': text };
+  void wrongElement;
   return [
     input,
     numeric,
@@ -95,6 +97,5 @@ export const BindingTypes = _component(() => {
     wrong,
     wrongNative,
     wrongChecked,
-    wrongElement,
   ];
 });

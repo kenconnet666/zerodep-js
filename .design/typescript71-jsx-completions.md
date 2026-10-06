@@ -97,9 +97,9 @@ func isJsxNamespacedNameText(name string) bool {
 
 ## 项目内交付
 
-`scripts/language-services/typescript-target.json` 固定 npm 版本、上游提交和补丁版本。`pnpm typescript:build --source <TypeScript Git 仓库> [--go <Go 1.27 可执行文件>]` 在临时 worktree 中应用补丁并构建，不污染源码仓库或 pnpm store。它复制官方 npm SDK/平台包布局和许可，将新的原生可执行文件安装到 `.codex/typescript-sdk`，并记录源码、补丁及二进制摘要。重复执行核对缓存和 SDK 入口，缺失或损坏会重新构建。
+`scripts/language-services/typescript-target.json` 固定 npm 版本、上游提交和补丁版本。当前统一入口是 `pnpm compiler:native:build --source <TypeScript Git 仓库> --go <Go可执行文件>`，同时包含语言服务补丁与框架 Go 转换，产物位于 `packages/native-<平台>/typescript`。旧语言服务专用构建脚本和 `.codex/typescript-sdk` 已不再使用。
 
-项目 MCP 固定使用生成的 SDK，WebStorm 的 TypeScript 包目录选择 SDK 内的 `node_modules/@typescript/typescript-<platform>-<arch>` 平台包，具体路径由构建脚本输出。CI 从固定上游提交构建 Linux SDK，再执行完整 LSP 检查和 `pnpm lsp:completions`。这只是语言服务补丁，框架的 Go 转换后端仍未实施。
+项目 MCP 使用生成的 SDK，WebStorm 选择 `packages/native-<平台>/typescript`。CI 在六种目标架构构建并测试，再执行完整 LSP 检查与 `pnpm lsp:completions`。此文前面的实验过程保留为历史记录，当前实施范围见 [原生工具链收敛](native-only.md)。
 
 只在项目 MCP 中追加候选不能修复 WebStorm 直接调用的原生服务，也会重复维护类型、文档和编辑范围，因此不推荐作为主方案。修改 JSX 声明或把 bind 改名，也不能修复原生语言服务对合法命名空间属性的通用问题。
 

@@ -1,6 +1,6 @@
 {
   "name": "zerodep-js-vite",
-  "version": "1.0.0-rc.3",
+  "version": "1.0.0-rc.4",
   "type": "module",
   "sideEffects": false,
   "engines": {
@@ -21,26 +21,14 @@
     }
   },
   "scripts": {
-    "dev": "tsc -b --watch",
-    "check": "tsc -p tsconfig.json --noEmit --incremental false --composite false",
-    "build": "tsc -b"
+    "dev": "node ../../scripts/native/tsc.mjs -b --watch",
+    "check": "node ../../scripts/native/tsc.mjs -p tsconfig.json --noEmit --incremental false --composite false",
+    "build": "node ../../scripts/native/tsc.mjs -b"
   },
   "peerDependencies": {
-    "vite": "^8.3.1",
-    "zerodep-js-compiler": "workspace:*",
-    "zerodep-js-native": "workspace:*"
-  },
-  "peerDependenciesMeta": {
-    "zerodep-js-compiler": {
-      "optional": true
-    },
-    "zerodep-js-native": {
-      "optional": true
-    }
+    "vite": "^8.3.1"
   },
   "devDependencies": {
-    "zerodep-js-compiler": "workspace:*",
-    "zerodep-js-native": "workspace:*",
     "typescript": "catalog:",
     "vite": "catalog:",
     "@types/node": "catalog:"
@@ -59,5 +47,8 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "zerodep-js-native": "workspace:*"
   }
 }

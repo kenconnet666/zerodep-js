@@ -1,6 +1,6 @@
 {
   "name": "zerodep-js-native",
-  "version": "1.0.0-rc.3",
+  "version": "1.0.0-rc.4",
   "type": "module",
   "license": "MIT",
   "author": "kenconnet666",
@@ -26,9 +26,9 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsc -b",
-    "dev": "tsc -b --watch",
-    "check": "tsc -p tsconfig.json --noEmit --incremental false --composite false"
+    "build": "node ../../scripts/native/tsc.mjs -b",
+    "dev": "node ../../scripts/native/tsc.mjs -b --watch",
+    "check": "node ../../scripts/native/tsc.mjs -p tsconfig.json --noEmit --incremental false --composite false"
   },
   "dependencies": {
     "typescript": "catalog:"
@@ -42,7 +42,8 @@
     "zerodep-js-native-darwin-arm64": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "catalog:"
+    "@types/node": "catalog:",
+    "@jridgewell/trace-mapping": "catalog:"
   },
   "repository": {
     "type": "git",

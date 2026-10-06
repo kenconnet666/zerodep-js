@@ -123,8 +123,10 @@ export const readonlyAttribute = <button offsetWidth={1} />;
 const Plain = () => <span />;
 // @ts-expect-error 普通函数不冒充框架组件。
 export const unmarked = <Plain />;
+// 在类型层验证 Promise 返回值；实际宏的 ZJ1200 由原生编译器测试验证。
+declare const componentSignature: typeof _component;
 // @ts-expect-error 当前渲染协议不支持 Promise 组件。
-export const asyncComponent = _component(async () => '异步');
+export const asyncComponent = componentSignature(async () => '异步');
 
 declare const target: HTMLDivElement;
 _mount(Required, { target, props: { label: '正确' } });

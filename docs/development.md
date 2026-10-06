@@ -1,6 +1,6 @@
 # 开发、类型检查与框架诊断
 
-TypeScript 7 检查原始 TSX 的类型；框架编译器检查被转换绑定的额外约束。二者一起使用，不能以一种检查通过代替另一种。Vite 接入、独立检查命令和项目诊断桥复用同一个编译器。
+项目定制 TypeScript 7.1 同时检查原始 TSX 类型和框架绑定约束。CLI、Vite 与项目语言服务使用同一个定制 SDK；持续编辑通过原生项目会话复用快照与 Program。
 
 ## 运行时与应用工具源码职责
 
@@ -15,23 +15,16 @@ TypeScript 7 检查原始 TSX 的类型；框架编译器检查被转换绑定�
 
 use 和 SSR 均通过同版本 core 的公开 API 与必要的 internal 协议共享组件身份、调度和所有权，不能跨包导入 core/src 或复制状态内核；core 不反向依赖 use。不要在 runtime/native 中增加 window/document 访问。生成数据维护入口仍为 scripts/generate-native.mjs，产物在 native/data.ts。改目录时同步检查声明映射、生成脚本、资源验证与独立消费，移除已经失效的旧构建文件。
 
-Vue、React、Svelte 已有独立页面宿主包与 Vite 文件范围选项，使用方式和验证边界见[页面宿主](page-hosts.md)。原讨论稿保留为设计过程记录。
-
 ## 检查入口
 
-在本仓库运行 `pnpm check`，依次准备包产物、检查各包及工具类型、检查示例的框架语义、运行 lint。已经构建后可以单独运行 `pnpm check:framework`。
-
-compiler 包提供以下命令；在消费项目安装它后，由 pnpm 调用：
+在本仓库运行 `pnpm check`，使用定制 SDK 构建包产物、检查各包与工具类型、报告框架语义错误，再运行 lint。独立项目使用原生 CLI：
 
 ```sh
-pnpm exec zerodep-check src
-pnpm exec zerodep-check src/Counter.tsx --json
-pnpm exec zerodep-check --stdin src/Counter.tsx --json
+pnpm exec zerodep-tsc -p tsconfig.json --noEmit
+pnpm exec zerodep-tsc -p tsconfig.json --jsx react-jsx
 ```
 
-最后一条从标准输入读取源码，适合编辑器传入未保存的文本快照。检查不执行应用代码；递归扫描会排除依赖、构建产物、声明文件和常见工具目录。退出码 0 表示无框架错误，1 表示发现语义错误，2 表示参数、文件访问或检查过程失败。JSON 结果是诊断数组，包含文件名、错误码、信息及从 1 开始的行列；结束位置可选且不包含末字符。它不读取 TS 项目配置，也不替代 `tsc --noEmit`。
-
-只想从工具调用时，可以导入 `diagnose(source, filename)`。遇到编译器自身异常会抛出错误，不会伪装成“源码无错误”。生成代码使用 `compile(source, filename)`，源码错误以 `CompileError.diagnostics` 返回。
+CLI 读取项目配置，原始类型与框架语义在同一编译器中检查；`noEmit` 仍报告框架错误。语言服务支持未保存的编辑内容。Node 工具可使用 `diagnose(source, filename)` 获取单文件框架诊断，`compile` 输出 JS/map；完整类型检查或连续编辑使用 `createCompiler`，结束后关闭会话。源码错误通过 `CompileError.diagnostics` 返回，内部异常不会伪装成无错误。
 
 ## 自然解构与实时读取
 
@@ -140,7 +133,7 @@ Go 已在 PATH 时可省略 `--go`。生成的 `packages/native-<平台>/typescr
 
 WebStorm 的 TypeScript 设置需要选择构建命令输出的**平台包目录**。Windows x64 为 `packages/native-win32-x64/typescript`。WebStorm 2026.2.3 从 SDK 根目录的同级查找平台包，不会按 Node 的规则进入根目录内的 node_modules；直接选择 `.codex/typescript-sdk` 虽然显示正确版本，实际服务却可能回退到内置 TypeScript 6.0.3。应用设置后，点击状态栏的语言服务图标，确认当前文件运行的是 `TypeScript-Go 7.1.0-dev.20261005.1+zerodep.native.<摘要>`；只看设置页的版本号不够。
 
-运行 `pnpm lsp:verify` 会验证原生错误/修复、框架错误/修复、依赖刷新和项目隔离。这是独立服务验证；已运行的 Codex MCP 进程需要重启后才加载桥接脚本变更。选择项目原生 SDK 的 WebStorm/VS Code 会直接得到框架诊断；选择官方 SDK 时只能得到官方 TS 诊断，此时可使用 Babel 的 `zerodep-check` 独立检查。没有要求安装私有 TS 插件或降级 TS 版本。
+运行 `pnpm lsp:verify` 会验证原生错误/修复、框架错误/修复、依赖刷新和项目隔离。这是独立服务验证；已运行的 Codex MCP 进程需要重启后才加载桥接脚本变更。选择项目原生 SDK 的 WebStorm/VS Code 会直接得到框架诊断；选择官方 SDK 时只能得到官方 TS 诊断，应改选项目定制 SDK 获得完整诊断。没有要求安装私有 TS 插件或降级 TS 版本。
 
 验证还通过标准 `textDocument/rename` 检查响应式变量、组件导出、跨文件 import 和 JSX 引用，并仅把编辑应用到本次临时探针。它证明标准 TS7 协议能力，不代替某个 IDE 自身的完整操作验收。
 

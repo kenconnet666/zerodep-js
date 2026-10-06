@@ -2,6 +2,8 @@
 
 使用 `.node-version` 指定的 Node 24 和 package.json 固定的 pnpm。依赖版本放入 pnpm catalog，包间使用 workspace 协议。请先阅读 [语义契约](docs/semantics.md)，不要把早期候选方案直接当作已实现 API。
 
+本机后续工作直接使用 `C:\Users\lionheart\WebstormProjects\zerodep-js`，不自行创建游离工作树。源码工作区先构建定制 SDK，所有包的构建与检查都使用它。
+
 ## 开发步骤
 
 1. 确认当前源码和 Git 状态，保留已有工作。
@@ -13,7 +15,7 @@
 ## 文件与职责
 
 - `packages/core`：状态、组件、DOM、生命周期及公共 JSX 类型。
-- `packages/compiler`：绑定分析、宏/JSX 转换、语义诊断与 CLI。
+- `packages/native`：Go 绑定分析、宏/JSX 转换、语义诊断、CLI 与项目会话。
 - `packages/vite`：普通转换和依赖扫描的同一接入。
 - `packages/ssr`：请求内渲染、数据编码与文档组合。
 - `apps/example`：功能验证页和任务工作台，消费实际包产物。

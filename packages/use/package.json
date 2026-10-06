@@ -1,6 +1,6 @@
 {
   "name": "zerodep-use",
-  "version": "1.0.0-rc.3",
+  "version": "1.0.0-rc.4",
   "type": "module",
   "sideEffects": false,
   "engines": {
@@ -29,9 +29,9 @@
     }
   },
   "scripts": {
-    "dev": "tsc -b --watch",
-    "check": "tsc -p tsconfig.json --noEmit --incremental false --composite false",
-    "build": "tsc -b"
+    "dev": "node ../../scripts/native/tsc.mjs -b --watch",
+    "check": "node ../../scripts/native/tsc.mjs -p tsconfig.json --noEmit --incremental false --composite false",
+    "build": "node ../../scripts/native/tsc.mjs -b"
   },
   "peerDependencies": {
     "zerodep-js": "workspace:*"

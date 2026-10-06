@@ -11,7 +11,7 @@ const { values } = parseArgs({
   options: {
     samples: { type: 'string', default: '5' },
     'memory-only': { type: 'boolean', default: false },
-    output: { type: 'string', default: 'reports/native-performance.json' },
+    output: { type: 'string', default: 'reports/native-only-performance.json' },
   },
 });
 const repeats = Number(values.samples);
@@ -32,12 +32,12 @@ const summary = (samples) => {
   };
 };
 
-async function measure(backend, mode) {
-  const child = fork(
-    resolve(import.meta.dirname, 'benchmark-worker.mjs'),
-    [backend, mode, fixture],
-    { cwd: root, stdio: ['ignore', 'pipe', 'pipe', 'ipc'], windowsHide: true },
-  );
+async function measure(mode) {
+  const child = fork(resolve(import.meta.dirname, 'benchmark-worker.mjs'), [mode, fixture], {
+    cwd: root,
+    stdio: ['ignore', 'pipe', 'pipe', 'ipc'],
+    windowsHide: true,
+  });
   let errors = '';
   child.stderr.on('data', (data) => {
     errors += data;
@@ -48,7 +48,7 @@ async function measure(backend, mode) {
   let monitor;
   let monitoring;
   let monitorText = '';
-  const stop = resolve(fixture, backend + '-' + mode + '-stop');
+  const stop = resolve(fixture, mode + '-stop');
   if (mode.startsWith('memory') && process.platform === 'win32') {
     monitor = spawn(
       'powershell.exe',
@@ -92,10 +92,10 @@ async function measure(backend, mode) {
     if (mode.startsWith('memory')) child.send({ release: true });
     const [code] = await closed;
     assert.equal(code, 0, errors);
-    const result = { backend, mode, ...message.result, ...(memory ? { memory } : {}) };
+    const result = { mode, ...message.result, ...(memory ? { memory } : {}) };
     measurements.push(result);
     console.log(
-      `${backend} ${mode}: ${JSON.stringify(result.samples ? summary(result.samples) : result.milliseconds)}${memory ? `; RSS ${(memory.peakBytes / 1024 / 1024).toFixed(1)} MiB` : ''}`,
+      `${mode}: ${JSON.stringify(result.samples ? summary(result.samples) : result.milliseconds)}${memory ? `; RSS ${(memory.peakBytes / 1024 / 1024).toFixed(1)} MiB` : ''}`,
     );
   } finally {
     if (child.exitCode === null) child.kill();
@@ -123,18 +123,14 @@ try {
   );
   for (const mode of values['memory-only'] ? [] : ['cold', 'warm', 'project', 'incremental']) {
     for (let i = 0; i < repeats; i++) {
-      for (const backend of i % 2 ? ['native', 'babel'] : ['babel', 'native']) {
-        await measure(backend, mode);
-        await rm(resolve(fixture, 'output'), { recursive: true, force: true });
-      }
+      await measure(mode);
+      await rm(resolve(fixture, 'output'), { recursive: true, force: true });
     }
   }
   if (process.platform === 'win32')
     for (const mode of ['memory', 'memory-project']) {
-      for (const backend of ['babel', 'native']) {
-        await measure(backend, mode);
-        await rm(resolve(fixture, 'output'), { recursive: true, force: true });
-      }
+      await measure(mode);
+      await rm(resolve(fixture, 'output'), { recursive: true, force: true });
     }
   const report = {
     timestamp: new Date().toISOString(),
@@ -159,27 +155,22 @@ try {
     },
     methodology: {
       repeats: previous?.methodology.repeats ?? repeats,
-      cold: 'Fresh Node process; timed dynamic backend import and first conversion of four real TSX files; OS file cache is not flushed; process launch and source reads excluded.',
-      warm: 'Same four files, three warm-up batches, twenty measured batches per process; framework checks plus JS and maps on both sides.',
+      cold: 'Fresh Node process; timed native compiler import and first conversion of four real TSX files; OS file cache is not flushed; process launch and source reads excluded.',
+      warm: 'Same four files, three warm-up batches, twenty measured batches per process; framework checks plus JS and maps.',
       project:
-        'Real apps/example; full TS7 type check, JS + JS maps + declarations + declaration maps. Babel: official TS7 declaration-only CLI then Babel. Native: one CLI. Both write output; fresh worker per sample.',
+        'Real apps/example; full TS7 type check, JS + JS maps + declarations + declaration maps. One custom native CLI writes every output; fresh worker per sample.',
       incremental:
-        'Retained TS7 Program, real AuthoringExample edit, type check plus JS/maps; two edit warm-ups then six measurements. Babel uses official TS7 checker and Babel; native uses CompilerSession.',
+        'Retained custom TS7 Program, real AuthoringExample edit, type check plus JS/maps; two edit warm-ups then six measurements using CompilerSession.',
       memory:
         'Separate conversion and full-project workloads; sampled process-tree working set including Go. Windows Toolhelp snapshot and 100ms delay; actual interval from elapsed/samples; not a precise allocation peak. Not mixed into timing samples.',
     },
     summary: Object.fromEntries(
       ['cold', 'warm', 'project', 'incremental'].map((mode) => [
         mode,
-        Object.fromEntries(
-          ['babel', 'native'].map((backend) => [
-            backend,
-            summary(
-              measurements
-                .filter((item) => item.mode === mode && item.backend === backend)
-                .flatMap((item) => item.samples ?? [item.milliseconds]),
-            ),
-          ]),
+        summary(
+          measurements
+            .filter((item) => item.mode === mode)
+            .flatMap((item) => item.samples ?? [item.milliseconds]),
         ),
       ]),
     ),

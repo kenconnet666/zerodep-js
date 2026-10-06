@@ -35,11 +35,5 @@ export default defineConfig({
       reuseExistingServer: false,
       timeout: 30_000,
     },
-    {
-      command: 'pnpm --filter @zerodep-js/hosts preview --port 4177',
-      url: 'http://127.0.0.1:4177/vue',
-      reuseExistingServer: false,
-      timeout: 30_000,
-    },
   ],
 });

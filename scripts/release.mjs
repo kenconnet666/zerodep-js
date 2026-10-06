@@ -408,16 +408,6 @@ async function main() {
   if (command === 'verify-registry') {
     const result = await manager(['test:packages:registry', '--version', selectedVersion]);
     process.stdout.write(result.stdout);
-    const hosts = await manager(['test:hosts:registry', '--version', selectedVersion]);
-    process.stdout.write(hosts.stdout);
-    const native = await manager([
-      'test:packages:registry',
-      '--compiler',
-      'native',
-      '--version',
-      selectedVersion,
-    ]);
-    process.stdout.write(native.stdout);
     ledger.registryVerifiedAt = new Date().toISOString();
     await save();
     return;

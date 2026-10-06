@@ -8,7 +8,7 @@
 | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | TypeScript      | 当前工作区固定官方 npm `7.1.0-dev.20261005.1`，升级验证见执行记录。Go 编译路线仅面向选定的新版本，不增加旧版或多版本兼容层。                                               |
 | Node            | Node 24，工程固定 24.18.0，包 engines 为 `>=24.11 <25`。不把未验证的大版本写入支持范围。                                                                                   |
-| 构建            | ESM、Babel 8 或固定 TS7 Go 原生编译、Vite 8 插件；固定版本由 catalog 管理，不提供 React runtime 或旧版 TS 兼容层。                                                         |
+| 构建            | ESM、固定的项目定制 TS7-Go 原生编译、Vite 8 插件；固定版本由 catalog 管理，不提供 React runtime 或旧版 TS 兼容层。                                                         |
 | 浏览器          | 面向现代 DOM、Proxy、WeakRef/FinalizationRegistry 和 AbortController 环境。CI 使用固定 Playwright 版本的 Chromium、Firefox、WebKit；状态保留移动提供 moveBefore 兼容路径。 |
 | Windows / Linux | Windows 本地与独立包消费、Linux 完整 CI 均有证据。WebKit 自动化不等于实机 Safari 或所有平台输入法验证。                                                                    |
 | 输入法          | 三浏览器组合事件序列已验证；Chromium CDP 编辑管线已覆盖候选、提交、取消、外部更新及 Unicode 选区。协议输入不等于 OS 输入法实测。                                           |
@@ -16,7 +16,7 @@
 
 包的体积和速度没有硬性上限，仍保留资源回收、压力和按需打包观察。验证脚本的运行超时用于发现挂起，不是性能排名或用户负载承诺。
 
-当前 TypeScript 7.1 nightly 的 JSX 命名空间补全回归由项目固定版本的原生 SDK 补丁修复；语言服务设置和补全回归入口见[开发诊断说明](development.md)。普通 npm `typescript` 仍是类型检查和声明构建基线，Babel 编译配合官方检查器；原生后端的 CLI、编辑器与 MCP 使用 `packages/native-<平台>/typescript`，同时提供框架诊断。原生包当前支持 Windows/Linux x64，其他平台未列入本轮分发。
+当前 TypeScript 7.1 nightly 的 JSX 命名空间补全回归由项目固定版本的原生 SDK 补丁修复；语言服务设置和补全回归入口见[开发诊断说明](development.md)。官方 npm TypeScript 只提供固定 API 客户端与标准库；工作区检查、声明、CLI、编辑器和 MCP 均选择 `packages/native-<平台>/typescript`。分发覆盖 Windows/Linux/macOS 的 x64/ARM64 六种组合，实际平台验收以对应提交 CI 为准。
 
 ## 正式设计范围
 
@@ -27,9 +27,9 @@
 - 同步组件 SSR、显式初始化数据、严格 hydration、已有输入保留与显式不匹配重建。
 - 原始 TSX 类型检查、框架诊断、source map、Vite 开发更新、产物与预编译组件库消费。
 
-RC2 通过可选 router/storage 子入口提供路由与浏览器持久化，核心根入口不会主动加载它们。Vue 3.5.43、React 19.3.0、Svelte 5.57.1 的独立页面宿主已有类型、构建、CSR/原生 SSR、开发更新及真实 npm 消费证据，具体约束见 [页面宿主](page-hosts.md)。数据库/鉴权框架、RSC、流式或异步组件 SSR、通用请求缓存、动画系统和 UI 组件库继续由应用组合；任务工作台的数据库与 HTTP 服务属于消费示例。
+可选 router/storage/history 能力位于 zerodep-use，core 根入口不主动加载它们。外部框架适配及宿主演示已删除；数据库、鉴权、流式或异步组件 SSR、通用请求缓存和 UI 组件库由应用组合，任务数据库与 HTTP 服务属于消费示例。
 
-当前 main 的 rc.3 候选已把相同行为迁入 zerodep-use/router 和 zerodep-use/storage，并移除 core 旧子入口；存储数据协议保持兼容。新版本尚未发布，当前消费与验收边界见 [拆包记录](use-extraction.md)。
+当前 main 的 rc.4 候选已把相同行为迁入 zerodep-use/router 和 zerodep-use/storage，并移除 core 旧子入口；存储数据协议保持兼容。新版本尚未发布，当前消费与验收边界见 [拆包记录](use-extraction.md)。
 
 ## 必须遵守的边界
 
@@ -47,4 +47,4 @@ RC2 通过可选 router/storage 子入口提供路由与浏览器持久化，核
 
 1.0.0-rc.2 已通过完整 CI 与七包实际 npm 安装验收，并建立 GitHub 预发布和完整性记录。本机 Windows 输入基本试用有用户反馈，详细范围见 [表单](forms.md)。七包 next 指向 RC2；四个原有包 latest=RC1，三个新宿主包 latest=RC2。使用精确版本，标签名不是稳定版承诺，具体证据见 CHANGELOG。
 
-用户随后批准的应用扩展、直接改名和三宿主已经交付，并要求在收尾执行 [完整性审查](completeness-audit.md)。CSS 接入继续暂停，IndexedDB、组件互用和混合子树 hydration 不在本轮范围。稳定 1.0.0 尚未发布；后续稳定版本遵循对应验收和版本规则，不把 RC 自动改称稳定版。
+历史交付记录保留在 CHANGELOG。当前源码已经收敛到单一定制 TS7-Go 路线，外部框架适配不再维护；稳定 1.0.0 尚未发布，不能把候选自动记为生产验收通过。

@@ -90,36 +90,23 @@ jobs:
           node-version-file: .node-version
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm format:check
-      - run: pnpm check
-      - run: pnpm test
-      - run: pnpm test:stability
       - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           pattern: native-sdk-*
           path: .codex/native-artifacts
           merge-multiple: true
       - run: node scripts/native/artifacts.mjs restore
-      - run: pnpm test:native
+      - run: pnpm format:check
+      - run: pnpm check
+      - run: pnpm test
+      - run: pnpm test:stability
       - run: pnpm lsp:setup
       - run: pnpm lsp:verify
       - run: pnpm lsp:completions
       - run: pnpm exec playwright install --with-deps chromium firefox webkit
       - run: pnpm test:packages
-      - run: pnpm test:native:packages
       - run: pnpm test:dev
-      - run: pnpm test:hosts:dev
-      - run: pnpm test:dev
-        env:
-          ZERODEP_COMPILER: native
-      - run: pnpm test:hosts:dev
-        env:
-          ZERODEP_COMPILER: native
-      - run: pnpm test:hosts:packages
       - run: pnpm test:e2e
-      - run: pnpm test:e2e
-        env:
-          ZERODEP_COMPILER: native
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()
         with:
@@ -162,8 +149,6 @@ jobs:
       - run: node scripts/native/artifacts.mjs restore
       - run: pnpm exec playwright install chromium
       - run: pnpm test:packages
-      - run: pnpm test:hosts:packages
-      - run: pnpm test:native:packages
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: failure()
         with:

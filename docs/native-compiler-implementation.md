@@ -1,5 +1,7 @@
 # 原生编译器实施
 
+RC4 当前路线只保留定制 TS7-Go，Vite 直接使用 `zerodep()`；工作区检查、声明和构建也调用定制 SDK。下文初次双后端性能与宿主验证属于历史证据，不再维护其工具链。现行范围见 [原生工具链收敛](../.design/native-only.md)。
+
 2026-10-06 用户已批准 [.design/native-compiler.md](../.design/native-compiler.md) 的推荐路线及完成后的性能测试。
 
 ## 交付范围
@@ -28,7 +30,7 @@ Node 的 `compile` 是与 Babel 对等的单文件转换入口。`createCompiler
 
 Vite 的原生生产构建默认检查每个请求文件；开发态默认将类型诊断留给原生语言服务，框架诊断仍阻止输出。可以显式设置 `typeCheck: true/false`。三宿主项目同步检查曾使热更新超过原有 5 秒断言，调整开发态检查策略后原断言通过；没有延长超时掩盖问题。项目完整检查使用 `zerodep-tsc --noEmit`。
 
-`zerodep-js-vite` 的两种后端均为可选 peer，并只动态加载所选后端。`zerodep-js-native` 使用官方固定 TS7 JavaScript API 连接项目原生二进制；公开类型不泄漏 TypeScript 内部 API 类型。没有旧版 TS 兼容层，没有 Zod 或 MCP SDK。
+`zerodep-js-vite` 直接依赖原生包并按需创建项目会话。`zerodep-js-native` 使用官方固定 TS7 JavaScript API 连接项目原生二进制；公开类型不泄漏 TypeScript 内部 API 类型。没有旧版 TS 兼容层，没有 Zod 或 MCP SDK。
 
 ## 构建与使用
 
@@ -36,7 +38,7 @@ Vite 的原生生产构建默认检查每个请求文件；开发态默认将类
 pnpm compiler:native:build --source <TypeScript仓库> --go <Go可执行文件> --test
 pnpm compiler:native:build --source <TypeScript仓库> --go <Go可执行文件> --platform linux-x64
 pnpm test:native
-pnpm test:native:packages
+pnpm test:packages
 pnpm benchmark:native --samples 5
 ```
 
@@ -44,7 +46,7 @@ pnpm benchmark:native --samples 5
 
 构建产物在 `packages/native-<平台>/typescript`，可以直接选择为 WebStorm 的 TypeScript 平台 SDK。版本带有 `+zerodep.native.<源码摘要>`，使旧增量缓存随编译器实现变化失效。CLI、Vite API 和项目 LSP 使用相同的二进制实现；它们各自管理进程，不共享单个全局进程。
 
-示例保留默认 Babel 选择。PowerShell 中用 `$env:ZERODEP_COMPILER='native'` 后运行 `pnpm dev` 或 `pnpm build`；普通消费项目设置 `zerodep({ compiler: 'native' })`，安装对应后端。组件库使用原生 CLI 一次输出 JS、声明及两种映射，配置见原生包 README。
+主示例固定原生编译器，直接运行 `pnpm dev` 或 `pnpm build`。消费项目使用 `zerodep()`；组件库使用 `zerodep-tsc` 一次输出 JS、声明及映射。
 
 统一发布清单现在包含十一包；平台包在 Node 原生包之前发布。平台携带 Apache-2.0 的 TypeScript 原文许可证/NOTICE 与 MIT 的框架许可证，并声明二进制 bin，确保从 Windows 打出的 Linux tgz 仍有可执行权限。包使用者无需 Go。
 

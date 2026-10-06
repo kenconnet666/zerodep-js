@@ -12,7 +12,7 @@ export { CompilerSession, createCompiler, type CompilerSessionOptions } from './
 
 let standalone: SyncAPI | undefined;
 
-/** 单文件转换接口，与 Babel compile 进行等价语义/性能比较，不声称完成项目类型检查。 */
+/** 单文件转换与框架诊断；需要项目类型检查时使用 createCompiler。 */
 export function compile(
   source: string,
   filename: string,
