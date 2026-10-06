@@ -51,3 +51,5 @@ gh workflow run release.yml --ref main -f run_id=<原成功CI运行ID>
 实际发布版本、成功运行链接及 registry 验收以 CHANGELOG 和对应 GitHub Release 中的 release.json 为准。配置了流程不等于某次发布已经成功。
 
 2026-10-06，提交 `c140e8e` 的[完整 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/37439243840) 已通过；随后的[发布运行](https://github.com/kenconnet666/zerodep-js/actions/runs/37443207385) 在门禁校验 run ID 时失败，尚未进入 npm 发布。原因是数字正则漏写反斜线，实际成为 `/^d+$/`。修复改用 `/^[0-9]+$/`，并执行工作流原始 JavaScript 验证十种接受和拒绝场景，包括数字 ID、错误分支、外部仓库、PR 事件和失败 CI。恢复时可手动指定上述已通过的运行 ID，继续使用原提交的固定产物，不重新打包候选。
+
+[恢复运行](https://github.com/kenconnet666/zerodep-js/actions/runs/37448439386) 通过门禁后，首次在创建 GitHub 草稿 Release 时遇到 403，仍未进入 npm 上传。任务的 `contents: write` 已生效，但发布目标已不是分支头，且没有现存 tag；GitHub 对特定历史工作流提交的 Release 创建另有 [workflow 权限要求](https://github.blog/changelog/2023-11-02-github-actions-enforcing-workflow-scope-when-creating-a-release/)。已用现有本机授权创建 `v1.0.0-rc.3`，严格指向通过 CI 的 `c140e8eb07067f410b9ceaafe6e91c8864a09fe9`，随后恢复失败任务。没有给 Actions 增加个人凭据或改动候选产物。tag 存在不代表 npm 发布和注册表验收已经完成，仍以运行结果和发布记录为准。
