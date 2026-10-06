@@ -394,5 +394,17 @@ try {
     await new Promise((resolve) => server.close(resolve));
   }
   // mkdtemp 创建且已核对范围的绝对路径；不清理共享 pnpm store 或工作区依赖。
+  const toolsCli = resolve(consumer, 'node_modules/zerodep-js-native/dist/tool-cli.js');
+  if (
+    await access(toolsCli).then(
+      () => true,
+      () => false,
+    )
+  )
+    await exec(process.execPath, [toolsCli, 'stop', '--force'], {
+      cwd: consumer,
+      env,
+      windowsHide: true,
+    });
   await rm(fixture, { recursive: true, force: true });
 }

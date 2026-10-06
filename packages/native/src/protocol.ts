@@ -46,9 +46,14 @@ export interface WorkspaceStats {
   outputCacheHits: number;
   projectChecks: number;
   projectCheckCacheHits: number;
+  idleTimeoutMs: number;
+  cacheTimeoutMs: number;
+  maxIdleProjects: number;
+  idleProjects: number;
 }
 export type WorkspaceRequest =
   | { action: 'info' | 'stats' }
+  | { action: 'stop'; force?: boolean }
   | {
       action: 'compile';
       id: string;

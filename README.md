@@ -4,6 +4,8 @@
 
 当前十一包 **1.0.0-rc.6 已发布到 next**，通过六平台原生验证、并行三浏览器验证与 npm 实际消费。传统编译器及 Vue、React、Svelte 页面宿主已移除，core 保留一份源码和一套产物。历史版本与发布证据见 [CHANGELOG](CHANGELOG.md)，当前工具与共享边界见 [原生工具说明](docs/native-tooling.md)。
 
+主分支新增常驻服务的跨命令复用、noEmit 增量检查和缓存生命周期管理；这部分尚未随 RC6 发布。实测与使用方式见 [常驻原生服务](docs/native-daemon-performance.md)。
+
 ## 工作区
 
 | 子项目              | 职责                                                 |

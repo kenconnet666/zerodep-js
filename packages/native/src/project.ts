@@ -11,6 +11,14 @@ import { dirname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { throwDiagnostics } from './diagnostics.js';
 import { nativeOptions, result } from './output.js';
 import type { CompileOptions, CompileResult } from './types.js';
+import { canonicalPath } from './paths.js';
+import {
+  canonical,
+  changedFiles,
+  dependencyStamps,
+  projectOptions,
+  stamp,
+} from './project-files.js';
 
 export interface CompilerSessionOptions {
   root?: string;
@@ -41,13 +49,15 @@ export class ProjectCompiler {
   private readonly checked = new Set<string>();
   readonly stats = { programsCreated: 0, semanticChecks: 0, outputCacheHits: 0 };
   private readonly configs = new Map<string, ParsedCommandLine>();
+  private stamps = new Map<string, string>();
+  private readonly overlays = new Set<string>();
 
   constructor(
     api: Pick<API, 'parseConfigFile' | 'createSnapshot'>,
     options: CompilerSessionOptions = {},
   ) {
     this.options = options;
-    this.root = resolve(options.root ?? '.');
+    this.root = canonicalPath(options.root ?? '.');
     this.api = api;
   }
 
@@ -56,7 +66,7 @@ export class ProjectCompiler {
     event: 'create' | 'update' | 'delete' = 'update',
     fromWatcher = false,
   ): void {
-    const filename = resolve(file);
+    const filename = canonicalPath(file);
     this.queue = this.queue
       .catch(() => {})
       .then(async () => {
@@ -88,7 +98,8 @@ export class ProjectCompiler {
         )
           return;
         this.changes.add(filename);
-        this.contents.delete(filename);
+        if (!fromWatcher) this.overlays.delete(filename);
+        if (!this.overlays.has(filename)) this.contents.delete(filename);
         if (event === 'delete') this.deleted.add(filename);
         else this.deleted.delete(filename);
         if (event === 'create') this.created.add(filename);
@@ -114,13 +125,25 @@ export class ProjectCompiler {
     if (this.closed) return Promise.reject(new Error('原生编译服务已关闭。'));
     const operation = this.queue
       .catch(() => {})
-      .then(() => this.emit(source, resolve(file), options, check));
+      .then(async () => {
+        const output = await this.emit(source, canonicalPath(file), options, check);
+        return output.map
+          ? { ...output, map: { ...output.map, sources: [resolve(file)] } }
+          : output;
+      })
+      .catch((error) => {
+        // 失败的模块解析不能在修复/安装依赖后继续复用负缓存。
+        this.configChanged = true;
+        this.outputs.clear();
+        this.checked.clear();
+        throw error;
+      });
     this.queue = operation;
     return operation;
   }
 
   private project(filename: string): string | undefined {
-    if (this.options.project) return resolve(this.root, this.options.project);
+    if (this.options.project) return canonicalPath(resolve(this.root, this.options.project));
     let directory = dirname(filename);
     for (;;) {
       const config = resolve(directory, 'tsconfig.json');
@@ -137,8 +160,31 @@ export class ProjectCompiler {
     options: CompileOptions,
     check: boolean,
   ): Promise<CompileResult> {
+    const diskChanges = await changedFiles(this.stamps);
+    for (const changed of diskChanges) {
+      // 比较键忽略 Windows 大小写，提供给 Go 的源码名保留真实路径，保持 HMR 身份稳定。
+      const path =
+        [...this.contents.keys(), ...this.diskContents.keys()].find(
+          (file) => canonical(file) === changed,
+        ) ?? canonicalPath(changed);
+      this.outputs.clear();
+      this.checked.clear();
+      if (/\.[cm]?[jt]sx?$/.test(path)) {
+        this.changes.add(path);
+        if ((await stamp(path)) === 'missing') this.deleted.add(path);
+        else this.deleted.delete(path);
+      } else this.configChanged = true;
+    }
+    for (const [path, config] of this.configs) {
+      if (JSON.stringify(await this.api.parseConfigFile(path)) !== JSON.stringify(config)) {
+        this.configChanged = true;
+        this.outputs.clear();
+        this.checked.clear();
+      }
+    }
     // 显式覆盖旧快照的层；只删本地缓存会让依赖回落到旧的内存文本。
     for (const path of this.changes) {
+      if (this.overlays.has(path)) continue;
       if (this.deleted.has(path)) {
         this.diskContents.delete(path);
         continue;
@@ -174,6 +220,8 @@ export class ProjectCompiler {
       this.files.clear();
       this.roots.clear();
       this.configs.clear();
+      for (const file of this.contents.keys())
+        if (!this.overlays.has(file)) this.contents.delete(file);
       this.configChanged = false;
     }
     let config = configPath ? this.configs.get(configPath) : undefined;
@@ -184,7 +232,7 @@ export class ProjectCompiler {
       this.configs.set(configPath, config);
     }
     const compilerOptions: RawCompilerOptions = {
-      ...config?.options,
+      ...(config ? projectOptions(config.options) : {}),
       ...nativeOptions(options),
       target: config?.options.target ?? nativeOptions(options).target,
       noEmit: false,
@@ -196,8 +244,6 @@ export class ProjectCompiler {
     };
     const rootSet = this.roots.get(key) ?? new Set<string>(config?.fileNames ?? []);
     const known = this.files.get(key);
-    const canonical = (path: string) =>
-      process.platform === 'win32' ? resolve(path).toLowerCase() : resolve(path);
     const addRoot = !known?.has(canonical(filename));
     if (addRoot) rootSet.add(filename);
     this.roots.set(key, rootSet);
@@ -213,6 +259,12 @@ export class ProjectCompiler {
         if (error.code === 'ENOENT') return undefined;
         throw error;
       }));
+    const diskSource = await this.readDisk(filename).catch((error: NodeJS.ErrnoException) => {
+      if (error.code === 'ENOENT') return undefined;
+      throw error;
+    });
+    if (source === diskSource) this.overlays.delete(filename);
+    else this.overlays.add(filename);
     const changed = previousSource !== source;
     if (changed) {
       this.contents.set(filename, source);
@@ -257,7 +309,7 @@ export class ProjectCompiler {
       : this.snapshot!.operation.createdPrograms![0]!;
     if (!id) this.stats.programsCreated++;
     this.programs.set(key, program.id as SyntheticProjectId);
-    if (update)
+    if (update) {
       this.files.set(
         key,
         new Set(
@@ -266,6 +318,11 @@ export class ProjectCompiler {
           ),
         ),
       );
+      this.stamps = await dependencyStamps([
+        ...[...this.files.values()].flatMap((files) => [...files]),
+        ...this.configs.keys(),
+      ]);
+    }
     throwDiagnostics(await program.getSyntacticDiagnostics(filename), filename);
     if (check) {
       this.stats.semanticChecks++;
@@ -307,5 +364,7 @@ export class ProjectCompiler {
     this.files.clear();
     this.roots.clear();
     this.configs.clear();
+    this.stamps.clear();
+    this.overlays.clear();
   }
 }

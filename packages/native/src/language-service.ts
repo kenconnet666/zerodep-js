@@ -227,6 +227,10 @@ export class NativeLanguageService {
     this.closed = true;
     this.stopWatching();
     await this.queue.catch(() => {});
+    const exited = new Promise<void>((done) => {
+      if (this.child.exitCode !== null || this.child.signalCode !== null) done();
+      else this.child.once('exit', () => done());
+    });
     const timer = setTimeout(() => this.child.kill(), 1000);
     try {
       await this.connection.sendRequest('shutdown', null);
@@ -237,6 +241,7 @@ export class NativeLanguageService {
       clearTimeout(timer);
       this.connection.dispose();
       if (this.child.exitCode === null) this.child.kill();
+      await exited;
     }
   }
 }

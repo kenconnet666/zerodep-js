@@ -8,15 +8,19 @@ import {
 import { NativeWorkspace } from './workspace.js';
 import type { WorkspaceRequest, WorkspaceResponse } from './protocol.js';
 import { CompileError } from './types.js';
+import { servicePolicy } from './service-policy.js';
 
 const [root, endpoint] = process.argv.slice(2);
 if (!root || !endpoint) throw new Error('原生服务需要项目目录和本机 IPC 地址。');
 const connections = new Set<Socket>();
+const policy = servicePolicy();
+let requests = 0;
 let workspace: NativeWorkspace | undefined;
 let idle: ReturnType<typeof setTimeout> | undefined;
 let closing = false;
+let stopping = false;
 const server = createServer((stream) => {
-  if (closing) {
+  if (closing || stopping) {
     stream.destroy();
     return;
   }
@@ -31,19 +35,35 @@ const server = createServer((stream) => {
     'workspace',
     async (request: WorkspaceRequest): Promise<WorkspaceResponse> => {
       try {
-        if (!workspace) {
-          workspace = new NativeWorkspace(root);
-          workspace.language.child.once('exit', () => {
-            if (!closing) void close().catch(() => {});
-          });
+        if (closing || stopping) throw new Error('原生服务正在停止。');
+        if (request.action === 'stop') {
+          if (!request.force && (connections.size > 1 || requests > 0))
+            throw new Error('其他客户端或请求正在使用此服务；关闭它们后重试，或显式使用 --force。');
+          // 先确认停止请求；客户端等待此 PID 退出，强制清理也不会丢失回复。
+          stopping = true;
+          setTimeout(() => {
+            void close().catch(() => {});
+          }, 50);
+          return { result: { serverPid: process.pid } };
         }
-        const result = await workspace.execute(owner, request);
-        return {
-          result:
-            request.action === 'stats'
-              ? { ...(result as object), clients: connections.size }
-              : result,
-        };
+        requests++;
+        try {
+          if (!workspace) {
+            workspace = new NativeWorkspace(root);
+            workspace.language.child.once('exit', () => {
+              if (!closing) void close().catch(() => {});
+            });
+          }
+          const result = await workspace.execute(owner, request);
+          return {
+            result:
+              request.action === 'stats'
+                ? { ...(result as object), clients: connections.size }
+                : result,
+          };
+        } finally {
+          requests--;
+        }
       } catch (error) {
         return {
           error: {
@@ -58,11 +78,8 @@ const server = createServer((stream) => {
   stream.on('close', () => {
     connection.dispose();
     connections.delete(stream);
-    void workspace
-      ?.release(owner)
-      .catch(() => {})
-      .finally(scheduleClose);
-    if (!workspace) scheduleClose();
+    void workspace?.release(owner).catch(() => {});
+    scheduleClose();
   });
 });
 
@@ -71,7 +88,7 @@ function scheduleClose(): void {
     clearTimeout(idle);
     idle = setTimeout(() => {
       void close().catch(() => {});
-    }, 1500);
+    }, policy.idleTimeoutMs);
   }
 }
 async function close(): Promise<void> {

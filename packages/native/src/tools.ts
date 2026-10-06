@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import { readFile, writeFile } from 'node:fs/promises';
 import { dirname, isAbsolute, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { setTimeout as delay } from 'node:timers/promises';
 import { WorkspaceClient } from './client.js';
 import { canonicalPath } from './paths.js';
 import type {
@@ -48,6 +49,24 @@ export class NativeTools {
   }
   stats(): Promise<WorkspaceStats> {
     return this.client.request({ action: 'stats' });
+  }
+  async stop(options: { force?: boolean } = {}): Promise<void> {
+    const { serverPid } = await this.client.request<{ serverPid: number }>({
+      action: 'stop',
+      ...options,
+    });
+    await this.client.close();
+    // Windows 中 broker 自己的 cwd 也会锁住目录；收到回复不等于进程已经退出。
+    for (let attempt = 0; attempt < 120; attempt++) {
+      try {
+        process.kill(serverPid, 0);
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code === 'ESRCH') return;
+        throw error;
+      }
+      await delay(50);
+    }
+    throw new Error('原生服务已请求停止，但进程未在期限内退出。');
   }
   check(projects: string[], options: { lint?: boolean } = {}): Promise<CheckResult> {
     return this.client.request({

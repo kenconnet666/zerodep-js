@@ -1,5 +1,11 @@
-import { API, type Diagnostic as NativeDiagnostic, type Snapshot } from 'typescript/unstable/async';
-import { readFile, stat } from 'node:fs/promises';
+import {
+  API,
+  type Diagnostic as NativeDiagnostic,
+  type Snapshot,
+  type ParsedCommandLine,
+  type RawCompilerOptions,
+} from 'typescript/unstable/async';
+import { readFile } from 'node:fs/promises';
 import { dirname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { NativeLanguageService } from './language-service.js';
@@ -12,6 +18,16 @@ import type {
   WorkspaceStats,
 } from './protocol.js';
 import type { Diagnostic } from './types.js';
+import {
+  canonical,
+  changedFiles,
+  dependencyStamps,
+  projectOptions,
+  stamp,
+} from './project-files.js';
+import { servicePolicy } from './service-policy.js';
+import { createBuilder } from './build.js';
+import { CheckCache } from './check-cache.js';
 
 interface CompileLease {
   engine: ProjectCompiler;
@@ -19,6 +35,8 @@ interface CompileLease {
   settings: CompilerSessionOptions;
 }
 interface CheckedProject {
+  config: ParsedCommandLine;
+  compilerOptions: RawCompilerOptions;
   snapshot: Snapshot;
   files: string[];
   configFile: string;
@@ -26,6 +44,10 @@ interface CheckedProject {
   stamps: Map<string, string>;
   pendingChanges: Set<string>;
   checked?: Diagnostic[];
+  checkedAt: number;
+  incremental: boolean;
+  force: boolean;
+  used: number;
 }
 
 export function diagnostic(
@@ -50,11 +72,29 @@ export class NativeWorkspace {
   private readonly shared = new Map<string, ProjectCompiler>();
   private readonly projects = new Map<string, CheckedProject>();
   private projectQueue: Promise<unknown> = Promise.resolve();
+  private readonly policy = servicePolicy();
+  private readonly idleEngines = new Map<ProjectCompiler, number>();
+  private readonly checks = new CheckCache();
+  private readonly sweep: ReturnType<typeof setInterval>;
+  private sweeping = false;
   private projectChecks = 0;
   private projectCheckCacheHits = 0;
 
   constructor(root: string) {
     this.root = root;
+    this.sweep = setInterval(
+      () => {
+        if (this.sweeping) return;
+        this.sweeping = true;
+        void this.trimIdle()
+          .catch(() => {})
+          .finally(() => {
+            this.sweeping = false;
+          });
+      },
+      Math.min(this.policy.cacheTimeoutMs, 30_000),
+    );
+    this.sweep.unref();
     this.language = new NativeLanguageService(root);
     this.api = this.language
       .request<{ pipe: string }>('custom/initializeAPISession', {})
@@ -123,11 +163,13 @@ export class NativeWorkspace {
         const previous = lease;
         const shared = disk === request.source && !lease;
         const key = JSON.stringify(settings);
+        const api = await this.api;
         let engine = shared ? this.shared.get(key) : undefined;
         if (!engine) {
-          engine = new ProjectCompiler(await this.api, settings);
+          engine = new ProjectCompiler(api, settings);
           if (shared) this.shared.set(key, engine);
         }
+        this.idleEngines.delete(engine);
         lease = { engine, shared, settings };
         this.leases.set(id, lease);
         if (previous?.shared) await this.dropShared(previous.engine);
@@ -156,12 +198,7 @@ export class NativeWorkspace {
         if (request.action === 'build') {
           const project = this.path(request.project);
           // 保留 Go 进程和磁盘增量信息；每轮重新读取构建图与输出时间，避免跨轮缓存误判已就绪。
-          const builder = await (
-            await this.api
-          ).createBuildOrchestrator([project], {
-            cwd: this.root,
-            stopBuildOnErrors: true,
-          });
+          const builder = await createBuilder(await this.api, this.root, project);
           try {
             const result = await builder.build();
             return {
@@ -185,12 +222,28 @@ export class NativeWorkspace {
               cached = false;
               this.projectChecks++;
               const program = project.snapshot.operation.createdPrograms![0]!;
-              const items = [
-                ...(await program.getProgramDiagnostics()),
-                ...(await program.getSyntacticDiagnostics()),
-                ...(await program.getSemanticDiagnostics()),
-              ];
+              let items: NativeDiagnostic[];
+              if (project.incremental) {
+                const result = await this.checks.check(
+                  await this.api,
+                  this.root,
+                  project.configFile,
+                  request.lint,
+                  project.force,
+                );
+                items = result.diagnostics ?? [];
+                if (result.status !== 0 && !items.some((item) => item.category === 1))
+                  throw new Error('原生增量检查未完成，状态 ' + result.status);
+              } else {
+                // 引用项目需要各自的输出契约；全局 noEmit/buildInfo 覆盖会破坏 -b 的语义。
+                items = [
+                  ...(await program.getProgramDiagnostics()),
+                  ...(await program.getSyntacticDiagnostics()),
+                  ...(await program.getSemanticDiagnostics()),
+                ];
+              }
               project.checked = items.filter((item) => item.category === 1).map(diagnostic);
+              project.checkedAt = Date.now();
             }
             diagnostics.push(...project.checked);
           }
@@ -226,15 +279,42 @@ export class NativeWorkspace {
   }
 
   private async projectChanges(project: CheckedProject): Promise<string[]> {
-    const changes = [...(await changedFiles(project.stamps)), ...this.unknownChanges(project)];
+    const changes = [
+      ...(await changedFiles(project.stamps)),
+      ...(await this.unknownChanges(project)),
+    ];
     const config = await (await this.api).parseConfigFile(project.configFile);
     if (JSON.stringify(config) !== project.signature) changes.push(project.configFile);
     return changes;
   }
 
-  private unknownChanges(project: CheckedProject): string[] {
-    // 已捕获文件的重复/迟到事件由指纹判定；新文件和包元数据仍需重建模块图。
-    return [...project.pendingChanges].filter((file) => !project.stamps.has(file));
+  private async unknownChanges(project: CheckedProject): Promise<string[]> {
+    const unknown = [...project.pendingChanges].filter((file) => !project.stamps.has(file));
+    if (!unknown.length) return [];
+    // 同目录中的其他项目/被排除文件也会发出通知。重新解析图确认是否加入依赖，
+    // 不把它们当作本次检查期间必然发生了源码变更；根列表另由配置签名校验。
+    const snapshot = await (
+      await this.api
+    ).createSnapshot({
+      ensurePrograms: true,
+      createPrograms: [
+        {
+          rootFiles: project.config.fileNames,
+          compilerOptions: project.compilerOptions,
+          options: { projectReferences: project.config.projectReferences },
+        },
+      ],
+    });
+    try {
+      const program = snapshot.operation.createdPrograms![0]!;
+      const dependencies = [
+        ...(await program.getSourceFileNames()),
+        ...(await program.getConfigFileNames()),
+      ];
+      return dependencies.some((file) => !project.stamps.has(canonical(file))) ? unknown : [];
+    } finally {
+      await snapshot.dispose();
+    }
   }
 
   private async project(name: string, lint?: boolean): Promise<CheckedProject> {
@@ -245,12 +325,35 @@ export class NativeWorkspace {
     if (config.errors.length) throw new Error(config.errors.map((item) => item.text).join('\n'));
     const signature = JSON.stringify(config);
     let project = this.projects.get(key);
+    let force = !project;
     if (project) {
       // 监听事件用于低延迟失效，磁盘指纹与 include 列表用于校验；不能把漏报事件当成干净结果。
-      const changed = [...(await changedFiles(project.stamps)), ...this.unknownChanges(project)];
+      const changed = [
+        ...(await changedFiles(project.stamps)),
+        ...(await this.unknownChanges(project)),
+      ];
       if (changed.length || signature !== project.signature || project.checked?.length) {
         for (const path of changed) this.language.changes.set(path, 'update');
         await this.language.flush();
+        force =
+          signature !== project.signature || changed.some((path) => !/\.[cm]?[jt]sx?$/.test(path));
+        // 恢复旧时间戳或同刻写入时，不能让原生构建器仅按 mtime 判为未改变。
+        if (!force) {
+          for (const path of changed) {
+            const before = project.stamps.get(path)?.split(':')[0];
+            const after = (await stamp(path)).split(':')[0];
+            if (
+              !before ||
+              before === 'missing' ||
+              after === 'missing' ||
+              BigInt(after!) <= BigInt(before) + 1_000_000n ||
+              BigInt(after!) <= BigInt(project.checkedAt + 1) * 1_000_000n
+            ) {
+              force = true;
+              break;
+            }
+          }
+        }
         this.projects.delete(key);
         await project.snapshot.dispose();
         project = undefined;
@@ -258,7 +361,7 @@ export class NativeWorkspace {
     }
     if (!project) {
       const compilerOptions = {
-        ...config.options,
+        ...projectOptions(config.options),
         ...(lint === undefined ? {} : { zerodepLint: lint }),
       };
       const snapshot = await api.createSnapshot({
@@ -279,28 +382,19 @@ export class NativeWorkspace {
           ...(await program.getConfigFileNames()),
         ].map(canonical),
       );
-      // node_modules 的包声明可以影响 exports/imports 解析；不依赖被排除目录的监听事件。
-      const directories = new Set<string>();
-      for (const path of dependencies) {
-        for (let directory = dirname(path); ; directory = dirname(directory)) {
-          if (directories.has(directory)) break;
-          directories.add(directory);
-          if (dirname(directory) === directory) break;
-        }
-      }
-      for (const directory of directories) dependencies.add(resolve(directory, 'package.json'));
-      dependencies.add(canonical(resolve(this.root, 'pnpm-lock.yaml')));
       project = {
+        config,
+        compilerOptions,
         snapshot,
         files: config.fileNames.filter((file) => !file.endsWith('.d.ts')),
         configFile: file,
         pendingChanges: new Set(),
         signature,
-        stamps: new Map(
-          await Promise.all(
-            [...dependencies].map(async (path) => [path, await stamp(path)] as const),
-          ),
-        ),
+        stamps: await dependencyStamps(dependencies),
+        incremental: !config.projectReferences?.length,
+        force,
+        used: Date.now(),
+        checkedAt: 0,
       };
       this.projects.set(key, project);
       if (this.projects.size > 16) {
@@ -310,6 +404,9 @@ export class NativeWorkspace {
         await expired.snapshot.dispose();
       }
     }
+    project.used = Date.now();
+    this.projects.delete(key);
+    this.projects.set(key, project);
     return project;
   }
 
@@ -328,6 +425,8 @@ export class NativeWorkspace {
         this.projects.size,
       semanticChecks: [...engines].reduce((sum, engine) => sum + engine.stats.semanticChecks, 0),
       outputCacheHits: [...engines].reduce((sum, engine) => sum + engine.stats.outputCacheHits, 0),
+      ...this.policy,
+      idleProjects: this.idleEngines.size,
       projectChecks: this.projectChecks,
       projectCheckCacheHits: this.projectCheckCacheHits,
     };
@@ -341,48 +440,59 @@ export class NativeWorkspace {
   }
   private async dropShared(engine: ProjectCompiler): Promise<void> {
     if ([...this.leases.values()].some((lease) => lease.engine === engine)) return;
-    for (const [key, current] of this.shared) if (current === engine) this.shared.delete(key);
-    await engine.close();
+    this.idleEngines.delete(engine);
+    this.idleEngines.set(engine, Date.now());
+    await this.trimEngines();
+  }
+  private async trimEngines(): Promise<void> {
+    for (const [engine, used] of this.idleEngines) {
+      if (
+        this.idleEngines.size <= this.policy.maxIdleProjects &&
+        Date.now() - used < this.policy.cacheTimeoutMs
+      )
+        break;
+      this.idleEngines.delete(engine);
+      for (const [key, current] of this.shared) if (current === engine) this.shared.delete(key);
+      await engine.close();
+    }
+  }
+  private async trimIdle(): Promise<void> {
+    await this.trimEngines();
+    const run = this.projectQueue
+      .catch(() => {})
+      .then(async () => {
+        for (const [key, project] of this.projects) {
+          if (Date.now() - project.used < this.policy.cacheTimeoutMs) continue;
+          this.projects.delete(key);
+          await project.snapshot.dispose();
+        }
+      });
+    this.projectQueue = run;
+    await run;
   }
   async release(owner: string): Promise<void> {
     for (const id of [...this.leases.keys()])
       if (id.startsWith(owner + ':')) await this.releaseCompile(id);
   }
   async close(): Promise<void> {
+    clearInterval(this.sweep);
     await this.projectQueue.catch(() => {});
-    for (const engine of new Set([
+    const engines = new Set([
       ...this.shared.values(),
       ...[...this.leases.values()].map((item) => item.engine),
-    ]))
-      await engine.close();
-    for (const project of this.projects.values()) await project.snapshot.dispose();
+    ]);
     try {
-      await (await this.api).close();
+      await Promise.allSettled([
+        ...[...engines].map((engine) => engine.close()),
+        ...[...this.projects.values()].map((project) => project.snapshot.dispose()),
+      ]);
     } finally {
-      await this.language.close();
+      try {
+        await this.checks.close();
+        await (await this.api).close();
+      } finally {
+        await this.language.close();
+      }
     }
   }
-}
-
-function canonical(file: string): string {
-  return process.platform === 'win32' ? resolve(file).toLowerCase() : resolve(file);
-}
-
-async function stamp(file: string): Promise<string> {
-  try {
-    const info = await stat(file, { bigint: true });
-    return `${info.mtimeNs}:${info.ctimeNs}:${info.size}:${info.ino}`;
-  } catch (error) {
-    if (['ENOENT', 'ENOTDIR'].includes((error as NodeJS.ErrnoException).code ?? ''))
-      return 'missing';
-    throw error;
-  }
-}
-async function changedFiles(stamps: Map<string, string>): Promise<string[]> {
-  const current = await Promise.all(
-    [...stamps].map(async ([file, previous]) =>
-      (await stamp(file)) === previous ? undefined : file,
-    ),
-  );
-  return current.filter((file): file is string => file !== undefined);
 }

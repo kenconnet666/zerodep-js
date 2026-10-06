@@ -13,6 +13,7 @@ import {
 } from 'vscode-jsonrpc/node';
 import { compilerPath } from './binary.js';
 import { CompileError } from './types.js';
+import { servicePolicy } from './service-policy.js';
 import type { WorkspaceRequest, WorkspaceResponse } from './protocol.js';
 
 export function workspaceRoot(directory: string): string {
@@ -36,6 +37,7 @@ export function serviceAddress(root: string): { endpoint: string; server: string
   );
   hash.update(readFileSync(resolve(dirname(compilerPath()), '../zerodep-build.json')));
   hash.update(readFileSync(resolve(dist, '../package.json')));
+  hash.update(JSON.stringify(servicePolicy()));
   for (const name of readdirSync(dist)
     .filter((name) => name.endsWith('.js'))
     .sort())
