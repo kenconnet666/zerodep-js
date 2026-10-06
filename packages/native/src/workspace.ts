@@ -1,9 +1,4 @@
-import {
-  API,
-  type BuildOrchestrator,
-  type Diagnostic as NativeDiagnostic,
-  type Snapshot,
-} from 'typescript/unstable/async';
+import { API, type Diagnostic as NativeDiagnostic, type Snapshot } from 'typescript/unstable/async';
 import { readFile, stat } from 'node:fs/promises';
 import { dirname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -26,12 +21,10 @@ interface CompileLease {
 interface CheckedProject {
   snapshot: Snapshot;
   files: string[];
-  directory: string;
-  dependencies: Set<string>;
+  configFile: string;
   signature: string;
   stamps: Map<string, string>;
-  dirty: boolean;
-  invalidatedBy: Set<string>;
+  pendingChanges: Set<string>;
   checked?: Diagnostic[];
 }
 
@@ -56,8 +49,6 @@ export class NativeWorkspace {
   private readonly leases = new Map<string, CompileLease>();
   private readonly shared = new Map<string, ProjectCompiler>();
   private readonly projects = new Map<string, CheckedProject>();
-  private readonly builders = new Map<string, BuildOrchestrator>();
-  private readonly changed = new Set<string>();
   private projectQueue: Promise<unknown> = Promise.resolve();
   private projectChecks = 0;
   private projectCheckCacheHits = 0;
@@ -71,12 +62,15 @@ export class NativeWorkspace {
     void this.api.catch(() => {});
     this.language.onChanges = (changes) => {
       for (const [file, event] of changes) {
-        this.changed.add(file);
-        for (const project of this.projects.values())
-          if (this.affects(project, file)) {
-            project.dirty = true;
-            project.invalidatedBy.add(file);
-          }
+        for (const project of this.projects.values()) {
+          const path = relative(dirname(project.configFile), file);
+          if (
+            (!isAbsolute(path) && path !== '..' && !path.startsWith('..' + sep)) ||
+            file.endsWith('package.json') ||
+            file.endsWith('pnpm-lock.yaml')
+          )
+            project.pendingChanges.add(canonical(file));
+        }
         for (const engine of new Set([
           ...this.shared.values(),
           ...[...this.leases.values()].map((item) => item.engine),
@@ -160,22 +154,25 @@ export class NativeWorkspace {
     const run = this.projectQueue
       .catch(() => {})
       .then(async () => {
-        await this.refreshProjects();
         if (request.action === 'build') {
           const project = this.path(request.project);
-          let builder = this.builders.get(project);
-          if (!builder) {
-            builder = await (
-              await this.api
-            ).createBuildOrchestrator([project], { cwd: this.root, stopBuildOnErrors: true });
-            this.builders.set(project, builder);
+          // 保留 Go 进程和磁盘增量信息；每轮重新读取构建图与输出时间，避免跨轮缓存误判已就绪。
+          const builder = await (
+            await this.api
+          ).createBuildOrchestrator([project], {
+            cwd: this.root,
+            stopBuildOnErrors: true,
+          });
+          try {
+            const result = await builder.build();
+            return {
+              status: result.status,
+              diagnostics: (result.diagnostics ?? []).map(diagnostic),
+              statistics: result.statistics,
+            };
+          } finally {
+            await builder.dispose();
           }
-          const result = await builder.build();
-          return {
-            status: result.status,
-            diagnostics: (result.diagnostics ?? []).map(diagnostic),
-            statistics: result.statistics,
-          };
         }
         if (request.action === 'check') {
           const selected: CheckedProject[] = [];
@@ -199,18 +196,16 @@ export class NativeWorkspace {
             diagnostics.push(...project.checked);
           }
           await this.language.flush();
-          for (const project of selected) {
-            for (const file of await changedFiles(project.stamps)) {
-              project.dirty = true;
-              project.invalidatedBy.add(file);
-            }
-          }
-          const changes = [...new Set(selected.flatMap((project) => [...project.invalidatedBy]))];
+          const changes = [
+            ...new Set(
+              (await Promise.all(selected.map((project) => this.projectChanges(project)))).flat(),
+            ),
+          ];
           return {
             diagnostics,
             projects: request.projects.length,
             cached,
-            complete: selected.every((project) => !project.dirty),
+            complete: changes.length === 0,
             ...(changes.length ? { changedFiles: changes } : {}),
           } satisfies CheckResult;
         }
@@ -231,25 +226,16 @@ export class NativeWorkspace {
     return run;
   }
 
-  private async refreshProjects(): Promise<void> {
-    if (!this.changed.size) return;
-    this.changed.clear();
-    for (const [key, project] of this.projects)
-      if (project.dirty) {
-        this.projects.delete(key);
-        await project.snapshot.dispose();
-      }
+  private async projectChanges(project: CheckedProject): Promise<string[]> {
+    const changes = [...(await changedFiles(project.stamps)), ...this.unknownChanges(project)];
+    const config = await (await this.api).parseConfigFile(project.configFile);
+    if (JSON.stringify(config) !== project.signature) changes.push(project.configFile);
+    return changes;
   }
 
-  private affects(project: CheckedProject, file: string): boolean {
-    const path = relative(project.directory, file);
-    const canonical = process.platform === 'win32' ? resolve(file).toLowerCase() : resolve(file);
-    return (
-      (!isAbsolute(path) && path !== '..' && !path.startsWith('..' + sep)) ||
-      project.dependencies.has(canonical) ||
-      file.endsWith('package.json') ||
-      file.endsWith('pnpm-lock.yaml')
-    );
+  private unknownChanges(project: CheckedProject): string[] {
+    // 已捕获文件的重复/迟到事件由指纹判定；新文件和包元数据仍需重建模块图。
+    return [...project.pendingChanges].filter((file) => !project.stamps.has(file));
   }
 
   private async project(name: string, lint?: boolean): Promise<CheckedProject> {
@@ -262,14 +248,14 @@ export class NativeWorkspace {
     let project = this.projects.get(key);
     if (project) {
       // 监听事件用于低延迟失效，磁盘指纹与 include 列表用于校验；不能把漏报事件当成干净结果。
-      const changed = await changedFiles(project.stamps);
-      if (project.dirty || changed.length || signature !== project.signature) {
+      const changed = [...(await changedFiles(project.stamps)), ...this.unknownChanges(project)];
+      if (changed.length || signature !== project.signature || project.checked?.length) {
         for (const path of changed) this.language.changes.set(path, 'update');
         await this.language.flush();
         this.projects.delete(key);
         await project.snapshot.dispose();
         project = undefined;
-      }
+      } else project.pendingChanges.clear();
     }
     if (!project) {
       const compilerOptions = {
@@ -292,23 +278,30 @@ export class NativeWorkspace {
           file,
           ...(await program.getSourceFileNames()),
           ...(await program.getConfigFileNames()),
-        ].map((path) =>
-          process.platform === 'win32' ? resolve(path).toLowerCase() : resolve(path),
-        ),
+        ].map(canonical),
       );
+      // node_modules 的包声明可以影响 exports/imports 解析；不依赖被排除目录的监听事件。
+      const directories = new Set<string>();
+      for (const path of dependencies) {
+        for (let directory = dirname(path); ; directory = dirname(directory)) {
+          if (directories.has(directory)) break;
+          directories.add(directory);
+          if (dirname(directory) === directory) break;
+        }
+      }
+      for (const directory of directories) dependencies.add(resolve(directory, 'package.json'));
+      dependencies.add(canonical(resolve(this.root, 'pnpm-lock.yaml')));
       project = {
         snapshot,
         files: config.fileNames.filter((file) => !file.endsWith('.d.ts')),
-        directory: dirname(file),
-        dependencies,
+        configFile: file,
+        pendingChanges: new Set(),
         signature,
         stamps: new Map(
           await Promise.all(
             [...dependencies].map(async (path) => [path, await stamp(path)] as const),
           ),
         ),
-        dirty: false,
-        invalidatedBy: new Set(),
       };
       this.projects.set(key, project);
       if (this.projects.size > 16) {
@@ -364,13 +357,16 @@ export class NativeWorkspace {
     ]))
       await engine.close();
     for (const project of this.projects.values()) await project.snapshot.dispose();
-    for (const builder of this.builders.values()) await builder.dispose();
     try {
       await (await this.api).close();
     } finally {
       await this.language.close();
     }
   }
+}
+
+function canonical(file: string): string {
+  return process.platform === 'win32' ? resolve(file).toLowerCase() : resolve(file);
 }
 
 async function stamp(file: string): Promise<string> {

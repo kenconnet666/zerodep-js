@@ -82,7 +82,12 @@ it('磁盘修改、增加根文件和删除依赖目录不会命中旧检查结�
     );
     expect((await tools.check(['tsconfig.json'])).diagnostics).toEqual([]);
     expect((await tools.check(['tsconfig.json'])).cached).toBe(true);
+    const notification = createCompiler({ root });
+    notification.invalidate(file);
+    await notification.close();
+    expect((await tools.check(['tsconfig.json'])).cached).toBe(true);
     expect((await tools.build('tsconfig.json')).status).toBe(0);
+    expect((await tools.build('tsconfig.json')).statistics).toMatchObject({ ProjectsBuilt: 0 });
     await writeFile(
       file,
       "import {value} from './dependency/value.js'; export const entry:string=value;",
@@ -107,6 +112,42 @@ it('磁盘修改、增加根文件和删除依赖目录不会命中旧检查结�
     );
     await mkdir(dependency);
     await writeFile(resolve(dependency, 'value.ts'), 'export const value=2;');
+    expect((await tools.check(['tsconfig.json'])).diagnostics).toEqual([]);
+  } finally {
+    await tools.close();
+    await cleanup(root);
+  }
+}, 60000);
+
+it('包 imports 改变会重建缓存的模块解析结果', async () => {
+  const root = await fixture();
+  const tools = new NativeTools(root);
+  const manifest = resolve(root, 'package.json');
+  const save = (target: string) =>
+    writeFile(
+      manifest,
+      JSON.stringify({
+        name: 'native-tooling-fixture',
+        private: true,
+        type: 'module',
+        imports: { '#value': target },
+      }),
+    );
+  try {
+    await writeFile(resolve(root, 'number.ts'), 'export const value=1;');
+    await writeFile(resolve(root, 'text.ts'), 'export const value="changed";');
+    await writeFile(
+      resolve(root, 'entry.ts'),
+      "import {value} from '#value'; export const entry:number=value;",
+    );
+    await save('./number.ts');
+    expect((await tools.check(['tsconfig.json'])).diagnostics).toEqual([]);
+    expect((await tools.check(['tsconfig.json'])).cached).toBe(true);
+    await save('./text.ts');
+    expect((await tools.check(['tsconfig.json'])).diagnostics.map((item) => item.code)).toContain(
+      'TS2322',
+    );
+    await save('./number.ts');
     expect((await tools.check(['tsconfig.json'])).diagnostics).toEqual([]);
   } finally {
     await tools.close();
