@@ -41,8 +41,8 @@
     "release:promote": "node --use-env-proxy scripts/release.mjs promote",
     "test:stability": "pnpm build:packages && node --expose-gc scripts/verify-stability.mjs",
     "browsers:install": "playwright install chromium firefox webkit",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "format": "node scripts/format.mjs --write .",
+    "format:check": "node scripts/format.mjs --check .",
     "native:generate": "node scripts/generate-native.mjs",
     "native:check": "node scripts/generate-native.mjs --check",
     "lsp:setup": "node scripts/language-services/setup.mjs",
@@ -55,6 +55,7 @@
     "test:native": "pnpm --filter zerodep-js-native build && vitest run --config vitest.native.config.ts"
   },
   "devDependencies": {
+    "@prettier/plugin-oxc": "catalog:",
     "@babel/cli": "catalog:",
     "@babel/core": "catalog:",
     "@babel/generator": "catalog:",

@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-06",
+  "platform": "win32-x64",
+  "node": "v24.18.0",
+  "prettier": "3.9.9",
+  "pluginOxc": "0.2.3",
+  "input": "198 tracked TS/TSX files from packages/apps/tests before the formatter regression test was added",
+  "method": "Three fresh CLI processes per configuration. Wall time includes Node startup. Identical output verified. Native parallel uses the official experimental CLI with cache disabled. Cached samples include initial population followed by two unchanged runs. Desktop machine, not an isolated benchmark host.",
+  "milliseconds": {
+    "prettier": [5688.2, 5597.7, 5693.9],
+    "nativeParser": [4975.4, 5080, 4969.3],
+    "nativeParserParallel": [2817.8, 3575.3, 2845.5],
+    "nativeParserCached": [2739.1, 772.9, 795.8]
+  },
+  "alternative": {
+    "tool": "oxfmt",
+    "version": "0.72.0",
+    "milliseconds": [452, 470.2, 458.1],
+    "differentFiles": 5,
+    "note": "Not selected for the current WebStorm Prettier integration; differences were line wrapping with equal normalized ASTs. These numbers do not describe the delivered Prettier configuration."
+  },
+  "delivered": {
+    "cli": "stable Prettier CLI, native Oxc parser, content cache keyed by pnpm lock hash",
+    "files": 198,
+    "milliseconds": {
+      "nativeCold": [5135.2, 5153.3, 5173],
+      "nativeCached": [5437.6, 2671.3, 2661.2]
+    }
+  },
+  "rejectedExperimentalCli": "Not used: Windows exit 3221225477 (0xC0000005) occurred with native parser in parallel worker teardown. Experimental samples above are not delivery claims."
+}

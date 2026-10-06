@@ -7,8 +7,8 @@
 当前分发平台：Windows、Linux、macOS 的 x64/ARM64 六种组合，由对应架构 CI runner 构建和执行验证。安装者无需 Go；维护者使用 Go 1.27.1 构建平台包。依赖官方精确版本的 TypeScript JavaScript API，不依赖 Babel、Zod 或 MCP SDK。
 
 ```sh
-pnpm add zerodep-js
-pnpm add -D zerodep-js-native zerodep-js-vite vite typescript@7.1.0-dev.20261005.1
+pnpm add zerodep-js@next
+pnpm add -D zerodep-js-native@next zerodep-js-vite@next vite typescript@7.1.0-dev.20261005.1
 pnpm exec zerodep-tsc -p tsconfig.json
 ```
 

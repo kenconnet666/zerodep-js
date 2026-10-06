@@ -114,7 +114,7 @@ ${entries(events)
   .join('\n')}
 }
 `,
-  { ...config, parser: 'typescript' },
+  { ...config, parser: 'oxc-ts' },
 );
 
 const notices = await format(
