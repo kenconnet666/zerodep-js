@@ -1,5 +1,7 @@
 # 类型检查热点深入研究
 
+后续已针对空 TSX 定位到具体声明，并验证原生增量和常驻服务路径，见[空 TSX 性能研究](empty-tsx-performance.md)及[后台服务实测](native-daemon-performance.md)。
+
 2026-10-07，延续 [RC6 初测](native-performance-rc6.md)。本次在主目录进行声明隔离实验，并从固定 TypeScript 提交及现有框架补丁构建临时 SDK。正式编译器源码、类型声明、SDK 和编译配置均未改变；没有创建工作树。所有原始样本、退出码、最小复现、SDK 摘要见 [研究数据](../reports/typecheck-investigation.json)。
 
 ## 结论与当前边界
