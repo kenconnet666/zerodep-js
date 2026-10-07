@@ -50,6 +50,148 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
+it.each(['key', 'read', 'storage', 'getItem', 'migrate', 'validate', 'write'])(
+  '%s 回调中停止后，恢复流程不再调用后续用户接口',
+  (phase) => {
+    const storage = new MemoryStorage();
+    const target = new EventTarget();
+    const add = vi.spyOn(target, 'addEventListener');
+    const remove = vi.spyOn(target, 'removeEventListener');
+    storage.data.set('prefs', saved(1));
+    let handle!: Persistence;
+    let armed = false;
+    const calls: string[] = [];
+    const visit = (name: string) => {
+      if (!armed) return;
+      calls.push(name);
+      if (phase === name) handle.stop();
+    };
+    class ObservedStorage extends MemoryStorage {
+      override getItem(key: string) {
+        visit('getItem');
+        return storage.getItem(key);
+      }
+    }
+    const observed = new ObservedStorage();
+    handle = owned(() =>
+      _persistLocal(
+        () => {
+          visit('key');
+          return 'prefs';
+        },
+        {
+          read() {
+            visit('read');
+            return 0;
+          },
+          write() {
+            visit('write');
+          },
+        },
+        {
+          window: target as Window,
+          storage: () => {
+            visit('storage');
+            return observed;
+          },
+          version: 2,
+          migrate(data) {
+            visit('migrate');
+            return data;
+          },
+          validate(data) {
+            visit('validate');
+            return data as number;
+          },
+        },
+      ),
+    ).result;
+    armed = true;
+    _flushSync();
+    expect(handle.status).toBe('stopped');
+    expect(calls.at(-1)).toBe(phase);
+    expect(handle.error).toBeUndefined();
+    expect(observed.writes).toBe(0);
+    expect(handle.retry()).toBe(false);
+    expect(handle.reset()).toBe(false);
+    for (const [index, added] of add.mock.calls.entries())
+      expect(
+        remove.mock.calls.some(
+          (removed, at) =>
+            removed[0] === added[0] &&
+            removed[1] === added[1] &&
+            remove.mock.invocationCallOrder[at]! > add.mock.invocationCallOrder[index]!,
+        ),
+      ).toBe(true);
+  },
+);
+
+it('错误回调中 stop 不再次提交失败写入，也不替换原错误', () => {
+  const storage = new MemoryStorage();
+  const model = reactive(0);
+  let handle!: Persistence;
+  const onError = vi.fn(() => handle.stop());
+  handle = owned(() => _persistLocal('prefs', model, { storage, onError })).result;
+  _flushSync();
+  const write = vi.spyOn(storage, 'setItem');
+  storage.failWrite = true;
+  model.write(1);
+  expect(handle.flush()).toBe(false);
+  expect(handle.status).toBe('stopped');
+  expect(String(handle.error)).toContain('空间不足');
+  expect(write).toHaveBeenCalledTimes(1);
+  expect(onError).toHaveBeenCalledTimes(1);
+});
+
+it('停止时最终提交允许存储再次调用 stop，不递归提交或残留定时器', () => {
+  vi.useFakeTimers();
+  let handle!: Persistence;
+  class StoppingStorage extends MemoryStorage {
+    override setItem(key: string, value: string) {
+      handle.stop();
+      super.setItem(key, value);
+    }
+  }
+  const storage = new StoppingStorage();
+  const model = reactive(0);
+  handle = owned(() => _persistLocal('prefs', model, { storage, writeDelay: 100 })).result;
+  _flushSync();
+  model.write(1);
+  _flushSync();
+  handle.stop();
+  expect(handle.status).toBe('stopped');
+  expect(storage.writes).toBe(1);
+  expect(value(storage)).toBe(1);
+  vi.runAllTimers();
+  expect(storage.writes).toBe(1);
+});
+
+it('reset 的 write 回调停止时不再执行最终提交或持久化重置值', () => {
+  const storage = new MemoryStorage();
+  const model = reactive(0);
+  let handle!: Persistence;
+  let armed = false;
+  handle = owned(() =>
+    _persistLocal(
+      'prefs',
+      {
+        read: () => model.read(),
+        write(next) {
+          if (armed) handle.stop();
+          model.write(next);
+        },
+      },
+      { storage },
+    ),
+  ).result;
+  _flushSync();
+  armed = true;
+  expect(handle.reset()).toBe(false);
+  expect(handle.status).toBe('stopped');
+  expect(handle.error).toBeUndefined();
+  expect(storage.writes).toBe(0);
+});
+
 it('先恢复已有值并替换根对象，深层编辑按批次写入', () => {
   const storage = new MemoryStorage();
   storage.data.set('prefs', saved({ nested: { n: 3 }, extra: true }));

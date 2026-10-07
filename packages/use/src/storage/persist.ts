@@ -64,18 +64,36 @@ function persist<T>(
   _getAbortSignal(); // 提前确认所有权，避免在事件或模块顶层留下无主监听。
   if (!binding || typeof binding.read !== 'function' || typeof binding.write !== 'function')
     throw new TypeError('持久化需要明确的 read/write 绑定。');
-  const initial = _untrack(() => _snapshot(binding.read()));
+  let stopped = false;
+  let stopping = false;
+  let callbackDepth = 0;
+  const stoppedOperation = Symbol('stopped persistence');
+  // 自定义接口可以同步卸载组件；返回后必须终止外层操作，不能重新连接或继续写入。
+  const call = <V>(callback: () => V): V => {
+    if (stopped) throw stoppedOperation;
+    callbackDepth++;
+    try {
+      const value = callback();
+      if (stopped) throw stoppedOperation;
+      return value;
+    } finally {
+      callbackDepth--;
+    }
+  };
+  const read = () => call(() => synchronous(binding.read()));
+  const write = (value: T) => call(() => synchronous(binding.write(value)));
+  const initial = _untrack(() => call(() => _snapshot(read())));
   const version = options.version ?? 1;
   const delay = options.writeDelay ?? 0;
   if (!Number.isSafeInteger(version) || version < 1 || !Number.isFinite(delay) || delay < 0)
     throw new TypeError('version 必须为正整数，writeDelay 必须为非负有限数值。');
   const encode = (value: T): string => {
-    const data = JSON.stringify(value);
+    const data = call(() => JSON.stringify(value));
     if (data === undefined) throw new TypeError('持久化数据必须可以编码为 JSON。');
     return data;
   };
   const readKey = () => {
-    const value = typeof key === 'function' ? key() : key;
+    const value = call(() => (typeof key === 'function' ? key() : key));
     if (typeof value !== 'string') throw new TypeError('存储键必须是字符串。');
     return value;
   };
@@ -96,7 +114,6 @@ function persist<T>(
   let pending: { key: string; text: string } | undefined;
   let timer: ReturnType<typeof setTimeout> | undefined;
   let paused = false;
-  let stopped = false;
   let first = true;
   let rewrite = false;
   let processing = false;
@@ -119,14 +136,16 @@ function persist<T>(
     }
   }
   function fail(error: unknown, ready = state.ready) {
+    if (stopped || error === stoppedOperation) return;
     if (error === undefined) error = new Error('存储操作抛出了 undefined。');
     publish(ready, error);
     if (reporting) return;
     reporting = true;
     try {
-      _untrack(() => options.onError?.(error));
+      _untrack(() => call(() => options.onError?.(error)));
     } catch (callbackError) {
-      publish(ready, new AggregateError([error, callbackError], '存储与错误回调均失败。'));
+      if (!stopped)
+        publish(ready, new AggregateError([error, callbackError], '存储与错误回调均失败。'));
     } finally {
       reporting = false;
     }
@@ -142,7 +161,7 @@ function persist<T>(
     if (!storage) return false;
     try {
       const value = raw(next.text);
-      storage.setItem(next.key, value);
+      call(() => storage!.setItem(next.key, value));
       if (next.key === activeKey) {
         saved = next.text;
         rewrite = false;
@@ -195,10 +214,10 @@ function persist<T>(
     if (previous > version) throw new Error('保存的数据版本比当前应用更新，不能覆盖。');
     if (previous !== version) {
       if (!options.migrate) throw new Error(`存储版本 ${previous} 需要迁移到 ${version}。`);
-      data = synchronous(options.migrate(data, previous));
+      data = call(() => synchronous(options.migrate!(data, previous)));
     }
-    const value = synchronous(options.validate ? options.validate(data) : (data as T));
-    return { value: _snapshot(value), migrated: previous !== version };
+    const value = call(() => synchronous(options.validate ? options.validate(data) : (data as T)));
+    return { value: call(() => _snapshot(value)), migrated: previous !== version };
   }
   function restore(value: string | null, preserveEdits = false): boolean {
     pending = undefined;
@@ -207,8 +226,8 @@ function persist<T>(
       const loaded =
         value === null ? { value: _snapshot(initial), migrated: false } : decode(value);
       const baseline = encode(loaded.value);
-      if (!preserveEdits) synchronous(binding.write(loaded.value));
-      saved = preserveEdits ? baseline : encode(binding.read());
+      if (!preserveEdits) write(loaded.value);
+      saved = preserveEdits ? baseline : encode(read());
       rewrite = loaded.migrated;
       publish(true);
       return true;
@@ -222,7 +241,7 @@ function persist<T>(
       return;
     _untrack(() => {
       try {
-        restore(changed === null ? storage!.getItem(activeKey!) : value);
+        restore(changed === null ? call(() => storage!.getItem(activeKey!)) : value);
       } catch (error) {
         fail(error);
       }
@@ -233,10 +252,11 @@ function persist<T>(
     if (storage) return true;
     try {
       target = options.window ?? (typeof window === 'undefined' ? undefined : window);
-      storage =
+      storage = call(() =>
         typeof options.storage === 'function'
           ? options.storage()
-          : (options.storage ?? target?.[kind]);
+          : (options.storage ?? target?.[kind]),
+      );
       if (!storage) throw new Error(`${kind} 在当前环境不可用。`);
       subscription = storageSubscription(storage, target, receive);
       target?.addEventListener('pagehide', pagehide);
@@ -254,7 +274,7 @@ function persist<T>(
     processing = true;
     try {
       const nextKey = readKey();
-      const text = encode(binding.read());
+      const text = encode(read());
       // 暂停期间仍收集读取，恢复后不会丢失字段或动态键的订阅。
       if (paused || !connect()) return false;
       if (activeKey !== nextKey) {
@@ -264,9 +284,15 @@ function persist<T>(
         publish(false);
         const preserve = first && initialText !== text;
         first = false;
-        if (!restore(storage!.getItem(nextKey), preserve)) return false;
+        if (
+          !restore(
+            call(() => storage!.getItem(nextKey)),
+            preserve,
+          )
+        )
+          return false;
       }
-      return state.ready && queue(encode(binding.read()), schedule);
+      return state.ready && queue(encode(read()), schedule);
     } catch (error) {
       fail(error);
       return false;
@@ -297,11 +323,11 @@ function persist<T>(
           const nextKey = readKey();
           if (nextKey !== activeKey && !flushPending()) return false;
           activeKey = nextKey;
-          synchronous(binding.write(_snapshot(initial)));
+          write(_snapshot(initial));
           publish(true);
           rewrite = true;
           if (paused) return true;
-          queue(encode(binding.read()), false);
+          queue(encode(read()), false);
           return flushPending();
         } catch (error) {
           fail(error);
@@ -317,7 +343,7 @@ function persist<T>(
           cancelTimer();
           pending = undefined;
           activeKey = nextKey;
-          storage!.removeItem(activeKey);
+          call(() => storage!.removeItem(activeKey!));
           restore(null);
           subscription?.notify(activeKey, null);
           return state.ready;
@@ -334,7 +360,10 @@ function persist<T>(
         try {
           activeKey = readKey();
           if (
-            !restore(storage!.getItem(activeKey), encode(binding.read()) !== (saved ?? initialText))
+            !restore(
+              call(() => storage!.getItem(activeKey!)),
+              encode(read()) !== (saved ?? initialText),
+            )
           )
             return false;
           first = false;
@@ -361,9 +390,9 @@ function persist<T>(
             storage &&
             !rewrite &&
             readKey() === activeKey &&
-            encode(binding.read()) === saved
+            encode(read()) === saved
           )
-            restore(storage.getItem(activeKey!));
+            restore(call(() => storage!.getItem(activeKey!)));
           publish(state.ready, state.error);
           process();
         } catch (error) {
@@ -372,9 +401,11 @@ function persist<T>(
       });
     },
     stop() {
-      if (stopped) return;
+      if (stopped || stopping) return;
+      stopping = true;
       try {
-        if (!paused && state.ready) handle.flush();
+        // 回调内停止直接释放，不再调用同一 read/write 发起递归的最终提交。
+        if (!callbackDepth && !paused && state.ready) handle.flush();
       } finally {
         stopped = true;
         cancelTimer();
