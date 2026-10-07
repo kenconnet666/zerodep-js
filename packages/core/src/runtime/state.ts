@@ -127,13 +127,17 @@ export function reactive<T>(value: T): T {
         track(values, key);
         throw error;
       }
+      track(values, key);
+      const descriptor = Reflect.getOwnPropertyDescriptor(target, key);
+      // 锁定属性必须返回目标中的精确值；原生数组方法也不能再包装。
+      if (descriptor && !descriptor.configurable && 'value' in descriptor && !descriptor.writable)
+        return result;
       const native = isArray && nativeMethods.get(key);
       if (
         native &&
         typeof result === 'function' &&
         (result === native || functionSource(result) === functionSource(native))
       ) {
-        track(values, key);
         let method = arrayMethods.get(result);
         if (!method) {
           method = function (this: unknown, ...args: unknown[]): unknown {
@@ -149,11 +153,6 @@ export function reactive<T>(value: T): T {
           arrayMethods.set(result, method);
         }
         return method;
-      }
-      track(values, key);
-      const descriptor = Reflect.getOwnPropertyDescriptor(target, key);
-      if (descriptor && !descriptor.configurable && 'value' in descriptor && !descriptor.writable) {
-        return result;
       }
       return reactive(result);
     },
@@ -172,8 +171,14 @@ export function reactive<T>(value: T): T {
       const before = Reflect.getOwnPropertyDescriptor(target, key);
       const had = Reflect.has(target, key);
       const length = isArray ? (target as unknown[]).length : 0;
+      const locked =
+        !(descriptor.configurable ?? before?.configurable ?? false) &&
+        !(descriptor.writable ?? before?.writable ?? false);
+      // 新属性默认不可写/不可配置；锁定时去代理会违反 defineProperty 的值身份约束。
       const next =
-        'value' in descriptor ? { ...descriptor, value: raw(descriptor.value) } : descriptor;
+        'value' in descriptor && !locked
+          ? { ...descriptor, value: raw(descriptor.value) }
+          : descriptor;
       const success = Reflect.defineProperty(target, key, next);
       // length 缩短遇到不可配置元素可能部分成功，失败时也要通知实际变更。
       _batch(() => {
@@ -183,7 +188,9 @@ export function reactive<T>(value: T): T {
           (!before ||
             !Object.is(before.value, after.value) ||
             before.get !== after.get ||
-            before.set !== after.set)
+            before.set !== after.set ||
+            before.configurable !== after.configurable ||
+            before.writable !== after.writable)
         )
           changed(values, key);
         if (had !== Reflect.has(target, key)) changed(existence, key);

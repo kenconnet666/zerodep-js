@@ -24,6 +24,38 @@ afterEach(() => {
 });
 
 describe('属性级对象状态', () => {
+  it('锁定的数组原生方法保持精确身份，不违反 Proxy 的 get 不变量', () => {
+    const input = Object.defineProperty([] as number[], 'push', { value: Array.prototype.push });
+    const rows = reactive(input);
+    expect(rows.push).toBe(Array.prototype.push);
+    expect(rows.push(1)).toBe(1);
+    expect(rows).toEqual([1]);
+  });
+
+  it('属性锁定改变实际返回身份时，冷派生不会保留旧代理', () => {
+    const child = { n: 1 };
+    const input = reactive({ child });
+    const read = new Derived(() => input.child);
+    expect(read.read()).not.toBe(child);
+    Object.defineProperty(input, 'child', { configurable: false, writable: false });
+    expect(input.child).toBe(child);
+    expect(read.read()).toBe(child);
+  });
+
+  it.each(['new', 'existing'])(
+    'defineProperty 锁定 %s 属性时保持调用方指定的代理值身份',
+    (kind) => {
+      const child = reactive({ n: 1 });
+      const input = reactive<Record<string, unknown>>({});
+      if (kind === 'existing') Object.defineProperty(input, 'child', { value: {}, writable: true });
+      expect(() =>
+        Object.defineProperty(input, 'child', { value: child, writable: false }),
+      ).not.toThrow();
+      expect(input.child).toBe(child);
+      expect(Object.getOwnPropertyDescriptor(input, 'child')?.value).toBe(child);
+    },
+  );
+
   it('getter 在读取其他依赖前抛错，替换字段后冷派生和 effect 都能恢复', () => {
     const object = reactive({
       get value(): number {

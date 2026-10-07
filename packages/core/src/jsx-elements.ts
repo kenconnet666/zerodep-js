@@ -1054,7 +1054,7 @@ interface Common0<T extends Element> extends NativeIndexProps {
   property?: string | number | null | undefined;
   r?: string | number | null | undefined;
   radius?: string | number | null | undefined;
-  ref?: ((element: T) => void) | undefined;
+  ref?: ((element: T) => void | (() => void)) | undefined;
   referrerpolicy?: string | null | undefined;
   refX?: string | number | null | undefined;
   refY?: string | number | null | undefined;
@@ -2046,7 +2046,7 @@ interface Common1<T extends Element> extends NativeIndexProps {
   'prop:translate'?: boolean | undefined;
   'prop:webkitMatchesSelector'?: ((selectors: string) => boolean) | undefined;
   'prop:writingSuggestions'?: string | undefined;
-  ref?: ((element: T) => void) | undefined;
+  ref?: ((element: T) => void | (() => void)) | undefined;
   role?: string | null | undefined;
   slot?: string | null | undefined;
   spellcheck?: 'false' | 'true' | boolean | null | undefined;
@@ -3081,7 +3081,7 @@ interface Common2<T extends Element> extends NativeIndexProps {
   property?: string | number | null | undefined;
   r?: string | number | null | undefined;
   radius?: string | number | null | undefined;
-  ref?: ((element: T) => void) | undefined;
+  ref?: ((element: T) => void | (() => void)) | undefined;
   referrerpolicy?: string | number | null | undefined;
   referrerPolicy?: string | number | null | undefined;
   refX?: string | number | null | undefined;
@@ -4025,7 +4025,7 @@ interface Common3<T extends Element> extends NativeIndexProps {
   'prop:slot'?: string | undefined;
   'prop:tabIndex'?: number | undefined;
   'prop:webkitMatchesSelector'?: ((selectors: string) => boolean) | undefined;
-  ref?: ((element: T) => void) | undefined;
+  ref?: ((element: T) => void | (() => void)) | undefined;
   role?: string | null | undefined;
   rowalign?: string | null | undefined;
   rowspacing?: string | null | undefined;
@@ -5086,7 +5086,7 @@ interface Common4<T extends Element> extends NativeIndexProps {
   property?: string | number | null | undefined;
   r?: string | number | null | undefined;
   radius?: string | number | null | undefined;
-  ref?: ((element: T) => void) | undefined;
+  ref?: ((element: T) => void | (() => void)) | undefined;
   referrerpolicy?: string | null | undefined;
   refX?: string | number | null | undefined;
   refY?: string | number | null | undefined;
@@ -6318,7 +6318,7 @@ interface Common5<T extends Element> extends NativeIndexProps {
   property?: string | number | null | undefined;
   r?: string | number | null | undefined;
   radius?: string | number | null | undefined;
-  ref?: ((element: T) => void) | undefined;
+  ref?: ((element: T) => void | (() => void)) | undefined;
   referrerpolicy?: string | number | null | undefined;
   referrerPolicy?: string | number | null | undefined;
   refX?: string | number | null | undefined;
@@ -7546,7 +7546,7 @@ interface Common6<T extends Element> extends NativeIndexProps {
   property?: string | number | null | undefined;
   r?: string | number | null | undefined;
   radius?: string | number | null | undefined;
-  ref?: ((element: T) => void) | undefined;
+  ref?: ((element: T) => void | (() => void)) | undefined;
   referrerpolicy?: string | number | null | undefined;
   referrerPolicy?: string | number | null | undefined;
   refX?: string | number | null | undefined;

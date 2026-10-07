@@ -6,6 +6,36 @@ import { _createMemoryHistory } from '../src/router/history.js';
 import { RouteError, _redirect } from '../src/router/navigation.js';
 
 const Page = defineComponent(() => null);
+it.each(['loader', 'validate', 'guard'])(
+  '%s 同步销毁路由后返回失败 Promise，取消仍消费迟到拒绝',
+  async (phase) => {
+    let router!: ReturnType<typeof _createRouter>;
+    const fail = () => {
+      router.dispose();
+      return Promise.reject(new Error('late cancelled navigation'));
+    };
+    const routes = _defineRoutes({
+      home: { path: '/', component: Page },
+      next: _defineRoute('/next', {
+        component: Page,
+        load: () => (phase === 'loader' ? fail() : 1),
+        validateData: (value) => (phase === 'validate' ? fail() : Number(value)),
+      }),
+    });
+    router = _createRouter(routes);
+    try {
+      await router.resolve();
+      if (phase === 'guard') router.beforeEach(fail);
+      expect((await router.navigate(routes.next)).status).toBe('cancelled');
+      expect(router.disposed).toBe(true);
+      expect(router.state.location.pathname).toBe('/');
+      await new Promise<void>((resolve) => setImmediate(resolve));
+    } finally {
+      router.dispose();
+    }
+  },
+);
+
 function deferred<T>() {
   let resolve!: (value: T) => void;
   const promise = new Promise<T>((done) => {

@@ -260,7 +260,8 @@ export type NativeProps<T extends Element> = (T extends Element
     class?: string | false | null | undefined;
     className?: string | null | undefined;
     style?: Style | null | undefined;
-    ref?: ((element: T) => void) | undefined;
+    /** 同步取得元素，可返回清理函数；回调内卸载时立即清理新返回的资源。 */
+    ref?: ((element: T) => void | (() => void)) | undefined;
     /** DOM 引用写入可写变量，卸载后为 undefined；不支持组件实例或对象路径。 */
     'bind:this'?: T | undefined;
     role?: string | null | undefined;

@@ -57,6 +57,11 @@
 
 ## 继续工作
 
+- 状态锁定属性：4 个回归先失败后修复，覆盖锁定的原生数组方法、descriptor 标志变化导致的冷派生身份、defineProperty 锁定代理值。遵守 JavaScript get/defineProperty 不变量，不创建第二套代理壳；状态/响应式/快照 57 项通过。
+- 路由 loader/validateData/guard 在返回失败 Promise 前同步 dispose 时，旧 abortable 提前返回会遗留未处理拒绝。现在取消也注册结果处理；3 个真实路由回归先失败后修复，路由 18 项通过。
+- 02139ac 的 CI 37683426407 在 Linux/Windows 独立消费中发现 async ref 负面类型断言未生效，根因是 ref 仍声明为 => void。已修正为 void 或清理函数，native:generate 更新声明并补本地类型用例，没有删除负面断言。项目检查通过；针对这个 CI 失败，本地完整 tgz 独立消费（安装/声明/组件库/CSR/SSR/接管/表单/卸载）已通过，临时目录与私有 store 自动逐项清理。
+- 最新远端 02139ac 的 Chromium、verify、六平台通过，Firefox/WebKit 仍未结束；包消费修复等待新提交的两平台复验。未发布新 npm 框架版本。
+
 - 当前继续轮：ref 初始化和清理同时失败时复用 rollback 保留两个错误；浏览器引用夹具补充失败顺序和临时节点清理。SSR 误传 Promise 内容的 4 个场景先复现未处理拒绝，再统一修复 DOM/SSR/文本路径；文本不再隐式字符串化函数和 symbol，相关 SSR 19 项通过。
 - 实时 rest 修复原型 getter/非枚举字段泄漏，命名解构仍可读取 getter。props/绑定/CSS 28 项与真实组件编译 17 项通过；消费者新增 Promise children/async ref 的负面类型用例，浏览器错误边界覆盖 Promise 内容的报错和恢复。这些新浏览器/消费场景交本提交 CI，不把类型检查当浏览器通过。
 - d5628ba 的 CI 37682117865 最近确认 verify、六平台、Linux/Windows 独立消费、Chromium 已通过，Firefox/WebKit 尚未结束。
