@@ -1,5 +1,16 @@
 # 变更记录
 
+## 1.0.0-rc.7 — 官方 TS7.1 与 Babel，待完整 CI 验收
+
+候选源码已准备，尚未发布；不得用下方历史版本的成功记录替代本次验收。
+
+- 官方 TypeScript 固定 7.1.0-dev.20261007.1，Babel 负责框架转换，Vite 负责开发与构建；删除自有 Go 后端、补丁、平台 SDK 和构建缓存设施，发布范围收敛为五包。
+- 保留变量式 API、组件参数解构/default/rest、DOM/组件 bind、泛型、SSR 和 HMR；项目检查与独立语言工具通过官方 API 和检查投影提供类型写回验证及源码映射。
+- 增加仅 DOM 的 bind:this，修复示例 SVG 引用的 TS2339；CI 同时检查示例原始 TSX，避免框架检查掩盖官方 IDE 可见错误。
+- 承接小核心简化：删除 _createPage 与冗余工具入口，持久化统一 read/write，开发面板显式 _inspect；生成直观 DOM 类型声明，保留中文语义与生命周期注释。
+- 独立语言工具提供真实类型驱动的命名空间属性补全和声明导航；这些增强尚未自动接入 WebStorm，详见 [工具边界](docs/tooling.md)。
+- 已通过最新 nightly 的全仓 check、326 项 Node 测试、client/server 构建、独立 LSP 与 49 项补全；平台、三浏览器和候选发布以本次 CI 为准。
+
 ## 1.0.0-rc.6 — 编译缓存修正，2026-10-07
 
 十一包已发布到 next。源码 `cd49382` 的[完整 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/37501732117)通过：六平台原生专项各 113 项、Node 336 项、三浏览器 328 项，严格抖动门禁通过。[发布任务](https://github.com/kenconnet666/zerodep-js/actions/runs/37504139849)完成真实注册表消费；十一份原始 tgz、npm SHA-512 和 next 标签一致。[GitHub 预发布](https://github.com/kenconnet666/zerodep-js/releases/tag/v1.0.0-rc.6)保留冻结产物与发布记录。
