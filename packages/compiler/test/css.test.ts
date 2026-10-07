@@ -12,6 +12,43 @@ function run(source: string) {
 }
 
 describe('原生 CSS 编译', () => {
+  it('真实 TSX 的直接派生值求参改变作者时，保留原方法并回退普通声明', () => {
+    const { result, host } = run(`
+import { _derived } from 'zerodep-js';
+import { css } from 'zerodep-js/css';
+function create() {
+ const width = _derived.by(() => {
+   Object.defineProperty(s, 'width', { value: { px: () => 'width:999px;' } });
+   return 20;
+ });
+ const node = <div class={css(s.width.px(width))} />;
+ const attributes = node.props;
+ return [attributes.class, attributes.style];
+}
+const result = create();`);
+    expect((result as string[])[0]).toBeTruthy();
+    expect((result as string[])[1]).toBe('');
+    expect(host.cssText()).toContain('width:20px;');
+    expect(host.cssText()).not.toContain('999px');
+  });
+
+  it('参数计算替换系统作者属性时，仍调用求参前取得的方法', () => {
+    const author = new Css();
+    const original = author.width;
+    const result = cssBinding(
+      author,
+      'width',
+      'px',
+      () => {
+        Object.defineProperty(author, 'width', { value: { px: () => 'width:999px' } });
+        return 20;
+      },
+      '--zj-order',
+    );
+    expect(result.declaration).toBe(original.px(20));
+    expect(result.value).toBeUndefined();
+  });
+
   for (const named of [false, true]) {
     it(`${named ? '命名' : '内联'}类名在 spread 后仍绑定变量并实时合并 style`, () => {
       const call = 'css(s.width.px(width))';

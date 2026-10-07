@@ -24,18 +24,26 @@ export function cssBinding(
   read: () => unknown,
   variable: string,
 ): CssValue {
-  // 未知 getter/方法先取接收者和方法，再求参数，保留原 JS 调用顺序。
-  if (!authorInputs(author, property, member)) {
-    const target = (author as Record<string, unknown>)[property];
-    const method = (target as Record<string, (...args: unknown[]) => string>)[member]!;
+  // 系统作者也先取得接收者和方法；派生参数的计算可能替换作者属性。
+  const target = (author as Record<string, unknown>)[property];
+  const method = (target as Record<string, (...args: unknown[]) => string>)[member]!;
+  const inputs = authorInputs(author, property, member);
+  const value = read();
+  const current = inputs && authorInputs(author, property, member);
+  if (
+    !inputs ||
+    !current ||
+    inputs.length !== current.length ||
+    inputs.some((input, index) => input !== current[index])
+  ) {
     return {
       [BINDING]: true,
-      declaration: Reflect.apply(method, target, [read()]) as string,
+      declaration: Reflect.apply(method, target, [value]) as string,
       variable,
       value: undefined,
     };
   }
-  const result = inlineDeclaration(author, property, member, read(), variable);
+  const result = inlineDeclaration(author, property, member, value, variable);
   return { [BINDING]: true, declaration: result.declaration, variable, value: result.value };
 }
 
