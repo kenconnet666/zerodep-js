@@ -12,6 +12,72 @@ function run(source: string) {
 }
 
 describe('原生 CSS 编译', () => {
+  for (const named of [false, true]) {
+    it(`${named ? '命名' : '内联'}类名在 spread 后仍绑定变量并实时合并 style`, () => {
+      const call = 'css(s.width.px(width))';
+      const { result, host } = run(`
+import { _state } from 'zerodep-js';
+import { css } from 'zerodep-js/css';
+function create() {
+ let width = _state(20);
+ let attrs = _state({ class: 'old', style: { color: 'red', '--user': 'first' } });
+ ${named ? `const name = ${call};` : ''}
+ const template = <div {...attrs} class={${named ? 'name' : call}} />;
+ const first = template.value.read().props;
+ const before = [first.class, first.style];
+ width = 40;
+ attrs = { class: 'ignored', style: { color: 'blue', '--user': 'second' } };
+ const next = template.value.read().props;
+ return [before, next.class, next.style];
+}
+const result = create();`);
+      const [before, name, style] = result as [string[], string, string];
+      expect(name).toBe(before[0]);
+      expect(before[1]).toContain(':20px');
+      expect(style).toContain(':40px');
+      expect(style).toContain('color:blue');
+      expect(style).toContain('--user:second');
+      expect(style).not.toContain('first');
+      expect(host.rules()).toHaveLength(1);
+    });
+  }
+
+  it('最后的 spread 可能覆盖类名时，保留原生 class/style 覆盖语义', () => {
+    const { result } = run(`
+import { _state } from 'zerodep-js';
+import { css } from 'zerodep-js/css';
+function create() {
+ let width = _state(20);
+ let attrs = _state({ class: 'external', style: 'width:80px' });
+ const template = <div {...{ title: 'before' }} class={css(s.width.px(width))} {...attrs} />;
+ const before = template.value.read().props.class;
+ attrs = { class: 'new', style: 'width:90px' };
+ const after = template.value.read().props;
+ return [before, after.class, after.style];
+}
+const result = create();`);
+    expect(result).toEqual(['external', 'new', 'width:90px']);
+  });
+
+  it('spread 引入 key 后仍能读取绑定结果，key 改变不混用元素变量', () => {
+    const { result } = run(`
+import { _state } from 'zerodep-js';
+import { css } from 'zerodep-js/css';
+function create() {
+ let width = _state(20); let id = _state('a');
+ const template = <div {...{ key: id }} class={css(s.width.px(width))} />;
+ const first = template.value.read();
+ const before = first.props.style;
+ id = 'b'; width = 30;
+ const next = template.value.read();
+ return [first === next, before, next.props.style];
+}
+const result = create();`);
+    const [same, before, after] = result as [boolean, string, string];
+    expect(same).toBe(false);
+    expect(before).toContain(':20px');
+    expect(after).toContain(':30px');
+  });
   it('未知接收者的属性错误不会提前读取参数', () => {
     let reads = 0;
     expect(() =>

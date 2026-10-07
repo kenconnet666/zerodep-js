@@ -42,9 +42,11 @@ function nativeClass(path: NodePath): NodePath<t.JSXElement> | undefined {
   )
     return;
   if (!t.isJSXIdentifier(opening.node.name) || !/^[a-z]/.test(opening.node.name.name)) return;
-  // 展开可能覆盖 class；保留原有从左到右覆盖语义，不猜测展开对象的键。
+  // class 之前的展开不会覆盖显式类名；之后的展开仍可能覆盖，保持原来的重算路径。
   if (
-    opening.node.attributes.some((attr) => t.isJSXSpreadAttribute(attr)) ||
+    opening.node.attributes
+      .slice(opening.node.attributes.indexOf(attribute.node) + 1)
+      .some((attr) => t.isJSXSpreadAttribute(attr)) ||
     opening.node.attributes.filter(
       (attr) => t.isJSXAttribute(attr) && t.isJSXIdentifier(attr.name, { name: 'class' }),
     ).length !== 1

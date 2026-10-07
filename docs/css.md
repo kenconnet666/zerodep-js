@@ -39,7 +39,7 @@ className 的公开类型仍是 string，依赖变化时自动重算，不必套
 
 优化范围是有限非负单位值、系统关键字、颜色十六进制值与 0–1 的 opacity。CSS-wide、important、未知值、负单位值、主题作者或覆写方法均可继续使用，但保留原声明重算，避免改变层叠语义。条件分支不会提前计算。
 
-只对没有 spread 的原生元素 class 附加变量。命名声明的全部读取都需直接用于这种 class；跨组件传递、字符串拼接或其他读取让该声明回退为普通 CSS 重算。现有 `class?: string` 不需改成样式对象协议。一般表达式重算可能增加规则，内容相同则复用。
+原生元素中，只要所有 spread 都位于显式 class 之前，就可附加变量；class 后仍有 spread 时保留普通重算。命名声明的全部读取都需直接用于这种 class；跨组件传递、字符串拼接或其他读取让该声明回退为普通 CSS 重算。现有 `class?: string` 不需改成样式对象协议。一般表达式重算可能增加规则，内容相同则复用。
 
 生成变量合并进已有 style，保留用户声明。`--zj-` 是私有前缀，请勿手动覆盖。多实例独立持有元素变量，卸载自然清理，不创建 CSS 专用 effect 或订阅表。
 
@@ -70,3 +70,20 @@ catalog 固定 CSS 0.3.0，框架保持选定 TS7.1 SDK。CSS 仓库用 TS6 构�
 跨仓库联调可先执行 `pnpm test:packages --css-tarball <候选.tgz>`。正常安装按精确版本和锁文件恢复，不要求相邻 CSS 仓库存在，也不提交临时绝对路径依赖。
 
 CSS 0.3.0 已从 npm 注册表核对版本和 SHA-512，与 [GitHub 预发布](https://github.com/kenconnet666/zerodep-css/releases/tag/v0.3.0) 中的 tgz 一致。catalog 固定 npm 版本，换机按锁文件安装即可；latest 未提升。
+
+## CSS 作者上下文
+
+从 zerodep-js/css 导入 _createCssContext，在项目模块中创建一次工厂，组件初始化时提供作者，后代通过同一工厂读取。
+
+```tsx
+const { provideCss, useCss } = _createCssContext<AppCss>();
+
+// 提供者的初始化代码；AppCss 为项目自己的作者类。
+let theme = _state.raw(lightTheme);
+provideCss(new AppCss(() => theme));
+
+// 后代组件初始化时读取，类型保持 AppCss，不必非空断言。
+const s = useCss();
+```
+
+useCss 在缺少提供者时明确报错；同一作用域不可重复提供，子作用域可覆盖。作者对象本身不克隆、不深代理；整体切换主题使用 Css(() => theme) 的读取函数。Portal 继承逻辑 context，但不会自动复制 DOM 上继承的 CSS 变量；这两种主题来源须分开理解。SSR 请求仅共享工厂的 context 键，不共享作者数据。外部事件应捕获初始化时取到的作者，不在没有组件作用域的回调中调用 useCss。

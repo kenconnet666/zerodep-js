@@ -19,6 +19,7 @@ for (const mode of ['csr', 'ssr']) {
     for (let index = 0; index < 4; index++) await page.locator('[data-css-grow=first]').click();
     await expect(first).toHaveCSS('width', '160px');
     await expect(page.locator('[data-css-inline=first]')).toHaveCSS('width', '160px');
+    await expect(page.locator('[data-css-spread=first]')).toHaveCSS('width', '160px');
     await expect(second).toHaveCSS('width', '180px');
     expect(await first.getAttribute('class')).toBe(name);
     expect(await ruleCount()).toBe(rules);
@@ -35,6 +36,22 @@ for (const mode of ['csr', 'ssr']) {
     await expect(first).toHaveCSS('width', '120px');
     await page.locator('[data-unmount]').click();
     await expect(page.locator('[data-css-portal]')).toHaveCount(0);
+    expect(errors).toEqual([]);
+  });
+
+  test(`${mode} CSS 主题按逻辑作用域传递，局部覆盖和 Portal 不串值`, async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    await page.goto(`/?render=${mode}`);
+    await expect(page.locator('[data-css-theme=outer]')).toHaveCSS('color', 'rgb(0, 0, 255)');
+    await expect(page.locator('[data-css-theme=portal]')).toHaveCSS('color', 'rgb(0, 0, 255)');
+    await expect(page.locator('[data-css-theme=local]')).toHaveCSS('color', 'rgb(128, 0, 128)');
+    await page.locator('[data-css-theme-toggle]').click();
+    await expect(page.locator('[data-css-theme=outer]')).toHaveCSS('color', 'rgb(0, 128, 0)');
+    await expect(page.locator('[data-css-theme=portal]')).toHaveCSS('color', 'rgb(0, 128, 0)');
+    await expect(page.locator('[data-css-theme=local]')).toHaveCSS('color', 'rgb(128, 0, 128)');
+    await page.locator('[data-unmount]').click();
+    await expect(page.locator('[data-css-theme=portal]')).toHaveCount(0);
     expect(errors).toEqual([]);
   });
 }

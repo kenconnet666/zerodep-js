@@ -9,13 +9,24 @@ import { _lazy } from 'zerodep-js';
 import { _task } from 'zerodep-use/task';
 import { _createRoot, _id } from 'zerodep-js';
 import { Css } from 'zerodep-css';
-import { css } from 'zerodep-js/css';
+import { css, _createCssContext } from 'zerodep-js/css';
 
 const cssAuthor = new Css();
 const styleClass: string = css(cssAuthor.width.px(12));
 <div class={styleClass} />;
 // @ts-expect-error CSS 作者类型跨 TS6/TS7 保持单位参数约束。
 cssAuthor.width.px('12px');
+class ProjectCss extends Css {
+  readonly label = 'project';
+}
+const projectCss = _createCssContext<ProjectCss>();
+_createRoot((dispose) => {
+  projectCss.provideCss(new ProjectCss());
+  projectCss.useCss().label satisfies string;
+  // @ts-expect-error 工厂保留项目作者扩展，不接受缺少字段的普通 Css。
+  projectCss.provideCss(new Css());
+  dispose();
+});
 
 const idFactory: () => string = _id;
 void idFactory;

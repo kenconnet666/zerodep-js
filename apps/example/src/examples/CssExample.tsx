@@ -1,8 +1,36 @@
 import { _component, _derived, _state, Portal } from 'zerodep-js';
-import { Css } from 'zerodep-css';
-import { css } from 'zerodep-js/css';
+import { Css, SystemKeywords, ColorKeywords } from 'zerodep-css';
+import { css, _createCssContext } from 'zerodep-js/css';
 
 const s = new Css();
+
+class Colors extends ColorKeywords {
+  readonly _primary: string;
+  constructor(primary: string) {
+    super();
+    this._primary = primary;
+  }
+}
+class Keywords extends SystemKeywords {
+  override readonly color: Colors;
+  constructor(primary: string) {
+    super();
+    this.color = new Colors(primary);
+  }
+}
+const { provideCss, useCss } = _createCssContext<Css<Keywords>>();
+const ThemeProbe = _component(({ location }: { location: string }) => {
+  const author = useCss();
+  return (
+    <div data-css-theme={location} class={css(author.color._primary)}>
+      主题作用域
+    </div>
+  );
+});
+const LocalThemeProbe = _component(() => {
+  provideCss(new Css(new Keywords('purple')));
+  return <ThemeProbe location="local" />;
+});
 
 const Card = _component(({ name, initial }: { name: string; initial: number }) => {
   let width = _state(initial);
@@ -42,15 +70,34 @@ const Card = _component(({ name, initial }: { name: string; initial: number }) =
       <div data-css-inline={name} class={css(s.width.px(width))}>
         内联样式
       </div>
+      <div
+        {...{ title: 'spread', style: { '--user-spread': 'kept' } }}
+        data-css-spread={name}
+        class={css(s.width.px(width))}
+      >
+        展开属性
+      </div>
     </section>
   );
 });
 
 export const CssExample = _component(() => {
   let visible = _state(true);
+  let keywords = _state.raw(new Keywords('blue'));
+  provideCss(new Css(() => keywords));
   return (
     <section aria-label="原生 CSS 接入">
       <h2>原生 CSS 接入</h2>
+      <button
+        data-css-theme-toggle
+        onClick={() => {
+          keywords = new Keywords('green');
+        }}
+      >
+        切换主题
+      </button>
+      <ThemeProbe location="outer" />
+      <LocalThemeProbe />
       <button
         data-css-visible
         onClick={() => {
@@ -68,6 +115,7 @@ export const CssExample = _component(() => {
       <Portal>
         <div data-css-portal class={css(s.position.fixed, s.bottom.px(0), s.pointerEvents.none)}>
           CSS Portal
+          <ThemeProbe location="portal" />
         </div>
       </Portal>
     </section>

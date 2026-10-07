@@ -196,7 +196,7 @@ it('显式 undefined 初值与未提供初值区分，不复制或深代理结�
 });
 
 it('reset 清空初值、错误和 retry 输入，保留 cancel 的原语义', async () => {
-  const loader = vi.fn((_: undefined) => {
+  const loader = vi.fn(() => {
     throw new Error('failed');
   });
   const owned = _createRoot((dispose) => ({
