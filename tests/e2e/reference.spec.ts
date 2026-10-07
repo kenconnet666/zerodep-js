@@ -28,7 +28,8 @@ for (const mode of ['csr', 'ssr']) {
 test('SSR 中引用保持空态，不尝试创建浏览器对象', async ({ request }) => {
   const response = await request.get('/?render=ssr');
   expect(response.ok()).toBe(true);
-  expect(await response.text()).toMatch(
-    /data-reference-current[^>]*><!--zj:dynamic-->empty<!--zj:\/dynamic--><\/output>/,
-  );
+  const html = await response.text();
+  // output 采用受控文本协议，不再包含会被原生 reset 清除的结构注释。
+  expect(html).toMatch(/data-reference-current[^>]*>empty<\/output>/);
+  expect(html).toMatch(/data-reference-mounted[^>]*><\/output>/);
 });

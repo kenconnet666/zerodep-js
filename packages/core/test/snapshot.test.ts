@@ -2,6 +2,42 @@ import { expect, it } from 'vitest';
 import { _snapshot } from '../src/runtime/snapshot.js';
 import { reactive, state } from '../src/runtime/state.js';
 import { _createRoot, _effect, _flushSync } from '../src/runtime/reactivity.js';
+import { runInNewContext } from 'node:vm';
+
+it('普通对象和数组忽略符号显示标签，不执行符号 getter', () => {
+  const object = { child: reactive({ n: 1 }), [Symbol.toStringTag]: 'Map' };
+  expect(_snapshot(object)).toEqual({ child: { n: 1 } });
+  for (const input of [{ n: 1 }, [1, 2]]) {
+    Object.defineProperty(input, Symbol.toStringTag, {
+      get() {
+        throw Error('symbol getter');
+      },
+    });
+    expect(_snapshot(input)).toEqual(structuredClone(input));
+  }
+  const foreign = runInNewContext('({ value: 3, [Symbol.toStringTag]: "Set" })') as {
+    value: number;
+  };
+  expect(_snapshot(foreign)).toEqual({ value: 3 });
+});
+
+it('集合按内建槽识别，覆写显示标签不会丢内容或执行 getter', () => {
+  const child = reactive({ value: 1 });
+  const map = new Map<unknown, unknown>([['child', child]]);
+  const set = new Set([child]);
+  for (const value of [map, set])
+    Object.defineProperty(value, Symbol.toStringTag, {
+      get() {
+        throw Error('ignored tag');
+      },
+    });
+  const copy = _snapshot({ child, map, set });
+  expect(copy.map.get('child')).toBe(copy.child);
+  expect(copy.set.has(copy.child)).toBe(true);
+  const date = new Date(123);
+  Object.defineProperty(date, Symbol.toStringTag, { value: 'Error' });
+  expect(_snapshot(date).getTime()).toBe(123);
+});
 
 it('脱开深代理且后续双向修改互不影响', () => {
   const model = reactive({ title: '草稿', child: { count: 1 }, list: [{ done: false }] });

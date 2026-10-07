@@ -6,6 +6,7 @@ import {
   _untrack,
   captureTracking,
 } from './reactivity.js';
+import { isPlainObjectPrototype } from './objects.js';
 
 const proxies = new WeakMap<object, object>();
 const originals = new WeakMap<object, object>();
@@ -60,12 +61,7 @@ export function reactive<T>(value: T): T {
     (prototype === null ||
       prototype === Array.prototype ||
       (typeof constructor === 'function' && functionSource(constructor) === functionSource(Array)));
-  const plain =
-    prototype === null ||
-    prototype === Object.prototype ||
-    (Object.getPrototypeOf(prototype) === null &&
-      typeof constructor === 'function' &&
-      Function.prototype.toString.call(constructor) === Function.prototype.toString.call(Object));
+  const plain = isPlainObjectPrototype(prototype);
   if ((!plainArray && !plain) || !Object.isExtensible(value)) return value;
   const cached = proxies.get(value);
   if (cached) return cached as T;
