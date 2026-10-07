@@ -1,15 +1,15 @@
 # 变更记录
 
-## 1.0.0-rc.7 — 官方 TS7.1 与 Babel，待完整 CI 验收
+## 1.0.0-rc.7 — 官方 TS7.1 与 Babel，2026-10-07
 
-候选源码已准备，尚未发布；不得用下方历史版本的成功记录替代本次验收。
+五包已发布到 npm next，源码 `ccffb8b` 的 [完整 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/37618603078) 和 [发布及注册表消费](https://github.com/kenconnet666/zerodep-js/actions/runs/37619281796) 均通过。[GitHub 预发布](https://github.com/kenconnet666/zerodep-js/releases/tag/v1.0.0-rc.7) 保存五份原始 tgz 与包含注册表验证时间的账本；SHA-512、版本和 next 标签一致，稳定 latest 未提升。
 
 - 官方 TypeScript 固定 7.1.0-dev.20261007.1，Babel 负责框架转换，Vite 负责开发与构建；删除自有 Go 后端、补丁、平台 SDK 和构建缓存设施，发布范围收敛为五包。
 - 保留变量式 API、组件参数解构/default/rest、DOM/组件 bind、泛型、SSR 和 HMR；项目检查与独立语言工具通过官方 API 和检查投影提供类型写回验证及源码映射。
 - 增加仅 DOM 的 bind:this，修复示例 SVG 引用的 TS2339；CI 同时检查示例原始 TSX，避免框架检查掩盖官方 IDE 可见错误。
 - 承接小核心简化：删除 _createPage 与冗余工具入口，持久化统一 read/write，开发面板显式 _inspect；生成直观 DOM 类型声明，保留中文语义与生命周期注释。
 - 标准 LSP 入口通过现有 LSP4IJ 接入 WebStorm，用户已确认绑定错误/修复、补全、中文说明和导航；协议测试覆盖跨文件未保存文本、增量编辑、重命名、自动导入和资源清理。WebStorm 专有类型引擎的版本限制独立记录于 [工具边界](docs/tooling.md)。
-- 已通过最新 nightly 的全仓 check、326 项 Node 测试、client/server 构建、独立 LSP 与 49 项补全；平台、三浏览器和候选发布以本次 CI 为准。
+- 已通过固定 nightly 的全仓 check、Node/编译测试、client/server 构建、独立 LSP 与 49 项补全、六平台工具验证、三浏览器及 Linux/Windows 独立消费。发布后另在 Windows 验证实际 npm 安装，并从 CI 原 tgz 验证语言服务器的绑定诊断、类型补全与关闭。
 
 ## 1.0.0-rc.6 — 编译缓存修正，2026-10-07
 

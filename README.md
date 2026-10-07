@@ -4,7 +4,7 @@
 
 优先保证实现简单、容易维护、使用方便、类型提示准确，并用适当中文注释解释关键语义。性能不是首要目标，不维护自有 TypeScript 分支、原生 SDK 或跨命令编译后台。
 
-> 当前源码正在完成官方工具链迁移。已发布的 RC6 属于此前路线，不代表这次迁移已经发布；验收状态见 [执行记录](docs/execution.md)，历史发布见 [CHANGELOG](CHANGELOG.md)。
+> 官方 TS7.1 + Babel + Vite 路线已作为 1.0.0-rc.7 发布到 npm next，并通过完整 CI 与注册表消费验证。稳定 latest 未提升；证据与 IDE 边界见 [执行记录](docs/execution.md)。
 
 ## 工作区
 
@@ -21,7 +21,7 @@
 
 ## 开发
 
-使用 Node 24、pnpm 10.34.5；官方 TypeScript 固定为 7.1.0-dev.20261006.1。安装不需要 Go 或 TypeScript 源码仓库。
+使用 Node 24、pnpm 10.34.5；官方 TypeScript 固定为 7.1.0-dev.20261007.1。安装不需要 Go 或 TypeScript 源码仓库。
 
 ```sh
 pnpm install --frozen-lockfile

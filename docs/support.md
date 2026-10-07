@@ -12,7 +12,7 @@
 | 浏览器          | 面向现代 DOM、Proxy、WeakRef/FinalizationRegistry 和 AbortController 环境。CI 使用固定 Playwright 版本的 Chromium、Firefox、WebKit；状态保留移动提供 moveBefore 兼容路径。 |
 | Windows / Linux | Windows 本地与独立包消费、Linux 完整 CI 均有证据。WebKit 自动化不等于实机 Safari 或所有平台输入法验证。                                                                    |
 | 输入法          | 三浏览器组合事件序列已验证；Chromium CDP 编辑管线已覆盖候选、提交、取消、外部更新及 Unicode 选区。协议输入不等于 OS 输入法实测。                                           |
-| 编辑器          | 官方 SDK 的普通类型检查与项目语言桥接分别验证；框架增强尚不自动接入 WebStorm，见 [工具链](tooling.md)。                                                                    |
+| 编辑器          | 官方 TS7.1 标准 LSP 已通过 LSP4IJ 在 WebStorm 实测；专有类型引擎及重复候选的边界见 [工具链](tooling.md)。                                                                  |
 
 包的体积和速度没有硬性上限，仍保留资源回收、压力和按需打包观察。验证脚本的运行超时用于发现挂起，不是性能排名或用户负载承诺。
 

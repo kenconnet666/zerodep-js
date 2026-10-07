@@ -4,14 +4,29 @@ zerodep-js 使用标准 TSX、显式变量式状态和一次初始化的组件�
 
 ## 安装与构建入口
 
-消费者使用 Node 24、固定官方 TS7.1 与 Vite 8。迁移发布验收完成前，使用工作区或同一批本地 tgz；不要将旧版 next 的定制 SDK 与当前 compiler 包混装。应用需要 core，构建侧需要 compiler、vite 插件、Vite 和 TypeScript；使用统一框架版本。官方平台二进制随 TypeScript 安装，不需要 Go。
+消费者使用 Node 24、官方 TypeScript 7.1.0-dev.20261007.1 与 Vite 8.3.1。当前候选 rc.7 已发布到 npm next，框架包安装相同版本：
 
 ```sh
-pnpm install --frozen-lockfile
-pnpm build:packages
-pnpm --filter @zerodep-js/example check
-pnpm dev
+pnpm add zerodep-js@1.0.0-rc.7
+pnpm add -D zerodep-js-compiler@1.0.0-rc.7 zerodep-js-vite@1.0.0-rc.7 typescript@7.1.0-dev.20261007.1 vite@8.3.1
 ```
+
+SSR 应用另装 zerodep-js-ssr@1.0.0-rc.7；路由、持久化和历史使用 zerodep-use@1.0.0-rc.7。官方平台二进制随 TypeScript 安装，不需要 Go 或自建 SDK。
+
+应用 package.json 的基本脚本：
+
+```json
+{
+  "scripts": {
+    "dev": "vite",
+    "check": "zerodep-check -p tsconfig.json",
+    "build": "pnpm check && vite build",
+    "preview": "vite preview"
+  }
+}
+```
+
+本仓库开发使用 README 中的工作区命令。
 
 Vite 插件同时处理普通转换和依赖扫描：
 

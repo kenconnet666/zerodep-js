@@ -77,7 +77,15 @@ WebStorm 自带补全与 LSP4IJ 可能同时展示同名普通候选。本机 Ta
 
 本机 WebStorm 2026.2.3（262.10968.77）的 TypeScriptGoPackageInfoKt.isSpteSupportedInTypeScriptVersion 判断要求 Registry 的 typescript.ts-go.type-evaluator.node-modules 开启，并且版本 major=7、minor=0、patch>=2。官方 7.1 dev 因 minor 不符被标为 NoSpte；仅改 Registry 无法开启。此结论来自本机 IDE 实际代码，后续 IDE 版本需重新核对。
 
+2026-10-07 进一步核对 [最新 EAP 的官方发布元数据](https://data.services.jetbrains.com/products/releases?code=WS&latest=true&type=eap)：WebStorm 2026.3 EAP（263.6259.34）仍有相同版本判断。仅按 HTTP Range 读取发行 ZIP 中的后端 JAR 和 ts-go-proxy，并验证 ZIP CRC，未安装或替换 IDE。
+
+两版 IDE 的原始 ts-go-proxy 均连接真实官方 7.1.0-dev.20261007.1 API 会话，首个 ideGetSnapshotProjects 请求均失败：`Cannot read properties of undefined (reading 'id')`。代理调用 `api.updateSnapshot()`；当前官方 API 要求 `updateSnapshot(baseSnapshot, params)`，在缺少 baseSnapshot 时失败。这证明除了按钮的版本限制，还存在真实接口不兼容，不能通过强行勾选、改版本号或塞入预览 SDK 目录解决。
+
+此前按用户要求试装的 JetBrains 7.1.0-dev.jetbrains.20261006.2 已移除，项目依赖及锁文件保持微软官方 7.1.0-dev.20261007.1（核对时 npm next）。该试装版还报告 14 项 DOM 标准库声明差异，未通过弱化类型来兼容它。研究脚本、下载文件与测试夹具均在记录证据后清理。
+
 该开关控制 WebStorm 内部类型求值与检查/重构的深度集成，不等于标准 TypeScript 语言服务是否启用。项目继续固定官方 TS7.1 dev，Zerodep LSP 提供已验证的标准语言能力；不伪造包版本、不修改 IDE 二进制，也不为这个开关降级项目。仅在 IDE 选择 JetBrains 自带 TS7 可以启用其内置集成，但会与项目 TS7.1 的类型判断分离，不作为默认方案。
+
+同一官方 TS7.1 SDK 同时启用此引擎，需要 JetBrains 更新版本准入与 API 适配。目前已检查的正式版和最新 EAP 均不满足。继续使用项目官方 SDK 与标准语言服务；框架 bind 写回等增强使用 Zerodep LSP。用户在试用期间停用了该 LSP，重新启用应在本项目“语言服务器”设置中操作，不能把此前验收通过等同于服务当前正在运行。
 
 详见 [JetBrains 设置说明](https://www.jetbrains.com/help/webstorm/settings-languages-typescript.html)。LSP4IJ 接入不声称等同于 WebStorm 内部服务驱动类型引擎。
 

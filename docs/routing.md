@@ -1,6 +1,6 @@
 # 路由
 
-当前 main 从 1.0.0-rc.3 起改用独立包入口 `zerodep-use/router`，与 core 安装相同版本。候选尚未发布，当前先通过工作区或本地 tgz 消费；RC2 使用原 core 子入口。路由表是普通 TypeScript 定义，组件仍使用同一套 TSX、变量式状态和生命周期。
+路由使用独立包入口 `zerodep-use/router`，与 core 安装相同版本；当前候选 rc.7 已发布。路由表是普通 TypeScript 定义，组件仍使用同一套 TSX、变量式状态和生命周期。
 
 ## 定义和使用
 
