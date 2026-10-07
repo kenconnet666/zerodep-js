@@ -4,6 +4,11 @@ import { assertCanWrite, getScope, source } from 'zerodep-js/internal';
 export type TaskResult<T> =
   { status: 'success'; data: T } | { status: 'error'; error: unknown } | { status: 'cancelled' };
 
+export interface TaskOptions<T> {
+  /** 已有结果的快照，不调用 loader；类型由 loader 决定，不因初值放宽。 */
+  initial?: NoInfer<T>;
+}
+
 export interface Task<I, T> {
   readonly status: 'idle' | 'pending' | 'success' | 'error';
   readonly pending: boolean;
@@ -15,6 +20,8 @@ export interface Task<I, T> {
   /** 使用最近一次输入重试；首次 run 前不启动任务，返回 cancelled。 */
   retry(this: void): Promise<TaskResult<T>>;
   cancel(this: void): void;
+  /** 取消并清空结果、错误和重试输入；不会恢复 initial 或重新发起请求。 */
+  reset(this: void): void;
   dispose(this: void): void;
 }
 
@@ -27,17 +34,22 @@ interface TaskState<T> {
 /** 显式任务，跟踪不跨 await；只拥有当前任务与最近一次结果，不提供请求缓存。 */
 export function _task<I, T>(
   loader: (input: I, signal: AbortSignal) => T | PromiseLike<T>,
+  options: TaskOptions<T> = {},
 ): Task<I, T> {
   assertCanWrite();
   const owner = getScope();
   if (!owner || owner.disposed || owner.clearing)
     throw new Error('_task 必须在有效的组件或 createRoot 作用域中创建。');
   const server = owner.server;
-  const state = source<TaskState<T>>({ status: 'idle', data: undefined, error: undefined });
+  const state = source<TaskState<T>>({
+    status: Object.hasOwn(options, 'initial') ? 'success' : 'idle',
+    data: options.initial,
+    error: undefined,
+  });
   let current: AbortController | undefined;
   let disposed = false;
-  let hasInput = false;
-  let lastInput: I;
+  // undefined 本身可以是合法输入；包装也便于 reset/dispose 释放最后一次输入。
+  let last: { input: I } | undefined;
   const cancelled = (): TaskResult<T> => ({ status: 'cancelled' });
 
   function cancel(): void {
@@ -53,13 +65,23 @@ export function _task<I, T>(
     if (disposed) return;
     assertCanWrite();
     disposed = true;
+    last = undefined;
     cancel();
+  }
+  function reset(): void {
+    assertCanWrite();
+    if (disposed) return;
+    const previous = current;
+    current = undefined;
+    last = undefined;
+    state.write({ status: 'idle', data: undefined, error: undefined });
+    // 先提交重置，再通知 abort；监听器启动的新任务不得被旧操作覆盖。
+    previous?.abort();
   }
   function run(input: I): Promise<TaskResult<T>> {
     assertCanWrite();
     if (disposed || server) return Promise.resolve(cancelled());
-    hasInput = true;
-    lastInput = input;
+    last = { input };
     const previous = current;
     const controller = new AbortController();
     current = controller;
@@ -112,8 +134,9 @@ export function _task<I, T>(
       return disposed;
     },
     run,
-    retry: () => (hasInput ? run(lastInput) : Promise.resolve(cancelled())),
+    retry: () => (last ? run(last.input) : Promise.resolve(cancelled())),
     cancel,
+    reset,
     dispose,
   });
 }

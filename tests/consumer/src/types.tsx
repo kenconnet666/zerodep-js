@@ -25,6 +25,16 @@ _createRoot((dispose) => {
   void count;
   // @ts-expect-error 发行包输入类型不丢失。
   void task.run(1);
+  const seeded = _task((id: string) => Promise.resolve({ id, count: 1 }), {
+    initial: { id: 'server', count: 0 },
+  });
+  seeded.reset();
+  const maybeCount: number | undefined = seeded.data?.count;
+  void maybeCount;
+  // @ts-expect-error 初值不能把 loader 结果中的 count 从 number 放宽为 string。
+  _task((id: string) => ({ id, count: 1 }), { initial: { id: 'server', count: 'bad' } });
+  // @ts-expect-error 初值不能改变 run 输入类型。
+  void seeded.run(1);
   dispose();
 });
 

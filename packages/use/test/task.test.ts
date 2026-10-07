@@ -1,6 +1,6 @@
 import { expect, it, vi } from 'vitest';
 import { _createRoot, _effect, _flushSync } from 'zerodep-js';
-import { defineComponent, source } from 'zerodep-js/internal';
+import { defineComponent, derived, source } from 'zerodep-js/internal';
 import { renderToString } from 'zerodep-js-ssr';
 import { _task, type Task } from '../src/task.js';
 
@@ -162,4 +162,163 @@ it('abort 监听器同步启动新任务时，外层操作不覆盖重入任务'
   } finally {
     owned();
   }
+});
+
+it('初值是成功结果，不调用 loader、不提供虚构的 retry 输入', async () => {
+  const value = { title: 'server' };
+  const loader = vi.fn((id: number) => ({ title: String(id) }));
+  const owned = _createRoot((dispose) => ({ dispose, task: _task(loader, { initial: value }) }));
+  try {
+    expect(owned.task.status).toBe('success');
+    expect(owned.task.pending).toBe(false);
+    expect(owned.task.data).toBe(value);
+    expect(await owned.task.retry()).toEqual({ status: 'cancelled' });
+    expect(loader).not.toHaveBeenCalled();
+    expect(await owned.task.run(2)).toEqual({ status: 'success', data: { title: '2' } });
+  } finally {
+    owned.dispose();
+  }
+});
+
+it('显式 undefined 初值与未提供初值区分，不复制或深代理结果', () => {
+  _createRoot((dispose) => {
+    try {
+      expect(_task(() => undefined).status).toBe('idle');
+      const seeded = _task(() => undefined, { initial: undefined });
+      expect(seeded.status).toBe('success');
+      expect(seeded.data).toBeUndefined();
+      seeded.reset();
+      expect(seeded.status).toBe('idle');
+    } finally {
+      dispose();
+    }
+  });
+});
+
+it('reset 清空初值、错误和 retry 输入，保留 cancel 的原语义', async () => {
+  const loader = vi.fn((_: undefined) => {
+    throw new Error('failed');
+  });
+  const owned = _createRoot((dispose) => ({
+    dispose,
+    task: _task<undefined, string>(loader, { initial: 'seed' }),
+  }));
+  try {
+    await owned.task.run(undefined);
+    expect(owned.task.data).toBe('seed');
+    expect(owned.task.status).toBe('error');
+    owned.task.cancel();
+    expect(owned.task.status).toBe('error');
+    const reset = owned.task.reset;
+    reset();
+    expect(owned.task.status).toBe('idle');
+    expect(owned.task.data).toBeUndefined();
+    expect(owned.task.error).toBeUndefined();
+    expect(await owned.task.retry()).toEqual({ status: 'cancelled' });
+    expect(loader).toHaveBeenCalledTimes(1);
+    await owned.task.run(undefined);
+    expect(loader).toHaveBeenCalledTimes(2);
+  } finally {
+    owned.dispose();
+  }
+});
+
+it.each(['success', 'error'] as const)('reset 及时结束等待并忽略迟到 %s', async (outcome) => {
+  const pending = deferred<string>();
+  let signal!: AbortSignal;
+  const owned = _createRoot((dispose) => ({
+    dispose,
+    task: _task(
+      (_: number, nextSignal) => {
+        signal = nextSignal;
+        return pending.promise;
+      },
+      { initial: 'seed' },
+    ),
+  }));
+  try {
+    const result = owned.task.run(1);
+    owned.task.reset();
+    expect(signal.aborted).toBe(true);
+    expect(await result).toEqual({ status: 'cancelled' });
+    if (outcome === 'success') pending.resolve('late');
+    else pending.reject(new Error('late'));
+    await Promise.resolve();
+    expect(owned.task.status).toBe('idle');
+    expect(owned.task.data).toBeUndefined();
+    expect(owned.task.error).toBeUndefined();
+  } finally {
+    owned.dispose();
+  }
+});
+
+it('reset 通知 abort 时允许新任务重入，重置不清掉新的重试输入', async () => {
+  let task!: Task<number, number>;
+  let next!: Promise<unknown>;
+  const dispose = _createRoot((stop) => {
+    task = _task((id, signal) => {
+      if (id === 1) {
+        signal.addEventListener(
+          'abort',
+          () => {
+            next = task.run(3);
+          },
+          { once: true },
+        );
+        return new Promise<number>(() => {});
+      }
+      return id;
+    });
+    return stop;
+  });
+  try {
+    const first = task.run(1);
+    task.reset();
+    expect(await first).toEqual({ status: 'cancelled' });
+    await next;
+    expect(task.data).toBe(3);
+    expect(await task.retry()).toEqual({ status: 'success', data: 3 });
+  } finally {
+    dispose();
+  }
+});
+
+it('reset 是可跟踪状态更新，纯派生不能调用，dispose 后不再变更', async () => {
+  const seen: string[] = [];
+  const owned = _createRoot((dispose) => {
+    const task = _task((value: number) => value, { initial: 1 });
+    _effect(() => {
+      seen.push(`${task.status}:${task.data}`);
+    });
+    return { task, dispose };
+  });
+  try {
+    _flushSync();
+    expect(() => derived(() => owned.task.reset()).read()).toThrow();
+    expect(owned.task.data).toBe(1);
+    owned.task.reset();
+    _flushSync();
+    expect(seen).toEqual(['success:1', 'idle:undefined']);
+    await owned.task.run(2);
+    owned.dispose();
+    owned.task.reset();
+    expect(owned.task.data).toBe(2);
+    expect(await owned.task.retry()).toEqual({ status: 'cancelled' });
+  } finally {
+    owned.dispose();
+  }
+});
+
+it('SSR 初值按请求隔离，可渲染但不启动 loader', async () => {
+  const loader = vi.fn((id: number) => id);
+  const calls: Promise<unknown>[] = [];
+  const App = defineComponent(({ initial }: { initial: number }) => {
+    const task = _task(loader, { initial });
+    calls.push(task.run(9));
+    return `${task.status}:${task.data}`;
+  });
+  expect(renderToString(App, { props: { initial: 1 } })).toBe('success:1');
+  expect(renderToString(App, { props: { initial: 2 } })).toBe('success:2');
+  expect(await Promise.all(calls)).toEqual([{ status: 'cancelled' }, { status: 'cancelled' }]);
+  expect(loader).not.toHaveBeenCalled();
 });
