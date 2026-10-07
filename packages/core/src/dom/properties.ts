@@ -62,7 +62,10 @@ export class PropertyBindings {
           let descriptor: PropertyDescriptor | undefined;
           while (base && !(descriptor = Object.getOwnPropertyDescriptor(base, name)))
             base = Object.getPrototypeOf(base) as object | null;
-          if (descriptor && !('value' in descriptor ? descriptor.writable : descriptor.set))
+          if (
+            descriptor &&
+            !('value' in descriptor ? descriptor.writable : typeof descriptor.set === 'function')
+          )
             throw new Error(`<${element.localName}> 的 property ${name} 不可写。`);
           this.initial.set(name, {
             value: previous,

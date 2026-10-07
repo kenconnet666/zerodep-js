@@ -1,5 +1,24 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "plugins": ["typescript", "oxc", "node"],
+  "options": { "typeAware": true },
+  "overrides": [
+    {
+      "files": [
+        "packages/core/src/**",
+        "packages/use/src/**",
+        "packages/ssr/src/**",
+        "apps/example/src/**"
+      ],
+      "rules": {
+        "typescript/no-floating-promises": "error",
+        "typescript/no-misused-promises": "error",
+        "typescript/switch-exhaustiveness-check": [
+          "error",
+          { "considerDefaultExhaustiveForUnions": true }
+        ]
+      }
+    }
+  ],
   "ignorePatterns": ["**/dist/**", "coverage/**", "test-results/**", "playwright-report/**"]
 }

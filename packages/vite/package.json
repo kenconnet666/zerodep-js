@@ -21,9 +21,9 @@
     }
   },
   "scripts": {
-    "dev": "node ../../scripts/native/tsc.mjs -b --watch",
-    "check": "node ../../scripts/native/tsc.mjs -p tsconfig.json --noEmit --incremental false --composite false",
-    "build": "node ../../scripts/native/tsc.mjs -b"
+    "dev": "tsc -b --watch",
+    "check": "tsc -p tsconfig.json --noEmit --incremental false --composite false",
+    "build": "tsc -b"
   },
   "peerDependencies": {
     "vite": "^8.3.1"
@@ -49,6 +49,6 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "zerodep-js-native": "workspace:*"
+    "zerodep-js-compiler": "workspace:*"
   }
 }

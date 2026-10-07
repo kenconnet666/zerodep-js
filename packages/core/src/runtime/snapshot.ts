@@ -1,6 +1,8 @@
 /** 脱开可枚举数据中的响应式代理，平台仍决定哪些值可以被结构化克隆。 */
 export function _snapshot<T>(value: T): T {
   const copies = new WeakMap<object, unknown>();
+  // 借用内建方法处理跨 realm 数据，下面每次都通过 call 显式提供接收者。
+  // oxlint-disable-next-line typescript/unbound-method
   const tag = Object.prototype.toString;
 
   function prepare(input: unknown): unknown {

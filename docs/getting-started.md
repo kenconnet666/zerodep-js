@@ -1,15 +1,16 @@
 # 开始使用 zerodep-js
 
-zerodep-js 使用标准 TSX、显式变量式状态和一次初始化的组件。当前源码只维护定制 TS7-Go 路线，版本为 1.0.0-rc.4 候选，发布状态见 [变更记录](../CHANGELOG.md)。源码工作区运行方式见 [README](../README.md)。
+zerodep-js 使用标准 TSX、显式变量式状态和一次初始化的组件。当前源码采用官方 TS7.1 dev、Babel 与 Vite；发布状态见 [执行记录](execution.md)和[变更记录](../CHANGELOG.md)。源码工作区运行方式见 [README](../README.md)。
 
 ## 安装与构建入口
 
-消费者使用 Node 24、固定 TS7 API 与 Vite 8。下面是 RC4 发布完成后的精确版本安装方式；发布验收前请使用工作区或同一批本地 tgz，不混装历史宿主或传统编译器包。平台二进制随依赖安装，消费者不需要 Go。
+消费者使用 Node 24、固定官方 TS7.1 与 Vite 8。迁移发布验收完成前，使用工作区或同一批本地 tgz；不要将旧版 next 的定制 SDK 与当前 compiler 包混装。应用需要 core，构建侧需要 compiler、vite 插件、Vite 和 TypeScript；使用统一框架版本。官方平台二进制随 TypeScript 安装，不需要 Go。
 
 ```sh
-pnpm add zerodep-js@1.0.0-rc.4
-pnpm add -D zerodep-js-native@1.0.0-rc.4 zerodep-js-vite@1.0.0-rc.4 vite@8.3.1 typescript@7.1.0-dev.20261005.1
-pnpm exec zerodep-tsc -p tsconfig.json --noEmit
+pnpm install --frozen-lockfile
+pnpm build:packages
+pnpm --filter @zerodep-js/example check
+pnpm dev
 ```
 
 Vite 插件同时处理普通转换和依赖扫描：
@@ -131,6 +132,6 @@ export const TodoList = _component(() => {
 
 SSR 项目额外安装 `zerodep-js-ssr`。先加载请求数据，再用 `renderToString(App, { props })` 生成 HTML；客户端以相同初值调用 `_hydrate`。初始化 JSON 通过 `zerodep-js-ssr/data` 的 serializeData 编码。完整文档模板和错误处理见 [SSR 指南](ssr-and-hydration.md)。
 
-仓库的 `apps/example` 同时提供框架用例和 `/tasks` 持久化任务页面，可以观察 props、表单、异步请求、取消、并发冲突、SSR/CSR 和开发更新在一起时的实际写法。运行方式见 [任务试点](pilot.md)。
+仓库的 `apps/example` 同时提供框架用例和 `/tasks` 持久化任务页面，可以观察 props、表单、异步请求、取消、并发冲突、SSR/CSR 和开发更新在一起时的实际写法。运行方式见 [任务试点](tooling.md)。
 
 下一步阅读 [API 参考](api.md)、[原生元素](native-elements.md)和[语义契约](semantics.md)。

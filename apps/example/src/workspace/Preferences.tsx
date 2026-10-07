@@ -2,14 +2,27 @@ import { _component, _state } from 'zerodep-js';
 import { _persistLocal } from 'zerodep-use/storage';
 
 export default _component(() => {
-  const preferences = _state({ compact: false });
-  const saved = _persistLocal('zerodep.example.workspace-preferences', preferences, {
-    validate(value) {
-      if (!value || typeof value !== 'object' || typeof Reflect.get(value, 'compact') !== 'boolean')
-        throw new Error('偏好格式无效。');
-      return { compact: Reflect.get(value, 'compact') as boolean };
+  let preferences = _state({ compact: false });
+  const saved = _persistLocal(
+    'zerodep.example.workspace-preferences',
+    {
+      read: () => preferences,
+      write: (next) => {
+        preferences = next;
+      },
     },
-  });
+    {
+      validate(value) {
+        if (
+          !value ||
+          typeof value !== 'object' ||
+          typeof Reflect.get(value, 'compact') !== 'boolean'
+        )
+          throw new Error('偏好格式无效。');
+        return { compact: Reflect.get(value, 'compact') as boolean };
+      },
+    },
+  );
   return (
     <section aria-label="偏好设置">
       <h2 tabIndex={-1} data-route-focus>

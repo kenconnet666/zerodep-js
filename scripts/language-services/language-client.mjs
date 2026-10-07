@@ -1,12 +1,12 @@
 import { root, serviceConfig } from './environment.mjs';
-import { NativeWorkspace } from '../../packages/native/dist/workspace.js';
+import { LanguageWorkspace } from '../../packages/compiler/dist/language-workspace.js';
 
 let active;
 export async function service(_kind, config) {
   const expected = serviceConfig();
-  if (config && config.bin !== expected.bin) throw new Error('只支持项目定制 SDK。');
+  if (config && config.bin !== expected.bin) throw new Error('只支持项目固定的官方 TS7.1。');
   if (!active) {
-    const client = new NativeWorkspace(root);
+    const client = new LanguageWorkspace(root);
     const pending = client
       .request({ action: 'info' })
       .then((info) => {

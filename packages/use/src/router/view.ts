@@ -234,7 +234,9 @@ export const Router = defineComponent((input: RouterProps): Renderable => {
   });
 });
 
-export type LinkProps<R extends AnyRoute> = Omit<NativeProps<HTMLAnchorElement>, 'href'> &
+// 固定 DOM 属性先形成稳定接口，不随每次路由泛型推断重新展开。
+interface NativeAnchorAttributes extends NativeProps<HTMLAnchorElement> {}
+export type LinkProps<R extends AnyRoute> = Omit<NativeAnchorAttributes, 'href'> &
   RouteOptions<NoInfer<R>> & {
     to: R;
     state?: unknown;

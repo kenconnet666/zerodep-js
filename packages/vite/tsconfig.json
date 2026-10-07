@@ -11,5 +11,5 @@
     "sourceMap": true
   },
   "include": ["src/**/*.ts"],
-  "references": [{ "path": "../native" }]
+  "references": [{ "path": "../compiler" }]
 }

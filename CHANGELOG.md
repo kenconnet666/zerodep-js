@@ -16,7 +16,7 @@
 - 自有 Vite、异步编译接口与 MCP 共用工作区 Go 进程；加入项目缓存、内存文本隔离、连接租约、异常重连和退出清理。
 - Go checker 增加三项可选类型规则，与类型诊断一起执行；补全 import 整理、状态声明 quick fix、模块边界与 API 报告入口。
 - 五包使用原生项目引用一次调度构建，移除构建之后的重复包级检查。保留 Oxlint 与 Prettier/Oxc；原生排版和 API 报告按需运行。
-- 原生 SDK 构建使用固定提交的临时源码归档，直接在主项目维护，不再创建 Git worktree。完整共享边界见 [原生工具说明](docs/native-tooling.md)。
+- 原生 SDK 构建使用固定提交的临时源码归档，直接在主项目维护，不再创建 Git worktree。完整共享边界见 [原生工具说明](https://github.com/kenconnet666/zerodep-js/blob/090396b/docs/native-tooling.md)。
 
 ## 1.0.0-rc.4 — 单一定制 TS7-Go 路线，2026-10-06
 
@@ -39,14 +39,14 @@
 - 路由/存储类型与语义测试、路由 SSR 测试、示例和独立消费同步迁移；公开路由组件声明使用 Renderable，避免私有模板类型路径泄漏。
 - 十五个公共包统一准备 1.0.0-rc.3（八个框架/宿主包、原生入口与六个平台包），发布清单与独立消费区分可选 use 和页面宿主。已发布 RC2 原始产物保持不变。
 
-- 新增独立原生 Go 编译器，与 Babel 后端共用 ABI 2；统一原始类型检查、JS/声明/映射及 LSP 框架诊断。原生转换性能与等价工作量测试见 [性能报告](docs/native-performance.md)。
+- 新增独立原生 Go 编译器，与 Babel 后端共用 ABI 2；统一原始类型检查、JS/声明/映射及 LSP 框架诊断。原生转换性能与等价工作量测试见 [性能报告](https://github.com/kenconnet666/zerodep-js/blob/090396b/docs/native-performance.md)。
 - Windows/Linux/macOS 的 x64/ARM64 使用对应架构 CI 构建与测试。完整 CI 通过后自动冻结 tgz、发布 next、检查 SHA-512 并运行真实注册表消费，最后公开 GitHub 预发布。恢复时沿用草稿中的原始产物与回执，不覆盖同版本内容。
 - 修复中间件开发服务器关闭时未释放原生编译进程的问题，避免 Linux 宿主开发测试在已完成断言后挂起。
 
 ## 维护收尾 — 2026-10-02
 
 - 补齐 npm 异步受理、版本公开与标签同步的发布恢复；先落盘尝试记录，受理后不重复上传，响应不确定时保留证据。增加四项针对性恢复测试并保留真实 Git/打包测试。
-- 更新当前安装指南、API 名称、主计划和宿主交付进度，区分研究历史与已支持能力；[交付后完整性审查](docs/completeness-audit.md)记录检查结果与取舍。
+- 更新当前安装指南、API 名称、主计划和宿主交付进度，区分研究历史与已支持能力；[交付后完整性审查](https://github.com/kenconnet666/zerodep-js/blob/090396b/docs/completeness-audit.md)记录检查结果与取舍。
 - 本维护阶段不修改 RC2 运行时或重打包已发布产物。
 
 ## 1.0.0-rc.2 — 2026-10-02

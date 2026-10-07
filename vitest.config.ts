@@ -11,7 +11,6 @@ export default defineConfig({
     ],
     clearMocks: true,
     restoreMocks: true,
-    setupFiles: ['./tests/native/compiler.setup.ts'],
     maxWorkers: 2,
   },
 });

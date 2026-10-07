@@ -107,7 +107,8 @@ export const PropertyExample = _component(() => {
         id="property-form"
         onSubmit={(event) => {
           event.preventDefault();
-          submitted = String(new FormData(event.currentTarget).get('external'));
+          const value = new FormData(event.currentTarget).get('external');
+          submitted = typeof value === 'string' ? value : (value?.name ?? '');
         }}
       />
 

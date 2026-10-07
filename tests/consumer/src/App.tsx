@@ -50,6 +50,7 @@ const packedRoutes = _defineRoutes({
 });
 
 export const App = _component(({ title }: { title: string }) => {
+  let input: HTMLInputElement | undefined = undefined;
   let message = _state('等待');
   let routed = _state(false);
   let lazyVisible = _state(false);
@@ -94,7 +95,10 @@ export const App = _component(({ title }: { title: string }) => {
     >
       <h1>{title}</h1>
       <Counter label="打包" onCount={(value) => (message = String(value))} />
-      <input aria-label="消息" bind:value={message} />
+      <input aria-label="消息" bind:value={message} bind:this={input} />
+      <button data-reference-focus onClick={() => input?.focus()}>
+        聚焦消息
+      </button>
       <button data-history-commit onClick={() => history.commit()}>
         记录消息
       </button>

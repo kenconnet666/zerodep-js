@@ -1,3 +1,4 @@
+import { generateJSX } from './generate-jsx.mjs';
 import { readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -71,7 +72,10 @@ for (const [tag, attributes] of Object.entries(htmlElementAttributes)) {
       htmlTypes.set(name, valueType(info, false));
     }
   }
-  htmlTags.set(tag, [...keys].sort());
+  htmlTags.set(
+    tag,
+    [...keys].sort((left, right) => (left < right ? -1 : left > right ? 1 : 0)),
+  );
 }
 
 for (const info of Object.values(svg.property)) {
@@ -139,3 +143,5 @@ for (const [path, content] of [
 console.log(
   `原生属性${check ? '生成检查通过' : '已生成'}：HTML ${htmlTypes.size} 个名称、SVG ${svgTypes.size} 个名称、事件 ${events.size} 个别名。`,
 );
+
+await generateJSX(check);

@@ -1,14 +1,19 @@
 # 浏览器持久化
 
-当前 main 从 1.0.0-rc.3 起改用独立包入口 `zerodep-use/storage`，与 core 安装相同版本。候选尚未发布，当前先通过工作区或本地 tgz 消费；RC2 使用原 core 子入口。变量式状态和持久化格式保持不变，迁移导入不清空已有草稿或偏好。
+使用独立包入口 `zerodep-use/storage`，与 core 安装相同版本。当前源码将输入统一为 read/write；该 API 调整不改变持久化格式，不清空已有草稿或偏好。
 
 ```tsx
 import { _component, _state } from 'zerodep-js';
 import { _persistLocal } from 'zerodep-use/storage';
 
 const Preferences = _component(() => {
-  const prefs = _state({ compact: false, name: '' });
-  const storage = _persistLocal('app.preferences', prefs);
+  let prefs = _state({ compact: false, name: '' });
+  const storage = _persistLocal('app.preferences', {
+    read: () => prefs,
+    write: (next) => {
+      prefs = next;
+    },
+  });
   return (
     <input
       value={prefs.name}
@@ -20,7 +25,7 @@ const Preferences = _component(() => {
 });
 ```
 
-直接对象绑定保持根对象/数组身份，通过字段更新恢复内容。使用稳定的 `_state` 普通对象或数组，不在绑定后替换根变量；不可替换字段和形态不匹配会报错。需要整体赋值或保存单个值时明确提供读写：
+统一使用显式 read/write：读取当前状态，恢复时由 write 决定如何替换。普通值、对象和数组使用同一个契约；库不再自动删除或重新定义应用对象的字段。
 
 ```ts
 let theme = _state('system');
@@ -38,7 +43,7 @@ const storage = _persistLocal('app.theme', {
 
 - SSR 不访问 window/storage，也不运行迁移；客户端先完成 hydration，再恢复本地值。
 - 默认值不会主动写入不存在的键，已有数据也不会被初始化默认值覆盖。首次恢复前已有的新编辑优先，包括接管前 input 回放。
-- 对象恢复按已验证的数据替换自身可枚举字段，移除不再存在的字段；不会隐式深合并缺失字段。需要新字段默认值时在 migrate/validate 中明确提供。
+- 恢复时将校验后的完整值交给 write，不隐式深合并。需要新字段默认值时在 migrate/validate 中明确提供。
 - 同页使用同一存储对象的绑定主动同步；跨标签页使用原生 storage 事件。收到外部提交时取消本实例的旧排队写入并应用提交，避免来回回写。这是提交事件覆盖规则，不是协作编辑或事务冲突解决。
 - writeDelay（毫秒，默认 0）合并写入。0 仍受响应式微任务批次合并；不会每写一个字段就立即同步写磁盘。
 - 动态键可以传 getter。切换前尝试提交旧键排队快照，再恢复新键；旧键提交失败会报告错误并保留待写内容，不能将新键数据写回旧键。
@@ -65,18 +70,27 @@ const storage = _persistLocal('app.theme', {
 默认存储是 JSON，支持范围和序列化行为遵循 JSON；需要 Date/Map 等特殊恢复逻辑时由 validate 显式转换，不冒充无损对象数据库。持久化不是 IndexedDB 的替代。
 
 ```ts
-_persistLocal('app.preferences', prefs, {
-  version: 2,
-  writeDelay: 100,
-  migrate(value, previousVersion) {
-    if (previousVersion === 1) return { ...(value as object), compact: false };
-    return value;
+_persistLocal(
+  'app.preferences',
+  {
+    read: () => prefs,
+    write: (next) => {
+      prefs = next;
+    },
   },
-  validate(value) {
-    // 可使用应用已有 schema；框架不绑定特定校验库。
-    return preferenceSchema.parse(value);
+  {
+    version: 2,
+    writeDelay: 100,
+    migrate(value, previousVersion) {
+      if (previousVersion === 1) return { ...(value as object), compact: false };
+      return value;
+    },
+    validate(value) {
+      // 可使用应用已有 schema；框架不绑定特定校验库。
+      return preferenceSchema.parse(value);
+    },
   },
-});
+);
 ```
 
 存储封装为 `{ format: 'zerodep-js-storage', version, value }`。无封装的旧 JSON 按版本 0 处理，必须明确迁移。更高版本、损坏 JSON、校验失败不会自动删除或覆盖；修复原始数据后 retry，或由用户明确 reset/remove。

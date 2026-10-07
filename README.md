@@ -1,49 +1,38 @@
 # zerodep-js
 
-使用标准 TSX、显式变量式状态和细粒度更新的独立框架。项目只维护固定的定制 TypeScript 7.1 Go 编译器：检查原始源码，在同一编译器内完成框架转换、JS、声明、映射和语言服务诊断。
+使用标准 TSX、显式变量式状态和细粒度更新的独立框架。框架转换使用 Babel，类型检查、声明和基础语言服务使用官方 TypeScript 7.1 dev，开发与打包使用 Vite。
 
-当前十一包 **1.0.0-rc.6 已发布到 next**，通过六平台原生验证、并行三浏览器验证与 npm 实际消费。传统编译器及 Vue、React、Svelte 页面宿主已移除，core 保留一份源码和一套产物。历史版本与发布证据见 [CHANGELOG](CHANGELOG.md)，当前工具与共享边界见 [原生工具说明](docs/native-tooling.md)。
+优先保证实现简单、容易维护、使用方便、类型提示准确，并用适当中文注释解释关键语义。性能不是首要目标，不维护自有 TypeScript 分支、原生 SDK 或跨命令编译后台。
 
-主分支已精简为宿主持有 Go 编译会话：一次性 CLI 完成即退出，Vite 在当前构建/开发期间复用，结束即关闭；这部分尚未随 RC6 发布。使用方式见 [原生工具说明](docs/native-tooling.md)。
+> 当前源码正在完成官方工具链迁移。已发布的 RC6 属于此前路线，不代表这次迁移已经发布；验收状态见 [执行记录](docs/execution.md)，历史发布见 [CHANGELOG](CHANGELOG.md)。
 
 ## 工作区
 
-| 子项目              | 职责                                                 |
-| ------------------- | ---------------------------------------------------- |
-| `packages/core`     | 状态、组件、DOM、生命周期、JSX 类型与 ABI 2          |
-| `packages/use`      | router、storage、history 子入口，通过 peer 共享 core |
-| `packages/ssr`      | 请求内渲染、HTML 转义、数据编码与文档组合            |
-| `packages/native`   | Go 框架转换、CLI、单文件接口与构建会话               |
-| `packages/native-*` | Windows/Linux/macOS 的 x64/ARM64 定制 SDK            |
-| `packages/vite`     | 原生源码转换、依赖扫描、开发诊断与 HMR               |
-| `apps/example`      | 独立框架、任务工作台与路由应用示例                   |
+| 包                | 职责                                                 |
+| ----------------- | ---------------------------------------------------- |
+| packages/core     | 响应式、组件、DOM、生命周期、JSX 类型和运行时协议    |
+| packages/use      | router、storage、history 子入口，通过 peer 共享 core |
+| packages/ssr      | 请求隔离、HTML 渲染、转义和数据编码                  |
+| packages/compiler | Babel 转换、框架检查、官方 TS7.1 与语言工具适配      |
+| packages/vite     | 转换接入、依赖扫描和开发更新                         |
+| apps/example      | 使用实际包产物的 CSR/SSR 示例和任务应用              |
 
-示例消费实际包产物，不使用源码别名。框架代码使用 [MIT License](LICENSE)，平台包中的 TypeScript 上游使用 Apache-2.0，相关许可随包分发。
+不提供外部框架运行时适配，也不把预编译组件库链接到工作区源码。
 
-## 环境与运行
+## 开发
 
-维护环境：Node 24.18.0、pnpm 10.34.5、Go 1.27.1；TypeScript API 固定为 `7.1.0-dev.20261005.1`。安装已发布平台包的消费者不需要 Go。源码工作区第一次运行先构建当前平台的 SDK：
+使用 Node 24、pnpm 10.34.5；官方 TypeScript 固定为 7.1.0-dev.20261006.1。安装不需要 Go 或 TypeScript 源码仓库。
 
 ```sh
 pnpm install --frozen-lockfile
-pnpm compiler:native:build --source <TypeScript源码检出路径> --go <Go可执行文件路径>
 pnpm dev
-```
-
-TypeScript 源码检出应包含 `scripts/language-services/typescript-target.json` 指定的上游提交。工作区的构建、检查和声明命令通过 `scripts/native/tsc.mjs` 调用定制 SDK；SDK 缺失时明确报错，不回退到官方编译器。
-
-开发入口默认为 `http://127.0.0.1:5173/`。`?render=ssr` 返回已渲染 HTML，`?render=csr` 由浏览器创建页面。`/tasks` 包含持久化任务、搜索、编辑、取消和并发冲突；`/workspace/tasks` 演示嵌套路由、草稿、离开确认和偏好设置。日常数据位于被忽略的 `apps/example/.data`，浏览器测试使用独立内存数据库。
-
-```sh
-pnpm dev:csr
-pnpm dev:ssr
 pnpm build
 pnpm preview
 ```
 
-生产服务默认端口 4173，可传 `--port 4200`。生产分支消费 `dist/client`、`dist/server`，不启动 Vite。
+开发默认端口 5173，生产预览默认端口 4173。主示例支持 CSR/SSR、任务路由和工作区；应用数据保存在 apps/example/.data，测试使用独立临时数据。
 
-## 组件与构建
+## 写法
 
 ```tsx
 import { _component, _state, _derived } from 'zerodep-js';
@@ -59,42 +48,24 @@ export const Counter = _component(({ step = 1 }: { step?: number }) => {
 });
 ```
 
-Vite 使用 `zerodep-js-vite` 的 `zerodep()`，插件直接依赖原生编译器，不再提供后端选择。Vite 项目的 TS 配置使用 `jsx: "preserve"`、`jsxImportSource: "zerodep-js"`。独立 CLI 输出 JS 使用 `zerodep-tsc -p tsconfig.json --jsx react-jsx`；该 JSX 模式名称属于 TypeScript，不引入 React。
+保留变量式读写、组件参数解构/默认值/实时 rest，以及原生和组件 bind、DOM bind:this。它们都是标准 TSX 语法，由框架编译器实现响应式语义；普通局部变量不隐式变为响应式。
 
-客户端通过 `_mount(App, { target, props })` 挂载，通过返回的 disposer 卸载。SSR 使用 `renderToString`，客户端以相同初值 `_hydrate`。详细用法见 [开始使用](docs/getting-started.md)、[编写指南](docs/authoring.md)、[SSR 指南](docs/ssr-and-hydration.md)。
+Vite 使用 zerodep-js-vite 的 zerodep()。应用 TS 配置使用 jsx: preserve、jsxImportSource: zerodep-js。客户端通过 _mount/_hydrate 返回的 disposer 卸载；服务端使用独立 SSR 入口。
 
-## 验证与编辑器
+## 验证与工具
 
 ```sh
 pnpm check
 pnpm test
+pnpm test:compiler
 pnpm test:dev
 pnpm test:packages
-pnpm test:e2e:chromium
-pnpm format:check
-```
-
-- `check`：定制 SDK 构建、各包与工具类型、框架诊断、生成数据与 lint。
-- `test`：运行时、原生编译语义、SSR、工具与发布恢复测试；`test:native` 只运行原生包用例。
-- `test:dev`：真实 Vite 开发更新、编译错误恢复、状态保留与 SSR 更新。
-- `test:packages`：工作区外安装真实 tgz，检查声明、预编译组件库、CSR/SSR、绑定和清理。
-- `test:e2e`：完整 Chromium/Firefox/WebKit；本地可选择 Chromium，完整矩阵由 CI 执行。
-- `benchmark:native`：当前原生路线的冷/热转换、完整项目、增量编辑和进程树内存观察。
-
-```sh
-pnpm lsp:setup
 pnpm lsp:verify
 pnpm lsp:completions
 ```
 
-WebStorm 选择当前平台包下的 `typescript` 目录，例如 `packages/native-win32-x64/typescript`。项目 MCP 名称为 `zerodep_js_lsp`，由本项目生成本机配置；不会修改其他项目或全局配置。补全、导航和框架诊断来自同一个定制 SDK。详见 [开发与诊断](docs/development.md)。
+本地执行相关验证；CI 并行运行工程检查、三浏览器、Linux/Windows 独立消费和官方工具的六平台验证。LSP 探针会临时写主示例源码，不与同一工作区的应用 check/build 同时运行。
 
-Prettier/Oxc 和 Oxlint 仍是独立工程工具；它们尚未共享 Go AST。格式化行为及 WebStorm 操作见 [格式化说明](docs/formatting.md)。
+[工具分工](docs/tooling.md) · [开始使用](docs/getting-started.md) · [API](docs/api.md) · [语义](docs/semantics.md) · [表单](docs/forms.md) · [SSR](docs/ssr-and-hydration.md) · [包消费](docs/packages.md) · [发布](docs/releasing.md)
 
-## 参考
-
-- [API](docs/api.md)、[语义契约](docs/semantics.md)、[支持范围](docs/support.md)
-- [表单](docs/forms.md)、[原生元素](docs/native-elements.md)、[路由](docs/routing.md)、[持久化](docs/storage.md)
-- [开发检查面板](docs/devtools.md)、[任务试点](docs/pilot.md)
-- [包产物与消费](docs/packages.md)、[多平台发布](docs/native-release.md)、[发布与回滚](docs/releasing.md)
-- [贡献约定](CONTRIBUTING.md)、[安全边界](docs/security.md)、[稳定性](docs/stability.md)
+框架源码使用 MIT License；成熟依赖按各自许可证分发，core 的生成数据来源见包内 THIRD_PARTY_NOTICES.md。

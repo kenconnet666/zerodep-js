@@ -21,6 +21,13 @@ const rows = [{ id: 1, title: 'row' }];
 const control = `const Field = _component((props: { value: string; onValueChange: (value: string) => void; label?: string }) => <span>{props.value}</span>);\n`;
 const cases = [
   {
+    name: 'DOM 引用绑定',
+    source:
+      header + `let node: HTMLInputElement | undefined; const view = <input bind:th¦={node} />;`,
+    expected: 'bind:this',
+    word: 'bind:th',
+  },
+  {
     name: '具名宏导入',
     source: `import { _sta¦ } from 'zerodep-js';`,
     expected: '_state',

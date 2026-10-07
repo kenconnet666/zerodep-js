@@ -30,7 +30,28 @@ export function resolveBindings(tag: string | Function, input: Props): Props {
   const values: Record<string, () => unknown> = Object.create(null);
   const events = new Map<string, Binding[]>();
   for (const binding of bindings) {
-    const [name, read] = binding;
+    const [name, read, write] = binding;
+    if (name === 'this') {
+      if (!native) throw new Error('bind:this 只支持 DOM 元素。');
+      if (Object.hasOwn(values, 'ref')) throw new Error('bind:this 不能重复声明。');
+      const validateReference = () => {
+        if (Object.hasOwn(original, 'ref')) throw new Error('bind:this 与 ref 不能同时声明。');
+      };
+      validateReference();
+      // ref 在正常挂载或成功接管后执行，SSR 只创建闭包、不写入 DOM 引用。
+      const reference = (element: Element) => {
+        write(element);
+        return () => {
+          // 条件切换时旧节点的清理不能抹掉新节点已经写入的引用。
+          if (read() === element) write(undefined);
+        };
+      };
+      values.ref = () => {
+        validateReference();
+        return reference;
+      };
+      continue;
+    }
     if (
       native &&
       !(

@@ -2,7 +2,7 @@
 
 项目保留 Prettier 3.9.9 的排版器，JS/TS/JSX/TSX 使用官方 `@prettier/plugin-oxc@0.2.3` 的 Rust 原生解析器。Svelte 格式插件与对应配置已删除。`.prettierrc.json` 显式选择 `oxc` / `oxc-ts`，编辑器、命令行及原生属性生成脚本读取同一份配置。
 
-这与 Go 编译器分工不同：Go 负责 TypeScript 类型检查、框架转换和诊断；格式化不嵌入编译过程。TS7 的 Go LSP 已有格式化接口，但其换行、引号等规则不等同于本项目的 Prettier 配置。
+官方 TS7.1 负责类型，Babel 负责框架转换；格式化独立使用 Prettier。官方语言服务的排版规则不等同于项目 Prettier 配置，因此不再维护另一条框架排版入口。
 
 ## 使用
 

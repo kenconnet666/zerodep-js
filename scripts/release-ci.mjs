@@ -98,7 +98,7 @@ if (existing) {
   const notes = resolve(directory, 'notes.md');
   await writeFile(
     notes,
-    `候选 ${version}，源码 ${revision}。\n\n只包含定制 TS7-Go 工具链与 Windows/Linux/macOS 的 x64/ARM64 平台包。平台产物来自同一提交的实际架构 CI 测试；发布到 npm next，不提升稳定标签。\n\n详细变更见仓库 CHANGELOG.md、docs/native-compiler-implementation.md 和 docs/native-performance.md。\n`,
+    `候选 ${version}，源码 ${revision}。\n\n包含 core、use、ssr、compiler、vite 五包。框架由 Babel 转换，类型和语言服务使用官方 TS7.1 dev；平台二进制由官方 TypeScript npm 依赖提供，不分发定制 SDK。产物来自同一提交的完整 CI；发布到 npm next，不提升稳定标签。\n\n详细变更见仓库 CHANGELOG.md 和 docs/tooling.md。\n`,
   );
   await gh([
     'release',

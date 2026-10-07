@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "node --watch server.ts",
-    "check": "node ../../scripts/native/tsc.mjs -p tsconfig.json --noEmit",
-    "build": "pnpm build:client && pnpm build:server",
+    "check": "zerodep-check -p tsconfig.json",
+    "build": "pnpm check && pnpm build:client && pnpm build:server",
     "build:client": "vite build --outDir dist/client",
     "build:server": "vite build --ssr src/entry-server.ts --outDir dist/server",
     "preview": "node server.ts --production"
@@ -18,7 +18,7 @@
     "zerodep-use": "workspace:*"
   },
   "devDependencies": {
-    "zerodep-js-native": "workspace:*",
+    "zerodep-js-compiler": "workspace:*",
     "zerodep-js-vite": "workspace:*",
     "typescript": "catalog:",
     "vite": "catalog:"

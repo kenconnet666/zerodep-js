@@ -1,46 +1,31 @@
-# 包产物与独立消费
+# 包边界与独立消费
 
-当前源码统一准备 **1.0.0-rc.4**，只维护原生 TS7 路线。发布清单位于 `scripts/package-list.mjs`，共十一包：core、use、ssr、vite、native 和六个平台包。工作区根与主示例保持 private；实际发布状态见 [CHANGELOG](../CHANGELOG.md)。
+项目维护 core、use、ssr、compiler、vite 五包。官方 TypeScript 的平台二进制由其 npm 依赖提供，框架不再发布自己的平台 SDK。
 
-## 包边界
+| 发布包              | 职责                                                                 |
+| ------------------- | -------------------------------------------------------------------- |
+| zerodep-js          | 浏览器与响应式运行时、类型声明、internal 编译协议、devtools 开发入口 |
+| zerodep-use         | history/router/storage，peer 依赖同版本 core                         |
+| zerodep-js-ssr      | 服务端渲染和序列化，peer 依赖 core                                   |
+| zerodep-js-compiler | Babel 转换、官方 TS7.1 检查与语言适配，属于开发工具                  |
+| zerodep-js-vite     | 构建侧依赖 compiler，集成 Vite                                       |
 
-| 包或入口                                   | 用途                                                 | 依赖边界                                        |
-| ------------------------------------------ | ---------------------------------------------------- | ----------------------------------------------- |
-| `zerodep-js`                               | 响应式、组件、DOM、hydrate、生命周期、快照和公共类型 | CSS Tools tokenizer 与 csstype；不依赖编译器    |
-| `zerodep-js/jsx-runtime`                   | JSX 类型约定                                         | `jsxImportSource: zerodep-js`                   |
-| `zerodep-js/internal`                      | 编译输出与 SSR 的 ABI 2                              | 内部协议，不作为手写 signal API                 |
-| `zerodep-use/router`、`storage`、`history` | 路由、持久化与编辑历史                               | 通过同版本 core peer 共享运行时，无聚合根入口   |
-| `zerodep-js-ssr`、`zerodep-js-ssr/data`    | SSR 与独立 JSON 编码                                 | core 为 peer；data 子入口不依赖 DOM 类型        |
-| `zerodep-js-native`                        | CLI、单文件转换、宿主内 Program                      | 固定 TS7 API 客户端及可选平台 SDK               |
-| `zerodep-js-native-<平台>`                 | Go 二进制、标准库与语言服务                          | Windows/Linux/macOS 的 x64/ARM64；用户不需要 Go |
-| `zerodep-js-vite`                          | 应用转换、依赖扫描、开发检查和 HMR                   | 直接依赖 native，Vite 8 为 peer                 |
+## 应用与组件库
 
-传统编译器和三个外部框架适配包已从源码及当前发布清单删除。已发布历史版本不回写或覆盖。
+应用和预编译库通过 peer dependency 共享 core，避免复制第二个响应式实例。运行时依赖图不得包含 Babel、TypeScript、lint 或 Vite。
 
-应用、SSR 和预编译组件库应共享同一个 core。ESM 执行入口通过 exports 指向 dist；源码、JS map 和声明 map 一起分发，消费端无需编译框架包的 src。产物排除 `.tsbuildinfo`、测试、工作区配置和本机文件。
+应用构建前使用 zerodep-check -p 检查项目，再由 Vite 构建 client/server。组件库采用同一个 Vite 插件和 library mode 输出 JS，官方 tsc --emitDeclarationOnly 输出声明。不要把仅经 tsc 转译的 _state/_component 当作可执行组件库。
 
-框架包使用 MIT，平台包包含上游 Apache-2.0 LICENSE、MIT LICENSE.zerodep 和 NOTICE。core 的生成属性源码、声明及 THIRD_PARTY_NOTICES.md 一同打包。
+公开类型保留泛型、可选属性、事件 currentTarget、组件 children 和绑定类型；声明映射必须指向随包提供的真实源码，不用本机绝对路径或工作区源码别名掩盖打包问题。
 
-## 消费验收
+## 实际消费验收
 
-`pnpm test:packages` 构建包后，在工作区外创建临时消费项目并执行以下检查：
+pnpm test:packages 使用本次固定 tgz 在工作区外安装，检查：
 
-1. 打包当前清单，核对源码导航、声明映射、许可证与平台可执行文件。
-2. 从真实 tgz 安装，无源码 alias，不继承 NODE_PATH；检查 exports 和已发布依赖协议。
-3. 确认没有传统编译器、外部宿主或 Babel 依赖。
-4. 用安装后的 `zerodep-tsc` 一次输出组件库 JS、声明与映射，然后打包安装该组件库。
-5. 严格检查必填 props、泛型 children、原生事件、bind 和公共 API 的正反类型用例。
-6. 验证客户端、Node SSR、请求隔离、CSR/SSR 节点接管、输入绑定、编辑历史、路由及卸载清理。
-7. 检查浏览器有效模块没有 TypeScript、原生编译器、Vite、SSR 渲染器或开发检查代码，验证小入口按需打包。
+- 包名、版本、许可证、导出、源码和映射完整。
+- 安装结果不链接回工作区，不残留 workspace/catalog/link/file 协议。
+- 官方 TS7.1 与 Babel 能独立编译预编译组件库，声明保留泛型和类型反例。
+- CSR/SSR、节点接管、绑定、路由、存储和卸载使用实际发布包。
+- 生产浏览器不包含开发工具、其他框架或重复运行时。
 
-测试结束清理自己创建的服务、浏览器、安装目录和 tgz；共享 pnpm store 不受影响。Linux 和 Windows CI 运行真实包消费，六个平台的 Go 构建与语义测试分别由对应 runner 执行。
-
-## 编译器接口
-
-Vite 消费使用 `zerodep()`。生产构建默认在同一个原生 Program 中检查请求文件并 emit；开发态默认交给语言服务做类型检查，框架诊断仍会阻止无效输出。全项目检查使用 `zerodep-tsc --noEmit`。
-
-组件库使用 `zerodep-tsc -p tsconfig.json --jsx react-jsx`，开启 declaration、declarationMap、sourceMap，并关闭 emitDeclarationOnly。内置框架转换先于 TypeScript JSX 转换，原始树负责声明输出。
-
-Node `compile` 是单文件转换与框架诊断接口；`createCompiler` 持有项目快照，适合检查及连续编辑，使用结束后必须关闭。`CompileResult.map` 使用本项目的 SourceMap 类型，运行时类型不暴露编译器 AST。
-
-编译器和 SSR 在初始化时验证 ABI 2。不匹配时报告 `ZJ_RUNTIME_ABI`；应统一框架版本并重新编译应用和组件库。Vite 跳过已经发布的 node_modules JS，依赖扫描和常规转换使用同一原生服务。
+注册表验收使用 release:verify-registry，比对同一提交、tgz 摘要、版本和 next 标签。上传成功不能替代实际安装，旧版本的消费通过也不覆盖当前候选。

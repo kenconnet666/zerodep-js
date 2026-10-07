@@ -12,10 +12,10 @@
     "dev": "pnpm build:packages && pnpm -r --parallel dev",
     "dev:csr": "pnpm build:packages && pnpm --filter @zerodep-js/example dev --render-mode csr",
     "dev:ssr": "pnpm build:packages && pnpm --filter @zerodep-js/example dev --render-mode ssr",
-    "build:packages": "node scripts/native/tsc.mjs -b tsconfig.build.json",
+    "build:packages": "tsc -b tsconfig.build.json",
     "check": "pnpm native:check && pnpm build:packages && pnpm check:projects && pnpm lint",
-    "check:projects": "node scripts/native/tsc.mjs -p apps/example/tsconfig.json && node scripts/native/tsc.mjs -p tsconfig.tools.json",
-    "check:config": "node scripts/native/tsc.mjs -p tsconfig.tools.json",
+    "check:projects": "node packages/compiler/dist/cli.js -p apps/example/tsconfig.json && node packages/compiler/dist/cli.js -p tsconfig.tools.json",
+    "check:config": "tsc -p tsconfig.tools.json",
     "build": "pnpm build:packages && pnpm --filter @zerodep-js/example build",
     "preview": "pnpm --filter @zerodep-js/example preview",
     "lint": "oxlint . --deny-warnings",
@@ -44,9 +44,7 @@
     "lsp:verify": "node scripts/language-services/verify.mjs",
     "lsp:completions": "node scripts/language-services/completions.mjs .",
     "lsp:inspect": "node scripts/language-services/inspect.mjs .",
-    "compiler:native:build": "node scripts/native/build.mjs",
-    "benchmark:native": "node scripts/native/benchmark.mjs",
-    "test:native": "pnpm --filter zerodep-js-native build && vitest run --config vitest.native.config.ts"
+    "test:compiler": "pnpm --filter zerodep-js-compiler build && vitest run --config vitest.compiler.config.ts"
   },
   "devDependencies": {
     "@prettier/plugin-oxc": "catalog:",
@@ -54,6 +52,7 @@
     "@types/node": "catalog:",
     "html-element-attributes": "catalog:",
     "oxlint": "catalog:",
+    "oxlint-tsgolint": "catalog:",
     "prettier": "catalog:",
     "property-information": "catalog:",
     "smol-toml": "catalog:",

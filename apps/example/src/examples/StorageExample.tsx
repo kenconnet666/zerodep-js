@@ -2,6 +2,11 @@ import { _component, _state } from 'zerodep-js';
 import { _persistLocal } from 'zerodep-use/storage';
 
 type Preferences = { name: string; compact: boolean };
+function errorMessage(error: unknown): string {
+  if (error === undefined) return '';
+  if (error instanceof Error) return error.message;
+  return typeof error === 'string' ? error : '存储操作失败';
+}
 function validate(value: unknown): Preferences {
   if (
     !value ||
@@ -16,8 +21,8 @@ function validate(value: unknown): Preferences {
 }
 
 export const StorageExample = _component(() => {
-  const prefs = _state<Preferences>({ name: '默认', compact: false });
-  const mirror = _state<Preferences>({ name: '默认', compact: false });
+  let prefs = _state<Preferences>({ name: '默认', compact: false });
+  let mirror = _state<Preferences>({ name: '默认', compact: false });
   const options = {
     version: 2,
     writeDelay: 80,
@@ -28,8 +33,26 @@ export const StorageExample = _component(() => {
       return value;
     },
   };
-  const storage = _persistLocal('zerodep.example.preferences', prefs, options);
-  _persistLocal('zerodep.example.preferences', mirror, options);
+  const storage = _persistLocal(
+    'zerodep.example.preferences',
+    {
+      read: () => prefs,
+      write: (next) => {
+        prefs = next;
+      },
+    },
+    options,
+  );
+  _persistLocal(
+    'zerodep.example.preferences',
+    {
+      read: () => mirror,
+      write: (next) => {
+        mirror = next;
+      },
+    },
+    options,
+  );
   return (
     <section aria-label="浏览器持久化">
       <h2>浏览器持久化</h2>
@@ -58,7 +81,7 @@ export const StorageExample = _component(() => {
         {mirror.name}/{String(mirror.compact)}
       </output>
       <output data-storage-status>{storage.status}</output>
-      <output data-storage-error>{storage.error !== undefined ? String(storage.error) : ''}</output>
+      <output data-storage-error>{errorMessage(storage.error)}</output>
       <button
         data-storage-flush
         onClick={() => {

@@ -1,6 +1,5 @@
 import assert from 'node:assert/strict';
 import { execFile } from 'node:child_process';
-import { createRequire } from 'node:module';
 import { createServer } from 'node:http';
 import { once } from 'node:events';
 import { access, cp, mkdir, mkdtemp, readFile, realpath, rm, writeFile } from 'node:fs/promises';
@@ -73,7 +72,6 @@ try {
   }
   for (const item of selectedPackages) {
     const name = item.folder;
-    const platformPackage = item.kind === 'native-platform';
     const directory = resolve(root, 'packages', name);
     const sourceManifest = await json(resolve(directory, 'package.json'));
     if (values.registry)
@@ -84,16 +82,12 @@ try {
     const files = new Set(packed.files.map((file) => file.path));
     assert(files.has('README.md'), `${name} 缺少包级说明。`);
     assert(
-      files.has('LICENSE') &&
-        sourceManifest.license === (platformPackage ? 'Apache-2.0 AND MIT' : 'MIT'),
+      files.has('LICENSE') && sourceManifest.license === 'MIT',
       `${name} 缺少 MIT 许可声明或文件。`,
     );
     assert.equal(
       await readFile(resolve(directory, 'LICENSE'), 'utf8'),
-      await readFile(
-        resolve(root, platformPackage ? 'patches/LICENSE.typescript' : 'LICENSE'),
-        'utf8',
-      ),
+      await readFile(resolve(root, 'LICENSE'), 'utf8'),
       `${name} 的许可证与项目根不一致。`,
     );
     if (name === 'core') {
@@ -114,22 +108,12 @@ try {
       assert.deepEqual(Object.keys(sourceManifest.peerDependencies), ['zerodep-js']);
       assert.equal(Object.keys(sourceManifest.dependencies ?? {}).length, 0);
     }
-    if (platformPackage) {
-      assert(
-        files.has('typescript/zerodep-build.json') && files.has('NOTICE.txt'),
-        `${name} 缺少原生产物或许可。`,
-      );
-      assert(
-        files.has(`typescript/lib/${item.platform.startsWith('win32') ? 'tsc.exe' : 'tsc'}`),
-        `${name} 缺少可执行文件。`,
-      );
-    }
     assert(
       [...files].every((file) => !/tsbuildinfo|(^|\/)(test|node_modules|\.codex)(\/|$)/.test(file)),
       `${name} 混入构建缓存或测试。`,
     );
     assert(
-      platformPackage || [...files].some((file) => file.startsWith('src/')),
+      [...files].some((file) => file.startsWith('src/')),
       `${name} 缺少源码导航产物。`,
     );
     for (const target of Object.values(sourceManifest.exports ?? {}))
@@ -139,13 +123,11 @@ try {
     const dependency = values.registry
       ? values.version
       : 'file:' + relative(consumer, file).replaceAll('\\', '/');
-    if (!platformPackage)
-      (['core', 'ssr', 'use'].includes(name) ? manifest.dependencies : manifest.devDependencies)[
-        packed.name
-      ] = dependency;
+    (['core', 'ssr', 'use'].includes(name) ? manifest.dependencies : manifest.devDependencies)[
+      packed.name
+    ] = dependency;
     manifest.pnpm.overrides[packed.name] = dependency;
-    if (!platformPackage || item.platform === `${process.platform}-${process.arch}`)
-      packages.set(packed.name, { files, sourceManifest });
+    packages.set(packed.name, { files, sourceManifest });
   }
   await writeFile(resolve(consumer, 'package.json'), JSON.stringify(manifest, null, 2));
   await writeFile(
@@ -156,24 +138,18 @@ try {
   console.log(`包内容清单通过，开始工作区外的${values.registry ? '注册表' : 'tgz'}独立安装。`);
   await run(['install', '--ignore-scripts', '--prefer-offline']);
   const lock = await readFile(resolve(consumer, 'pnpm-lock.yaml'), 'utf8');
-  assert(!lock.includes('@babel/'), '原生依赖图仍含 Babel。');
-  for (const host of ['zerodep-js-compiler', 'react', 'react-dom', 'vue', 'svelte'])
+  assert(lock.includes('@babel/'), '消费安装缺少正式 Babel 编译依赖。');
+  for (const host of ['zerodep-js-native', 'react', 'react-dom', 'vue', 'svelte'])
     assert.equal(
       await access(resolve(consumer, 'node_modules', host)).then(
         () => true,
         () => false,
       ),
       false,
-      '原生消费不能安装传统编译器或外部宿主。',
+      '消费安装不能回流定制原生 SDK 或外部宿主。',
     );
   for (const [name, { files, sourceManifest }] of packages) {
-    const directory = name.startsWith('zerodep-js-native-')
-      ? dirname(
-          createRequire(
-            await realpath(resolve(consumer, 'node_modules/zerodep-js-native/package.json')),
-          ).resolve(name + '/package.json'),
-        )
-      : resolve(consumer, 'node_modules', name);
+    const directory = resolve(consumer, 'node_modules', name);
     const installedPath = await realpath(directory);
     assert(installedPath.startsWith(consumer + sep), `${name} 仍链接到工作区。`);
     const installed = await json(resolve(directory, 'package.json'));
@@ -208,9 +184,11 @@ try {
       await assert.rejects(import(specifier), { code: 'ERR_PACKAGE_PATH_NOT_EXPORTED' });
     }
     assert.equal(typeof _createRouter, 'function');
+    assert.equal('_createPage' in await import('zerodep-js'), false, '旧页面宿主 API 必须移除');
     _createRoot(dispose => {
       try {
-        const persistence = _persistLocal('probe', { n: 0 }, {
+        let data = { n: 0 };
+        const persistence = _persistLocal('probe', { read: () => data, write: next => {data = next;} }, {
           storage: { getItem: () => null, setItem() {}, removeItem() {} },
         });
         _flushSync();
@@ -242,17 +220,6 @@ try {
       relative(consumer, resolve(archives, basename(library.filename))).replaceAll('\\', '/'),
   ]);
   await run(['run', 'check']);
-  const checked = JSON.parse(
-    (await run(['exec', 'zerodep-tools', 'check', '-p', 'tsconfig.json', '--json'])).stdout,
-  );
-  assert(checked.complete && checked.diagnostics.length === 0, '安装后的原生检查失败。');
-  assert.deepEqual(
-    JSON.parse(
-      (await run(['exec', 'zerodep-tools', 'boundary', 'src/App.tsx', '--browser'])).stdout,
-    ),
-    [],
-    '安装后的 Go 模块检查失败。',
-  );
   console.log('独立安装、声明、泛型/事件类型与预编译组件库通过。');
   await run(['run', 'build']);
   const report = await json(resolve(consumer, 'dist/build-report.json'));
@@ -270,7 +237,7 @@ try {
   );
   assert(
     !clientModules.some((id) =>
-      /\/@babel\/|\/typescript\/|\/zerodep-js-(native|vite|ssr)\//.test(id),
+      /\/@babel\/|\/typescript\/|\/zerodep-js-(compiler|native|vite|ssr)\//.test(id),
     ),
     '构建或服务端代码进入客户端。',
   );
@@ -338,6 +305,8 @@ try {
     await page.locator('[data-counter]').click();
     await expect(page.locator('output')).toHaveText('2');
     await page.getByLabel('消息').fill('独立输入');
+    await page.locator('[data-reference-focus]').click();
+    await expect(page.getByLabel('消息')).toBeFocused();
     await expect(page.locator('output')).toHaveText('独立输入');
     await page.locator('[data-history-commit]').click();
     await page.getByLabel('消息').fill('下一次输入');

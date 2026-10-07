@@ -75,6 +75,9 @@ export const BindingTypes = _component(() => {
   // 类型层验证属性集合；实际 JSX 的 ZJ1403 由原生编译器测试验证。
   // @ts-expect-error 非表单元素不提供 value 绑定。
   const wrongElement: JSX.IntrinsicElements['div'] = { 'bind:value': text };
+  // @ts-expect-error 生成声明必须保留可选属性缺失与显式 undefined 的区别。
+  const missingChecked: JSX.IntrinsicElements['input'] = { 'bind:checked': undefined };
+  void missingChecked;
   void wrongElement;
   return [
     input,

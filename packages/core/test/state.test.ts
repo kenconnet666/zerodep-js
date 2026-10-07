@@ -223,6 +223,8 @@ describe('数组状态', () => {
     observe(() => {
       seen.push(rows.join(','));
     });
+    // 默认排序本身也是响应式数组需要覆盖的原生行为。
+    // oxlint-disable-next-line typescript/require-array-sort-compare
     expect(rows.sort()).toBe(rows);
     _flushSync();
     expect(rows.splice(1, 1, 4, 5)).toEqual([2]);

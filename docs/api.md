@@ -6,7 +6,7 @@
 
 RC3 候选新增 `bind:value` / `bind:checked` / `bind:valueAsNumber` 与组件绑定、`zerodep-use/history` 的 _history、core 的 _lazy。前后写法、数据类型、撤销边界和 SSR 占位规则见[编写指南](authoring.md)。
 
-可选 `zerodep-use/storage` 提供 _persistLocal / _persistSession，绑定对象或显式 read/write，支持迁移、同步、失败恢复与清理。完整契约见 [浏览器持久化](storage.md)。
+可选 `zerodep-use/storage` 提供 _persistLocal / _persistSession，统一使用显式 read/write，支持迁移、同步、失败恢复与清理。完整契约见 [浏览器持久化](storage.md)。
 
 可选 `zerodep-use/router` 提供 _defineRoute/_defineRoutes、_createRouter、browser/hash/memory history、Router/Outlet/Link、_useRoute/_useRouter、_onBeforeLeave、_redirect/RouteError。包含类型化参数、取消/预加载、布局复用、错误恢复和 SSR 数据准备，详见 [路由](routing.md)。这些扩展均不改变状态宏写法。
 
@@ -110,12 +110,16 @@ SSR 使用 `renderToString(App, { props })` 同步生成组件 HTML；每请求�
 
 ## 编译与公开类型
 
-`_createPage(Component)` 创建可重复使用的页面入口 `(target, initial) => handle`。handle.update(next) 完整替换输入并保留页面实例，handle.dispose() 幂等释放，销毁后 update 不再生效。普通对象/数组会形成独立数据副本并保留环和共享引用；回调、类实例、Map/Set 等不透明值保持引用，应用应以替换或自己的方法管理它们。初始 input 必须为普通对象。
+页面入口统一为 `_mount` / `_hydrate`，返回清理函数。旧 `_createPage` 的宿主输入复制、深比较和 update 协议已删除。
 
-该入口用于独立页面的创建、输入更新和销毁，不改变 `_mount` 返回清理函数的契约。页面输入更新不是重新执行组件初始化，本地状态重置仍通过明确的实例身份决定。
-
-`zerodep-js-native` 的 `compile(source, filename, options?)` 返回代码、映射与开发标记，编译失败抛出 CompileError，其 diagnostics 包含代码、文件和位置。`diagnose(source, filename)` 返回单文件框架诊断数组。项目检查与 JS/声明输出使用 `zerodep-tsc`；持续编辑使用 `createCompiler` 共享项目快照，见[开发指南](development.md)。
+`zerodep-js-compiler` 的 `compile(source, filename, options?)` 返回代码、映射与开发标记，失败抛出带 diagnostics 的 CompileError。`diagnose(source, filename)` 返回单文件框架诊断。项目检查使用 `zerodep-check -p tsconfig.json`，应用编译使用 Vite，声明输出使用官方 tsc；见 [开发指南](development.md)。
 
 常用类型包括 `ComponentProps<typeof App>`、`JSX.IntrinsicElements['button']`、`Renderable`、`Template`、`Style`、`StyleObject`、`EventHandler<Element, Event>`、`MountOptions`、`HydrateOptions`、`Context<T>` 和 `Cleanup`。优先让 component 保留函数与泛型推断，不需要为每个返回值手写接口。
 
 `zerodep-js/internal` 是编译输出协议，不作为用户 signal API。模块间传值、控制流收窄、支持范围与迁移规则以 [语义契约](semantics.md)和[支持范围](support.md)为准。
+
+## DOM 引用
+
+`<input bind:this={node} />` 将元素写入可写变量，并在卸载时清为 undefined。目标可声明为 `let node: HTMLInputElement | undefined = undefined`，也可以使用更宽的 Element 类型；显式空态初始化也让普通 lint 工具正确理解声明。需要引用变化触发视图更新时显式使用 _state。普通 let 适合事件和 _onMount 中读取。官方 IDE 不理解 bind:this 的隐式赋值，若普通变量被收窄为初始 undefined，可使用 `_state<ElementType | undefined>(undefined)` 保留准确的联合类型；框架检查投影会另外检查实际元素写入和卸载清理类型。
+
+仅支持 DOM 标签和简单变量，不支持组件实例、对象路径、参数或与 ref 同时使用。复杂初始化仍使用 ref 回调返回清理函数；SSR 不写入 DOM 引用，hydration 验证成功后才激活。

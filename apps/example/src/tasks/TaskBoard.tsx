@@ -190,7 +190,12 @@ export const TaskBoard = _component(({ initial, mode = 'csr', embedded = false }
           </nav>
         )}
       </header>
-      <form class="task-create" onSubmit={add}>
+      <form
+        class="task-create"
+        onSubmit={(event) => {
+          void add(event);
+        }}
+      >
         <label class="sr-only" for={embedded ? 'embedded-new-task' : 'new-task'}>
           新任务
         </label>

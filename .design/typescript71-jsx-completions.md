@@ -99,7 +99,7 @@ func isJsxNamespacedNameText(name string) bool {
 
 `scripts/language-services/typescript-target.json` 固定 npm 版本、上游提交和补丁版本。当前统一入口是 `pnpm compiler:native:build --source <TypeScript Git 仓库> --go <Go可执行文件>`，同时包含语言服务补丁与框架 Go 转换，产物位于 `packages/native-<平台>/typescript`。旧语言服务专用构建脚本和 `.codex/typescript-sdk` 已不再使用。
 
-项目 MCP 使用生成的 SDK，WebStorm 选择 `packages/native-<平台>/typescript`。CI 在六种目标架构构建并测试，再执行完整 LSP 检查与 `pnpm lsp:completions`。此文前面的实验过程保留为历史记录，当前实施范围见 [原生工具链收敛](native-only.md)。
+项目 MCP 使用生成的 SDK，WebStorm 选择 `packages/native-<平台>/typescript`。CI 在六种目标架构构建并测试，再执行完整 LSP 检查与 `pnpm lsp:completions`。此文前面的实验过程保留为历史记录，当前实施范围见 [原生工具链收敛](https://github.com/kenconnet666/zerodep-js/blob/090396b/.design/native-only.md)。
 
 只在项目 MCP 中追加候选不能修复 WebStorm 直接调用的原生服务，也会重复维护类型、文档和编辑范围，因此不推荐作为主方案。修改 JSX 声明或把 bind 改名，也不能修复原生语言服务对合法命名空间属性的通用问题。
 

@@ -1,4 +1,4 @@
-import { compile, type CompileResult } from 'zerodep-js-native';
+import { compile, type CompileResult } from 'zerodep-js-compiler';
 import { Counter, Label } from '@zerodep-consumer/counter';
 import { _mount, type ComponentProps } from 'zerodep-js';
 import { _createScope, _snapshot } from 'zerodep-js';
@@ -65,4 +65,10 @@ export const signal: AbortSignal = scope.signal;
 scope.dispose();
 _snapshot({ n: 1 }).n.toFixed();
 _persistLocal('typed', { read: () => 1, write: (value) => value.toFixed() });
-_persistSession('typed-object', { enabled: true });
+_persistSession('typed-object', {
+  read: () => ({ enabled: true }),
+  write: (value) => {
+    const enabled: boolean = value.enabled;
+    void enabled;
+  },
+});

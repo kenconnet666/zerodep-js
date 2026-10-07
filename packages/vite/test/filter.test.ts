@@ -1,4 +1,4 @@
-import { afterEach, expect, it, vi } from 'vitest';
+import { expect, it, vi } from 'vitest';
 import { resolve } from 'node:path';
 import { zerodep, type ZerodepOptions } from '../src/index.js';
 
@@ -7,14 +7,8 @@ type Transform = (
   code: string,
   id: string,
 ) => Promise<{ code: string } | null>;
-const cleanup: Array<() => Promise<unknown>> = [];
-afterEach(async () => {
-  for (const close of cleanup.splice(0)) await close();
-});
 function managedPlugin(options: ZerodepOptions = {}) {
-  const plugin = zerodep({ ...options, typeCheck: false });
-  cleanup.push(() => Reflect.apply(plugin.closeWatcher as Function, undefined, []));
-  return plugin;
+  return zerodep(options);
 }
 function transforms(options: ZerodepOptions) {
   const plugin = managedPlugin(options);
@@ -49,6 +43,24 @@ function transforms(options: ZerodepOptions) {
   };
 }
 const source = `import { _state } from 'zerodep-js'; let count = _state(0); count++;`;
+
+it('转换与项目类型检查分离，但框架结构诊断始终执行', async () => {
+  const root = resolve('apps/example');
+  const file = resolve(root, 'src/__vite_semantic_probe.ts');
+  const context = {
+    error(error: { message: string }): never {
+      throw new Error(error.message);
+    },
+  };
+  const plugin = managedPlugin();
+  Reflect.apply(plugin.configResolved as Function, undefined, [{ root, command: 'build' }]);
+  const handler = (plugin.transform as { handler: Transform }).handler;
+  const result = handler.call(context, 'export const value: string = 1;', file);
+  expect((await result)?.code).toContain('value = 1');
+  await expect(
+    handler.call(context, "import {_state} from 'zerodep-js';const value=_state(1);value++;", file),
+  ).rejects.toThrow('ZJ1005');
+});
 
 it('目录范围按项目 root 解释，查询不影响选择，排除范围外文件与声明', async () => {
   const { root, run } = transforms({ include: 'src/page/**', exclude: '**/*.skip.tsx' });

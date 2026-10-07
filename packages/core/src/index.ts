@@ -18,8 +18,6 @@ export { _lazy } from './runtime/lazy.js';
 export type { LazyComponent, LazyOptions } from './runtime/lazy.js';
 export { _mount, _hydrate } from './dom/mount.js';
 export type { MountOptions, HydrateOptions } from './dom/mount.js';
-export { _createPage } from './dom/page.js';
-export type { PageEntry, PageHandle } from './dom/page.js';
 export { HydrationError } from './dom/hydration.js';
 export type { Renderable, Template } from './runtime/template.js';
 export type { JSX, NativeProps, Style, StyleObject, EventHandler } from './jsx-runtime.js';

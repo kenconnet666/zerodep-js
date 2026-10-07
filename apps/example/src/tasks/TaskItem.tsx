@@ -87,7 +87,12 @@ export const TaskItem = _component(
         />
 
         <div class="task-content">
-          <form onSubmit={save} class="task-edit">
+          <form
+            onSubmit={(event) => {
+              void save(event);
+            }}
+            class="task-edit"
+          >
             <label class="sr-only" for={`task-${task.id}`}>
               编辑：{task.title}
             </label>

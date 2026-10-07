@@ -164,10 +164,11 @@ export const BindingProbe = _component(() => {
   const bindingCompletions = await call('completions', {
     ...(await point(bindingFile, 'bind />', 4)),
     prefix: 'bind',
-    resolveLimit: 3,
+    resolveLimit: 4,
   });
   assert.deepEqual(bindingCompletions.items.map((item) => item.insertText).sort(), [
     'bind:checked',
+    'bind:this',
     'bind:value',
     'bind:valueAsNumber',
   ]);
@@ -184,7 +185,7 @@ export const BindingProbe = _component(() => {
   );
   const bindingReport = await call('diagnostics', { filePath: bindingFile });
   assert(bindingReport.complete && bindingReport.errors === 0, JSON.stringify(bindingReport));
-  console.log('TS7 JSX 绑定补全通过：三个原生输入候选、类型、说明和完整写法。');
+  console.log('TS7 JSX 绑定补全通过：四个原生输入候选、类型、说明和完整写法。');
 
   // 必须命中源属性本身，非空结果或跳到框架的条件类型都不算导航成功。
   let navigationChecks = 0;
@@ -198,7 +199,27 @@ export const BindingProbe = _component(() => {
     navigationChecks++;
   }
   const authoring = 'apps/example/src/examples/AuthoringExample.tsx';
-  const jsxTypes = 'packages/core/src/jsx-runtime.ts';
+  const jsxTypes = 'packages/core/src/jsx-elements.ts';
+  const reference = 'apps/example/src/examples/ReferenceExample.tsx';
+  for (const offset of [1, 6]) {
+    // input 的声明继承 Common1，导航必须命中这一份真实声明，而不是任意同名属性。
+    const text = await readFile(resolve(root, jsxTypes), 'utf8');
+    const inputBase = /interface InputProps extends (\w+)<HTMLInputElement>/.exec(text)?.[1];
+    assert(inputBase, '找不到 input 的生成类型');
+    const before = text.indexOf(`interface ${inputBase}<`);
+    const location = text.indexOf("'bind:this'", before);
+    const report = await call('definitions', await point(reference, 'bind:this={input}', offset));
+    assert.equal(report.total, 1, JSON.stringify(report));
+    assert.equal(relative(root, report.items[0].filePath).replaceAll('\\', '/'), jsxTypes);
+    const lines = text.slice(0, location).split('\n');
+    assert.deepEqual(report.items[0].range.start, {
+      line: lines.length,
+      column: lines.at(-1).length + 1,
+    });
+    const hover = await call('hover', await point(reference, 'bind:this={input}', offset));
+    assert(JSON.stringify(hover.contents).includes('HTMLInputElement'));
+    navigationChecks++;
+  }
   for (const offset of [1, 6]) {
     for (const [needle, declaration] of [
       ['bind:value={text}', "'bind:value'?: string | null"],

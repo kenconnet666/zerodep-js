@@ -1,6 +1,0 @@
-{
-  "version": "7.1.0-dev.20261005.1",
-  "revision": 2,
-  "commit": "50d70a3f5f453a79a4323b263165da51f656a4e3",
-  "patch": "patches/typescript-7.1.0-dev.20261005.1.patch"
-}

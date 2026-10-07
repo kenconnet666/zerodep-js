@@ -31,13 +31,14 @@ export interface Persistence {
   readonly ready: boolean;
   readonly status: PersistStatus;
   readonly error: unknown;
-  flush(): boolean;
-  reset(): boolean;
-  remove(): boolean;
-  retry(): boolean;
-  pause(): void;
-  resume(): void;
-  stop(): void;
+  /** 句柄方法不依赖 this，允许交给事件和作用域清理回调。 */
+  flush(this: void): boolean;
+  reset(this: void): boolean;
+  remove(this: void): boolean;
+  retry(this: void): boolean;
+  pause(this: void): void;
+  resume(this: void): void;
+  stop(this: void): void;
 }
 
 // 包名迁移不改变持久化协议，已有偏好与草稿继续按原版本读取。
@@ -54,53 +55,15 @@ function synchronous<T>(value: T): T {
   return value;
 }
 
-function bindingFor<T>(input: T | StorageBinding<T>): StorageBinding<T> {
-  if (record(input) && typeof input.read === 'function' && typeof input.write === 'function')
-    return input as unknown as StorageBinding<T>;
-  if (input === null || typeof input !== 'object')
-    throw new TypeError('持久化普通变量请提供 read/write，对象绑定请使用稳定的响应式对象。');
-  if (!Array.isArray(input) && ![Object.prototype, null].includes(Object.getPrototypeOf(input)))
-    throw new TypeError('直接持久化只绑定普通对象或数组。');
-  return {
-    read: () => input as T,
-    write(next) {
-      if (next === null || typeof next !== 'object' || Array.isArray(next) !== Array.isArray(input))
-        throw new TypeError('保存的数据与持久化对象形态不同，请提供 validate 或迁移。');
-      for (const key of new Set([...Object.keys(input), ...Object.keys(next)])) {
-        const descriptor = Object.getOwnPropertyDescriptor(input, key);
-        if (
-          (descriptor && !descriptor.configurable) ||
-          (!descriptor && !Object.isExtensible(input))
-        )
-          throw new TypeError('持久化对象含不可替换字段，请使用 read/write 绑定。');
-      }
-      if (Array.isArray(input) && !Object.getOwnPropertyDescriptor(input, 'length')?.writable)
-        throw new TypeError('持久化数组的 length 必须可写。');
-      _batch(() => {
-        for (const key of Object.keys(input))
-          if (!Object.hasOwn(next, key)) Reflect.deleteProperty(input, key);
-        if (Array.isArray(input)) input.length = (next as unknown[]).length;
-        for (const key of Object.keys(next))
-          // defineProperty 保留 __proto__ 作为数据，不触发原型 setter。
-          Object.defineProperty(input, key, {
-            value: Reflect.get(next, key),
-            enumerable: true,
-            configurable: true,
-            writable: true,
-          });
-      });
-    },
-  };
-}
-
 function persist<T>(
   kind: 'localStorage' | 'sessionStorage',
   key: string | (() => string),
-  input: T | StorageBinding<T>,
+  binding: StorageBinding<T>,
   options: PersistOptions<T>,
 ): Persistence {
   _getAbortSignal(); // 提前确认所有权，避免在事件或模块顶层留下无主监听。
-  const binding = bindingFor(input);
+  if (!binding || typeof binding.read !== 'function' || typeof binding.write !== 'function')
+    throw new TypeError('持久化需要明确的 read/write 绑定。');
   const initial = _untrack(() => _snapshot(binding.read()));
   const version = options.version ?? 1;
   const delay = options.writeDelay ?? 0;
@@ -438,35 +401,15 @@ function persist<T>(
 export function _persistLocal<T>(
   key: string | (() => string),
   binding: StorageBinding<T>,
-  options?: PersistOptions<T>,
-): Persistence;
-export function _persistLocal<T extends object>(
-  key: string | (() => string),
-  state: T,
-  options?: PersistOptions<T>,
-): Persistence;
-export function _persistLocal<T>(
-  key: string | (() => string),
-  state: T | StorageBinding<T>,
   options: PersistOptions<T> = {},
 ): Persistence {
-  return persist('localStorage', key, state, options);
+  return persist('localStorage', key, binding, options);
 }
 
 export function _persistSession<T>(
   key: string | (() => string),
   binding: StorageBinding<T>,
-  options?: PersistOptions<T>,
-): Persistence;
-export function _persistSession<T extends object>(
-  key: string | (() => string),
-  state: T,
-  options?: PersistOptions<T>,
-): Persistence;
-export function _persistSession<T>(
-  key: string | (() => string),
-  state: T | StorageBinding<T>,
   options: PersistOptions<T> = {},
 ): Persistence {
-  return persist('sessionStorage', key, state, options);
+  return persist('sessionStorage', key, binding, options);
 }

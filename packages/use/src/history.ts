@@ -15,14 +15,15 @@ export interface History {
   readonly length: number;
   readonly index: number;
   readonly disposed: boolean;
-  commit(): boolean;
-  undo(): boolean;
-  redo(): boolean;
+  /** 句柄方法捕获所属状态，不依赖 this，可以直接用作回调。 */
+  commit(this: void): boolean;
+  undo(this: void): boolean;
+  redo(this: void): boolean;
   /** 恢复基线并清空其后的操作记录。 */
-  reset(): boolean;
+  reset(this: void): boolean;
   /** 把当前数据设为新的基线，适合保存成功后使用。 */
-  clear(): boolean;
-  dispose(): void;
+  clear(this: void): boolean;
+  dispose(this: void): void;
 }
 
 function synchronous<T>(value: T): T {

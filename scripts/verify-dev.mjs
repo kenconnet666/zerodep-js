@@ -40,15 +40,17 @@ const localSource = (label, initial = 0, failure = false, mixed = false) => `
 import {_component,_state,_onMount,_onCleanup,_getAbortSignal} from 'zerodep-js';
 export const App = _component(({onDestroy}:{onDestroy?:()=>void}) => {
   let count = _state(${initial});
+  let node = _state<HTMLInputElement | undefined>(undefined);
   const form = _state({name:'初始'});
   _onMount(() => {
+    globalThis.__boundInput = () => node;
     globalThis.__mounts=(globalThis.__mounts??0)+1;
     window.addEventListener('zerodep-probe',()=>{globalThis.__pings=(globalThis.__pings??0)+1;},
       {signal:_getAbortSignal()});
   });
   _onCleanup(()=>onDestroy?.());
   ${failure ? "throw new Error('测试初始化失败');" : ''}
-  return <section><h1>${label}</h1><input aria-label="热更新姓名" bind:value={form.name}/>
+  return <section><h1>${label}</h1><input aria-label="热更新姓名" bind:this={node} bind:value={form.name}/>
     <button data-local-count onClick={()=>count++}>{count}</button></section>;
 });
 ${mixed ? 'export const extra = 1;' : ''}
@@ -73,10 +75,44 @@ export function createCounter() {
   );
   await writeFile(resolve(fixture, 'App.tsx'), source('版本一'));
   await writeFile(
+    resolve(fixture, 'ReferenceCheck.tsx'),
+    `
+import {_component,_hydrate} from 'zerodep-js';
+import {renderToString} from 'zerodep-js-ssr';
+const Probe = _component(({capture}:{capture?: (read: () => HTMLInputElement | undefined) => void}) => {
+  let node: HTMLInputElement | undefined;
+  capture?.(() => node);
+  return <section><input bind:this={node}/><p>expected</p></section>;
+});
+export function verifyReferences() {
+  const target = document.createElement('div');
+  document.body.append(target);
+  let read = (): HTMLInputElement | undefined => undefined;
+  const props = {capture: (next: typeof read) => { read = next; }};
+  let failed = false;
+  let stop: (()=>void) | undefined;
+  try {
+    const html = renderToString(Probe, {props: {}});
+    target.innerHTML = html.replace('expected', 'wrong');
+    try { _hydrate(Probe,{target,props}); } catch { failed = true; }
+    const emptyAfterFailure = read() === undefined;
+    target.innerHTML = html;
+    const before = target.querySelector('input');
+    stop = _hydrate(Probe,{target,props});
+    const reused = read() === before && read()?.isConnected;
+    stop();
+    return {failed,emptyAfterFailure,reused,emptyAfterDispose:read()===undefined};
+  } finally { stop?.(); target.remove(); }
+}
+`,
+  );
+  await writeFile(
     resolve(fixture, 'entry.ts'),
     `
 import { _mount } from 'zerodep-js';
+import { _inspect } from 'zerodep-js/devtools';
 import { App } from './App.tsx';
+_inspect();
 globalThis.__loads = (globalThis.__loads ?? 0) + 1;
 globalThis.__disposals = 0;
 const options = { target: document.querySelector('#app'), props: { onDestroy() {globalThis.__disposals++;} } };
@@ -190,6 +226,21 @@ if(import.meta.hot)import.meta.hot.dispose(stop);
   await expect(page.locator('#app h1')).toHaveText('本地二');
   await expect(page.locator('[data-local-count]')).toHaveText('2');
   await expect(page.getByLabel('热更新姓名')).toHaveValue('热更新前的数据');
+  assert(
+    await page.evaluate(
+      () => globalThis.__boundInput() === document.querySelector('[aria-label="热更新姓名"]'),
+    ),
+    'HMR 后 bind:this 必须指向新节点',
+  );
+  assert.deepEqual(
+    await page.evaluate(async () => (await import('/ReferenceCheck.tsx')).verifyReferences()),
+    {
+      failed: true,
+      emptyAfterFailure: true,
+      reused: true,
+      emptyAfterDispose: true,
+    },
+  );
   assert.equal(await page.evaluate(() => globalThis.__loads), 1);
   assert.equal(await page.evaluate(() => globalThis.__disposals), disposals + 1);
   await page.evaluate(() => window.dispatchEvent(new Event('zerodep-probe')));
@@ -197,7 +248,8 @@ if(import.meta.hot)import.meta.hot.dispose(stop);
   await page.getByRole('button', { name: '开发检查', exact: true }).click();
   const inspector = page.getByRole('complementary', { name: 'zerodep 开发检查' });
   await expect(inspector).toContainText('热更新前的数据');
-  await expect(inspector).toContainText('保留 2/2');
+  // DOM 引用是资源，重建时重新绑定；计数与表单这两份普通数据继续保留。
+  await expect(inspector).toContainText('保留 2/3');
   await inspector.getByRole('button', { name: '重新初始化此组件' }).click();
   await expect(page.locator('[data-local-count]')).toHaveText('0');
   await expect(page.getByLabel('热更新姓名')).toHaveValue('初始');

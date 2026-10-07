@@ -81,14 +81,6 @@ jobs:
         with:
           github-token: ${{ github.token }}
           run-id: ${{ needs.gate.outputs.run_id }}
-          pattern: native-sdk-*
-          path: .codex/native-artifacts
-          merge-multiple: true
-      - run: node scripts/native/artifacts.mjs restore
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
-        with:
-          github-token: ${{ github.token }}
-          run-id: ${{ needs.gate.outputs.run_id }}
           name: release-candidate
           path: .release
       - run: pnpm build:packages

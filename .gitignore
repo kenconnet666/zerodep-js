@@ -8,17 +8,8 @@ reports/stability/
 .release/
 playwright-report/
 .codex/config.toml
-.codex/toolchains/
-.codex/typescript-source/
-packages/native/bin/
-packages/native-*/typescript/
-.codex/ts-native-build-*/
-.codex/native-artifacts/
 .idea
 apps/example/.dev-check-*/
-apps/example/.native-check-*/
-apps/example/.native-tools-*/
-apps/example/.native-bench-*/
 apps/example/.data/
 .DS_Store
 .env

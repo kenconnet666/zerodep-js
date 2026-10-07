@@ -10,6 +10,8 @@ import {
   type Renderable,
 } from 'zerodep-js';
 
+// 验证显式标注的必填属性不会因为默认值而变成可选。
+// oxlint-disable-next-line typescript/no-useless-default-assignment
 const Required = _component(({ label = '默认值' }: { label: string }) => <button>{label}</button>);
 const Generic = _component(
   <T,>({ item, children }: { item: T; children: (value: T) => Renderable }) => children(item),

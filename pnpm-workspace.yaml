@@ -3,6 +3,12 @@ packages:
   - apps/*
 
 catalog:
+  '@babel/core': 8.0.6
+  '@babel/parser': 8.0.6
+  '@babel/preset-typescript': 8.0.1
+  '@babel/traverse': 8.0.6
+  '@babel/types': 8.0.6
+  '@types/convert-source-map': 2.0.3
   '@prettier/plugin-oxc': 0.2.3
   '@csstools/css-tokenizer': 4.0.2
   '@jridgewell/trace-mapping': 0.3.31
@@ -11,14 +17,16 @@ catalog:
   csstype: 3.2.3
   html-element-attributes: 3.5.0
   oxlint: 1.86.0
+  oxlint-tsgolint: 7.0.2003
   prettier: 3.9.9
   property-information: 7.2.0
   sirv: 3.0.2
   smol-toml: 1.9.0
-  typescript: 7.1.0-dev.20261005.1
+  typescript: 7.1.0-dev.20261007.1
   vite: 8.3.1
   vitest: 5.0.3
   vscode-jsonrpc: 9.0.3
+  vscode-languageserver-types: 3.18.4
 
 autoInstallPeers: false
 

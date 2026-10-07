@@ -4,6 +4,7 @@ import { execFile } from 'node:child_process';
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { promisify } from 'node:util';
+import { compile } from '../../packages/compiler/src/index.js';
 
 const root = resolve(import.meta.dirname, '../..');
 const execute = promisify(execFile);
@@ -12,11 +13,12 @@ it('原生解析保留 bind、Unicode 光标与选区格式化结果', async () 
   const filepath = resolve(root, 'apps/example/src/format-probe.tsx');
   const options = await resolveConfig(filepath);
   expect(options?.parser).toBe('oxc-ts');
-  const source = `const 文本="🚀";\nconst view=<input bind:value={文本} title="表单"/>;\n`;
+  const source = `let 文本="🚀";\nlet node:HTMLInputElement|undefined;\nconst view=<input bind:value={文本} bind:this={node} title="表单"/>;\n`;
   const base = { ...options, filepath, cursorOffset: source.indexOf('bind:value') + 5 };
   const native = await formatWithCursor(source, base);
   const reference = await formatWithCursor(source, { ...base, parser: 'typescript' });
   expect(native).toEqual(reference);
+  expect(compile(native.formatted, filepath).code).toContain('bindProps');
   expect(native.formatted.slice(native.cursorOffset, native.cursorOffset + 5)).toBe('value');
   const range = { ...base, rangeStart: source.indexOf('const view'), rangeEnd: source.length };
   expect(await formatWithCursor(source, range)).toEqual(

@@ -3,6 +3,9 @@ import { App } from './App.js';
 import { registerPropertyElement } from './examples/property-elements.js';
 import './style.css';
 
+// 主示例明确开启诊断面板，框架的普通开发构建只负责 HMR。
+if (import.meta.env.DEV) void import('zerodep-js/devtools').then(({ _inspect }) => _inspect());
+
 const root = document.querySelector<HTMLElement>('#app');
 if (!root) throw new Error('Missing application root.');
 const mode = root.dataset.renderMode;

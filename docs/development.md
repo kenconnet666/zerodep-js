@@ -1,6 +1,6 @@
 # 开发、类型检查与框架诊断
 
-项目定制 TypeScript 7.1 同时检查原始 TSX 类型和框架绑定约束。CLI、Vite 与项目语言服务使用同一个定制 SDK；持续编辑通过原生项目会话复用快照与 Program。
+官方 TS7.1 dev 负责类型检查与语言服务，Babel 负责框架转换与语义诊断，Vite 负责开发和打包。工具职责、检查投影和编辑器边界见 [工具链](tooling.md)。
 
 ## 运行时与应用工具源码职责
 
@@ -17,14 +17,9 @@ use 和 SSR 均通过同版本 core 的公开 API 与必要的 internal 协议�
 
 ## 检查入口
 
-在本仓库运行 `pnpm check`，使用定制 SDK 构建包产物、检查各包与工具类型、报告框架语义错误，再运行 lint。独立项目使用原生 CLI：
+在本仓库运行 `pnpm check`。应用项目使用 `zerodep-check -p tsconfig.json`，通过官方 API 检查类型，同时执行框架规则。
 
-```sh
-pnpm exec zerodep-tsc -p tsconfig.json --noEmit
-pnpm exec zerodep-tsc -p tsconfig.json --jsx react-jsx
-```
-
-CLI 读取项目配置，原始类型与框架语义在同一编译器中检查；`noEmit` 仍报告框架错误。语言服务支持未保存的编辑内容。Node 工具可使用 `diagnose(source, filename)` 获取单文件框架诊断，`compile` 输出 JS/map；完整类型检查或连续编辑使用 `createCompiler`，结束后关闭会话。源码错误通过 `CompileError.diagnostics` 返回，内部异常不会伪装成无错误。
+zerodep-js-compiler 的 compile 输出 JS/map，diagnose 检查单文件框架语义。普通包与声明输出使用官方 tsc，框架应用使用 Vite。
 
 ## 自然解构与实时读取
 
@@ -40,7 +35,7 @@ export const Counter = _component(({ step = 1 }: { step?: number }) => {
 });
 ```
 
-命名导入可以重命名；静态命名空间成员也受支持，例如 `import * as Z from 'zerodep-js'` 后使用 `Z.component`、`Z._state`、`Z._derived.by` 和 `<Z.For>`。静态字符串成员 `Z['_state']` 也能识别。不支持通过运行时计算的属性名、二次包装或动态导入间接调用宏；宏本身不可当作普通值转交。普通运行时函数不受这个宏限制。
+命名导入可以重命名；静态命名空间成员也受支持，例如 `import * as Z from 'zerodep-js'` 后使用 `Z._component`、`Z._state`、`Z._derived.by` 和 `<Z.For>`。静态字符串成员 `Z['_state']` 也能识别。不支持通过运行时计算的属性名、二次包装或动态导入间接调用宏；宏本身不可当作普通值转交。普通运行时函数不受这个宏限制。
 
 解构 props 及 For 的 row/index 是实时只读绑定。默认表达式只在输入为 undefined 时参与求值，遵循缓存与依赖更新规则；普通函数体中的局部解构、赋值和传参继续是当前取值。详见 [语义契约](semantics.md)。
 
@@ -68,7 +63,7 @@ return user ? (
 ) : null;
 ```
 
-需要保留原对象时，在外层保存当前值，检查并捕获这个普通局部变量。这里仍是对象引用，后续对象内部变更遵循普通 JavaScript 规则；需要脱开的数据副本时使用 snapshot(value)。
+需要保留原对象时，在外层保存当前值，检查并捕获这个普通局部变量。这里仍是对象引用，后续对象内部变更遵循普通 JavaScript 规则；需要脱开的数据副本时使用 _snapshot(value)。
 
 ```tsx
 const current = user;
@@ -114,36 +109,11 @@ ZJ1501 是保守的源码边界检查，不是第二套 TypeScript 类型系统�
 
 ## 编辑器和 Codex 诊断桥
 
-TS7 的补全、跳转、引用、原生类型错误和框架语义错误来自同一个原生语言服务。框架分析直接挂在原始 SourceFile 与检查流程中，项目桥接器不再调用 Babel 诊断进程。MCP 输出中的 `source: 'zerodep-js'` 和 `framework` 字段标识框架诊断；普通 LSP 客户端能直接收到带 ZJ 编号的错误。
+项目桥接器使用官方 LSP/API 和 Babel 检查投影；补全从真实 JSX 属性类型取符号，导航跟随声明映射。独立验证入口为 `pnpm lsp:verify` 与 `pnpm lsp:completions`，本机配置通过 `pnpm lsp:setup` 生成。
 
-项目桥接器使用 MCP `2025-11-25` 的 stdio JSON-RPC：按行传输 JSON，公开五个只读工具，参数用 JSON Schema 描述并在服务端校验。传输和请求调度复用 `vscode-jsonrpc`，不依赖 MCP SDK 或 Zod；`json-lines.mjs` 负责分帧，`mcp-client.mjs` 服务独立检查脚本。协议依据为 [MCP stdio](https://modelcontextprotocol.io/specification/2025-11-25/basic/transports) 和[生命周期](https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle)。
+WebStorm 选择 `node_modules/typescript`。IDE 的官方服务与项目桥接器是独立入口：选择官方 SDK 不会自动加载框架增强。官方源码检查和框架检查之间的区别、绑定限制见 [工具链](tooling.md)。IDE MCP 曾漏报编辑器可见的 TS 错误，不能把空诊断作为验收证据。
 
-官方 npm `typescript@7.1.0-dev.20261005.1` 有 JSX 命名空间属性的补全回归。项目维护固定上游提交的原生补丁，修复候选筛选、冒号上下文、编辑范围及自动触发；MCP 直接调用修复后的服务，不补造候选。core 同时显式保留已生成的 ARIA 属性以提供候选，见[原生补全修复记录](../.design/typescript71-jsx-completions.md)。
-
-首次设置语言服务先准备 Go 1.27 和包含固定提交的 TypeScript 源码，再运行：
-
-```sh
-pnpm compiler:native:build --source <TypeScript源代码路径> --go <Go可执行文件路径> --test
-pnpm lsp:setup
-pnpm lsp:verify
-pnpm lsp:completions
-```
-
-Go 已在 PATH 时可省略 `--go`。生成的 `packages/native-<平台>/typescript` 保留官方平台 SDK 与标准库布局，版本为 `7.1.0-dev.20261005.1+zerodep.native.<源码摘要>`，同时包含框架转换、框架诊断和补全修复。项目 MCP 在 SDK 缺失或补丁不匹配时明确要求重新构建，不回退到缺少修复的服务。`lsp:completions` 同时核对候选、文档、实际插入/自动导入编辑及插入后的类型诊断。
-
-WebStorm 的 TypeScript 设置需要选择构建命令输出的**平台包目录**。Windows x64 为 `packages/native-win32-x64/typescript`。WebStorm 2026.2.3 从 SDK 根目录的同级查找平台包，不会按 Node 的规则进入根目录内的 node_modules；直接选择 `.codex/typescript-sdk` 虽然显示正确版本，实际服务却可能回退到内置 TypeScript 6.0.3。应用设置后，点击状态栏的语言服务图标，确认当前文件运行的是 `TypeScript-Go 7.1.0-dev.20261005.1+zerodep.native.<摘要>`；只看设置页的版本号不够。
-
-运行 `pnpm lsp:verify` 会验证原生错误/修复、框架错误/修复、依赖刷新和项目隔离。这是独立服务验证；已运行的 Codex MCP 进程需要重启后才加载桥接脚本变更。选择项目原生 SDK 的 WebStorm/VS Code 会直接得到框架诊断；选择官方 SDK 时只能得到官方 TS 诊断，应改选项目定制 SDK 获得完整诊断。没有要求安装私有 TS 插件或降级 TS 版本。
-
-验证还通过标准 `textDocument/rename` 检查响应式变量、组件导出、跨文件 import 和 JSX 引用，并仅把编辑应用到本次临时探针。它证明标准 TS7 协议能力，不代替某个 IDE 自身的完整操作验收。
-
-WebStorm 2026.2 已提供 TS7 原生支持；选择上述平台包后，本机的 service-powered type engine 控件由 IDE 自动禁用，不手动改注册表或退回旧版 TS。[JetBrains 配置说明](https://www.jetbrains.com/help/webstorm/settings-languages-typescript.html)
-
-2026-10-06 在 WebStorm 2026.2.3 实测项目 `+zerodep.2`：NameField 的 bind:value 可用 Ctrl+B 跳到业务 value 声明，基本补全把 bind 插入为 bind:value，英文输入 bind:va 自动显示同一候选且 Tab 接受后的属性名正确。中文输入法可能拦截 Ctrl+空格并输入全角冒号 `：`，这与语言服务候选缺失不同；代码使用 ASCII `:`，必要时通过“代码 → 代码补全 → 基本”检查。
-
-本机 WebStorm 2026.2 重启后，事件提示正确给出 MouseEvent 与 HTMLButtonElement；响应式变量、组件导出、跨文件 import 与 JSX 重命名均实际执行并核对。用户确认故意类型错误在编辑器中显示 TS2322，修复后独立 TS7 对定义和使用文件均返回完整的零错误报告。临时文件在核对后清理。
-
-该版本 IDE MCP 的 get_file_problems / lint_files 对上述错误返回空结果，而编辑器可见诊断与独立 TS7 能正确发现；目前不能把 MCP 空结果用作 TS7 验收。此前出现的插件异常与接口超时在重启后未阻止本轮操作，其具体因果关系未确定。工具诊断继续使用项目 LSP 或 pnpm check；不因接口漏报而降级 TS 或修改其他项目设置。
+MCP 传输使用 vscode-jsonrpc 与 JSON Schema 校验，未引入 MCP SDK 或 Zod。修改桥接器后，已运行 MCP 进程需重新加载；先完成独立验证，再检查当前会话。
 
 ## 开发更新
 

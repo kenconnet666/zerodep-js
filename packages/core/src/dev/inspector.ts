@@ -8,7 +8,8 @@ import {
 } from './runtime.js';
 
 let installed = false;
-export function installInspector(): void {
+/** 应用选择开启面板；普通 HMR 不安装全局界面与事件监听。 */
+export function _inspect(): void {
   if (installed || typeof window === 'undefined' || typeof document === 'undefined') return;
   installed = true;
   const controller = new AbortController();

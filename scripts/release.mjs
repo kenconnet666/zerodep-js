@@ -71,17 +71,13 @@ async function manifests() {
     folders.map(async (folder, index) => {
       const path = resolve(root, 'packages', folder, 'package.json');
       const manifest = await json(path);
-      const platformPackage = packageList[index].kind === 'native-platform';
       assert.equal(manifest.name, names[index], '发布名称不符合本项目约定。');
-      assert.equal(manifest.license, platformPackage ? 'Apache-2.0 AND MIT' : 'MIT');
+      assert.equal(manifest.license, 'MIT');
       assert.equal(manifest.publishConfig?.registry, registry);
       assert.equal(manifest.publishConfig?.access, 'public');
       assert.equal(
         await readFile(resolve(root, 'packages', folder, 'LICENSE'), 'utf8'),
-        await readFile(
-          resolve(root, platformPackage ? 'patches/LICENSE.typescript' : 'LICENSE'),
-          'utf8',
-        ),
+        await readFile(resolve(root, 'LICENSE'), 'utf8'),
       );
       return { folder, path, manifest };
     }),
@@ -359,11 +355,6 @@ async function main() {
   if (command === 'publish') {
     const results = await authenticated((publish) =>
       publishCandidates(ledger.packages, {
-        readyToUpload: (item) =>
-          item.name !== 'zerodep-js-native' ||
-          ledger.packages
-            .filter((p) => p.name.startsWith('zerodep-js-native-'))
-            .every((p) => p.published),
         readVersion: (item) => metadata(item.name, selectedVersion),
         readTags: (item) => tags(item.name),
         save,
