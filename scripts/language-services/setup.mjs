@@ -1,4 +1,4 @@
-import { readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { parse } from 'smol-toml';
 import { root, serviceConfig } from './environment.mjs';
@@ -24,6 +24,49 @@ const next = managed.test(existing)
   : existing.trimEnd() + (existing ? '\n\n' : '') + block;
 parse(next);
 await writeFile(path, next);
+const editor = resolve(root, '.codex/lsp4ij');
+await mkdir(editor, { recursive: true });
+const node = process.execPath.replaceAll('\\', '/');
+const server = resolve(root, 'packages/compiler/bin/language-server.mjs').replaceAll('\\', '/');
+await writeFile(
+  resolve(editor, 'template.json'),
+  JSON.stringify(
+    {
+      id: 'zerodep-js',
+      name: 'Zerodep TS7.1',
+      programArgs: { default: `"${node}" "${server}" --stdio` },
+      fileTypeMappings: [
+        {
+          fileType: { name: 'TypeScript', patterns: ['*.ts', '*.mts', '*.cts'] },
+          languageId: 'typescript',
+        },
+        {
+          fileType: { name: 'TypeScript-React', patterns: ['*.tsx'] },
+          languageId: 'typescriptreact',
+        },
+        {
+          fileType: { name: 'JavaScript', patterns: ['*.js', '*.mjs', '*.cjs'] },
+          languageId: 'javascript',
+        },
+        {
+          fileType: { name: 'JavaScript-React', patterns: ['*.jsx'] },
+          languageId: 'javascriptreact',
+        },
+      ],
+    },
+    null,
+    2,
+  ) + '\n',
+);
+await writeFile(
+  resolve(editor, 'initializationOptions.json'),
+  JSON.stringify({ projectRoot: root }, null, 2) + '\n',
+);
+await writeFile(
+  resolve(editor, 'clientSettings.json'),
+  JSON.stringify({ format: { enabled: false } }, null, 2) + '\n',
+);
 console.log(
   'Generated project-local zerodep_js_lsp configuration. Run pnpm lsp:verify before reload.',
 );
+console.log('LSP4IJ 导入模板：' + editor + '；实际 IDE 接入需单独验证。');

@@ -39,6 +39,8 @@ export class TypeScriptService {
   private closing: Promise<void> | undefined;
   private api: Promise<API<true>> | undefined;
   private readonly watchFiles: boolean;
+  private readonly documents = new Map<string, SourceDocument>();
+  private version = 0;
   onChanges: (files: Map<string, 'create' | 'update' | 'delete'>) => void = () => {};
 
   constructor(root: string, watchFiles = true) {
@@ -212,24 +214,68 @@ export class TypeScriptService {
   async withDocument<T>(document: SourceDocument, action: () => Promise<T>): Promise<T> {
     await this.ready;
     this.assertAlive();
-    // 文档请求独立开关缓冲区，其他客户端的内存文本不进入这个请求。
+    // MCP 使用临时文档；编辑器已有缓冲区时临时投影，结束后恢复原文，保留其他未保存文件。
     const operation = this.queue
       .catch(() => {})
       .then(async () => {
         await this.flush();
-        await this.connection.sendNotification('textDocument/didOpen', {
-          textDocument: { ...document, version: 1 },
-        });
+        const original = this.documents.get(document.uri);
+        await this.sendDocument(document, Boolean(original));
         try {
           return await action();
         } finally {
-          await this.connection.sendNotification('textDocument/didClose', {
-            textDocument: { uri: document.uri },
-          });
+          if (original) await this.sendDocument(original, true);
+          else
+            await this.connection.sendNotification('textDocument/didClose', {
+              textDocument: { uri: document.uri },
+            });
         }
       });
     this.queue = operation;
     return operation;
+  }
+
+  private async sendDocument(document: SourceDocument, opened: boolean): Promise<void> {
+    const version = ++this.version;
+    if (opened)
+      await this.connection.sendNotification('textDocument/didChange', {
+        textDocument: { uri: document.uri, version },
+        contentChanges: [{ text: document.text }],
+      });
+    else
+      await this.connection.sendNotification('textDocument/didOpen', {
+        textDocument: { ...document, version },
+      });
+  }
+
+  /** 编辑器缓冲区由连接拥有；临时请求不得关闭或覆盖其他文件的未保存内容。 */
+  setDocument(document: SourceDocument): Promise<void> {
+    const operation = this.queue
+      .catch(() => {})
+      .then(async () => {
+        await this.ready;
+        this.assertAlive();
+        await this.sendDocument(document, this.documents.has(document.uri));
+        this.documents.set(document.uri, document);
+      });
+    this.queue = operation;
+    return operation;
+  }
+
+  removeDocument(uri: string): Promise<void> {
+    const operation = this.queue
+      .catch(() => {})
+      .then(async () => {
+        if (!this.documents.has(uri)) return;
+        await this.connection.sendNotification('textDocument/didClose', { textDocument: { uri } });
+        this.documents.delete(uri);
+      });
+    this.queue = operation;
+    return operation;
+  }
+
+  getDocument(uri: string): SourceDocument | undefined {
+    return this.documents.get(uri);
   }
 
   private stopWatching(): void {

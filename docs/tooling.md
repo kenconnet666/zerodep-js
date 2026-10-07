@@ -55,6 +55,32 @@ pnpm lsp:completions
 
 LSP 探针会在主示例目录创建临时源码，不与同一工作区的应用 check/build 同时执行。脚本负责恢复文件并关闭自己创建的服务。
 
+### 标准编辑器接入
+
+`zerodep-language-server --stdio` 是 compiler 包提供的标准 LSP 入口。传输与增量文档管理使用微软的 vscode-languageserver / vscode-languageserver-textdocument；它与 MCP 复用官方进程、框架检查和源码映射。编辑器连接关闭时释放官方进程与监听，多个未保存文件共享该连接的缓冲区，临时检查投影不会覆盖原文。
+
+本机 WebStorm 已安装 LSP4IJ，可按其 [自定义服务器文档](https://github.com/redhat-developer/lsp4ij/blob/main/docs/UserDefinedLanguageServer.md) 导入模板，无需开发 JetBrains 插件：
+
+1. 运行 `pnpm build:packages` 与 `pnpm lsp:setup`。
+2. 在 WebStorm 的“语言服务器”设置中点击“＋”，在模板菜单选择 Import from custom template。
+3. 选择项目 `.codex/lsp4ij` 文件夹，导入 Zerodep TS7.1。
+4. 模板中的 Node/服务器路径来自当前工作区，初始化选项限定项目根目录；其他项目初始化时不启用框架能力。生成文件仅供本机使用，不提交。
+5. 导入后用真实文件验证 bind: 补全、属性导航、错误/修复和未保存文本，再判断是否需关闭本项目内置 TS 诊断以消除重复提示。不要全局停用其他项目的 TypeScript。
+
+标准协议测试覆盖跨文件未保存修改、Unicode 增量范围、绑定写回负例与修复、重命名、引用及自动导入。Windows URI 的盘符大小写和编码差异先归一化；同一绑定在投影中的读写引用合并为原文的一次编辑。补全 resolve 重开原投影并映射自动导入编辑，有限的菜单上下文在连接关闭时释放。
+
+不声明生成代码的格式化、语义 token 或未经验证的编辑能力。WebStorm 本机已实测绑定错误/修复、补全、悬浮与导航，当前状态见执行记录。
+
+WebStorm 自带补全与 LSP4IJ 可能同时展示同名普通候选。本机 TaskBoard 探针确认 LSP 在属性名和表达式位置各只返回一个 task，解析后的类型分别为 Task 和 NoInfer<Task>；候选列表中另一项来自 IDE 的补全合并。当前 LSP4IJ 用户配置不提供关闭 IDE 原生补全贡献者的开关。保留完整官方类型候选，不通过限制普通补全能力去掩盖界面重复；不能将没有行内详情直接解释为 any。
+
+### WebStorm 的服务驱动类型引擎
+
+本机 WebStorm 2026.2.3（262.10968.77）的 TypeScriptGoPackageInfoKt.isSpteSupportedInTypeScriptVersion 判断要求 Registry 的 typescript.ts-go.type-evaluator.node-modules 开启，并且版本 major=7、minor=0、patch>=2。官方 7.1 dev 因 minor 不符被标为 NoSpte；仅改 Registry 无法开启。此结论来自本机 IDE 实际代码，后续 IDE 版本需重新核对。
+
+该开关控制 WebStorm 内部类型求值与检查/重构的深度集成，不等于标准 TypeScript 语言服务是否启用。项目继续固定官方 TS7.1 dev，Zerodep LSP 提供已验证的标准语言能力；不伪造包版本、不修改 IDE 二进制，也不为这个开关降级项目。仅在 IDE 选择 JetBrains 自带 TS7 可以启用其内置集成，但会与项目 TS7.1 的类型判断分离，不作为默认方案。
+
+详见 [JetBrains 设置说明](https://www.jetbrains.com/help/webstorm/settings-languages-typescript.html)。LSP4IJ 接入不声称等同于 WebStorm 内部服务驱动类型引擎。
+
 ## 生成类型与注释
 
 `pnpm native:generate` 中的 native 指浏览器原生元素数据。它使用成熟的 HTML 属性数据、csstype 和官方 TS7.1 API 生成清楚的 JSX 接口，不依赖被删除的 Go 补丁。

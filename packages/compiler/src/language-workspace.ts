@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { realpathSync, statSync } from 'node:fs';
-import { isAbsolute, relative, resolve, sep } from 'node:path';
+import { dirname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { TraceMap, generatedPositionFor, originalPositionFor } from '@jridgewell/trace-mapping';
 import type { CompletionItem, Position, Range } from 'vscode-languageserver-types';
@@ -23,6 +23,8 @@ export class LanguageWorkspace {
   readonly language: TypeScriptService;
   private queue: Promise<unknown> = Promise.resolve();
   private closed = false;
+  private completionId = 0;
+  private readonly completions = new Map<number, SourceDocument>();
 
   constructor(root: string) {
     const directory = resolve(root);
@@ -33,7 +35,23 @@ export class LanguageWorkspace {
 
   private filename(uri: string): string {
     const file = fileURLToPath(uri);
-    const path = relative(this.root, file);
+    // Windows 短路径和目录链接需先归一化；新建未保存文件则归一化最近的现有父目录。
+    let ancestor = file;
+    let canonical: string;
+    for (;;) {
+      try {
+        canonical = resolve(realpathSync.native(ancestor), relative(ancestor, file));
+        break;
+      } catch (error) {
+        if (
+          !['ENOENT', 'ENOTDIR'].includes((error as NodeJS.ErrnoException).code ?? '') ||
+          dirname(ancestor) === ancestor
+        )
+          throw error;
+        ancestor = dirname(ancestor);
+      }
+    }
+    const path = relative(this.root, canonical);
     if (isAbsolute(path) || path === '..' || path.startsWith('..' + sep))
       throw new Error('工具输入必须位于项目目录内。');
     return file;
@@ -44,6 +62,11 @@ export class LanguageWorkspace {
     const operation = this.queue.catch(() => {}).then(() => this.execute(request));
     this.queue = operation;
     return operation as Promise<T>;
+  }
+
+  setDocument(document: SourceDocument): Promise<void> {
+    this.filename(document.uri);
+    return this.language.setDocument(document);
   }
 
   private async execute(request: LanguageRequest): Promise<unknown> {
@@ -69,7 +92,17 @@ export class LanguageWorkspace {
       )
     )
       throw new Error('不支持的语言服务操作。');
-    const params = request.params ?? {};
+    let params = request.params ?? {};
+    const context = params.data as { zerodepProjection?: number; upstream?: unknown } | undefined;
+    if (method === 'completionItem/resolve' && context?.zerodepProjection !== undefined) {
+      const document = this.completions.get(context.zerodepProjection);
+      if (!document) throw new Error('补全上下文已过期，请重新触发补全。');
+      const current = this.language.getDocument(document.uri);
+      if (current && current.text !== document.text)
+        throw new Error('文档已变化，请重新触发补全。');
+      request = { ...request, document };
+      params = { ...params, data: context.upstream };
+    }
     if (
       method === 'completionItem/resolve' &&
       (params.data as { zerodepNamespace?: boolean } | undefined)?.zerodepNamespace
@@ -147,12 +180,56 @@ export class LanguageWorkspace {
       const range = params.range as Range;
       generatedParams.range = { start: toGenerated(range.start), end: toGenerated(range.end) };
     }
+    if (method === 'completionItem/resolve' && map) {
+      const edit = params.textEdit as
+        { range?: Range; insert?: Range; replace?: Range } | undefined;
+      const range = (value: Range): Range => ({
+        start: toGenerated(value.start),
+        end: toGenerated(value.end),
+      });
+      if (edit)
+        generatedParams.textEdit = {
+          ...edit,
+          ...(edit.range ? { range: range(edit.range) } : {}),
+          ...(edit.insert ? { insert: range(edit.insert) } : {}),
+          ...(edit.replace ? { replace: range(edit.replace) } : {}),
+        };
+      if (Array.isArray(params.additionalTextEdits))
+        generatedParams.additionalTextEdits = params.additionalTextEdits.map(
+          (item: { range: Range }) => ({ ...item, range: range(item.range) }),
+        );
+    }
     const raw = await this.language.request(method, generatedParams, {
       ...document,
       text: projection.code,
     });
+    const sameDocument = (candidate: string): boolean => {
+      if (!candidate.startsWith('file:')) return false;
+      const path = resolve(fileURLToPath(candidate));
+      return process.platform === 'win32'
+        ? path.toLowerCase() === resolve(filename).toLowerCase()
+        : path === resolve(filename);
+    };
     const remap = (value: unknown, contextUri = uri): unknown => {
-      if (Array.isArray(value)) return value.map((item) => remap(item, contextUri));
+      if (Array.isArray(value)) {
+        const edits = new Set<string>();
+        return value
+          .map((item) => remap(item, contextUri))
+          .filter((item) => {
+            if (
+              !item ||
+              typeof item !== 'object' ||
+              !('range' in item) ||
+              (!('newText' in item) && !('uri' in item))
+            )
+              return true;
+            // 一次 bind 读写投影会产生多个引用；原文同一编辑只能应用一次。
+            const key = JSON.stringify(item);
+            if (edits.has(key)) return false;
+            edits.add(key);
+            return true;
+          });
+      }
       if (!value || typeof value !== 'object') return value;
       const record = value as Record<string, unknown>;
       const owner =
@@ -164,8 +241,10 @@ export class LanguageWorkspace {
       return Object.fromEntries(
         Object.entries(record).map(([key, item]) => {
           if (key === 'data') return [key, item]; // 官方解析补全等请求所需的不透明数据保持原样。
+          if (['uri', 'targetUri'].includes(key) && typeof item === 'string' && sameDocument(item))
+            return [key, uri];
           if (
-            (owner === uri || key === 'originSelectionRange') &&
+            (sameDocument(owner) || key === 'originSelectionRange') &&
             [
               'range',
               'insert',
@@ -182,11 +261,28 @@ export class LanguageWorkspace {
             const range = item as Range;
             return [key, { start: toOriginal(range.start), end: toOriginal(range.end) }];
           }
-          return [key, remap(item, key.startsWith('file:') ? key : owner)];
+          return [
+            sameDocument(key) ? uri : key,
+            remap(item, key.startsWith('file:') ? key : owner),
+          ];
         }),
       );
     };
     const result = remap(raw);
+    if (method === 'textDocument/completion' && map && result && typeof result === 'object') {
+      const items = (
+        Array.isArray(result) ? result : 'items' in result ? result.items : []
+      ) as CompletionItem[];
+      if (items.some((item) => item.data !== undefined)) {
+        const id = ++this.completionId;
+        // resolve 需要重开同一投影才能正确映射自动导入；只保留有限次菜单的原文，关闭时释放。
+        this.completions.set(id, document);
+        if (this.completions.size > 16)
+          this.completions.delete(this.completions.keys().next().value!);
+        for (const item of items)
+          if (item.data !== undefined) item.data = { zerodepProjection: id, upstream: item.data };
+      }
+    }
     if (
       method === 'textDocument/diagnostic' &&
       result &&
@@ -216,6 +312,7 @@ export class LanguageWorkspace {
   async close(): Promise<void> {
     this.closed = true;
     await this.queue.catch(() => {});
+    this.completions.clear();
     await this.language.close();
   }
 }

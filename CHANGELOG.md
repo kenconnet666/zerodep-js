@@ -8,7 +8,7 @@
 - 保留变量式 API、组件参数解构/default/rest、DOM/组件 bind、泛型、SSR 和 HMR；项目检查与独立语言工具通过官方 API 和检查投影提供类型写回验证及源码映射。
 - 增加仅 DOM 的 bind:this，修复示例 SVG 引用的 TS2339；CI 同时检查示例原始 TSX，避免框架检查掩盖官方 IDE 可见错误。
 - 承接小核心简化：删除 _createPage 与冗余工具入口，持久化统一 read/write，开发面板显式 _inspect；生成直观 DOM 类型声明，保留中文语义与生命周期注释。
-- 独立语言工具提供真实类型驱动的命名空间属性补全和声明导航；这些增强尚未自动接入 WebStorm，详见 [工具边界](docs/tooling.md)。
+- 标准 LSP 入口通过现有 LSP4IJ 接入 WebStorm，用户已确认绑定错误/修复、补全、中文说明和导航；协议测试覆盖跨文件未保存文本、增量编辑、重命名、自动导入和资源清理。WebStorm 专有类型引擎的版本限制独立记录于 [工具边界](docs/tooling.md)。
 - 已通过最新 nightly 的全仓 check、326 项 Node 测试、client/server 构建、独立 LSP 与 49 项补全；平台、三浏览器和候选发布以本次 CI 为准。
 
 ## 1.0.0-rc.6 — 编译缓存修正，2026-10-07

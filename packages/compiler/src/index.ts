@@ -51,11 +51,11 @@ interface ReactiveBinding {
 }
 
 /** 宏按导入和词法绑定识别，转换与构建器保持独立。 */
-export function compile(
+function transformFramework(
   source: string,
   filename: string,
   options: CompileOptions = {},
-): CompileResult {
+): { ast: t.File; hasDevelopment: boolean } {
   let ast: t.File;
   try {
     ast = parse(source, {
@@ -351,6 +351,15 @@ export function compile(
       ...statements.filter((node) => !t.isImportDeclaration(node)),
     ];
   }
+  return { ast, hasDevelopment: development?.enabled ?? false };
+}
+
+export function compile(
+  source: string,
+  filename: string,
+  options: CompileOptions = {},
+): CompileResult {
+  const { ast, hasDevelopment } = transformFramework(source, filename, options);
   const result = transformFromAstSync(ast, source, {
     filename,
     sourceFileName: filename,
@@ -363,13 +372,14 @@ export function compile(
   return {
     code: result.code,
     map: result.map ?? null,
-    hasDevelopment: development?.enabled ?? false,
+    hasDevelopment,
   };
 }
 
 export function diagnose(source: string, filename: string): Diagnostic[] {
   try {
-    compile(source, filename);
+    // 诊断复用完整框架分析，但不生成未使用的 JS，避免大型声明触发生成器日志。
+    transformFramework(source, filename);
     return [];
   } catch (error) {
     if (error instanceof CompileError) return error.diagnostics;

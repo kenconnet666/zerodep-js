@@ -5,5 +5,6 @@ test-results/
 playwright-report/
 .idea/
 .codex/config.toml
+.codex/lsp4ij/
 .design/ts7-tsx-probe-results.json
 pnpm-lock.yaml

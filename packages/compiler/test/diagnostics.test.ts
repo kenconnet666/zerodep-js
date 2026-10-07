@@ -1,6 +1,27 @@
 import { describe, expect, it } from 'vitest';
 import { compile } from '../src/index.js';
 import { execute } from './execute.js';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+import { resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
+
+it('大型声明只做框架诊断，不触发代码生成提示，框架错误仍会报告', async () => {
+  const module = pathToFileURL(resolve('packages/compiler/dist/index.js')).href;
+  const program = `import { diagnose } from ${JSON.stringify(module)};
+import { readFileSync } from 'node:fs';
+const filename = 'packages/core/src/jsx-elements.ts';
+const large = diagnose(readFileSync(filename, 'utf8'), filename);
+const invalid = diagnose("import { _state } from 'zerodep-js'; const n = _state(0); n++;", 'invalid.ts');
+console.log(JSON.stringify({ large, codes: invalid.map(item => item.code) }));`;
+  const result = await promisify(execFile)(
+    process.execPath,
+    ['--input-type=module', '-e', program],
+    { windowsHide: true },
+  );
+  expect(result.stderr).toBe('');
+  expect(JSON.parse(result.stdout)).toEqual({ large: [], codes: ['ZJ1005'] });
+}, 15000);
 
 describe('静态命名空间导入', () => {
   it('命名空间 state/derived、raw/by 和 component 使用同一转换', () => {
