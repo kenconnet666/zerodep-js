@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
-import { mkdir, mkdtemp, readFile, realpath, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { resolve, dirname } from 'node:path';
-import { tmpdir } from 'node:os';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { pathToFileURL } from 'node:url';
@@ -81,11 +80,11 @@ it('磁盘修改、增加根文件和删除依赖目录不会命中旧检查结�
       "import {value} from './dependency/value.js'; export const entry:number=value;",
     );
     expect((await tools.check(['tsconfig.json'])).diagnostics).toEqual([]);
-    expect((await tools.check(['tsconfig.json'])).cached).toBe(true);
+    expect((await tools.check(['tsconfig.json'])).complete).toBe(true);
     const notification = createCompiler({ root });
     notification.invalidate(file);
     await notification.close();
-    expect((await tools.check(['tsconfig.json'])).cached).toBe(true);
+    expect((await tools.check(['tsconfig.json'])).complete).toBe(true);
     expect((await tools.build('tsconfig.json')).status).toBe(0);
     expect((await tools.build('tsconfig.json')).statistics).toMatchObject({ ProjectsBuilt: 0 });
     await writeFile(
@@ -142,7 +141,7 @@ it('包 imports 改变会重建缓存的模块解析结果', async () => {
     );
     await save('./number.ts');
     expect((await tools.check(['tsconfig.json'])).diagnostics).toEqual([]);
-    expect((await tools.check(['tsconfig.json'])).cached).toBe(true);
+    expect((await tools.check(['tsconfig.json'])).complete).toBe(true);
     await save('./text.ts');
     expect((await tools.check(['tsconfig.json'])).diagnostics.map((item) => item.code)).toContain(
       'TS2322',
@@ -191,7 +190,7 @@ it('单文件修复不能丢弃其他文件操作，编辑拒绝半个 Unicode�
   ).toBe('abc\r\nok');
 });
 
-it('两个客户端复用 Go 进程与磁盘编译缓存，内存覆盖不污染另一客户端', async () => {
+it('编译宿主各自持有状态，内存覆盖不污染另一会话', async () => {
   const root = await fixture();
   const file = resolve(root, 'state.ts');
   const tools = new NativeTools(root);
@@ -201,15 +200,8 @@ it('两个客户端复用 Go 进程与磁盘编译缓存，内存覆盖不污染
   const source = `import {_state} from 'zerodep-js'; let count=_state(1); export function read(){ return count; }`;
   try {
     await writeFile(file, source);
-    const [one, two] = await Promise.all([tools.stats(), other.stats()]);
-    expect(one.compilerPid).toBe(two.compilerPid);
-    expect(one.serverPid).toBe(two.serverPid);
     const first = await a.compile(source, file);
-    const before = await tools.stats();
     expect((await b.compile(source, file)).code).toBe(first.code);
-    const after = await tools.stats();
-    expect(after.outputCacheHits).toBeGreaterThan(before.outputCacheHits);
-    expect(after.semanticChecks).toBe(before.semanticChecks);
     expect((await a.compile(source.replace('_state(1)', '_state(2)'), file)).code).toContain(
       '.state(2)',
     );
@@ -218,7 +210,9 @@ it('两个客户端复用 Go 进程与磁盘编译缓存，内存覆盖不污染
     expect((await b.compile(source, file)).code).toBe(first.code);
     const check = await tools.check(['tsconfig.json']);
     expect(check.diagnostics).toEqual([]);
-    expect((await other.check(['tsconfig.json'])).cached).toBe(true);
+    await tools.inspect(file, 'export const virtual: number = "错误";');
+    expect((await tools.check(['tsconfig.json'])).diagnostics).toEqual([]);
+    expect((await other.check(['tsconfig.json'])).complete).toBe(true);
   } finally {
     await a.close();
     await b.close();
@@ -303,72 +297,6 @@ it('Go 元数据区分 type-only 导入，声明与公开类型变化进入 API 
     await cleanup(root);
   }
 }, 60000);
-
-it('并发启动只有一个服务，关闭一个客户端不影响其他客户端，最后退出回收进程', async () => {
-  const temporary = await realpath(tmpdir());
-  const root = await mkdtemp(resolve(temporary, 'zerodep-workspace-'));
-  const clients = Array.from({ length: 6 }, () => new NativeTools(root));
-  const previous = process.env.NODE_OPTIONS;
-  let serverPid = 0,
-    compilerPid = 0;
-  const alive = (pid: number) => {
-    try {
-      process.kill(pid, 0);
-      return true;
-    } catch {
-      return false;
-    }
-  };
-  try {
-    // 工具后台进程不能继承调用方的测试/调试加载器。
-    process.env.NODE_OPTIONS = '--require=zerodep-missing-parent-hook';
-    const states = await Promise.all(clients.map((client) => client.stats()));
-    expect(new Set(states.map((state) => state.serverPid)).size).toBe(1);
-    expect(new Set(states.map((state) => state.compilerPid)).size).toBe(1);
-    serverPid = states[0]!.serverPid;
-    compilerPid = states[0]!.compilerPid;
-    await Promise.all(clients.slice(0, -1).map((client) => client.close()));
-    expect((await clients.at(-1)!.stats()).serverPid).toBe(serverPid);
-    await clients.at(-1)!.close();
-    await expect.poll(() => alive(serverPid), { timeout: 5000 }).toBe(false);
-    await expect.poll(() => alive(compilerPid), { timeout: 5000 }).toBe(false);
-  } finally {
-    if (previous === undefined) delete process.env.NODE_OPTIONS;
-    else process.env.NODE_OPTIONS = previous;
-    await Promise.all(clients.map((client) => client.close()));
-    for (const pid of [serverPid, compilerPid]) if (pid && alive(pid)) process.kill(pid);
-    assert.equal(dirname(root), temporary);
-    await rm(root, { recursive: true, force: true });
-  }
-}, 30000);
-
-it('原生进程异常退出后客户端可重连，旧连接不会保留死进程', async () => {
-  const temporary = await realpath(tmpdir());
-  const root = await mkdtemp(resolve(temporary, 'zerodep-reconnect-'));
-  const tools = new NativeTools(root);
-  try {
-    const before = await tools.stats();
-    process.kill(before.compilerPid);
-    await expect
-      .poll(
-        async () => {
-          try {
-            const after = await tools.stats();
-            return after.compilerPid !== before.compilerPid && after.serverPid !== before.serverPid;
-          } catch {
-            return false;
-          }
-        },
-        { timeout: 10000, interval: 100 },
-      )
-      .toBe(true);
-  } finally {
-    await tools.close();
-    assert.equal(dirname(root), temporary);
-    // close 释放客户端租约，最后一个连接断开后的空闲退出最多需要约 1.5 秒。
-    await rm(root, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
-  }
-}, 20000);
 
 it('lint 开关使增量诊断失效，any case 不能冒充穷尽，未检查 JS 仍有框架诊断', async () => {
   const root = await fixture();

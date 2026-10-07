@@ -2,7 +2,7 @@
 
 固定 TypeScript 7.1 的 zerodep-js 原生 Go 编译器。框架分析与输出编入 TypeScript，保留原始源码类型检查、声明、源码映射和语言服务。运行时协议为 ABI 2，项目只维护这一编译路线。
 
-RC6 已发布到 next；本次常驻与增量完善属于更新后的源码，尚未随 RC6 发布。实际注册表状态与发布记录见仓库 CHANGELOG。源码工作区先运行 `pnpm compiler:native:build --source <TypeScript仓库> --go <Go路径>`；验收使用实际 tgz 独立安装。
+RC6 已发布到 next；当前源码已改为宿主持有编译会话，这部分尚未随 RC6 发布。实际注册表状态与发布记录见仓库 CHANGELOG。源码工作区先运行 `pnpm compiler:native:build --source <TypeScript仓库> --go <Go路径>`；验收使用实际 tgz 独立安装。
 
 当前分发平台：Windows、Linux、macOS 的 x64/ARM64 六种组合，由对应架构 CI runner 构建和执行验证。安装者无需 Go；维护者使用 Go 1.27.1 构建平台包。依赖官方精确版本的 TypeScript JavaScript API，不依赖 Babel、Zod 或 MCP SDK。
 
@@ -39,7 +39,7 @@ import { zerodep } from 'zerodep-js-vite';
 export default { plugins: [zerodep()] };
 ```
 
-原生模式在生产构建中默认使用同一 Program 检查请求文件并生成 JS。开发态默认只执行转换和框架诊断，由原生语言服务提供类型诊断，避免复杂类型检查阻塞热更新。`typeCheck: true/false` 可显式覆盖；项目完整检查使用 `zerodep-tools check -p tsconfig.json`，复用常驻 Go 服务与原生增量信息。框架语义错误始终阻止输出。
+原生模式在生产构建中默认使用同一 Program 检查请求文件并生成 JS。开发态默认只执行转换和框架诊断，由原生语言服务提供类型诊断，避免复杂类型检查阻塞热更新。`typeCheck: true/false` 可显式覆盖；项目完整检查使用 `zerodep-tsc -p tsconfig.json --noEmit`，命令完成即退出。框架语义错误始终阻止输出。
 
 Node 单文件接口只进行转换和框架诊断：
 
@@ -58,4 +58,4 @@ try {
 
 源代码、构建方式及性能报告见 [项目仓库](https://github.com/kenconnet666/zerodep-js)。原生平台包携带上游 Apache-2.0 许可、NOTICE、标准库和构建摘要。
 
-`zerodep-tools` 提供 check、lint、build、imports、fix、boundary、api 和试验性 format。异步 `NativeTools` 与 `createCompiler`、Vite、项目 MCP 复用工作区 Go 服务；用完调用 `close()`，最后一个连接断开后默认保留 5 分钟供后续命令复用。`zerodep-tools status` 查看状态，`zerodep-tools stop` 主动停止，有其他使用者时需显式 `--force`。类型规则、编辑保护、Program 共享范围及 WebStorm 接入边界见 [原生工具说明](https://github.com/kenconnet666/zerodep-js/blob/main/docs/native-tooling.md)。
+`zerodep-tools` 提供 check、lint、build、imports、fix、boundary、api 和试验性 format。`NativeTools`、`createCompiler` 各自持有 Go 子进程；一次构建或开发服务器运行期间复用，结束时 `await close()` 立即释放。没有跨命令后台服务、status/stop 管理命令或空闲保留策略。类型规则、编辑保护与 WebStorm 边界见 [原生工具说明](https://github.com/kenconnet666/zerodep-js/blob/main/docs/native-tooling.md)。

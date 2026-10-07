@@ -10,6 +10,7 @@ import {
   type MessageConnection,
 } from 'vscode-jsonrpc/node';
 import { compilerPath } from './binary.js';
+import { API } from 'typescript/unstable/async';
 
 export interface SourceDocument {
   uri: string;
@@ -35,10 +36,14 @@ export class NativeLanguageService {
   private queue: Promise<unknown> = Promise.resolve();
   private flushing: Promise<void> = Promise.resolve();
   private closed = false;
+  private closing: Promise<void> | undefined;
+  private api: Promise<API<true>> | undefined;
+  private readonly watchFiles: boolean;
   onChanges: (files: Map<string, 'create' | 'update' | 'delete'>) => void = () => {};
 
-  constructor(root: string) {
+  constructor(root: string, watchFiles = true) {
     this.root = root;
+    this.watchFiles = watchFiles;
     this.child = spawn(compilerPath(), ['--lsp', '--stdio'], {
       cwd: root,
       stdio: 'pipe',
@@ -53,6 +58,10 @@ export class NativeLanguageService {
     this.child.on('exit', () => {
       this.connection.dispose();
       this.stopWatching();
+      void this.api?.then((api) => api.client.close()).catch(() => {});
+    });
+    this.child.stdout.once('end', () => {
+      void this.api?.then((api) => api.client.close()).catch(() => {});
     });
     this.connection.onRequest('workspace/configuration', ({ items }: { items: unknown[] }) =>
       items.map(() => ({})),
@@ -94,7 +103,7 @@ export class NativeLanguageService {
       },
     });
     await this.connection.sendNotification('initialized', {});
-    await this.installWatchers();
+    if (this.watchFiles) await this.installWatchers();
     return info;
   }
 
@@ -194,6 +203,7 @@ export class NativeLanguageService {
 
   async request<T>(method: string, params: unknown, document?: SourceDocument): Promise<T> {
     await this.ready;
+    this.assertAlive();
     if (!document) {
       await this.flush();
       return this.connection.sendRequest<T>(method, params);
@@ -223,15 +233,39 @@ export class NativeLanguageService {
     for (const watcher of this.watchers) watcher.close();
     this.watchers = [];
   }
-  async close(): Promise<void> {
+  assertAlive(): void {
+    try {
+      if (
+        this.child.exitCode !== null ||
+        this.child.signalCode !== null ||
+        this.child.stdout.readableEnded ||
+        !this.child.pid
+      )
+        throw new Error('exited');
+      // 外部终止可能先于 Node 的 exit 事件；此时不能继续向已关闭的 API 管道写请求。
+      process.kill(this.child.pid, 0);
+    } catch {
+      throw new Error('原生编译器已退出，请重新创建会话。');
+    }
+  }
+  openAPI(): Promise<API<true>> {
+    return (this.api ??= this.request<{ pipe: string }>('custom/initializeAPISession', {}).then(
+      ({ pipe }) => API.fromLSPConnection({ pipe }),
+    ));
+  }
+  close(): Promise<void> {
+    return (this.closing ??= this.finishClose());
+  }
+  private async finishClose(): Promise<void> {
     this.closed = true;
     this.stopWatching();
+    const timer = setTimeout(() => this.child.kill(), 1000);
     await this.queue.catch(() => {});
+    await this.api?.then((api) => api.close()).catch(() => {});
     const exited = new Promise<void>((done) => {
       if (this.child.exitCode !== null || this.child.signalCode !== null) done();
       else this.child.once('exit', () => done());
     });
-    const timer = setTimeout(() => this.child.kill(), 1000);
     try {
       await this.connection.sendRequest('shutdown', null);
       await this.connection.sendNotification('exit', null);

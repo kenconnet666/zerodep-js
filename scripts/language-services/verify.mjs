@@ -5,7 +5,7 @@ import { randomUUID } from 'node:crypto';
 import { parse } from 'smol-toml';
 import { root } from './environment.mjs';
 import { connectMcp } from './mcp-client.mjs';
-import { service, stopAll } from './language-client.mjs';
+import { service, closeService } from './language-client.mjs';
 import { removeProbes } from './probe-files.mjs';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { relative } from 'node:path';
@@ -336,7 +336,7 @@ export const RenameCounter = _component(({ step = 1 }: {step?: number;}) => {
   );
   console.log('独立服务验证完成；若桌面 MCP 进程已运行，脚本缓存需在新会话中另行核对。');
 } finally {
-  stopAll();
+  await closeService();
   await client.close();
   await removeProbes([...created].map((file) => resolve(root, file)));
   if (log) process.stderr.write(log);

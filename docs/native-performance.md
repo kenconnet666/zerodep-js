@@ -1,5 +1,7 @@
 # 原生编译器性能基线
 
+> 本文保留历史性能记录。跨命令后台服务已移除；当前实现由宿主持有 Go 会话，接口和生命周期以 [原生工具说明](native-tooling.md) 为准。
+
 当前 RC6 的重新测量、TS-Go 源码分析与属性接口实验见 [RC6 编译性能研究](native-performance-rc6.md)。
 
 这是删除传统编译器前的历史对照报告。当前 `pnpm benchmark:native` 只测试定制原生路线，输出 `reports/native-only-performance.json`；旧原始样本保留供比较，不需要重新安装旧工具。

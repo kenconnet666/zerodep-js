@@ -1,5 +1,5 @@
 import { root } from './environment.mjs';
-import { service, restart, stopAll } from './language-client.mjs';
+import { service, closeService } from './language-client.mjs';
 import { readFile, realpath } from 'node:fs/promises';
 import { extname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -142,7 +142,7 @@ function tool(name, description, properties, read) {
             // 子语言进程的流中断允许重建一次；语义错误、超时和第二次失败仍完整上报。
             if (
               attempt ||
-              !/ERR_STREAM_DESTROYED|write after|connection.*(?:disposed|closed)/iu.test(
+              !/原生编译器已退出|ERR_STREAM_DESTROYED|write after|connection.*(?:disposed|closed)/iu.test(
                 String(error),
               )
             )
@@ -150,7 +150,7 @@ function tool(name, description, properties, read) {
             process.stderr.write(
               'Restarting ' + doc.kind + ' after transport failure: ' + error + '\n',
             );
-            restart(doc.kind);
+            await closeService();
           }
         }
       } catch (error) {
@@ -322,16 +322,12 @@ let closing = false;
 function close() {
   if (closing) return;
   closing = true;
-  stopAll();
   server.dispose();
-  process.exit(0);
+  void closeService().finally(() => process.exit(0));
 }
 process.stdin.on('end', close);
 process.on('SIGINT', close);
 process.on('SIGTERM', close);
-process.on('exit', () => {
-  stopAll();
-});
 server.onError(([error]) => process.stderr.write(String(error) + '\n'));
 server.onClose(close);
 server.listen();

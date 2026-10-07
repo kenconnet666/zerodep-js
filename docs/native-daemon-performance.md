@@ -2,6 +2,8 @@
 
 > 前半部分保留实施前研究记录；用户批准后的实现见末尾“已实施”，使用方式见 [原生工具说明](native-tooling.md)。
 
+> 2026-10-07 后续状态：用户要求优先降低维护成本，跨命令后台层及其管理/基准入口已移除，改为宿主管理会话。本文数据及命令属于历史版本；当前用法见 [原生工具](native-tooling.md)，公平比较与取舍见 [后续记录](../.design/native-hot-check-followup.md#用户调整方向后的研究结论)。
+
 2026-10-07，延续[空 TSX 性能研究](empty-tsx-performance.md)。推荐在现有工作区服务上继续完善常驻与增量检查。原始记录与失败探针见 [empty-tsx-performance.json](../reports/empty-tsx-performance.json)。本轮只做研究，没有安装长期后台服务或改变默认生命周期。
 
 ## 已有基础及当前限制

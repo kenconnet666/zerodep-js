@@ -1,57 +1,47 @@
-import { randomUUID } from 'node:crypto';
 import { resolve } from 'node:path';
-import { WorkspaceClient } from './client.js';
+import { NativeLanguageService } from './language-service.js';
+import { ProjectCompiler } from './project.js';
 import { canonicalPath } from './paths.js';
-import type { CompilerSessionOptions } from './protocol.js';
-import type { CompileOptions, CompileResult } from './types.js';
+import type { CompileOptions, CompileResult, CompilerSessionOptions } from './types.js';
 
-export type { CompilerSessionOptions } from './protocol.js';
+export type { CompilerSessionOptions } from './types.js';
 
-/** 客户端只释放自己的连接与内存快照，共享服务由最后一个使用者退出后回收。 */
+/** 编译器只由当前构建/开发宿主持有，关闭会话即释放 Go 进程。 */
 export class CompilerSession {
   readonly root: string;
-  private readonly options: CompilerSessionOptions;
-  private readonly client: WorkspaceClient;
-  private readonly id = randomUUID();
+  private readonly language: NativeLanguageService;
+  private readonly engine: Promise<ProjectCompiler>;
   private queue: Promise<unknown> = Promise.resolve();
   private closed = false;
   private closing: Promise<void> | undefined;
 
   constructor(options: CompilerSessionOptions = {}) {
-    this.options = options;
     this.root = canonicalPath(options.root ?? '.');
-    this.client = new WorkspaceClient(this.root);
+    this.language = new NativeLanguageService(this.root, false);
+    this.engine = this.language
+      .openAPI()
+      .then((api) => new ProjectCompiler(api, { ...options, root: this.root }));
+    void this.engine.catch(() => {});
   }
   compile(source: string, file: string, options: CompileOptions = {}): Promise<CompileResult> {
     if (this.closed) return Promise.reject(new Error('原生编译服务已关闭。'));
-    const pending = this.queue
+    const operation = this.queue
       .catch(() => {})
-      .then(() =>
-        this.client.request<CompileResult>({
-          action: 'compile',
-          id: this.id,
-          settings: { ...this.options, root: this.root },
-          source,
-          filename: canonicalPath(resolve(this.root, file)),
-          options,
-        }),
-      );
-    this.queue = pending;
-    return pending;
+      .then(async () => {
+        const engine = await this.engine;
+        this.language.assertAlive();
+        return engine.compile(source, canonicalPath(resolve(this.root, file)), options);
+      });
+    this.queue = operation;
+    return operation;
   }
   invalidate(file: string, event: 'create' | 'update' | 'delete' = 'update'): void {
     if (this.closed) return;
     this.queue = this.queue
       .catch(() => {})
-      .then(() =>
-        this.client.request({
-          action: 'invalidate',
-          id: this.id,
-          filename: canonicalPath(resolve(this.root, file)),
-          event,
-        }),
+      .then(async () =>
+        (await this.engine).invalidate(canonicalPath(resolve(this.root, file)), event),
       );
-    // 失联会在下一次编译时建立新服务；无后续请求的 watcher 也不能留下未处理的 rejection。
     void this.queue.catch(() => {});
   }
   close(): Promise<void> {
@@ -59,8 +49,17 @@ export class CompilerSession {
   }
   private async finishClose(): Promise<void> {
     this.closed = true;
-    await this.queue.catch(() => {});
-    await this.client.close();
+    const timer = setTimeout(() => this.language.child.kill(), 5000);
+    try {
+      await this.queue.catch(() => {});
+      await this.engine.then((engine) => engine.close()).catch(() => {});
+    } finally {
+      try {
+        await this.language.close();
+      } finally {
+        clearTimeout(timer);
+      }
+    }
   }
 }
 

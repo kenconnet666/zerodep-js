@@ -11,7 +11,7 @@ import type { CompileOptions, CompileResult } from './types.js';
 export { CompilerSession, createCompiler, type CompilerSessionOptions } from './session.js';
 export { NativeTools, applyTextEdits, writeEdits, fileEdits } from './tools.js';
 export type { ApiReport, BoundaryOptions, CodeAction, EditResult } from './tools.js';
-export type { CheckResult, FileInfo, Position, TextEdit, WorkspaceStats } from './protocol.js';
+export type { CheckResult, FileInfo, Position, TextEdit } from './protocol.js';
 
 let standalone: SyncAPI | undefined;
 

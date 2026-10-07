@@ -40,3 +40,9 @@ export class CompileError extends Error {
     this.diagnostics = diagnostics;
   }
 }
+export interface CompilerSessionOptions {
+  root?: string;
+  project?: string;
+  /** 默认在相同 Program 中检查请求文件，再输出 JS。 */
+  check?: boolean;
+}

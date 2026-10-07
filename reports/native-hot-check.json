@@ -1,0 +1,167 @@
+{
+  "measuredAt": "2026-10-07T01:51:04.328Z",
+  "platform": "win32-x64",
+  "node": "v24.18.0",
+  "hotChecks": [
+    {
+      "milliseconds": 2001.9267999999993,
+      "phases": {
+        "parseConfigFile": 5.035699999999451,
+        "createSnapshot": 123.03110000000015,
+        "createBuildOrchestrator": 0.8739000000005035,
+        "build": 1820.6835
+      }
+    },
+    {
+      "milliseconds": 1945.0208999999995,
+      "phases": {
+        "parseConfigFile": 5.012300000000323,
+        "createSnapshot": 54.118499999999585,
+        "createBuildOrchestrator": 0.7809999999999491,
+        "build": 1832.3670000000002
+      }
+    },
+    {
+      "milliseconds": 2010.7643999999982,
+      "phases": {
+        "parseConfigFile": 5.160299999999552,
+        "createSnapshot": 57.544700000000375,
+        "createBuildOrchestrator": 0.7760999999991327,
+        "build": 1893.8234000000011
+      }
+    },
+    {
+      "milliseconds": 1977.4130999999998,
+      "phases": {
+        "parseConfigFile": 4.828500000001441,
+        "createSnapshot": 75.83890000000065,
+        "createBuildOrchestrator": 1.4954999999990832,
+        "build": 1842.616
+      }
+    },
+    {
+      "milliseconds": 1977.8292000000001,
+      "phases": {
+        "parseConfigFile": 4.855599999998958,
+        "createSnapshot": 56.93579999999929,
+        "createBuildOrchestrator": 0.7471000000005006,
+        "build": 1866.6959000000006
+      }
+    }
+  ],
+  "memory": [
+    {
+      "stage": "JSX 暖机后",
+      "goLiveBytes": 43964698,
+      "nodeHeapBytes": 11778760,
+      "stats": {
+        "serverPid": 24936,
+        "compilerPid": 32824,
+        "compileSessions": 0,
+        "sharedProjects": 0,
+        "programsCreated": 1,
+        "semanticChecks": 0,
+        "outputCacheHits": 0,
+        "idleTimeoutMs": 300000,
+        "cacheTimeoutMs": 300000,
+        "maxIdleProjects": 4,
+        "idleProjects": 0,
+        "projectChecks": 11,
+        "projectCheckCacheHits": 0
+      }
+    },
+    {
+      "stage": "60 次编辑/项目切换后",
+      "goLiveBytes": 27394281,
+      "nodeHeapBytes": 11838000,
+      "stats": {
+        "serverPid": 24936,
+        "compilerPid": 32824,
+        "compileSessions": 0,
+        "sharedProjects": 4,
+        "programsCreated": 20,
+        "semanticChecks": 4,
+        "outputCacheHits": 0,
+        "idleTimeoutMs": 300000,
+        "cacheTimeoutMs": 300000,
+        "maxIdleProjects": 4,
+        "idleProjects": 4,
+        "projectChecks": 71,
+        "projectCheckCacheHits": 0
+      }
+    },
+    {
+      "stage": "120 次编辑/项目切换后",
+      "goLiveBytes": 38878018,
+      "nodeHeapBytes": 11890928,
+      "stats": {
+        "serverPid": 24936,
+        "compilerPid": 32824,
+        "compileSessions": 0,
+        "sharedProjects": 4,
+        "programsCreated": 20,
+        "semanticChecks": 4,
+        "outputCacheHits": 0,
+        "idleTimeoutMs": 300000,
+        "cacheTimeoutMs": 300000,
+        "maxIdleProjects": 4,
+        "idleProjects": 4,
+        "projectChecks": 131,
+        "projectCheckCacheHits": 0
+      }
+    },
+    {
+      "stage": "180 次编辑/项目切换后",
+      "goLiveBytes": 45388099,
+      "nodeHeapBytes": 11949616,
+      "stats": {
+        "serverPid": 24936,
+        "compilerPid": 32824,
+        "compileSessions": 0,
+        "sharedProjects": 4,
+        "programsCreated": 20,
+        "semanticChecks": 4,
+        "outputCacheHits": 0,
+        "idleTimeoutMs": 300000,
+        "cacheTimeoutMs": 300000,
+        "maxIdleProjects": 4,
+        "idleProjects": 4,
+        "projectChecks": 191,
+        "projectCheckCacheHits": 0
+      }
+    },
+    {
+      "stage": "240 次编辑/项目切换后",
+      "goLiveBytes": 58603916,
+      "nodeHeapBytes": 12413224,
+      "stats": {
+        "serverPid": 24936,
+        "compilerPid": 32824,
+        "compileSessions": 0,
+        "sharedProjects": 4,
+        "programsCreated": 20,
+        "semanticChecks": 4,
+        "outputCacheHits": 0,
+        "idleTimeoutMs": 300000,
+        "cacheTimeoutMs": 300000,
+        "maxIdleProjects": 4,
+        "idleProjects": 4,
+        "projectChecks": 251,
+        "projectCheckCacheHits": 0
+      }
+    }
+  ],
+  "cpuFlat": "File: tsc.exe\nBuild ID: C:\\Users\\lionheart\\WebstormProjects\\zerodep-js\\packages\\native-win32-x64\\typescript\\lib\\tsc.exe2026-10-06 22:26:25.879107 +0800 CST\nType: cpu\nTime: 2026-10-07 09:51:19 CST\nDuration: 10.14s, Total samples = 27.04s (266.77%)\nShowing nodes accounting for 18.70s, 69.16% of 27.04s total\nDropped 881 nodes (cum <= 0.14s)\nShowing top 18 nodes out of 353\n      flat  flat%   sum%        cum   cum%\n    12.74s 47.12% 47.12%     12.74s 47.12%  runtime.cgocall\n     0.71s  2.63% 49.74%      0.71s  2.63%  runtime.semasleep\n     0.69s  2.55% 52.29%      0.69s  2.55%  internal/runtime/maps.ctrlGroup.matchH2 (inline)\n     0.60s  2.22% 54.51%      0.96s  3.55%  runtime.tryDeferToSpanScan\n     0.48s  1.78% 56.29%      1.51s  5.58%  runtime.scanObject\n     0.44s  1.63% 57.91%      1.22s  4.51%  runtime.scanObjectsSmall\n     0.40s  1.48% 59.39%      0.40s  1.48%  internal/runtime/maps.memHashAES\n     0.39s  1.44% 60.84%      0.39s  1.44%  runtime.semawakeup\n     0.33s  1.22% 62.06%      8.52s 31.51%  github.com/microsoft/TypeScript/tsc/internal/checker.(*Checker).instantiateTypeWithAlias\n     0.33s  1.22% 63.28%      0.33s  1.22%  runtime.memclrNoHeapPointers\n     0.30s  1.11% 64.39%      0.31s  1.15%  github.com/zeebo/xxh3.hashAny128\n     0.24s  0.89% 65.27%      0.85s  3.14%  runtime.mapaccess2\n     0.22s  0.81% 66.09%      0.42s  1.55%  runtime.findObject\n     0.19s   0.7% 66.79%      0.89s  3.29%  runtime.preemptM\n     0.18s  0.67% 67.46%      0.18s  0.67%  runtime.sysUnusedOS\n     0.16s  0.59% 68.05%      0.56s  2.07%  runtime.mapassign\n     0.15s  0.55% 68.60%      0.29s  1.07%  github.com/microsoft/TypeScript/tsc/internal/checker.CompareTypes\n     0.15s  0.55% 69.16%      0.42s  1.55%  runtime.mapaccess2_faststr\n",
+  "cpuCumulative": "File: tsc.exe\nBuild ID: C:\\Users\\lionheart\\WebstormProjects\\zerodep-js\\packages\\native-win32-x64\\typescript\\lib\\tsc.exe2026-10-06 22:26:25.879107 +0800 CST\nType: cpu\nTime: 2026-10-07 09:51:19 CST\nDuration: 10.14s, Total samples = 27.04s (266.77%)\nShowing nodes accounting for 13.22s, 48.89% of 27.04s total\nDropped 881 nodes (cum <= 0.14s)\nShowing top 22 nodes out of 353\n      flat  flat%   sum%        cum   cum%\n    12.74s 47.12% 47.12%     12.74s 47.12%  runtime.cgocall\n         0     0% 47.12%     12.74s 47.12%  syscall.SyscallN\n         0     0% 47.12%     12.74s 47.12%  syscall.syscalln\n     0.33s  1.22% 48.34%      8.52s 31.51%  github.com/microsoft/TypeScript/tsc/internal/checker.(*Checker).instantiateTypeWithAlias\n     0.08s   0.3% 48.63%      8.52s 31.51%  github.com/microsoft/TypeScript/tsc/internal/checker.(*Checker).instantiateTypeWorker\n     0.02s 0.074% 48.71%      8.51s 31.47%  github.com/microsoft/TypeScript/tsc/internal/checker.(*Checker).instantiateType (partial-inline)\n     0.02s 0.074% 48.78%      8.50s 31.43%  github.com/microsoft/TypeScript/tsc/internal/checker.(*Checker).getConditionalTypeInstantiation\n     0.03s  0.11% 48.89%      8.16s 30.18%  github.com/microsoft/TypeScript/tsc/internal/core.Map[go.shape.*uint8,go.shape.*uint8] (inline)\n         0     0% 48.89%      8.03s 29.70%  internal/poll.(*FD).Read\n         0     0% 48.89%      8.03s 29.70%  internal/poll.(*FD).Read.func1\n         0     0% 48.89%      8.03s 29.70%  internal/poll.(*FD).execIO\n         0     0% 48.89%      8.03s 29.70%  os.(*File).Read\n         0     0% 48.89%      8.03s 29.70%  os.(*File).read (inline)\n         0     0% 48.89%      8.03s 29.70%  syscall.ReadFile (inline)\n         0     0% 48.89%      8.03s 29.70%  syscall.readFile\n         0     0% 48.89%      7.81s 28.88%  bufio.(*Reader).ReadBytes\n         0     0% 48.89%      7.81s 28.88%  bufio.(*Reader).ReadSlice\n         0     0% 48.89%      7.81s 28.88%  bufio.(*Reader).collectFragments\n         0     0% 48.89%      7.81s 28.88%  bufio.(*Reader).fill\n         0     0% 48.89%      7.81s 28.88%  github.com/microsoft/TypeScript/tsc/internal/jsonrpc.(*Reader).Read\n         0     0% 48.89%      7.81s 28.88%  github.com/microsoft/TypeScript/tsc/internal/lsp.(*Server).Run.func4\n         0     0% 48.89%      7.81s 28.88%  github.com/microsoft/TypeScript/tsc/internal/lsp.(*Server).read (inline)\n",
+  "sdk": {
+    "version": "7.1.0-dev.20261005.1+zerodep.native.52064eee65b8",
+    "baseVersion": "7.1.0-dev.20261005.1",
+    "commit": "50d70a3f5f453a79a4323b263165da51f656a4e3",
+    "sourceHash": "52064eee65b88977eb6b3378104569c372add5c72ca5a74e3ebd25a18128e560",
+    "goVersion": "go version go1.27.1 windows/amd64",
+    "platform": "win32-x64",
+    "binaryHash": "efd58842c98cf5b123692520b7098bdb9f91faa9482fe0a96d7ea03b91f3c2fe"
+  },
+  "adapterHash": "0539d825dcc8471f599feab2e45df8185972370b9c17cfbfcc7e15c869ba96b5",
+  "scope": "直接实例化生产 NativeWorkspace，复用同一个 Go LSP/API，省去外层 Node IPC；普通计时与采样分开。四批共 240 次编辑/20 项目轮换，24 次虚拟错误/修复。Go 存活堆在每个采样点由 API 主动 GC，不等于运行时工作集或峰值；不能替代数小时真实使用验证。"
+}

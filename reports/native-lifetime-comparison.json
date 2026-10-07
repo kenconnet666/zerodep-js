@@ -1,0 +1,147 @@
+{
+  "measuredAt": "2026-10-07T02:01:28.676Z",
+  "platform": "win32-x64",
+  "node": "v24.18.0",
+  "sdk": {
+    "version": "7.1.0-dev.20261005.1+zerodep.native.52064eee65b8",
+    "baseVersion": "7.1.0-dev.20261005.1",
+    "commit": "50d70a3f5f453a79a4323b263165da51f656a4e3",
+    "sourceHash": "52064eee65b88977eb6b3378104569c372add5c72ca5a74e3ebd25a18128e560",
+    "goVersion": "go version go1.27.1 windows/amd64",
+    "platform": "win32-x64",
+    "binaryHash": "efd58842c98cf5b123692520b7098bdb9f91faa9482fe0a96d7ea03b91f3c2fe"
+  },
+  "samples": [
+    {
+      "stage": "cold",
+      "route": "cli",
+      "milliseconds": 4311.8
+    },
+    {
+      "stage": "cold",
+      "route": "daemon",
+      "milliseconds": 4873.31
+    },
+    {
+      "stage": "unchanged",
+      "route": "cli",
+      "milliseconds": 219.54
+    },
+    {
+      "stage": "unchanged",
+      "route": "daemon",
+      "milliseconds": 25.7
+    },
+    {
+      "stage": "unchanged",
+      "route": "daemon",
+      "milliseconds": 24.2
+    },
+    {
+      "stage": "unchanged",
+      "route": "cli",
+      "milliseconds": 219.02
+    },
+    {
+      "stage": "unchanged",
+      "route": "cli",
+      "milliseconds": 207.75
+    },
+    {
+      "stage": "unchanged",
+      "route": "daemon",
+      "milliseconds": 22.15
+    },
+    {
+      "stage": "constant-edit",
+      "route": "cli",
+      "milliseconds": 223.04
+    },
+    {
+      "stage": "constant-edit",
+      "route": "daemon",
+      "milliseconds": 176.52
+    },
+    {
+      "stage": "constant-edit",
+      "route": "daemon",
+      "milliseconds": 191.9
+    },
+    {
+      "stage": "constant-edit",
+      "route": "cli",
+      "milliseconds": 237.95
+    },
+    {
+      "stage": "constant-edit",
+      "route": "cli",
+      "milliseconds": 234.22
+    },
+    {
+      "stage": "constant-edit",
+      "route": "daemon",
+      "milliseconds": 204.1
+    },
+    {
+      "stage": "type-error",
+      "route": "cli",
+      "milliseconds": 229.22
+    },
+    {
+      "stage": "type-error",
+      "route": "daemon",
+      "milliseconds": 213.76
+    },
+    {
+      "stage": "type-repair",
+      "route": "daemon",
+      "milliseconds": 231.56
+    },
+    {
+      "stage": "type-repair",
+      "route": "cli",
+      "milliseconds": 224.31
+    },
+    {
+      "stage": "jsx-first",
+      "route": "cli",
+      "milliseconds": 2235.6
+    },
+    {
+      "stage": "jsx-first",
+      "route": "daemon",
+      "milliseconds": 1918.54
+    },
+    {
+      "stage": "jsx-edit",
+      "route": "cli",
+      "milliseconds": 2286.75
+    },
+    {
+      "stage": "jsx-edit",
+      "route": "daemon",
+      "milliseconds": 1861.43
+    },
+    {
+      "stage": "jsx-edit",
+      "route": "daemon",
+      "milliseconds": 1929.52
+    },
+    {
+      "stage": "jsx-edit",
+      "route": "cli",
+      "milliseconds": 2216.46
+    },
+    {
+      "stage": "jsx-edit",
+      "route": "cli",
+      "milliseconds": 2202.52
+    },
+    {
+      "stage": "jsx-edit",
+      "route": "daemon",
+      "milliseconds": 2032.15
+    }
+  ],
+  "scope": "同一临时项目、同一 SDK、完整示例 TSX 配置；独立进程 CLI 与共享服务都使用原生 noEmit 增量，各持有独立缓存；每组共享同一次源文件修改，交替顺序。冷样本各一次，热样本各三次；未清空 OS 缓存。错误/修复均验证，夹具和服务最终清理。"
+}

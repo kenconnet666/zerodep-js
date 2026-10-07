@@ -11,7 +11,7 @@
 | `zerodep-js/internal`                      | 编译输出与 SSR 的 ABI 2                              | 内部协议，不作为手写 signal API                 |
 | `zerodep-use/router`、`storage`、`history` | 路由、持久化与编辑历史                               | 通过同版本 core peer 共享运行时，无聚合根入口   |
 | `zerodep-js-ssr`、`zerodep-js-ssr/data`    | SSR 与独立 JSON 编码                                 | core 为 peer；data 子入口不依赖 DOM 类型        |
-| `zerodep-js-native`                        | CLI、单文件转换、常驻 Program                        | 固定 TS7 API 客户端及可选平台 SDK               |
+| `zerodep-js-native`                        | CLI、单文件转换、宿主内 Program                      | 固定 TS7 API 客户端及可选平台 SDK               |
 | `zerodep-js-native-<平台>`                 | Go 二进制、标准库与语言服务                          | Windows/Linux/macOS 的 x64/ARM64；用户不需要 Go |
 | `zerodep-js-vite`                          | 应用转换、依赖扫描、开发检查和 HMR                   | 直接依赖 native，Vite 8 为 peer                 |
 

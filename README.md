@@ -4,7 +4,7 @@
 
 当前十一包 **1.0.0-rc.6 已发布到 next**，通过六平台原生验证、并行三浏览器验证与 npm 实际消费。传统编译器及 Vue、React、Svelte 页面宿主已移除，core 保留一份源码和一套产物。历史版本与发布证据见 [CHANGELOG](CHANGELOG.md)，当前工具与共享边界见 [原生工具说明](docs/native-tooling.md)。
 
-主分支新增常驻服务的跨命令复用、noEmit 增量检查和缓存生命周期管理；这部分尚未随 RC6 发布。实测与使用方式见 [常驻原生服务](docs/native-daemon-performance.md)。
+主分支已精简为宿主持有 Go 编译会话：一次性 CLI 完成即退出，Vite 在当前构建/开发期间复用，结束即关闭；这部分尚未随 RC6 发布。使用方式见 [原生工具说明](docs/native-tooling.md)。
 
 ## 工作区
 
@@ -13,7 +13,7 @@
 | `packages/core`     | 状态、组件、DOM、生命周期、JSX 类型与 ABI 2          |
 | `packages/use`      | router、storage、history 子入口，通过 peer 共享 core |
 | `packages/ssr`      | 请求内渲染、HTML 转义、数据编码与文档组合            |
-| `packages/native`   | Go 框架转换、CLI、单文件接口与常驻项目会话           |
+| `packages/native`   | Go 框架转换、CLI、单文件接口与构建会话               |
 | `packages/native-*` | Windows/Linux/macOS 的 x64/ARM64 定制 SDK            |
 | `packages/vite`     | 原生源码转换、依赖扫描、开发诊断与 HMR               |
 | `apps/example`      | 独立框架、任务工作台与路由应用示例                   |

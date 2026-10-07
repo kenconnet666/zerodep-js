@@ -9,7 +9,7 @@ RC4 当前路线只保留定制 TS7-Go，Vite 直接使用 `zerodep()`；工作�
 - 固定 TypeScript 7.1.0-dev.20261005.1，Go 编译进同一 emit 流程，保留原始声明与源码映射。
 - 迁移现有宏、组件、For、JSX/bind、控制流诊断及开发元数据，共用 core ABI 2。
 - 提供独立 `zerodep-js-native` CLI/Node 接口，Vite 显式选择后端且不在 native 模式加载 Babel。
-- 原生检查接入 noEmit/LSP；常驻服务串行更新快照并隔离客户端/SSR 配置，close 等待当前请求后释放进程。CLI 转发终止信号；Node API 暂不提供单请求中途取消。
+- 原生检查接入 noEmit/LSP；宿主编译会话串行更新快照并隔离客户端/SSR 配置，close 等待当前请求后释放进程。CLI 转发终止信号；Node API 暂不提供单请求中途取消。
 - 正确性以现有 Babel 语义、浏览器/SSR/HMR 和干净消费对照验证；不靠自动回退通过测试。
 - 性能报告分别比较转换、检查加输出、冷构建与增量更新，记录硬件/版本、样本及内存，不预设原生一定更快。
 

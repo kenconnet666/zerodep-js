@@ -5,7 +5,7 @@ import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
 import { root } from './environment.mjs';
-import { service, stopAll } from './language-client.mjs';
+import { service, closeService } from './language-client.mjs';
 import { removeProbes } from './probe-files.mjs';
 
 const { values } = parseArgs({
@@ -463,6 +463,6 @@ try {
   );
   assert.equal(failures.length, 0, '原生补全矩阵存在失败');
 } finally {
-  stopAll();
+  await closeService();
   await removeProbes(created);
 }

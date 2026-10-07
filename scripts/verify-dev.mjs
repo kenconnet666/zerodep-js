@@ -5,7 +5,6 @@ import { dirname, resolve, relative, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { chromium, expect } from '@playwright/test';
 import { zerodep } from '../packages/vite/dist/index.js';
-import { NativeTools } from '../packages/native/dist/index.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const example = resolve(root, 'apps/example');
@@ -57,7 +56,6 @@ ${mixed ? 'export const extra = 1;' : ''}
 let server;
 let browser;
 try {
-  await writeFile(resolve(fixture, 'pnpm-workspace.yaml'), 'packages: []\n');
   await writeFile(
     resolve(fixture, 'index.html'),
     '<div id="app"></div><script type="module" src="/entry.ts"></script>',
@@ -267,12 +265,6 @@ if(import.meta.hot)import.meta.hot.dispose(stop);
 } finally {
   await browser?.close();
   await server?.close();
-  const tools = new NativeTools(fixture);
-  try {
-    await tools.stop({ force: true });
-  } finally {
-    await tools.close();
-  }
   // fixture 是创建时已核对范围的固定绝对路径，仅清理本次持有的目录。
   await rm(fixture, { recursive: true, force: true });
 }

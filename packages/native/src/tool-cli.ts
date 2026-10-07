@@ -5,7 +5,7 @@ import { dirname, resolve } from 'node:path';
 import { NativeTools, applyTextEdits, fileEdits, writeEdits } from './tools.js';
 
 const usage =
-  'zerodep-tools <check|lint|build|format|imports|fix|boundary|api|status|stop> [文件] [-p tsconfig.json]\n编辑默认只检查或返回建议；--write 写入，fix 还需 --action 编号。\napi --baseline 文件 [--update] 检查或更新公开 API 基线；format 是 Go 排版试验入口。';
+  'zerodep-tools <check|lint|build|format|imports|fix|boundary|api> [文件] [-p tsconfig.json]\n编辑默认只检查或返回建议；--write 写入，fix 还需 --action 编号。\napi --baseline 文件 [--update] 检查或更新公开 API 基线；format 是 Go 排版试验入口。';
 
 async function main(): Promise<void> {
   const [command, ...args] = process.argv.slice(2);
@@ -17,7 +17,6 @@ async function main(): Promise<void> {
     args,
     allowPositionals: true,
     options: {
-      force: { type: 'boolean', default: false },
       help: { type: 'boolean', short: 'h' },
       project: { type: 'string', short: 'p', multiple: true },
       lint: { type: 'boolean', default: false },
@@ -112,13 +111,9 @@ async function main(): Promise<void> {
           process.exitCode = 1;
         }
       } else console.log(text.trimEnd());
-    } else if (command === 'stop') {
-      await tools.stop({ force: values.force });
-      console.log('原生工作区服务已停止。');
-    } else if (command === 'status') console.log(JSON.stringify(await tools.stats(), null, 2));
-    else
+    } else
       throw new Error(
-        '用法：zerodep-tools <check|lint|build|format|imports|fix|boundary|api|status|stop> [文件] [-p tsconfig.json]',
+        '用法：zerodep-tools <check|lint|build|format|imports|fix|boundary|api> [文件] [-p tsconfig.json]',
       );
   } catch (error) {
     console.error(error instanceof Error ? error.message : error);

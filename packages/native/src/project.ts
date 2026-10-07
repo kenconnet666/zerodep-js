@@ -10,7 +10,7 @@ import { readFile } from 'node:fs/promises';
 import { dirname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { throwDiagnostics } from './diagnostics.js';
 import { nativeOptions, result } from './output.js';
-import type { CompileOptions, CompileResult } from './types.js';
+import type { CompileOptions, CompileResult, CompilerSessionOptions } from './types.js';
 import { canonicalPath } from './paths.js';
 import {
   canonical,
@@ -19,13 +19,6 @@ import {
   projectOptions,
   stamp,
 } from './project-files.js';
-
-export interface CompilerSessionOptions {
-  root?: string;
-  project?: string;
-  /** 默认在相同 Program 中检查请求文件，再输出 JS。 */
-  check?: boolean;
-}
 
 /** 一个宿主持有一个服务；更新与输出串行，旧快照在请求结束后释放。 */
 export class ProjectCompiler {
