@@ -9,6 +9,7 @@ import { TEMPLATE, element, type DynamicTemplate, type Renderable } from '../run
 import { attachAttributes, attachRef } from './attributes.js';
 import { notifySelect } from './controls.js';
 import { bindHeadDocument } from '../runtime/head.js';
+import { synchronous } from '../runtime/synchronous.js';
 import type { Props } from '../runtime/props.js';
 import { childContainer, createRange, insert, rollback, type Container } from './utils.js';
 import { renderList } from './list.js';
@@ -119,8 +120,10 @@ export function renderValue(
     for (const item of value) renderValue(item, parent, before, namespaceParent, hydration);
     return;
   }
-  if (typeof value !== 'object' || !(TEMPLATE in value))
+  if (typeof value !== 'object' || !(TEMPLATE in value)) {
+    synchronous(value, '渲染内容不能是 Promise；请先准备异步数据再渲染。');
     throw new Error('无效 JSX 内容；函数请显式调用，对象请转换为可呈现值。');
+  }
   if (value.kind === 'fragment') {
     for (const child of value.children)
       renderValue(child, parent, before, namespaceParent, hydration);

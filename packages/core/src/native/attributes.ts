@@ -4,6 +4,7 @@ import { clientProperty, ownsContent, propertyName } from './properties.js';
 import { styleText } from './style.js';
 import { textValue } from './text.js';
 import { svgAliases } from './data.js';
+import { synchronous } from '../runtime/synchronous.js';
 
 export { textValue } from './text.js';
 
@@ -189,12 +190,14 @@ export function attributeValue(name: string, value: unknown, namespace = HTML): 
 /** 文本专用元素不能放入结构标记，也不能把模板对象直接转成字符串。 */
 export function textContent(value: Renderable): string {
   if (value == null || typeof value === 'boolean') return '';
-  if (typeof value !== 'object') return textValue(value);
+  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'bigint')
+    return textValue(value);
   if (Array.isArray(value)) return value.map(textContent).join('');
-  if (TEMPLATE in value) {
+  if (typeof value === 'object' && TEMPLATE in value) {
     if (value.kind === 'dynamic') return textContent(value.value.read());
     if (value.kind === 'fragment') return value.children.map(textContent).join('');
   }
+  synchronous(value, '渲染内容不能是 Promise；请先准备异步数据再渲染。');
   throw new Error('文本专用元素只接受文本、数组和派生文本，不接受子组件或元素。');
 }
 

@@ -8,11 +8,40 @@ import {
   _provideContext,
   _useContext,
 } from 'zerodep-js';
-import { defineComponent, element, props, dynamic, liveRender } from 'zerodep-js/internal';
+import {
+  defineComponent,
+  element,
+  props,
+  dynamic,
+  liveRender,
+  type Renderable,
+} from 'zerodep-js/internal';
 import { For, ErrorBoundary } from 'zerodep-js';
 import { renderToString, serializeData } from '../src/index.js';
 
 describe('真实组件 SSR', () => {
+  it.each([() => 'function source', Symbol('private')])(
+    '文本专用元素不把函数或 symbol 隐式转成文本（%s）',
+    (value) => {
+      const App = defineComponent(() => element('output', { children: value }));
+      expect(() => renderToString(App)).toThrow('文本专用元素');
+    },
+  );
+  it.each(['component', 'div', 'output', 'textarea'])(
+    '拒绝 %s 的 Promise 内容并释放作用域，不产生额外未处理拒绝',
+    async (kind) => {
+      const cleaned = vi.fn();
+      const App = defineComponent(() => {
+        _onCleanup(cleaned);
+        const value = Promise.reject(new Error('late content')) as unknown as Renderable;
+        return kind === 'component' ? value : element(kind, { children: value });
+      });
+      expect(() => renderToString(App)).toThrow('Promise');
+      expect(cleaned).toHaveBeenCalledTimes(1);
+      await new Promise<void>((resolve) => setImmediate(resolve));
+    },
+  );
+
   it('noscript 输出备用 HTML，并拒绝原始文本提前结束备用区域', () => {
     const App = defineComponent(() =>
       element('noscript', { children: element('p', { children: '无需脚本也可阅读' }) }),

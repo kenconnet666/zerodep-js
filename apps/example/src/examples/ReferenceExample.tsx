@@ -1,4 +1,4 @@
-import { _component, _state, _onMount, _mount, _flushSync } from 'zerodep-js';
+import { _component, _state, _onMount, _onCleanup, _mount, _flushSync } from 'zerodep-js';
 
 type Reference = (element: HTMLDivElement) => void | (() => void);
 const ReferenceProbe = _component(({ reference }: { reference: Reference | undefined }) => (
@@ -13,26 +13,34 @@ export const ReferenceExample = _component(() => {
   let mounted = _state('');
   let reference = _state<Reference | undefined>(undefined);
   let probeResult = _state('');
-  function probe(kind: 'dispose' | 'async') {
+  function probe(kind: 'dispose' | 'async' | 'failure') {
     const target = document.createElement('div');
     target.dataset.referenceProbe = '';
     document.body.append(target);
     let cleaned = 0;
-    const dispose = _mount(ReferenceProbe, {
-      target,
-      props: {
-        get reference() {
-          return reference;
-        },
-      },
-    });
+    let dispose: (() => void) | undefined;
     try {
+      dispose = _mount(ReferenceProbe, {
+        target,
+        props: {
+          get reference() {
+            return reference;
+          },
+        },
+      });
       if (kind === 'dispose')
         reference = () => {
-          dispose();
+          dispose!();
           return () => {
             cleaned++;
           };
+        };
+      else if (kind === 'failure')
+        reference = () => {
+          _onCleanup(() => {
+            throw new Error('ref cleanup');
+          });
+          throw new Error('ref setup');
         };
       // 模拟 JS 调用方误传 async；正常 TS 作者会被 ref 的返回类型阻止。
       else
@@ -42,11 +50,17 @@ export const ReferenceExample = _component(() => {
       _flushSync();
       probeResult = String(cleaned);
     } catch (error) {
-      probeResult = error instanceof Error ? error.message : String(error);
+      const message = (reason: unknown) =>
+        reason instanceof Error ? reason.message : String(reason);
+      probeResult =
+        error instanceof AggregateError ? error.errors.map(message).join('/') : message(error);
     } finally {
-      dispose();
-      target.remove();
-      reference = undefined;
+      try {
+        dispose?.();
+      } finally {
+        target.remove();
+        reference = undefined;
+      }
     }
   }
   _onMount(() => {
@@ -87,6 +101,9 @@ export const ReferenceExample = _component(() => {
         验证异步引用诊断
       </button>
       <output data-reference-probe-result>{probeResult}</output>
+      <button data-reference-failure onClick={() => probe('failure')}>
+        验证引用与清理失败
+      </button>
     </section>
   );
 });

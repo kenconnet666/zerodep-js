@@ -86,9 +86,11 @@ for (const mode of ['csr', 'ssr']) {
       const errors: string[] = [];
       page.on('pageerror', (error) => errors.push(error.message));
       await page.goto(`/?render=${mode}`);
-      for (const kind of ['render', 'effect']) {
+      for (const kind of ['render', 'effect', 'promise', 'promise-text']) {
         await page.locator(`[data-${kind}-error]`).click();
         await expect(page.locator('[data-boundary-error]')).toBeVisible();
+        if (kind.startsWith('promise'))
+          await expect(page.locator('[data-boundary-error]')).toContainText('Promise');
         await page.locator('[data-recover]').click();
         await expect(page.locator('[data-working]')).toHaveText('工作正常');
       }

@@ -129,6 +129,13 @@ const scope = _createScope();
 export const signal: AbortSignal = scope.signal;
 scope.dispose();
 _snapshot({ n: 1 }).n.toFixed();
+const futureContent = Promise.resolve('稍后');
+// @ts-expect-error 内容必须是已准备好的值，不把 Promise 当作可渲染节点。
+<div children={futureContent} />;
+// @ts-expect-error 文本输出同样不支持隐式等待。
+<output children={futureContent} />;
+// @ts-expect-error DOM ref 必须同步返回，异步资源显式启动并清理。
+<div ref={async () => {}} />;
 _persistLocal('typed', { read: () => 1, write: (value) => value.toFixed() });
 _persistSession('typed-object', {
   read: () => ({ enabled: true }),

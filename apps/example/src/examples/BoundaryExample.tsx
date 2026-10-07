@@ -1,14 +1,21 @@
-import { _component, _state, _effect, ErrorBoundary } from 'zerodep-js';
+import { _component, _state, _effect, ErrorBoundary, type TextRenderable } from 'zerodep-js';
 
-const Risky = _component(({ mode }: { mode: 'ok' | 'render' | 'effect' }) => {
+type Mode = 'ok' | 'render' | 'effect' | 'promise' | 'promise-text';
+const Risky = _component(({ mode }: { mode: Mode }) => {
   _effect(() => {
     if (mode === 'effect') throw new Error('副作用失败');
   });
-  function label() {
+  function label(): TextRenderable {
     if (mode === 'render') throw new Error('呈现失败');
+    if (mode === 'promise' || mode === 'promise-text')
+      return Promise.reject(new Error('late content')) as unknown as TextRenderable;
     return '工作正常';
   }
-  return <p data-working>{label()}</p>;
+  return mode === 'promise-text' ? (
+    <output data-working>{label()}</output>
+  ) : (
+    <p data-working>{label()}</p>
+  );
 });
 const FailedSetup = _component(() => {
   throw new Error('初始化失败');
@@ -22,7 +29,7 @@ const ClientOnly = _component(() => {
 });
 
 export const BoundaryExample = _component(() => {
-  let mode = _state<'ok' | 'render' | 'effect'>('ok');
+  let mode = _state<Mode>('ok');
   let nested = _state(false);
   return (
     <section aria-label="错误恢复">
@@ -67,6 +74,24 @@ export const BoundaryExample = _component(() => {
       >
         <Risky mode={mode} />
       </ErrorBoundary>
+      <button
+        type="button"
+        data-promise-error
+        onClick={() => {
+          mode = 'promise';
+        }}
+      >
+        验证异步内容诊断
+      </button>
+      <button
+        type="button"
+        data-promise-text-error
+        onClick={() => {
+          mode = 'promise-text';
+        }}
+      >
+        验证异步文本诊断
+      </button>
       <button
         type="button"
         data-nested-error

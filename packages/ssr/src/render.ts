@@ -11,6 +11,7 @@ import {
   elementText,
   nativeAttributes,
   renderedHead,
+  synchronous,
   type HeadData,
   hasOpenBinding,
   OPEN_STATE_ATTRIBUTE,
@@ -71,9 +72,11 @@ function render(value: Renderable, owner: Scope, context: Context): string {
   if (value == null || typeof value === 'boolean') return '';
   if (typeof value === 'string' || typeof value === 'number' || typeof value === 'bigint')
     return escapeText(textValue(value));
-  if (typeof value !== 'object') throw new Error('无效的服务端渲染值。');
   if (Array.isArray(value)) return value.map((item) => render(item, owner, context)).join('');
-  if (!(TEMPLATE in value)) throw new Error('无效的服务端渲染值。');
+  if (typeof value !== 'object' || !(TEMPLATE in value)) {
+    synchronous(value, '渲染内容不能是 Promise；请先准备异步数据再渲染。');
+    throw new Error('无效的服务端渲染值。');
+  }
   if (value.kind === 'fragment')
     return value.children.map((child) => render(child, owner, context)).join('');
   // 不读取 target/children，服务端也不会执行 Portal 子组件的初始化代码。

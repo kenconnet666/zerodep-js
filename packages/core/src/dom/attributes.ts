@@ -13,6 +13,7 @@ import { bindControl, notifySelect } from './controls.js';
 import { HTML, attributeNamespace, eventName, nativeAttributes } from '../native/attributes.js';
 import { PropertyBindings } from './properties.js';
 import { synchronous } from '../runtime/synchronous.js';
+import { rollback } from './utils.js';
 
 const properties = new Set(['value', 'checked', 'selected', 'muted']);
 
@@ -137,10 +138,10 @@ export function attachRef(element: Element, input: Props, owner: Scope): void {
         }),
       );
     } catch (error) {
-      scope.dispose();
+      const failed = scope;
       scope = undefined;
       previous = undefined;
-      throw error;
+      rollback(failed, error);
     }
   });
 }

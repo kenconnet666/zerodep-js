@@ -11,6 +11,9 @@ for (const mode of ['csr', 'ssr']) {
     await page.locator('[data-reference-async]').click();
     await expect(page.locator('[data-reference-probe-result]')).toContainText('DOM ref 必须同步');
     await expect(page.locator('[data-reference-probe]')).toHaveCount(0);
+    await page.locator('[data-reference-failure]').click();
+    await expect(page.locator('[data-reference-probe-result]')).toHaveText('ref setup/ref cleanup');
+    await expect(page.locator('[data-reference-probe]')).toHaveCount(0);
     expect(errors).toEqual([]);
   });
 

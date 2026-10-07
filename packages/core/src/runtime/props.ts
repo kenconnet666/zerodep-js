@@ -76,7 +76,7 @@ export function prop(input: Props, key: PropertyKey, fallback?: () => unknown): 
 export function restProps(input: Props, excluded: readonly PropertyKey[]): Props {
   const removed = new Set(excluded);
   return readonlyView(
-    (key) => (removed.has(key) ? undefined : input[key]),
+    (key) => (removed.has(key) || !enumerableKeys(input).includes(key) ? undefined : input[key]),
     () => enumerableKeys(input).filter((key) => !removed.has(key)),
   );
 }
