@@ -13,7 +13,7 @@
 | packages/core     | 响应式、组件、DOM、生命周期、JSX 类型和运行时协议    |
 | packages/use      | router、storage、history 子入口，通过 peer 共享 core |
 | packages/ssr      | 请求隔离、HTML 渲染、转义和数据编码                  |
-| packages/compiler | Babel 转换、框架检查、官方 TS7.1 与语言工具适配      |
+| packages/compiler | Babel 转换、框架检查、选定 TS7.1 与语言工具适配      |
 | packages/vite     | 转换接入、依赖扫描和开发更新                         |
 | apps/example      | 使用实际包产物的 CSR/SSR 示例和任务应用              |
 
@@ -21,7 +21,9 @@
 
 ## 开发
 
-使用 Node 24、pnpm 10.34.5；官方 TypeScript 固定为 7.1.0-dev.20261007.1。安装不需要 Go 或 TypeScript 源码仓库。
+完整换机步骤见 [环境配置](docs/environment-setup.md)，包括 SDK、WebStorm 补丁、MCP/LSP 和回退。
+
+使用 Node 24、pnpm 10.34.5；当前工作区使用 JetBrains TypeScript 7.1.0-dev.jetbrains.20261006.2。安装不需要 Go 或 TypeScript 源码仓库。
 
 ```sh
 pnpm install --frozen-lockfile
@@ -66,6 +68,6 @@ pnpm lsp:completions
 
 本地执行相关验证；CI 并行运行工程检查、三浏览器、Linux/Windows 独立消费和官方工具的六平台验证。LSP 探针会临时写主示例源码，不与同一工作区的应用 check/build 同时运行。
 
-[工具分工](docs/tooling.md) · [开始使用](docs/getting-started.md) · [API](docs/api.md) · [语义](docs/semantics.md) · [表单](docs/forms.md) · [SSR](docs/ssr-and-hydration.md) · [包消费](docs/packages.md) · [发布](docs/releasing.md)
+[环境配置](docs/environment-setup.md) · [Svelte API 取舍](.design/svelte-api-review.md) · [工具分工](docs/tooling.md) · [开始使用](docs/getting-started.md) · [API](docs/api.md) · [语义](docs/semantics.md) · [表单](docs/forms.md) · [SSR](docs/ssr-and-hydration.md) · [包消费](docs/packages.md) · [发布](docs/releasing.md)
 
 框架源码使用 MIT License；成熟依赖按各自许可证分发，core 的生成数据来源见包内 THIRD_PARTY_NOTICES.md。

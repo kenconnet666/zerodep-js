@@ -2,7 +2,9 @@
 
 当前工作区版本调整（2026-10-07）：按用户最新要求，IDE 与项目统一固定 JetBrains `7.1.0-dev.jetbrains.20261006.2`，使用 GitHub 原始 HTTPS 发行包与锁定平台覆盖。已在用户授权分支 codex/webstorm-ts71-integration 保存检查点 2480fbd。项目 check、client/server 构建、117 项编译测试、lsp:verify、49/49 补全和 Windows 独立 tgz 消费通过。本轮未发布新包，以下 rc.7 发布证据仍对应此前微软 nightly。
 
-WebStorm EAP 263.6259.34 的本机代理已按用户授权打补丁并保留原文件：快照 API 改为 getCurrentLanguageServerSnapshot，配置路径查找项目改为 getConfiguredProject。真实 IDE 查询返回 string、泛型 number | undefined、对象属性及 _component 的默认值/rest 参数类型；修改泛型调用后结果刷新为 string | undefined。错误赋值在编辑器出现红线，修复后的状态单独核对。补丁命令和 LSP 复用边界见 [工具链](tooling.md)。
+WebStorm EAP 263.6259.34 的本机代理已按用户授权打补丁并保留原文件：快照 API 改为 getCurrentLanguageServerSnapshot，配置路径查找项目改为 getConfiguredProject。真实 IDE 查询返回 string、泛型 number | undefined、对象属性及 _component 的默认值/rest 参数类型；修改泛型调用后结果刷新为 string | undefined。错误赋值在编辑器出现红线，修复后的状态单独核对。补丁命令和 LSP 复用边界见 [工具链](tooling.md)，完整换机步骤见 [环境配置](environment-setup.md)。
+
+分支实现提交 b4acad7 的 [CI 37627371733](https://github.com/kenconnet666/zerodep-js/actions/runs/37627371733) 已完成且通过：工程检查、六平台 SDK、三浏览器以及 Linux/Windows 独立消费全部成功。分支上的 release-artifacts 按条件跳过，本轮未发布新版本。API 后续取舍已整理为 [Svelte 对照研究](../.design/svelte-api-review.md)，尚未实施新增能力。
 
 更新：2026-10-07。官方 TS7.1 dev、Babel 与 Vite 迁移已完成，五包 `1.0.0-rc.7` 已发布到 npm next。目标与取舍见 [工具链方案](../.design/standard-toolchain-plan.md)，使用入口及编辑器限制见 [工具链](tooling.md)。
 

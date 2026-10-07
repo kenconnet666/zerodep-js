@@ -26,7 +26,8 @@
 - CI 按浏览器、平台和 Linux/Windows 独立消费并行；发布等待同一提交全部必需任务通过，不减少用例或放宽断言提速。
 - 已授权生产验收后使用环境变量中的 npm token 发布固定 tgz 到 next，并核对注册表与干净安装；凭据不写入文件或日志。发布与恢复见 docs/releasing.md，未经授权不提升 latest。
 - 项目服务名 zerodep_js_lsp，由 pnpm lsp:setup 配置，不改全局或其他项目设置。先独立验证，再请求重新加载；磁盘配置、独立服务、当前会话和 IDE 实际接入分别说明。
-- WebStorm 使用配套 TypeScript 7（原生）以启用服务驱动类型引擎；项目 node_modules/typescript 安装相同版本。SDK 不自动加载项目框架增强；IDE MCP 可能漏报 TS 错误，不能把空诊断当作验收。
+- 换机先阅读 docs/environment-setup.md；API 对照研究见 .design/svelte-api-review.md，未确认的提议不能当作已实现契约。
+- WebStorm 使用同版本 TypeScript 7（原生）以启用服务驱动类型引擎；项目 node_modules/typescript 安装相同版本。SDK 不自动加载项目框架增强；IDE MCP 可能漏报 TS 错误，不能把空诊断当作验收。
 
 ## 清理
 
