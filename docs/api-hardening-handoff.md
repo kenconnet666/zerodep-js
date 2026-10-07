@@ -1,106 +1,65 @@
-# 基础 API 持续交接
+# 基础 API 维护交接
 
-更新：2026-10-08。这是进行中的检查点，目标仍在执行，不能当作发布验收。最新完整绿色基线为 e4d8cf5（CI 37690013428）；CSS 0.3.1 仍等待自身完整 CI 后发布。
+更新：2026-10-08。当前目标仍在执行；北京时间 08:00 按用户要求结束。本文区分源码完成、CI 验收和发布，不把待运行的检查当作通过。
 
-## 授权、预算与工作区
+## 最新授权与环境
 
-- 按 [主计划](production-plan.md) 自主完善基础 API、CSS 协作和真实缺陷，可为简单维护适当调整 API。组件只是测试夹具，不建立组件库。
-- 最新用户要求：周额度到 0 后继续使用已有余额，至北京时间 2026-10-08 08:00（UTC 00:00）结束，提前预留提交、清理和交接时间。此要求取代“余额只用于少量交接”的旧限制；不购买、不重置额度。最近周窗口读数已用 96%，余额 61,804.0163505000；额度共享，无法精确归因。
-- 主仓库当前目录，分支 codex/webstorm-ts71-integration；本轮起点 057d8ab。CSS 相邻仓库 main，HEAD 964a4f6，本轮未修改 CSS 源码。
-- 固定 JetBrains TS7.1.0-dev.jetbrains.20261006.2、Babel、Vite；CSS 消费 npm 0.3.0，CSS 仓库自己的 TS6 不进入框架依赖图。
-- 每个可审阅阶段中文提交推送。完整平台/浏览器/独立消费交 CI，本地只做受影响检查；下次推送前核对前轮 CI，修复真实失败，不空等或反复轮询。
-- Windows 清理逐文件/链接后再删空目录，不递归删除、不遍历链接、不动共享 pnpm store、用户运行数据或根 .git。
+- 用户最新要求：周额度到 0 后继续使用已有余额，至北京时间 2026-10-08 08:00（UTC 00:00）结束，预留提交、清理与交接时间。此前“余额仅少量用于交接”已被替代；不购买、不重置额度。
+- 最近账户读数：周额度已用 97%，余额 61,804.0163505000；这些是账户共享数据，不能精确归因到本任务，也不是 token 数。
+- zerodep-js：当前主目录，分支 codex/webstorm-ts71-integration；最新代码提交 97319ae，完整 CI 37702203453 已成功。随后只整理文档和待应用补丁。
+- zerodep-css：相邻目录 main，提交 593cebde73d62234f0d38c635cf0c56ca368faa9，六包源码版本 0.3.1，尚未发布。主框架 catalog 仍为已发布 0.3.0。
+- Node 24.18.0、pnpm 10.34.5；框架固定 JetBrains TS7.1.0-dev.jetbrains.20261006.2，Babel/Vite 分工不变。CSS 仓库保留自己的 TS6，不进入主框架运行时/SDK 依赖图。
 
-## 已完成实现与契约
+## 已交付源码
 
-| 范围       | 当前实现                                                                                                                                              | 入口与重点回归                                            |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
-| 任务       | _task(loader,{initial}) 保存成功初值，不发请求、不制造 retry 输入；reset 清空数据/错误/重试输入，取消等待且不覆盖 abort 重入的新任务；cancel 保留数据 | [任务](tasks.md)，use/test/task.test.ts                   |
-| CSS        | 支持显式 class 前的 spread；命名 css 自动跟踪；直接变量保守绑定；_createCssContext 复用 context，保留作者类型、嵌套覆盖和请求隔离                     | [CSS](css.md)，compiler CSS、core/SSR context、CssExample |
-| details    | bind:open 布尔写回；data-zj-open 验证 SSR 原值并接纳接管前操作；toggle 下一任务校准，卸载取消 timer                                                   | [表单](forms.md)，disclosure 编译/SSR/浏览器测试          |
-| 分组       | bind:group 的 radio 字符串、checkbox 字符串数组；静态 type 和明确 value 位于 spread 后；写回声明值，保留隐藏选项，不建立全局分组表                    | group 编译/类型投影/SSR/浏览器测试                        |
-| output     | 受控纯文本 TextRenderable，不放结构注释；form.reset 后重新取得实际 Text；富内容使用普通容器                                                           | [表单](forms.md)，WebKit reset、接管前 reset、负面类型    |
-| 数组       | sort 用户回调恢复依赖跟踪，机械读取不形成循环；跨 realm 普通数组可响应，Array 子类保持实例/私有字段                                                   | core state/reactivity 测试                                |
-| 快照       | 普通对象/数组先于显示标签识别；Map/Set 用内建槽识别，不被 Symbol.toStringTag 误导；其他平台对象仍交 structuredClone                                   | core snapshot 测试，共享 objects.ts 原型判断              |
-| 页面元信息 | 可选 zerodep-js/head 的 _head，只支持 title/description；同步纯读取、按字段覆盖、释放恢复、按 Document 隔离；SSR 按根收集                             | [元信息](head.md)，core/SSR head、HeadExample、独立消费   |
-| SSR 入口   | _render 返回 {html,head}，renderToString 保持字符串；renderDocument 一次替换标记并安全输出；示例三个入口共用 CSS 宿主，客户端恢复清单                 | ssr document 测试与独立包消费                             |
+| 范围               | 已实现或修复的契约                                                                                                              | 验收入口                                                        |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| 任务               | initial 建立成功初态但不请求；reset 清空数据/错误/重试输入；取消与同步 abort 重入安全；初值 getter 只读一次                     | docs/tasks.md、packages/use/test/task.test.ts                   |
+| 绑定               | details bind:open；radio/checkbox 字符串 bind:group；原生 reset、接管前编辑、写回类型与稀疏数组校验                             | docs/forms.md、compiler/SSR group 与 disclosure 测试、tests/e2e |
+| output             | 受控纯文本 TextRenderable，原生 reset 后重新取得实际文本节点；富内容用普通容器                                                  | docs/forms.md、SSR/类型反例、WebKit 回归                        |
+| 状态与快照         | 数组用户比较器追踪、跨 realm/子类边界、锁定属性 Proxy 不变量；显示标签不能伪装普通数据或集合                                    | core state/reactivity/snapshot 测试                             |
+| props              | 解构/default/rest 保留；实时 rest 只暴露自有可枚举属性，命名读取仍支持 getter                                                   | core props 与真实组件编译测试                                   |
+| 历史/持久化        | 回调内销毁后不恢复已释放记录或重新连接；拒绝历史操作重入；普通停止仍最终提交                                                    | use history/storage 测试                                        |
+| 路由               | 已取消 Promise 的拒绝仍处理；同步历史重入保留事件入口、最新地址/state，守卫按已提交位置回滚                                     | use router/history 测试、真实 browser/hash 夹具                 |
+| 同步契约/引用/边界 | 误传 Promise 报错并处理拒绝；清理继续释放其他资源；ref 内卸载立即清理返回资源；初始化/清理双错误保留；边界 reset 重入不重复挂载 | core/SSR 单测、reference/flow 浏览器测试                        |
+| CSS                | 命名 css 追踪、直接变量保守绑定、class 前 spread、参数求值顺序、调用源码映射、_createCssContext                                 | docs/css.md、compiler CSS 19 项、类型与独立消费                 |
+| 页面元信息         | _head 只处理 title/description；按字段覆盖/销毁恢复、Document/SSR 根隔离；_render 返回 {html,head}                              | docs/head.md、core/SSR head、浏览器及独立消费                   |
+| CSS 组合           | 普通/局部/Portal/动态导入主题；加载期间切换主题；CSS HMR 尺寸/颜色、单宿主与开发 SSR 样式接管                                   | css.spec.ts、verify-dev.mjs，已进入 97319ae 完整 CI             |
+| 工具与文档         | 52 项语言补全含任务 reset、head 和主题作者方法；旧 SDK 操作说明移出当前指南，研究保留为历史                                     | lsp:verify、lsp:completions、environment-setup.md               |
 
-类型、LSP、完整浏览器测试均进入已有 CI，没有降低断言或添加重试掩盖失败。生成 JSX 类型用 native:generate 维护，不能手工修改生成文件。
+组件仅为验收夹具，没有建立组件库。watch、防抖、ref 组合、class 合并、复杂外部订阅、流式/异步组件 SSR 等未进入本轮。
 
-## 提交与 CI 证据
+## 当前 CI 与发布边界
 
-| 提交                      | CI          | 结果与修复关系                                                                                                                     |
-| ------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| 1f0aa82（含任务 4445436） | 37656625476 | 完整通过；早期 GitHub 500 推送故障已恢复                                                                                           |
-| 1612e3f                   | 37658548791 | 三浏览器暴露 details toggle 微任务校准过早，后续改下一任务                                                                         |
-| c26fa40                   | 37661954118 | WebKit 暴露 form.reset 重建 output 文本，随后落实纯文本契约                                                                        |
-| 4284d8c                   | 37671752512 | 旧 reference SSR 断言仍要求 output 注释，更新为严格纯文本协议                                                                      |
-| 671b5de（含快照 94f5909） | 37673784740 | 完整通过                                                                                                                           |
-| 4a21fe2                   | 37678372596 | 后续推送取消了未结束的 Chromium 安装步骤（尚未开始 E2E）；其余两浏览器、六平台、Linux/Windows 消费及 verify 通过，不能记为完整通过 |
-| 8b431ed                   | 37680292167 | 任务/getter、分组稀疏数组与历史生命周期修复已推送，完整结果待核对                                                                  |
+- 主框架 97319ae / CI 37702203453：verify、六平台 SDK、两平台独立消费、三浏览器全部通过；发布产物任务按分支规则跳过，不能据此声称已发布。
+- 先前完整通过的主框架基线：5b93e73 / 37692576724、e4d8cf5 / 37690013428、6fa1088 / 37684887284。更早失败与修复记录保存在 Git 历史，不覆盖后来提交的验收。
+- CSS 593cebd / CI 37688602400：最近只剩 performance (templates) 未结束，其 job 为 113022729179，仍显示运行 .github/actions/setup，未开始基准。其余功能、类型、三浏览器、生命周期、元框架等任务已通过。
+- 该运行仍活跃；下载未完成 job 的日志返回 BlobNotFound，不是程序失败证据。没有取消/重启它，也没有跳过发布门禁。
+- 本轮框架新 API 尚未发布到 npm；框架源码包版本仍 1.0.0-rc.7，注册表现有 rc.7 不包含全部源码新能力。不得覆盖已发布版本或提升 latest。
 
-运行链接格式：https://github.com/kenconnet666/zerodep-js/actions/runs/运行编号 。以 GitHub 实际结果为准，后续修改不能沿用旧提交的验收结论。
+## CSS 0.3.1 候选与待应用测试
 
-## 本次继续修复（随本检查点提交）
+CSS 修复核对 authorInputs 的底层 name 数据值，拒绝将改名或 getter 作者套用系统属性优化，正常扩展关键字仍可绑定。修复前两个用例失败，修复后构建、生成检查、六包类型/Vue/Svelte 检查、绑定焦点与 5 项 inline 用例通过。
 
-- 任务 initial 的原型 getter 与普通属性一致，状态为 success，初值只读取一次。
-- checkbox 模型先读取一次再验证，拒绝稀疏数组，避免 getter 在校验和写回时提供不同数据。
-- 历史 read/write 可触发 dispose/卸载；外层操作随后返回 false，不恢复记录。拒绝同一句柄重入修改，try/finally 保证异常后仍可操作。
-- 新回归先失败再修复：任务/绑定相关 24 项、历史 11 项、TS7 工具/测试源检查和 lint 均通过。完整矩阵交本阶段 CI。
-- 持久化回调中 stop/卸载现在终止外层恢复/读写，不重新连接；正常外部停止仍最终提交，回调内停止直接清理，避免递归提交。7 个停止位置先复现失败后修复；补充监听释放、错误回调、最终提交及 reset 重入，31 项存储测试、TS7 工具检查和 lint 通过。
+固定候选位于相邻 CSS 仓库 test-results/release，manifest.json 记录提交 593cebd、六个 tgz 的 SHA512。zerodep-css-0.3.1.tgz 已用于主框架工作区外独立消费，验证真实 opacity 层叠和更新、声明、组件库、CSR/SSR、接管、表单、卸载。
 
-## 同步契约与格式门禁
+主框架新增的两处消费用例保存于 [.design/pending-css-0.3.1-consumer.patch](../.design/pending-css-0.3.1-consumer.patch)，尚未应用到当前分支。它包含 scripts/verify-packages.mjs 和 tests/consumer/src/App.tsx 的已验证修改；不能在旧 0.3.0 依赖下启用。补丁已验证可以应用，避免遗留必须等待新依赖的脏工作区。
 
-- 8b431ed 和 784cd1b 的 verify 被交接文档表格格式挡住，后续按统一 formatter 修正；这是文档格式问题，完整 verify 仍需新提交运行，不能以焦点通过替代。
-- effect、历史 write、parseSearch 和存储 migrate 的失败 Promise 已复现额外未处理拒绝。现复用内部 synchronous 检查，仍同步报契约错误，同时消费无主拒绝；页面元信息也复用此检查，不增加异步 API。
-- 相关 5 个文件 76 项测试、TS7 工具检查、lint 与改动文件格式检查通过。框架新增内部导出同步供 use 包使用，独立包消费继续交 CI。
+## 恢复交付顺序
 
-## 继续工作
+1. 在 CSS 仓库核对 CI 37688602400 的同一提交完整成功。若仍运行就保留；若终止失败，先读日志定位再修复或重跑失败任务，不能凭等待时长重启。
+2. 核对 CSS main 干净、HEAD 与 origin/main 为 593cebd，manifest.commit 和 tgz 摘要相符。随后执行 pnpm release:publish（默认 next），不重新构造另一批包。缺少本机候选时需从相同源码重新构建、打包并验证新的固定产物，不能冒充旧摘要已验收。
+3. 核对六包注册表版本、dist.integrity 与 next。原有五包 latest 应保持 0.2.0，compiler 的 latest 保持 0.3.0；不自动提升 latest。
+4. 回主框架，将 catalog 的 zerodep-css 固定为 0.3.1，并将 core 的 CSS peer 下限改为 ^0.3.1。应用补丁：git apply --check .design/pending-css-0.3.1-consumer.patch，确认后 git apply 同一路径。
+5. 安装并检查 lockfile，只接受所需 CSS 变更。若 pnpm 丢掉未变 SDK 的 SHA512，应从可信 HEAD 恢复这些完整性字段，再 frozen 安装；不能删摘要绕过验证。
+6. 配置变更按约定 pnpm check、pnpm build；完整独立消费和平台/浏览器交新提交 CI。提交时删除已经应用的补丁，避免维护两份用例。
+7. 主框架发布另按 docs/releasing.md 准备新的候选版本，等待同提交完整门禁，发布固定 tgz 到 next 并干净安装复验；当前源码版本不能再次上传覆盖 rc.7。
 
-- 最新时间要求已写入 AGENTS.md：北京时间 08:00 截止，周额度到 0 后可继续已有余额，最后几分钟收束提交和交接。原生目标卡片旧额度文字不覆盖用户这条新要求。
-- CSS 验收补齐：动态导入的主题组件、Portal 和局部主题共享上下文夹具已加入浏览器测试；CSS HMR 复用 verify-dev，验证尺寸/颜色、SSR 样式接管和单宿主。新增文档标记分别验证兼容更新不整页刷新、移除最后本地组件的转发导出按契约刷新；本地 test:dev 已通过，临时目录/截图/日志清理完毕。
-- CSS source map 的两个回归先失败后修复：生成的 cssBinding/cssResult 通过现有 Babel inherits 保留调用位置。CSS 19 项单测、应用/工具检查和 lint 通过；新动态加载主题场景交 CI。
+## 安装、清理与验证注意事项
 
-- e4d8cf5 的 CI 37690013428 已完整通过（含历史重入、CSS 求值顺序和边界清理重入的三浏览器）。新增语言探针覆盖任务 reset 类型/中文文档、head 字段、CSS context 作者方法/文档；独立 lsp:verify 和三个焦点补全均通过，完整补全用例增至 52，交本次 CI。
-- 已清理用户指南中仍指向旧自维护 SDK / 旧 WebStorm 平台包选择的操作说明；研究证据保留并标历史归档。明确源码 API 与已发布 rc.7 不同。核对 docs/.design 内 121 个相对文件链接、源码范围 44 个目录，未发现缺失目标或空目录；未遍历 node_modules、dist、.git、IDE 配置或链接目标。
-
-- ErrorBoundary 重建重入修复已推送为 e4d8cf5。CSS 候选的剩余 performance (templates) 任务（job 113022729179）最新仍在 .github/actions/setup 阶段，尚未开始基准；不能把它当通过，也不因等待时间长重启仍运行的任务。后续先核对 CI 37688602400 完整结论，再执行 CSS main 的 pnpm release:publish（默认 next）并核对六包版本/摘要/tag，最后更新主框架依赖和提交待消费用例。
-
-- CSS 跨仓库修复已复现并提交：zerodep-css main 的 593cebd 准备六包 0.3.1。authorInputs 现在核对属性作者的底层 name 数据值，不执行 getter；保留正常关键字扩展。构建、生成一致性、六包类型/Vue/Svelte 检查及绑定焦点通过。CI 37688602400 最近只剩 performance (templates) 运行，尚未发布。
-- 已按 593cebd 打包到相邻 CSS 仓库 test-results/release；manifest.json 记录同一提交与六包 SHA512。主框架使用 --css-tarball 的工作区外独立消费已通过，新增真实继承作者 opacity 层叠/更新用例；scripts/verify-packages.mjs 与 tests/consumer/src/App.tsx 暂不单独提交，等待 0.3.1 发布后更新 catalog/peer/lockfile 一起交付。不能直接用旧 0.3.0 跑这些新增消费断言。
-- 期间补充 ErrorBoundary 清理回调重入 reset 的真实 DOM 回归：CSR/SSR 修复前都会出现 2 份内容，重建期间合并重复 reset 后 Chromium 两项通过。普通后续 reset 保留、纯派生仍拒绝调用；该修复与 CSS 消费依赖分开提交。
-
-- 94daff7 已推送历史重入阶段。CI 37686588162 最近已通过 verify、六平台、两平台包消费和 WebKit，Chromium/Firefox 尚未完成。
-- CSS 接入层修复已复现的求值顺序错误：先保存作者接收者/方法，再读取直接参数；求参后作者身份变化就使用原方法回退声明。17 项 CSS 编译/运行时测试（含真实 _derived TSX）及工具 TS7/lint 通过，无须为此改 CSS 作者的单位规则。
-- 下一项可核对 CSS 库 authorInputs 对继承属性作者的底层 name 是否检查充分：只比较方法身份可能把映射到其他 CSS 属性的自定义作者误认作系统作者。尚未复现或修改，必须先在 CSS 仓库补焦点测试；若属实应由 CSS 库修复，不能在框架复制判断。
-
-- 最新完整门禁：6fa1088 的 CI 37684887284 已通过 verify、六个平台、Linux/Windows 独立消费和三浏览器。此前 ref 类型导致的两平台消费失败已远端复验；后续代码不沿用此结论。
-- 历史重入继续轮：固定每轮事件的入口快照、memory replace 返回原操作结果；路由忽略过期入口，自身写历史时只暂存最新通知，外部同步改写仍按新导航执行守卫。回滚按已提交页面计算位置，覆盖最后事件 delta=0 但提交位置不同的情况。
-- 相关 29 项历史/路由单测通过，应用/工具项目检查通过；真实 browser CSR/SSR 和 hash CSR 夹具已加入 CI。本阶段补充的自定义 history 约定是 location 返回稳定当前入口对象，事件引用同一快照，见 routing.md。
-
-- 状态锁定属性：4 个回归先失败后修复，覆盖锁定的原生数组方法、descriptor 标志变化导致的冷派生身份、defineProperty 锁定代理值。遵守 JavaScript get/defineProperty 不变量，不创建第二套代理壳；状态/响应式/快照 57 项通过。
-- 路由 loader/validateData/guard 在返回失败 Promise 前同步 dispose 时，旧 abortable 提前返回会遗留未处理拒绝。现在取消也注册结果处理；3 个真实路由回归先失败后修复，路由 18 项通过。
-- 02139ac 的 CI 37683426407 在 Linux/Windows 独立消费中发现 async ref 负面类型断言未生效，根因是 ref 仍声明为 => void。已修正为 void 或清理函数，native:generate 更新声明并补本地类型用例，没有删除负面断言。项目检查通过；针对这个 CI 失败，本地完整 tgz 独立消费（安装/声明/组件库/CSR/SSR/接管/表单/卸载）已通过，临时目录与私有 store 自动逐项清理。
-- 最新远端 02139ac 的 Chromium、verify、六平台通过，Firefox/WebKit 仍未结束；包消费修复等待新提交的两平台复验。未发布新 npm 框架版本。
-
-- 当前继续轮：ref 初始化和清理同时失败时复用 rollback 保留两个错误；浏览器引用夹具补充失败顺序和临时节点清理。SSR 误传 Promise 内容的 4 个场景先复现未处理拒绝，再统一修复 DOM/SSR/文本路径；文本不再隐式字符串化函数和 symbol，相关 SSR 19 项通过。
-- 实时 rest 修复原型 getter/非枚举字段泄漏，命名解构仍可读取 getter。props/绑定/CSS 28 项与真实组件编译 17 项通过；消费者新增 Promise children/async ref 的负面类型用例，浏览器错误边界覆盖 Promise 内容的报错和恢复。这些新浏览器/消费场景交本提交 CI，不把类型检查当浏览器通过。
-- d5628ba 的 CI 37682117865 最近确认 verify、六平台、Linux/Windows 独立消费、Chromium 已通过，Firefox/WebKit 尚未结束。
-
-- 后续源码已补齐同步清理检查（注册清理、effect 清理和执行中卸载三种路径），32 项响应式/生命周期测试通过。
-- DOM ref 在调用中卸载自己的根时立即释放返回的资源；误传 async ref 同步诊断并消费拒绝。真实 Chromium CSR/SSR 两项新增用例在修复前失败（有效作用域报错），修复后通过。应用构建、TS7 工具检查和 lint 通过，三浏览器全量交 CI。
-- 0838cd3 的 CI 37681272108 已确认 verify、六个平台与 Windows 消费通过；Linux 消费及三浏览器仍运行。文档格式门禁已恢复，未宣称完整通过。
-- 主计划新增 API 表已更新为实际契约与源码状态，不再把已落地功能写成待选候选。测试失败截图/trace 在成功重跑后由测试工具清理，本地剩余 .last-run.json 和空 test-results 目录一并移除。
-
-1. 先查 Git 状态和最新 CI；4a21fe2 的 Chromium 因新推送取消安装，最新提交必须重新覆盖它。
-2. 继续基础 API 生命周期/错误路径、SSR/CSS/类型消费的有价值审计；不要为用完额度凑重复测试或引入成品组件。
-3. 后续继续审计组件/引用失败的错误保留、类型提示与组合使用。避免用复杂泛型包装所有同步函数，仅为实际问题补充约束。
-4. 按最新要求在北京时间 08:00 截止；周额度用完可继续已有余额。最后几分钟收束提交、清理与交接，记录仍在运行的 CI 和未发布项，不购买或重置额度。
-
-## 发布与恢复
-
-- 本轮框架基础 API 尚未作为新 npm 版本发布；源码包版本仍 1.0.0-rc.7。不得声称现有注册表已包含这些改动。
-- CSS 0.3.0 六包 next 已发布验证；既有五包 latest 仍为 0.2.0。新 compiler 首次发布由 npm 自动创建 latest=0.3.0，删除返回 403，已在 CSS 发布记录说明；本轮不重新发布它们。
-- 发布前按 [发布流程](releasing.md) 完成同提交全门禁和干净消费，不能把 pending 当通过，未经授权不提升 latest。
-- 换机按 [环境配置](environment-setup.md)，不是重新选 TS 版本。SDK 安装后若 lockfile 被 pnpm 重写，必须保留并核对原 SHA512，不删摘要绕过检查。
-- 常用焦点命令：pnpm test 后跟受影响测试路径；pnpm exec tsc -p tsconfig.tools.json --noEmit；pnpm lint。完整构建/三浏览器/六平台/包消费在 CI。
+- 当前 JetBrains SDK 主包和平台包都来自原始 GitHub 发行地址。独立消费者需合并根级平台 overrides；只安装主包 URL 不保证平台二进制可用。完整说明见 environment-setup.md、packages.md。
+- 换机/IDE 操作只按 environment-setup.md 指定 SDK 与 EAP 构建。语言协议测试通过不代表当前桌面 MCP 或所有 IDE 构建已重新加载。
+- 已清理本任务浏览器截图、trace、日志和临时开发目录；检查过 121 个 docs/.design 相对文件链接及 44 个源码目录，无缺失目标或空目录。
+- CSS 发布目录的六个本任务旧 0.3.0 tgz 已逐个比对 npm SHA512 后删除，可从 npm 恢复；0.3.1 固定候选保留。更早的发布归档、用户 IDE 数据和共享 pnpm store 未动。
+- Windows 仅按核对后的准确路径逐文件/链接删除，再删除空目录，不递归删除、不遍历链接、不动根 .git。只清理本任务进程与产物。
+- 本地优先焦点测试，不重复运行已通过且未受影响的全集。LSP 探针会创建临时源码，不能与同工作区 check/build 并行。

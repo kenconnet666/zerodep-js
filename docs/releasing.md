@@ -1,12 +1,12 @@
 # 候选发布与恢复
 
-发布清单唯一维护于 scripts/package-list.mjs：core、ssr、use、compiler、vite。包使用同一个版本，编译器平台依赖由官方 TypeScript 提供。
+发布清单唯一维护于 scripts/package-list.mjs：core、ssr、use、compiler、vite。包使用同一个版本；当前 JetBrains SDK 与平台二进制来自原始 GitHub 发行文件，独立项目仍需相应根级平台 overrides，见 [包边界](packages.md)。
 
 ## 发布门槛
 
 1. 工作区包含全部需要的源码、类型、测试与文档，保留并完成本轮已有改动。
 2. 相关本地检查通过，候选提交已推送，完整 CI 成功。
-3. CI 覆盖工程检查、三浏览器、Linux/Windows 独立消费以及六平台官方工具验证。
+3. CI 覆盖工程检查、三浏览器、Linux/Windows 独立消费以及六平台选定 SDK 验证。
 4. CI 保存同一提交的固定 tgz、版本与 SHA-512；发布过程不重新构造另一批包。
 
 ```sh
