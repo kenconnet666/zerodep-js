@@ -133,6 +133,7 @@ export function _createRouter<T extends object>(
   let previousScroll: ScrollRestoration | undefined;
   let restoring: string | undefined;
   let writingHistory = false;
+  let deferredHistory: HistoryChange | undefined;
   let disposed = false;
 
   function active() {
@@ -307,19 +308,31 @@ export function _createRouter<T extends object>(
         .querySelector<HTMLElement>('[data-route-focus]')
         ?.focus({ preventScroll: true });
   }
+  function writeHistory(write: () => HistoryEntry): HistoryEntry {
+    writingHistory = true;
+    let entry: HistoryEntry | undefined;
+    try {
+      return (entry = write());
+    } finally {
+      writingHistory = false;
+      const change = deferredHistory;
+      deferredHistory = undefined;
+      // 跳过自己的通知；监听器造成的后续历史变更仍作为新导航处理。
+      if (change && change.location !== entry) receive(change);
+    }
+  }
   function rollback(change: HistoryChange, previous: HistoryEntry) {
     if (history.location.key !== change.location.key) return;
-    if (change.delta !== null && change.delta !== 0 && previous.group === change.location.group) {
+    if (
+      change.delta !== null &&
+      previous.index !== change.location.index &&
+      previous.group === change.location.group
+    ) {
       restoring = previous.key;
       // 连续后退时 delta 只相对上一次原生事件，恢复距离必须相对已提交页面。
       history.go(previous.index - change.location.index);
     } else {
-      writingHistory = true;
-      try {
-        committedEntry = history.replace(previous.href, previous.state);
-      } finally {
-        writingHistory = false;
-      }
+      committedEntry = writeHistory(() => history.replace(previous.href, previous.state));
     }
   }
   async function navigateInternal(
@@ -449,19 +462,18 @@ export function _createRouter<T extends object>(
       if (signal.aborted || disposed) return { status: 'cancelled' };
       let entry = change?.location ?? history.location;
       if (!restored && (!change || redirected)) {
-        writingHistory = true;
         try {
-          entry =
+          entry = writeHistory(() =>
             opts.replace || change || redirected
               ? history.replace(urlPath(url), opts.state)
-              : history.push(urlPath(url), opts.state);
+              : history.push(urlPath(url), opts.state),
+          );
         } catch (error) {
           report(error);
           return { status: 'error', error: asRouteError(error) };
-        } finally {
-          writingHistory = false;
         }
       }
+      if (signal.aborted || disposed) return { status: 'cancelled' };
       committedEntry = entry;
       const error = prepared.error;
       const state: RouterState = Object.freeze({
@@ -506,7 +518,12 @@ export function _createRouter<T extends object>(
     restored?: RouterSnapshot,
   ) => (job = navigateInternal(to, opts, change, restored));
   const receive = (change: HistoryChange) => {
-    if (writingHistory || disposed) return;
+    // 前面的监听器可能已同步 push/replace；过期入口不能覆盖较新的导航。
+    if (disposed || change.location !== history.location) return;
+    if (writingHistory) {
+      deferredHistory = change;
+      return;
+    }
     if (restoring === change.location.key) {
       restoring = undefined;
       committedEntry = change.location;

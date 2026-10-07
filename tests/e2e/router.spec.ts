@@ -27,6 +27,35 @@ const test = base.extend<{ task: Task }>({
 });
 
 for (const mode of ['csr', 'ssr']) {
+  for (const kind of mode === 'csr' ? ['browser', 'hash'] : ['browser'])
+    test(`${mode}/${kind} 同步历史改写保留最新 state，拒绝后回到原生历史位置`, async ({ page }) => {
+      const errors: string[] = [];
+      page.on('pageerror', (error) => errors.push(error.message));
+      await page.goto(
+        kind === 'hash'
+          ? '/workspace?render=csr&history=hash#/workspace/tasks'
+          : `/workspace/tasks?render=${mode}`,
+      );
+      await expect(page.getByRole('heading', { name: '任务列表' })).toBeVisible();
+      const original = page.url();
+      const index = await page.evaluate(() => history.state.__zerodep_history_v1.index as number);
+      await page.locator('[data-history-reenter-deny]').click();
+      await expect(page.locator('[data-history-probe]')).toHaveText('cancelled/0');
+      await expect(page).toHaveURL(original);
+      await expect
+        .poll(() => page.evaluate(() => history.state.__zerodep_history_v1.index as number))
+        .toBe(index);
+      await page.locator('[data-history-reenter-allow]').click();
+      await expect(page.locator('[data-history-probe]')).toHaveText('cancelled/2');
+      await expect(page.getByRole('heading', { name: '偏好设置' })).toBeVisible();
+      const url = new URL(page.url());
+      if (kind === 'hash') {
+        expect(url.pathname).toBe('/workspace');
+        expect(url.hash).toBe('#/workspace/preferences');
+      } else expect(url.pathname).toBe('/workspace/preferences');
+      expect(errors).toEqual([]);
+    });
+
   test(`${mode} 嵌套路由、查询、编辑与布局身份`, async ({ page, task }) => {
     const errors: string[] = [];
     page.on('pageerror', (error) => errors.push(error.message));
