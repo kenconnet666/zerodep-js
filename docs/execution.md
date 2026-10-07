@@ -56,3 +56,10 @@ Chromium 修饰键开页曾有 Linux 偶发超时，trace 显示事件未被框�
 ## 2026-10-07 原生 CSS 接入
 
 CSS 仓库拆分共享模板编译器，核心移除旧 TS peer；本项目增加可选 css 子入口，Babel 识别命名 css 派生与可确认原生元素的直接变量绑定。类名保持字符串，跨组件/复杂表达式回退原生重算。详细语义与换机依赖见 docs/css.md；没有同步升级两个仓库的 TypeScript。
+
+### 2026-10-08 CSS 交付核对
+
+- CSS 仓库提交 ca86a9d 完整 CI 通过，六个 0.3.0 包已发布 npm next，逐包核对 SHA-512 与固定产物一致。旧五包 latest 仍为 0.2.0；新增 compiler 首发由 npm 同时生成 latest 0.3.0，标签删除请求返回 403，未改变其他标签。
+- 本项目 catalog 使用 npm zerodep-css 0.3.0，无本机目录或临时 GitHub 覆盖。依赖树仅含指定 JetBrains TS7.1，没有引入 CSS 模板编译器或 TS6。
+- 本地 check、生产构建、相关编译/运行时/SSR 测试、11 个 CSS 焦点用例、工具链用例、LSP 验证、Chromium 的 CSR/SSR/无 JS 首屏及工作区外 npm 消费通过。跨平台/三浏览器矩阵以最新框架提交的 CI 为准，不把运行中状态记为通过。
+- 清理临时 tgz、其 pnpm 安装目录和空目录；保留 CSS 发布产物作为恢复和核对依据。

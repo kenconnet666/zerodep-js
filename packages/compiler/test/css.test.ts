@@ -3,6 +3,7 @@ import { Css } from 'zerodep-css';
 import { createServerCssHost, withCssHost } from 'zerodep-css/server';
 import { execute } from './execute.js';
 import { compile } from '../src/index.js';
+import { cssBinding } from '../../core/src/css-internal.js';
 
 function run(source: string) {
   const host = createServerCssHost();
@@ -11,6 +12,22 @@ function run(source: string) {
 }
 
 describe('原生 CSS 编译', () => {
+  it('未知接收者的属性错误不会提前读取参数', () => {
+    let reads = 0;
+    expect(() =>
+      cssBinding(
+        null,
+        'width',
+        'px',
+        () => {
+          reads++;
+          return 20;
+        },
+        '--zj-test',
+      ),
+    ).toThrow(TypeError);
+    expect(reads).toBe(0);
+  });
   it('未知作者回退保留 getter、方法和参数的 JS 求值顺序', () => {
     const order: string[] = [];
     const author = {

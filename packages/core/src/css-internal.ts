@@ -26,8 +26,8 @@ export function cssBinding(
 ): CssValue {
   // 未知 getter/方法先取接收者和方法，再求参数，保留原 JS 调用顺序。
   if (!authorInputs(author, property, member)) {
-    const target = Reflect.get(Object(author), property);
-    const method = Reflect.get(Object(target), member);
+    const target = (author as Record<string, unknown>)[property];
+    const method = (target as Record<string, (...args: unknown[]) => string>)[member]!;
     return {
       [BINDING]: true,
       declaration: Reflect.apply(method, target, [read()]) as string,
