@@ -111,20 +111,26 @@ export function prepareCss(ast: t.File, program: NodePath<t.Program>, source: st
           !t.isIdentifier(method.object.object)
         )
           return argument;
-        return call('cssBinding', [
-          method.object.object,
-          t.stringLiteral(method.object.property.name),
-          t.stringLiteral(method.property.name),
-          t.arrowFunctionExpression([], argument.arguments[0] as t.Expression),
-          t.stringLiteral(`--zj-${file}-${site}-${slot++}`),
-        ]);
+        return t.inherits(
+          call('cssBinding', [
+            method.object.object,
+            t.stringLiteral(method.object.property.name),
+            t.stringLiteral(method.property.name),
+            t.arrowFunctionExpression([], argument.arguments[0] as t.Expression),
+            t.stringLiteral(`--zj-${file}-${site}-${slot++}`),
+          ]),
+          argument,
+        );
       });
       if (!slot || parts.some((part) => !t.isExpression(part))) return;
       used = true;
-      const result = call('cssResult', [
-        path.node.callee as t.Expression,
-        t.arrayExpression(parts as t.Expression[]),
-      ]);
+      const result = t.inherits(
+        call('cssResult', [
+          path.node.callee as t.Expression,
+          t.arrayExpression(parts as t.Expression[]),
+        ]),
+        path.node,
+      );
       if (inline) {
         elements.set(inline.node, result);
         // 原 class 不再求值；cssProps 用同一个派生结果生成 class 和 style。

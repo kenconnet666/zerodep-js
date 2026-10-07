@@ -36,12 +36,17 @@ export const App = _component(({ onDestroy }: {onDestroy?: () => void;}) => {
   return <button onClick={counter.increment}>${label}:{counter.count}</button>;
 });
 `;
-const localSource = (label, initial = 0, failure = false, mixed = false) => `
-import {_component,_state,_onMount,_onCleanup,_getAbortSignal,_id} from 'zerodep-js';
+const localSource = (label, initial = 0, failure = false, mixed = false, color = 'blue') => `
+import {_component,_state,_derived,_onMount,_onCleanup,_getAbortSignal,_id} from 'zerodep-js';
+import {Css} from 'zerodep-css';
+import {css} from 'zerodep-js/css';
+const s = new Css();
 export const App = _component(({onDestroy}:{onDestroy?:()=>void}) => {
   let count = _state(${initial});
   let node = _state<HTMLInputElement | undefined>(undefined);
   const form = _state({name:'初始'});
+  const width = _derived(count + 100);
+  const className = css(s.width.px(width), s.color.raw('${color}'));
   const inputId = _id();
   _onMount(() => {
     globalThis.__boundInput = () => node;
@@ -51,7 +56,7 @@ export const App = _component(({onDestroy}:{onDestroy?:()=>void}) => {
   });
   _onCleanup(()=>onDestroy?.());
   ${failure ? "throw new Error('测试初始化失败');" : ''}
-  return <section><h1>${label}</h1><label for={inputId}>姓名</label><input id={inputId} aria-label="热更新姓名" bind:this={node} bind:value={form.name}/>
+  return <section data-local-css class={className}><h1>${label}</h1><label for={inputId}>姓名</label><input id={inputId} aria-label="热更新姓名" bind:this={node} bind:value={form.name}/>
     <button data-local-count onClick={()=>count++}>{count}</button></section>;
 });
 ${mixed ? 'export const extra = 1;' : ''}
@@ -112,7 +117,14 @@ export function verifyReferences() {
     `
 import { _mount } from 'zerodep-js';
 import { _inspect } from 'zerodep-js/devtools';
+import { Css } from 'zerodep-css';
+import { css } from 'zerodep-js/css';
+import 'zerodep-js/css/internal';
+import { hydrateCss } from 'zerodep-css/browser';
 import { App } from './App.tsx';
+// 预先声明夹具随后使用的依赖，避免新增依赖触发 Vite 的整页重新优化。
+void Css; void css;
+hydrateCss();
 _inspect();
 globalThis.__loads = (globalThis.__loads ?? 0) + 1;
 globalThis.__disposals = 0;
@@ -126,13 +138,22 @@ if (import.meta.hot) {
   );
   await writeFile(
     resolve(fixture, 'server.ts'),
-    `import { renderToString } from 'zerodep-js-ssr'; import { App } from './App.tsx'; export const render = () => renderToString(App);`,
+    `import { renderToString } from 'zerodep-js-ssr';
+import { createServerCssHost, withCssHost, serializeCssRules } from 'zerodep-css/server';
+import { App } from './App.tsx';
+export const render = () => {
+  const host = createServerCssHost();
+  const html = withCssHost(host, () => renderToString(App));
+  return {html, styles: serializeCssRules(host.rules())};
+};`,
   );
   await writeFile(
     resolve(fixture, 'hydrate.ts'),
     `
 import {_hydrate} from 'zerodep-js';
+import {hydrateCss} from 'zerodep-css/browser';
 import {App} from './App.tsx';
+hydrateCss();
 const target=document.querySelector('#app');
 const before=target.querySelector('input');
 const stop=_hydrate(App,{target});
@@ -154,10 +175,19 @@ if(import.meta.hot)import.meta.hot.dispose(stop);
             if (request.url !== '/hydrate-check') return next();
             void (async () => {
               const module = await vite.environments.ssr.runner.import('/server.ts');
+              const rendered = module.render();
+              const styles =
+                '<style data-zerodep-css>' +
+                rendered.styles.cssText +
+                '</style>' +
+                '<script type="application/json" data-zerodep-css>' +
+                rendered.styles.manifest +
+                '</script>';
               const html = await vite.transformIndexHtml(
                 '/hydrate-check',
-                '<div id="app">' +
-                  module.render() +
+                styles +
+                  '<div id="app">' +
+                  rendered.html +
                   '</div><script type="module" src="/hydrate.ts"></script>',
               );
               response.setHeader('content-type', 'text/html;charset=utf-8');
@@ -185,7 +215,7 @@ if(import.meta.hot)import.meta.hot.dispose(stop);
   const environment = server.environments.ssr;
   assert(isRunnableDevEnvironment(environment));
   const first = await environment.runner.import('/server.ts');
-  assert(first.render().includes('版本一:'));
+  assert(first.render().html.includes('版本一:'));
   browser = await chromium.launch();
   const page = await browser.newPage();
   const pageErrors = [];
@@ -194,6 +224,9 @@ if(import.meta.hot)import.meta.hot.dispose(stop);
   const client = server.environments.client;
   await client.depsOptimizer?.scanProcessing;
   await client.waitForRequestsIdle();
+  await page.evaluate(() => {
+    globalThis.__documentProbe = true;
+  });
   assert.deepEqual(logs, [], '初始依赖扫描不应产生错误或警告。');
   await page.locator('#app').getByRole('button').click();
   await page.waitForFunction(() => document.querySelector('button')?.textContent === '版本一:1');
@@ -215,17 +248,22 @@ if(import.meta.hot)import.meta.hot.dispose(stop);
   assert.equal(await page.evaluate(() => globalThis.__loads), 1);
   assert.equal(await page.evaluate(() => globalThis.__disposals), 2);
   const updated = await environment.runner.import('/server.ts');
-  assert(updated.render().includes('版本三:'));
+  assert(updated.render().html.includes('版本三:'));
   assert.deepEqual(pageErrors, []);
   await writeFile(resolve(fixture, 'App.tsx'), localSource('本地一'));
   await expect(page.locator('#app h1')).toHaveText('本地一');
   await page.getByLabel('热更新姓名').fill('热更新前的数据');
   await page.locator('[data-local-count]').click();
   await page.locator('[data-local-count]').click();
+  await expect(page.locator('[data-local-css]')).toHaveCSS('width', '102px');
+  await expect(page.locator('[data-local-css]')).toHaveCSS('color', 'rgb(0, 0, 255)');
   const disposals = await page.evaluate(() => globalThis.__disposals);
-  await writeFile(resolve(fixture, 'App.tsx'), localSource('本地二'));
+  await writeFile(resolve(fixture, 'App.tsx'), localSource('本地二', 0, false, false, 'red'));
   await expect(page.locator('#app h1')).toHaveText('本地二');
   await expect(page.locator('[data-local-count]')).toHaveText('2');
+  await expect(page.locator('[data-local-css]')).toHaveCSS('width', '102px');
+  await expect(page.locator('[data-local-css]')).toHaveCSS('color', 'rgb(255, 0, 0)');
+  await expect(page.locator('style[data-zerodep-css]')).toHaveCount(1);
   await expect(page.getByLabel('热更新姓名')).toHaveValue('热更新前的数据');
   assert.equal(
     await page.locator('label').getAttribute('for'),
@@ -272,6 +310,11 @@ if(import.meta.hot)import.meta.hot.dispose(stop);
   await writeFile(resolve(fixture, 'App.tsx'), localSource('修复执行', 5));
   await expect(page.locator('#app h1')).toHaveText('修复执行');
   await expect(page.locator('[data-local-count]')).toHaveText('5');
+  assert.equal(
+    await page.evaluate(() => globalThis.__documentProbe),
+    true,
+    '兼容组件更新不能用整页重载伪装恢复',
+  );
   // 增加非组件导出后不再作为自接收边界；入口的常规重建仍能取得新定义。
   await writeFile(resolve(fixture, 'App.tsx'), localSource('导出变化', 6, false, true));
   await expect(page.locator('#app h1')).toHaveText('导出变化');
@@ -296,14 +339,25 @@ if(import.meta.hot)import.meta.hot.dispose(stop);
   );
   await hydration.locator('[data-local-count]').click();
   await expect(hydration.locator('[data-local-count]')).toHaveText('7');
+  await expect(hydration.locator('[data-local-css]')).toHaveCSS('width', '107px');
+  await expect(hydration.locator('[data-local-css]')).toHaveCSS('color', 'rgb(0, 0, 255)');
+  await expect(hydration.locator('style[data-zerodep-css]')).toHaveCount(1);
   assert.deepEqual(hydrationErrors, []);
   await hydration.close();
+  await page.evaluate(() => {
+    globalThis.__documentProbe = true;
+  });
   // 从本地组件切换为转发导出后，不能让旧的自接收边界静默留下旧页面。
   await writeFile(resolve(fixture, 'Replacement.tsx'), localSource('转发入口', 9));
   await writeFile(resolve(fixture, 'App.tsx'), "export {App} from './Replacement.tsx';");
   await expect(page.locator('#app h1')).toHaveText('转发入口');
   await expect(page.locator('[data-local-count]')).toHaveText('9');
   assert(logs.some((message) => String(message).includes('ZJ1203')));
+  assert.equal(
+    await page.evaluate(() => globalThis.__documentProbe),
+    undefined,
+    '移除最后一个本地组件后应刷新转发入口',
+  );
   // 故意写入错误源码会产生 SSR 堆栈和客户端重载提示，但不应破坏依赖扫描。
   assert(
     !logs.some((message) => /Failed to run dependency scan|react\/jsx/.test(String(message))),

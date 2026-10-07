@@ -4,6 +4,7 @@ import { createServerCssHost, withCssHost } from 'zerodep-css/server';
 import { execute } from './execute.js';
 import { compile } from '../src/index.js';
 import { cssBinding } from '../../core/src/css-internal.js';
+import { TraceMap, originalPositionFor } from '@jridgewell/trace-mapping';
 
 function run(source: string) {
   const host = createServerCssHost();
@@ -12,6 +13,35 @@ function run(source: string) {
 }
 
 describe('原生 CSS 编译', () => {
+  it.each([false, true])('CSS 生成的调用映射回原始作者与 css 调用（named=%s）', (named) => {
+    const expression = 'css(s.width.px(width))';
+    const line = named ? `const name = ${expression};` : `return <div class={${expression}} />;`;
+    const source = [
+      "import { _state } from 'zerodep-js';",
+      "import { css } from 'zerodep-js/css';",
+      'function view() {',
+      'let width = _state(20);',
+      line,
+      ...(named ? ['return <div class={name} />;'] : []),
+      '}',
+    ].join('\n');
+    const result = compile(source, 'CssMap.tsx');
+    const lines = result.code.split('\n');
+    for (const [helper, original] of [
+      ['cssBinding', 's.width'],
+      ['cssResult', 'css('],
+    ]) {
+      const index = lines.findIndex((text) => text.includes(`.${helper}(`));
+      expect(index).toBeGreaterThanOrEqual(0);
+      expect(
+        originalPositionFor(new TraceMap(result.map!), {
+          line: index + 1,
+          column: lines[index]!.indexOf(`.${helper}(`),
+        }),
+      ).toMatchObject({ source: 'CssMap.tsx', line: 5, column: line.indexOf(original!) });
+    }
+  });
+
   it('真实 TSX 的直接派生值求参改变作者时，保留原方法并回退普通声明', () => {
     const { result, host } = run(`
 import { _derived } from 'zerodep-js';

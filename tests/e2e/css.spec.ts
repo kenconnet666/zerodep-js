@@ -1,6 +1,47 @@
 import { expect, test } from '@playwright/test';
 
 for (const mode of ['csr', 'ssr']) {
+  test(`${mode} 按需组件加载期间切换主题，完成后继承最新逻辑作用域`, async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    let requested = false;
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    await page.route('**/LazyThemeProbe-*.js', async (route) => {
+      requested = true;
+      await gate;
+      await route.continue();
+    });
+    try {
+      await page.goto(`/?render=${mode}`);
+      await page.locator('[data-css-lazy-toggle]').click();
+      await expect.poll(() => requested).toBe(true);
+      await page.locator('[data-css-theme-toggle]').click();
+      await expect(page.locator('[data-css-theme=lazy]')).toHaveCount(0);
+      release();
+      await expect(page.locator('[data-css-theme=lazy]')).toHaveCSS('color', 'rgb(0, 128, 0)');
+      await expect(page.locator('[data-css-theme=lazy-portal]')).toHaveCSS(
+        'color',
+        'rgb(0, 128, 0)',
+      );
+      await expect(page.locator('[data-css-theme=lazy-local]')).toHaveCSS(
+        'color',
+        'rgb(128, 0, 128)',
+      );
+      await page.locator('[data-css-lazy-toggle]').click();
+      await expect(page.locator('[data-css-theme^=lazy]')).toHaveCount(0);
+      await page.locator('[data-css-lazy-toggle]').click();
+      await expect(page.locator('[data-css-theme=lazy]')).toHaveCSS('color', 'rgb(0, 128, 0)');
+      await page.locator('[data-unmount]').click();
+      await expect(page.locator('[data-css-theme^=lazy]')).toHaveCount(0);
+      expect(errors).toEqual([]);
+    } finally {
+      release();
+    }
+  });
+
   test(`${mode} 原生 CSS 追踪、变量、多实例与销毁`, async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (error) => errors.push(error.message));

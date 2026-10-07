@@ -1,24 +1,11 @@
-import { _component, _derived, _state, Portal } from 'zerodep-js';
-import { Css, SystemKeywords, ColorKeywords } from 'zerodep-css';
-import { css, _createCssContext } from 'zerodep-js/css';
+import { _component, _derived, _state, _lazy, Portal } from 'zerodep-js';
+import { Css } from 'zerodep-css';
+import { css } from 'zerodep-js/css';
+import { Keywords, provideCss, useCss } from './css-theme.js';
 
 const s = new Css();
 
-class Colors extends ColorKeywords {
-  readonly _primary: string;
-  constructor(primary: string) {
-    super();
-    this._primary = primary;
-  }
-}
-class Keywords extends SystemKeywords {
-  override readonly color: Colors;
-  constructor(primary: string) {
-    super();
-    this.color = new Colors(primary);
-  }
-}
-const { provideCss, useCss } = _createCssContext<Css<Keywords>>();
+const LazyThemeProbe = _lazy(() => import('./LazyThemeProbe.js'));
 const ThemeProbe = _component(({ location }: { location: string }) => {
   const author = useCss();
   return (
@@ -27,9 +14,14 @@ const ThemeProbe = _component(({ location }: { location: string }) => {
     </div>
   );
 });
-const LocalThemeProbe = _component(() => {
+const LocalThemeProbe = _component(({ lazy }: { lazy: boolean }) => {
   provideCss(new Css(new Keywords('purple')));
-  return <ThemeProbe location="local" />;
+  return (
+    <>
+      <ThemeProbe location="local" />
+      {lazy && <LazyThemeProbe location="lazy-local" />}
+    </>
+  );
 });
 
 const Card = _component(({ name, initial }: { name: string; initial: number }) => {
@@ -83,6 +75,7 @@ const Card = _component(({ name, initial }: { name: string; initial: number }) =
 
 export const CssExample = _component(() => {
   let visible = _state(true);
+  let lazyVisible = _state(false);
   let keywords = _state.raw(new Keywords('blue'));
   provideCss(new Css(() => keywords));
   return (
@@ -97,7 +90,16 @@ export const CssExample = _component(() => {
         切换主题
       </button>
       <ThemeProbe location="outer" />
-      <LocalThemeProbe />
+      <LocalThemeProbe lazy={lazyVisible} />
+      <button
+        data-css-lazy-toggle
+        onClick={() => {
+          lazyVisible = !lazyVisible;
+        }}
+      >
+        切换按需主题
+      </button>
+      {lazyVisible && <LazyThemeProbe location="lazy" />}
       <button
         data-css-visible
         onClick={() => {
@@ -116,6 +118,7 @@ export const CssExample = _component(() => {
         <div data-css-portal class={css(s.position.fixed, s.bottom.px(0), s.pointerEvents.none)}>
           CSS Portal
           <ThemeProbe location="portal" />
+          {lazyVisible && <LazyThemeProbe location="lazy-portal" />}
         </div>
       </Portal>
     </section>
