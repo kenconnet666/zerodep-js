@@ -7,7 +7,9 @@ import {
   _getAbortSignal,
   _snapshot,
   _lazy,
+  _id,
 } from 'zerodep-js';
+import { _task } from 'zerodep-use/task';
 import { _history } from 'zerodep-use/history';
 import { _persistLocal } from 'zerodep-use/storage';
 import {
@@ -50,6 +52,8 @@ const packedRoutes = _defineRoutes({
 });
 
 export const App = _component(({ title }: { title: string }) => {
+  const inputId = _id();
+  const task = _task((value: string) => Promise.resolve(value));
   let input: HTMLInputElement | undefined = undefined;
   let message = _state('等待');
   let routed = _state(false);
@@ -82,6 +86,7 @@ export const App = _component(({ title }: { title: string }) => {
     { id: 2, name: '乙' },
   ]);
   _onMount(() => {
+    void task.run('task-ready');
     const signal = _getAbortSignal();
     document.body.dataset.fixtureEffect = 'active';
     return () => {
@@ -95,7 +100,9 @@ export const App = _component(({ title }: { title: string }) => {
     >
       <h1>{title}</h1>
       <Counter label="打包" onCount={(value) => (message = String(value))} />
-      <input aria-label="消息" bind:value={message} bind:this={input} />
+      <label for={inputId}>消息</label>
+      <input id={inputId} aria-label="消息" bind:value={message} bind:this={input} />
+      <span data-packed-task>{task.data}</span>
       <button data-reference-focus onClick={() => input?.focus()}>
         聚焦消息
       </button>

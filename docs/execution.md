@@ -1,5 +1,9 @@
 # 当前执行记录
 
+新增能力（2026-10-07）：用户批准 Svelte 对照中的优先项后，实现 `_id()` 与 `zerodep-use/task` 的 `_task(loader)`。ID 在 SSR 输出接管标记，客户端复用；异步任务以显式 run/retry/cancel 管理结果，已接入任务工作台。338 项单元测试、check、client/server 构建、Chromium 的任务/ID/接管回归、HMR 与开发态 SSR 验证、独立 tgz 消费通过。消费夹具使用独立 pnpm store，避免宿主缓存丢失 tarball integrity 元数据，仍保留完整性校验。
+
+ID 阶段提交 ba2df01 的 [CI 37630433779](https://github.com/kenconnet666/zerodep-js/actions/runs/37630433779) 已通过；异步任务阶段完整矩阵以其后续提交 CI 为准。新增 API 仍在分支源码，未发布新 npm 版本。动画与 head 管理尚未实施。
+
 当前工作区版本调整（2026-10-07）：按用户最新要求，IDE 与项目统一固定 JetBrains `7.1.0-dev.jetbrains.20261006.2`，使用 GitHub 原始 HTTPS 发行包与锁定平台覆盖。已在用户授权分支 codex/webstorm-ts71-integration 保存检查点 2480fbd。项目 check、client/server 构建、117 项编译测试、lsp:verify、49/49 补全和 Windows 独立 tgz 消费通过。本轮未发布新包，以下 rc.7 发布证据仍对应此前微软 nightly。
 
 WebStorm EAP 263.6259.34 的本机代理已按用户授权打补丁并保留原文件：快照 API 改为 getCurrentLanguageServerSnapshot，配置路径查找项目改为 getConfiguredProject。真实 IDE 查询返回 string、泛型 number | undefined、对象属性及 _component 的默认值/rest 参数类型；修改泛型调用后结果刷新为 string | undefined。错误赋值在编辑器出现红线，修复后的状态单独核对。补丁命令和 LSP 复用边界见 [工具链](tooling.md)，完整换机步骤见 [环境配置](environment-setup.md)。

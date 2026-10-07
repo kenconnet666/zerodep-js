@@ -2,7 +2,19 @@ import assert from 'node:assert/strict';
 import { execFile } from 'node:child_process';
 import { createServer } from 'node:http';
 import { once } from 'node:events';
-import { access, cp, mkdir, mkdtemp, readFile, realpath, rm, writeFile } from 'node:fs/promises';
+import {
+  access,
+  cp,
+  mkdir,
+  mkdtemp,
+  readFile,
+  readdir,
+  realpath,
+  rm,
+  rmdir,
+  unlink,
+  writeFile,
+} from 'node:fs/promises';
 import { basename, dirname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -32,7 +44,8 @@ const consumer = resolve(fixture, 'consumer');
 const archives = resolve(fixture, 'archives');
 const executable = /\.[cm]?js$/.test(pnpm) ? process.execPath : pnpm;
 const prefix = executable === pnpm ? [] : [pnpm];
-const env = { ...process.env, CI: 'true' };
+// 消费安装连 store 也隔离，避免宿主缓存元数据缺失掩盖 HTTPS tarball 的完整性验证。
+const env = { ...process.env, CI: 'true', npm_config_store_dir: resolve(fixture, 'store') };
 if (values.registry) env.npm_config_registry = 'https://registry.npmjs.org/';
 delete env.NODE_PATH;
 const exec = promisify(execFile);
@@ -104,6 +117,7 @@ try {
         './history',
         './router',
         './storage',
+        './task',
       ]);
       assert.deepEqual(Object.keys(sourceManifest.peerDependencies), ['zerodep-js']);
       assert.equal(Object.keys(sourceManifest.dependencies ?? {}).length, 0);
@@ -301,6 +315,11 @@ try {
     await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
     await expect(page.locator('#app')).toHaveAttribute('data-reused', String(mode === 'ssr'));
     await expect(page.locator('h1')).toHaveText('独立消费');
+    await expect(page.locator('[data-packed-task]')).toHaveText('task-ready');
+    assert.equal(
+      await page.locator('label').getAttribute('for'),
+      await page.locator('input[aria-label="消息"]').getAttribute('id'),
+    );
     await expect(page.locator('[data-row]')).toHaveText(['甲', '乙']);
     await page.locator('[data-counter]').click();
     await expect(page.locator('output')).toHaveText('2');
@@ -362,6 +381,18 @@ try {
     server.closeAllConnections();
     await new Promise((resolve) => server.close(resolve));
   }
-  // mkdtemp 创建且已核对范围的绝对路径；不清理共享 pnpm store 或工作区依赖。
-  await rm(fixture, { recursive: true, force: true });
+  // 只逐项清理 mkdtemp 创建的目录和私有 store；pnpm 链接本身可删，不能遍历目标。
+  assert.equal(await realpath(fixture), fixture);
+  const pending = [fixture];
+  const directories = [];
+  while (pending.length) {
+    const directory = pending.pop();
+    directories.push(directory);
+    for (const entry of await readdir(directory, { withFileTypes: true })) {
+      const file = resolve(directory, entry.name);
+      if (entry.isDirectory() && !entry.isSymbolicLink()) pending.push(file);
+      else await unlink(file);
+    }
+  }
+  for (const directory of directories.reverse()) await rmdir(directory);
 }

@@ -37,11 +37,12 @@ export const App = _component(({ onDestroy }: {onDestroy?: () => void;}) => {
 });
 `;
 const localSource = (label, initial = 0, failure = false, mixed = false) => `
-import {_component,_state,_onMount,_onCleanup,_getAbortSignal} from 'zerodep-js';
+import {_component,_state,_onMount,_onCleanup,_getAbortSignal,_id} from 'zerodep-js';
 export const App = _component(({onDestroy}:{onDestroy?:()=>void}) => {
   let count = _state(${initial});
   let node = _state<HTMLInputElement | undefined>(undefined);
   const form = _state({name:'初始'});
+  const inputId = _id();
   _onMount(() => {
     globalThis.__boundInput = () => node;
     globalThis.__mounts=(globalThis.__mounts??0)+1;
@@ -50,7 +51,7 @@ export const App = _component(({onDestroy}:{onDestroy?:()=>void}) => {
   });
   _onCleanup(()=>onDestroy?.());
   ${failure ? "throw new Error('测试初始化失败');" : ''}
-  return <section><h1>${label}</h1><input aria-label="热更新姓名" bind:this={node} bind:value={form.name}/>
+  return <section><h1>${label}</h1><label for={inputId}>姓名</label><input id={inputId} aria-label="热更新姓名" bind:this={node} bind:value={form.name}/>
     <button data-local-count onClick={()=>count++}>{count}</button></section>;
 });
 ${mixed ? 'export const extra = 1;' : ''}
@@ -226,6 +227,10 @@ if(import.meta.hot)import.meta.hot.dispose(stop);
   await expect(page.locator('#app h1')).toHaveText('本地二');
   await expect(page.locator('[data-local-count]')).toHaveText('2');
   await expect(page.getByLabel('热更新姓名')).toHaveValue('热更新前的数据');
+  assert.equal(
+    await page.locator('label').getAttribute('for'),
+    await page.getByLabel('热更新姓名').getAttribute('id'),
+  );
   assert(
     await page.evaluate(
       () => globalThis.__boundInput() === document.querySelector('[aria-label="热更新姓名"]'),
@@ -285,6 +290,10 @@ if(import.meta.hot)import.meta.hot.dispose(stop);
   await hydration.goto(`http://127.0.0.1:${address.port}/hydrate-check`);
   await hydration.waitForFunction(() => globalThis.__hydrated === true);
   await hydration.getByLabel('热更新姓名').fill('开发态接管');
+  assert.equal(
+    await hydration.locator('label').getAttribute('for'),
+    await hydration.getByLabel('热更新姓名').getAttribute('id'),
+  );
   await hydration.locator('[data-local-count]').click();
   await expect(hydration.locator('[data-local-count]')).toHaveText('7');
   assert.deepEqual(hydrationErrors, []);

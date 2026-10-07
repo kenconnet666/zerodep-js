@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest';
-import { _id, _createRoot, _effect, _flushSync } from 'zerodep-js';
+import { _id, _createRoot, _effect, _flushSync, ErrorBoundary } from 'zerodep-js';
 import { defineComponent, element } from 'zerodep-js/internal';
 import { renderToString } from '../src/render.js';
 
@@ -45,4 +45,20 @@ it('初始化之外拒绝调用，失败初始化不遗留全局上下文', () =
   });
   _flushSync();
   stop();
+});
+
+it('失败组件的 ID 标记不泄漏到错误边界的 SSR 回退内容', () => {
+  const Broken = defineComponent(() => {
+    _id();
+    throw new Error('failed');
+  });
+  const App = defineComponent(() =>
+    element(ErrorBoundary, {
+      children: element(Broken, {}),
+      fallback: () => element(Field, {}),
+    }),
+  );
+  const html = renderToString(App);
+  expect(html).toContain('zj:boundary:error');
+  expect([...html.matchAll(/<!--zj:id:/g)]).toHaveLength(2);
 });

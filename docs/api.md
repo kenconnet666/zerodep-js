@@ -8,6 +8,8 @@ RC3 候选新增 `bind:value` / `bind:checked` / `bind:valueAsNumber` 与组件�
 
 可选 `zerodep-use/storage` 提供 _persistLocal / _persistSession，统一使用显式 read/write，支持迁移、同步、失败恢复与清理。完整契约见 [浏览器持久化](storage.md)。
 
+可选 `zerodep-use/task` 提供 `_task(loader)`：显式 run/retry/cancel，跟踪只读状态并忽略过期结果，随作用域释放，SSR 不发起任务。完整类型、结果联合和边界见 [异步任务](tasks.md)。
+
 可选 `zerodep-use/router` 提供 _defineRoute/_defineRoutes、_createRouter、browser/hash/memory history、Router/Outlet/Link、_useRoute/_useRouter、_onBeforeLeave、_redirect/RouteError。包含类型化参数、取消/预加载、布局复用、错误恢复和 SSR 数据准备，详见 [路由](routing.md)。这些扩展均不改变状态宏写法。
 
 ## 状态宏与组件

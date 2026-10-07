@@ -6,6 +6,19 @@ import { _defineRoute, _defineRoutes, _createRouter, Link } from 'zerodep-use/ro
 import { _persistLocal, _persistSession } from 'zerodep-use/storage';
 import { _history } from 'zerodep-use/history';
 import { _lazy } from 'zerodep-js';
+import { _task } from 'zerodep-use/task';
+import { _createRoot, _id } from 'zerodep-js';
+
+const idFactory: () => string = _id;
+void idFactory;
+_createRoot((dispose) => {
+  const task = _task((id: string) => Promise.resolve({ id, count: 1 }));
+  const count: number | undefined = task.data?.count;
+  void count;
+  // @ts-expect-error 发行包输入类型不丢失。
+  void task.run(1);
+  dispose();
+});
 
 let boundText = '';
 let boundNumber = 123;
