@@ -33,12 +33,12 @@ function groupModel(input: Props, read: () => unknown) {
   const model = read();
   if (typeof value !== 'string') throw new TypeError('bind:group 的 value 必须是明确的字符串。');
   if (type === 'radio' && typeof model === 'string') return { value, model };
-  if (
-    type === 'checkbox' &&
-    Array.isArray(model) &&
-    model.every((item) => typeof item === 'string')
-  )
-    return { value, model: model as string[] };
+  if (type === 'checkbox' && Array.isArray(model)) {
+    // 先读取一次，既检查稀疏项，也避免 getter 在校验和写回之间返回不同值。
+    const items: unknown[] = Array.from(model);
+    if (items.every((item): item is string => typeof item === 'string'))
+      return { value, model: items };
+  }
   throw new TypeError('bind:group 的 radio 需要字符串模型，checkbox 需要字符串数组。');
 }
 

@@ -164,6 +164,24 @@ it('abort 监听器同步启动新任务时，外层操作不覆盖重入任务'
   }
 });
 
+it('原型 getter 提供的初值同样是成功结果，且只读取一次', () => {
+  let reads = 0;
+  class Options {
+    get initial() {
+      reads++;
+      return 'seed';
+    }
+  }
+  const owned = _createRoot((dispose) => ({ dispose, task: _task(() => '', new Options()) }));
+  try {
+    expect(owned.task.status).toBe('success');
+    expect(owned.task.data).toBe('seed');
+    expect(reads).toBe(1);
+  } finally {
+    owned.dispose();
+  }
+});
+
 it('初值是成功结果，不调用 loader、不提供虚构的 retry 输入', async () => {
   const value = { title: 'server' };
   const loader = vi.fn((id: number) => ({ title: String(id) }));

@@ -1,7 +1,59 @@
 import { expect, it } from 'vitest';
 import { _createRoot, _effect, _flushSync } from 'zerodep-js';
 import { derived, state } from 'zerodep-js/internal';
-import { _history } from '../src/history.js';
+import { _history, type History } from '../src/history.js';
+
+it.each(['commit', 'clear', 'undo', 'redo', 'reset'] as const)(
+  '%s 的绑定回调销毁历史后，不再恢复已释放的记录或游标',
+  (operation) => {
+    let value = 0;
+    let disposeInCallback = false;
+    let history!: History;
+    history = _history({
+      read() {
+        if (disposeInCallback) history.dispose();
+        return value;
+      },
+      write(next) {
+        value = next;
+        if (disposeInCallback) history.dispose();
+      },
+    });
+    value = 1;
+    history.commit();
+    if (operation === 'redo') history.undo();
+    disposeInCallback = true;
+    expect(history[operation]()).toBe(false);
+    expect(history.disposed).toBe(true);
+    expect(history.length).toBe(0);
+    expect(history.index).toBe(0);
+    expect(history.canUndo).toBe(false);
+    expect(history.canRedo).toBe(false);
+  },
+);
+
+it('绑定回调不能重入同一历史操作，异常后仍可继续使用', () => {
+  let value = 0;
+  let reenter = false;
+  const history = _history({
+    read: () => value,
+    write(next) {
+      if (reenter) history.commit();
+      value = next;
+    },
+  });
+  value = 1;
+  history.commit();
+  reenter = true;
+  expect(() => history.undo()).toThrow('重入');
+  expect(history.index).toBe(1);
+  expect(history.length).toBe(2);
+  expect(value).toBe(1);
+  reenter = false;
+  expect(history.undo()).toBe(true);
+  expect(value).toBe(0);
+  history.dispose();
+});
 
 it('每次提交保存独立数据，支持撤销/重做，继续编辑会丢弃旧重做分支', () => {
   const data = state({ name: '初始', nested: { n: 0 } });

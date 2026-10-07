@@ -49,26 +49,38 @@ export function _history<T>(binding: HistoryBinding<T>, options: HistoryOptions 
   let records: T[] = [baseline];
   let position = 0;
   let disposed = false;
+  let operating = false;
   const state = source({ length: 1, index: 0, disposed: false });
   const publish = () => state.write({ length: records.length, index: position, disposed });
+
+  const operate = (action: () => boolean): boolean => {
+    if (disposed) return false;
+    assertCanWrite();
+    if (operating) throw new Error('历史记录的 read/write 回调不能重入同一历史操作。');
+    operating = true;
+    try {
+      return _untrack(action);
+    } finally {
+      operating = false;
+    }
+  };
 
   const apply = (value: T) => {
     // write 获得副本，后续编辑不能回头修改历史；只有写入成功后才移动游标。
     const copy = _snapshot(value);
     synchronous(binding.write(copy));
   };
-  const move = (offset: number): boolean => {
-    if (disposed) return false;
-    assertCanWrite();
-    return _untrack(() => {
+  const move = (offset: number): boolean =>
+    operate(() => {
       const next = position + offset;
       if (next < 0 || next >= records.length) return false;
       apply(records[next]!);
+      // 用户回调可能卸载所有者；已释放的记录不能被外层操作恢复。
+      if (disposed) return false;
       position = next;
       publish();
       return true;
     });
-  };
   const history: History = Object.freeze({
     get canUndo() {
       return state.read().index > 0;
@@ -86,40 +98,38 @@ export function _history<T>(binding: HistoryBinding<T>, options: HistoryOptions 
     get disposed() {
       return state.read().disposed;
     },
-    commit() {
-      if (disposed) return false;
-      assertCanWrite();
-      const copy = capture();
-      records = records.slice(0, position + 1);
-      records.push(copy);
-      if (records.length > limit + 1) records.splice(0, records.length - limit - 1);
-      position = records.length - 1;
-      publish();
-      return true;
-    },
+    commit: () =>
+      operate(() => {
+        const copy = capture();
+        if (disposed) return false;
+        records = records.slice(0, position + 1);
+        records.push(copy);
+        if (records.length > limit + 1) records.splice(0, records.length - limit - 1);
+        position = records.length - 1;
+        publish();
+        return true;
+      }),
     undo: () => move(-1),
     redo: () => move(1),
-    reset() {
-      if (disposed) return false;
-      assertCanWrite();
-      return _untrack(() => {
+    reset: () =>
+      operate(() => {
         apply(baseline as T);
+        if (disposed) return false;
         records = [baseline as T];
         position = 0;
         publish();
         return true;
-      });
-    },
-    clear() {
-      if (disposed) return false;
-      assertCanWrite();
-      const copy = capture();
-      baseline = copy;
-      records = [copy];
-      position = 0;
-      publish();
-      return true;
-    },
+      }),
+    clear: () =>
+      operate(() => {
+        const copy = capture();
+        if (disposed) return false;
+        baseline = copy;
+        records = [copy];
+        position = 0;
+        publish();
+        return true;
+      }),
     dispose() {
       if (disposed) return;
       assertCanWrite();

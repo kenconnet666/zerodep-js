@@ -40,7 +40,7 @@ export const Search = _component(() => {
 
 `_task<I, T>((input: I, signal: AbortSignal) => T | PromiseLike<T>, options?)` 根据 loader 推断输入和结果类型。创建时必须属于有效组件或 `_createRoot`；不能创建无主的长期任务。创建本身不调用 loader。
 
-可传入 `{ initial: existingData }` 表示已有成功结果，例如服务端传来的首屏数据。它只读取初值一次、不调用 loader、不自动提供 retry 输入，也不会因之后 options 的变化重新初始化。显式提供合法的 undefined 初值仍是 success；完全省略 initial 才是 idle。类型由 loader 决定，initial 不能把结果类型放宽。初值与后续 data 都是普通值，不额外深代理或克隆。
+可传入 `{ initial: existingData }` 表示已有成功结果，例如服务端传来的首屏数据。它只读取初值一次、不调用 loader、不自动提供 retry 输入，也不会因之后 options 的变化重新初始化。显式提供合法的 undefined 初值仍是 success；完全省略 initial 才是 idle；类的原型 getter 也按同样规则读取。类型由 loader 决定，initial 不能把结果类型放宽。初值与后续 data 都是普通值，不额外深代理或克隆。
 
 | 成员                 | 契约                                                                                              |
 | -------------------- | ------------------------------------------------------------------------------------------------- |

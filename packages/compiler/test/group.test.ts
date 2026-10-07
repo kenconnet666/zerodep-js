@@ -84,6 +84,7 @@ it('运行时拒绝错误组模型及非字符串选项，不把错误输入隐�
     ['radio', [], 'a'],
     ['checkbox', 'a', 'a'],
     ['checkbox', [1], 'a'],
+    ['checkbox', new Array<string>(1), 'a'],
     ['radio', 'a', 1],
   ];
   for (const [type, model, value] of cases) {
@@ -93,6 +94,24 @@ it('运行时拒绝错误组模型及非字符串选项，不把错误输入隐�
     ) as ElementTemplate;
     expect(() => view.props.checked).toThrow('bind:group');
   }
+});
+
+it('checkbox 每次校验只读取一次数组项，校验与写回使用同一个快照', () => {
+  let reads = 0;
+  const model = Object.defineProperty(['a'], '0', {
+    get() {
+      reads++;
+      return reads === 1 ? 'a' : undefined;
+    },
+  });
+  const result = execute(
+    `let selected = initial; const view = <input type="checkbox" value="b" bind:group={selected} />;
+     const result = {view, get selected(){return selected;}};`,
+    { initial: model },
+  ) as { view: ElementTemplate; selected: string[] };
+  change(result.view, true);
+  expect(reads).toBe(1);
+  expect(result.selected).toEqual(['a', 'b']);
 });
 
 it('类型和值需明确且不被后续 spread 覆盖，checked 管理权不可冲突', () => {

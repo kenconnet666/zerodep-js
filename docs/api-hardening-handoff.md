@@ -1,82 +1,63 @@
-# 基础 API 持续执行交接
+# 基础 API 持续交接
 
-更新：2026-10-08。本文是进行中的检查点，不表示目标已完成。
+更新：2026-10-08。这是进行中的检查点，目标仍在执行，不能当作发布验收。
 
-## 授权与预算
+## 授权、预算与工作区
 
-- 用户授权按 production-plan 自主完善已有/新增基础 API、CSS 协作、测试和真实缺陷修复，可适当调整 API，优先使用简单、实现易维护、类型准确。
-- 组件只作验收夹具，组件库另行开展。两个仓库保持各自 TS，TSX 继续走 Babel。
-- 启动时账户周窗口已用 83%，剩余 17%；余额约 61,804（账户额度单位，不是 token）。每个可审阅阶段检查实际使用率；这是账户共享额度，不能精确归因到本任务。
-- 周额度内持续做有价值的工作；接近耗尽先收束新代码。用户只允许少量余额用于最终整理和交接，不用于继续扩展，不购买、不重置额度。提前保存进展，不能假设额度耗尽后一定还能继续执行。
+- 按 [主计划](production-plan.md) 自主完善基础 API、CSS 协作和真实缺陷，可为简单维护适当调整 API。组件只是测试夹具，不建立组件库。
+- 周额度启动时剩余 17%，最近读数剩余 11%（已用 89%）；账户余额读数 61,804.0163505000。额度共享，无法精确归因；用户只授权少量余额用于最终整理交接，不用它继续扩展，不购买或重置。
+- 主仓库当前目录，分支 codex/webstorm-ts71-integration；本轮起点 057d8ab。CSS 相邻仓库 main，HEAD 964a4f6，本轮未修改 CSS 源码。
+- 固定 JetBrains TS7.1.0-dev.jetbrains.20261006.2、Babel、Vite；CSS 消费 npm 0.3.0，CSS 仓库自己的 TS6 不进入框架依赖图。
+- 每个可审阅阶段中文提交推送。完整平台/浏览器/独立消费交 CI，本地只做受影响检查；下次推送前核对前轮 CI，修复真实失败，不空等或反复轮询。
+- Windows 清理逐文件/链接后再删空目录，不递归删除、不遍历链接、不动共享 pnpm store、用户运行数据或根 .git。
 
-## 工作区与基线
+## 已完成实现与契约
 
-- zerodep-js：当前主目录，分支 codex/webstorm-ts71-integration。开始本轮前 HEAD 为 057d8ab。
-- zerodep-css：相邻目录，main，开始本轮前 HEAD 为 964a4f6。
-- 上一实现 b34b0f3 完整 CI 通过；规划提交的状态应在下一次推送前检查。固定 SDK 为 7.1.0-dev.jetbrains.20261006.2，CSS 为 npm 0.3.0。
-- Windows 逐文件/链接删除再移除空目录，不遍历链接，不动共享 pnpm store、用户运行数据或根 .git。
+| 范围 | 当前实现 | 入口与重点回归 |
+| --- | --- | --- |
+| 任务 | _task(loader,{initial}) 保存成功初值，不发请求、不制造 retry 输入；reset 清空数据/错误/重试输入，取消等待且不覆盖 abort 重入的新任务；cancel 保留数据 | [任务](tasks.md)，use/test/task.test.ts |
+| CSS | 支持显式 class 前的 spread；命名 css 自动跟踪；直接变量保守绑定；_createCssContext 复用 context，保留作者类型、嵌套覆盖和请求隔离 | [CSS](css.md)，compiler CSS、core/SSR context、CssExample |
+| details | bind:open 布尔写回；data-zj-open 验证 SSR 原值并接纳接管前操作；toggle 下一任务校准，卸载取消 timer | [表单](forms.md)，disclosure 编译/SSR/浏览器测试 |
+| 分组 | bind:group 的 radio 字符串、checkbox 字符串数组；静态 type 和明确 value 位于 spread 后；写回声明值，保留隐藏选项，不建立全局分组表 | group 编译/类型投影/SSR/浏览器测试 |
+| output | 受控纯文本 TextRenderable，不放结构注释；form.reset 后重新取得实际 Text；富内容使用普通容器 | [表单](forms.md)，WebKit reset、接管前 reset、负面类型 |
+| 数组 | sort 用户回调恢复依赖跟踪，机械读取不形成循环；跨 realm 普通数组可响应，Array 子类保持实例/私有字段 | core state/reactivity 测试 |
+| 快照 | 普通对象/数组先于显示标签识别；Map/Set 用内建槽识别，不被 Symbol.toStringTag 误导；其他平台对象仍交 structuredClone | core snapshot 测试，共享 objects.ts 原型判断 |
+| 页面元信息 | 可选 zerodep-js/head 的 _head，只支持 title/description；同步纯读取、按字段覆盖、释放恢复、按 Document 隔离；SSR 按根收集 | [元信息](head.md)，core/SSR head、HeadExample、独立消费 |
+| SSR 入口 | _render 返回 {html,head}，renderToString 保持字符串；renderDocument 一次替换标记并安全输出；示例三个入口共用 CSS 宿主，客户端恢复清单 | ssr document 测试与独立包消费 |
 
-## 当前阶段
+类型、LSP、完整浏览器测试均进入已有 CI，没有降低断言或添加重试掩盖失败。生成 JSX 类型用 native:generate 维护，不能手工修改生成文件。
 
-第一阶段：_task 初值/reset 与取消/重入/SSR/类型边界。
+## 提交与 CI 证据
 
-已选契约：initial 只保存已有结果，不请求、不建立虚构的 retry 输入；提供 initial 时 status=success。reset 取消并清空数据、错误、重试输入，回到 idle，不恢复 initial；cancel 保留原有 data 语义。dispose 清除不再需要的输入引用。类型仅从 loader 推断，初值不放宽结果。
+| 提交 | CI | 结果与修复关系 |
+| --- | --- | --- |
+| 1f0aa82（含任务 4445436） | 37656625476 | 完整通过；早期 GitHub 500 推送故障已恢复 |
+| 1612e3f | 37658548791 | 三浏览器暴露 details toggle 微任务校准过早，后续改下一任务 |
+| c26fa40 | 37661954118 | WebKit 暴露 form.reset 重建 output 文本，随后落实纯文本契约 |
+| 4284d8c | 37671752512 | 旧 reference SSR 断言仍要求 output 注释，更新为严格纯文本协议 |
+| 671b5de（含快照 94f5909） | 37673784740 | 完整通过 |
+| 4a21fe2 | 37678372596 | 最近查看仅 Chromium 仍运行；其余两浏览器、六平台、Linux/Windows 消费及 verify 已通过。尚不能记为完整通过 |
 
-本地任务焦点测试 14 项已通过，包类型构建通过；TS7 工具/测试源检查及 lint 结果见本阶段日志。消费者类型用例已补充，完整包消费/平台/浏览器交 CI。下次继续先看 Git 状态与前次 CI，不把本地检查当作完整远端验收。
+运行链接格式：https://github.com/kenconnet666/zerodep-js/actions/runs/运行编号 。以 GitHub 实际结果为准，后续修改不能沿用旧提交的验收结论。
 
-## 后续顺序
+## 本次继续修复（随本检查点提交）
 
-1. 完成并提交 _task 阶段，焦点验证后推送；完整矩阵交 CI。
-2. CSS 覆盖/求值与主题作用域审计，优先真实正确性问题；安全支持 class 在 spread 之后的常见封装。
-3. 原生 details bind:open，再设计 bind:group 的组身份、类型、reset 与接管规则。
-4. 状态/生命周期/列表/Portal/context 组合审计，扩展有价值的单测；不靠重复计数器用例凑数量。
-5. CSS context 薄封装和页面元信息分别固定契约、实现与验收。
+- 任务 initial 的原型 getter 与普通属性一致，状态为 success，初值只读取一次。
+- checkbox 模型先读取一次再验证，拒绝稀疏数组，避免 getter 在校验和写回时提供不同数据。
+- 历史 read/write 可触发 dispose/卸载；外层操作随后返回 false，不恢复记录。拒绝同一句柄重入修改，try/finally 保证异常后仍可操作。
+- 新回归先失败再修复：任务/绑定相关 24 项、历史 11 项、TS7 工具/测试源检查和 lint 均通过。完整矩阵交本阶段 CI。
 
-## 每阶段交付
+## 继续工作
 
-本地运行相关焦点测试和必要类型构建，完整浏览器/平台/包消费交 CI；推送后继续工作，不空等。下一次推送前检查前次 CI，修复真实失败。中文提交，保持产物与源码证据区分；及时更新本文的提交、失败、未完成检查和剩余额度。
+1. 先查 Git 状态和最新 CI；尤其核对 4a21fe2 的 Chromium 最终结果。
+2. 继续基础 API 生命周期/错误路径、SSR/CSS/类型消费的有价值审计；不要为用完额度凑重复测试或引入成品组件。
+3. 检查持久化的自定义回调/停止重入，以及同步接口误传 Promise 的拒绝处理。先复现再修复，避免无证据重构。
+4. 接近周额度耗尽时停止开启大改动，整理准确提交、CI、未完成验证和恢复命令。余额只少量用于交接。
 
-## 阶段检查点
+## 发布与恢复
 
-- _task 初值/reset：本地 14 项焦点测试、包类型和 TS7 工具/测试源检查通过。Lint 的单个未使用参数已修正。首次提交 4445436 推送遭 GitHub 500 拒绝，后续与修复一并重试，不假称已触发该提交 CI。
-- CSS：支持 class 前的 spread，保留后续 spread 的原覆盖语义；焦点 15 项通过。增加 _createCssContext（既有 context 薄封装），作用域/主题/SSR 4 项通过。浏览器、Portal、消费者类型用例已加入，交完整 CI 验证。
-- 本轮尚未修改 zerodep-css 源码，不需要发布新 CSS 版本。
-- 最近额度核对仍为周窗口已用 83%，余额未用于开发扩展。
-
-## 最新检查点（继续执行）
-
-- 4445436 与 1f0aa82 已成功推送；合并到 1f0aa82 的完整 CI（37656625476）已通过，包含 _task 和 CSS 主题/spread 阶段。此前 GitHub 500 为临时推送失败，已恢复。
-- details bind:open：运行时、编译/类型投影、生成 JSX 声明、SSR 初值协议、语言服务补全用例及浏览器夹具已加入。18 项绑定/投影/SSR 焦点测试及应用/工具 TS7 检查通过；完整浏览器与 LSP 交本阶段 CI。
-- 接管协议用 data-zj-open 保存原始展开值；不忽略初始数据不匹配，成功后移除。普通 details.open 的旧行为不变。
-- 当前额度：周窗口已用 84%，剩余 16%；账户余额保持约 61,804，仅预留少量交接使用。
-
-## 分组绑定与 CI 修复
-
-- 1612e3f 的 CI 37658548791 暴露 details 原生 toggle 监听器间微任务校准过早，三浏览器都复现。改为下一任务校准并清理 timer；未放宽断言、超时或重试。
-- bind:group 首版 radio 字符串 / checkbox 字符串数组；type/value 必须在所有 spread 后明确声明，radio/checkbox type 为静态字面量。写回声明值、保留联合类型；checkbox 只增删当前值，保留已有顺序与暂未显示的选择，不建立全局分组表。
-- 本地分组编译/类型投影/SSR 17 项通过，应用与工具类型检查、lint 通过。因 details CI 真失败，仅额外运行相关 Chromium 子集：details 4 项、group 3 项全部通过。其余平台和浏览器仍交 CI。
-- 下一阶段审计状态数组：变更方法的机械读取必须不形成循环，但用户 sort 比较回调中的状态读取应正常跟踪；同时检查跨 realm 普通数组与带私有字段的 Array 子类。先用回归测试确认问题，再调整实现。
-
-## 数组与原生 output 审计
-
-- 三个数组回归先失败后修复：sort 用户比较回调丢失依赖、跨 realm 普通数组 push 意外重跑、Array 子类被代理破坏私有字段。加入同步跟踪恢复，已知原生变更方法按函数缓存，Array 子类保留原实例；显式 untrack 和方法替换也有用例。
-- c26fa40 的 CI 37661954118 仅 WebKit 分组用例失败。探针确认模型实际已更新，根因是原生 form.reset 重建 output 内部文本，渲染器仍引用旧 Text。采用受控文本输出契约，output children 明确为 TextRenderable，不承载组件/元素；富内容用普通容器和 role=status，避免复杂 DOM 恢复协议。
-- output SSR 不放结构标记，更新时重新取得实际 Text；接管前 reset 也覆盖。生成类型已由 native:generate 更新，负面类型用例明确拒绝富内容。
-- 本地相关单测 50 项、TS7 工具/测试源检查通过；WebKit 分组 3 项全部通过，未放宽原断言。调试日志已从源码移除。其余浏览器与整套回归交下一轮 CI。
-- 后续继续：检查该修复 CI，审计 snapshot 对普通数据 Symbol.toStringTag 的处理，再完善页面元信息等基础能力；不要因上一轮的浏览器假设添加无证据的 DOM 移动补丁。
-
-## 继续轮：快照与既有 SSR 断言
-
-- 已核对 4284d8c 的 CI 37671752512：三浏览器仅 reference 的 SSR 正则仍要求 output 内部旧结构注释；其他功能用例通过。已改为严格断言新的纯文本 empty 输出，并增加 mounted 输出为空的断言，保留服务端不挂载 DOM 引用的要求。
-- _snapshot 修复普通对象/数组的 Symbol.toStringTag 被误读/误分类，Map/Set 改用内建 size 槽识别，避免自定义标签造成内容丢失；其他平台类型仍交给 structuredClone。共享普通对象原型判断，状态与快照不维护两套判断。
-- 新增普通数据符号 getter、跨 realm 假标签、真实集合覆写标签及 Date 假标签用例。快照/状态焦点 28 项与 TS7 工具检查通过；完整矩阵交本提交 CI。
-- 额度快照：周窗口已用87%，余额约61,804，未动用重置或购买。
-
-## 页面元信息阶段
-
-- 选择可选 zerodep-js/head 的 _head(() => ({title,description}))，只支持两个字符串字段/空声明，读取为纯同步派生。记录更新不提升优先级，销毁恢复其他记录；按文档隔离多根，SSR 按请求根收集。
-- SSR 新增 _render 返回 {html,head}，renderToString 保持字符串接口。renderDocument 接受两种返回值，通过唯一 app-head 标记安全输出，单次替换防止标题/正文中的模板标记被再次解释。模板默认标题改由根 _head 提供，避免重复 title/description。
-- 服务端元信息带 data-zj-head；客户端复用并在作用域释放后清理。接管验证失败、首 effect 前销毁不动服务端 head。普通静态元信息按原节点和值恢复。
-- 11 项核心/SSR 焦点测试和应用/工具 TS7 检查通过，浏览器与独立消费者场景已加入 CI。DOM 类型没有从新的 SSR 声明泄漏，已检查生成 d.ts。
-- 三个示例 SSR 入口共用 CSS 宿主组合，任务/工作区客户端也恢复 CSS 清单；未迁移 UI 组件库。
-- 快照修复提交 671b5de 的完整 CI 37673784740 已通过；最近额度为周窗口已用89%，余额读数仍约61,804。
+- 本轮框架基础 API 尚未作为新 npm 版本发布；源码包版本仍 1.0.0-rc.7。不得声称现有注册表已包含这些改动。
+- CSS 0.3.0 六包 next 已发布验证；既有五包 latest 仍为 0.2.0。新 compiler 首次发布由 npm 自动创建 latest=0.3.0，删除返回 403，已在 CSS 发布记录说明；本轮不重新发布它们。
+- 发布前按 [发布流程](releasing.md) 完成同提交全门禁和干净消费，不能把 pending 当通过，未经授权不提升 latest。
+- 换机按 [环境配置](environment-setup.md)，不是重新选 TS 版本。SDK 安装后若 lockfile 被 pnpm 重写，必须保留并核对原 SHA512，不删摘要绕过检查。
+- 常用焦点命令：pnpm test 后跟受影响测试路径；pnpm exec tsc -p tsconfig.tools.json --noEmit；pnpm lint。完整构建/三浏览器/六平台/包消费在 CI。

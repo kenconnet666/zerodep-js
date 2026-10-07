@@ -42,7 +42,7 @@ export function _task<I, T>(
     throw new Error('_task 必须在有效的组件或 createRoot 作用域中创建。');
   const server = owner.server;
   const state = source<TaskState<T>>({
-    status: Object.hasOwn(options, 'initial') ? 'success' : 'idle',
+    status: 'initial' in options ? 'success' : 'idle',
     data: options.initial,
     error: undefined,
   });
