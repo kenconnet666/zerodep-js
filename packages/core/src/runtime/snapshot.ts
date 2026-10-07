@@ -1,12 +1,12 @@
 import { isPlainObjectPrototype } from './objects.js';
 
-const mapSize = Object.getOwnPropertyDescriptor(Map.prototype, 'size')!.get!;
-const setSize = Object.getOwnPropertyDescriptor(Set.prototype, 'size')!.get!;
+const mapSize = Object.getOwnPropertyDescriptor(Map.prototype, 'size')!;
+const setSize = Object.getOwnPropertyDescriptor(Set.prototype, 'size')!;
 
 /** 读取内建槽而非可伪造的显示标签，兼容跨 realm 和覆写 toStringTag 的集合。 */
-function hasCollectionSlot(value: object, getter: () => unknown): boolean {
+function hasCollectionSlot(value: object, descriptor: PropertyDescriptor): boolean {
   try {
-    getter.call(value);
+    descriptor.get!.call(value);
     return true;
   } catch {
     return false;
