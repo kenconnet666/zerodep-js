@@ -27,6 +27,33 @@ function readControl(event: Event, name: string): unknown {
   return element.value;
 }
 
+function groupModel(input: Props, read: () => unknown) {
+  const type = String(input.type).toLowerCase();
+  const value = input.value;
+  const model = read();
+  if (typeof value !== 'string') throw new TypeError('bind:group 的 value 必须是明确的字符串。');
+  if (type === 'radio' && typeof model === 'string') return { value, model };
+  if (
+    type === 'checkbox' &&
+    Array.isArray(model) &&
+    model.every((item) => typeof item === 'string')
+  )
+    return { value, model: model as string[] };
+  throw new TypeError('bind:group 的 radio 需要字符串模型，checkbox 需要字符串数组。');
+}
+
+/** 只依据模型与声明值更新；不建立全局 DOM 分组表，也不从被篡改的 DOM value 写入值。 */
+function writeGroup(input: Props, binding: Binding, event: Event): void {
+  const [, read, write] = binding;
+  const { value, model } = groupModel(input, read);
+  const checked = (event.currentTarget as HTMLInputElement).checked;
+  if (typeof model === 'string') {
+    if (checked) write(value);
+  } else if (checked) {
+    if (!model.includes(value)) write([...model, value]);
+  } else if (model.includes(value)) write(model.filter((item) => item !== value));
+}
+
 /** 先成为普通受控 props，SSR、接管、IME 和 reset 因而继续使用同一条输入流程。 */
 export function resolveBindings(tag: string | Function, input: Props): Props {
   const bindings = input[BINDINGS] as readonly Binding[] | undefined;
@@ -62,12 +89,18 @@ export function resolveBindings(tag: string | Function, input: Props): Props {
       native &&
       !(
         (name === 'value' && ['input', 'textarea', 'select'].includes(tag)) ||
-        (['checked', 'valueAsNumber'].includes(name) && tag === 'input') ||
+        (['checked', 'valueAsNumber', 'group'].includes(name) && tag === 'input') ||
         (name === 'open' && tag === 'details')
       )
     )
       throw new Error(`<${tag}> 不支持 bind:${name}。`);
-    const property = native && name === 'valueAsNumber' ? 'value' : name;
+    const property = native
+      ? name === 'group'
+        ? 'checked'
+        : name === 'valueAsNumber'
+          ? 'value'
+          : name
+      : name;
     if (Object.hasOwn(values, property)) throw new Error(`${property} 不能同时绑定两次。`);
     const validate = () => {
       for (const key of [
@@ -81,14 +114,22 @@ export function resolveBindings(tag: string | Function, input: Props): Props {
       if (
         native &&
         name === 'valueAsNumber' &&
-        !['number', 'range'].includes(String(original.type))
+        !['number', 'range'].includes(String(original.type).toLowerCase())
       )
         throw new Error('bind:valueAsNumber 需要 type="number" 或 type="range"。');
-      if (native && name === 'checked' && !['checkbox', 'radio'].includes(String(original.type)))
+      if (
+        native &&
+        name === 'checked' &&
+        !['checkbox', 'radio'].includes(String(original.type).toLowerCase())
+      )
         throw new Error('bind:checked 需要 type="checkbox" 或 type="radio"。');
     };
     values[property] = () => {
       validate();
+      if (native && name === 'group') {
+        const { value, model } = groupModel(original, read);
+        return typeof model === 'string' ? model === value : model.includes(value);
+      }
       const value = read();
       return native && property === 'value' ? (value ?? '') : value;
     };
@@ -96,7 +137,7 @@ export function resolveBindings(tag: string | Function, input: Props): Props {
     const event = native
       ? name === 'open'
         ? 'toggle'
-        : name === 'checked' || tag === 'select'
+        : name === 'checked' || name === 'group' || tag === 'select'
           ? 'change'
           : 'input'
       : `on${name[0]!.toUpperCase()}${name.slice(1)}Change`;
@@ -113,8 +154,11 @@ export function resolveBindings(tag: string | Function, input: Props): Props {
     const property = native ? `on:${event}` : event;
     values[property] = () =>
       function (this: unknown, value: unknown) {
-        for (const [name, , write] of bindings)
-          write(native ? readControl(value as Event, name) : value);
+        for (const binding of bindings) {
+          const [name, , write] = binding;
+          if (native && name === 'group') writeGroup(original, binding, value as Event);
+          else write(native ? readControl(value as Event, name) : value);
+        }
         // 各种原生事件别名按原 props 顺序执行，绑定先写回，用户回调读取最新状态。
         for (const key of Object.keys(original))
           if (native ? eventName(key)?.type === event && !eventName(key)?.capture : key === event) {

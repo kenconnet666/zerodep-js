@@ -7,6 +7,7 @@ import { OPEN_STATE_ATTRIBUTE } from '../native/bindings.js';
 export class DisclosureControl {
   private readonly pulse = new Source(0);
   private disposed = false;
+  private timer: ReturnType<typeof setTimeout> | undefined;
   private adopting: boolean;
   private readonly element: HTMLDetailsElement;
   private readonly input: Props;
@@ -16,14 +17,16 @@ export class DisclosureControl {
     this.input = input;
     this.adopting = !!hydration && element.open !== Boolean(input.open);
     const toggle = () => {
-      // 原生 toggle 和用户回调完成后再校准，同值拒绝也能恢复模型。
-      queueMicrotask(() => {
+      // 浏览器可在两个原生监听器之间执行微任务；下一任务才保证写回和用户回调均已结束。
+      clearTimeout(this.timer);
+      this.timer = setTimeout(() => {
         if (!this.disposed) this.pulse.write(_untrack(() => this.pulse.read()) + 1);
-      });
+      }, 0);
     };
     element.addEventListener('toggle', toggle);
     _onCleanup(() => {
       this.disposed = true;
+      clearTimeout(this.timer);
       element.removeEventListener('toggle', toggle);
     });
     if (hydration)

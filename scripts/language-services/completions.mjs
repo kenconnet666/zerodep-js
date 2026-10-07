@@ -155,6 +155,15 @@ const cases = [
     edit: true,
   },
   {
+    name: 'checkbox 成组绑定',
+    source:
+      header +
+      `let selected = _state<string[]>([]); const view = <input type="checkbox" value="a" bind:gr¦={selected} />;`,
+    expected: 'bind:group',
+    word: 'bind:gr',
+    edit: true,
+  },
+  {
     name: 'textarea 绑定',
     source: header + `const view = <textarea bind:v¦={text} />;`,
     expected: 'bind:value',

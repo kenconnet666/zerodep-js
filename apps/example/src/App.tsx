@@ -17,6 +17,7 @@ import { IdExample } from './examples/IdExample.js';
 import { PortalExample } from './examples/PortalExample.js';
 import { CssExample } from './examples/CssExample.js';
 import { DisclosureExample } from './examples/DisclosureExample.js';
+import { GroupExample } from './examples/GroupExample.js';
 
 const Button = _component(
   ({ type = 'button', children, ...attrs }: JSX.IntrinsicElements['button']) => (
@@ -98,6 +99,7 @@ export const App = _component(({ mode = 'csr', onUnmount }: AppProps) => {
       <p class="eyebrow">框架运行验证</p>
       <CssExample />
       <DisclosureExample />
+      <GroupExample />
       <h1>zerodep-js</h1>
       <p>
         当前首屏模式：<strong data-mode>{mode.toUpperCase()}</strong>

@@ -111,11 +111,50 @@ export function transformJsx(
             } else if (native) {
               if (!(
                 (property === 'value' && ['input', 'textarea', 'select'].includes(tag.name)) ||
-                (['checked', 'valueAsNumber'].includes(property) && tag.name === 'input') ||
+                (['checked', 'valueAsNumber', 'group'].includes(property) &&
+                  tag.name === 'input') ||
                 (property === 'open' && tag.name === 'details')
               ))
                 report(attribute, 'ZJ1403', `<${tag.name}> 不支持 bind:${property}。`);
-              const owned = property === 'valueAsNumber' ? 'value' : property;
+              if (property === 'group') {
+                const attrs = node.openingElement.attributes;
+                const typeIndex = attrs.findLastIndex(
+                  (item) =>
+                    t.isJSXAttribute(item) && t.isJSXIdentifier(item.name, { name: 'type' }),
+                );
+                const valueIndex = attrs.findLastIndex(
+                  (item) =>
+                    t.isJSXAttribute(item) && t.isJSXIdentifier(item.name, { name: 'value' }),
+                );
+                const lastSpread = attrs.findLastIndex((item) => t.isJSXSpreadAttribute(item));
+                const typeAttr = attrs[typeIndex];
+                const typeValue = t.isJSXAttribute(typeAttr) ? typeAttr.value : null;
+                const literal = t.isJSXExpressionContainer(typeValue)
+                  ? typeValue.expression
+                  : typeValue;
+                if (
+                  !t.isStringLiteral(literal) ||
+                  !['radio', 'checkbox'].includes(literal.value.toLowerCase()) ||
+                  typeIndex <= lastSpread ||
+                  valueIndex <= lastSpread
+                )
+                  report(
+                    attribute,
+                    'ZJ1405',
+                    'bind:group 需要在展开属性后明确声明 type="radio"/"checkbox" 和字符串 value。',
+                  );
+              }
+              if (
+                (property === 'group' && boundNames.has('checked')) ||
+                (property === 'checked' && boundNames.has('group'))
+              )
+                report(attribute, 'ZJ1404', 'bind:group 与 bind:checked 不能同时声明。');
+              const owned =
+                property === 'group'
+                  ? 'checked'
+                  : property === 'valueAsNumber'
+                    ? 'value'
+                    : property;
               if (
                 node.openingElement.attributes.some(
                   (other) =>

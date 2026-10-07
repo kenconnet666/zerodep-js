@@ -52,6 +52,10 @@ _createRoot((dispose) => {
 let boundText = '';
 let boundNumber = 123;
 let expanded = false;
+let selected: string[] = [];
+<input type="checkbox" value="a" bind:group={selected} />;
+// @ts-expect-error 分组模型不接受 boolean。
+<input type="checkbox" value="a" bind:group={expanded} />;
 <details bind:open={expanded} />;
 // @ts-expect-error 展开状态需要 boolean，不能写回 string。
 <details bind:open={boundText} />;

@@ -57,7 +57,7 @@ export function projectForCheck(
             : native
               ? property === 'open'
                 ? 'onToggle'
-                : property === 'checked' || tag === 'select'
+                : property === 'checked' || property === 'group' || tag === 'select'
                   ? 'onChange'
                   : 'onInput'
               : `on${property[0]!.toUpperCase()}${property.slice(1)}Change`;
@@ -73,7 +73,45 @@ export function projectForCheck(
             t.identifier('currentTarget'),
           );
           value = t.memberExpression(currentTarget, t.identifier(property));
-          if (property === 'valueAsNumber') {
+          if (property === 'group') {
+            const typeAttr = original.findLast(
+              (item) => t.isJSXAttribute(item) && attributeName(item) === 'type',
+            );
+            const typeValue = t.isJSXAttribute(typeAttr) ? typeAttr.value : null;
+            const literal = t.isJSXExpressionContainer(typeValue)
+              ? typeValue.expression
+              : typeValue;
+            const valueAttr = original.findLast(
+              (item) => t.isJSXAttribute(item) && attributeName(item) === 'value',
+            );
+            const itemValue = t.isJSXAttribute(valueAttr) ? valueAttr.value : null;
+            const expression = t.isJSXExpressionContainer(itemValue)
+              ? itemValue.expression
+              : itemValue;
+            const selected =
+              expression && t.isExpression(expression)
+                ? t.cloneNode(expression, true)
+                : t.stringLiteral('');
+            if (t.isStringLiteral(literal) && literal.value.toLowerCase() === 'checkbox') {
+              const item = path.scope.generateUidIdentifier('item');
+              value = t.conditionalExpression(
+                t.memberExpression(t.cloneNode(currentTarget), t.identifier('checked')),
+                t.arrayExpression([
+                  t.spreadElement(t.cloneNode(target, true)),
+                  t.cloneNode(selected, true),
+                ]),
+                t.callExpression(
+                  t.memberExpression(t.cloneNode(target, true), t.identifier('filter')),
+                  [
+                    t.arrowFunctionExpression(
+                      [item],
+                      t.binaryExpression('!==', t.cloneNode(item), t.cloneNode(selected, true)),
+                    ),
+                  ],
+                ),
+              );
+            } else value = selected;
+          } else if (property === 'valueAsNumber') {
             value = t.conditionalExpression(
               t.callExpression(t.memberExpression(t.identifier('Number'), t.identifier('isNaN')), [
                 t.cloneNode(value),

@@ -9158,6 +9158,8 @@ interface InputProps extends Common1<HTMLInputElement> {
   autoComplete?: string | null | undefined;
   /** checkbox/radio 的选中状态；输入时写回 boolean。 */
   'bind:checked'?: boolean;
+  /** radio 写回所选字符串，checkbox 写回字符串数组；需明确 type 和字符串 value。 */
+  'bind:group'?: string | readonly string[];
   /** 双向文本绑定：输入时写回字符串。必须绑定可赋值的变量或对象属性。 */
   'bind:value'?: string | null | undefined;
   /** number/range 的数值；清空或无有效数字时写回 undefined。 */
