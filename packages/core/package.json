@@ -31,6 +31,18 @@
     "./jsx-runtime": {
       "types": "./dist/jsx-runtime.d.ts",
       "import": "./dist/jsx-runtime.js"
+    },
+    "./css": {
+      "node": {
+        "types": "./dist/css-server.d.ts",
+        "import": "./dist/css-server.js"
+      },
+      "types": "./dist/css.d.ts",
+      "import": "./dist/css.js"
+    },
+    "./css/internal": {
+      "types": "./dist/css-internal.d.ts",
+      "import": "./dist/css-internal.js"
     }
   },
   "scripts": {
@@ -43,7 +55,8 @@
     "csstype": "catalog:"
   },
   "devDependencies": {
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "zerodep-css": "catalog:"
   },
   "license": "MIT",
   "author": "kenconnet666",
@@ -59,5 +72,13 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
+  },
+  "peerDependencies": {
+    "zerodep-css": "^0.3.0"
+  },
+  "peerDependenciesMeta": {
+    "zerodep-css": {
+      "optional": true
+    }
   }
 }

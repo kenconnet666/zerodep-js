@@ -24,3 +24,7 @@
 进度与限制见 [执行记录](execution.md)。历史版本证据由 CHANGELOG 和 Git 历史保存，不在当前操作文档中保留相互冲突的命令。
 
 路由、存储和历史继续在 use 包内维护，不顺带扩张全栈数据层、流式 SSR、动画或组件库。框架 API 的新取舍需有具体源码与验证证据。
+
+## 已批准的 CSS 接入
+
+采用 zerodep-css 作者与运行时，Babel 负责 TSX 原生追踪，不导入旧模板编译器。CSS 仓库保留 TS6，本项目保留 TS7；通过发行 JS 和类型声明协作。class 维持 string，元素变量只是保守优化。实现依据与验收范围见 [原生 CSS 接入](../.design/zerodep-css-integration.md)。

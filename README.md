@@ -75,3 +75,5 @@ pnpm lsp:completions
 [环境配置](docs/environment-setup.md) · [Svelte API 取舍](.design/svelte-api-review.md) · [工具分工](docs/tooling.md) · [开始使用](docs/getting-started.md) · [API](docs/api.md) · [语义](docs/semantics.md) · [表单](docs/forms.md) · [SSR](docs/ssr-and-hydration.md) · [包消费](docs/packages.md) · [发布](docs/releasing.md)
 
 框架源码使用 MIT License；成熟依赖按各自许可证分发，core 的生成数据来源见包内 THIRD_PARTY_NOTICES.md。
+
+当前分支支持可选 [原生 CSS](docs/css.md)：`const className = css(...)` 自动追踪，直接响应式值保守绑定元素变量。复用 zerodep-css，无需 bx 或额外 Vite 插件。该框架入口尚未发布到 npm rc.7。

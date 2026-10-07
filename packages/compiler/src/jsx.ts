@@ -6,7 +6,12 @@ type Helper = (name: string, args: t.Expression[]) => t.CallExpression;
 type Report = (node: t.Node, code: string, message: string) => void;
 
 /** JSX 先变为惰性描述，再处理变量绑定，避免在组件初始化时读取动态属性。 */
-export function transformJsx(ast: t.File, helper: Helper, report: Report): boolean {
+export function transformJsx(
+  ast: t.File,
+  helper: Helper,
+  report: Report,
+  decorate?: (node: t.JSXElement, attributes: t.Expression) => t.Expression,
+): boolean {
   let transformed = false;
   const templates = new WeakSet<t.Node>();
   function tagName(
@@ -162,9 +167,10 @@ export function transformJsx(ast: t.File, helper: Helper, report: Report): boole
         const native = t.isJSXIdentifier(tag) && /^[a-z]/.test(tag.name);
         const tagValue = native ? t.stringLiteral(tag.name) : tagName(tag);
         const original = helper('props', [t.arrayExpression(sources)]);
-        const attributes = bindings.length
+        let attributes: t.Expression = bindings.length
           ? helper('bindProps', [original, t.arrayExpression(bindings)])
           : original;
+        if (decorate) attributes = decorate(node, attributes);
         const hasKey = node.openingElement.attributes.some(
           (attribute) =>
             t.isJSXSpreadAttribute(attribute) ||

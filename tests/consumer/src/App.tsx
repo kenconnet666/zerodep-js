@@ -23,6 +23,10 @@ import {
   _useRoute,
 } from 'zerodep-use/router';
 import { Counter, Label } from '@zerodep-consumer/counter';
+import { Css } from 'zerodep-css';
+import { css } from 'zerodep-js/css';
+
+const s = new Css();
 
 const LazyCounter = _lazy(() =>
   import('@zerodep-consumer/counter').then((module) => module.Counter),
@@ -53,6 +57,8 @@ const packedRoutes = _defineRoutes({
 });
 
 export const App = _component(({ title }: { title: string }) => {
+  let width = _state(120);
+  const className = css(s.width.px(width));
   const inputId = _id();
   const task = _task((value: string) => Promise.resolve(value));
   let input: HTMLInputElement | undefined = undefined;
@@ -100,6 +106,17 @@ export const App = _component(({ title }: { title: string }) => {
       style={{ containerType: 'inline-size', '--package-consumer': '1', color: 'black !important' }}
     >
       <h1>{title}</h1>
+      <button
+        data-packed-css-grow
+        onClick={() => {
+          width += 10;
+        }}
+      >
+        加宽
+      </button>
+      <div data-packed-css class={className}>
+        打包样式
+      </div>
       <Counter label="打包" onCount={(value) => (message = String(value))} />
       <label for={inputId}>消息</label>
       <input id={inputId} aria-label="消息" bind:value={message} bind:this={input} />

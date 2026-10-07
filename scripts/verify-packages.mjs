@@ -27,6 +27,7 @@ const { values } = parseArgs({
   options: {
     registry: { type: 'boolean', default: false },
     version: { type: 'string' },
+    'css-tarball': { type: 'string' },
   },
 });
 if (values.registry)
@@ -78,10 +79,18 @@ try {
   // 发行 SDK 使用固定 HTTPS tarball；复制平台覆盖，独立消费不依赖 IDE 缓存。
   for (const match of catalog.matchAll(/^  '(@typescript\/[^']+)': (https:\/\/\S+)$/gm))
     manifest.pnpm.overrides[match[1]] = match[2];
-  for (const name of ['typescript', 'vite', '@types/node']) {
+  for (const name of ['typescript', 'vite', '@types/node', 'zerodep-css']) {
     const version = catalog.match(new RegExp(`^  ['"]?${name}['"]?: (\\S+)$`, 'm'))?.[1];
     assert(version, `找不到 ${name} 的固定 catalog 版本。`);
     manifest.devDependencies[name] = version;
+  }
+  if (values['css-tarball']) {
+    assert(!values.registry, '注册表验收不能替换 CSS 依赖。');
+    const source = await realpath(values['css-tarball']);
+    assert(source.endsWith('.tgz'), 'CSS 候选产物需要 tgz 文件。');
+    const archive = resolve(archives, 'zerodep-css.tgz');
+    await cp(source, archive);
+    manifest.devDependencies['zerodep-css'] = `file:${archive.replaceAll('\\', '/')}`;
   }
   for (const item of selectedPackages) {
     const name = item.folder;
@@ -174,8 +183,12 @@ try {
           !/^(workspace:|catalog:|link:|file:)/.test(version),
           `${name} 的 ${kind} 含本地协议。`,
         );
-    for (const target of Object.values(installed.exports ?? {}))
-      for (const file of Object.values(target)) await access(resolve(directory, file));
+    const targets = [installed.exports ?? {}];
+    while (targets.length) {
+      const target = targets.pop();
+      if (typeof target === 'string') await access(resolve(directory, target));
+      else if (target) targets.push(...Object.values(target));
+    }
     for (const file of files)
       if (file.endsWith('.map')) {
         const map = await json(resolve(directory, file));
@@ -275,8 +288,8 @@ try {
   );
   assert.equal(typeof globalThis.document, 'undefined');
   const { render } = await import(pathToFileURL(resolve(consumer, 'dist/server/server.js')).href);
-  assert(render('<独立请求>').includes('&lt;独立请求&gt;'));
-  assert(!render('另一个请求').includes('独立请求'));
+  assert(render('<独立请求>').html.includes('&lt;独立请求&gt;'));
+  assert(!render('另一个请求').html.includes('独立请求'));
   const template = await readFile(resolve(consumer, 'dist/client/index.html'), 'utf8');
   server = createServer((request, response) => {
     void (async () => {
@@ -284,10 +297,12 @@ try {
       if (url.pathname === '/') {
         const mode = url.searchParams.get('mode') === 'csr' ? 'csr' : 'ssr';
         response.setHeader('Content-Type', 'text/html; charset=utf-8');
+        const rendered = mode === 'ssr' ? render('独立消费') : { html: '', styles: '' };
         response.end(
           template
             .replace('__MODE__', mode)
-            .replace('<!--app-->', mode === 'ssr' ? render('独立消费') : ''),
+            .replace('</head>', () => `${rendered.styles}</head>`)
+            .replace('<!--app-->', () => rendered.html),
         );
       } else {
         assert(/^\/assets\/[\w.-]+$/.test(url.pathname));
@@ -315,6 +330,11 @@ try {
     await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
     await expect(page.locator('#app')).toHaveAttribute('data-reused', String(mode === 'ssr'));
     await expect(page.locator('h1')).toHaveText('独立消费');
+    await expect(page.locator('[data-packed-css]')).toHaveCSS('width', '120px');
+    const cssClass = await page.locator('[data-packed-css]').getAttribute('class');
+    await page.locator('[data-packed-css-grow]').click();
+    await expect(page.locator('[data-packed-css]')).toHaveCSS('width', '130px');
+    assert.equal(await page.locator('[data-packed-css]').getAttribute('class'), cssClass);
     await expect(page.locator('[data-packed-task]')).toHaveText('task-ready');
     await expect(page.locator('[data-packed-portal]')).toHaveText('外层内容');
     assert(

@@ -3,6 +3,7 @@ packages:
   - apps/*
 
 catalog:
+  zerodep-css: 0.3.0
   '@babel/core': 8.0.6
   '@babel/parser': 8.0.6
   '@babel/preset-typescript': 8.0.1

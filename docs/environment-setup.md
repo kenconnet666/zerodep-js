@@ -146,3 +146,9 @@ node scripts/language-services/webstorm-patch.mjs $webstormInstall restore
 恢复后同时把 IDE Registry 的预览版本恢复为该 EAP 原配 `v7.1.0-dev.jetbrains.20260721.2`，再启动 IDE。此操作只恢复 IDE；项目仍保持新 SDK。若要求项目也回退，必须另行更改 catalog、平台 overrides、锁文件和对应 API 适配，不能只换一个 package.json 版本。
 
 升级 IDE 前保存补丁状态和原文件。旧补丁是否仍需要、原生 SDK 是否已支持，应重新验证。本文记录的是一次可复现的已验证组合，不承诺后续 EAP 自动兼容。
+
+## 原生 CSS 依赖
+
+示例使用 catalog 固定的 zerodep-css@0.3.0。换机无需相邻 CSS 源码目录；它自己的 TS6 不替换本项目 TS7。CSS 仓库的模板编译器已拆为 zerodep-css-compiler，本项目不依赖它。接线见 [原生 CSS](css.md)。
+
+CSS 0.3.0 已从 npm 注册表核对版本和 SHA-512，与 [GitHub 预发布](https://github.com/kenconnet666/zerodep-css/releases/tag/v0.3.0) 中的 tgz 一致。catalog 固定 npm 版本，换机按锁文件安装即可；latest 未提升。

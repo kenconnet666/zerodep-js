@@ -15,6 +15,7 @@ import { AuthoringExample } from './examples/AuthoringExample.js';
 import { ReferenceExample } from './examples/ReferenceExample.js';
 import { IdExample } from './examples/IdExample.js';
 import { PortalExample } from './examples/PortalExample.js';
+import { CssExample } from './examples/CssExample.js';
 
 const Button = _component(
   ({ type = 'button', children, ...attrs }: JSX.IntrinsicElements['button']) => (
@@ -94,6 +95,7 @@ export const App = _component(({ mode = 'csr', onUnmount }: AppProps) => {
   return (
     <main style={{ '--step': step }}>
       <p class="eyebrow">框架运行验证</p>
+      <CssExample />
       <h1>zerodep-js</h1>
       <p>
         当前首屏模式：<strong data-mode>{mode.toUpperCase()}</strong>

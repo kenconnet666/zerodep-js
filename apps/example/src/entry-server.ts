@@ -5,9 +5,25 @@ import type { TaskPage } from './tasks/schema.js';
 import { _createRouter, _createMemoryHistory } from 'zerodep-use/router';
 import { routes } from './workspace/routes.js';
 import { Workspace } from './workspace/App.js';
+import { createServerCssHost, withCssHost, serializeCssRules } from 'zerodep-css/server';
 
-export function render(template: string, mode: RenderMode): Promise<string> {
-  return renderDocument({ template, mode, render: () => renderToString(App, { props: { mode } }) });
+export async function render(template: string, mode: RenderMode): Promise<string> {
+  const host = createServerCssHost();
+  return withCssHost(host, async () => {
+    const html = await renderDocument({
+      template,
+      mode,
+      render: () => renderToString(App, { props: { mode } }),
+    });
+    if (mode !== 'ssr') return html;
+    // 先完成组件渲染，再收集请求内样式；复用 CSS 库的 HTML/JSON 安全序列化。
+    const { cssText, manifest } = serializeCssRules(host.rules());
+    return html.replace(
+      '</head>',
+      () =>
+        `<style data-zerodep-css>${cssText}</style><script type="application/json" data-zerodep-css>${manifest}</script></head>`,
+    );
+  });
 }
 
 export function renderTasks(

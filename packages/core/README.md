@@ -23,3 +23,5 @@ _snapshot、_onMount/_createScope/_getAbortSignal 与 _createPage 留在 core。
 [使用契约](https://github.com/kenconnet666/zerodep-js/blob/main/docs/semantics.md) · [开发与诊断](https://github.com/kenconnet666/zerodep-js/blob/main/docs/development.md) · [表单](https://github.com/kenconnet666/zerodep-js/blob/main/docs/forms.md)
 
 本文说明当前公开 API。框架与适配包统一版本，实际发布与验收状态见 [变更记录](https://github.com/kenconnet666/zerodep-js/blob/main/CHANGELOG.md)。
+
+可选 `zerodep-js/css` 子入口提供 css 自动追踪，需另装 `zerodep-css@0.3.0`。浏览器与 Node 请求宿主分别解析；普通框架入口不会加载 CSS 包或旧 TS 编译器。使用说明见仓库 docs/css.md。

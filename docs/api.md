@@ -159,3 +159,7 @@ const Field = _component(() => {
 `<input bind:this={node} />` 将元素写入可写变量，并在卸载时清为 undefined。目标可声明为 `let node: HTMLInputElement | undefined = undefined`，也可以使用更宽的 Element 类型；显式空态初始化也让普通 lint 工具正确理解声明。需要引用变化触发视图更新时显式使用 _state。普通 let 适合事件和 _onMount 中读取。官方 IDE 不理解 bind:this 的隐式赋值，若普通变量被收窄为初始 undefined，可使用 `_state<ElementType | undefined>(undefined)` 保留准确的联合类型；框架检查投影会另外检查实际元素写入和卸载清理类型。
 
 仅支持 DOM 标签和简单变量，不支持组件实例、对象路径、参数或与 ref 同时使用。复杂初始化仍使用 ref 回调返回清理函数；SSR 不写入 DOM 引用，hydration 验证成功后才激活。
+
+## 原生 CSS
+
+可选 `zerodep-js/css` 接入 zerodep-css。css 命名 const 声明自动追踪，直接响应式值可绑定元素变量；写法和边界见 [原生 CSS](css.md)。沿用 CSS 库 css 名称，不增加另一套样式 API。

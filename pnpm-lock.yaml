@@ -84,6 +84,9 @@ catalogs:
     vscode-languageserver-types:
       specifier: 3.18.4
       version: 3.18.4
+    zerodep-css:
+      specifier: 0.3.0
+      version: 0.3.0
 
 overrides:
   '@typescript/typescript-win32-x64@7.1.0-dev.jetbrains.20261006.2': https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-win32-x64-v7.1.0-dev.jetbrains.20261006.2.tgz
@@ -137,12 +140,18 @@ importers:
       vscode-jsonrpc:
         specifier: 'catalog:'
         version: 9.0.3
+      zerodep-css:
+        specifier: 'catalog:'
+        version: 0.3.0
 
   apps/example:
     dependencies:
       sirv:
         specifier: 'catalog:'
         version: 3.0.2
+      zerodep-css:
+        specifier: 'catalog:'
+        version: 0.3.0
       zerodep-js:
         specifier: workspace:*
         version: link:../../packages/core
@@ -221,6 +230,9 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-v7.1.0-dev.jetbrains.20261006.2.tgz
+      zerodep-css:
+        specifier: 'catalog:'
+        version: 0.3.0
 
   packages/ssr:
     devDependencies:
@@ -1306,6 +1318,10 @@ packages:
     engines: {node: '>=20.11'}
     hasBin: true
 
+  zerodep-css@0.3.0:
+    resolution: {integrity: sha512-Vj2UATOYncCWfFnOVUa4iHJVPX4apRpH2QgizOTKJA5uxof9LQq+0gzOiQDA+5LFXqwS2ZoBTDUihcjCTQsUBg==}
+    engines: {node: '>=24'}
+
 snapshots:
 
   '@babel/code-frame@8.0.6':
@@ -2074,3 +2090,7 @@ snapshots:
       vscode-languageserver-protocol: 3.18.4
 
   why-is-node-running@3.2.1: {}
+
+  zerodep-css@0.3.0:
+    dependencies:
+      csstype: 3.2.3

@@ -59,6 +59,7 @@
     "typescript": "catalog:",
     "vitest": "catalog:",
     "vscode-jsonrpc": "catalog:",
-    "vite": "catalog:"
+    "vite": "catalog:",
+    "zerodep-css": "catalog:"
   }
 }

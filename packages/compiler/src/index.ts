@@ -11,6 +11,7 @@ import { normalizeNamespaces } from './namespaces.js';
 import { checkGuards } from './guards.js';
 import { coreImport } from './imports.js';
 import { Development } from './development.js';
+import { isCssCall, prepareCss } from './css.js';
 
 export { CompileError } from './diagnostics.js';
 export type { Diagnostic } from './diagnostics.js';
@@ -111,7 +112,13 @@ function transformFramework(
 
   const forCallbacks = collectForCallbacks(ast, report);
   checkGuards(ast, forCallbacks, report);
-  const hasJsx = transformJsx(ast, helper, report);
+  const css = prepareCss(ast, program, source);
+  const hasJsx = transformJsx(ast, helper, report, (node, attributes) => {
+    const result = css.elements.get(node);
+    return result
+      ? css.call('cssProps', [attributes, t.arrowFunctionExpression([], result)])
+      : attributes;
+  });
   program.scope.crawl();
   transformForCallbacks(ast, forCallbacks, helper, report);
   program.scope.crawl();
@@ -200,6 +207,24 @@ function transformFramework(
           helper('derived', [member === 'by' ? argument : t.arrowFunctionExpression([], argument)]),
         );
       path.skip();
+    },
+  });
+
+  // 命名 css 声明复用普通派生的依赖缓存；模块顶层仍是普通 JS。
+  traverse(ast, {
+    VariableDeclarator(path) {
+      if (!t.isIdentifier(path.node.id) || !path.getFunctionParent()) return;
+      const init = path.get('init');
+      if (!css.records.has(path.node) && (!init.isCallExpression() || !isCssCall(init))) return;
+      const binding = path.scope.getBinding(path.node.id.name)!;
+      if (binding.kind !== 'const') {
+        report(path.node, 'ZJ1600', '自动追踪的 css 声明使用 const；修改样式来源的状态即可。');
+        return;
+      }
+      reactive.set(binding, { binding, derived: true });
+      path.node.init = helper('derived', [
+        t.arrowFunctionExpression([], path.node.init as t.Expression),
+      ]);
     },
   });
 
@@ -300,6 +325,7 @@ function transformFramework(
       if (
         errors.length ||
         generated.has(path.node) ||
+        css.identifiers.has(path.node) ||
         path.findParent((parent) => parent.isTSType())
       )
         return;
