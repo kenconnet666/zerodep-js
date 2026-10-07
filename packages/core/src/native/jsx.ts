@@ -1,4 +1,4 @@
-import type { Renderable } from '../runtime/template.js';
+import type { Renderable, TextRenderable } from '../runtime/template.js';
 import type { HtmlAttributeValues, SvgAttributeValues, NativeEventAliases } from './data.js';
 import type { clientProperties, ownedProperties, formProperties } from './properties.js';
 import type { Style } from './style.js';
@@ -255,7 +255,7 @@ export type NativeProps<T extends Element> = (T extends Element
   NativeBindings<T> &
   Pick<HtmlAttributeValues, Extract<keyof HtmlAttributeValues, `aria-${string}`>> &
   AttributeLinks<T> & {
-    children?: Renderable;
+    children?: T extends HTMLOutputElement ? TextRenderable : Renderable;
     key?: string | number | symbol;
     class?: string | false | null | undefined;
     className?: string | null | undefined;

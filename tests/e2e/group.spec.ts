@@ -21,6 +21,7 @@ for (const mode of ['csr', 'ssr']) {
     await first.locator('[data-group-options]').click();
     await expect(first.locator('[data-group-check=a]')).toHaveCount(0);
     await expect(first.locator('[data-group-picked]')).toHaveText('a,b');
+    await expect(first.locator('[data-group-check=b]')).toBeChecked();
     await first.locator('[data-group-check=b]').uncheck();
     await expect(first.locator('[data-group-picked]')).toHaveText('a');
     await first.locator('[data-group-options]').click();
@@ -57,6 +58,7 @@ test('SSR 接管前的分组选中由已有受控输入流程恢复', async ({ p
   try {
     await page.goto('/?render=ssr', { waitUntil: 'commit' });
     const form = page.locator('[data-group=first]');
+    await form.getByRole('button', { name: '重置', exact: true }).click();
     await form.locator('[data-group-check=a]').uncheck();
     await form.locator('[data-group-check=b]').check();
     await form.locator('[data-group-radio=b]').check();

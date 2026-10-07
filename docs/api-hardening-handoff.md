@@ -56,3 +56,11 @@
 - bind:group 首版 radio 字符串 / checkbox 字符串数组；type/value 必须在所有 spread 后明确声明，radio/checkbox type 为静态字面量。写回声明值、保留联合类型；checkbox 只增删当前值，保留已有顺序与暂未显示的选择，不建立全局分组表。
 - 本地分组编译/类型投影/SSR 17 项通过，应用与工具类型检查、lint 通过。因 details CI 真失败，仅额外运行相关 Chromium 子集：details 4 项、group 3 项全部通过。其余平台和浏览器仍交 CI。
 - 下一阶段审计状态数组：变更方法的机械读取必须不形成循环，但用户 sort 比较回调中的状态读取应正常跟踪；同时检查跨 realm 普通数组与带私有字段的 Array 子类。先用回归测试确认问题，再调整实现。
+
+## 数组与原生 output 审计
+
+- 三个数组回归先失败后修复：sort 用户比较回调丢失依赖、跨 realm 普通数组 push 意外重跑、Array 子类被代理破坏私有字段。加入同步跟踪恢复，已知原生变更方法按函数缓存，Array 子类保留原实例；显式 untrack 和方法替换也有用例。
+- c26fa40 的 CI 37661954118 仅 WebKit 分组用例失败。探针确认模型实际已更新，根因是原生 form.reset 重建 output 内部文本，渲染器仍引用旧 Text。采用受控文本输出契约，output children 明确为 TextRenderable，不承载组件/元素；富内容用普通容器和 role=status，避免复杂 DOM 恢复协议。
+- output SSR 不放结构标记，更新时重新取得实际 Text；接管前 reset 也覆盖。生成类型已由 native:generate 更新，负面类型用例明确拒绝富内容。
+- 本地相关单测 50 项、TS7 工具/测试源检查通过；WebKit 分组 3 项全部通过，未放宽原断言。调试日志已从源码移除。其余浏览器与整套回归交下一轮 CI。
+- 后续继续：检查该修复 CI，审计 snapshot 对普通数据 Symbol.toStringTag 的处理，再完善页面元信息等基础能力；不要因上一轮的浏览器假设添加无证据的 DOM 移动补丁。

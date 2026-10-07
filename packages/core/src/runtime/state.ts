@@ -1,4 +1,11 @@
-import { Source, assertCanWrite, _batch, isTracking, _untrack } from './reactivity.js';
+import {
+  Source,
+  assertCanWrite,
+  _batch,
+  isTracking,
+  _untrack,
+  captureTracking,
+} from './reactivity.js';
 
 const proxies = new WeakMap<object, object>();
 const originals = new WeakMap<object, object>();
@@ -22,7 +29,11 @@ const mutators = new Set<PropertyKey>([
   'fill',
   'copyWithin',
 ]);
-const arrayMethods = new Map<PropertyKey, (...args: unknown[]) => unknown>();
+const nativeMethods = new Map(
+  [...mutators].map((key) => [key, Reflect.get(Array.prototype, key) as Function]),
+);
+const arrayMethods = new WeakMap<Function, (...args: unknown[]) => unknown>();
+const functionSource = (value: Function) => Function.prototype.toString.call(value);
 
 export function raw<T>(value: T): T {
   return value !== null && typeof value === 'object'
@@ -43,20 +54,25 @@ export function reactive<T>(value: T): T {
   if (value === null || typeof value !== 'object' || originals.has(value)) return value;
   const prototype = Object.getPrototypeOf(value);
   const constructor = prototype && Object.getOwnPropertyDescriptor(prototype, 'constructor')?.value;
+  const isArray = Array.isArray(value);
+  const plainArray =
+    isArray &&
+    (prototype === null ||
+      prototype === Array.prototype ||
+      (typeof constructor === 'function' && functionSource(constructor) === functionSource(Array)));
   const plain =
     prototype === null ||
     prototype === Object.prototype ||
     (Object.getPrototypeOf(prototype) === null &&
       typeof constructor === 'function' &&
       Function.prototype.toString.call(constructor) === Function.prototype.toString.call(Object));
-  if ((!Array.isArray(value) && !plain) || !Object.isExtensible(value)) return value;
+  if ((!plainArray && !plain) || !Object.isExtensible(value)) return value;
   const cached = proxies.get(value);
   if (cached) return cached as T;
 
   const values: Signals = new Map();
   const existence: Signals = new Map();
   const keys = new Source(0);
-  const isArray = Array.isArray(value);
 
   function track(map: Signals, key: PropertyKey): void {
     if (!isTracking()) return;
@@ -115,14 +131,26 @@ export function reactive<T>(value: T): T {
         track(values, key);
         throw error;
       }
-      if (isArray && mutators.has(key) && result === Reflect.get(Array.prototype, key)) {
-        let method = arrayMethods.get(key);
+      const native = isArray && nativeMethods.get(key);
+      if (
+        native &&
+        typeof result === 'function' &&
+        (result === native || functionSource(result) === functionSource(native))
+      ) {
+        track(values, key);
+        let method = arrayMethods.get(result);
         if (!method) {
           method = function (this: unknown, ...args: unknown[]): unknown {
+            if (key === 'sort' && typeof args[0] === 'function') {
+              const compare = args[0];
+              const tracked = captureTracking();
+              args[0] = (...items: unknown[]) =>
+                tracked(() => Reflect.apply(compare, undefined, items));
+            }
             // 原生数组变更内部会读 length，这些机械读取不能成为 effect 依赖。
             return _batch(() => _untrack(() => Reflect.apply(result as Function, this, args)));
           };
-          arrayMethods.set(key, method);
+          arrayMethods.set(result, method);
         }
         return method;
       }

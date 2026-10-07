@@ -14,7 +14,8 @@ export const voidTags = new Set(
   'area base br col embed hr img input link meta param source track wbr'.split(' '),
 );
 export const rawTextTags = new Set(['script', 'style', 'iframe', 'xmp', 'noembed', 'noframes']);
-export const textTags = new Set(['title', 'textarea', 'option', ...rawTextTags]);
+// output 的 form.reset 会替换子文本，不能在其中依赖结构注释或持久 Text 节点身份。
+export const textTags = new Set(['title', 'textarea', 'option', 'output', ...rawTextTags]);
 const asciiLower = (value: string) => value.replace(/[A-Z]/g, (letter) => letter.toLowerCase());
 // HTML 解析器会修正这些 SVG 名称；createElementNS 必须使用相同拼写。
 const svgTags = new Map(

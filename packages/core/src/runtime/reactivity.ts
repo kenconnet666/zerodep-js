@@ -168,14 +168,24 @@ export function _onCleanup(cleanup: Cleanup): void {
   }
   currentScope.cleanups.push(cleanup);
 }
-export function _untrack<T>(fn: () => T): T {
+function withObserver<T>(observer: Observer | null, fn: () => T): T {
   const previous = currentObserver;
-  currentObserver = null;
+  currentObserver = observer;
   try {
     return fn();
   } finally {
     currentObserver = previous;
   }
+}
+
+export function _untrack<T>(fn: () => T): T {
+  return withObserver(null, fn);
+}
+
+/** 仅供同步宿主调用：屏蔽机械读取时，用户回调仍沿用调用方原有的跟踪环境。 */
+export function captureTracking() {
+  const observer = currentObserver;
+  return <T>(fn: () => T): T => withObserver(observer, fn);
 }
 
 export function isTracking(): boolean {

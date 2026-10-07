@@ -200,6 +200,10 @@ export function renderValue(
     const bindText = () =>
       renderEffect(() => {
         const content = fixed ? initial : elementText(node.localName, value.props);
+        if (node.localName === 'output' && text?.parentNode !== node) {
+          // WebKit 在原生 reset 中即使文本未变也会重建节点；继续绑定实际输出节点。
+          text = node.firstChild?.nodeType === 3 ? (node.firstChild as Text) : undefined;
+        }
         if (text) text.data = content;
         else if (content) {
           text = node.ownerDocument.createTextNode(content);

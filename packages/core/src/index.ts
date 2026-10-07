@@ -19,7 +19,7 @@ export type { LazyComponent, LazyOptions } from './runtime/lazy.js';
 export { _mount, _hydrate } from './dom/mount.js';
 export type { MountOptions, HydrateOptions } from './dom/mount.js';
 export { HydrationError } from './dom/hydration.js';
-export type { Renderable, Template } from './runtime/template.js';
+export type { Renderable, Template, TextRenderable } from './runtime/template.js';
 export type { JSX, NativeProps, Style, StyleObject, EventHandler } from './jsx-runtime.js';
 export { _createContext, _provideContext, _useContext } from './runtime/context.js';
 export type { Context } from './runtime/context.js';

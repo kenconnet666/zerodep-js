@@ -8,6 +8,9 @@ export const TEMPLATE = Symbol('zerodep.template');
 
 export type Renderable =
   Template | string | number | bigint | boolean | null | undefined | readonly Renderable[];
+/** 原生文本输出内容；富内容状态区域使用普通容器和 role="status"。 */
+export type TextRenderable =
+  string | number | bigint | boolean | null | undefined | readonly TextRenderable[];
 export type Template =
   | ElementTemplate
   | DynamicTemplate

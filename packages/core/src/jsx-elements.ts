@@ -1377,15 +1377,6 @@ interface Common1<T extends Element> extends NativeIndexProps {
   autoFocus?: boolean | null | undefined;
   /** DOM 引用写入可写变量，卸载后为 undefined；不支持组件实例或对象路径。 */
   'bind:this'?: T | undefined;
-  children?:
-    | string
-    | number
-    | bigint
-    | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
-    | null
-    | undefined;
   class?: string | false | null | undefined;
   className?: string | null | undefined;
   contenteditable?: string | number | boolean | null | undefined;
@@ -8080,6 +8071,15 @@ interface AProps8 extends Common0<HTMLAnchorElement | MathMLElement | SVGAElemen
   type?: string | null | undefined;
 }
 interface AbbrProps extends Common1<HTMLElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   'prop:getElementsByTagNameNS'?:
     | {
         (
@@ -8131,6 +8131,15 @@ interface AnimateTransformProps extends Common2<SVGAnimateTransformElement> {
 interface AnnotationProps extends Common3<MathMLElement> {}
 interface AreaProps extends Common1<HTMLAreaElement> {
   alt?: string | null | undefined;
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   coords?: string | null | undefined;
   download?: string | boolean | null | undefined;
   href?: string | null | undefined;
@@ -8187,6 +8196,15 @@ interface AreaProps extends Common1<HTMLAreaElement> {
 interface AudioProps extends Common1<HTMLAudioElement> {
   autoplay?: boolean | null | undefined;
   autoPlay?: boolean | null | undefined;
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   controls?: boolean | null | undefined;
   crossorigin?: string | null | undefined;
   crossOrigin?: string | null | undefined;
@@ -8241,6 +8259,15 @@ interface AudioProps extends Common1<HTMLAudioElement> {
   src?: string | null | undefined;
 }
 interface BaseProps extends Common1<HTMLBaseElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   href?: string | null | undefined;
   'prop:getElementsByTagNameNS'?:
     | {
@@ -8264,6 +8291,15 @@ interface BaseProps extends Common1<HTMLBaseElement> {
   target?: string | null | undefined;
 }
 interface BlockquoteProps extends Common1<HTMLQuoteElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   cite?: string | null | undefined;
   'prop:cite'?: string | undefined;
   'prop:getElementsByTagNameNS'?:
@@ -8290,6 +8326,15 @@ interface BodyProps extends Common1<HTMLBodyElement> {
   background?: string | null | undefined;
   bgcolor?: string | null | undefined;
   bgColor?: string | null | undefined;
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   link?: string | null | undefined;
   'prop:aLink'?: string | undefined;
   'prop:background'?: string | undefined;
@@ -8347,6 +8392,15 @@ interface BodyProps extends Common1<HTMLBodyElement> {
   vLink?: string | null | undefined;
 }
 interface BrProps extends Common1<HTMLBRElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   clear?: string | null | undefined;
   'prop:clear'?: string | undefined;
   'prop:getElementsByTagNameNS'?:
@@ -8368,6 +8422,15 @@ interface BrProps extends Common1<HTMLBRElement> {
     | undefined;
 }
 interface ButtonProps extends Common1<HTMLButtonElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   command?: string | null | undefined;
   commandfor?: string | null | undefined;
   commandFor?: string | null | undefined;
@@ -8426,6 +8489,15 @@ interface ButtonProps extends Common1<HTMLButtonElement> {
   value?: string | number | null | undefined;
 }
 interface CanvasProps extends Common1<HTMLCanvasElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   height?: number | null | undefined;
   'prop:captureStream'?: ((frameRequestRate?: number) => MediaStream) | undefined;
   'prop:getContext'?:
@@ -8469,6 +8541,15 @@ interface CanvasProps extends Common1<HTMLCanvasElement> {
 }
 interface CaptionProps extends Common1<HTMLTableCaptionElement> {
   align?: string | null | undefined;
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   'prop:align'?: string | undefined;
   'prop:getElementsByTagNameNS'?:
     | {
@@ -8507,6 +8588,15 @@ interface ColProps extends Common1<HTMLTableColElement> {
   char?: string | null | undefined;
   charoff?: string | null | undefined;
   charOff?: string | null | undefined;
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   chOff?: string | null | undefined;
   'prop:align'?: string | undefined;
   'prop:ch'?: string | undefined;
@@ -8537,6 +8627,15 @@ interface ColProps extends Common1<HTMLTableColElement> {
   width?: string | null | undefined;
 }
 interface DataProps extends Common1<HTMLDataElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   'prop:getElementsByTagNameNS'?:
     | {
         (
@@ -8558,6 +8657,15 @@ interface DataProps extends Common1<HTMLDataElement> {
   value?: string | null | undefined;
 }
 interface DatalistProps extends Common1<HTMLDataListElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   'prop:getElementsByTagNameNS'?:
     | {
         (
@@ -8583,6 +8691,15 @@ interface DefsProps extends Common2<SVGDefsElement> {
   'prop:getScreenCTM'?: (() => DOMMatrix | null) | undefined;
 }
 interface DelProps extends Common1<HTMLModElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   cite?: string | null | undefined;
   datetime?: string | null | undefined;
   dateTime?: string | null | undefined;
@@ -8612,6 +8729,15 @@ interface DescProps extends Common2<SVGDescElement> {
 interface DetailsProps extends Common1<HTMLDetailsElement> {
   /** 原生 details 展开状态，toggle 写回 boolean；接管前操作会保留。 */
   'bind:open'?: boolean;
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   name?: string | null | undefined;
   open?: boolean | null | undefined;
   'prop:getElementsByTagNameNS'?:
@@ -8635,6 +8761,15 @@ interface DetailsProps extends Common1<HTMLDetailsElement> {
   'prop:open'?: boolean | undefined;
 }
 interface DialogProps extends Common1<HTMLDialogElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   closedby?: string | null | undefined;
   closedBy?: string | null | undefined;
   open?: boolean | null | undefined;
@@ -8665,6 +8800,15 @@ interface DialogProps extends Common1<HTMLDialogElement> {
 }
 interface DivProps extends Common1<HTMLDivElement> {
   align?: string | null | undefined;
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   'prop:align'?: string | undefined;
   'prop:getElementsByTagNameNS'?:
     | {
@@ -8685,6 +8829,15 @@ interface DivProps extends Common1<HTMLDivElement> {
     | undefined;
 }
 interface DlProps extends Common1<HTMLDListElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   compact?: boolean | null | undefined;
   'prop:compact'?: boolean | undefined;
   'prop:getElementsByTagNameNS'?:
@@ -8717,6 +8870,15 @@ interface EllipseProps extends Common2<SVGEllipseElement> {
 }
 interface EmbedProps extends Common1<HTMLEmbedElement> {
   align?: string | null | undefined;
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   height?: string | null | undefined;
   name?: string | null | undefined;
   'prop:align'?: string | undefined;
@@ -8825,6 +8987,15 @@ interface FeTurbulenceProps extends Common2<SVGFETurbulenceElement> {
   crossOrigin?: string | number | null | undefined;
 }
 interface FieldsetProps extends Common1<HTMLFieldSetElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   disabled?: boolean | null | undefined;
   form?: string | null | undefined;
   name?: string | null | undefined;
@@ -8867,6 +9038,15 @@ interface FormProps extends Common1<HTMLFormElement> {
   action?: string | null | undefined;
   autocomplete?: AutoFillBase | null | undefined;
   autoComplete?: string | null | undefined;
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   encoding?: string | null | undefined;
   enctype?: string | null | undefined;
   encType?: string | null | undefined;
@@ -8918,6 +9098,15 @@ interface GProps extends Common2<SVGGElement> {
 }
 interface H1Props extends Common1<HTMLHeadingElement> {
   align?: string | null | undefined;
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   'prop:align'?: string | undefined;
   'prop:getElementsByTagNameNS'?:
     | {
@@ -8938,6 +9127,15 @@ interface H1Props extends Common1<HTMLHeadingElement> {
     | undefined;
 }
 interface HeadProps extends Common1<HTMLHeadElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   profile?: string | null | undefined;
   'prop:getElementsByTagNameNS'?:
     | {
@@ -8959,6 +9157,15 @@ interface HeadProps extends Common1<HTMLHeadElement> {
 }
 interface HrProps extends Common1<HTMLHRElement> {
   align?: string | null | undefined;
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   color?: string | null | undefined;
   noshade?: boolean | null | undefined;
   noShade?: boolean | null | undefined;
@@ -8988,6 +9195,15 @@ interface HrProps extends Common1<HTMLHRElement> {
   width?: string | null | undefined;
 }
 interface HtmlProps extends Common1<HTMLHtmlElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   manifest?: string | null | undefined;
   'prop:getElementsByTagNameNS'?:
     | {
@@ -9019,6 +9235,15 @@ interface IframeProps extends Common1<HTMLIFrameElement> {
   allowPaymentRequest?: boolean | null | undefined;
   allowusermedia?: boolean | null | undefined;
   allowUserMedia?: boolean | null | undefined;
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   frameborder?: string | null | undefined;
   frameBorder?: string | null | undefined;
   height?: string | null | undefined;
@@ -9084,6 +9309,15 @@ interface ImgProps extends Common1<HTMLImageElement> {
   align?: string | null | undefined;
   alt?: string | null | undefined;
   border?: string | null | undefined;
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   crossorigin?: string | null | undefined;
   crossOrigin?: string | null | undefined;
   decoding?: 'async' | 'auto' | 'sync' | null | undefined;
@@ -9166,6 +9400,15 @@ interface InputProps extends Common1<HTMLInputElement> {
   'bind:valueAsNumber'?: number | undefined;
   capture?: string | null | undefined;
   checked?: boolean | null | undefined;
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   colorspace?: string | null | undefined;
   colorSpace?: string | null | undefined;
   defaultChecked?: boolean | null | undefined;
@@ -9285,6 +9528,15 @@ interface InputProps extends Common1<HTMLInputElement> {
   width?: number | null | undefined;
 }
 interface LabelProps extends Common1<HTMLLabelElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   for?: string | null | undefined;
   htmlFor?: string | null | undefined;
   'prop:getElementsByTagNameNS'?:
@@ -9308,6 +9560,15 @@ interface LabelProps extends Common1<HTMLLabelElement> {
 }
 interface LegendProps extends Common1<HTMLLegendElement> {
   align?: string | null | undefined;
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   'prop:align'?: string | undefined;
   'prop:getElementsByTagNameNS'?:
     | {
@@ -9328,6 +9589,15 @@ interface LegendProps extends Common1<HTMLLegendElement> {
     | undefined;
 }
 interface LiProps extends Common1<HTMLLIElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   'prop:getElementsByTagNameNS'?:
     | {
         (
@@ -9368,6 +9638,15 @@ interface LinkProps extends Common1<HTMLLinkElement> {
   blocking?: string | null | undefined;
   charset?: string | null | undefined;
   charSet?: string | null | undefined;
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   color?: string | null | undefined;
   crossorigin?: string | null | undefined;
   crossOrigin?: string | null | undefined;
@@ -9429,6 +9708,15 @@ interface LinkProps extends Common1<HTMLLinkElement> {
   type?: string | null | undefined;
 }
 interface MapProps extends Common1<HTMLMapElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   name?: string | null | undefined;
   'prop:getElementsByTagNameNS'?:
     | {
@@ -9458,6 +9746,15 @@ interface MaskProps extends Common2<SVGMaskElement> {
   crossOrigin?: string | number | null | undefined;
 }
 interface MenuProps extends Common1<HTMLMenuElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   compact?: boolean | null | undefined;
   'prop:compact'?: boolean | undefined;
   'prop:getElementsByTagNameNS'?:
@@ -9481,6 +9778,15 @@ interface MenuProps extends Common1<HTMLMenuElement> {
 interface MetaProps extends Common1<HTMLMetaElement> {
   charset?: string | null | undefined;
   charSet?: string | null | undefined;
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   content?: string | null | undefined;
   'http-equiv'?: string | null | undefined;
   httpEquiv?: string | null | undefined;
@@ -9514,6 +9820,15 @@ interface MetadataProps extends Common2<SVGMetadataElement> {
   crossOrigin?: string | number | null | undefined;
 }
 interface MeterProps extends Common1<HTMLMeterElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   high?: number | null | undefined;
   low?: number | null | undefined;
   max?: number | null | undefined;
@@ -9551,6 +9866,15 @@ interface ObjectProps extends Common1<HTMLObjectElement> {
   align?: string | null | undefined;
   archive?: string | null | undefined;
   border?: string | null | undefined;
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   classid?: string | null | undefined;
   classId?: string | null | undefined;
   code?: string | null | undefined;
@@ -9613,6 +9937,15 @@ interface ObjectProps extends Common1<HTMLObjectElement> {
   width?: string | null | undefined;
 }
 interface OlProps extends Common1<HTMLOListElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   compact?: boolean | null | undefined;
   'prop:compact'?: boolean | undefined;
   'prop:getElementsByTagNameNS'?:
@@ -9640,6 +9973,15 @@ interface OlProps extends Common1<HTMLOListElement> {
   type?: string | null | undefined;
 }
 interface OptgroupProps extends Common1<HTMLOptGroupElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   disabled?: boolean | null | undefined;
   label?: string | null | undefined;
   'prop:disabled'?: boolean | undefined;
@@ -9663,6 +10005,15 @@ interface OptgroupProps extends Common1<HTMLOptGroupElement> {
   'prop:label'?: string | undefined;
 }
 interface OptionProps extends Common1<HTMLOptionElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   defaultSelected?: boolean | null | undefined;
   disabled?: boolean | null | undefined;
   label?: string | null | undefined;
@@ -9689,6 +10040,14 @@ interface OptionProps extends Common1<HTMLOptionElement> {
   value?: string | number | null | undefined;
 }
 interface OutputProps extends Common1<HTMLOutputElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').TextRenderable[]
+    | null
+    | undefined;
   for?: string | null | undefined;
   form?: string | null | undefined;
   htmlFor?: string | null | undefined;
@@ -9718,6 +10077,15 @@ interface OutputProps extends Common1<HTMLOutputElement> {
 }
 interface PProps extends Common1<HTMLParagraphElement> {
   align?: string | null | undefined;
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   'prop:align'?: string | undefined;
   'prop:getElementsByTagNameNS'?:
     | {
@@ -9751,6 +10119,15 @@ interface PatternProps extends Common2<SVGPatternElement> {
   crossOrigin?: string | number | null | undefined;
 }
 interface PictureProps extends Common1<HTMLPictureElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   'prop:getElementsByTagNameNS'?:
     | {
         (
@@ -9790,6 +10167,15 @@ interface PolylineProps extends Common2<SVGPolylineElement> {
   'prop:isPointInStroke'?: ((point?: DOMPointInit) => boolean) | undefined;
 }
 interface PreProps extends Common1<HTMLPreElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   'prop:getElementsByTagNameNS'?:
     | {
         (
@@ -9811,6 +10197,15 @@ interface PreProps extends Common1<HTMLPreElement> {
   width?: number | null | undefined;
 }
 interface ProgressProps extends Common1<HTMLProgressElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   max?: number | null | undefined;
   'prop:getElementsByTagNameNS'?:
     | {
@@ -9991,6 +10386,15 @@ interface SelectProps extends Common1<HTMLSelectElement> {
   autoComplete?: string | null | undefined;
   /** 单选写回字符串；multiple 多选写回字符串数组。 */
   'bind:value'?: string | readonly string[] | null | undefined;
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   defaultValue?: readonly (string | number)[] | (string | number | null | undefined);
   disabled?: boolean | null | undefined;
   form?: string | null | undefined;
@@ -10044,6 +10448,15 @@ interface SetProps extends Common2<SVGSetElement> {
   'prop:getStartTime'?: (() => number) | undefined;
 }
 interface SlotProps extends Common1<HTMLSlotElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   name?: string | null | undefined;
   'prop:assign'?: ((...nodes: (Element | Text)[]) => void) | undefined;
   'prop:assignedElements'?: ((options?: AssignedNodesOptions) => Element[]) | undefined;
@@ -10068,6 +10481,15 @@ interface SlotProps extends Common1<HTMLSlotElement> {
   'prop:name'?: string | undefined;
 }
 interface SourceProps extends Common1<HTMLSourceElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   height?: number | null | undefined;
   media?: string | null | undefined;
   'prop:getElementsByTagNameNS'?:
@@ -10102,6 +10524,15 @@ interface SourceProps extends Common1<HTMLSourceElement> {
   width?: number | null | undefined;
 }
 interface SpanProps extends Common1<HTMLSpanElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   'prop:getElementsByTagNameNS'?:
     | {
         (
@@ -10316,6 +10747,15 @@ interface TableProps extends Common1<HTMLTableElement> {
   cellPadding?: string | null | undefined;
   cellspacing?: string | null | undefined;
   cellSpacing?: string | null | undefined;
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   frame?: string | null | undefined;
   'prop:align'?: string | undefined;
   'prop:bgColor'?: string | undefined;
@@ -10362,6 +10802,15 @@ interface TbodyProps extends Common1<HTMLTableSectionElement> {
   char?: string | null | undefined;
   charoff?: string | null | undefined;
   charOff?: string | null | undefined;
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   chOff?: string | null | undefined;
   'prop:align'?: string | undefined;
   'prop:ch'?: string | undefined;
@@ -10399,6 +10848,15 @@ interface TdProps extends Common1<HTMLTableCellElement> {
   char?: string | null | undefined;
   charoff?: string | null | undefined;
   charOff?: string | null | undefined;
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   chOff?: string | null | undefined;
   colspan?: string | number | null | undefined;
   colSpan?: number | null | undefined;
@@ -10445,6 +10903,15 @@ interface TdProps extends Common1<HTMLTableCellElement> {
   width?: string | null | undefined;
 }
 interface TemplateProps extends Common1<HTMLTemplateElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   'prop:getElementsByTagNameNS'?:
     | {
         (
@@ -10483,6 +10950,15 @@ interface TextareaProps extends Common1<HTMLTextAreaElement> {
   autoComplete?: string | null | undefined;
   /** 双向文本绑定：输入时写回字符串。必须绑定可赋值的变量或对象属性。 */
   'bind:value'?: string | null | undefined;
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   cols?: number | null | undefined;
   defaultValue?: string | number | null | undefined;
   dirname?: string | null | undefined;
@@ -10562,6 +11038,15 @@ interface TextPathProps extends Common2<SVGTextPathElement> {
   'prop:selectSubString'?: ((charnum: number, nchars: number) => void) | undefined;
 }
 interface TimeProps extends Common1<HTMLTimeElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   datetime?: string | null | undefined;
   dateTime?: string | null | undefined;
   'prop:dateTime'?: string | undefined;
@@ -10679,6 +11164,15 @@ interface TrProps extends Common1<HTMLTableRowElement> {
   char?: string | null | undefined;
   charoff?: string | null | undefined;
   charOff?: string | null | undefined;
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   chOff?: string | null | undefined;
   'prop:align'?: string | undefined;
   'prop:bgColor'?: string | undefined;
@@ -10708,6 +11202,15 @@ interface TrProps extends Common1<HTMLTableRowElement> {
   vAlign?: string | null | undefined;
 }
 interface TrackProps extends Common1<HTMLTrackElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   default?: boolean | null | undefined;
   kind?: string | null | undefined;
   label?: string | null | undefined;
@@ -10753,6 +11256,15 @@ interface TspanProps extends Common2<SVGTSpanElement> {
   'prop:selectSubString'?: ((charnum: number, nchars: number) => void) | undefined;
 }
 interface UlProps extends Common1<HTMLUListElement> {
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   compact?: boolean | null | undefined;
   'prop:compact'?: boolean | undefined;
   'prop:getElementsByTagNameNS'?:
@@ -10784,6 +11296,15 @@ interface UseProps extends Common2<SVGUseElement> {
 interface VideoProps extends Common1<HTMLVideoElement> {
   autoplay?: boolean | null | undefined;
   autoPlay?: boolean | null | undefined;
+  children?:
+    | string
+    | number
+    | bigint
+    | boolean
+    | readonly import('./runtime/template.js').Renderable[]
+    | import('./runtime/template.js').Template
+    | null
+    | undefined;
   controls?: boolean | null | undefined;
   crossorigin?: string | null | undefined;
   crossOrigin?: string | null | undefined;
