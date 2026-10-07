@@ -89,7 +89,7 @@ export class Scope {
         }
         while (this.cleanups.length) {
           try {
-            this.cleanups.pop()!();
+            synchronous(this.cleanups.pop()!(), '清理函数必须同步完成。');
           } catch (error) {
             errors.push(error);
           }
@@ -388,7 +388,7 @@ class ReactiveEffect extends Scope implements Observer {
         const cleanup = this.callback();
         if (typeof cleanup === 'function') {
           // 回调可能卸载自己所属的根，此时返回的资源也必须立即释放。
-          if (this.disposed) _untrack(cleanup);
+          if (this.disposed) synchronous(_untrack(cleanup), '清理函数必须同步完成。');
           else this.cleanups.push(cleanup);
         } else if (cleanup !== undefined) {
           const message = 'effect 必须同步返回清理函数或 undefined，异步任务应显式取消。';

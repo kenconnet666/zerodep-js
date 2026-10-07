@@ -47,7 +47,7 @@
 
 先用现有 Css(() => theme) 和框架 context 验证：主题替换、子树覆盖、Portal/懒加载中的逻辑继承、请求隔离和自定义关键字提示。逻辑 context 的继承与 CSS 变量在实际 DOM 上的继承需要区分，不能宣称 Portal 自动搬运所有 CSS 变量。
 
-若公共薄封装确实改善用法，再采用下表中的 _createCssContext 候选。不增加 ThemeProvider 成品组件或第二套主题数据模型。
+已采用 _createCssContext 薄封装，并覆盖嵌套提供、根隔离和 SSR 请求隔离；继续用真实夹具验证组合行为。不增加 ThemeProvider 成品组件或第二套主题数据模型。
 
 ### 4.3 SSR、接管与开发工具
 
@@ -56,18 +56,18 @@
 - 覆盖并发请求、多根、Portal、懒加载、nonce、内联变量的 CSP 边界、HMR 重建与 source map。
 - 验证 TS7 对 CSS 作者、方法参数、自定义主题和 css 返回 string 的提示及错误；以真实包安装验证，不能靠源码别名通过。
 
-## 5. 新增基础 API 工作清单（已授权自主取舍）
+## 5. 新增基础 API（源码已实现，持续验收）
 
-| 候选                        | 建议契约                                                                                                              | 价值 / 成本 / 去向                                                  |
-| --------------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| _task(loader, { initial })  | 显式提供已有结果，不触发请求；无论客户端或 SSR 都能建立相同初态；与可编辑 _state 模型保持分离                         | 减少 SSR 数据接线；中低成本；use/task                               |
-| task.reset()                | 候选语义为取消当前任务、清空 data/error/重试输入并回到 idle；cancel 仍保留 data。不能同时含糊地表示恢复 initial       | 清空查询/详情状态；低到中成本；use/task；与 initial 一起确认语义    |
-| 原生 bind:group             | radio 绑定单值、checkbox 绑定数组；首版字符串值；组身份和原生 name/form 行为明确                                      | 真正减少手写集合更新；中成本；compiler/core/类型投影                |
-| 原生 details 的 bind:open   | 用户 toggle 写回 boolean，模型控制展开；支持初始 SSR 与接管前操作；不扩展成 Dialog 模态 API                           | 原生交互基础；低到中成本；compiler/core/类型投影                    |
-| _createCssContext<AppCss>() | 提供 provideCss/useCss 薄封装，保持作者类型；缺少提供者明确报错；复用既有 context                                     | 降低重复接线；低成本；可选 zerodep-js/css；须先用夹具证明必要       |
-| 页面元信息登记入口          | 初版 title/description；SSR 收集、客户端更新、嵌套覆盖和卸载恢复。函数 _head(() => data) 与 JSX Head 只选一种公开形式 | 页面基础能力；中成本；core/use/ssr 所有权边界先确定，不属于视觉组件 |
+| API                         | 当前契约                                                                                                          | 入口与文档                                     |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| _task(loader, { initial })  | 提供已有成功结果，不请求；SSR/客户端同初态，不产生虚构的 retry 输入；类型由 loader 决定                           | zerodep-use/task；[任务](tasks.md)             |
+| task.reset()                | 取消并清空 data/error/重试输入，回到 idle，不恢复 initial；cancel 仍保留 data                                     | zerodep-use/task；[任务](tasks.md)             |
+| 原生 bind:group             | radio 字符串、checkbox 字符串数组；静态 type/明确 value 在所有 spread 后；写回声明值；原生 name/form 分组保持一致 | compiler/core/类型投影；[表单](forms.md)       |
+| 原生 details 的 bind:open   | 用户 toggle 写回 boolean，模型控制展开；验证 SSR 原值后接纳接管前操作；没有 Dialog 模态协议                       | compiler/core/类型投影；[表单](forms.md)       |
+| _createCssContext<AppCss>() | provideCss/useCss 薄封装，保留作者类型，缺失提供者报错；复用既有 context                                          | 可选 zerodep-js/css；[CSS](css.md)             |
+| _head(() => data)           | 只支持 title/description；同步纯读取、SSR 收集、客户端更新、按字段覆盖和卸载恢复，多文档隔离                      | 可选 zerodep-js/head 与 ssr；[元信息](head.md) |
 
-候选名称与细节可按可维护性调整。优先固定 bind:group、details bind:open 和 _task 的补充；主题封装经现有 API 试点后决定，元信息独立成阶段。授权允许自主推进，但不为完成清单保留没有实际价值的能力。
+这些是源码实现状态，不表示新 npm 版本已发布，也不替代同一提交完整 CI。当前重点转向组合与错误路径审计，阶段证据和待验收项集中在 [交接记录](api-hardening-handoff.md)。授权允许继续有价值的完善，不为清单数量扩充 API。
 
 以下暂不进入本轮：完整 Dialog/Button/TextField 等组件、视觉主题/变体组件体系、退场动画协调、通用 Suspense/流式 SSR、请求缓存/并发策略、watch、防抖、ref 组合、class 合并和复杂外部订阅。
 

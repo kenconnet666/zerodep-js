@@ -120,7 +120,7 @@ SSR 只输出空的 Portal 标记，不读取目标、不执行子组件；整�
 ## 原生元素与根入口
 
 - `class`/`className`、style 字符串/对象、HTML/SVG/MathML 与原生事件遵循[原生元素契约](native-elements.md)。`StyleObject` 提供 CSS 属性提示，长度单位显式填写。
-- `ref={(element) => ...}` 获取元素，可返回清理函数。布局测量放在 DOM 提交后的 effect；同步回调中启动的异步资源仍需自行取消。
+- `ref={(element) => ...}` 同步获取元素，可返回同步清理函数；若回调卸载了自己的根，刚返回的清理会立即执行。布局测量放在 DOM 提交后的 effect；回调中启动的异步资源仍需自行取消，不能直接把 async 函数作为 ref。
 - `prop:member={value}` 用于客户端 DOM 成员。SSR 不求值直接表达式；解除绑定恢复接管时初值。内建表单模型和子内容所有权不能绕过。
 - `on:EventName` / `oncapture:EventName` 保留精确事件名；自定义 detail 来自调用方类型契约。
 - `_mount(App, { target, props })` 替换并接管目标容器，返回 disposer。

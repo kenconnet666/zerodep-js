@@ -370,6 +370,35 @@ describe('作用域和调度', () => {
     expect(source.subscribers.size).toBe(0);
   });
 
+  it.each(['registered', 'effect', 'self-dispose'])(
+    '异步清理明确报错并释放其他资源（%s）',
+    async (kind) => {
+      const cleaned = vi.fn();
+      const asynchronous = async () => {
+        throw new Error('late cleanup');
+      };
+      let stop!: Cleanup;
+      _createRoot((dispose) => {
+        stop = dispose;
+        _onCleanup(cleaned);
+        if (kind === 'registered') _onCleanup(asynchronous);
+        else
+          _effect(() => {
+            if (kind === 'self-dispose') dispose();
+            return asynchronous;
+          });
+      });
+      if (kind === 'self-dispose') expect(() => _flushSync()).toThrow('清理函数必须同步');
+      else {
+        _flushSync();
+        expect(stop).toThrow('清理函数必须同步');
+      }
+      expect(cleaned).toHaveBeenCalledTimes(1);
+      expect(stop).not.toThrow();
+      await new Promise<void>((resolve) => setImmediate(resolve));
+    },
+  );
+
   it('清理期间不能创建新的孤立资源', () => {
     const trigger = new Source(0);
     root(() =>

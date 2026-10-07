@@ -1,6 +1,19 @@
 import { expect, test } from '@playwright/test';
 
 for (const mode of ['csr', 'ssr']) {
+  test(`${mode} ref 自行卸载仍清理资源，异步引用只报告同步诊断`, async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    await page.goto(`/?render=${mode}`);
+    await page.locator('[data-reference-dispose]').click();
+    await expect(page.locator('[data-reference-probe-result]')).toHaveText('1');
+    await expect(page.locator('[data-reference-probe]')).toHaveCount(0);
+    await page.locator('[data-reference-async]').click();
+    await expect(page.locator('[data-reference-probe-result]')).toContainText('DOM ref 必须同步');
+    await expect(page.locator('[data-reference-probe]')).toHaveCount(0);
+    expect(errors).toEqual([]);
+  });
+
   test(`${mode} DOM bind:this 支持挂载、焦点、条件清理和键替换`, async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (error) => errors.push(error.message));
