@@ -31,6 +31,7 @@ declare global {
 }
 declare function Editor<T>(props: { value: T; onValueChange: (value: T) => void }): JSX.Element;
 `;
+/** @type {Array<[string, string, number[]]>} */
 const cases = [
   [
     '隐式引用的控制流边界',
@@ -142,7 +143,6 @@ try {
     await withProgram(source, async (program) => {
       const service = program.getProject().languageService;
       const direct = await service.getCompletionsAtPosition(filename, start + prefix.length);
-      const attribute = await service.getCompletionsAtPosition(filename, start);
       const names = (list) =>
         list?.entries?.map((item) => item.name).filter((name) => name.startsWith('bind:')) ?? [];
       const file = await program.getSourceFile(filename);
