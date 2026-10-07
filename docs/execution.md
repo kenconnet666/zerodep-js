@@ -34,6 +34,10 @@ WebStorm 已改选官方 node_modules/typescript，并通过本机已有 LSP4IJ 
 
 ## 后续修复
 
+1848cf4 的 CI 37615196903 中，工程、六平台、三浏览器和独立消费任务已通过；release-artifacts 被干净工作区检查拦截。原因是 pnpm 在 Linux 安装时为两个已跟踪的 CLI 入口设置可执行位，Git 原先记录为 100644。入口改为记录 100755，保留发布时的干净工作区门槛。
+
+用户要求直接试用 JetBrains 发布的 TS7.1 SDK，并明确放在项目中选择。已核对其 2026-10-07 发布的 7.1.0-dev.jetbrains.20261006.2，校验发行包 SHA256，安装到本机 `.codex/jetbrains-sdk/node_modules/typescript`，标准 bin/tsc 已返回该版本；平台包位于同一 node_modules。SDK 原文不修改，不进入版本控制，也不覆盖构建依赖。试用版对现有声明报告 14 项 DOM 标准库差异（SetHTMLOptions/SetHTMLUnsafeOptions），因此不能宣称其与当前微软 nightly 等价。用户中止电脑自动操作后，按其要求交由 IDE 选择该项目目录；之前的 IDE 缓存安装尝试和错误版本目录已清理，原有 7.0 缓存保留。
+
 a5d6507 的 CI 37608594119 已确认 CLI 链接修复：工程、六平台、两种独立消费、Firefox/WebKit 均通过。Chromium 唯一失败为修饰键打开新标签页的偶发超时，原始 trace 确认 trusted/modified 均为 true、defaultPrevented 为 false；重试成功仍按严格门槛判失败，Windows 无框架链接对照中，headless shell 与完整 Chromium 各 100 次均通过，未在本机复现，因此不能宣称已证明 shell 是根因。CI 的 Chromium 项目改用 Playwright 官方提供的完整 Chromium 新无头模式，以更接近桌面原生输入与开页行为；保留原断言和 failOnFlakyTests，并增加 Alt/Shift/button 记录，完整 Linux 结果仍待 CI。参考：https://playwright.dev/docs/browsers#chromium-new-headless-mode 。
 
 标准 LSP 试点修复 Windows URI 大小写/编码映射与 bind 读写重复编辑；补全 resolve 保留原投影上下文。两个真实进程协议用例、既有语言工具和 49 项补全通过；最新完整 CI 仍待本轮提交。

@@ -6,5 +6,6 @@ playwright-report/
 .idea/
 .codex/config.toml
 .codex/lsp4ij/
+.codex/jetbrains-sdk/
 .design/ts7-tsx-probe-results.json
 pnpm-lock.yaml

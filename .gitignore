@@ -9,6 +9,7 @@ reports/stability/
 playwright-report/
 .codex/config.toml
 .codex/lsp4ij/
+.codex/jetbrains-sdk/
 .idea
 apps/example/.dev-check-*/
 apps/example/.data/
