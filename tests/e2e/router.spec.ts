@@ -222,14 +222,35 @@ test('正常链接修饰键保留原生行为，后退恢复滚动', async ({ pa
   await page.goto('/workspace/tasks?render=ssr');
   await expect(page.locator('#app')).toHaveAttribute('data-client-ready', 'true');
   const original = page.url();
-  // 修饰键的原生开页依赖活跃页面，先明确激活，再发出可信鼠标事件。
+  const link = page.getByRole('link', { name: '偏好设置', exact: true });
+  // bringToFront 的协议回复不代表文档已获得焦点；等实际输入目标就绪再点击。
   await page.bringToFront();
-  const [other] = await Promise.all([
-    context.waitForEvent('page'),
-    page
-      .getByRole('link', { name: '偏好设置', exact: true })
-      .click({ modifiers: ['ControlOrMeta'] }),
-  ]);
+  await link.focus();
+  await expect(link).toBeFocused();
+  await expect.poll(() => page.evaluate(() => document.hasFocus())).toBe(true);
+  await link.evaluate((node) => {
+    document.addEventListener('click', function observe(event) {
+      if (!event.composedPath().includes(node)) return;
+      // 在路由处理器之后记录，分清原生开页失败和框架错误拦截。
+      node.setAttribute(
+        'data-native-click',
+        JSON.stringify({
+          trusted: event.isTrusted,
+          modified: event.ctrlKey || event.metaKey,
+          prevented: event.defaultPrevented,
+        }),
+      );
+      document.removeEventListener('click', observe);
+    });
+  });
+  const opened = context.waitForEvent('page');
+  void opened.catch(() => {});
+  await link.click({ modifiers: ['ControlOrMeta'] });
+  await expect(link).toHaveAttribute(
+    'data-native-click',
+    JSON.stringify({ trusted: true, modified: true, prevented: false }),
+  );
+  const other = await opened;
   await other.waitForLoadState();
   await expect(other.getByRole('heading', { name: '偏好设置' })).toBeVisible();
   expect(page.url()).toBe(original);
