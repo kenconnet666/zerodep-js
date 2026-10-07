@@ -8,6 +8,7 @@ import {
 import { TEMPLATE, element, type DynamicTemplate, type Renderable } from '../runtime/template.js';
 import { attachAttributes, attachRef } from './attributes.js';
 import { notifySelect } from './controls.js';
+import { bindHeadDocument } from '../runtime/head.js';
 import type { Props } from '../runtime/props.js';
 import { childContainer, createRange, insert, rollback, type Container } from './utils.js';
 import { renderList } from './list.js';
@@ -231,6 +232,7 @@ export function _mount<C extends AnyComponent>(component: C, options: MountOptio
   const { target } = options;
   if (roots.has(target)) throw new Error('目标容器已挂载，请先调用其 disposer。');
   const scope = new Scope(null);
+  bindHeadDocument(scope, target.ownerDocument);
   const dispose = () => {
     try {
       scope.dispose();
@@ -259,6 +261,7 @@ export function _hydrate<C extends AnyComponent>(
   const { target } = options;
   if (roots.has(target)) throw new Error('目标容器已挂载，请先调用其 disposer。');
   const scope = new Scope(null);
+  bindHeadDocument(scope, target.ownerDocument);
   const cursor = hydrationRoot(target);
   const dispose = () => {
     try {

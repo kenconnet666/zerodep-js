@@ -287,7 +287,9 @@ try {
     `数据与 untrack 入口体积：${report.tree.reduce((sum, chunk) => sum + chunk.bytes, 0)} 字节。`,
   );
   assert.equal(typeof globalThis.document, 'undefined');
-  const { render } = await import(pathToFileURL(resolve(consumer, 'dist/server/server.js')).href);
+  const { render, page: renderPage } = await import(
+    pathToFileURL(resolve(consumer, 'dist/server/server.js')).href
+  );
   assert(render('<独立请求>').html.includes('&lt;独立请求&gt;'));
   assert(!render('另一个请求').html.includes('独立请求'));
   const template = await readFile(resolve(consumer, 'dist/client/index.html'), 'utf8');
@@ -297,13 +299,7 @@ try {
       if (url.pathname === '/') {
         const mode = url.searchParams.get('mode') === 'csr' ? 'csr' : 'ssr';
         response.setHeader('Content-Type', 'text/html; charset=utf-8');
-        const rendered = mode === 'ssr' ? render('独立消费') : { html: '', styles: '' };
-        response.end(
-          template
-            .replace('__MODE__', mode)
-            .replace('</head>', () => `${rendered.styles}</head>`)
-            .replace('<!--app-->', () => rendered.html),
-        );
+        response.end(await renderPage(template, mode, '独立消费'));
       } else {
         assert(/^\/assets\/[\w.-]+$/.test(url.pathname));
         response.setHeader(
@@ -330,6 +326,11 @@ try {
     await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
     await expect(page.locator('#app')).toHaveAttribute('data-reused', String(mode === 'ssr'));
     await expect(page.locator('h1')).toHaveText('独立消费');
+    await expect(page).toHaveTitle('独立消费');
+    await expect(page.locator('head meta[name=description]')).toHaveAttribute(
+      'content',
+      '独立包消费',
+    );
     await expect(page.locator('[data-packed-css]')).toHaveCSS('width', '120px');
     const cssClass = await page.locator('[data-packed-css]').getAttribute('class');
     await page.locator('[data-packed-css-grow]').click();

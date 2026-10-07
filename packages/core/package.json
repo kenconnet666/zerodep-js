@@ -43,6 +43,10 @@
     "./css/internal": {
       "types": "./dist/css-internal.d.ts",
       "import": "./dist/css-internal.js"
+    },
+    "./head": {
+      "types": "./dist/head.d.ts",
+      "import": "./dist/head.js"
     }
   },
   "scripts": {

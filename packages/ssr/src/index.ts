@@ -1,12 +1,14 @@
 export type RenderMode = 'csr' | 'ssr';
-export { renderToString } from './render.js';
+import { headData } from 'zerodep-js/internal';
+import type { RenderResult } from './render.js';
+export { renderToString, _render } from './render.js';
 export { serializeData } from './data.js';
-export type { RenderOptions } from './render.js';
+export type { RenderOptions, RenderResult } from './render.js';
 
 export interface DocumentOptions {
   template: string;
   mode: RenderMode;
-  render: () => string | Promise<string>;
+  render: () => string | RenderResult | Promise<string | RenderResult>;
 }
 
 /** 文档级组合入口；render 的 HTML 必须由可信的渲染器生成。 */
@@ -19,8 +21,33 @@ export async function renderDocument({ template, mode, render }: DocumentOptions
     }
   }
 
-  const html = mode === 'ssr' ? await render() : '';
+  const result = mode === 'ssr' ? await render() : '';
+  const html = typeof result === 'string' ? result : result?.html;
   if (typeof html !== 'string') throw new TypeError('The server renderer must return HTML text.');
-
-  return template.replace('__RENDER_MODE__', mode).replace('<!--app-html-->', () => html);
+  const head = typeof result === 'string' ? {} : headData(result.head);
+  const escape = (value: string) =>
+    value.replace(
+      /[&<>"\r]/g,
+      (character) =>
+        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', '\r': '&#13;' })[character]!,
+    );
+  const tags =
+    (head.title === undefined ? '' : `<title data-zj-head="title">${escape(head.title)}</title>`) +
+    (head.description === undefined
+      ? ''
+      : `<meta data-zj-head="description" name="description" content="${escape(head.description)}">`);
+  const marker = '<!--app-head-->';
+  const position = template.indexOf(marker);
+  if ((tags && position < 0) || (position >= 0 && position !== template.lastIndexOf(marker)))
+    throw new Error('页面元信息需要唯一的 <!--app-head--> 位置。');
+  const values: Record<string, string> = {
+    [marker]: tags,
+    __RENDER_MODE__: mode,
+    '<!--app-html-->': html,
+  };
+  // 一次替换，正文或标题中出现模板标记时不得再次解释。
+  return template.replace(
+    /<!--app-head-->|__RENDER_MODE__|<!--app-html-->/g,
+    (key) => values[key]!,
+  );
 }

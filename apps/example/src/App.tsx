@@ -18,6 +18,8 @@ import { PortalExample } from './examples/PortalExample.js';
 import { CssExample } from './examples/CssExample.js';
 import { DisclosureExample } from './examples/DisclosureExample.js';
 import { GroupExample } from './examples/GroupExample.js';
+import { HeadExample } from './examples/HeadExample.js';
+import { _head } from 'zerodep-js/head';
 
 const Button = _component(
   ({ type = 'button', children, ...attrs }: JSX.IntrinsicElements['button']) => (
@@ -80,6 +82,7 @@ const Counter = _component(
 type AppProps = { mode?: RenderMode; onUnmount?: () => void };
 
 export const App = _component(({ mode = 'csr', onUnmount }: AppProps) => {
+  _head(() => ({ title: 'zerodep-js example', description: '基础 API 验收' }));
   let ready = _state(false);
   _effect(() => {
     ready = true;
@@ -100,6 +103,7 @@ export const App = _component(({ mode = 'csr', onUnmount }: AppProps) => {
       <CssExample />
       <DisclosureExample />
       <GroupExample />
+      <HeadExample />
       <h1>zerodep-js</h1>
       <p>
         当前首屏模式：<strong data-mode>{mode.toUpperCase()}</strong>

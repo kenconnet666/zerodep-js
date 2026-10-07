@@ -10,6 +10,8 @@ import { _task } from 'zerodep-use/task';
 import { _createRoot, _id } from 'zerodep-js';
 import { Css } from 'zerodep-css';
 import { css, _createCssContext } from 'zerodep-js/css';
+import { _head, type HeadData } from 'zerodep-js/head';
+import { _render, type RenderResult } from 'zerodep-js-ssr';
 
 const cssAuthor = new Css();
 const styleClass: string = css(cssAuthor.width.px(12));
@@ -27,6 +29,19 @@ _createRoot((dispose) => {
   projectCss.provideCss(new Css());
   dispose();
 });
+
+function headTypes() {
+  _head(() => ({ title: 'title', description: undefined }));
+  _head(() => false);
+  // @ts-expect-error 元信息不隐式把数字变成标题。
+  _head(() => ({ title: 123 }));
+  // @ts-expect-error 不支持异步元信息 getter。
+  _head(async () => ({ title: 'async' }));
+  const head: HeadData = { title: 'x' };
+  const rendered: RenderResult = _render(Counter, { props: { label: 'x' } });
+  return [head, rendered];
+}
+void headTypes;
 
 const idFactory: () => string = _id;
 void idFactory;

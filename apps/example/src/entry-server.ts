@@ -1,4 +1,10 @@
-import { renderDocument, renderToString, serializeData, type RenderMode } from 'zerodep-js-ssr';
+import {
+  renderDocument,
+  _render,
+  serializeData,
+  type RenderMode,
+  type DocumentOptions,
+} from 'zerodep-js-ssr';
 import { App } from './App.js';
 import { TaskBoard } from './tasks/TaskBoard.js';
 import type { TaskPage } from './tasks/schema.js';
@@ -7,15 +13,11 @@ import { routes } from './workspace/routes.js';
 import { Workspace } from './workspace/App.js';
 import { createServerCssHost, withCssHost, serializeCssRules } from 'zerodep-css/server';
 
-export async function render(template: string, mode: RenderMode): Promise<string> {
+async function renderPage(options: DocumentOptions): Promise<string> {
   const host = createServerCssHost();
   return withCssHost(host, async () => {
-    const html = await renderDocument({
-      template,
-      mode,
-      render: () => renderToString(App, { props: { mode } }),
-    });
-    if (mode !== 'ssr') return html;
+    const html = await renderDocument(options);
+    if (options.mode !== 'ssr' || host.rules().length === 0) return html;
     // 先完成组件渲染，再收集请求内样式；复用 CSS 库的 HTML/JSON 安全序列化。
     const { cssText, manifest } = serializeCssRules(host.rules());
     return html.replace(
@@ -24,6 +26,10 @@ export async function render(template: string, mode: RenderMode): Promise<string
         `<style data-zerodep-css>${cssText}</style><script type="application/json" data-zerodep-css>${manifest}</script></head>`,
     );
   });
+}
+
+export function render(template: string, mode: RenderMode): Promise<string> {
+  return renderPage({ template, mode, render: () => _render(App, { props: { mode } }) });
 }
 
 export function renderTasks(
@@ -35,10 +41,10 @@ export function renderTasks(
   const index = template.indexOf(marker);
   if (index < 0 || index !== template.lastIndexOf(marker))
     throw new Error('任务页面需要唯一的初始化数据位置。');
-  return renderDocument({
+  return renderPage({
     template: template.replace(marker, () => serializeData(initial)),
     mode,
-    render: () => renderToString(TaskBoard, { props: { initial, mode } }),
+    render: () => _render(TaskBoard, { props: { initial, mode } }),
   });
 }
 
@@ -61,10 +67,10 @@ export async function renderWorkspace(
     const marker = '<!--route-data-->';
     if (template.indexOf(marker) < 0 || template.indexOf(marker) !== template.lastIndexOf(marker))
       throw new Error('路由页面需要唯一的初始化数据位置。');
-    const html = await renderDocument({
+    const html = await renderPage({
       template: template.replace(marker, () => serializeData(initial)),
       mode,
-      render: () => renderToString(Workspace, { props: { router } }),
+      render: () => _render(Workspace, { props: { router } }),
     });
     return { html, status: mode === 'ssr' ? router.state.statusCode : 200, redirect: undefined };
   } finally {

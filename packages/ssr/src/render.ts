@@ -10,6 +10,8 @@ import {
   textValue,
   elementText,
   nativeAttributes,
+  renderedHead,
+  type HeadData,
   hasOpenBinding,
   OPEN_STATE_ATTRIBUTE,
   selectionValues,
@@ -206,14 +208,20 @@ function render(value: Renderable, owner: Scope, context: Context): string {
   return `${output}</${tag}>`;
 }
 
-/** 同步完成一棵请求内树，再释放全部资源；不存在跨请求的组件实例注册表。 */
-export function renderToString<C extends AnyComponent>(
+export interface RenderResult {
+  readonly html: string;
+  readonly head: HeadData;
+}
+
+/** 同步完成请求内的树和元信息收集，再释放全部资源。 */
+export function _render<C extends AnyComponent>(
   component: C,
   ...[options]: Arguments<C>
-): string {
+): RenderResult {
   const scope = new Scope(null);
   scope.server = true;
   let output = '';
+  let head: HeadData = {};
   const errors: unknown[] = [];
   try {
     output = _untrack(() =>
@@ -224,6 +232,7 @@ export function renderToString<C extends AnyComponent>(
         }),
       ),
     );
+    head = renderedHead(scope);
   } catch (error) {
     errors.push(error);
   }
@@ -234,5 +243,13 @@ export function renderToString<C extends AnyComponent>(
   }
   if (errors.length === 1) throw errors[0];
   if (errors.length) throw new AggregateError(errors, '服务端渲染与资源清理失败。');
-  return output;
+  return { html: output, head };
+}
+
+/** 仅需要正文的调用方保持原来的字符串接口。 */
+export function renderToString<C extends AnyComponent>(
+  component: C,
+  ...args: Arguments<C>
+): string {
+  return _render(component, ...args).html;
 }

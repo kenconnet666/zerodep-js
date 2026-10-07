@@ -25,6 +25,7 @@ import {
 import { Counter, Label } from '@zerodep-consumer/counter';
 import { Css } from 'zerodep-css';
 import { css } from 'zerodep-js/css';
+import { _head } from 'zerodep-js/head';
 
 const s = new Css();
 
@@ -57,6 +58,7 @@ const packedRoutes = _defineRoutes({
 });
 
 export const App = _component(({ title }: { title: string }) => {
+  _head(() => ({ title, description: '独立包消费' }));
   let width = _state(120);
   const className = css(s.width.px(width));
   const inputId = _id();
