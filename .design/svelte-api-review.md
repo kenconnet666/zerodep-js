@@ -25,6 +25,8 @@
 
 ### 1. SSR 与接管一致的组件 ID：优先级最高
 
+用户随后批准实施：`_id()` 已落地，契约见 [API](../docs/api.md#组件-id)。每次调用生成实例稳定 ID，SSR 标记由 hydration 复用；多根、列表移动、实例重建、卸载及损坏标记恢复已有测试。下面保留最初取舍依据。
+
 Svelte 的 `$props.id()` 给组件实例生成 ID。固定源码中，服务端把 ID 写为标记，客户端 hydration 读取该标记，而不是两边各调用随机数：见 [client props_id](https://github.com/sveltejs/svelte/blob/15720b16a5ef33e3e1f4301c77b94ec375070e73/packages/svelte/src/internal/client/dom/template.js)、[server props_id](https://github.com/sveltejs/svelte/blob/15720b16a5ef33e3e1f4301c77b94ec375070e73/packages/svelte/src/internal/server/index.js)。
 
 当前 core 没有公开的同类生成入口。组件作者必须手动传 id，否则多个 Field、提示信息和 aria-describedby 关系容易重复；SSR 和客户端各自 randomUUID 也不能保证接管一致。这是无障碍与复用能力的缺口，TSX 简洁性不能替代它。

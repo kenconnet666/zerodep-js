@@ -94,6 +94,15 @@ export class HydrationCursor {
       throw new HydrationError('区域内存在多余节点，请检查服务端与客户端初始数据或 HTML 结构。');
   }
 
+  id(): string {
+    const node = this.current;
+    const match = node?.nodeType === 8 && /^zj:id:(zj-[a-f0-9]{32})$/.exec(node.textContent ?? '');
+    if (!node || node === this.end || !match) throw new HydrationError('组件 ID 标记缺失或无效。');
+    this.current = node.nextSibling;
+    this.session.own(node);
+    return match[1]!;
+  }
+
   text(expected: string): Text | undefined {
     if (!expected) return undefined;
     const node = this.current;

@@ -1,5 +1,10 @@
 import { Scope, getScope, renderEffect, _untrack, type Cleanup } from '../runtime/reactivity.js';
-import { setupComponent, type AnyComponent, type ComponentProps } from '../runtime/component.js';
+import {
+  createId,
+  setupComponent,
+  type AnyComponent,
+  type ComponentProps,
+} from '../runtime/component.js';
 import { TEMPLATE, element, type DynamicTemplate, type Renderable } from '../runtime/template.js';
 import { attachAttributes, attachRef } from './attributes.js';
 import { notifySelect } from './controls.js';
@@ -137,7 +142,12 @@ export function renderValue(
       _untrack(() =>
         scope.run(() =>
           renderValue(
-            setupComponent(value.tag as AnyComponent, value.props),
+            setupComponent(value.tag as AnyComponent, value.props, () => {
+              if (hydration) return hydration.id();
+              const id = createId();
+              insert(parent.ownerDocument!.createComment('zj:id:' + id), parent, before);
+              return id;
+            }),
             parent,
             before,
             namespaceParent,

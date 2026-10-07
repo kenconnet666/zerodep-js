@@ -118,6 +118,24 @@ SSR 使用 `renderToString(App, { props })` 同步生成组件 HTML；每请求�
 
 `zerodep-js/internal` 是编译输出协议，不作为用户 signal API。模块间传值、控制流收窄、支持范围与迁移规则以 [语义契约](semantics.md)和[支持范围](support.md)为准。
 
+## 组件 ID
+
+`_id(): string` 在组件同步初始化中生成 ID，可以从同步辅助函数中调用。一个初始化中的多次调用得到不同 ID；返回值在实例存活期间稳定。它不是响应式宏，不需要额外编译语法；事件、effect、派生和普通 root 中调用都会报错。
+
+SSR 把 ID 写为组件前的 `zj:id:` 注释，hydration 读取同一标记，label/for 和 aria-describedby 关系不变。客户端新实例使用 Web Crypto 生成独立 ID，不依赖进程全局计数器。不同请求产生不同 ID，不承诺相同输入的 HTML 字节完全相同；不要将 ID 用作业务主键。HTML 压缩器必须保留 `zj:` 协议注释，调用次数或组件树不一致会按正常接管规则报错。
+
+```tsx
+const Field = _component(() => {
+  const id = _id();
+  return (
+    <>
+      <label for={id}>姓名</label>
+      <input id={id} />
+    </>
+  );
+});
+```
+
 ## DOM 引用
 
 `<input bind:this={node} />` 将元素写入可写变量，并在卸载时清为 undefined。目标可声明为 `let node: HTMLInputElement | undefined = undefined`，也可以使用更宽的 Element 类型；显式空态初始化也让普通 lint 工具正确理解声明。需要引用变化触发视图更新时显式使用 _state。普通 let 适合事件和 _onMount 中读取。官方 IDE 不理解 bind:this 的隐式赋值，若普通变量被收窄为初始 undefined，可使用 `_state<ElementType | undefined>(undefined)` 保留准确的联合类型；框架检查投影会另外检查实际元素写入和卸载清理类型。

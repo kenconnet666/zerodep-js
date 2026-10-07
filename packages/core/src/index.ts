@@ -12,7 +12,7 @@ export { _snapshot } from './runtime/snapshot.js';
 export { _onMount, _createScope, _getAbortSignal } from './runtime/lifecycle.js';
 export type { ScopeHandle } from './runtime/lifecycle.js';
 export { _state, _derived } from './runtime/macros.js';
-export { _component } from './runtime/component.js';
+export { _component, _id } from './runtime/component.js';
 export type { Component, ComponentProps } from './runtime/component.js';
 export { _lazy } from './runtime/lazy.js';
 export type { LazyComponent, LazyOptions } from './runtime/lazy.js';

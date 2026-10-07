@@ -1,8 +1,24 @@
-import { getScope } from './reactivity.js';
+import { assertCanWrite, getScope, type Scope } from './reactivity.js';
 import { readonlyProps } from './props.js';
 import type { Renderable } from './template.js';
 
 export const COMPONENT = Symbol('zerodep.component');
+
+let idOwner: Scope | null = null;
+let allocateId: (() => string) | undefined;
+
+/** 不共享服务端计数器；接管时由渲染器提供服务端已写出的 ID。 */
+export function createId(): string {
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  return 'zj-' + Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
+/** 在组件同步初始化中创建稳定 ID；多个调用得到不同 ID，普通更新不会重新生成。 */
+export function _id(): string {
+  assertCanWrite();
+  if (!allocateId || getScope() !== idOwner) throw new Error('_id 必须在组件同步初始化中调用。');
+  return allocateId();
+}
 
 export type Component<F extends (...args: never[]) => Renderable> = F & {
   readonly [COMPONENT]: F;
@@ -27,10 +43,23 @@ export function defineComponent<F extends (...args: never[]) => Renderable>(
 }
 
 /** 渲染器先建立实例作用域，再执行一次 setup；输入的 getter 不会被复制掉。 */
-export function setupComponent(component: AnyComponent, input: object): Renderable {
+export function setupComponent(
+  component: AnyComponent,
+  input: object,
+  ids: () => string = createId,
+): Renderable {
   if (!getScope()) throw new Error('组件初始化必须属于渲染作用域。');
   if (typeof component?.[COMPONENT] !== 'function')
     throw new Error('无效组件，请使用 _component 声明。');
   const setup = component[COMPONENT];
-  return setup(readonlyProps(input) as never);
+  const previousOwner = idOwner;
+  const previousAllocator = allocateId;
+  idOwner = getScope();
+  allocateId = ids;
+  try {
+    return setup(readonlyProps(input) as never);
+  } finally {
+    idOwner = previousOwner;
+    allocateId = previousAllocator;
+  }
 }

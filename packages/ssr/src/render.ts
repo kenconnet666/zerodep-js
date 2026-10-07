@@ -12,6 +12,7 @@ import {
   nativeAttributes,
   selectionValues,
   setupComponent,
+  createId,
   element,
   dynamic,
   _untrack,
@@ -135,9 +136,15 @@ function render(value: Renderable, owner: Scope, context: Context): string {
     }
   }
   if (typeof value.tag !== 'string')
-    return scoped(owner, (scope) =>
-      render(setupComponent(value.tag as AnyComponent, value.props), scope, context),
-    );
+    return scoped(owner, (scope) => {
+      let markers = '';
+      const body = setupComponent(value.tag as AnyComponent, value.props, () => {
+        const id = createId();
+        markers += `<!--zj:id:${id}-->`;
+        return id;
+      });
+      return markers + render(body, scope, context);
+    });
   const namespace = namespaceFor(value.tag, context.namespace, context.tag, context.encoding);
   const tag = elementName(value.tag, namespace);
   const attributes = nativeAttributes(value.props, tag, namespace);
