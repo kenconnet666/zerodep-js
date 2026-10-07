@@ -1,12 +1,12 @@
 # 编译、检查与语言工具
 
-当前源码使用官方 `typescript@7.1.0-dev.20261007.1` 与 Babel 8，Vite 负责开发和打包。项目不再编译、打补丁或分发 TypeScript SDK。接口变化集中在 `packages/compiler` 的适配层，只维护选定的 TS7.1 版本。
+当前源码按用户最新要求固定 JetBrains EAP 配套 `typescript@7.1.0-dev.jetbrains.20260721.2` 与 Babel 8，Vite 负责开发和打包。项目不再编译、打补丁或分发 TypeScript SDK。接口变化集中在 `packages/compiler` 的适配层，只维护选定的 TS7.1 版本。
 
 ## 职责
 
 | 工作                                    | 负责工具                                        |
 | --------------------------------------- | ----------------------------------------------- |
-| TypeScript 类型、声明与基础语言服务     | 官方 TS7.1 dev                                  |
+| TypeScript 类型、声明与基础语言服务     | 选定的 JetBrains TS7.1                                  |
 | 变量式响应性、组件、JSX、bind、框架诊断 | Babel 框架编译器                                |
 | 模块解析与打包、监听、开发服务器        | Vite                                            |
 | 通用 lint                               | 现有 Oxlint；ESLint 正式支持 TS7 后优先评估切换 |
@@ -23,7 +23,7 @@ pnpm check
 pnpm build
 ```
 
-普通运行时包由官方 `tsc -b` 输出 JS、声明与映射。包含框架宏的应用通过 Vite 插件转换，不能把仅经 tsc 擦除类型的宏调用作为可执行产物。
+普通运行时包由SDK 的 `tsc -b` 输出 JS、声明与映射。包含框架宏的应用通过 Vite 插件转换，不能把仅经 tsc 擦除类型的宏调用作为可执行产物。
 
 `zerodep-check -p tsconfig.json` 同时执行框架规则和官方类型检查。它覆盖配置包含及实际依赖的源文件，不只检查当前路由加载的组件。`--json` 输出结构化诊断；文件/目录与 `--stdin` 模式只执行框架语义检查。
 
@@ -75,23 +75,17 @@ WebStorm 自带补全与 LSP4IJ 可能同时展示同名普通候选。本机 Ta
 
 ### WebStorm 的服务驱动类型引擎
 
-本机 WebStorm 2026.2.3（262.10968.77）的 TypeScriptGoPackageInfoKt.isSpteSupportedInTypeScriptVersion 判断要求 Registry 的 typescript.ts-go.type-evaluator.node-modules 开启，并且版本 major=7、minor=0、patch>=2。官方 7.1 dev 因 minor 不符被标为 NoSpte；仅改 Registry 无法开启。此结论来自本机 IDE 实际代码，后续 IDE 版本需重新核对。
+当前 EAP 263.6259.34 与项目统一使用 JetBrains 配套的 `7.1.0-dev.jetbrains.20260721.2`。IDE Registry 的 `typescript.native-preview.ts-go.version` 恢复为 `v7.1.0-dev.jetbrains.20260721.2`；TypeScript 设置选择“TypeScript 7（原生）”，保留“启用服务驱动的类型引擎”。项目通过 pnpm 安装相同版本，不依赖 IDE 缓存路径。
 
-2026-10-07 进一步核对 [最新 EAP 的官方发布元数据](https://data.services.jetbrains.com/products/releases?code=WS&latest=true&type=eap)：WebStorm 2026.3 EAP（263.6259.34）仍有相同版本判断。仅按 HTTP Range 读取发行 ZIP 中的后端 JAR 和 ts-go-proxy，并验证 ZIP CRC，未安装或替换 IDE。
+该版本不在 npm 注册表：catalog 固定 JetBrains 的 SDK HTTPS tarball，overrides 固定七个平台 tarball，锁文件保存完整性校验。执行 `pnpm install --frozen-lockfile` 即可重现；无需编译 Go、复制 SDK 或修改 SDK 源码。独立消费验证沿用同一下载配置。
 
-两版 IDE 的原始 ts-go-proxy 均连接真实官方 7.1.0-dev.20261007.1 API 会话，首个 ideGetSnapshotProjects 请求均失败：`Cannot read properties of undefined (reading 'id')`。代理调用 `api.updateSnapshot()`；当前官方 API 要求 `updateSnapshot(baseSnapshot, params)`，在缺少 baseSnapshot 时失败。这证明除了按钮的版本限制，还存在真实接口不兼容，不能通过强行勾选、改版本号或塞入预览 SDK 目录解决。
+此前试用的较新 `7.1.0-dev.jetbrains.20261006.2` 与 EAP 的 ts-go-proxy API 不匹配，会在查询类型时报 `Cannot update an inactive snapshot`。恢复配套版后，本机实际 IDE 类型查询已返回 `let search: string`。版本显示、按钮状态和实际类型查询分别验证，不能只凭可勾选宣称兼容。
 
-此前按用户要求试装的 JetBrains 7.1.0-dev.jetbrains.20261006.2 已移除，项目依赖及锁文件保持微软官方 7.1.0-dev.20261007.1（核对时 npm next）。该试装版还报告 14 项 DOM 标准库声明差异，未通过弱化类型来兼容它。研究脚本、下载文件与测试夹具均在记录证据后清理。
-
-该开关控制 WebStorm 内部类型求值与检查/重构的深度集成，不等于标准 TypeScript 语言服务是否启用。项目继续固定官方 TS7.1 dev，Zerodep LSP 提供已验证的标准语言能力；不伪造包版本、不修改 IDE 二进制，也不为这个开关降级项目。仅在 IDE 选择 JetBrains 自带 TS7 可以启用其内置集成，但会与项目 TS7.1 的类型判断分离，不作为默认方案。
-
-同一官方 TS7.1 SDK 同时启用此引擎，需要 JetBrains 更新版本准入与 API 适配。目前已检查的正式版和最新 EAP 均不满足。继续使用项目官方 SDK 与标准语言服务；框架 bind 写回等增强使用 Zerodep LSP。用户在试用期间停用了该 LSP，重新启用应在本项目“语言服务器”设置中操作，不能把此前验收通过等同于服务当前正在运行。
-
-详见 [JetBrains 设置说明](https://www.jetbrains.com/help/webstorm/settings-languages-typescript.html)。LSP4IJ 接入不声称等同于 WebStorm 内部服务驱动类型引擎。
+服务驱动类型引擎负责 IDE 内部类型求值与检查/重构集成；Zerodep LSP 负责 bind 写回等框架增强，两者职责不同。详见 [JetBrains 设置说明](https://www.jetbrains.com/help/webstorm/settings-languages-typescript.html)。
 
 ## 生成类型与注释
 
-`pnpm native:generate` 中的 native 指浏览器原生元素数据。它使用成熟的 HTML 属性数据、csstype 和官方 TS7.1 API 生成清楚的 JSX 接口，不依赖被删除的 Go 补丁。
+`pnpm native:generate` 中的 native 指浏览器原生元素数据。它使用成熟的 HTML 属性数据、csstype 和选定 TS7.1 API 生成清楚的 JSX 接口，不依赖被删除的 Go 补丁。
 
 生成文件有明确人工维护入口，禁止修改生成输出绕过检查。源码中文注释解释默认值、求值顺序、资源所有权、映射和生命周期等不明显的原因，不机械复述语句。
 

@@ -62,10 +62,12 @@ try {
   manifest.devDependencies = {};
   manifest.pnpm = { overrides: {} };
   const catalog = await readFile(resolve(root, 'pnpm-workspace.yaml'), 'utf8');
-  // 读取 catalog 中的精确版本，包含当前 TypeScript nightly 的预发布后缀。
+  // 发行 SDK 使用固定 HTTPS tarball；复制平台覆盖，独立消费不依赖 IDE 缓存。
+  for (const match of catalog.matchAll(/^  '(@typescript\/[^']+)': (https:\/\/\S+)$/gm))
+    manifest.pnpm.overrides[match[1]] = match[2];
   for (const name of ['typescript', 'vite', '@types/node']) {
     const version = catalog.match(
-      new RegExp(`^  ['"]?${name}['"]?: ([0-9.]+(?:-[0-9A-Za-z.-]+)?)$`, 'm'),
+      new RegExp(`^  ['"]?${name}['"]?: (\\S+)$`, 'm'),
     )?.[1];
     assert(version, `找不到 ${name} 的固定 catalog 版本。`);
     manifest.devDependencies[name] = version;

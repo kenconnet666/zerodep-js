@@ -20,7 +20,7 @@ function attributeName(attribute: t.JSXAttribute): string {
     : attribute.name.name;
 }
 
-/** 检查用源码把隐式写回显式表达给官方 TS；运行代码仍由框架编译器生成。 */
+/** 检查用源码把隐式写回显式表达给选定 TS；运行代码仍由框架编译器生成。 */
 export function projectForCheck(
   source: string,
   filename: string,
@@ -115,7 +115,7 @@ export function projectForCheck(
         handlers.set(event, statements);
         if (property !== 'this') {
           // 原生绑定保留其专用读取类型；可选组件属性也保留 bind 的 undefined 语义。
-          // 必填组件属性使用普通 prop，使官方 TS 可以直接从值推断组件泛型。
+          // 必填组件属性使用普通 prop，使选定 TS 可以直接从值推断组件泛型。
           output.push(
             native || options.optionalBindings?.has(attribute.start!)
               ? t.cloneNode(attribute, true)
