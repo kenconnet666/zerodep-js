@@ -38,6 +38,10 @@ let name = _state('');
 
 ## 重置与接管
 
+原生 details 可使用 `let open = _state(false); <details bind:open={open}>...</details>`。浏览器 toggle 写回 boolean，绑定先写回，再执行用户 onToggle；若回调拒绝变化，DOM 会重新服从模型。不能同时提供普通 open 或覆盖私有 data-zj-open 标记。普通 details 的既有 open 属性行为不变，此绑定不处理 dialog 的模态显示。
+
+SSR 为 bind:open 保存独立初值标记，因为 details.open 会直接修改 HTML 属性，不能从该属性判断服务端原值。接管先校验标记，再保留用户接管前的展开/关闭并写回模型；错误或缺失的标记仍按 hydration 不匹配处理。成功接管移除标记。原生 toggle 可以合并多次快速变化，不承诺每次赋值都产生独立事件。
+
 reset 事件的默认动作之后，非受控字段回到首次默认值，受控字段重新服从当前模型。如果业务希望同时重置模型，在 onReset 中显式赋初值；preventDefault 会保留浏览器当前状态。
 
 SSR 接管比较浏览器原生初始状态，避免把 range 等平台默认规范化误判为用户输入。接管前已有的文本、勾选和选择状态会保留，并交给已经安装的 input/change 回调；模型拒绝的修改仍会回写模型值。事件监听器、校准任务和组合输入定时器随作用域释放。

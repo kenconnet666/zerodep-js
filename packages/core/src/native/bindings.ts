@@ -2,6 +2,11 @@ import { props, restProps, type Props } from '../runtime/props.js';
 import { eventName } from './attributes.js';
 
 const BINDINGS = Symbol('zerodep.bindings');
+const OPEN_BINDING = Symbol('zerodep.details-open');
+export const OPEN_STATE_ATTRIBUTE = 'data-zj-open';
+export function hasOpenBinding(input: Props): boolean {
+  return input[OPEN_BINDING] === true;
+}
 export type Binding = readonly [name: string, read: () => unknown, write: (value: unknown) => void];
 
 /** 编译器保存可写关系；普通 spread 值不能伪装成有 setter 的绑定。 */
@@ -10,6 +15,7 @@ export function bindProps(input: Props, bindings: readonly Binding[]): Props {
 }
 
 function readControl(event: Event, name: string): unknown {
+  if (name === 'open') return (event.currentTarget as HTMLDetailsElement).open;
   const element = event.currentTarget as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
   if (name === 'checked') return (element as HTMLInputElement).checked;
   if (name === 'valueAsNumber') {
@@ -27,7 +33,7 @@ export function resolveBindings(tag: string | Function, input: Props): Props {
   if (!bindings) return input;
   const original = restProps(input, [BINDINGS]);
   const native = typeof tag === 'string';
-  const values: Record<string, () => unknown> = Object.create(null);
+  const values: Record<PropertyKey, () => unknown> = Object.create(null);
   const events = new Map<string, Binding[]>();
   for (const binding of bindings) {
     const [name, read, write] = binding;
@@ -56,7 +62,8 @@ export function resolveBindings(tag: string | Function, input: Props): Props {
       native &&
       !(
         (name === 'value' && ['input', 'textarea', 'select'].includes(tag)) ||
-        (['checked', 'valueAsNumber'].includes(name) && tag === 'input')
+        (['checked', 'valueAsNumber'].includes(name) && tag === 'input') ||
+        (name === 'open' && tag === 'details')
       )
     )
       throw new Error(`<${tag}> 不支持 bind:${name}。`);
@@ -65,7 +72,10 @@ export function resolveBindings(tag: string | Function, input: Props): Props {
     const validate = () => {
       for (const key of [
         property,
-        ...(native ? [property === 'checked' ? 'defaultChecked' : 'defaultValue'] : []),
+        ...(native && name !== 'open'
+          ? [property === 'checked' ? 'defaultChecked' : 'defaultValue']
+          : []),
+        ...(native && name === 'open' ? [OPEN_STATE_ATTRIBUTE] : []),
       ])
         if (Object.hasOwn(original, key)) throw new Error(`bind:${name} 不能同时声明 ${key}。`);
       if (
@@ -82,10 +92,13 @@ export function resolveBindings(tag: string | Function, input: Props): Props {
       const value = read();
       return native && property === 'value' ? (value ?? '') : value;
     };
+    if (native && name === 'open') values[OPEN_BINDING] = () => true;
     const event = native
-      ? name === 'checked' || tag === 'select'
-        ? 'change'
-        : 'input'
+      ? name === 'open'
+        ? 'toggle'
+        : name === 'checked' || tag === 'select'
+          ? 'change'
+          : 'input'
       : `on${name[0]!.toUpperCase()}${name.slice(1)}Change`;
     const list = events.get(event) ?? [];
     list.push(binding);

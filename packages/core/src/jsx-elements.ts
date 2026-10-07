@@ -8610,6 +8610,8 @@ interface DescProps extends Common2<SVGDescElement> {
   crossOrigin?: string | number | null | undefined;
 }
 interface DetailsProps extends Common1<HTMLDetailsElement> {
+  /** 原生 details 展开状态，toggle 写回 boolean；接管前操作会保留。 */
+  'bind:open'?: boolean;
   name?: string | null | undefined;
   open?: boolean | null | undefined;
   'prop:getElementsByTagNameNS'?:

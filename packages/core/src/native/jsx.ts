@@ -145,13 +145,19 @@ interface SelectBindings {
   /** 单选写回字符串；multiple 多选写回字符串数组。 */
   'bind:value'?: string | readonly string[] | null | undefined;
 }
+interface DetailsBindings {
+  /** 原生 details 展开状态，toggle 写回 boolean；接管前操作会保留。 */
+  'bind:open'?: boolean;
+}
 type NativeBindings<T> = T extends HTMLInputElement
   ? InputBindings
   : T extends HTMLTextAreaElement
     ? TextBindings
     : T extends HTMLSelectElement
       ? SelectBindings
-      : {};
+      : T extends HTMLDetailsElement
+        ? DetailsBindings
+        : {};
 
 type ChangeName<K extends string> = `on${Capitalize<K>}Change`;
 type FirstArgument<F> = F extends (...args: infer Args) => unknown

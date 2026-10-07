@@ -55,9 +55,11 @@ export function projectForCheck(
           property === 'this'
             ? 'ref'
             : native
-              ? property === 'checked' || tag === 'select'
-                ? 'onChange'
-                : 'onInput'
+              ? property === 'open'
+                ? 'onToggle'
+                : property === 'checked' || tag === 'select'
+                  ? 'onChange'
+                  : 'onInput'
               : `on${property[0]!.toUpperCase()}${property.slice(1)}Change`;
         let parameter = events.get(event);
         if (!parameter) {

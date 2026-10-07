@@ -69,7 +69,7 @@ export function attachAttributes(
       (left, right) => Number(properties.has(left)) - Number(properties.has(right)),
     );
     for (const name of names) {
-      if (control && (name === 'value' || name === 'checked')) continue;
+      if (control?.owns(name)) continue;
       const value = next.get(name) ?? null;
       if (previous.get(name) !== value) setAttribute(element, name, value);
     }

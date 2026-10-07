@@ -51,6 +51,10 @@ _createRoot((dispose) => {
 
 let boundText = '';
 let boundNumber = 123;
+let expanded = false;
+<details bind:open={expanded} />;
+// @ts-expect-error 展开状态需要 boolean，不能写回 string。
+<details bind:open={boundText} />;
 <input bind:value={boundText} />;
 // @ts-expect-error 文本绑定不会把 number 偷换成 string。
 <input bind:value={boundNumber} />;

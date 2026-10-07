@@ -163,6 +163,14 @@ const cases = [
     edit: true,
   },
   {
+    name: 'details 展开绑定',
+    source: header + `const view = <details bind:op¦={checked} />;`,
+    expected: 'bind:open',
+    word: 'bind:op',
+    absent: ['bind:value', 'bind:checked'],
+    edit: true,
+  },
+  {
     name: 'select 绑定',
     source: header + `const view = <select bind:v¦={text} />;`,
     expected: 'bind:value',

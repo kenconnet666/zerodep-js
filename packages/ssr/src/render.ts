@@ -10,6 +10,8 @@ import {
   textValue,
   elementText,
   nativeAttributes,
+  hasOpenBinding,
+  OPEN_STATE_ATTRIBUTE,
   selectionValues,
   setupComponent,
   createId,
@@ -150,6 +152,8 @@ function render(value: Renderable, owner: Scope, context: Context): string {
   const namespace = namespaceFor(value.tag, context.namespace, context.tag, context.encoding);
   const tag = elementName(value.tag, namespace);
   const attributes = nativeAttributes(value.props, tag, namespace);
+  if (namespace === HTML && tag === 'details' && hasOpenBinding(value.props))
+    attributes.set(OPEN_STATE_ATTRIBUTE, attributes.has('open') ? '1' : '0');
   if (namespace === HTML && tag === 'option' && context.selection) {
     const optionValue =
       attributes.get('value') ??

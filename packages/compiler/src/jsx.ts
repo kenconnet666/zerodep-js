@@ -111,7 +111,8 @@ export function transformJsx(
             } else if (native) {
               if (!(
                 (property === 'value' && ['input', 'textarea', 'select'].includes(tag.name)) ||
-                (['checked', 'valueAsNumber'].includes(property) && tag.name === 'input')
+                (['checked', 'valueAsNumber'].includes(property) && tag.name === 'input') ||
+                (property === 'open' && tag.name === 'details')
               ))
                 report(attribute, 'ZJ1403', `<${tag.name}> 不支持 bind:${property}。`);
               const owned = property === 'valueAsNumber' ? 'value' : property;
@@ -120,9 +121,12 @@ export function transformJsx(
                   (other) =>
                     t.isJSXAttribute(other) &&
                     t.isJSXIdentifier(other.name) &&
-                    [owned, owned === 'checked' ? 'defaultChecked' : 'defaultValue'].includes(
-                      other.name.name,
-                    ),
+                    [
+                      owned,
+                      ...(property === 'open'
+                        ? ['data-zj-open']
+                        : [owned === 'checked' ? 'defaultChecked' : 'defaultValue']),
+                    ].includes(other.name.name),
                 )
               )
                 report(attribute, 'ZJ1404', `bind:${property} 与普通模型属性冲突。`);
