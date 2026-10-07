@@ -66,9 +66,7 @@ try {
   for (const match of catalog.matchAll(/^  '(@typescript\/[^']+)': (https:\/\/\S+)$/gm))
     manifest.pnpm.overrides[match[1]] = match[2];
   for (const name of ['typescript', 'vite', '@types/node']) {
-    const version = catalog.match(
-      new RegExp(`^  ['"]?${name}['"]?: (\\S+)$`, 'm'),
-    )?.[1];
+    const version = catalog.match(new RegExp(`^  ['"]?${name}['"]?: (\\S+)$`, 'm'))?.[1];
     assert(version, `找不到 ${name} 的固定 catalog 版本。`);
     manifest.devDependencies[name] = version;
   }

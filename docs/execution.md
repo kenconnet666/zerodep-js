@@ -1,6 +1,8 @@
 # 当前执行记录
 
-当前工作区版本调整（2026-10-07）：按用户最新要求，IDE 与项目统一固定 `7.1.0-dev.jetbrains.20260721.2`。项目改为 JetBrains 原始 HTTPS 发行包，适配配套 API 并重新生成 DOM 声明。恢复配套 IDE 服务后，实际类型查询正常返回；本轮工程验证另记，以下 rc.7 发布证据仍对应微软 nightly 的已发布版本，不代表本轮变更已发布。
+当前工作区版本调整（2026-10-07）：按用户最新要求，IDE 与项目统一固定 JetBrains `7.1.0-dev.jetbrains.20261006.2`，使用 GitHub 原始 HTTPS 发行包与锁定平台覆盖。已在用户授权分支 codex/webstorm-ts71-integration 保存检查点 2480fbd。项目 check、client/server 构建、117 项编译测试、lsp:verify、49/49 补全和 Windows 独立 tgz 消费通过。本轮未发布新包，以下 rc.7 发布证据仍对应此前微软 nightly。
+
+WebStorm EAP 263.6259.34 的本机代理已按用户授权打补丁并保留原文件：快照 API 改为 getCurrentLanguageServerSnapshot，配置路径查找项目改为 getConfiguredProject。真实 IDE 查询返回 string、泛型 number | undefined、对象属性及 _component 的默认值/rest 参数类型；修改泛型调用后结果刷新为 string | undefined。错误赋值在编辑器出现红线，修复后的状态单独核对。补丁命令和 LSP 复用边界见 [工具链](tooling.md)。
 
 更新：2026-10-07。官方 TS7.1 dev、Babel 与 Vite 迁移已完成，五包 `1.0.0-rc.7` 已发布到 npm next。目标与取舍见 [工具链方案](../.design/standard-toolchain-plan.md)，使用入口及编辑器限制见 [工具链](tooling.md)。
 
@@ -27,7 +29,7 @@
 
 五包 next 均为 rc.7；latest 未提升（core/ssr/compiler/vite 保持 rc.1，use 保持 rc.4）。[GitHub rc.7 预发布](https://github.com/kenconnet666/zerodep-js/releases/tag/v1.0.0-rc.7) 已公开，冻结 tgz 与发布账本留在忽略目录 `.release/1.0.0-rc.7` 供恢复与审计。
 
-## IDE 实测与剩余外部限制
+## rc.7 阶段的 IDE 验证记录（历史）
 
 WebStorm 的项目 SDK 使用官方 node_modules/typescript。用户曾通过本机 LSP4IJ 实测：窄字符串绑定写回错误出现在原始 TSX，修复后红线消失，bind 补全、中文悬浮与 Ctrl+B 跳转正常。临时 EditorProbe 已删除。IDE MCP 可能漏报 TS 错误，空诊断不作为验收依据。
 

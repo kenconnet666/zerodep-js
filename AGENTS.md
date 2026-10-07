@@ -4,7 +4,7 @@
 
 - 直接在当前主目录工作，只有用户明确要求才创建或使用新工作树。保留用户已有改动。
 - 独立 TSX 细粒度响应式框架，不混入其他项目的 API 决定。CSS 接入仍仅研究，IndexedDB 等未授权扩展不顺带加入。
-- 2026-10-07 用户最新决定：IDE 与项目统一固定 EAP 配套的 JetBrains TypeScript 7.1.0-dev.jetbrains.20260721.2，Babel 框架转换和 Vite 不变。此决定取代此前追随微软 nightly 的版本选择；只维护这一 TS7.1，不回退 TS6、不维护多版本兼容或定制 TS 内核补丁。SDK 与平台包从 JetBrains 原始发行地址安装，精确 URL 和校验信息进入 pnpm catalog/overrides/lockfile。
+- 2026-10-07 用户最新决定：IDE 与项目统一固定 JetBrains TypeScript 7.1.0-dev.jetbrains.20261006.2，Babel 框架转换和 Vite 不变。此决定取代此前追随微软 nightly 的版本选择；只维护这一 TS7.1，不回退 TS6、不维护多版本兼容或定制 TS 内核补丁。已授权为 WebStorm EAP 类型引擎适配 ts-go-proxy，先备份并验证；SDK 与平台包从 JetBrains GitHub Release 原始发行地址安装，精确 URL 和校验信息进入 pnpm catalog/overrides/lockfile。
 - 首要目标是简单易维护、方便使用、良好类型提示与适当中文注释。性能次要；不为减少依赖或解析次数引入复杂后台、缓存和协议。
 - 保留显式变量式 _state/_derived（无 .value）、_component 参数解构/默认值/实时 rest、bind、DOM bind:this、_lazy、快照历史和开发状态保留。不能以弱化类型或生命周期、表单、列表、SSR 断言完成迁移。
 - 选择性参考 Svelte 的语义和资源所有权，参考 Vue Devtools 的使用体验；无需复制其全部功能。以 docs/production-plan.md、docs/semantics.md 和 .design/standard-toolchain-plan.md 为执行依据。

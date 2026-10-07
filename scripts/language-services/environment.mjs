@@ -13,7 +13,7 @@ export function serviceConfig() {
     readFileSync(requireProject.resolve('typescript/package.json'), 'utf8'),
   );
   if (!manifest.version.startsWith('7.1.'))
-    throw new Error('语言服务需要项目固定的官方 TypeScript 7.1。');
+    throw new Error('语言服务需要项目固定的选定 TypeScript 7.1。');
   return {
     bin: compilerPath(),
     args: ['--lsp', '--stdio'],

@@ -4,7 +4,7 @@ zerodep-js 使用标准 TSX、显式变量式状态和一次初始化的组件�
 
 ## 安装与构建入口
 
-工作区源码已按用户要求切换为 EAP 配套 `7.1.0-dev.jetbrains.20260721.2`，使用仓库的 `pnpm install --frozen-lockfile`，下载来源和平台覆盖见 [工具链](tooling.md)。下方 npm rc.7 安装说明对应既有发布版本，尚不包含本次 SDK 调整。
+工作区源码已按用户要求切换为 JetBrains `7.1.0-dev.jetbrains.20261006.2`，使用仓库的 `pnpm install --frozen-lockfile`，下载来源和平台覆盖见 [工具链](tooling.md)。下方 npm rc.7 安装说明对应既有发布版本，尚不包含本次 SDK 调整。
 
 消费者使用 Node 24、官方 TypeScript 7.1.0-dev.20261007.1 与 Vite 8.3.1。当前候选 rc.7 已发布到 npm next，框架包安装相同版本：
 
