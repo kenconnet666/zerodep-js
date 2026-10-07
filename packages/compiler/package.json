@@ -9,9 +9,10 @@
     "node": ">=24.11 <25"
   },
   "bin": {
-    "zerodep-check": "./dist/cli.js"
+    "zerodep-check": "./bin/check.mjs"
   },
   "files": [
+    "bin",
     "dist/**/*.js",
     "dist/**/*.js.map",
     "dist/**/*.d.ts",
