@@ -12,6 +12,7 @@ import type { Props } from '../runtime/props.js';
 import { childContainer, createRange, insert, rollback, type Container } from './utils.js';
 import { renderList } from './list.js';
 import { renderBoundary } from './boundary.js';
+import { renderPortal } from './portal.js';
 import { HydrationError, HydrationCursor, hydrationRoot } from './hydration.js';
 import {
   HTML,
@@ -134,6 +135,10 @@ export function renderValue(
   }
   if (value.kind === 'boundary') {
     renderBoundary(value, parent, before, namespaceParent, renderValue, hydration);
+    return;
+  }
+  if (value.kind === 'portal') {
+    renderPortal(value, parent, before, renderValue, hydration);
     return;
   }
   if (typeof value.tag !== 'string') {

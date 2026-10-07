@@ -25,3 +25,5 @@ export { _createContext, _provideContext, _useContext } from './runtime/context.
 export type { Context } from './runtime/context.js';
 export { For, ErrorBoundary } from './runtime/flow.js';
 export type { ForProps, Key, ErrorBoundaryProps } from './runtime/flow.js';
+export { Portal } from './dom/portal.js';
+export type { PortalProps } from './dom/portal.js';

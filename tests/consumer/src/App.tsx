@@ -8,6 +8,7 @@ import {
   _snapshot,
   _lazy,
   _id,
+  Portal,
 } from 'zerodep-js';
 import { _task } from 'zerodep-use/task';
 import { _history } from 'zerodep-use/history';
@@ -103,6 +104,9 @@ export const App = _component(({ title }: { title: string }) => {
       <label for={inputId}>消息</label>
       <input id={inputId} aria-label="消息" bind:value={message} bind:this={input} />
       <span data-packed-task>{task.data}</span>
+      <Portal>
+        <span data-packed-portal>外层内容</span>
+      </Portal>
       <button data-reference-focus onClick={() => input?.focus()}>
         聚焦消息
       </button>

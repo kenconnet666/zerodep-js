@@ -78,3 +78,10 @@ export const ErrorBoundary = defineComponent((input: ErrorBoundaryProps): Bounda
   kind: 'boundary',
   input,
 }));
+
+export interface PortalTemplate {
+  readonly [TEMPLATE]: true;
+  readonly kind: 'portal';
+  /** SSR 不读取浏览器目标，内部协议不依赖 DOM 全局类型。 */
+  readonly input: { readonly target?: unknown; readonly children?: Renderable };
+}

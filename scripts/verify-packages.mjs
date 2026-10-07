@@ -316,6 +316,12 @@ try {
     await expect(page.locator('#app')).toHaveAttribute('data-reused', String(mode === 'ssr'));
     await expect(page.locator('h1')).toHaveText('独立消费');
     await expect(page.locator('[data-packed-task]')).toHaveText('task-ready');
+    await expect(page.locator('[data-packed-portal]')).toHaveText('外层内容');
+    assert(
+      await page
+        .locator('[data-packed-portal]')
+        .evaluate((node) => node.parentNode === document.body),
+    );
     assert.equal(
       await page.locator('label').getAttribute('for'),
       await page.locator('input[aria-label="消息"]').getAttribute('id'),
@@ -356,6 +362,7 @@ try {
     await expect(page.locator('body')).toHaveAttribute('data-fixture-effect', 'active');
     await page.evaluate(() => window.stopFixture());
     await expect(page.locator('#app')).toBeEmpty();
+    await expect(page.locator('[data-packed-portal]')).toHaveCount(0);
     await expect(page.locator('body')).toHaveAttribute('data-fixture-effect', 'disposed');
     await expect(page.locator('body')).toHaveAttribute('data-fixture-aborted', 'true');
     assert.equal(

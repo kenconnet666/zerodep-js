@@ -1,7 +1,7 @@
 import { Derived } from './reactivity.js';
 import { COMPONENT, type AnyComponent } from './component.js';
 import { restProps, type Props } from './props.js';
-import type { ListTemplate, BoundaryTemplate } from './flow.js';
+import type { ListTemplate, BoundaryTemplate, PortalTemplate } from './flow.js';
 import { resolveBindings } from '../native/bindings.js';
 
 export const TEMPLATE = Symbol('zerodep.template');
@@ -9,7 +9,12 @@ export const TEMPLATE = Symbol('zerodep.template');
 export type Renderable =
   Template | string | number | bigint | boolean | null | undefined | readonly Renderable[];
 export type Template =
-  ElementTemplate | DynamicTemplate | FragmentTemplate | ListTemplate | BoundaryTemplate;
+  | ElementTemplate
+  | DynamicTemplate
+  | FragmentTemplate
+  | ListTemplate
+  | BoundaryTemplate
+  | PortalTemplate;
 
 export interface ElementTemplate {
   readonly [TEMPLATE]: true;

@@ -99,6 +99,22 @@ const Content = _component(() => {
 
 JSX 值是可重复插入的渲染描述，每个位置有独立 DOM 与生命周期。普通 children 可以转发；参数化内容使用显式调用的函数。普通函数值不会被自动当作 children 执行。
 
+## Portal：把内容放到页面外层
+
+```tsx
+import { Portal } from 'zerodep-js';
+
+<Portal>
+  <div role="dialog">弹窗内容</div>
+</Portal>;
+```
+
+默认把内容放到当前页面的 body，适合需要离开原容器的弹层或提示。它仍属于原父组件：数据照常更新，context 照常可用，原错误边界仍能接住错误，父组件卸载时外层内容一起清理。Portal 不自动添加包装 div，不接管目标容器中原有的内容。
+
+需要指定位置时使用 `<Portal target={container}>内容</Portal>`，container 是同一文档中的 HTML 元素引用，不是选择器字符串。换到另一个容器时保留子组件、DOM、草稿、ID 和焦点；target 为 null 时销毁内容，恢复目标后重新创建。省略 target 或传 undefined 都使用 body。
+
+SSR 只输出空的 Portal 标记，不读取目标、不执行子组件；整棵树成功接管后再显示外层内容。因此首屏必须包含的正文不要放进 Portal。事件按实际 DOM 位置冒泡，放到 body 后不会自动冒泡给原 JSX 父节点。Portal 只负责放置与清理，不负责弹窗焦点圈定、滚动锁定或动画。
+
 ## 原生元素与根入口
 
 - `class`/`className`、style 字符串/对象、HTML/SVG/MathML 与原生事件遵循[原生元素契约](native-elements.md)。`StyleObject` 提供 CSS 属性提示，长度单位显式填写。

@@ -72,6 +72,8 @@ function render(value: Renderable, owner: Scope, context: Context): string {
   if (!(TEMPLATE in value)) throw new Error('无效的服务端渲染值。');
   if (value.kind === 'fragment')
     return value.children.map((child) => render(child, owner, context)).join('');
+  // 不读取 target/children，服务端也不会执行 Portal 子组件的初始化代码。
+  if (value.kind === 'portal') return range('portal', '');
   if (value.kind === 'dynamic')
     return range(
       'dynamic',

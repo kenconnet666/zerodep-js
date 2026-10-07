@@ -54,6 +54,8 @@ export const Counter = _component(({ step = 1 }: { step?: number }) => {
 
 当前分支新增 `_id()` 用于 SSR/接管一致的组件无障碍 ID，`zerodep-use/task` 的 `_task(loader)` 用于显式可取消异步任务；两者尚未发布到 npm rc.7。契约与用法见 [API](docs/api.md#组件-id) 和 [异步任务](docs/tasks.md)。
 
+`<Portal>内容</Portal>` 可以把弹层内容放到 body，仍随原父组件更新和销毁；指定位置使用 `target={container}`。SSR 只留占位，接管成功后再显示。它也属于当前分支新增能力，详见 [Portal](docs/api.md#portal把内容放到页面外层)。
+
 Vite 使用 zerodep-js-vite 的 zerodep()。应用 TS 配置使用 jsx: preserve、jsxImportSource: zerodep-js。客户端通过 _mount/_hydrate 返回的 disposer 卸载；服务端使用独立 SSR 入口。
 
 ## 验证与工具
