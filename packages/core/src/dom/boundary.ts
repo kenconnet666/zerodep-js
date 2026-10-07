@@ -1,4 +1,4 @@
-import { Scope, getScope, _untrack } from '../runtime/reactivity.js';
+import { Scope, getScope, _untrack, assertCanWrite } from '../runtime/reactivity.js';
 import { dynamic } from '../runtime/template.js';
 import type { BoundaryTemplate } from '../runtime/flow.js';
 import { HydrationCursor, containsHydrationError } from './hydration.js';
@@ -18,9 +18,13 @@ export function renderBoundary(
   let pending = range.hydration;
   let branch: Scope | undefined;
   let recovering = false;
+  let displaying = false;
 
   const reset = () => {
-    if (!owner.disposed) display();
+    if (owner.disposed) return;
+    assertCanWrite();
+    // 清理回调可能再次请求重建；当前重建已经满足它，不递归挂载第二份子树。
+    if (!displaying) display();
   };
   function retryAfterCommit(failure?: { error: unknown }): void {
     const cursor = pending!;
@@ -31,6 +35,15 @@ export function renderBoundary(
     cursor.session.defer(() => display(failure));
   }
   function display(failure?: { error: unknown }): void {
+    const previous = displaying;
+    displaying = true;
+    try {
+      replace(failure);
+    } finally {
+      displaying = previous;
+    }
+  }
+  function replace(failure?: { error: unknown }): void {
     recovering = failure !== undefined;
     const next = new Scope(owner);
     const cursor = pending;

@@ -1,4 +1,11 @@
-import { _component, _state, _effect, ErrorBoundary, type TextRenderable } from 'zerodep-js';
+import {
+  _component,
+  _state,
+  _effect,
+  _onCleanup,
+  ErrorBoundary,
+  type TextRenderable,
+} from 'zerodep-js';
 
 type Mode = 'ok' | 'render' | 'effect' | 'promise' | 'promise-text';
 const Risky = _component(({ mode }: { mode: Mode }) => {
@@ -27,10 +34,21 @@ const ClientOnly = _component(() => {
   if (typeof document === 'undefined') throw new Error('该内容需要浏览器环境');
   return <p data-client-recovered>客户端局部重试成功</p>;
 });
+const ResetDuringCleanup = _component(
+  ({ reset, recover }: { reset: () => void; recover: () => void }) => {
+    _onCleanup(reset);
+    return (
+      <button data-cleanup-reset-recover onClick={recover}>
+        恢复并在清理中再次请求
+      </button>
+    );
+  },
+);
 
 export const BoundaryExample = _component(() => {
   let mode = _state<Mode>('ok');
   let nested = _state(false);
+  let cleanupReset = _state(false);
   return (
     <section aria-label="错误恢复">
       <h2>错误恢复</h2>
@@ -56,24 +74,43 @@ export const BoundaryExample = _component(() => {
         触发副作用错误
       </button>
       <ErrorBoundary
-        fallback={(error, reset) => (
-          <div data-boundary-error>
-            <p role="alert">{String(error)}</p>
-            <button
-              type="button"
-              data-recover
-              onClick={() => {
+        fallback={(error, reset) =>
+          cleanupReset ? (
+            <ResetDuringCleanup
+              reset={reset}
+              recover={() => {
                 mode = 'ok';
                 reset();
               }}
-            >
-              恢复
-            </button>
-          </div>
-        )}
+            />
+          ) : (
+            <div data-boundary-error>
+              <p role="alert">{String(error)}</p>
+              <button
+                type="button"
+                data-recover
+                onClick={() => {
+                  mode = 'ok';
+                  reset();
+                }}
+              >
+                恢复
+              </button>
+            </div>
+          )
+        }
       >
         <Risky mode={mode} />
       </ErrorBoundary>
+      <button
+        data-cleanup-reset-error
+        onClick={() => {
+          cleanupReset = true;
+          mode = 'render';
+        }}
+      >
+        验证清理期间重建
+      </button>
       <button
         type="button"
         data-promise-error

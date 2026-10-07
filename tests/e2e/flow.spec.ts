@@ -82,6 +82,19 @@ for (const mode of ['csr', 'ssr']) {
       await expect(page.locator('[data-theme="default"]')).toHaveText('默认');
     });
 
+    test('清理中再次 reset 不重复挂载恢复子树', async ({ page }) => {
+      const errors: string[] = [];
+      page.on('pageerror', (error) => errors.push(error.message));
+      await page.goto(`/?render=${mode}`);
+      await page.locator('[data-cleanup-reset-error]').click();
+      await page.locator('[data-cleanup-reset-recover]').click();
+      await expect(page.locator('[data-working]')).toHaveCount(1);
+      await expect(page.locator('[data-working]')).toHaveText('工作正常');
+      await page.locator('[data-unmount]').click();
+      await expect(page.locator('[data-working]')).toHaveCount(0);
+      expect(errors).toEqual([]);
+    });
+
     test('呈现与副作用错误局部恢复，fallback 自身失败交给外层', async ({ page }) => {
       const errors: string[] = [];
       page.on('pageerror', (error) => errors.push(error.message));

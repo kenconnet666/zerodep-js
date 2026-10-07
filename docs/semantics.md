@@ -72,6 +72,7 @@
 - For 接受数组、null 或 undefined；缺失数组视为空，fallback 随空态创建与销毁。使用命名导入（可重命名）或静态命名空间标签，以及内联同步 row/index 回调；写入参数或用外部回调代替会报错，普通辅助回调仍按 JavaScript 传值。
 - context 用 _createContext / _provideContext / _useContext 表达，值按最近作用域继承，内层可覆盖；同一作用域只提供一次。变化值使用状态对象或 getter，普通数值保持取值语义。
 - ErrorBoundary 捕获子树的初始化、渲染与排队 effect 错误。fallback 接收错误与 reset，reset 重建子树；fallback 自身失败交给外层。原生事件和自行启动的异步任务仍由调用方处理错误。
+- 错误边界重建期间，清理回调再次调用 reset 并入当前重建，不递归挂载第二份子树；后续事件仍可重新 reset。纯派生中不能调用 reset，边界销毁后它不再生效。
 - 普通 map 保持普通计算，不默认为有身份保留的列表机制。
 - `_mount(App, { target, props })`、`_hydrate(App, { target, props })` 返回 disposer；SSR 从同步 `renderToString(App, { props })` 建立正确基线。
 - 完整生产目标包括受控表单、IME/选区、错误恢复、context、ref、属性转发、声明消费、HMR、SSR/hydration 与安全边界；不以只支持计数器代替完成。

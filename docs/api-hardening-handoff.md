@@ -57,6 +57,10 @@
 
 ## 继续工作
 
+- CSS 跨仓库修复已复现并提交：zerodep-css main 的 593cebd 准备六包 0.3.1。authorInputs 现在核对属性作者的底层 name 数据值，不执行 getter；保留正常关键字扩展。构建、生成一致性、六包类型/Vue/Svelte 检查及绑定焦点通过。CI 37688602400 最近只剩 performance (templates) 运行，尚未发布。
+- 已按 593cebd 打包到相邻 CSS 仓库 test-results/release；manifest.json 记录同一提交与六包 SHA512。主框架使用 --css-tarball 的工作区外独立消费已通过，新增真实继承作者 opacity 层叠/更新用例；scripts/verify-packages.mjs 与 tests/consumer/src/App.tsx 暂不单独提交，等待 0.3.1 发布后更新 catalog/peer/lockfile 一起交付。不能直接用旧 0.3.0 跑这些新增消费断言。
+- 期间补充 ErrorBoundary 清理回调重入 reset 的真实 DOM 回归：CSR/SSR 修复前都会出现 2 份内容，重建期间合并重复 reset 后 Chromium 两项通过。普通后续 reset 保留、纯派生仍拒绝调用；该修复与 CSS 消费依赖分开提交。
+
 - 94daff7 已推送历史重入阶段。CI 37686588162 最近已通过 verify、六平台、两平台包消费和 WebKit，Chromium/Firefox 尚未完成。
 - CSS 接入层修复已复现的求值顺序错误：先保存作者接收者/方法，再读取直接参数；求参后作者身份变化就使用原方法回退声明。17 项 CSS 编译/运行时测试（含真实 _derived TSX）及工具 TS7/lint 通过，无须为此改 CSS 作者的单位规则。
 - 下一项可核对 CSS 库 authorInputs 对继承属性作者的底层 name 是否检查充分：只比较方法身份可能把映射到其他 CSS 属性的自定义作者误认作系统作者。尚未复现或修改，必须先在 CSS 仓库补焦点测试；若属实应由 CSS 库修复，不能在框架复制判断。
