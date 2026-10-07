@@ -18,7 +18,7 @@ import { NativeTools } from '../src/tools.js';
 import { NativeWorkspace } from '../src/workspace.js';
 import { compilerPath } from '../src/binary.js';
 import { ProjectCompiler } from '../src/project.js';
-import { changedFiles, dependencyStamps } from '../src/project-files.js';
+import { canonical, changedFiles, dependencyStamps, stamp } from '../src/project-files.js';
 
 async function fixture() {
   const root = await mkdtemp(join(tmpdir(), 'zerodep-owned-test-'));
@@ -186,6 +186,22 @@ it('硬链接元数据变化不冒充源码修改，内容变化仍使缓存失�
     expect(await changedFiles(stamps)).toEqual([]);
     await writeFile(file, 'export const value: number = 2;');
     expect(await changedFiles(stamps)).toHaveLength(1);
+  } finally {
+    await removeFixture(root);
+  }
+});
+
+it('时间戳与长度无法区分的源码更新仍通过内容检测到', async () => {
+  const root = await fixture();
+  try {
+    const file = join(root, 'entry.ts');
+    const stamps = await dependencyStamps([file]);
+    const key = canonical(file);
+    const previousHash = stamps.get(key)!.split(':')[4]!;
+    await writeFile(file, 'export const value: number = 2;');
+    // 确定性模拟文件系统的元数据粒度不足，而不是靠等待时间戳变化让用例通过。
+    stamps.set(key, (await stamp(file)) + ':' + previousHash);
+    expect(await changedFiles(stamps)).toEqual([key]);
   } finally {
     await removeFixture(root);
   }

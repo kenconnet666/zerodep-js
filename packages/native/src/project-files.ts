@@ -29,17 +29,14 @@ export async function changedFiles(stamps: Map<string, string>): Promise<string[
   const current = await Promise.all(
     [...stamps].map(async ([file, previous]) => {
       const fields = previous.split(':');
-      const current = await stamp(file);
-      if (current === fields.slice(0, 4).join(':')) return undefined;
+      const current = await stamp(file, fields[4] !== undefined);
+      if (current === previous) return undefined;
       const next = current.split(':');
-      // pnpm 建立/删除硬链接会更新共享文件的 ctime。只有该字段变化时，
-      // 用内容确认它是否仍相同；保留 inode、mtime、目录变化的失效语义。
-      if (fields[4] && next[0] === fields[0] && next[2] === fields[2] && next[3] === fields[3]) {
-        const verified = await stamp(file, true);
-        if (verified.split(':')[4] === fields[4]) {
-          stamps.set(file, verified);
-          return undefined;
-        }
+      // 同长度的快速写入不保证更新可观察的时间戳；文件必须按内容确认。
+      // 硬链接仅改变元数据时无需失效，文件身份和目录变化仍需重新检查。
+      if (fields[4] && next[4] === fields[4] && next[3] === fields[3]) {
+        stamps.set(file, current);
+        return undefined;
       }
       return file;
     }),
