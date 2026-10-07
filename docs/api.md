@@ -2,11 +2,11 @@
 
 页面元信息使用 `zerodep-js/head` 的 `_head(() => ({ title, description }))`；SSR 的 `_render` 返回正文与元信息，`renderToString` 保持字符串接口。生命周期与模板接线见 [页面元信息](head.md)。
 
-本文对应当前公开 API，发布版本与变更见 CHANGELOG。core 顶层函数直接使用单下划线名称；路由和持久化来自独立 zerodep-use，旧 core 子入口直接移除，不保留转发或 deprecated。JSX 组件、类型/类和实例方法保持原名。
+本文对应当前工作区源码 API；本轮新增能力尚未发布为新 npm 版本，不能假定现有 rc.7 已包含它们。发布边界见 [环境配置](environment-setup.md)和[交接记录](api-hardening-handoff.md)。core 顶层函数直接使用单下划线名称；路由和持久化来自独立 zerodep-use，旧 core 子入口直接移除，不保留转发或 deprecated。JSX 组件、类型/类和实例方法保持原名。
 
 公共运行时从 `zerodep-js` 导入，Vite 插件来自 `zerodep-js-vite`，独立编译来自 `zerodep-js-compiler`，服务端入口来自 `zerodep-js-ssr`。下面记录当前实际契约；安装与声明消费见 [开始使用](getting-started.md)和[包产物](packages.md)。
 
-RC3 候选新增 `bind:value` / `bind:checked` / `bind:valueAsNumber` 与组件绑定、`zerodep-use/history` 的 _history、core 的 _lazy。前后写法、数据类型、撤销边界和 SSR 占位规则见[编写指南](authoring.md)。
+`bind:value` / `bind:checked` / `bind:valueAsNumber` 与组件绑定、`zerodep-use/history` 的 _history、core 的 _lazy 的前后写法、数据类型、撤销边界和 SSR 占位规则见 [编写指南](authoring.md)。分组与展开绑定见 [表单](forms.md)。
 
 可选 `zerodep-use/storage` 提供 _persistLocal / _persistSession，统一使用显式 read/write，支持迁移、同步、失败恢复与清理。完整契约见 [浏览器持久化](storage.md)。
 

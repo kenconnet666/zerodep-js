@@ -43,7 +43,7 @@ pnpm lsp:verify
 pnpm lsp:completions
 ```
 
-依次执行；语言探针会临时创建示例源码，不能与同工作区的 check/build 并行。补全验收应为 49/49，服务版本应为上述 JetBrains SDK。需要跑浏览器/包消费时，再执行 `pnpm browsers:install` 和 `pnpm test:packages`。完整远端 CI 尚未结束时，不能把本机检查当作六平台和三浏览器矩阵全部通过。
+依次执行；语言探针会临时创建示例源码，不能与同工作区的 check/build 并行。补全探针的全部用例都应通过，总数以当前脚本输出为准，服务版本应为上述 JetBrains SDK。需要跑浏览器/包消费时，再执行 `pnpm browsers:install` 和 `pnpm test:packages`。完整远端 CI 尚未结束时，不能把本机检查当作六平台和三浏览器矩阵全部通过。
 
 ## 3. WebStorm SDK 缓存
 

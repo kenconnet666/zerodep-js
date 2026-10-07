@@ -6,13 +6,13 @@
 
 | 领域            | 当前范围与证据                                                                                                                                                             |
 | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| TypeScript      | 当前工作区固定官方 npm `7.1.0-dev.20261007.1`，升级验证见执行记录。仅面向选定的新版本，不增加旧版或多版本兼容层。                                                          |
+| TypeScript      | 当前工作区固定 JetBrains `7.1.0-dev.jetbrains.20261006.2`，发行地址与校验见 [环境配置](environment-setup.md)。仅面向选定的新版本，不增加旧版或多版本兼容层。               |
 | Node            | Node 24，工程固定 24.18.0，包 engines 为 `>=24.11 <25`。不把未验证的大版本写入支持范围。                                                                                   |
-| 构建            | ESM、官方 TS7.1 类型检查、Babel 框架转换、Vite 8 插件；固定版本由 catalog 管理，不提供 React runtime 或旧版 TS 兼容层。                                                    |
+| 构建            | ESM、选定 JetBrains TS7.1 类型检查、Babel 框架转换、Vite 8 插件；固定版本由 catalog 管理，不提供 React runtime 或旧版 TS 兼容层。                                          |
 | 浏览器          | 面向现代 DOM、Proxy、WeakRef/FinalizationRegistry 和 AbortController 环境。CI 使用固定 Playwright 版本的 Chromium、Firefox、WebKit；状态保留移动提供 moveBefore 兼容路径。 |
 | Windows / Linux | Windows 本地与独立包消费、Linux 完整 CI 均有证据。WebKit 自动化不等于实机 Safari 或所有平台输入法验证。                                                                    |
 | 输入法          | 三浏览器组合事件序列已验证；Chromium CDP 编辑管线已覆盖候选、提交、取消、外部更新及 Unicode 选区。协议输入不等于 OS 输入法实测。                                           |
-| 编辑器          | 官方 TS7.1 标准 LSP 已通过 LSP4IJ 在 WebStorm 实测；专有类型引擎及重复候选的边界见 [工具链](tooling.md)。                                                                  |
+| 编辑器          | 项目框架 LSP 与 WebStorm 原生类型引擎分开配置；指定 EAP 构建、同版本 SDK 和代理补丁步骤见 [环境配置](environment-setup.md)，不将历史 SDK 实测套到其他版本。                |
 
 包的体积和速度没有硬性上限，仍保留资源回收、压力和按需打包观察。验证脚本的运行超时用于发现挂起，不是性能排名或用户负载承诺。
 

@@ -61,7 +61,9 @@ Svelte transition 的价值不只在语法：退场期间节点仍需存活，�
 
 ### 4. 路由页面的 head 所有权：中等优先，放 SSR/use 边界
 
-Svelte 提供 svelte:head，能将页面元数据纳入服务端输出和客户端更新。当前 renderDocument 只组合可信模板与 app HTML，没有公开的组件级 title/meta/link 收集、去重与卸载恢复协议。只在 onMount 中修改 document.title 解决不了首屏 SSR 和嵌套路由的覆盖恢复。
+2026-10-08 实施更新：已选择组件作用域的 `_head`，首版只处理 title/description，SSR 使用 `_render` 收集，客户端按文档隔离与卸载恢复；见 [当前契约](../docs/head.md)。以下保留此前的取舍背景，不再表示这项能力缺失，也不扩张为任意 meta/link 注入。
+
+Svelte 提供 svelte:head，能将页面元数据纳入服务端输出和客户端更新。研究时 renderDocument 只组合可信模板与 app HTML，没有公开的组件级 title/meta/link 收集、去重与卸载恢复协议。只在 onMount 中修改 document.title 解决不了首屏 SSR 和嵌套路由的覆盖恢复。
 
 若项目面向带 SEO 的多页面应用，建议先做路由级 title/meta 数据契约，由 SSR 文档和客户端路由共同应用；不必从一开始支持任意组件向 head 注入节点。明确键、覆盖顺序、转义、请求隔离和导航撤销。若产品只是内部后台，此项可以延后。
 
@@ -77,7 +79,7 @@ Svelte 提供 svelte:head，能将页面元数据纳入服务端输出和客户�
 
 ### 原生表单与双向绑定
 
-Svelte 还支持 group、files、尺寸、媒体状态和 getter/setter 绑定。当前 bind:value/checked/valueAsNumber/this，加原生事件与 ref，已覆盖基础表单；IME、reset、选区和 hydration 的正确性比绑定名称数量更重要。
+Svelte 还支持 group、files、尺寸、媒体状态和 getter/setter 绑定。原有 bind:value/checked/valueAsNumber/this 加原生事件与 ref 覆盖基础表单；后续已加入字符串模型的 bind:group 与 details 的 bind:open，契约见 [表单](../docs/forms.md)。IME、reset、选区和 hydration 的正确性比绑定名称数量更重要，其余绑定仍不是本轮默认扩展清单。
 
 当前原生 select 的 bind:value 明确写回 string/string[]；Svelte 可以通过内部 option 值保存对象。这是实质差异，但稳定 ID 与模型查找通常更贴近原生 HTML，也便于 SSR/表单提交。不默认扩展对象 select，只有真实产品需要对象身份语义时才讨论。普通输入归一化直接写 value + onInput 更清楚，不为 getter/setter binding 再造语法。
 
