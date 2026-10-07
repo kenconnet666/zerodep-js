@@ -8,7 +8,7 @@ import {
   _snapshot,
   type Cleanup,
 } from 'zerodep-js';
-import { source } from 'zerodep-js/internal';
+import { source, synchronous } from 'zerodep-js/internal';
 import { storageSubscription, type StorageLike } from './hub.js';
 
 export type { StorageLike } from './hub.js';
@@ -45,15 +45,7 @@ export interface Persistence {
 const format = 'zerodep-js-storage';
 const record = (value: unknown): value is Record<string, unknown> =>
   value !== null && typeof value === 'object' && !Array.isArray(value);
-function synchronous<T>(value: T): T {
-  if (
-    value !== null &&
-    (typeof value === 'object' || typeof value === 'function') &&
-    typeof Reflect.get(value, 'then') === 'function'
-  )
-    throw new TypeError('localStorage 绑定、迁移和校验必须同步完成。');
-  return value;
-}
+const syncMessage = '浏览器存储绑定、迁移和校验必须同步完成。';
 
 function persist<T>(
   kind: 'localStorage' | 'sessionStorage',
@@ -80,8 +72,8 @@ function persist<T>(
       callbackDepth--;
     }
   };
-  const read = () => call(() => synchronous(binding.read()));
-  const write = (value: T) => call(() => synchronous(binding.write(value)));
+  const read = () => call(() => synchronous(binding.read(), syncMessage));
+  const write = (value: T) => call(() => synchronous(binding.write(value), syncMessage));
   const initial = _untrack(() => call(() => _snapshot(read())));
   const version = options.version ?? 1;
   const delay = options.writeDelay ?? 0;
@@ -214,9 +206,11 @@ function persist<T>(
     if (previous > version) throw new Error('保存的数据版本比当前应用更新，不能覆盖。');
     if (previous !== version) {
       if (!options.migrate) throw new Error(`存储版本 ${previous} 需要迁移到 ${version}。`);
-      data = call(() => synchronous(options.migrate!(data, previous)));
+      data = call(() => synchronous(options.migrate!(data, previous), syncMessage));
     }
-    const value = call(() => synchronous(options.validate ? options.validate(data) : (data as T)));
+    const value = call(() =>
+      synchronous(options.validate ? options.validate(data) : (data as T), syncMessage),
+    );
     return { value: call(() => _snapshot(value)), migrated: previous !== version };
   }
   function restore(value: string | null, preserveEdits = false): boolean {

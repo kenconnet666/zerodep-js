@@ -3,6 +3,22 @@ import { _createRoot, _effect, _flushSync } from 'zerodep-js';
 import { derived, state } from 'zerodep-js/internal';
 import { _history, type History } from '../src/history.js';
 
+it('误传失败的异步 write 只报告同步契约错误，不产生额外的未处理拒绝', async () => {
+  let value = 0;
+  const history = _history({
+    read: () => value,
+    write: async () => {
+      throw new Error('late write');
+    },
+  });
+  value = 1;
+  history.commit();
+  expect(() => history.undo()).toThrow('同步');
+  expect(history.index).toBe(1);
+  history.dispose();
+  await new Promise<void>((resolve) => setImmediate(resolve));
+});
+
 it.each(['commit', 'clear', 'undo', 'redo', 'reset'] as const)(
   '%s 的绑定回调销毁历史后，不再恢复已释放的记录或游标',
   (operation) => {

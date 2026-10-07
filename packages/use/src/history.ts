@@ -1,5 +1,5 @@
 import { _onCleanup, _snapshot, _untrack } from 'zerodep-js';
-import { assertCanWrite, getScope, source } from 'zerodep-js/internal';
+import { assertCanWrite, getScope, source, synchronous } from 'zerodep-js/internal';
 
 export interface HistoryBinding<T> {
   read(): T;
@@ -26,16 +26,6 @@ export interface History {
   dispose(this: void): void;
 }
 
-function synchronous<T>(value: T): T {
-  if (
-    value !== null &&
-    (typeof value === 'object' || typeof value === 'function') &&
-    typeof Reflect.get(value, 'then') === 'function'
-  )
-    throw new TypeError('历史记录的 read/write 必须同步完成。');
-  return value;
-}
-
 /** 手动标记操作边界；只记录数据，不把网络提交或 DOM 操作当成可撤销事务。 */
 export function _history<T>(binding: HistoryBinding<T>, options: HistoryOptions = {}): History {
   assertCanWrite();
@@ -44,7 +34,8 @@ export function _history<T>(binding: HistoryBinding<T>, options: HistoryOptions 
   if (typeof binding?.read !== 'function' || typeof binding?.write !== 'function')
     throw new TypeError('历史记录需要 read 和 write。');
 
-  const capture = () => _untrack(() => _snapshot(synchronous(binding.read())));
+  const capture = () =>
+    _untrack(() => _snapshot(synchronous(binding.read(), '历史记录的 read/write 必须同步完成。')));
   let baseline: T | undefined = capture();
   let records: T[] = [baseline];
   let position = 0;
@@ -68,7 +59,7 @@ export function _history<T>(binding: HistoryBinding<T>, options: HistoryOptions 
   const apply = (value: T) => {
     // write 获得副本，后续编辑不能回头修改历史；只有写入成功后才移动游标。
     const copy = _snapshot(value);
-    synchronous(binding.write(copy));
+    synchronous(binding.write(copy), '历史记录的 read/write 必须同步完成。');
   };
   const move = (offset: number): boolean =>
     operate(() => {

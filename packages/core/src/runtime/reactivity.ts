@@ -1,5 +1,6 @@
 /* oxlint-disable typescript/no-this-alias -- 这里切换同步跟踪上下文，并非给回调捕获 this 别名。 */
 import { RenderQueue } from './render-queue.js';
+import { synchronous } from './synchronous.js';
 export type Cleanup = () => void;
 export type EffectCallback = () => void | Cleanup;
 
@@ -390,7 +391,9 @@ class ReactiveEffect extends Scope implements Observer {
           if (this.disposed) _untrack(cleanup);
           else this.cleanups.push(cleanup);
         } else if (cleanup !== undefined) {
-          throw new Error('effect 必须同步返回清理函数或 undefined，异步任务应显式取消。');
+          const message = 'effect 必须同步返回清理函数或 undefined，异步任务应显式取消。';
+          synchronous(cleanup, message);
+          throw new TypeError(message);
         }
       });
     } finally {

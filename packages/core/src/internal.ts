@@ -21,6 +21,7 @@ export {
   assertCanWrite,
 } from './runtime/reactivity.js';
 export { state } from './runtime/state.js';
+export { synchronous } from './runtime/synchronous.js';
 export { defineComponent, setupComponent, createId, COMPONENT } from './runtime/component.js';
 export { prop, props, restProps } from './runtime/props.js';
 export type { Props } from './runtime/props.js';

@@ -617,19 +617,24 @@ it('新键 reset 仍提交旧键待写快照', () => {
   expect(value(storage, 'b').n).toBe(0);
 });
 
-it('异步迁移明确报错，不能把 Promise 当空对象持久化', () => {
-  const storage = new MemoryStorage();
-  storage.data.set('prefs', saved({ n: 1 }));
-  const model = reactive({ n: 0 });
-  const { result } = owned(() =>
-    _persistLocal('prefs', model, {
-      storage,
-      version: 2,
-      migrate: () => Promise.resolve({ n: 2 }),
-    }),
-  );
-  _flushSync();
-  expect(String(result.error)).toContain('同步');
-  expect(model.read().n).toBe(0);
-  expect(storage.writes).toBe(0);
-});
+it.each([false, true])(
+  '异步迁移明确报错，消费拒绝而不持久化 Promise（reject=%s）',
+  async (reject) => {
+    const storage = new MemoryStorage();
+    storage.data.set('prefs', saved({ n: 1 }));
+    const model = reactive({ n: 0 });
+    const { result } = owned(() =>
+      _persistLocal('prefs', model, {
+        storage,
+        version: 2,
+        migrate: () =>
+          reject ? Promise.reject(new Error('late migrate')) : Promise.resolve({ n: 2 }),
+      }),
+    );
+    _flushSync();
+    expect(String(result.error)).toContain('同步');
+    expect(model.read().n).toBe(0);
+    expect(storage.writes).toBe(0);
+    await new Promise<void>((resolve) => setImmediate(resolve));
+  },
+);

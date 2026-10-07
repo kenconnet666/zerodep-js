@@ -344,6 +344,17 @@ describe('作用域和调度', () => {
     expect(() => _flushSync()).toThrow('同步返回');
   });
 
+  it('误传失败的异步 effect 时报告同步错误，不另产生未处理的拒绝', async () => {
+    root(() => {
+      // @ts-expect-error 异步 effect 无自动清理协议，JS 调用仍应消费错误 Promise。
+      _effect(async () => {
+        throw new Error('late effect');
+      });
+    });
+    expect(() => _flushSync()).toThrow('同步返回');
+    await new Promise<void>((resolve) => setImmediate(resolve));
+  });
+
   it('执行中卸载仍释放回调返回的资源', () => {
     const cleanup = vi.fn();
     const source = new Source(0);

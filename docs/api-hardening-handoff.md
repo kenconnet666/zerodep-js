@@ -13,31 +13,31 @@
 
 ## 已完成实现与契约
 
-| 范围 | 当前实现 | 入口与重点回归 |
-| --- | --- | --- |
-| 任务 | _task(loader,{initial}) 保存成功初值，不发请求、不制造 retry 输入；reset 清空数据/错误/重试输入，取消等待且不覆盖 abort 重入的新任务；cancel 保留数据 | [任务](tasks.md)，use/test/task.test.ts |
-| CSS | 支持显式 class 前的 spread；命名 css 自动跟踪；直接变量保守绑定；_createCssContext 复用 context，保留作者类型、嵌套覆盖和请求隔离 | [CSS](css.md)，compiler CSS、core/SSR context、CssExample |
-| details | bind:open 布尔写回；data-zj-open 验证 SSR 原值并接纳接管前操作；toggle 下一任务校准，卸载取消 timer | [表单](forms.md)，disclosure 编译/SSR/浏览器测试 |
-| 分组 | bind:group 的 radio 字符串、checkbox 字符串数组；静态 type 和明确 value 位于 spread 后；写回声明值，保留隐藏选项，不建立全局分组表 | group 编译/类型投影/SSR/浏览器测试 |
-| output | 受控纯文本 TextRenderable，不放结构注释；form.reset 后重新取得实际 Text；富内容使用普通容器 | [表单](forms.md)，WebKit reset、接管前 reset、负面类型 |
-| 数组 | sort 用户回调恢复依赖跟踪，机械读取不形成循环；跨 realm 普通数组可响应，Array 子类保持实例/私有字段 | core state/reactivity 测试 |
-| 快照 | 普通对象/数组先于显示标签识别；Map/Set 用内建槽识别，不被 Symbol.toStringTag 误导；其他平台对象仍交 structuredClone | core snapshot 测试，共享 objects.ts 原型判断 |
-| 页面元信息 | 可选 zerodep-js/head 的 _head，只支持 title/description；同步纯读取、按字段覆盖、释放恢复、按 Document 隔离；SSR 按根收集 | [元信息](head.md)，core/SSR head、HeadExample、独立消费 |
-| SSR 入口 | _render 返回 {html,head}，renderToString 保持字符串；renderDocument 一次替换标记并安全输出；示例三个入口共用 CSS 宿主，客户端恢复清单 | ssr document 测试与独立包消费 |
+| 范围       | 当前实现                                                                                                                                              | 入口与重点回归                                            |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| 任务       | _task(loader,{initial}) 保存成功初值，不发请求、不制造 retry 输入；reset 清空数据/错误/重试输入，取消等待且不覆盖 abort 重入的新任务；cancel 保留数据 | [任务](tasks.md)，use/test/task.test.ts                   |
+| CSS        | 支持显式 class 前的 spread；命名 css 自动跟踪；直接变量保守绑定；_createCssContext 复用 context，保留作者类型、嵌套覆盖和请求隔离                     | [CSS](css.md)，compiler CSS、core/SSR context、CssExample |
+| details    | bind:open 布尔写回；data-zj-open 验证 SSR 原值并接纳接管前操作；toggle 下一任务校准，卸载取消 timer                                                   | [表单](forms.md)，disclosure 编译/SSR/浏览器测试          |
+| 分组       | bind:group 的 radio 字符串、checkbox 字符串数组；静态 type 和明确 value 位于 spread 后；写回声明值，保留隐藏选项，不建立全局分组表                    | group 编译/类型投影/SSR/浏览器测试                        |
+| output     | 受控纯文本 TextRenderable，不放结构注释；form.reset 后重新取得实际 Text；富内容使用普通容器                                                           | [表单](forms.md)，WebKit reset、接管前 reset、负面类型    |
+| 数组       | sort 用户回调恢复依赖跟踪，机械读取不形成循环；跨 realm 普通数组可响应，Array 子类保持实例/私有字段                                                   | core state/reactivity 测试                                |
+| 快照       | 普通对象/数组先于显示标签识别；Map/Set 用内建槽识别，不被 Symbol.toStringTag 误导；其他平台对象仍交 structuredClone                                   | core snapshot 测试，共享 objects.ts 原型判断              |
+| 页面元信息 | 可选 zerodep-js/head 的 _head，只支持 title/description；同步纯读取、按字段覆盖、释放恢复、按 Document 隔离；SSR 按根收集                             | [元信息](head.md)，core/SSR head、HeadExample、独立消费   |
+| SSR 入口   | _render 返回 {html,head}，renderToString 保持字符串；renderDocument 一次替换标记并安全输出；示例三个入口共用 CSS 宿主，客户端恢复清单                 | ssr document 测试与独立包消费                             |
 
 类型、LSP、完整浏览器测试均进入已有 CI，没有降低断言或添加重试掩盖失败。生成 JSX 类型用 native:generate 维护，不能手工修改生成文件。
 
 ## 提交与 CI 证据
 
-| 提交 | CI | 结果与修复关系 |
-| --- | --- | --- |
-| 1f0aa82（含任务 4445436） | 37656625476 | 完整通过；早期 GitHub 500 推送故障已恢复 |
-| 1612e3f | 37658548791 | 三浏览器暴露 details toggle 微任务校准过早，后续改下一任务 |
-| c26fa40 | 37661954118 | WebKit 暴露 form.reset 重建 output 文本，随后落实纯文本契约 |
-| 4284d8c | 37671752512 | 旧 reference SSR 断言仍要求 output 注释，更新为严格纯文本协议 |
-| 671b5de（含快照 94f5909） | 37673784740 | 完整通过 |
-| 4a21fe2 | 37678372596 | 后续推送取消了未结束的 Chromium 安装步骤（尚未开始 E2E）；其余两浏览器、六平台、Linux/Windows 消费及 verify 通过，不能记为完整通过 |
-| 8b431ed | 37680292167 | 任务/getter、分组稀疏数组与历史生命周期修复已推送，完整结果待核对 |
+| 提交                      | CI          | 结果与修复关系                                                                                                                     |
+| ------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| 1f0aa82（含任务 4445436） | 37656625476 | 完整通过；早期 GitHub 500 推送故障已恢复                                                                                           |
+| 1612e3f                   | 37658548791 | 三浏览器暴露 details toggle 微任务校准过早，后续改下一任务                                                                         |
+| c26fa40                   | 37661954118 | WebKit 暴露 form.reset 重建 output 文本，随后落实纯文本契约                                                                        |
+| 4284d8c                   | 37671752512 | 旧 reference SSR 断言仍要求 output 注释，更新为严格纯文本协议                                                                      |
+| 671b5de（含快照 94f5909） | 37673784740 | 完整通过                                                                                                                           |
+| 4a21fe2                   | 37678372596 | 后续推送取消了未结束的 Chromium 安装步骤（尚未开始 E2E）；其余两浏览器、六平台、Linux/Windows 消费及 verify 通过，不能记为完整通过 |
+| 8b431ed                   | 37680292167 | 任务/getter、分组稀疏数组与历史生命周期修复已推送，完整结果待核对                                                                  |
 
 运行链接格式：https://github.com/kenconnet666/zerodep-js/actions/runs/运行编号 。以 GitHub 实际结果为准，后续修改不能沿用旧提交的验收结论。
 
@@ -49,11 +49,17 @@
 - 新回归先失败再修复：任务/绑定相关 24 项、历史 11 项、TS7 工具/测试源检查和 lint 均通过。完整矩阵交本阶段 CI。
 - 持久化回调中 stop/卸载现在终止外层恢复/读写，不重新连接；正常外部停止仍最终提交，回调内停止直接清理，避免递归提交。7 个停止位置先复现失败后修复；补充监听释放、错误回调、最终提交及 reset 重入，31 项存储测试、TS7 工具检查和 lint 通过。
 
+## 同步契约与格式门禁
+
+- 8b431ed 和 784cd1b 的 verify 被交接文档表格格式挡住，后续按统一 formatter 修正；这是文档格式问题，完整 verify 仍需新提交运行，不能以焦点通过替代。
+- effect、历史 write、parseSearch 和存储 migrate 的失败 Promise 已复现额外未处理拒绝。现复用内部 synchronous 检查，仍同步报契约错误，同时消费无主拒绝；页面元信息也复用此检查，不增加异步 API。
+- 相关 5 个文件 76 项测试、TS7 工具检查、lint 与改动文件格式检查通过。框架新增内部导出同步供 use 包使用，独立包消费继续交 CI。
+
 ## 继续工作
 
 1. 先查 Git 状态和最新 CI；4a21fe2 的 Chromium 因新推送取消安装，最新提交必须重新覆盖它。
 2. 继续基础 API 生命周期/错误路径、SSR/CSS/类型消费的有价值审计；不要为用完额度凑重复测试或引入成品组件。
-3. 下一项审计同步接口误传 Promise 的拒绝处理。先复现再修复，避免无证据重构。
+3. 后续检查清理回调误传 async 的错误/资源释放，以及类型提示是否能提前阻止常见异步误用。先复现再修复，避免无证据重构。
 4. 接近周额度耗尽时停止开启大改动，整理准确提交、CI、未完成验证和恢复命令。余额只少量用于交接。
 
 ## 发布与恢复

@@ -7,6 +7,7 @@ import {
   type Scope,
 } from './reactivity.js';
 import { textValue } from '../native/text.js';
+import { synchronous } from './synchronous.js';
 
 export interface HeadData {
   readonly title?: string | undefined;
@@ -19,11 +20,7 @@ export function headData(input: HeadInput): HeadData {
   if (input == null || input === false) return {};
   if (typeof input !== 'object' || Array.isArray(input))
     throw new TypeError('页面元信息需要 title/description 对象。');
-  if (typeof Reflect.get(input, 'then') === 'function') {
-    // 非 TS 调用也明确拒绝异步 getter；消费其拒绝，避免另冒出无主 Promise 错误。
-    void Promise.resolve(input).catch(() => {});
-    throw new TypeError('页面元信息必须同步返回，不能返回 Promise。');
-  }
+  synchronous(input, '页面元信息必须同步返回，不能返回 Promise。');
   for (const key of Object.keys(input))
     if (key !== 'title' && key !== 'description')
       throw new TypeError(`不支持页面元信息字段 ${key}。`);
