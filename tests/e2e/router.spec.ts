@@ -237,6 +237,9 @@ test('正常链接修饰键保留原生行为，后退恢复滚动', async ({ pa
         JSON.stringify({
           trusted: event.isTrusted,
           modified: event.ctrlKey || event.metaKey,
+          alt: event.altKey,
+          shift: event.shiftKey,
+          button: event.button,
           prevented: event.defaultPrevented,
         }),
       );
@@ -248,7 +251,14 @@ test('正常链接修饰键保留原生行为，后退恢复滚动', async ({ pa
   await link.click({ modifiers: ['ControlOrMeta'] });
   await expect(link).toHaveAttribute(
     'data-native-click',
-    JSON.stringify({ trusted: true, modified: true, prevented: false }),
+    JSON.stringify({
+      trusted: true,
+      modified: true,
+      alt: false,
+      shift: false,
+      button: 0,
+      prevented: false,
+    }),
   );
   const other = await opened;
   await other.waitForLoadState();

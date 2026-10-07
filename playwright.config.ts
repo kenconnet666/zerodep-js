@@ -17,7 +17,8 @@ export default defineConfig({
     screenshot: 'only-on-failure',
   },
   projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    // 使用完整 Chromium 的新无头模式，让原生输入、焦点和新标签页走桌面浏览器实现。
+    { name: 'chromium', use: { ...devices['Desktop Chrome'], channel: 'chromium' } },
     {
       name: 'firefox',
       testIgnore: '**/native-input.spec.ts',
