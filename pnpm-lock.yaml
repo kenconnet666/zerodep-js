@@ -85,8 +85,8 @@ catalogs:
       specifier: 3.18.4
       version: 3.18.4
     zerodep-css:
-      specifier: 0.3.0
-      version: 0.3.0
+      specifier: 0.3.1
+      version: 0.3.1
 
 overrides:
   '@typescript/typescript-win32-x64@7.1.0-dev.jetbrains.20261006.2': https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-win32-x64-v7.1.0-dev.jetbrains.20261006.2.tgz
@@ -142,7 +142,7 @@ importers:
         version: 9.0.3
       zerodep-css:
         specifier: 'catalog:'
-        version: 0.3.0
+        version: 0.3.1
 
   apps/example:
     dependencies:
@@ -151,7 +151,7 @@ importers:
         version: 3.0.2
       zerodep-css:
         specifier: 'catalog:'
-        version: 0.3.0
+        version: 0.3.1
       zerodep-js:
         specifier: workspace:*
         version: link:../../packages/core
@@ -232,7 +232,7 @@ importers:
         version: https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-v7.1.0-dev.jetbrains.20261006.2.tgz
       zerodep-css:
         specifier: 'catalog:'
-        version: 0.3.0
+        version: 0.3.1
 
   packages/ssr:
     devDependencies:
@@ -1318,8 +1318,8 @@ packages:
     engines: {node: '>=20.11'}
     hasBin: true
 
-  zerodep-css@0.3.0:
-    resolution: {integrity: sha512-Vj2UATOYncCWfFnOVUa4iHJVPX4apRpH2QgizOTKJA5uxof9LQq+0gzOiQDA+5LFXqwS2ZoBTDUihcjCTQsUBg==}
+  zerodep-css@0.3.1:
+    resolution: {integrity: sha512-MHHT+k8SgvuyjJE+3RCuBxQ7TgSVcj04LT/oY3VSSm9lVrSYJirC7N1RoMMslWvfBDTwZcFiqlfRqkjvpv6zlA==}
     engines: {node: '>=24'}
 
 snapshots:
@@ -2091,6 +2091,6 @@ snapshots:
 
   why-is-node-running@3.2.1: {}
 
-  zerodep-css@0.3.0:
+  zerodep-css@0.3.1:
     dependencies:
       csstype: 3.2.3

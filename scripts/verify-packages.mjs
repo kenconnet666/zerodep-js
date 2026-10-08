@@ -336,6 +336,9 @@ try {
     await page.locator('[data-packed-css-grow]').click();
     await expect(page.locator('[data-packed-css]')).toHaveCSS('width', '130px');
     assert.equal(await page.locator('[data-packed-css]').getAttribute('class'), cssClass);
+    await expect(page.locator('[data-packed-mapped-css]')).toHaveCSS('opacity', '0.5');
+    await page.locator('[data-packed-mapped-update]').click();
+    await expect(page.locator('[data-packed-mapped-css]')).toHaveCSS('opacity', '0.8');
     await expect(page.locator('[data-packed-task]')).toHaveText('task-ready');
     await expect(page.locator('[data-packed-portal]')).toHaveText('外层内容');
     assert(

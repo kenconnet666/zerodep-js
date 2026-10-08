@@ -4,7 +4,7 @@
 
 优先保证实现简单、容易维护、使用方便、类型提示准确，并用适当中文注释解释关键语义。性能不是首要目标，不维护自有 TypeScript 分支、原生 SDK 或跨命令编译后台。
 
-> 官方 TS7.1 + Babel + Vite 路线已作为 1.0.0-rc.7 发布到 npm next，并通过完整 CI 与注册表消费验证。稳定 latest 未提升；证据与 IDE 边界见 [执行记录](docs/execution.md)。
+> 当前源码准备 1.0.0-rc.8：固定 JetBrains TS7.1，补齐基础 API 与可选 CSS 集成。npm next 仍为此前的 rc.7；新候选的 CI、发布和注册表消费状态见 [维护交接](docs/api-hardening-handoff.md)，稳定 latest 未提升。
 
 ## 工作区
 

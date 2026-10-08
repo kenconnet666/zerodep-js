@@ -67,11 +67,11 @@ const styles =
 
 ## 类型和维护
 
-catalog 固定 CSS 0.3.0，框架保持选定 TS7.1 SDK。CSS 仓库用 TS6 构建 JS 与声明；本项目不运行它的旧 AST 编译器，也不安装 zerodep-css-compiler。旧编译器由 Vue/Svelte 适配器独立使用。
+catalog 固定 CSS 0.3.1，core 可选 CSS peer 下限为 ^0.3.1，框架保持选定 TS7.1 SDK。CSS 仓库用 TS6 构建 JS 与声明；本项目不运行它的旧 AST 编译器，也不安装 zerodep-css-compiler。旧编译器由 Vue/Svelte 适配器独立使用。
 
 跨仓库联调可先执行 `pnpm test:packages --css-tarball <候选.tgz>`。正常安装按精确版本和锁文件恢复，不要求相邻 CSS 仓库存在，也不提交临时绝对路径依赖。
 
-CSS 0.3.0 已从 npm 注册表核对版本和 SHA-512，与 [GitHub 预发布](https://github.com/kenconnet666/zerodep-css/releases/tag/v0.3.0) 中的 tgz 一致。catalog 固定 npm 版本，换机按锁文件安装即可；latest 未提升。
+CSS 0.3.1 核心包已从 npm 注册表核对版本和 SHA-512，与本轮固定 tgz 一致。该版本修复继承作者改写底层属性名或使用 getter 时的优化判断，保留无效值前的有效声明。catalog 固定 npm 版本，换机按锁文件安装即可；完整六包发布进度见 [维护交接](api-hardening-handoff.md)。
 
 ## CSS 作者上下文
 

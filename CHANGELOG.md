@@ -13,7 +13,7 @@
 安装与迁移注意事项：
 
 - IDE 与项目固定 JetBrains `7.1.0-dev.jetbrains.20261006.2`，替换 rc.7 的微软 nightly。独立应用需合并 docs/packages.md 中说明的主包 URL 和根级平台 overrides，并保存锁文件；不能只执行普通 npm TypeScript 版本安装。
-- core 的 CSS 子入口保持可选，使用时安装所要求的 zerodep-css 版本；不会把旧 Vue/Svelte 模板编译器或其 TS6 引入框架工具链。
+- core 的 CSS 子入口保持可选，使用时安装 `zerodep-css@^0.3.1`，本仓库精确固定 0.3.1；不会把旧 Vue/Svelte 模板编译器或其 TS6 引入框架工具链。
 - `renderToString()` 仍返回正文字符串。使用 head 管理时改用 `_render()` 的 `{ html, head }`，交给文档模板组合；title/description 默认值放到根组件 `_head()`，避免重复声明。
 - `_task` 的 initial 建立成功初态但不自动请求；reset 回到 idle 并清空数据、错误与重试输入，cancel 保留现有数据。Portal 的逻辑 context 继承不等于搬运实际 DOM 上的 CSS 变量。
 - 应用与预编译组件库统一升级五包并重建，继续共享同一 core；未增加完整组件库、流式 SSR 或新的外部框架宿主。
