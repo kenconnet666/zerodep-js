@@ -1,5 +1,7 @@
 # 当前执行记录
 
+当前基础 API、CSS、CI 和待发布状态以 [维护交接](api-hardening-handoff.md) 为准。下文保留各阶段当时的版本与验证证据；历史“未实施”及 SDK 结论不能替代后续阶段。
+
 Portal（2026-10-07）：按用户确认新增 `<Portal>`，默认放到 body，可用 target 指定容器；换容器保留节点、草稿、ID、焦点和子组件状态，逻辑 context/错误边界/清理仍属于原父组件。SSR 只留空标记，接管成功后才写外部目标。check、client/server 构建、149 项 core/SSR 单元测试及 Chromium 的 Portal、列表、context、错误边界回归已通过；完整矩阵以本次提交 CI 为准。watch、防抖、ref 组合、class 合并和外部订阅未新增。
 
 新增能力（2026-10-07）：用户批准 Svelte 对照中的优先项后，实现 `_id()` 与 `zerodep-use/task` 的 `_task(loader)`。ID 在 SSR 输出接管标记，客户端复用；异步任务以显式 run/retry/cancel 管理结果，已接入任务工作台。338 项单元测试、check、client/server 构建、Chromium 的任务/ID/接管回归、HMR 与开发态 SSR 验证、独立 tgz 消费通过。消费夹具使用独立 pnpm store，避免宿主缓存丢失 tarball integrity 元数据，仍保留完整性校验。

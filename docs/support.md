@@ -43,4 +43,4 @@
 
 ## 发布边界
 
-历史交付与注册表验收保留在 CHANGELOG。当前源码已切换官方 TS7.1 dev、Babel 与 Vite；本轮迁移的独立验证、完整 CI 与候选发布状态见 [执行记录](execution.md)。历史候选通过不代表当前提交通过，稳定 1.0.0 尚未发布。
+历史交付与注册表验收保留在 CHANGELOG。当前源码固定 JetBrains TS7.1.0-dev.jetbrains.20261006.2、Babel 与 Vite；基础 API 最新提交、CI 与待发布边界见 [交接记录](api-hardening-handoff.md)，之前迁移和发布证据见 [执行记录](execution.md)。历史候选通过不代表当前提交通过，稳定 1.0.0 尚未发布。
