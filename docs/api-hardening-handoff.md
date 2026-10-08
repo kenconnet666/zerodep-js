@@ -70,7 +70,15 @@ CSS 修复核对 authorInputs 的底层 name 数据值，拒绝将改名或 gett
 - 框架 [rc.8 GitHub 预发布](https://github.com/kenconnet666/zerodep-js/releases/tag/v1.0.0-rc.8) 已公开，保存原始五份 tgz 和最终 release.json。账本 revision 为 fe2a7b4，registryVerifiedAt 为 2026-10-08T05:11:43.861Z。本机 .release/1.0.0-rc.8 已恢复同批 tgz 与最终账本，五份摘要一致。
 - CSS [0.3.1 GitHub 预发布](https://github.com/kenconnet666/zerodep-css/releases/tag/v0.3.1) 保存六份原始 tgz、manifest.json 和 registry-verification.json。本机相邻仓库 test-results/release 保留同批产物。
 - 已完成版本不重新上传、不重新构造同版本产物。换机先从对应预发布恢复原文件并核对源码与 SHA-512；下一次代码修复使用新版本，完整门禁仍按同一候选提交执行。
-- 当前没有遗留的待应用 CSS 补丁或待发布候选。后续可讨论基础 API 易用性审查；组件仍是验收夹具，不自动扩张为完整组件库。
+- 当前没有遗留的待应用 CSS 补丁或待发布候选。后续授权的组件库基础设施见下节；rc.8 发行包不包含这些后续源码变更。
+
+## 2026-10-08 Provider 与文档站
+
+- 用户已确认 packages/ui 的 div Provider、继承系统关键字的亮暗主题、中文/英文及自定义语言、独立地区与时区。使用 useCss/useLang/useLocale，根默认亮色、zh-CN、Asia/Shanghai；不会自动跟随系统或持久化。契约见 [Provider](provider.md)。
+- 复用 _createContext/_createCssContext、SystemKeywords 和 Css 的主题读取函数；日期计算引入 date-fns 4.4.0 与官方 @date-fns/tz 1.5.0。无全局语言/时区设置，夏令时规则交给库。
+- apps/docs 加入真实交互示例和 SSR 渲染入口，应用继续自行拼接 CSS 标签；客户端有 SSR 内容时接管。Portal 中可用空参数 Provider 重新应用继承配置。
+- 本地通过 UI 构建与声明、文档 CSR/SSR 构建、相关类型检查、8 项单元/SSR 用例和 Chromium 的 CSR/SSR 两项端到端用例。焦点 lint、格式和 frozen 安装也通过。完整三浏览器/平台由本次提交 CI 验证，不把此前 CI 绿灯当作本轮结果。
+- UI 保持 private，未加入五包发行清单；启动文档演示用 pnpm dev:docs。下一步讨论首个业务组件，或先审阅并确定主题颜色/字号/间距的具体数值。
 
 ## 安装、清理与验证注意事项
 

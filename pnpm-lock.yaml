@@ -24,6 +24,9 @@ catalogs:
     '@csstools/css-tokenizer':
       specifier: 4.0.2
       version: 4.0.2
+    '@date-fns/tz':
+      specifier: 1.5.0
+      version: 1.5.0
     '@jridgewell/trace-mapping':
       specifier: 0.3.31
       version: 0.3.31
@@ -42,6 +45,9 @@ catalogs:
     csstype:
       specifier: 3.2.3
       version: 3.2.3
+    date-fns:
+      specifier: 4.4.0
+      version: 4.4.0
     html-element-attributes:
       specifier: 3.5.0
       version: 3.5.0
@@ -146,12 +152,18 @@ importers:
 
   apps/docs:
     dependencies:
+      date-fns:
+        specifier: 'catalog:'
+        version: 4.4.0
       zerodep-css:
         specifier: 'catalog:'
         version: 0.3.1
       zerodep-js:
         specifier: workspace:*
         version: link:../../packages/core
+      zerodep-js-ssr:
+        specifier: workspace:*
+        version: link:../../packages/ssr
       zerodep-js-ui:
         specifier: workspace:*
         version: link:../../packages/ui
@@ -272,6 +284,13 @@ importers:
         version: link:../core
 
   packages/ui:
+    dependencies:
+      '@date-fns/tz':
+        specifier: 'catalog:'
+        version: 1.5.0
+      date-fns:
+        specifier: 'catalog:'
+        version: 4.4.0
     devDependencies:
       typescript:
         specifier: 'catalog:'
@@ -288,6 +307,9 @@ importers:
       zerodep-js-compiler:
         specifier: workspace:*
         version: link:../compiler
+      zerodep-js-ssr:
+        specifier: workspace:*
+        version: link:../ssr
       zerodep-js-vite:
         specifier: workspace:*
         version: link:../vite
@@ -450,6 +472,9 @@ packages:
   '@csstools/css-tokenizer@4.0.2':
     resolution: {integrity: sha512-OoKoR0f76dCY666JlcbhmVTs2drYj1GUXZTYTcbUgJjh9Nv41aFfZ21bPQTERm5+L5cBDo466NltB2lplS5GBw==}
     engines: {node: '>=20.19.0'}
+
+  '@date-fns/tz@1.5.0':
+    resolution: {integrity: sha512-lwYN/vDPeNRULcepoE/LO2Pgx+7/RV+S9ARfbc9lr2DtGkOD7pAiruHvbR1RX3Qyf6ja47EWJDMsNK5vK08DJg==}
 
   '@emnapi/core@1.11.1':
     resolution: {integrity: sha512-RSvbQmHzdKzNsLYa/wHrbc3KN4sYLKAdPZxqiM2HATqv/SBk2/ENSHpvXGaLOMcsAyz0poEGqkmmKYG3OWiJEQ==}
@@ -989,6 +1014,9 @@ packages:
 
   csstype@3.2.3:
     resolution: {integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==}
+
+  date-fns@4.4.0:
+    resolution: {integrity: sha512-+1UMbeh68lH1SegH83CGWwpb6OHHbpSgr3+s5Eww5M4CAgswBpoWS0AjTOfEJ33HiYKz1hdj/KTFprzXHmq/6w==}
 
   detect-libc@2.1.2:
     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
@@ -1533,6 +1561,8 @@ snapshots:
 
   '@csstools/css-tokenizer@4.0.2': {}
 
+  '@date-fns/tz@1.5.0': {}
+
   '@emnapi/core@1.11.1':
     dependencies:
       '@emnapi/wasi-threads': 1.2.2
@@ -1845,6 +1875,8 @@ snapshots:
   convert-source-map@2.0.0: {}
 
   csstype@3.2.3: {}
+
+  date-fns@4.4.0: {}
 
   detect-libc@2.1.2: {}
 

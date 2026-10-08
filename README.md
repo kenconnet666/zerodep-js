@@ -16,7 +16,7 @@
 | packages/compiler | Babel 转换、框架检查、选定 TS7.1 与语言工具适配    |
 | packages/vite     | 转换接入、依赖扫描和开发更新                       |
 | apps/example      | 使用实际包产物的 CSR/SSR 示例和任务应用            |
-| packages/ui       | 组件库工程基础，尚无组件，暂不发布                 |
+| packages/ui       | Provider、亮暗主题、语言与日期时区，暂不发布       |
 | apps/docs         | 组件库与框架文档应用                               |
 
 不提供外部框架运行时适配，也不把预编译组件库链接到工作区源码。

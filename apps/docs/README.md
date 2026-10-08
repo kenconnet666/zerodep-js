@@ -1,6 +1,6 @@
 # 组件库与框架文档
 
-使用 zerodep-js 自身的 TSX 和 Vite。当前是可运行的文档入口，不包含完整文档站功能。
+使用 zerodep-js 自身的 TSX 和 Vite。已提供 Provider 的主题、语言、地区、时区及 Portal 交互演示。
 
 从仓库根目录执行：
 
@@ -11,6 +11,8 @@ pnpm preview:docs
 ```
 
 开发地址 `http://localhost:5174`，构建预览地址 `http://localhost:4174`，与原有示例端口分开。构建产物在 `apps/docs/dist`，可交给静态站点服务器。
+
+默认静态页面采用 CSR。`dist/server/entry-server.js` 另提供 SSR 的 `render()`，返回 html/styles，由服务器插入页面；浏览器入口有 SSR 内容时使用接管，无内容时挂载。三浏览器测试同时验证两条路径。
 
 - `src/pages/components/`：组件说明和交互示例。
 - `src/pages/system/`：框架使用文档。

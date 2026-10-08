@@ -32,6 +32,12 @@ export default defineConfig({
   ],
   webServer: [
     {
+      command: 'pnpm --filter @zerodep-js/docs preview --host 127.0.0.1 --port 4176',
+      url: 'http://127.0.0.1:4176',
+      reuseExistingServer: false,
+      timeout: 30_000,
+    },
+    {
       command: 'pnpm --filter @zerodep-js/example preview --port 4175 --tasks-file :memory:',
       url: baseURL,
       reuseExistingServer: false,

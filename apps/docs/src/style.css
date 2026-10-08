@@ -82,3 +82,48 @@ footer {
   color: #526171;
   border-top: 1px solid #dce1e8;
 }
+
+.provider-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  margin: 20px 0;
+}
+.provider-controls label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.provider-region {
+  padding: 20px;
+  border-radius: 12px;
+}
+.provider-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+.provider-grid > div {
+  border-radius: 8px;
+}
+.provider-demo p,
+.provider-portal p {
+  overflow-wrap: anywhere;
+}
+.provider-demo pre {
+  overflow-x: auto;
+  padding: 16px;
+  background: #f0f3f7;
+}
+.provider-portal {
+  position: fixed;
+  z-index: 10;
+  inset-inline-end: 16px;
+  bottom: 16px;
+  max-width: min(360px, calc(100vw - 32px));
+  max-height: 70vh;
+  overflow: auto;
+  box-shadow: 0 8px 28px rgb(0 0 0 / 0.2);
+  border-radius: 8px;
+}

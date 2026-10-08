@@ -6,12 +6,14 @@
   "scripts": {
     "dev": "vite",
     "check": "zerodep-check -p tsconfig.json",
-    "build": "pnpm check && vite build",
+    "build": "pnpm check && vite build && vite build --ssr src/entry-server.ts --outDir dist/server",
     "preview": "vite preview"
   },
   "dependencies": {
+    "date-fns": "catalog:",
     "zerodep-css": "catalog:",
     "zerodep-js": "workspace:*",
+    "zerodep-js-ssr": "workspace:*",
     "zerodep-js-ui": "workspace:*"
   },
   "devDependencies": {
