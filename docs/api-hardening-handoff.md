@@ -8,6 +8,14 @@
 
 本地完成相关类型检查、包声明及示例 client/server 构建，12 项入口/生命周期单测与任务页 Chromium 11 项通过；语言补全只验证相关包导入用例，完整平台、三浏览器和剩余补全交新提交 CI。新增文档为 requests.md，不增加替代任务 API，也不改变同步生命周期的约定。
 
+## 注入 store 的后续变更
+
+当前源码进一步删除 `_createScope` 与 `ScopeHandle`，保留内部 Scope 和生命周期断言。新增 `zerodep-use/store`：必须提供后向下读取；持久化配置在提供者处，保存普通 JSON，支持 Web Storage、IndexedDB 和自定义同步/异步适配器。不保留旧 storage 入口、数据封装或迁移逻辑。路由预加载、其他工具和 CSS 接线不变。本次代码使用独立的新提交验收，不套用下面 rc.8 的发布结论。
+
+本地验证：相关应用与工具类型检查均 0 错误，包声明与 client/server 构建通过；33 项 store/生命周期/入口单测、30 项 Chromium 存储/任务/路由用例通过，包含真实 IndexedDB 的 CSR/SSR 恢复、刷新、跨标签通知和清除。4 项相关 LSP 补全通过。新适配器的异步读写、失败、次序和清理通过受控延迟用例验证，没有连接真实 Redis；后端接线由用户实现 StorageAdapter。
+
+打包检查确认 use 仅导出 history/router/store，不包含旧 task/storage 入口文件。临时检查文件已清理，完整平台和三浏览器由新提交 CI 验收。
+
 ## 最新授权与环境
 
 - 本地只做改动相关焦点检查，完整测试全部交 CI；阶段提交并推送，同提交完整验收后发布固定 tgz 到 next，不提升 latest。

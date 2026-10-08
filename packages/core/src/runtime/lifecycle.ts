@@ -1,5 +1,4 @@
 import {
-  Scope,
   assertCanWrite,
   _effect,
   getScope,
@@ -7,29 +6,6 @@ import {
   type Cleanup,
   type EffectCallback,
 } from './reactivity.js';
-
-export interface ScopeHandle {
-  readonly active: boolean;
-  readonly signal: AbortSignal;
-  /** 只在同步回调中恢复作用域；await 后须显式再次 run。 */
-  run<T>(callback: () => T): T;
-  dispose(): void;
-}
-
-/** 默认归属当前作用域；在组件外创建时，由调用方负责 dispose。 */
-export function _createScope(): ScopeHandle {
-  const scope = new Scope();
-  return Object.freeze({
-    get active() {
-      return !scope.disposed && !scope.clearing;
-    },
-    get signal() {
-      return scope.signal;
-    },
-    run: <T>(callback: () => T): T => _untrack(() => scope.run(callback)),
-    dispose: () => scope.dispose(),
-  });
-}
 
 /** 当前 effect 重跑或所属组件/根销毁时取消；不会把作用域传播到异步调用链。 */
 export function _getAbortSignal(): AbortSignal {

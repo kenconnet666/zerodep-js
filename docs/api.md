@@ -2,13 +2,13 @@
 
 页面元信息使用 `zerodep-js/head` 的 `_head(() => ({ title, description }))`；SSR 的 `_render` 返回正文与元信息，`renderToString` 保持字符串接口。生命周期与模板接线见 [页面元信息](head.md)。
 
-本文对应当前工作区源码 API；本轮新增能力尚未发布为新 npm 版本，不能假定现有 rc.7 已包含它们。发布边界见 [环境配置](environment-setup.md)和[交接记录](api-hardening-handoff.md)。core 顶层函数直接使用单下划线名称；路由和持久化来自独立 zerodep-use，旧 core 子入口直接移除，不保留转发或 deprecated。JSX 组件、类型/类和实例方法保持原名。
+本文对应当前源码；rc.8 之后已移除 task/scope 并新增注入 store，尚未发布新候选。发布边界见 [环境配置](environment-setup.md)和[交接记录](api-hardening-handoff.md)。core 顶层函数直接使用单下划线名称；路由和持久化来自独立 zerodep-use，旧 core 子入口直接移除，不保留转发或 deprecated。JSX 组件、类型/类和实例方法保持原名。
 
 公共运行时从 `zerodep-js` 导入，Vite 插件来自 `zerodep-js-vite`，独立编译来自 `zerodep-js-compiler`，服务端入口来自 `zerodep-js-ssr`。下面记录当前实际契约；安装与声明消费见 [开始使用](getting-started.md)和[包产物](packages.md)。
 
 `bind:value` / `bind:checked` / `bind:valueAsNumber` 与组件绑定、`zerodep-use/history` 的 _history、core 的 _lazy 的前后写法、数据类型、撤销边界和 SSR 占位规则见 [编写指南](authoring.md)。分组与展开绑定见 [表单](forms.md)。
 
-可选 `zerodep-use/storage` 提供 _persistLocal / _persistSession，统一使用显式 read/write，支持迁移、同步、失败恢复与清理。完整契约见 [浏览器持久化](storage.md)。
+可选 `zerodep-use/store` 提供 `_createStore`：父组件 provideStore 后，后代才能 useStore；配置 persist 可自动保存，支持 Web Storage、IndexedDB 和自定义异步适配器。见 [store](store.md)。
 
 请求使用普通 async/await 与 fetch，数据和错误由页面按需要保存；生命周期取消沿用 `_getAbortSignal()`。示例见 [普通请求](requests.md)。
 
@@ -45,7 +45,7 @@
 
 `_onMount(fn)` 在客户端 DOM 提交后执行一次，内部读取不建立重跑依赖，可返回同步清理函数；SSR 不执行。返回的停止函数可撤销尚未执行的回调或提前释放其资源。
 
-`_createScope()` 返回只包含 `run`、`dispose`、`signal`、`active` 的句柄，默认属于当前作用域；在组件外创建时调用方负责 dispose。run 只恢复同步回调的上下文，不让所有权跨 await 隐式传播。`_getAbortSignal()` 获取当前有效作用域的取消信号：在 effect 内每轮独立，重跑和销毁时先取消，再执行清理。
+`_getAbortSignal()` 取得当前作用域的取消信号；在 effect 内每轮独立，重跑或销毁时自动取消。组件外的响应式工作仍用 `_createRoot` 并负责销毁，不再提供另一套 scope 句柄。
 
 ```ts
 _onMount(() => {

@@ -9,7 +9,8 @@ import {
   type Renderable,
 } from 'zerodep-js';
 import { Link, Outlet, _useRoute, _useRouter, _onBeforeLeave } from 'zerodep-use/router';
-import { _persistLocal } from 'zerodep-use/storage';
+import { _createStore } from 'zerodep-use/store';
+const { provideStore: provideDraft } = _createStore<{ title: string | null }>();
 import { ApiFailure, updateTask } from '../tasks/api.js';
 import { titleSchema } from '../tasks/schema.js';
 import { routes } from './routes.js';
@@ -130,29 +131,26 @@ export const TaskDetail = _component((): Renderable => {
   const route = _useRoute(routes.task);
   const router = _useRouter();
   const task = _snapshot(route.data!);
-  let title = _state(task.title);
+  const draftState = _state<{ title: string | null }>({ title: null });
   let savedTitle = _state(task.title);
+  const title = _derived(draftState.title ?? savedTitle);
   let revision = _state(task.revision);
   let saving = _state(false);
   let message = _state('');
   const dirty = _derived(title !== savedTitle);
   const signal = _getAbortSignal();
-  const draft = _persistLocal(
-    `zerodep.example.task-title:${task.id}`,
-    {
-      read: () => (title === savedTitle ? null : title),
-      write: (value) => {
-        title = value ?? savedTitle;
-      },
-    },
-    {
+  const draft = provideDraft(draftState, {
+    persist: {
+      key: `zerodep.example.task-title:${task.id}`,
       writeDelay: 150,
-      validate: (value) => {
-        if (value !== null && typeof value !== 'string') throw new Error('草稿应为文本。');
-        return value;
+      validate(value) {
+        if (!value || typeof value !== 'object') throw new Error('草稿应为文本。');
+        const title = Reflect.get(value, 'title');
+        if (title !== null && typeof title !== 'string') throw new Error('草稿应为文本。');
+        return { title };
       },
     },
-  );
+  });
   _onBeforeLeave(() => !dirty || window.confirm('标题尚未提交，确定离开吗？草稿会保留。'));
 
   async function save() {
@@ -169,10 +167,10 @@ export const TaskDetail = _component((): Renderable => {
       if (signal.aborted) return;
       savedTitle = saved.title;
       // 请求发出后继续输入的内容仍是新草稿，不能被较早的提交结果覆盖。
-      if (title === entered) title = saved.title;
+      if (title === entered) draftState.title = null;
       revision = saved.revision;
-      if (title === saved.title) draft.remove();
-      else draft.flush();
+      if (title === saved.title) await draft.clear();
+      else await draft.save();
       router.invalidate(routes.tasks);
       router.invalidate(routes.task);
       message = '标题已保存';
@@ -199,7 +197,7 @@ export const TaskDetail = _component((): Renderable => {
           aria-label="任务标题"
           value={title}
           onInput={(event) => {
-            title = event.currentTarget.value;
+            draftState.title = event.currentTarget.value;
           }}
         />
       </label>
@@ -209,7 +207,7 @@ export const TaskDetail = _component((): Renderable => {
       </button>
       <button
         onClick={() => {
-          title = savedTitle;
+          draftState.title = null;
         }}
       >
         放弃当前修改

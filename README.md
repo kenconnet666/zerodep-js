@@ -8,14 +8,14 @@
 
 ## 工作区
 
-| 包                | 职责                                                 |
-| ----------------- | ---------------------------------------------------- |
-| packages/core     | 响应式、组件、DOM、生命周期、JSX 类型和运行时协议    |
-| packages/use      | router、storage、history 子入口，通过 peer 共享 core |
-| packages/ssr      | 请求隔离、HTML 渲染、转义和数据编码                  |
-| packages/compiler | Babel 转换、框架检查、选定 TS7.1 与语言工具适配      |
-| packages/vite     | 转换接入、依赖扫描和开发更新                         |
-| apps/example      | 使用实际包产物的 CSR/SSR 示例和任务应用              |
+| 包                | 职责                                               |
+| ----------------- | -------------------------------------------------- |
+| packages/core     | 响应式、组件、DOM、生命周期、JSX 类型和运行时协议  |
+| packages/use      | router、store、history 子入口，通过 peer 共享 core |
+| packages/ssr      | 请求隔离、HTML 渲染、转义和数据编码                |
+| packages/compiler | Babel 转换、框架检查、选定 TS7.1 与语言工具适配    |
+| packages/vite     | 转换接入、依赖扫描和开发更新                       |
+| apps/example      | 使用实际包产物的 CSR/SSR 示例和任务应用            |
 
 不提供外部框架运行时适配，也不把预编译组件库链接到工作区源码。
 
@@ -57,6 +57,8 @@ export const Counter = _component(({ step = 1 }: { step?: number }) => {
 `<Portal>内容</Portal>` 可以把弹层内容放到 body，仍随原父组件更新和销毁；指定位置使用 `target={container}`。SSR 只留占位，接管成功后再显示。它也属于当前分支新增能力，详见 [Portal](docs/api.md#portal把内容放到页面外层)。
 
 Vite 使用 zerodep-js-vite 的 zerodep()。应用 TS 配置使用 jsx: preserve、jsxImportSource: zerodep-js。客户端通过 _mount/_hydrate 返回的 disposer 卸载；服务端使用独立 SSR 入口。
+
+当前源码提供必须向下注入的 [store](docs/store.md)，可选择自动保存到 localStorage、sessionStorage、IndexedDB 或自定义异步后端；不新增全局单例。此变更尚未进入 rc.8 发行包。
 
 ## 验证与工具
 

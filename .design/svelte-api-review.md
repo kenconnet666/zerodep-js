@@ -8,18 +8,18 @@
 
 ## 已具备或应保留的选择
 
-| Svelte 能力                                        | 当前项目                                                         | 取舍                                                                              |
-| -------------------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| $state / $state.raw / $derived / $derived.by       | _state/raw、_derived/by                                          | 保留变量式写法；不改为容器或 .value                                               |
-| $props 解构、默认值与 rest                         | _component 参数解构、别名、默认值、实时 rest                     | 当前 TSX 更直接，不引入 $props 类宏                                               |
-| if / each / key / 动态组件 / snippet               | JS 表达式、For、key、组件值、类型化 children 回调                | 保留 TSX 和显式 For 身份语义；不增加模板块语法                                    |
-| 回调 props、组件绑定                               | 常规函数 props、onValueChange 约定、bind:value                   | 已有双向写回类型检查；不为对应 $bindable 再加声明宏                               |
-| onMount / onDestroy / effect.root / getAbortSignal | _onMount、_onCleanup、_createRoot、_createScope、_getAbortSignal | 生命周期与取消已有基础，不误报成缺失；派生保持纯同步，取消范围不完全等同于 Svelte |
-| tick / flushSync / untrack                         | _tick、_flushSync、_untrack                                      | 已有调度契约；_tick 不承诺等待网络                                                |
-| 类型化 context                                     | _createContext / _provideContext / _useContext                   | 已有作用域隔离和准确类型，不需要重造                                              |
-| state.snapshot                                     | _snapshot                                                        | 保留明确的 structuredClone 语义；与 Svelte 的克隆细节差异不自动视为缺陷           |
-| boundary 错误恢复                                  | ErrorBoundary 的 fallback(error, reset)                          | 同步呈现/effect 的错误恢复已有；异步等待边界另行讨论                              |
-| 动态代码加载                                       | _lazy、preload、fallback、重试                                   | 已有代码加载流程，不把它误称为通用异步数据资源                                    |
+| Svelte 能力                                        | 当前项目                                           | 取舍                                                                              |
+| -------------------------------------------------- | -------------------------------------------------- | --------------------------------------------------------------------------------- |
+| $state / $state.raw / $derived / $derived.by       | _state/raw、_derived/by                            | 保留变量式写法；不改为容器或 .value                                               |
+| $props 解构、默认值与 rest                         | _component 参数解构、别名、默认值、实时 rest       | 当前 TSX 更直接，不引入 $props 类宏                                               |
+| if / each / key / 动态组件 / snippet               | JS 表达式、For、key、组件值、类型化 children 回调  | 保留 TSX 和显式 For 身份语义；不增加模板块语法                                    |
+| 回调 props、组件绑定                               | 常规函数 props、onValueChange 约定、bind:value     | 已有双向写回类型检查；不为对应 $bindable 再加声明宏                               |
+| onMount / onDestroy / effect.root / getAbortSignal | _onMount、_onCleanup、_createRoot、_getAbortSignal | 生命周期与取消已有基础，不误报成缺失；派生保持纯同步，取消范围不完全等同于 Svelte |
+| tick / flushSync / untrack                         | _tick、_flushSync、_untrack                        | 已有调度契约；_tick 不承诺等待网络                                                |
+| 类型化 context                                     | _createContext / _provideContext / _useContext     | 已有作用域隔离和准确类型，不需要重造                                              |
+| state.snapshot                                     | _snapshot                                          | 保留明确的 structuredClone 语义；与 Svelte 的克隆细节差异不自动视为缺陷           |
+| boundary 错误恢复                                  | ErrorBoundary 的 fallback(error, reset)            | 同步呈现/effect 的错误恢复已有；异步等待边界另行讨论                              |
+| 动态代码加载                                       | _lazy、preload、fallback、重试                     | 已有代码加载流程，不把它误称为通用异步数据资源                                    |
 
 实现入口：[公开导出](../packages/core/src/index.ts)、[生命周期](../packages/core/src/runtime/lifecycle.ts)、[控制流](../packages/core/src/runtime/flow.ts)、[lazy](../packages/core/src/runtime/lazy.ts)、[语义](../docs/semantics.md)。
 
@@ -41,7 +41,7 @@ Svelte 的 `$props.id()` 给组件实例生成 ID。固定源码中，服务端�
 
 用户随后批准实施：`zerodep-use/task` 的 `_task(loader)` 已按显式 run/retry/cancel 方案实现，并替换任务工作台的查询控制器；未引入隐式 await 跟踪或异步呈现边界。后续用户决定删除整组任务 API，当前写法见 [普通请求](../docs/requests.md)。下面仅保留最初研究依据，不再作为实施建议。
 
-Svelte 的 await/boundary/settled 等能力能协调异步结果与呈现。当前项目已有取消信号、_createScope、_lazy 和路由 pending/loader，但普通搜索或详情请求仍需每处编写 loading/error/data、取消和过期结果保护。这里的缺口是重复且易错的生命周期管理，**不是少了一个 await 模板块**。
+Svelte 的 await/boundary/settled 等能力能协调异步结果与呈现。当前项目已有取消信号、_lazy 和路由 pending/loader，但普通搜索或详情请求仍需每处编写 loading/error/data、取消和过期结果保护。这里的缺口是重复且易错的生命周期管理，**不是少了一个 await 模板块**。
 
 建议以一个普通异步任务辅助函数为试点，名称和返回形状先讨论；接收明确依赖/loader，统一 pending/error/data、重试和最后一次请求生效。优先放 use 包，普通 Promise 和 AbortSignal 继续可用。第一阶段不引入自动跨 await 跟踪、不改变 _derived 纯计算、不扩张流式 SSR、Suspense 或通用网络缓存。
 

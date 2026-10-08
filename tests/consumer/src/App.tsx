@@ -11,7 +11,7 @@ import {
   Portal,
 } from 'zerodep-js';
 import { _history } from 'zerodep-use/history';
-import { _persistLocal } from 'zerodep-use/storage';
+import { _createStore } from 'zerodep-use/store';
 import {
   _createRouter,
   _createMemoryHistory,
@@ -25,6 +25,9 @@ import { Counter, Label } from '@zerodep-consumer/counter';
 import { Css, WidthCss } from 'zerodep-css';
 import { css } from 'zerodep-js/css';
 import { _head } from 'zerodep-js/head';
+
+const { provideStore: provideMessage, useStore: useMessage } = _createStore<{ message: string }>();
+const StoreMessage = _component(() => <span data-packed-store>{useMessage().message}</span>);
 
 const s = new Css();
 class OpacityWidth extends WidthCss {
@@ -70,32 +73,18 @@ export const App = _component(({ title }: { title: string }) => {
   const className = css(s.width.px(width));
   const inputId = _id();
   let input: HTMLInputElement | undefined = undefined;
-  let message = _state('等待');
+  const messages = _state({ message: '等待' });
   let routed = _state(false);
   let lazyVisible = _state(false);
   const history = _history({
-    read: () => message,
+    read: () => messages.message,
     write: (next) => {
-      message = next;
+      messages.message = next;
     },
   });
   const router = _createRouter(packedRoutes, { history: _createMemoryHistory('/packed/start') });
   _onCleanup(() => router.dispose());
-  _persistLocal(
-    'package-message',
-    {
-      read: () => message,
-      write: (value) => {
-        message = value;
-      },
-    },
-    {
-      validate(value) {
-        if (typeof value !== 'string') throw new Error('需要文本');
-        return value;
-      },
-    },
-  );
+  provideMessage(messages, { persist: { key: 'package-message', pick: ['message'] } });
   const rows = _state([
     { id: 1, name: '甲' },
     { id: 2, name: '乙' },
@@ -138,9 +127,10 @@ export const App = _component(({ title }: { title: string }) => {
       >
         更新继承作者值
       </button>
-      <Counter label="打包" onCount={(value) => (message = String(value))} />
+      <Counter label="打包" onCount={(value) => (messages.message = String(value))} />
       <label for={inputId}>消息</label>
-      <input id={inputId} aria-label="消息" bind:value={message} bind:this={input} />
+      <input id={inputId} aria-label="消息" bind:value={messages.message} bind:this={input} />
+      <StoreMessage />
       <Portal>
         <span data-packed-portal>外层内容</span>
       </Portal>
@@ -166,7 +156,7 @@ export const App = _component(({ title }: { title: string }) => {
       </button>
       {lazyVisible && <LazyCounter label="按需打包" />}
 
-      <output>{message}</output>
+      <output>{messages.message}</output>
       <Label value={{ id: 3 }}>{(value) => value.id}</Label>
       <For each={rows} keyBy={(row) => row.id}>
         {(row) => <span data-row={row.id}>{row.name}</span>}
@@ -176,7 +166,7 @@ export const App = _component(({ title }: { title: string }) => {
         onClick={() => {
           const copied = _snapshot(rows);
           copied[0]!.name = '副本';
-          message = `${copied[0]!.name}/${rows[0]!.name}`;
+          messages.message = `${copied[0]!.name}/${rows[0]!.name}`;
         }}
       >
         复制快照

@@ -1,6 +1,6 @@
 import { _component, _state, _derived, _effect, _getAbortSignal, For } from 'zerodep-js';
 import type { RenderMode } from 'zerodep-js-ssr';
-import { _persistLocal } from 'zerodep-use/storage';
+import { _createStore } from 'zerodep-use/store';
 import { ApiFailure, listTasks, createTask, updateTask, deleteTask } from './api.js';
 import {
   titleSchema,
@@ -12,6 +12,8 @@ import {
 import { TaskItem } from './TaskItem.js';
 import './tasks.css';
 
+const { provideStore: provideDraft } = _createStore<{ text: string }>();
+
 type Props = { initial?: TaskPage; mode?: RenderMode; embedded?: boolean };
 
 export const TaskBoard = _component(({ initial, mode = 'csr', embedded = false }: Props) => {
@@ -19,23 +21,18 @@ export const TaskBoard = _component(({ initial, mode = 'csr', embedded = false }
   let tasks = _state<Task[]>(start?.tasks ?? []);
   let search = _state(start?.query ?? '');
   let filter = _state<TaskFilter>(start?.filter ?? 'all');
-  let newTitle = _state('');
-  const draftStorage = _persistLocal(
-    'zerodep.example.task-draft',
-    {
-      read: () => newTitle,
-      write: (value) => {
-        newTitle = value;
-      },
-    },
-    {
+  const draft = _state({ text: '' });
+  const draftStorage = provideDraft(draft, {
+    persist: {
+      key: 'zerodep.example.task-draft',
       writeDelay: 150,
       validate(value) {
-        if (typeof value !== 'string') throw new Error('保存的草稿格式无效');
-        return value;
+        if (!value || typeof value !== 'object' || typeof Reflect.get(value, 'text') !== 'string')
+          throw new Error('保存的草稿格式无效');
+        return { text: Reflect.get(value, 'text') as string };
       },
     },
-  );
+  });
   let loading = _state(false);
   let creating = _state(false);
   let ready = _state(false);
@@ -147,18 +144,18 @@ export const TaskBoard = _component(({ initial, mode = 'csr', embedded = false }
   async function add(event: SubmitEvent) {
     event.preventDefault();
     if (creating) return;
-    const parsed = titleSchema.safeParse(newTitle);
+    const parsed = titleSchema.safeParse(draft.text);
     if (!parsed.success) {
       createError = parsed.error.message;
       return;
     }
-    const submitted = newTitle;
+    const submitted = draft.text;
     creating = true;
     createError = '';
     try {
       await createTask(parsed.data, lifetime);
       if (!lifetime.aborted) {
-        if (newTitle === submitted) newTitle = '';
+        if (draft.text === submitted) draft.text = '';
         notice = '任务已添加';
         await load();
       }
@@ -206,10 +203,10 @@ export const TaskBoard = _component(({ initial, mode = 'csr', embedded = false }
         <input
           id={embedded ? 'embedded-new-task' : 'new-task'}
           placeholder="接下来想完成什么？"
-          value={newTitle}
+          value={draft.text}
           maxLength={160}
           autoComplete="off"
-          onInput={(event) => (newTitle = event.currentTarget.value)}
+          onInput={(event) => (draft.text = event.currentTarget.value)}
         />
 
         <button type="submit" disabled={!ready || creating}>

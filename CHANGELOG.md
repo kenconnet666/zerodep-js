@@ -1,7 +1,9 @@
 # 变更记录
 
-## 未发布 — 移除 task 工具
+## 未发布 — 注入 store 与 API 精简
 
+- 删除 `_createScope` 和 `ScopeHandle`，保留内部生命周期管理。
+- 新增必须向下注入的 `_createStore`，持久化支持顶层字段选择、普通 JSON、IndexedDB 与同步/异步自定义适配器；删除旧 storage 入口及版本迁移协议，不做兼容。
 - 删除 `_task`、Task/TaskOptions/TaskResult 与整个 `zerodep-use/task` 子入口，不保留兼容别名。请求直接使用 async/await、页面状态及已有生命周期信号。
 - 任务工作台保留旧查询丢弃、卸载取消、错误重试、SSR 首屏和保存冲突保护；同步移除专属补全、消费夹具与旧构建产物。已发布 rc.8 不变。
 - CSS 的服务端标签拼接和 useCss 不变；未新增 `_query` 或实验性异步渲染机制。

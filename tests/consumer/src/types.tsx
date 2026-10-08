@@ -1,9 +1,9 @@
 import { compile, type CompileResult } from 'zerodep-js-compiler';
 import { Counter, Label } from '@zerodep-consumer/counter';
 import { _component, _mount, type ComponentProps } from 'zerodep-js';
-import { _createScope, _snapshot } from 'zerodep-js';
+import { _getAbortSignal, _snapshot } from 'zerodep-js';
 import { _defineRoute, _defineRoutes, _createRouter, Link } from 'zerodep-use/router';
-import { _persistLocal, _persistSession } from 'zerodep-use/storage';
+import { _createStore, _indexedDBStorage, type StorageAdapter } from 'zerodep-use/store';
 import { _history } from 'zerodep-use/history';
 import { _lazy } from 'zerodep-js';
 import { _createRoot, _id } from 'zerodep-js';
@@ -112,9 +112,11 @@ router.href(routes.item, { params: { id: '1' } });
 router.href(routes.item, { params: { id: 1 } });
 // @ts-expect-error 子入口泛型 Link 不丢失必填参数。
 <Link to={routes.item} />;
-const scope = _createScope();
-export const signal: AbortSignal = scope.signal;
-scope.dispose();
+export const signal: AbortSignal = _createRoot((dispose) => {
+  const signal = _getAbortSignal();
+  dispose();
+  return signal;
+});
 _snapshot({ n: 1 }).n.toFixed();
 const futureContent = Promise.resolve('稍后');
 // @ts-expect-error 内容必须是已准备好的值，不把 Promise 当作可渲染节点。
@@ -123,11 +125,25 @@ const futureContent = Promise.resolve('稍后');
 <output children={futureContent} />;
 // @ts-expect-error DOM ref 必须同步返回，异步资源显式启动并清理。
 <div ref={async () => {}} />;
-_persistLocal('typed', { read: () => 1, write: (value) => value.toFixed() });
-_persistSession('typed-object', {
-  read: () => ({ enabled: true }),
-  write: (value) => {
-    const enabled: boolean = value.enabled;
-    void enabled;
-  },
+const consumerStore = _createStore<{ enabled: boolean }>();
+_createRoot((dispose) => {
+  const saved = consumerStore.provideStore(
+    { enabled: true },
+    { persist: { key: 'typed-object', storage: _indexedDBStorage(), pick: ['enabled'] } },
+  );
+  consumerStore.useStore().enabled satisfies boolean;
+  saved.save() satisfies Promise<boolean>;
+  // @ts-expect-error 注入字段类型不可丢失。
+  consumerStore.useStore().enabled = 1;
+  // @ts-expect-error pick 只能选择已定义字段。
+  consumerStore.provideStore({ enabled: false }, { persist: { key: 'bad', pick: ['missing'] } });
+  dispose();
 });
+const remoteStorage: StorageAdapter = {
+  async getItem() {
+    return null;
+  },
+  async setItem() {},
+  async removeItem() {},
+};
+void remoteStorage;

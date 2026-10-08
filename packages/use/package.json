@@ -23,9 +23,9 @@
       "types": "./dist/router.d.ts",
       "import": "./dist/router.js"
     },
-    "./storage": {
-      "types": "./dist/storage.d.ts",
-      "import": "./dist/storage.js"
+    "./store": {
+      "types": "./dist/store.d.ts",
+      "import": "./dist/store.js"
     }
   },
   "scripts": {

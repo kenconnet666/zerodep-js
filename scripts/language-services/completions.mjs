@@ -21,6 +21,33 @@ const rows = [{ id: 1, title: 'row' }];
 const control = `const Field = _component((props: { value: string; onValueChange: (value: string) => void; label?: string }) => <span>{props.value}</span>);\n`;
 const cases = [
   {
+    name: '注入 store 字段',
+    source:
+      header +
+      `import { _createStore } from 'zerodep-use/store';
+const settings = _createStore<{ theme: string }>();
+const App = _component(() => { const prefs = settings.useStore(); return <p>{prefs.the¦}</p>; });`,
+    expected: 'theme',
+    word: 'the',
+  },
+  {
+    name: 'store 保存字段选择',
+    source:
+      header +
+      `import { _createStore } from 'zerodep-use/store';
+const settings = _createStore<{ theme: string; temporary: boolean }>();
+const App = _component(() => { const prefs = _state({ theme: 'light', temporary: false }); settings.provideStore(prefs, { persist: { key: 'prefs', pick: ['the¦'] } }); return null; });`,
+    expected: 'theme',
+    word: 'the',
+  },
+  {
+    name: 'IndexedDB 适配器导入',
+    source: `import { _indexedDBS¦ } from 'zerodep-use/store';`,
+    expected: '_indexedDBStorage',
+    word: '_indexedDBS',
+    details: true,
+  },
+  {
     name: '页面元信息字段',
     source:
       header +
@@ -273,10 +300,10 @@ const App = _component(() => { const s = theme.useCss(); s.width.p¦(20); return
     word: '_createR',
   },
   {
-    name: '持久化包导入',
-    source: `import { _persistL¦ } from 'zerodep-use/storage';`,
-    expected: '_persistLocal',
-    word: '_persistL',
+    name: '注入 store 包导入',
+    source: `import { _createS¦ } from 'zerodep-use/store';`,
+    expected: '_createStore',
+    word: '_createS',
   },
   { name: 'JSX 标签名', source: header + `const view = <in¦ />;`, expected: 'input', word: 'in' },
   {

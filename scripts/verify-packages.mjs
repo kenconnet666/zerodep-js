@@ -123,13 +123,13 @@ try {
     }
     if (name === 'use') {
       assert(
-        ![...files].some((file) => /^(src|dist)\/task\./.test(file)),
-        'use 包不能残留已删除的 task 源码或构建文件。',
+        ![...files].some((file) => /^(src|dist)\/(task|storage)\./.test(file)),
+        'use 包不能残留已删除的 task/storage 入口文件。',
       );
       assert.deepEqual(Object.keys(sourceManifest.exports).sort(), [
         './history',
         './router',
-        './storage',
+        './store',
       ]);
       assert.deepEqual(Object.keys(sourceManifest.peerDependencies), ['zerodep-js']);
       assert.equal(Object.keys(sourceManifest.dependencies ?? {}).length, 0);
@@ -208,23 +208,26 @@ try {
       `
     import assert from 'node:assert/strict';
     import { _createRoot, _flushSync } from 'zerodep-js';
-    import { _persistLocal } from 'zerodep-use/storage';
+    import { _createStore } from 'zerodep-use/store';
     import { _createRouter } from 'zerodep-use/router';
-    for (const specifier of ['zerodep-js/router', 'zerodep-js/storage', 'zerodep-use']) {
+    for (const specifier of ['zerodep-js/router', 'zerodep-js/storage', 'zerodep-use/storage', 'zerodep-use']) {
       await assert.rejects(import(specifier), { code: 'ERR_PACKAGE_PATH_NOT_EXPORTED' });
     }
     assert.equal(typeof _createRouter, 'function');
     assert.equal('_createPage' in await import('zerodep-js'), false, '旧页面宿主 API 必须移除');
-    _createRoot(dispose => {
-      try {
-        let data = { n: 0 };
-        const persistence = _persistLocal('probe', { read: () => data, write: next => {data = next;} }, {
-          storage: { getItem: () => null, setItem() {}, removeItem() {} },
-        });
-        _flushSync();
-        assert.equal(persistence.ready, true, 'use 必须共享调用方的 core 所有权和调度器');
-      } finally { dispose(); }
+    assert.equal('_createScope' in await import('zerodep-js'), false, '旧 scope API 必须移除');
+    const store = _createStore();
+    const owned = _createRoot(dispose => {
+      const data = { n: 0 };
+      const persistence = store.provideStore(data, { persist: { key: 'probe', storage: { async getItem() { return null; }, async setItem() {}, async removeItem() {} } } });
+      assert.equal(store.useStore(), data, '消费端必须先注入再共享原对象');
+      return { dispose, persistence };
     });
+    try {
+      _flushSync();
+      assert.equal(await owned.persistence.restore(), true);
+      assert.equal(owned.persistence.ready, true, 'use 必须共享调用方的 core 所有权和调度器');
+    } finally { owned.dispose(); }
   `,
     ],
     { cwd: consumer, env, windowsHide: true, encoding: 'utf8' },
@@ -342,6 +345,7 @@ try {
     await expect(page.locator('[data-packed-mapped-css]')).toHaveCSS('opacity', '0.5');
     await page.locator('[data-packed-mapped-update]').click();
     await expect(page.locator('[data-packed-mapped-css]')).toHaveCSS('opacity', '0.8');
+    await expect(page.locator('[data-packed-store]')).toHaveText('等待');
     await expect(page.locator('[data-packed-portal]')).toHaveText('外层内容');
     assert(
       await page

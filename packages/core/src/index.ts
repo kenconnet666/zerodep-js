@@ -9,8 +9,7 @@ export {
 } from './runtime/reactivity.js';
 export type { Cleanup, EffectCallback } from './runtime/reactivity.js';
 export { _snapshot } from './runtime/snapshot.js';
-export { _onMount, _createScope, _getAbortSignal } from './runtime/lifecycle.js';
-export type { ScopeHandle } from './runtime/lifecycle.js';
+export { _onMount, _getAbortSignal } from './runtime/lifecycle.js';
 export { _state, _derived } from './runtime/macros.js';
 export { _component, _id } from './runtime/component.js';
 export type { Component, ComponentProps } from './runtime/component.js';

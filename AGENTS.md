@@ -3,7 +3,7 @@
 ## 目标与范围
 
 - 直接在当前主目录工作，只有用户明确要求才创建或使用新工作树。保留用户已有改动。
-- 独立 TSX 细粒度响应式框架。已授权 zerodep-css 原生接入：CSS 作者与宿主归 CSS 仓库，TSX 转换复用本项目 Babel；命名 css 自动追踪，直接变量保守绑定。IndexedDB 等未授权扩展不顺带加入。
+- 独立 TSX 细粒度响应式框架。已授权 zerodep-css 原生接入：CSS 作者与宿主归 CSS 仓库，TSX 转换复用本项目 Babel；命名 css 自动追踪，直接变量保守绑定。仅加入本次已授权的 store/IndexedDB 适配器，不扩展其他数据层。
 - 2026-10-08 当前重点是已有/新增基础 API 与 CSS 协作。组件只作为验收夹具，不实现或发布完整 Dialog/Button/TextField 等组件，不建立组件库；组件库另行规划。新候选须先确认契约，当前主计划为 docs/production-plan.md。
 - 2026-10-07 用户最新决定：IDE 与项目统一固定 JetBrains TypeScript 7.1.0-dev.jetbrains.20261006.2，Babel 框架转换和 Vite 不变。此决定取代此前追随微软 nightly 的版本选择；只维护这一 TS7.1，不回退 TS6、不维护多版本兼容或定制 TS 内核补丁。已授权为 WebStorm EAP 类型引擎适配 ts-go-proxy，先备份并验证；SDK 与平台包从 JetBrains GitHub Release 原始发行地址安装，精确 URL 和校验信息进入 pnpm catalog/overrides/lockfile。
 - 首要目标是简单易维护、方便使用、良好类型提示与适当中文注释。性能次要；不为减少依赖或解析次数引入复杂后台、缓存和协议。
@@ -13,9 +13,11 @@
 
 - 2026-10-08 后续决定：删除 `_task` 整组 API，不新增 `_query`；参考 Svelte 的普通 async/await 请求，复用现有状态与生命周期。保留 useCss 写法，服务端 CSS 标签由应用自己拼接，不改动该流程。
 
+- 2026-10-08：删除 `_createScope`/`ScopeHandle`。store 必须由父组件 provideStore 后向下读取，没有全局注册表；使用 `_state` 对象，提供者可配置持久化。支持 local/session、IndexedDB 与用户自定义同步或异步存储（例如后端 Redis 的 HTTP 适配器）。不兼容旧存储 API 或格式；保留路由预加载，其他工具不动。
+
 ## 结构与 API
 
-- core 提供响应式与 DOM 运行时；use 提供 router/storage/history；ssr 提供服务端适配；compiler 提供 Babel 转换与选定 TS SDK 适配；vite 提供开发和打包。不要创建空包、无用途抽象层或框架宿主演示。
+- core 提供响应式与 DOM 运行时；use 提供 router/store/history，存储实现是 store 的内部能力；ssr 提供服务端适配；compiler 提供 Babel 转换与选定 TS SDK 适配；vite 提供开发和打包。不要创建空包、无用途抽象层或框架宿主演示。
 - 顶层公开函数使用单下划线，声明本身使用该名称，入口直接导出。JSX 组件、类型、类和对象成员保持常规命名。删除旧入口，不保留 deprecated 别名或兼容转发。
 - 普通包由选定 SDK 的 tsc 构建，框架应用由 Vite 转换；不能把未经宏转换的 TS 擦除产物冒充可执行应用。
 - 共享版本放在 pnpm catalog，包间依赖使用 workspace:*。使用 Node 24 和 package.json 固定的 pnpm，不添加其他包管理器锁文件。

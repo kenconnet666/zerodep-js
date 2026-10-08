@@ -1,5 +1,5 @@
 import { expect, it, vi } from 'vitest';
-import { _createScope, _getAbortSignal, _onMount } from '../src/runtime/lifecycle.js';
+import { _getAbortSignal, _onMount } from '../src/runtime/lifecycle.js';
 import {
   _createRoot,
   _effect,
@@ -177,17 +177,17 @@ it('清理停止根后仍报告原始异常，其他根继续更新并释放订�
 it('子作用域保持 context、显式停止和父级销毁责任', () => {
   const Context = _createContext('default');
   const cleaned = vi.fn();
-  let child!: ReturnType<typeof _createScope>;
+  let child!: Scope;
   const stop = _createRoot((dispose) => {
     _provideContext(Context, 'root');
-    child = _createScope();
+    child = new Scope();
     child.run(() => _onCleanup(cleaned));
     return dispose;
   });
   const signal = child.signal;
   expect(child.run(() => _useContext(Context))).toBe('root');
   stop();
-  expect(child.active).toBe(false);
+  expect(child.disposed).toBe(true);
   expect(child.signal).toBe(signal);
   expect(signal.aborted).toBe(true);
   expect(cleaned).toHaveBeenCalledOnce();
@@ -196,12 +196,12 @@ it('子作用域保持 context、显式停止和父级销毁责任', () => {
 });
 
 it('独立 scope 需要显式销毁，失败清理仍释放兄弟资源', () => {
-  const parent = _createScope();
+  const parent = new Scope();
   const cleaned = vi.fn();
-  let child!: ReturnType<typeof _createScope>;
+  let child!: Scope;
   parent.run(() => {
     _onCleanup(cleaned);
-    child = _createScope();
+    child = new Scope();
     child.run(() =>
       _onCleanup(() => {
         throw new Error('清理失败');
@@ -211,16 +211,16 @@ it('独立 scope 需要显式销毁，失败清理仍释放兄弟资源', () => 
   const signal = parent.signal;
   expect(() => parent.dispose()).toThrow('清理失败');
   expect(signal.aborted).toBe(true);
-  expect(child.active).toBe(false);
+  expect(child.disposed).toBe(true);
   expect(cleaned).toHaveBeenCalledOnce();
 });
 
 it('禁止在纯派生创建生命周期资源，也不自动传播 await 作用域', async () => {
   expect(() => _getAbortSignal()).toThrow('有效的作用域');
-  const scope = _createScope();
+  const scope = new Scope();
   try {
     scope.run(() => {
-      expect(() => new Derived(() => _createScope()).read()).toThrow('纯派生');
+      expect(() => new Derived(() => new Scope()).read()).toThrow('纯派生');
       expect(() => new Derived(() => _getAbortSignal()).read()).toThrow('纯派生');
     });
     await scope.run(async () => {
