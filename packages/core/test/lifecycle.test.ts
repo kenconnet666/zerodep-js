@@ -136,6 +136,44 @@ it.each(['cleanup', 'abort'] as const)(
   },
 );
 
+it('清理停止根后仍报告原始异常，其他根继续更新并释放订阅', () => {
+  const trigger = new Source(0);
+  const failure = new Error('cleanup failure');
+  const called = vi.fn();
+  const other = vi.fn();
+  const released = vi.fn();
+  const stop = _createRoot((dispose) => {
+    _onCleanup(released);
+    _effect(() => {
+      called(trigger.read());
+      return () => {
+        dispose();
+        throw failure;
+      };
+    });
+    return dispose;
+  });
+  const stopOther = _createRoot((dispose) => {
+    _effect(() => {
+      other(trigger.read());
+    });
+    return dispose;
+  });
+  try {
+    _flushSync();
+    expect(() => _flushSync(() => trigger.write(1))).toThrow(failure);
+    _flushSync(() => trigger.write(2));
+    expect(called).toHaveBeenCalledExactlyOnceWith(0);
+    expect(released).toHaveBeenCalledOnce();
+    expect(other.mock.calls).toEqual([[0], [1], [2]]);
+    expect(stop).not.toThrow();
+  } finally {
+    stop();
+    stopOther();
+  }
+  expect(trigger.subscribers.size).toBe(0);
+});
+
 it('子作用域保持 context、显式停止和父级销毁责任', () => {
   const Context = _createContext('default');
   const cleaned = vi.fn();

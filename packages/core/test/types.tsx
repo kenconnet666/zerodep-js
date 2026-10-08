@@ -134,6 +134,8 @@ export const asyncComponent = componentSignature(async () => '异步');
 declare const target: HTMLDivElement;
 const OptionalParameter = _component((props?: { label?: string }) => props?.label ?? null);
 const NoParameter = _component(() => null);
+_mount(NoParameter, { target });
+_hydrate(NoParameter, { target, props: {} });
 const optionalProps: ComponentProps<typeof OptionalParameter> = { label: '正确' };
 _mount(OptionalParameter, { target });
 _mount(OptionalParameter, { target, props: optionalProps });
