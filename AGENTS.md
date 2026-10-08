@@ -4,7 +4,7 @@
 
 - 直接在当前主目录工作，只有用户明确要求才创建或使用新工作树。保留用户已有改动。
 - 独立 TSX 细粒度响应式框架。已授权 zerodep-css 原生接入：CSS 作者与宿主归 CSS 仓库，TSX 转换复用本项目 Babel；命名 css 自动追踪，直接变量保守绑定。仅加入本次已授权的 store/IndexedDB 适配器，不扩展其他数据层。
-- 2026-10-08 当前重点是已有/新增基础 API 与 CSS 协作。组件只作为验收夹具，不实现或发布完整 Dialog/Button/TextField 等组件，不建立组件库；组件库另行规划。新候选须先确认契约，当前主计划为 docs/production-plan.md。
+- 2026-10-08 当前重点是已有/新增基础 API 与 CSS 协作。用户已授权建立 packages/ui 组件库与 apps/docs 组件库/框架文档应用的基础目录、依赖和配置；本阶段保持 private，不实现或发布具体组件。组件契约另行讨论，当前主计划为 docs/production-plan.md。
 - 2026-10-07 用户最新决定：IDE 与项目统一固定 JetBrains TypeScript 7.1.0-dev.jetbrains.20261006.2，Babel 框架转换和 Vite 不变。此决定取代此前追随微软 nightly 的版本选择；只维护这一 TS7.1，不回退 TS6、不维护多版本兼容或定制 TS 内核补丁。已授权为 WebStorm EAP 类型引擎适配 ts-go-proxy，先备份并验证；SDK 与平台包从 JetBrains GitHub Release 原始发行地址安装，精确 URL 和校验信息进入 pnpm catalog/overrides/lockfile。
 - 首要目标是简单易维护、方便使用、良好类型提示与适当中文注释。性能次要；不为减少依赖或解析次数引入复杂后台、缓存和协议。
 - 2026-10-08 用户已授权按基础 API 计划自主执行、完善测试和修复，并允许为简洁性适当调整 API；在实施前记录选定契约，不必逐项再次确认。本地只跑相关焦点检查，完整测试交 CI。CSS 0.3.1 与框架 rc.8 已交付，发布/恢复证据见 docs/api-hardening-handoff.md；此前限时窗口已经结束，不作为后续截止时间，不触发额度重置或购买。
@@ -17,7 +17,7 @@
 
 ## 结构与 API
 
-- core 提供响应式与 DOM 运行时；use 提供 router/store/history，存储实现是 store 的内部能力；ssr 提供服务端适配；compiler 提供 Babel 转换与选定 TS SDK 适配；vite 提供开发和打包。不要创建空包、无用途抽象层或框架宿主演示。
+- core 提供响应式与 DOM 运行时；use 提供 router/store/history，存储实现是 store 的内部能力；ssr 提供服务端适配；compiler 提供 Babel 转换与选定 TS SDK 适配；vite 提供开发和打包；ui 为已授权的组件库工程，apps/docs 承载组件与框架文档。除本次明确要求的工程准备外，不创建空包、无用途抽象层或框架宿主演示。
 - 顶层公开函数使用单下划线，声明本身使用该名称，入口直接导出。JSX 组件、类型、类和对象成员保持常规命名。删除旧入口，不保留 deprecated 别名或兼容转发。
 - 普通包由选定 SDK 的 tsc 构建，框架应用由 Vite 转换；不能把未经宏转换的 TS 擦除产物冒充可执行应用。
 - 共享版本放在 pnpm catalog，包间依赖使用 workspace:*。使用 Node 24 和 package.json 固定的 pnpm，不添加其他包管理器锁文件。

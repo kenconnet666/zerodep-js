@@ -16,6 +16,8 @@
 | packages/compiler | Babel 转换、框架检查、选定 TS7.1 与语言工具适配    |
 | packages/vite     | 转换接入、依赖扫描和开发更新                       |
 | apps/example      | 使用实际包产物的 CSR/SSR 示例和任务应用            |
+| packages/ui       | 组件库工程基础，尚无组件，暂不发布                 |
+| apps/docs         | 组件库与框架文档应用                               |
 
 不提供外部框架运行时适配，也不把预编译组件库链接到工作区源码。
 
@@ -33,6 +35,8 @@ pnpm preview
 ```
 
 开发默认端口 5173，生产预览默认端口 4173。主示例支持 CSR/SSR、任务路由和工作区；应用数据保存在 apps/example/.data，测试使用独立临时数据。
+
+组件库与文档工程已独立准备：`pnpm dev:docs` 启动文档站（5174），`pnpm build:ui` 构建组件库，`pnpm build:docs` 构建文档站，`pnpm preview:docs` 预览产物（4174）。根命令 `pnpm dev` 仍只启动原有示例和框架包监听，`pnpm build` 包含两个应用。目录和后续放置代码的位置见 [组件库](packages/ui/README.md) 与 [文档应用](apps/docs/README.md)。
 
 ## 写法
 

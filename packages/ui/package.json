@@ -1,0 +1,29 @@
+{
+  "name": "zerodep-js-ui",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "check": "zerodep-check -p tsconfig.json",
+    "build": "pnpm check && vite build && tsc -p tsconfig.build.json"
+  },
+  "peerDependencies": {
+    "zerodep-js": "workspace:*",
+    "zerodep-css": "catalog:"
+  },
+  "devDependencies": {
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "zerodep-css": "catalog:",
+    "zerodep-js": "workspace:*",
+    "zerodep-js-compiler": "workspace:*",
+    "zerodep-js-vite": "workspace:*"
+  }
+}
