@@ -87,6 +87,55 @@ it('每轮 effect 有独立 signal，取消发生在用户 cleanup 之前', () =
   expect(order).toEqual(['abort:0', 'cleanup:0', 'abort:1', 'cleanup:1']);
 });
 
+it.each(['cleanup', 'abort'] as const)(
+  '重跑前的 %s 回调停止 effect 或根时，不再建立下一轮资源',
+  (phase) => {
+    for (const target of ['effect', 'root'] as const) {
+      const trigger = new Source(0);
+      const calls = vi.fn();
+      const cleaned = vi.fn();
+      const independent = vi.fn();
+      const signals: AbortSignal[] = [];
+      let stopEffect!: () => void;
+      const stop = _createRoot((dispose) => {
+        stopEffect = _effect(() => {
+          calls(trigger.read());
+          const signal = _getAbortSignal();
+          signals.push(signal);
+          const cancel = () => (target === 'effect' ? stopEffect() : dispose());
+          if (phase === 'abort') signal.addEventListener('abort', cancel, { once: true });
+          return () => {
+            cleaned();
+            if (phase === 'cleanup') cancel();
+          };
+        });
+        return dispose;
+      });
+      const stopIndependent = _createRoot((dispose) => {
+        _effect(() => {
+          independent(trigger.read());
+        });
+        return dispose;
+      });
+      try {
+        _flushSync();
+        expect(() => _flushSync(() => trigger.write(1))).not.toThrow();
+        _flushSync(() => trigger.write(2));
+        expect(calls).toHaveBeenCalledExactlyOnceWith(0);
+        expect(cleaned).toHaveBeenCalledOnce();
+        expect(signals).toHaveLength(1);
+        expect(signals[0]!.aborted).toBe(true);
+        expect(independent.mock.calls).toEqual([[0], [1], [2]]);
+        expect(trigger.subscribers.size).toBe(1);
+      } finally {
+        stop();
+        stopIndependent();
+      }
+      expect(trigger.subscribers.size).toBe(0);
+    }
+  },
+);
+
 it('子作用域保持 context、显式停止和父级销毁责任', () => {
   const Context = _createContext('default');
   const cleaned = vi.fn();

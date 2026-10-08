@@ -379,6 +379,8 @@ class ReactiveEffect extends Scope implements Observer {
     this.dirty = false;
     if (this.initialized && !dependenciesChanged(this)) return;
     this.clear();
+    // abort/旧资源清理可以同步停止当前 effect；此时不能重新进入已销毁的作用域。
+    if (this.disposed) return;
     disconnectDependencies(this);
     const previous = currentObserver;
     currentObserver = this;
