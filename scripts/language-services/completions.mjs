@@ -21,6 +21,38 @@ const rows = [{ id: 1, title: 'row' }];
 const control = `const Field = _component((props: { value: string; onValueChange: (value: string) => void; label?: string }) => <span>{props.value}</span>);\n`;
 const cases = [
   {
+    name: 'CSS公共关键字语义文档',
+    source: `import { Css } from 'zerodep-css'; const s = new Css(); s.backgroundColor.inhe¦;`,
+    expected: 'inherit',
+    word: 'inhe',
+    details: true,
+    documentation: '使用父元素该属性的计算值',
+  },
+  {
+    name: 'CSS属性用途文档',
+    source: `import { Css } from 'zerodep-css'; const s = new Css(); s.fontSi¦;`,
+    expected: 'fontSize',
+    word: 'fontSi',
+    details: true,
+    documentation: '设置字体大小',
+  },
+  {
+    name: 'CSS主题扩展成员文档',
+    source: `import { Css, SystemKeywords, systemKeywords } from 'zerodep-css';
+class Theme extends SystemKeywords {
+  override readonly fontSize = {
+    ...systemKeywords.fontSize,
+    /** 中号正文字体，主题可覆盖。 */
+    _md: '1rem',
+  };
+}
+const s = new Css(new Theme()); s.fontSize._m¦;`,
+    expected: '_md',
+    word: '_m',
+    details: true,
+    documentation: '中号正文字体',
+  },
+  {
     name: '注入 store 字段',
     source:
       header +
@@ -67,6 +99,7 @@ const App = _component(() => { const s = theme.useCss(); s.width.p¦(20); return
     expected: 'px',
     word: 'p',
     details: true,
+    documentation: 'CSS 像素',
   },
   {
     name: 'DOM 引用绑定',
@@ -475,6 +508,13 @@ try {
         if (language.capabilities.completionProvider?.resolveProvider)
           item = { ...item, ...(await language.request('completionItem/resolve', item)) };
         if (entry.details) assert(item.detail && item.documentation, '缺少类型或文档');
+        if (entry.documentation) {
+          const documentation =
+            typeof item.documentation === 'string'
+              ? item.documentation
+              : (item.documentation?.value ?? '');
+          assert(documentation.includes(entry.documentation), '缺少对应语义的中文说明');
+        }
         const edit = item.textEdit;
         if (entry.edit) assert(edit, '命名空间补全必须提供明确替换范围');
         const range = edit?.range ?? edit?.replace;
@@ -515,6 +555,17 @@ try {
       assert.equal(report.kind, 'full');
       const errors = report.items.filter((item) => item.severity === 1);
       assert.equal(errors.length, 0, JSON.stringify(errors));
+      if (entry.documentation) {
+        const hover = await language.run(doc, () =>
+          language.request('textDocument/hover', {
+            textDocument: { uri: doc.uri },
+            position,
+          }),
+        );
+        const documentation =
+          typeof hover?.contents === 'string' ? hover.contents : (hover?.contents?.value ?? '');
+        assert(documentation.includes(entry.documentation), '悬浮缺少对应语义的中文说明');
+      }
       console.log('通过：' + entry.name);
     } catch (error) {
       failures.push({ name: entry.name, error: error.message });
