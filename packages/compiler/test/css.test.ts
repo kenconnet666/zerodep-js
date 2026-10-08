@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { Css } from 'zerodep-css';
+import { Css, SystemKeywords, systemKeywords } from 'zerodep-css';
 import { createServerCssHost, withCssHost } from 'zerodep-css/server';
 import { execute } from './execute.js';
 import { compile } from '../src/index.js';
@@ -13,6 +13,110 @@ function run(source: string) {
 }
 
 describe('原生 CSS 编译', () => {
+  it('关键字绑定源码映射仍指向原始成员读取', () => {
+    const source = `import { css } from 'zerodep-js/css';
+function view() { return <div class={css(s.color._primary)} />; }`;
+    const result = compile(source, 'KeywordMap.tsx');
+    const lines = result.code.split('\n');
+    const index = lines.findIndex((line) => line.includes('.cssKeyword('));
+    expect(index).toBeGreaterThanOrEqual(0);
+    expect(
+      originalPositionFor(new TraceMap(result.map!), {
+        line: index + 1,
+        column: lines[index]!.indexOf('.cssKeyword('),
+      }),
+    ).toMatchObject({
+      source: 'KeywordMap.tsx',
+      line: 2,
+      column: source.split('\n')[1]!.indexOf('s.color._primary'),
+    });
+  });
+  it.each([false, true])(
+    '主题关键字动态绑定并在特殊值/var 之间清理私有变量（named=%s）',
+    (named) => {
+      class Theme extends SystemKeywords {
+        // oxlint-disable-next-line typescript/no-misused-spread -- 只复制库契约中的原始值字段，不复制作者方法。
+        override readonly color = { ...systemKeywords.color, _primary: '#245fc5' };
+        constructor(primary = '#245fc5') {
+          super();
+          this.color._primary = primary;
+        }
+      }
+      const host = createServerCssHost();
+      const result = withCssHost(host, () =>
+        execute(
+          `
+import { _state } from 'zerodep-js';
+import { css } from 'zerodep-js/css';
+function create() {
+ let theme = _state.raw(new Theme());
+ let external = _state('#123456');
+ const s = makeAuthor(() => theme);
+ ${named ? 'const name = css(s.color._primary, s.display.flex);' : ''}
+ const view = <div class={${named ? 'name' : 'css(s.color._primary, s.display.flex)'}} style={{ '--brand': external, padding: '2px' }} />;
+ const values = ['#245fc5', 'inherit', 'initial', 'unset', 'revert', 'revert-layer', 'var(--brand, inherit)', 'nonsense', '#ffffff'];
+ return values.map(value => {
+   theme = new Theme(value);
+   external = '#abcdef';
+   return [view.props.class, view.props.style, s.keywords.color._primary];
+ });
+}
+const result = create();`,
+          { Theme, makeAuthor: (read: () => Theme) => new Css(read) },
+        ),
+      ) as string[][];
+      expect(result[0]![0]).toBe(result.at(-1)![0]);
+      for (const [index, [, style, value]] of result.entries()) {
+        expect(style).toContain('--brand:#abcdef');
+        expect(style).toContain('padding:2px');
+        if (index === 0 || index === result.length - 1) expect(style).toContain(`:${value}`);
+        else {
+          expect(style).not.toContain(value);
+          // display.flex 是主题中的安全值，只有 color 对应的变量应被移除。
+          expect(style!.match(/--zj-[^:]+:/g)).toHaveLength(1);
+          expect(host.cssText()).toContain(`color:${value};`);
+        }
+      }
+    },
+  );
+
+  it('主题关键字接收者和 getter 保留一次求值，未知作者不绑定', () => {
+    const order: string[] = [];
+    const s = {
+      get color() {
+        order.push('color');
+        return {
+          get _primary() {
+            order.push('primary');
+            return 'color:red;';
+          },
+        };
+      },
+    };
+    const host = createServerCssHost();
+    const result = withCssHost(host, () =>
+      execute(
+        `
+import { css } from 'zerodep-js/css';
+const attrs = <div class={css(s.color._primary)} />.props;
+const result = { class: attrs.class, style: attrs.style };`,
+        { s },
+      ),
+    ) as { class: string; style: string };
+    expect(result.class).toBeTruthy();
+    expect(result.style).toBe('');
+    expect(order).toEqual(['color', 'primary']);
+  });
+
+  it('嵌套选择器和跨组件主题类名保持原声明，不要求隐藏的变量传递', () => {
+    const code = compile(
+      `import { css } from 'zerodep-js/css';
+function view() { const name = css(s.color._primary);
+return <Widget class={name}><div class={css(s._hover(s.color._primary))} /></Widget>; }`,
+      'theme.tsx',
+    ).code;
+    expect(code).not.toContain('cssKeyword');
+  });
   it.each([false, true])('CSS 生成的调用映射回原始作者与 css 调用（named=%s）', (named) => {
     const expression = 'css(s.width.px(width))';
     const line = named ? `const name = ${expression};` : `return <div class={${expression}} />;`;

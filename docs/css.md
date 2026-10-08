@@ -26,18 +26,36 @@ className 的公开类型仍是 string，依赖变化时自动重算，不必套
 
 ## 元素变量与重算
 
-| 写法                                                      | 行为                             |
-| --------------------------------------------------------- | -------------------------------- |
-| `s.width.px(width)`，width 直接来自 `_state` / `_derived` | 系统方法和支持值使用元素变量     |
-| `s.color.raw(color)`，color 直接来自上述标记              | 可确认的颜色值使用元素变量       |
-| `s.width.px(width * 2)`                                   | 普通计算，依赖变化后重算 CSS     |
-| `s.color.raw(active ? 'red' : 'blue')`                    | 普通条件计算，依赖变化后重算 CSS |
-| `s._hover(s.width.px(width))`                             | 嵌套调用保留普通重算             |
-| 普通别名、自定义或覆写方法                                | 保留原调用，不猜测作者实现       |
+原生元素 class 中直接读取注入主题的关键字（如 `s.color._primary`）也尝试元素变量绑定。编译器只标记读取位置，CSS 库根据每次读取的实际值和可信作者元数据决定是否绑定；普通系统常量仍直接输出。嵌套选择器、跨组件 class 和条件表达式沿用原范围，不改变 SSR CSS 标签拼接。
+
+| 写法                                                      | 行为                                                 |
+| --------------------------------------------------------- | ---------------------------------------------------- |
+| `s.width.px(width)`，width 直接来自 `_state` / `_derived` | 系统方法和支持值使用元素变量                         |
+| `s.color.raw(color)`，color 直接来自上述标记              | 可确认的颜色值使用元素变量                           |
+| `s.color._primary`，s 是注入主题的作者                    | 每次读取后按安全值绑定，原值仍可通过 s.keywords 读取 |
+| `s.width.px(width * 2)`                                   | 普通计算，依赖变化后重算 CSS                         |
+| `s.color.raw(active ? 'red' : 'blue')`                    | 普通条件计算，依赖变化后重算 CSS                     |
+| `s._hover(s.width.px(width))`                             | 嵌套调用保留普通重算                                 |
+| 普通别名、自定义或覆写方法                                | 保留原调用，不猜测作者实现                           |
 
 `.px(width)` 的绑定效果是 `width:var(--zj-...)`，配合元素 style 中完整的 `${width}px`。`.raw()` 不自动补单位，变量由编译器生成。
 
-优化范围是有限非负单位值、系统关键字、颜色十六进制值与 0–1 的 opacity。CSS-wide、important、未知值、负单位值、主题作者或覆写方法均可继续使用，但保留原声明重算，避免改变层叠语义。条件分支不会提前计算。
+优化范围是有限非负单位值、系统关键字、颜色十六进制值与 0–1 的 opacity。CSS-wide、important、未知值、负单位值、主题作者的方法调用或覆写方法均可继续使用，但保留原声明重算，避免改变层叠语义。条件分支不会提前计算。主题成员使用相同的安全值分类，不因类型标注为 string 就假设任意 CSS 字符串都可以等价转换。
+
+`inherit` / `initial` / `unset` / `revert` / `revert-layer` 始终作为目标属性的原始声明，不放入生成变量。值从普通颜色切换到这些关键字时，会更新类名并清除该项私有变量；恢复安全颜色后重新绑定。回退依然响应式，不表示冻结初值。
+
+已有 `var(--brand, inherit)`、calc()/复杂表达式原样使用，不再套一层自动变量。JS 中引用字符串变化时重新计算声明；CSS 中被引用变量变化由浏览器处理。用户定义的变量仍可直接绑定状态：
+
+```tsx
+let width = _state(120);
+let accent = _state('#245fc5');
+<div
+  class={css(s.width.raw('var(--card-width)'), s.color.raw('var(--card-accent)'))}
+  style={{ '--card-width': `${width}px`, '--card-accent': accent }}
+/>;
+```
+
+这里若主动把 `--card-accent` 设置为 inherit，就表示继承该自定义属性，框架不会擅自解释为 color:inherit。需要在颜色与全局关键字之间切换时，直接使用 `s.color.raw(accent)` 或主题成员。用户 style 与 s.keywords 原始值始终保留。
 
 作者接收者和方法先于参数求值；如果直接派生值的计算替换了作者属性，本次仍调用已经取得的方法，并保守回退为普通声明。不会为了元素变量绑定重新选择另一个方法，也不会重复计算参数。
 
@@ -67,7 +85,7 @@ const styles =
 
 ## 类型和维护
 
-catalog 固定 CSS 0.3.1，core 可选 CSS peer 下限为 ^0.3.1，框架保持选定 TS7.1 SDK。CSS 仓库用 TS6 构建 JS 与声明；本项目不运行它的旧 AST 编译器，也不安装 zerodep-css-compiler。旧编译器由 Vue/Svelte 适配器独立使用。
+catalog 固定 CSS 0.3.2，core 可选 CSS peer 下限为 ^0.3.2，框架保持选定 TS7.1 SDK。CSS 仓库用 TS6 构建 JS 与声明；本项目不运行它的旧 AST 编译器，也不安装 zerodep-css-compiler。旧编译器由 Vue/Svelte 适配器独立使用。
 
 跨仓库联调可先执行 `pnpm test:packages --css-tarball <候选.tgz>`。正常安装按精确版本和锁文件恢复，不要求相邻 CSS 仓库存在，也不提交临时绝对路径依赖。
 

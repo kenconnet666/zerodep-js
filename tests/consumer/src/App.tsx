@@ -22,7 +22,7 @@ import {
   _useRoute,
 } from 'zerodep-use/router';
 import { Counter, Label } from '@zerodep-consumer/counter';
-import { Css, WidthCss } from 'zerodep-css';
+import { Css, WidthCss, SystemKeywords, systemKeywords } from 'zerodep-css';
 import { css } from 'zerodep-js/css';
 import { _head } from 'zerodep-js/head';
 
@@ -40,6 +40,14 @@ class MappedCss extends Css {
   override readonly width = new OpacityWidth();
 }
 const mapped = new MappedCss();
+class PackedTheme extends SystemKeywords {
+  // oxlint-disable-next-line typescript/no-misused-spread -- 按主题契约复制原始颜色值。
+  override readonly color = { ...systemKeywords.color, _primary: '' };
+  constructor(value: string) {
+    super();
+    this.color._primary = value;
+  }
+}
 
 const LazyCounter = _lazy(() =>
   import('@zerodep-consumer/counter').then((module) => module.Counter),
@@ -73,6 +81,8 @@ export const App = _component(({ title }: { title: string }) => {
   _head(() => ({ title, description: '独立包消费' }));
   let width = _state(120);
   let mappedValue = _state('auto');
+  let keyword = _state('#245fc5');
+  const themed = new Css(() => new PackedTheme(keyword));
   const className = css(s.width.px(width));
   const inputId = _id();
   let input: HTMLInputElement | undefined = undefined;
@@ -116,6 +126,21 @@ export const App = _component(({ title }: { title: string }) => {
       <div data-packed-css class={className}>
         打包样式
       </div>
+      <div
+        data-packed-keyword
+        class={css(themed.color._primary)}
+        style={{ '--consumer-accent': '#663399' }}
+      >
+        主题变量
+      </div>
+      <button
+        data-packed-keyword-update
+        onClick={() => {
+          keyword = keyword === '#245fc5' ? 'var(--consumer-accent, inherit)' : '#ffffff';
+        }}
+      >
+        更新主题变量
+      </button>
       <div
         data-packed-mapped-css
         class={css(mapped.width.raw('0.5'), mapped.width.raw(mappedValue))}

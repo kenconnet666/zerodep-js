@@ -342,6 +342,16 @@ try {
     await page.locator('[data-packed-css-grow]').click();
     await expect(page.locator('[data-packed-css]')).toHaveCSS('width', '130px');
     assert.equal(await page.locator('[data-packed-css]').getAttribute('class'), cssClass);
+    const keywordNode = page.locator('[data-packed-keyword]');
+    const keywordClass = await keywordNode.getAttribute('class');
+    await expect(keywordNode).toHaveCSS('color', 'rgb(36, 95, 197)');
+    await expect(keywordNode).toHaveAttribute('style', /--zj-[a-z0-9-]+:#245fc5/);
+    await page.locator('[data-packed-keyword-update]').click();
+    await expect(keywordNode).toHaveCSS('color', 'rgb(102, 51, 153)');
+    assert(!/--zj-/.test(await keywordNode.getAttribute('style')));
+    await page.locator('[data-packed-keyword-update]').click();
+    await expect(keywordNode).toHaveCSS('color', 'rgb(255, 255, 255)');
+    assert.equal(await keywordNode.getAttribute('class'), keywordClass);
     await expect(page.locator('[data-packed-mapped-css]')).toHaveCSS('opacity', '0.5');
     await page.locator('[data-packed-mapped-update]').click();
     await expect(page.locator('[data-packed-mapped-css]')).toHaveCSS('opacity', '0.8');

@@ -1,6 +1,47 @@
 import { expect, test } from '@playwright/test';
 
 for (const mode of ['csr', 'ssr']) {
+  test(`${mode} 主题关键字与全局值、用户 var 切换时清理自动变量`, async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    await page.goto(`/?render=${mode}`);
+    const node = page.locator('[data-css-keyword]');
+    const name = await node.getAttribute('class');
+    const variables = () =>
+      node.evaluate((element: HTMLElement) =>
+        Array.from(element.style).filter((key) => key.startsWith('--zj-')),
+      );
+    await expect(node).toHaveCSS('color', 'rgb(36, 95, 197)');
+    expect(await variables()).toHaveLength(1);
+    for (const color of [
+      'rgb(20, 30, 40)',
+      'rgb(0, 0, 0)',
+      'rgb(20, 30, 40)',
+      'rgb(20, 30, 40)',
+      'rgb(20, 30, 40)',
+      'rgb(18, 52, 86)',
+      'rgb(255, 0, 0)',
+    ]) {
+      await page.locator('[data-css-keyword-next]').click();
+      await expect(node).toHaveCSS('color', color);
+      expect(await variables()).toHaveLength(0);
+      expect(
+        await node.evaluate((element: HTMLElement) => element.style.getPropertyValue('--user')),
+      ).toBe('kept');
+      if (color === 'rgb(18, 52, 86)') {
+        const variableClass = await node.getAttribute('class');
+        await page.locator('[data-css-keyword-external]').click();
+        await expect(node).toHaveCSS('color', 'rgb(101, 67, 33)');
+        expect(await node.getAttribute('class')).toBe(variableClass);
+      }
+    }
+    await page.locator('[data-css-keyword-next]').click();
+    await expect(node).toHaveCSS('color', 'rgb(255, 255, 255)');
+    expect(await node.getAttribute('class')).toBe(name);
+    expect(await variables()).toHaveLength(1);
+    expect(errors).toEqual([]);
+  });
+
   test(`${mode} 按需组件加载期间切换主题，完成后继承最新逻辑作用域`, async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (error) => errors.push(error.message));
@@ -87,10 +128,15 @@ for (const mode of ['csr', 'ssr']) {
     await expect(page.locator('[data-css-theme=outer]')).toHaveCSS('color', 'rgb(0, 0, 255)');
     await expect(page.locator('[data-css-theme=portal]')).toHaveCSS('color', 'rgb(0, 0, 255)');
     await expect(page.locator('[data-css-theme=local]')).toHaveCSS('color', 'rgb(128, 0, 128)');
+    const outer = page.locator('[data-css-theme=outer]');
+    const themeClass = await outer.getAttribute('class');
+    expect(await outer.getAttribute('style')).toMatch(/--zj-[a-z0-9-]+:blue/);
     await page.locator('[data-css-theme-toggle]').click();
     await expect(page.locator('[data-css-theme=outer]')).toHaveCSS('color', 'rgb(0, 128, 0)');
     await expect(page.locator('[data-css-theme=portal]')).toHaveCSS('color', 'rgb(0, 128, 0)');
     await expect(page.locator('[data-css-theme=local]')).toHaveCSS('color', 'rgb(128, 0, 128)');
+    expect(await outer.getAttribute('class')).toBe(themeClass);
+    expect(await outer.getAttribute('style')).toMatch(/--zj-[a-z0-9-]+:green/);
     await page.locator('[data-unmount]').click();
     await expect(page.locator('[data-css-theme=portal]')).toHaveCount(0);
     expect(errors).toEqual([]);

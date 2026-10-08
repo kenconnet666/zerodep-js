@@ -95,6 +95,25 @@ export function prepareCss(ast: t.File, program: NodePath<t.Program>, source: st
       const site = count++;
       const parts = path.node.arguments.map((argument) => {
         if (
+          t.isMemberExpression(argument) &&
+          !argument.computed &&
+          t.isIdentifier(argument.property) &&
+          t.isMemberExpression(argument.object) &&
+          !argument.object.computed &&
+          t.isIdentifier(argument.object.property) &&
+          t.isIdentifier(argument.object.object)
+        ) {
+          // 编译期不猜主题或执行 getter；实际成员身份和值由 CSS 库在运行时核对。
+          return t.inherits(
+            call('cssKeyword', [
+              argument.object,
+              t.stringLiteral(argument.property.name),
+              t.stringLiteral(`--zj-${file}-${site}-${slot++}`),
+            ]),
+            argument,
+          );
+        }
+        if (
           !t.isCallExpression(argument) ||
           argument.arguments.length !== 1 ||
           !directState(path, argument.arguments[0]!)

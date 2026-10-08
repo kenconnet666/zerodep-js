@@ -1,5 +1,5 @@
 import type { CssInput } from 'zerodep-css';
-import { authorInputs, inlineDeclaration } from 'zerodep-css/bindings';
+import { authorInputs, inlineDeclaration, inlineKeyword } from 'zerodep-css/bindings';
 import { Derived } from './runtime/reactivity.js';
 import { props, type Props } from './runtime/props.js';
 import { styleText } from './native/style.js';
@@ -14,6 +14,12 @@ interface CssValue {
 interface CssResult {
   className: string;
   style: Record<string, string>;
+}
+
+/** 保持一次属性链读取；特殊关键字和已有 var() 由 CSS 库保留原声明。 */
+export function cssKeyword(target: unknown, member: string, variable: string): CssValue {
+  const result = inlineKeyword(target, member, variable);
+  return { [BINDING]: true, ...result, variable, value: result.value };
 }
 
 /** 只由编译器生成；业务侧 css 的参数仍然是普通声明字符串。 */

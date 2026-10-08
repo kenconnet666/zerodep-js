@@ -5,6 +5,48 @@ import { Keywords, provideCss, useCss } from './css-theme.js';
 
 const s = new Css();
 
+const keywordValues = [
+  '#245fc5',
+  'inherit',
+  'initial',
+  'unset',
+  'revert',
+  'revert-layer',
+  'var(--external, inherit)',
+  'not-a-color',
+  '#ffffff',
+];
+const KeywordBindingProbe = _component(() => {
+  let position = _state(0);
+  let external = _state('#123456');
+  const theme = _derived(new Keywords(keywordValues[position]!));
+  const author = new Css(() => theme);
+  const className = css(s.color.red, author.color._primary);
+  return (
+    <section style={{ color: 'rgb(20, 30, 40)', colorScheme: 'light', '--external': external }}>
+      <button
+        data-css-keyword-next
+        onClick={() => {
+          position = (position + 1) % keywordValues.length;
+        }}
+      >
+        切换关键字值
+      </button>
+      <button
+        data-css-keyword-external
+        onClick={() => {
+          external = '#654321';
+        }}
+      >
+        更新用户变量
+      </button>
+      <div data-css-keyword class={className} style={{ '--user': 'kept' }}>
+        {keywordValues[position]}
+      </div>
+    </section>
+  );
+});
+
 const LazyThemeProbe = _lazy(() => import('./LazyThemeProbe.js'));
 const ThemeProbe = _component(({ location }: { location: string }) => {
   const author = useCss();
@@ -81,6 +123,7 @@ export const CssExample = _component(() => {
   return (
     <section aria-label="原生 CSS 接入">
       <h2>原生 CSS 接入</h2>
+      <KeywordBindingProbe />
       <button
         data-css-theme-toggle
         onClick={() => {
