@@ -19,7 +19,7 @@
 ## 2. 当前基线
 
 - zerodep-js 固定 JetBrains TS7.1.0-dev.jetbrains.20261006.2、Babel 和 Vite；不退回 TS6，不建立多版本兼容或自定义 TS 内核。
-- zerodep-css 核心包已升级为 npm 0.3.1，新增继承作者的层叠/更新消费回归。CSS 仓库保留 TS6.0.3 构建；旧 Vue/Svelte TS AST 编译器独立位于 zerodep-css-compiler，本项目不依赖它。
+- zerodep-css 核心包已升级为 npm 0.3.2，保留继承作者层叠回归，并接入主题关键字的运行时安全变量绑定。CSS 仓库保留 TS6.0.3 构建；旧 Vue/Svelte TS AST 编译器独立位于 zerodep-css-compiler，本项目不依赖它。
 - css 自动追踪、直接变量保守绑定、SSR 样式收集/恢复、_id、Portal 已落地。
 - 框架提交 b34b0f3 的 CI 已确认通过：基础检查、六个平台工具链、Linux/Windows 独立消费和三浏览器。CSS 提交 ca86a9d 的完整 CI 也已通过。规划提交后的 CI 状态另行记录，不把这些证据套到后续实现。
 
@@ -41,6 +41,7 @@
 
 ### 4.1 完善既有 css 语义
 
+- 已支持直接主题成员的运行时分类：安全值绑定元素变量，特殊关键字与已有 var()/复杂表达式保留原声明；切换时清理对应私有变量，不改变用户 style、原始 keywords 或 SSR 标签拼接。普通系统常量、嵌套选择器和跨组件类名保持原边界。
 - 函数内命名 const css 声明与 JSX 内联调用保持一致的依赖更新；普通别名仍是快照，类名仍为 string。
 - 评估支持可直接证明覆盖顺序的 spread 用法，例如在 spread 后明确写 class；后续 spread 可能覆盖 class 时继续保守处理。先看可读性和维护代价，不追求所有位置都自动绑定。
 - 保留用户 style、属性覆盖顺序、条件惰性及 JS 方法/参数求值顺序；CSS 变量转换失败时保留正确原声明。
