@@ -85,9 +85,9 @@ const styles =
 
 ## 类型和维护
 
-CSS 0.3.3 候选已在 CSS 仓库实现关键字压缩，当前项目仍固定已发布的 0.3.2，待候选完整 CI 通过并发布后再升级。候选沿用原有写法：原始值只保存一份，按值和语义说明一致分组，公开作者/关键字构造器仍可继承。公开类型保持 ColorCss、ColorKeywords、FontSizeCss 等语义名称，公共集合使用 globalKeywords、colorKeywords、fontSizeKeywords；中文说明在 hover 和补全详情中均保留，不要求重复输出每个属性的完整声明示例。默认系统声明仍是自有字符串字段，主题读取和元素变量的安全回退不变。
+CSS 0.3.3 已实现关键字压缩，当前项目从 npm 精确安装此版本。沿用原有写法：原始值只保存一份，按值和语义说明一致分组，公开作者/关键字构造器仍可继承。公开类型保持 ColorCss、ColorKeywords、FontSizeCss 等语义名称，公共集合使用 globalKeywords、colorKeywords、fontSizeKeywords；中文说明在 hover 和补全详情中均保留，不要求重复输出每个属性的完整声明示例。默认系统声明仍是自有字符串字段，主题读取和元素变量的安全回退不变。
 
-catalog 固定 CSS 0.3.2，core 可选 CSS peer 下限为 ^0.3.2，框架保持选定 TS7.1 SDK。CSS 仓库用 TS6 构建 JS 与声明；本项目不运行它的旧 AST 编译器，也不安装 zerodep-css-compiler。旧编译器由 Vue/Svelte 适配器独立使用。
+catalog 固定 CSS 0.3.3，core 可选 CSS peer 下限为 ^0.3.2（本轮没有新增运行时接口），框架保持选定 TS7.1 SDK。CSS 仓库用 TS6 构建 JS 与声明；本项目不运行它的旧 AST 编译器，也不安装 zerodep-css-compiler。旧编译器由 Vue/Svelte 适配器独立使用。
 
 跨仓库联调可先执行 `pnpm test:packages --css-tarball <候选.tgz>`。正常安装按精确版本和锁文件恢复，不要求相邻 CSS 仓库存在，也不提交临时绝对路径依赖。
 
