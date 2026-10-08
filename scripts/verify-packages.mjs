@@ -395,9 +395,9 @@ try {
     await expect(page.locator('[data-packed-portal]')).toHaveCount(0);
     await expect(page.locator('body')).toHaveAttribute('data-fixture-effect', 'disposed');
     await expect(page.locator('body')).toHaveAttribute('data-fixture-aborted', 'true');
-    assert.equal(
-      await page.evaluate(() => JSON.parse(localStorage.getItem('package-message')).value),
-      '副本/甲',
+    assert.deepEqual(
+      await page.evaluate(() => JSON.parse(localStorage.getItem('package-message'))),
+      { message: '副本/甲' },
     );
     assert.deepEqual(failures, []);
     await page.close();
