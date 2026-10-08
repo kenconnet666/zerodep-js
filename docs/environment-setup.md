@@ -33,7 +33,9 @@ SDK 未发布到 npm 注册表，主包和平台包直接来自 [JetBrains GitHu
 
 若 GitHub 下载失败，先恢复网络或使用已配置的包管理器代理，再重试同一条 frozen-lockfile 安装。不要改版本号、删除锁文件或从其他 SDK 目录拼装文件。
 
-## 2. 基础工程验收
+## 2. 基础工程验收（CI）
+
+以下是完整 CI 的检查入口，换机后不要求在本地逐项运行。本地先核对上节 SDK 版本和产物是否可用，开发时只跑改动相关的焦点检查。
 
 ```powershell
 pnpm check
@@ -43,7 +45,7 @@ pnpm lsp:verify
 pnpm lsp:completions
 ```
 
-依次执行；语言探针会临时创建示例源码，不能与同工作区的 check/build 并行。补全探针的全部用例都应通过，总数以当前脚本输出为准，服务版本应为上述 JetBrains SDK。需要跑浏览器/包消费时，再执行 `pnpm browsers:install` 和 `pnpm test:packages`。完整远端 CI 尚未结束时，不能把本机检查当作六平台和三浏览器矩阵全部通过。
+CI 在各自任务中执行这些检查；语言探针会临时创建示例源码，不能与同工作区的 check/build 并行。补全探针的全部用例都应通过，总数以当前脚本输出为准，服务版本应为上述 JetBrains SDK。完整浏览器与独立包消费同样由 CI 执行。完整远端 CI 尚未结束时，不能把本机焦点检查当作六平台和三浏览器矩阵全部通过。
 
 ## 3. WebStorm SDK 缓存
 

@@ -60,6 +60,8 @@ Vite 使用 zerodep-js-vite 的 zerodep()。应用 TS 配置使用 jsx: preserve
 
 ## 验证与工具
 
+下面是 CI 使用的完整验收入口，不是本地开发需要依次执行的清单：
+
 ```sh
 pnpm check
 pnpm test
@@ -70,7 +72,7 @@ pnpm lsp:verify
 pnpm lsp:completions
 ```
 
-本地执行相关验证；CI 并行运行工程检查、三浏览器、Linux/Windows 独立消费和官方工具的六平台验证。LSP 探针会临时写主示例源码，不与同一工作区的应用 check/build 同时运行。
+本地只执行改动相关的焦点检查，例如 `pnpm exec vitest run packages/core/test/lifecycle.test.ts`；完整测试留给 CI。CI 并行运行工程检查、三浏览器、Linux/Windows 独立消费和选定 SDK 的六平台验证。LSP 探针会临时写主示例源码，不与同一工作区的应用 check/build 同时运行。
 
 [环境配置](docs/environment-setup.md) · [Svelte API 取舍](.design/svelte-api-review.md) · [工具分工](docs/tooling.md) · [开始使用](docs/getting-started.md) · [API](docs/api.md) · [语义](docs/semantics.md) · [表单](docs/forms.md) · [SSR](docs/ssr-and-hydration.md) · [包消费](docs/packages.md) · [发布](docs/releasing.md)
 

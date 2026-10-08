@@ -19,6 +19,8 @@
 
 ## 构建和检查
 
+下列命令列出完整工程入口；日常本地只检查改动相关范围，完整检查、构建与测试交给 CI。
+
 ```sh
 pnpm build:packages
 pnpm check
