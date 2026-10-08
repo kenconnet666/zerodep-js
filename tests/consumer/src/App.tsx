@@ -27,7 +27,10 @@ import { css } from 'zerodep-js/css';
 import { _head } from 'zerodep-js/head';
 
 const { provideStore: provideMessage, useStore: useMessage } = _createStore<{ message: string }>();
-const StoreMessage = _component(() => <span data-packed-store>{useMessage().message}</span>);
+const StoreMessage = _component(() => {
+  const messages = useMessage();
+  return <span data-packed-store>{messages.message}</span>;
+});
 
 const s = new Css();
 class OpacityWidth extends WidthCss {

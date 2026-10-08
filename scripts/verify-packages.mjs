@@ -359,6 +359,7 @@ try {
     await expect(page.locator('[data-row]')).toHaveText(['甲', '乙']);
     await page.locator('[data-counter]').click();
     await expect(page.locator('output')).toHaveText('2');
+    await expect(page.locator('[data-packed-store]')).toHaveText('2');
     await page.getByLabel('消息').fill('独立输入');
     await page.locator('[data-reference-focus]').click();
     await expect(page.getByLabel('消息')).toBeFocused();
@@ -375,6 +376,7 @@ try {
     await expect(page.locator('body')).toHaveAttribute('data-fixture-effect', 'active');
     await page.locator('[data-copy]').click();
     await expect(page.locator('output')).toHaveText('副本/甲');
+    await expect(page.locator('[data-packed-store]')).toHaveText('副本/甲');
     await page.locator('[data-open-router]').click();
     await expect(page.locator('[data-route-id]')).toHaveText('start');
     await page.getByRole('link', { name: '下一页' }).click();
