@@ -1,4 +1,4 @@
-import type { Renderable } from '../runtime/template.js';
+import type { Renderable, TextRenderable } from '../runtime/template.js';
 import type { HtmlAttributeValues, SvgAttributeValues, NativeEventAliases } from './data.js';
 import type { clientProperties, ownedProperties, formProperties } from './properties.js';
 import type { Style } from './style.js';
@@ -136,6 +136,8 @@ interface TextBindings {
   'bind:value'?: string | null | undefined;
 }
 interface InputBindings extends TextBindings {
+  /** radio 写回所选字符串，checkbox 写回字符串数组；需明确 type 和字符串 value。 */
+  'bind:group'?: string | readonly string[];
   /** checkbox/radio 的选中状态；输入时写回 boolean。 */
   'bind:checked'?: boolean;
   /** number/range 的数值；清空或无有效数字时写回 undefined。 */
@@ -145,13 +147,19 @@ interface SelectBindings {
   /** 单选写回字符串；multiple 多选写回字符串数组。 */
   'bind:value'?: string | readonly string[] | null | undefined;
 }
+interface DetailsBindings {
+  /** 原生 details 展开状态，toggle 写回 boolean；接管前操作会保留。 */
+  'bind:open'?: boolean;
+}
 type NativeBindings<T> = T extends HTMLInputElement
   ? InputBindings
   : T extends HTMLTextAreaElement
     ? TextBindings
     : T extends HTMLSelectElement
       ? SelectBindings
-      : {};
+      : T extends HTMLDetailsElement
+        ? DetailsBindings
+        : {};
 
 type ChangeName<K extends string> = `on${Capitalize<K>}Change`;
 type FirstArgument<F> = F extends (...args: infer Args) => unknown
@@ -247,12 +255,13 @@ export type NativeProps<T extends Element> = (T extends Element
   NativeBindings<T> &
   Pick<HtmlAttributeValues, Extract<keyof HtmlAttributeValues, `aria-${string}`>> &
   AttributeLinks<T> & {
-    children?: Renderable;
+    children?: T extends HTMLOutputElement ? TextRenderable : Renderable;
     key?: string | number | symbol;
     class?: string | false | null | undefined;
     className?: string | null | undefined;
     style?: Style | null | undefined;
-    ref?: ((element: T) => void) | undefined;
+    /** 同步取得元素，可返回清理函数；回调内卸载时立即清理新返回的资源。 */
+    ref?: ((element: T) => void | (() => void)) | undefined;
     /** DOM 引用写入可写变量，卸载后为 undefined；不支持组件实例或对象路径。 */
     'bind:this'?: T | undefined;
     role?: string | null | undefined;

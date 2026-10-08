@@ -1,15 +1,23 @@
 import { Derived } from './reactivity.js';
 import { COMPONENT, type AnyComponent } from './component.js';
 import { restProps, type Props } from './props.js';
-import type { ListTemplate, BoundaryTemplate } from './flow.js';
+import type { ListTemplate, BoundaryTemplate, PortalTemplate } from './flow.js';
 import { resolveBindings } from '../native/bindings.js';
 
 export const TEMPLATE = Symbol('zerodep.template');
 
 export type Renderable =
   Template | string | number | bigint | boolean | null | undefined | readonly Renderable[];
+/** 原生文本输出内容；富内容状态区域使用普通容器和 role="status"。 */
+export type TextRenderable =
+  string | number | bigint | boolean | null | undefined | readonly TextRenderable[];
 export type Template =
-  ElementTemplate | DynamicTemplate | FragmentTemplate | ListTemplate | BoundaryTemplate;
+  | ElementTemplate
+  | DynamicTemplate
+  | FragmentTemplate
+  | ListTemplate
+  | BoundaryTemplate
+  | PortalTemplate;
 
 export interface ElementTemplate {
   readonly [TEMPLATE]: true;

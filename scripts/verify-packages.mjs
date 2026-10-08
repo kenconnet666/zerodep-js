@@ -2,7 +2,19 @@ import assert from 'node:assert/strict';
 import { execFile } from 'node:child_process';
 import { createServer } from 'node:http';
 import { once } from 'node:events';
-import { access, cp, mkdir, mkdtemp, readFile, realpath, rm, writeFile } from 'node:fs/promises';
+import {
+  access,
+  cp,
+  mkdir,
+  mkdtemp,
+  readFile,
+  readdir,
+  realpath,
+  rm,
+  rmdir,
+  unlink,
+  writeFile,
+} from 'node:fs/promises';
 import { basename, dirname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -15,6 +27,7 @@ const { values } = parseArgs({
   options: {
     registry: { type: 'boolean', default: false },
     version: { type: 'string' },
+    'css-tarball': { type: 'string' },
   },
 });
 if (values.registry)
@@ -32,7 +45,8 @@ const consumer = resolve(fixture, 'consumer');
 const archives = resolve(fixture, 'archives');
 const executable = /\.[cm]?js$/.test(pnpm) ? process.execPath : pnpm;
 const prefix = executable === pnpm ? [] : [pnpm];
-const env = { ...process.env, CI: 'true' };
+// 消费安装连 store 也隔离，避免宿主缓存元数据缺失掩盖 HTTPS tarball 的完整性验证。
+const env = { ...process.env, CI: 'true', npm_config_store_dir: resolve(fixture, 'store') };
 if (values.registry) env.npm_config_registry = 'https://registry.npmjs.org/';
 delete env.NODE_PATH;
 const exec = promisify(execFile);
@@ -62,13 +76,21 @@ try {
   manifest.devDependencies = {};
   manifest.pnpm = { overrides: {} };
   const catalog = await readFile(resolve(root, 'pnpm-workspace.yaml'), 'utf8');
-  // 读取 catalog 中的精确版本，包含当前 TypeScript nightly 的预发布后缀。
-  for (const name of ['typescript', 'vite', '@types/node']) {
-    const version = catalog.match(
-      new RegExp(`^  ['"]?${name}['"]?: ([0-9.]+(?:-[0-9A-Za-z.-]+)?)$`, 'm'),
-    )?.[1];
+  // 发行 SDK 使用固定 HTTPS tarball；复制平台覆盖，独立消费不依赖 IDE 缓存。
+  for (const match of catalog.matchAll(/^  '(@typescript\/[^']+)': (https:\/\/\S+)$/gm))
+    manifest.pnpm.overrides[match[1]] = match[2];
+  for (const name of ['typescript', 'vite', '@types/node', 'zerodep-css']) {
+    const version = catalog.match(new RegExp(`^  ['"]?${name}['"]?: (\\S+)$`, 'm'))?.[1];
     assert(version, `找不到 ${name} 的固定 catalog 版本。`);
     manifest.devDependencies[name] = version;
+  }
+  if (values['css-tarball']) {
+    assert(!values.registry, '注册表验收不能替换 CSS 依赖。');
+    const source = await realpath(values['css-tarball']);
+    assert(source.endsWith('.tgz'), 'CSS 候选产物需要 tgz 文件。');
+    const archive = resolve(archives, 'zerodep-css.tgz');
+    await cp(source, archive);
+    manifest.devDependencies['zerodep-css'] = `file:${archive.replaceAll('\\', '/')}`;
   }
   for (const item of selectedPackages) {
     const name = item.folder;
@@ -104,6 +126,7 @@ try {
         './history',
         './router',
         './storage',
+        './task',
       ]);
       assert.deepEqual(Object.keys(sourceManifest.peerDependencies), ['zerodep-js']);
       assert.equal(Object.keys(sourceManifest.dependencies ?? {}).length, 0);
@@ -160,8 +183,12 @@ try {
           !/^(workspace:|catalog:|link:|file:)/.test(version),
           `${name} 的 ${kind} 含本地协议。`,
         );
-    for (const target of Object.values(installed.exports ?? {}))
-      for (const file of Object.values(target)) await access(resolve(directory, file));
+    const targets = [installed.exports ?? {}];
+    while (targets.length) {
+      const target = targets.pop();
+      if (typeof target === 'string') await access(resolve(directory, target));
+      else if (target) targets.push(...Object.values(target));
+    }
     for (const file of files)
       if (file.endsWith('.map')) {
         const map = await json(resolve(directory, file));
@@ -260,9 +287,11 @@ try {
     `数据与 untrack 入口体积：${report.tree.reduce((sum, chunk) => sum + chunk.bytes, 0)} 字节。`,
   );
   assert.equal(typeof globalThis.document, 'undefined');
-  const { render } = await import(pathToFileURL(resolve(consumer, 'dist/server/server.js')).href);
-  assert(render('<独立请求>').includes('&lt;独立请求&gt;'));
-  assert(!render('另一个请求').includes('独立请求'));
+  const { render, page: renderPage } = await import(
+    pathToFileURL(resolve(consumer, 'dist/server/server.js')).href
+  );
+  assert(render('<独立请求>').html.includes('&lt;独立请求&gt;'));
+  assert(!render('另一个请求').html.includes('独立请求'));
   const template = await readFile(resolve(consumer, 'dist/client/index.html'), 'utf8');
   server = createServer((request, response) => {
     void (async () => {
@@ -270,11 +299,7 @@ try {
       if (url.pathname === '/') {
         const mode = url.searchParams.get('mode') === 'csr' ? 'csr' : 'ssr';
         response.setHeader('Content-Type', 'text/html; charset=utf-8');
-        response.end(
-          template
-            .replace('__MODE__', mode)
-            .replace('<!--app-->', mode === 'ssr' ? render('独立消费') : ''),
-        );
+        response.end(await renderPage(template, mode, '独立消费'));
       } else {
         assert(/^\/assets\/[\w.-]+$/.test(url.pathname));
         response.setHeader(
@@ -301,6 +326,30 @@ try {
     await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
     await expect(page.locator('#app')).toHaveAttribute('data-reused', String(mode === 'ssr'));
     await expect(page.locator('h1')).toHaveText('独立消费');
+    await expect(page).toHaveTitle('独立消费');
+    await expect(page.locator('head meta[name=description]')).toHaveAttribute(
+      'content',
+      '独立包消费',
+    );
+    await expect(page.locator('[data-packed-css]')).toHaveCSS('width', '120px');
+    const cssClass = await page.locator('[data-packed-css]').getAttribute('class');
+    await page.locator('[data-packed-css-grow]').click();
+    await expect(page.locator('[data-packed-css]')).toHaveCSS('width', '130px');
+    assert.equal(await page.locator('[data-packed-css]').getAttribute('class'), cssClass);
+    await expect(page.locator('[data-packed-mapped-css]')).toHaveCSS('opacity', '0.5');
+    await page.locator('[data-packed-mapped-update]').click();
+    await expect(page.locator('[data-packed-mapped-css]')).toHaveCSS('opacity', '0.8');
+    await expect(page.locator('[data-packed-task]')).toHaveText('task-ready');
+    await expect(page.locator('[data-packed-portal]')).toHaveText('外层内容');
+    assert(
+      await page
+        .locator('[data-packed-portal]')
+        .evaluate((node) => node.parentNode === document.body),
+    );
+    assert.equal(
+      await page.locator('label').getAttribute('for'),
+      await page.locator('input[aria-label="消息"]').getAttribute('id'),
+    );
     await expect(page.locator('[data-row]')).toHaveText(['甲', '乙']);
     await page.locator('[data-counter]').click();
     await expect(page.locator('output')).toHaveText('2');
@@ -337,6 +386,7 @@ try {
     await expect(page.locator('body')).toHaveAttribute('data-fixture-effect', 'active');
     await page.evaluate(() => window.stopFixture());
     await expect(page.locator('#app')).toBeEmpty();
+    await expect(page.locator('[data-packed-portal]')).toHaveCount(0);
     await expect(page.locator('body')).toHaveAttribute('data-fixture-effect', 'disposed');
     await expect(page.locator('body')).toHaveAttribute('data-fixture-aborted', 'true');
     assert.equal(
@@ -362,6 +412,18 @@ try {
     server.closeAllConnections();
     await new Promise((resolve) => server.close(resolve));
   }
-  // mkdtemp 创建且已核对范围的绝对路径；不清理共享 pnpm store 或工作区依赖。
-  await rm(fixture, { recursive: true, force: true });
+  // 只逐项清理 mkdtemp 创建的目录和私有 store；pnpm 链接本身可删，不能遍历目标。
+  assert.equal(await realpath(fixture), fixture);
+  const pending = [fixture];
+  const directories = [];
+  while (pending.length) {
+    const directory = pending.pop();
+    directories.push(directory);
+    for (const entry of await readdir(directory, { withFileTypes: true })) {
+      const file = resolve(directory, entry.name);
+      if (entry.isDirectory() && !entry.isSymbolicLink()) pending.push(file);
+      else await unlink(file);
+    }
+  }
+  for (const directory of directories.reverse()) await rmdir(directory);
 }

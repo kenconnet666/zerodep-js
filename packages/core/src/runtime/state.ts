@@ -1,4 +1,12 @@
-import { Source, assertCanWrite, _batch, isTracking, _untrack } from './reactivity.js';
+import {
+  Source,
+  assertCanWrite,
+  _batch,
+  isTracking,
+  _untrack,
+  captureTracking,
+} from './reactivity.js';
+import { isPlainObjectPrototype } from './objects.js';
 
 const proxies = new WeakMap<object, object>();
 const originals = new WeakMap<object, object>();
@@ -22,7 +30,11 @@ const mutators = new Set<PropertyKey>([
   'fill',
   'copyWithin',
 ]);
-const arrayMethods = new Map<PropertyKey, (...args: unknown[]) => unknown>();
+const nativeMethods = new Map(
+  [...mutators].map((key) => [key, Reflect.get(Array.prototype, key) as Function]),
+);
+const arrayMethods = new WeakMap<Function, (...args: unknown[]) => unknown>();
+const functionSource = (value: Function) => Function.prototype.toString.call(value);
 
 export function raw<T>(value: T): T {
   return value !== null && typeof value === 'object'
@@ -43,20 +55,20 @@ export function reactive<T>(value: T): T {
   if (value === null || typeof value !== 'object' || originals.has(value)) return value;
   const prototype = Object.getPrototypeOf(value);
   const constructor = prototype && Object.getOwnPropertyDescriptor(prototype, 'constructor')?.value;
-  const plain =
-    prototype === null ||
-    prototype === Object.prototype ||
-    (Object.getPrototypeOf(prototype) === null &&
-      typeof constructor === 'function' &&
-      Function.prototype.toString.call(constructor) === Function.prototype.toString.call(Object));
-  if ((!Array.isArray(value) && !plain) || !Object.isExtensible(value)) return value;
+  const isArray = Array.isArray(value);
+  const plainArray =
+    isArray &&
+    (prototype === null ||
+      prototype === Array.prototype ||
+      (typeof constructor === 'function' && functionSource(constructor) === functionSource(Array)));
+  const plain = isPlainObjectPrototype(prototype);
+  if ((!plainArray && !plain) || !Object.isExtensible(value)) return value;
   const cached = proxies.get(value);
   if (cached) return cached as T;
 
   const values: Signals = new Map();
   const existence: Signals = new Map();
   const keys = new Source(0);
-  const isArray = Array.isArray(value);
 
   function track(map: Signals, key: PropertyKey): void {
     if (!isTracking()) return;
@@ -115,21 +127,32 @@ export function reactive<T>(value: T): T {
         track(values, key);
         throw error;
       }
-      if (isArray && mutators.has(key) && result === Reflect.get(Array.prototype, key)) {
-        let method = arrayMethods.get(key);
+      track(values, key);
+      const descriptor = Reflect.getOwnPropertyDescriptor(target, key);
+      // 锁定属性必须返回目标中的精确值；原生数组方法也不能再包装。
+      if (descriptor && !descriptor.configurable && 'value' in descriptor && !descriptor.writable)
+        return result;
+      const native = isArray && nativeMethods.get(key);
+      if (
+        native &&
+        typeof result === 'function' &&
+        (result === native || functionSource(result) === functionSource(native))
+      ) {
+        let method = arrayMethods.get(result);
         if (!method) {
           method = function (this: unknown, ...args: unknown[]): unknown {
+            if (key === 'sort' && typeof args[0] === 'function') {
+              const compare = args[0];
+              const tracked = captureTracking();
+              args[0] = (...items: unknown[]) =>
+                tracked(() => Reflect.apply(compare, undefined, items));
+            }
             // 原生数组变更内部会读 length，这些机械读取不能成为 effect 依赖。
             return _batch(() => _untrack(() => Reflect.apply(result as Function, this, args)));
           };
-          arrayMethods.set(key, method);
+          arrayMethods.set(result, method);
         }
         return method;
-      }
-      track(values, key);
-      const descriptor = Reflect.getOwnPropertyDescriptor(target, key);
-      if (descriptor && !descriptor.configurable && 'value' in descriptor && !descriptor.writable) {
-        return result;
       }
       return reactive(result);
     },
@@ -148,8 +171,14 @@ export function reactive<T>(value: T): T {
       const before = Reflect.getOwnPropertyDescriptor(target, key);
       const had = Reflect.has(target, key);
       const length = isArray ? (target as unknown[]).length : 0;
+      const locked =
+        !(descriptor.configurable ?? before?.configurable ?? false) &&
+        !(descriptor.writable ?? before?.writable ?? false);
+      // 新属性默认不可写/不可配置；锁定时去代理会违反 defineProperty 的值身份约束。
       const next =
-        'value' in descriptor ? { ...descriptor, value: raw(descriptor.value) } : descriptor;
+        'value' in descriptor && !locked
+          ? { ...descriptor, value: raw(descriptor.value) }
+          : descriptor;
       const success = Reflect.defineProperty(target, key, next);
       // length 缩短遇到不可配置元素可能部分成功，失败时也要通知实际变更。
       _batch(() => {
@@ -159,7 +188,9 @@ export function reactive<T>(value: T): T {
           (!before ||
             !Object.is(before.value, after.value) ||
             before.get !== after.get ||
-            before.set !== after.set)
+            before.set !== after.set ||
+            before.configurable !== after.configurable ||
+            before.writable !== after.writable)
         )
           changed(values, key);
         if (had !== Reflect.has(target, key)) changed(existence, key);

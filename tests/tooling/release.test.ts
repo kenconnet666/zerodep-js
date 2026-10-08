@@ -1,6 +1,16 @@
 import { expect, it } from 'vitest';
 import { execFile, execFileSync } from 'node:child_process';
-import { copyFile, mkdir, mkdtemp, readFile, realpath, rm, writeFile } from 'node:fs/promises';
+import {
+  copyFile,
+  mkdir,
+  mkdtemp,
+  readFile,
+  realpath,
+  readdir,
+  rmdir,
+  unlink,
+  writeFile,
+} from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { isAbsolute, relative, resolve, sep } from 'node:path';
 import { promisify } from 'node:util';
@@ -108,6 +118,16 @@ it('发布工具固定产物、拒绝篡改/越界/私有包，并仅准备明�
       stderr: expect.stringContaining('需要干净工作区'),
     });
   } finally {
-    await rm(fixture, { recursive: true, force: true });
+    // fixture 已核对位于独占临时目录；逐项清理，不跟随目录链接。
+    const directories = [fixture];
+    for (let index = 0; index < directories.length; index++) {
+      const directory = directories[index]!;
+      for (const entry of await readdir(directory, { withFileTypes: true })) {
+        const file = resolve(directory, entry.name);
+        if (entry.isDirectory() && !entry.isSymbolicLink()) directories.push(file);
+        else await unlink(file);
+      }
+    }
+    for (const directory of directories.reverse()) await rmdir(directory);
   }
 }, 60_000);

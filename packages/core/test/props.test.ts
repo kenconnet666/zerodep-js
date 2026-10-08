@@ -4,6 +4,24 @@ import { reactive } from '../src/runtime/state.js';
 import { _createRoot, _effect, _flushSync } from '../src/runtime/reactivity.js';
 
 describe('组件输入视图', () => {
+  it('实时 rest 只暴露未排除的自有可枚举属性，不读取原型 getter 或隐藏字段', () => {
+    const hidden = vi.fn(() => 'prototype secret');
+    const input = Object.create(Object.defineProperty({}, 'inherited', { get: hidden })) as Record<
+      string,
+      unknown
+    >;
+    input.visible = 'public';
+    Object.defineProperty(input, 'secret', { value: 'private' });
+    const rest = restProps(input, []);
+    expect(rest.inherited).toBeUndefined();
+    expect(rest.secret).toBeUndefined();
+    expect('inherited' in rest).toBe(false);
+    expect(Object.keys(rest)).toEqual(['visible']);
+    expect(hidden).not.toHaveBeenCalled();
+    input.visible = 'updated';
+    expect(rest.visible).toBe('updated');
+  });
+
   it('默认值按实例缓存，依赖更新和显式覆盖保持一致', () => {
     const input = reactive<{ min?: number; max?: number | null }>({ min: 0 });
     const min = prop(input, 'min', () => 0);

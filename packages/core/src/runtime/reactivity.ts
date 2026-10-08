@@ -1,5 +1,6 @@
 /* oxlint-disable typescript/no-this-alias -- 这里切换同步跟踪上下文，并非给回调捕获 this 别名。 */
 import { RenderQueue } from './render-queue.js';
+import { synchronous } from './synchronous.js';
 export type Cleanup = () => void;
 export type EffectCallback = () => void | Cleanup;
 
@@ -88,7 +89,7 @@ export class Scope {
         }
         while (this.cleanups.length) {
           try {
-            this.cleanups.pop()!();
+            synchronous(this.cleanups.pop()!(), '清理函数必须同步完成。');
           } catch (error) {
             errors.push(error);
           }
@@ -168,14 +169,24 @@ export function _onCleanup(cleanup: Cleanup): void {
   }
   currentScope.cleanups.push(cleanup);
 }
-export function _untrack<T>(fn: () => T): T {
+function withObserver<T>(observer: Observer | null, fn: () => T): T {
   const previous = currentObserver;
-  currentObserver = null;
+  currentObserver = observer;
   try {
     return fn();
   } finally {
     currentObserver = previous;
   }
+}
+
+export function _untrack<T>(fn: () => T): T {
+  return withObserver(null, fn);
+}
+
+/** 仅供同步宿主调用：屏蔽机械读取时，用户回调仍沿用调用方原有的跟踪环境。 */
+export function captureTracking() {
+  const observer = currentObserver;
+  return <T>(fn: () => T): T => withObserver(observer, fn);
 }
 
 export function isTracking(): boolean {
@@ -368,6 +379,8 @@ class ReactiveEffect extends Scope implements Observer {
     this.dirty = false;
     if (this.initialized && !dependenciesChanged(this)) return;
     this.clear();
+    // abort/旧资源清理可以同步停止当前 effect；此时不能重新进入已销毁的作用域。
+    if (this.disposed) return;
     disconnectDependencies(this);
     const previous = currentObserver;
     currentObserver = this;
@@ -377,10 +390,12 @@ class ReactiveEffect extends Scope implements Observer {
         const cleanup = this.callback();
         if (typeof cleanup === 'function') {
           // 回调可能卸载自己所属的根，此时返回的资源也必须立即释放。
-          if (this.disposed) _untrack(cleanup);
+          if (this.disposed) synchronous(_untrack(cleanup), '清理函数必须同步完成。');
           else this.cleanups.push(cleanup);
         } else if (cleanup !== undefined) {
-          throw new Error('effect 必须同步返回清理函数或 undefined，异步任务应显式取消。');
+          const message = 'effect 必须同步返回清理函数或 undefined，异步任务应显式取消。';
+          synchronous(cleanup, message);
+          throw new TypeError(message);
         }
       });
     } finally {

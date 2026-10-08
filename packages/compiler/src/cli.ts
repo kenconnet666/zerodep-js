@@ -31,7 +31,7 @@ async function main(): Promise<void> {
   const args = process.argv.slice(2);
   if (args.includes('--help')) {
     process.stdout.write(
-      'zerodep-check -p tsconfig.json [--json]\nzerodep-check [文件或目录...] [--json]\nzerodep-check --stdin 文件名 [--json]\n-p 使用官方 TS7.1 同时检查类型和框架语义；文件和 stdin 模式仅检查框架语义。\n',
+      'zerodep-check -p tsconfig.json [--json]\nzerodep-check [文件或目录...] [--json]\nzerodep-check --stdin 文件名 [--json]\n-p 使用选定 TS7.1 同时检查类型和框架语义；文件和 stdin 模式仅检查框架语义。\n',
     );
     return;
   }

@@ -127,6 +127,8 @@ const Editor = _component(() => {
 
 _createRouter 默认使用内存历史，不根据环境偷偷切换。browser/hash 可指定 window，要求 HTTP(S) origin；一个窗口同时只有一个原生 history 实例，一个 history 实例只属于一个路由器。底层通过原生 history.state 中的专用字段保存位置，业务 state 单独保存；不要自行覆盖受管理历史的内部字段。
 
+history.location 是当前入口的稳定只读快照，监听事件引用同一入口对象；自定义 history 也应保持这个约定。监听器同步发起另一操作时，原事件和 push/replace 的返回值仍对应原操作，location 则指向最新入口。已启动的路由器忽略被替代的旧事件；自身提交时出现的外部改写按新导航处理，仍执行守卫。拒绝后按已提交页面的位置回滚，不只看最后一次事件的相对偏移。
+
 Router 组件自动启动并拥有控制器，卸载时取消加载、停止监听并 dispose。手工调用 router.start() 适用于自己管理呈现的场合，返回停止监听的函数；最终仍需 router.dispose()。SSR 在 HTTP 连接中止时也应 dispose 正在加载的控制器。不要把同一控制器挂到两个 Router，也不要复用已销毁的实例。模块级路由定义可以共享，控制器与可变数据必须按应用/请求创建。
 
 默认保存最近 100 个历史项的滚动位置；后退/前进恢复位置，普通导航滚到 fragment 对应 ID 或顶部。新路径提交后聚焦页面显式标记的 `[data-route-focus]`（标题可配 tabIndex={-1}）。可全局禁用 scroll/focus，或在 navigate 中单次指定。没有标记时不猜测焦点目标。

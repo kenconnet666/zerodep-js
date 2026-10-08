@@ -9,6 +9,16 @@ import {
   elementName,
   elementText,
 } from '../src/native/attributes.js';
+import { element, dynamic, fragment } from '../src/runtime/template.js';
+
+it('output 按文本输出组合派生与数组，不放入会被 reset 清除的结构节点', () => {
+  expect(elementText('output', { children: ['合计', dynamic(() => 2), fragment(['件'])] })).toBe(
+    '合计2件',
+  );
+  expect(() =>
+    elementText('output', { children: element('strong', { children: '富内容' }) }),
+  ).toThrow('文本专用');
+});
 
 it('原生标签与 HTML 解析保持相同的名称和命名空间', () => {
   expect(elementName('BUTTON', HTML)).toBe('button');

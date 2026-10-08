@@ -7,6 +7,8 @@ import {
   type Scope,
 } from '../runtime/reactivity.js';
 import type { Props } from '../runtime/props.js';
+import { hasOpenBinding } from '../native/bindings.js';
+import { DisclosureControl } from './disclosure.js';
 import type { HydrationSession } from './hydration.js';
 import { HTML, textValue, selectionValues } from '../native/attributes.js';
 import {
@@ -20,6 +22,9 @@ import {
 
 const controls = new WeakMap<Element, Control>();
 class Control {
+  owns(name: string): boolean {
+    return name === 'value' || name === 'checked';
+  }
   readonly element: InputControl;
   private readonly input: Props;
   private readonly owner: Scope;
@@ -331,7 +336,9 @@ export function bindControl(
   input: Props,
   hydration: HydrationSession | undefined,
   hasEvent: (type: string) => boolean,
-): Control | undefined {
+): Control | DisclosureControl | undefined {
+  if (element.namespaceURI === HTML && element.localName === 'details' && hasOpenBinding(input))
+    return new DisclosureControl(element as HTMLDetailsElement, input, hydration);
   if (element.namespaceURI !== HTML || !['input', 'textarea', 'select'].includes(element.localName))
     return undefined;
   return new Control(element as InputControl, input, hydration, hasEvent);

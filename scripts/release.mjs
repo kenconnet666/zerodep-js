@@ -159,7 +159,7 @@ async function authenticated(run) {
   let token = process.env.NPM_TOKEN || process.env.NODE_AUTH_TOKEN;
   if (!token && process.platform === 'win32' && !process.env.CI) {
     token = execFileSync(
-      'powershell.exe',
+      'pwsh',
       [
         '-NoLogo',
         '-NoProfile',

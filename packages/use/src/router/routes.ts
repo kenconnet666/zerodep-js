@@ -1,5 +1,5 @@
 import type { Component, Renderable } from 'zerodep-js';
-import { unowned } from 'zerodep-js/internal';
+import { unowned, synchronous } from 'zerodep-js/internal';
 
 export type ParamValue = string | readonly string[];
 export type Params = Readonly<Record<string, ParamValue | undefined>>;
@@ -268,12 +268,7 @@ export function matchRoutes(table: object, url: URL): Match[] {
       const search = parse
         ? unowned(() => parse(new URLSearchParams(url.search)))
         : readSearch(url.searchParams);
-      if (
-        search !== null &&
-        typeof search === 'object' &&
-        typeof Reflect.get(search, 'then') === 'function'
-      )
-        throw new TypeError('parseSearch 必须同步完成。');
+      synchronous(search, 'parseSearch 必须同步完成。');
       return { ...match, search };
     }) ?? []
   );

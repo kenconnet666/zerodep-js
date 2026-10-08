@@ -8,6 +8,7 @@ import {
   _provideContext,
   type JSX,
   type Renderable,
+  type ComponentProps,
 } from 'zerodep-js';
 
 // 验证显式标注的必填属性不会因为默认值而变成可选。
@@ -131,6 +132,18 @@ declare const componentSignature: typeof _component;
 export const asyncComponent = componentSignature(async () => '异步');
 
 declare const target: HTMLDivElement;
+const OptionalParameter = _component((props?: { label?: string }) => props?.label ?? null);
+const NoParameter = _component(() => null);
+_mount(NoParameter, { target });
+_hydrate(NoParameter, { target, props: {} });
+const optionalProps: ComponentProps<typeof OptionalParameter> = { label: '正确' };
+_mount(OptionalParameter, { target });
+_mount(OptionalParameter, { target, props: optionalProps });
+_hydrate(OptionalParameter, { target, props: { label: '正确' } });
+// @ts-expect-error 可选参数仍保留其属性类型，不能退化为 any。
+_mount(OptionalParameter, { target, props: { label: 1 } });
+// @ts-expect-error 无参数组件仍不接受任意属性。
+_mount(NoParameter, { target, props: { label: '多余' } });
 _mount(Required, { target, props: { label: '正确' } });
 // @ts-expect-error 根入口同样要求必填 props。
 _mount(Required, { target });

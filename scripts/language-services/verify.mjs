@@ -164,10 +164,11 @@ export const BindingProbe = _component(() => {
   const bindingCompletions = await call('completions', {
     ...(await point(bindingFile, 'bind />', 4)),
     prefix: 'bind',
-    resolveLimit: 4,
+    resolveLimit: 5,
   });
   assert.deepEqual(bindingCompletions.items.map((item) => item.insertText).sort(), [
     'bind:checked',
+    'bind:group',
     'bind:this',
     'bind:value',
     'bind:valueAsNumber',
@@ -185,7 +186,7 @@ export const BindingProbe = _component(() => {
   );
   const bindingReport = await call('diagnostics', { filePath: bindingFile });
   assert(bindingReport.complete && bindingReport.errors === 0, JSON.stringify(bindingReport));
-  console.log('TS7 JSX 绑定补全通过：四个原生输入候选、类型、说明和完整写法。');
+  console.log('TS7 JSX 绑定补全通过：五个原生输入候选、类型、说明和完整写法。');
 
   // 必须命中源属性本身，非空结果或跳到框架的条件类型都不算导航成功。
   let navigationChecks = 0;

@@ -1,8 +1,10 @@
 # 开始使用 zerodep-js
 
-zerodep-js 使用标准 TSX、显式变量式状态和一次初始化的组件。当前源码采用官方 TS7.1 dev、Babel 与 Vite；发布状态见 [执行记录](execution.md)和[变更记录](../CHANGELOG.md)。源码工作区运行方式见 [README](../README.md)。
+zerodep-js 使用标准 TSX、显式变量式状态和一次初始化的组件。当前源码采用固定的 JetBrains TS7.1、Babel 与 Vite；发布状态见 [执行记录](execution.md)和[变更记录](../CHANGELOG.md)。源码工作区运行方式见 [环境配置](environment-setup.md)。
 
-## 安装与构建入口
+## 已发布 rc.7 的安装与构建入口
+
+工作区源码已按用户要求切换为 JetBrains `7.1.0-dev.jetbrains.20261006.2`，使用仓库的 `pnpm install --frozen-lockfile`，下载来源和平台覆盖见 [工具链](tooling.md)。下方 npm rc.7 安装说明对应既有发布版本，尚不包含本次 SDK 调整。
 
 消费者使用 Node 24、官方 TypeScript 7.1.0-dev.20261007.1 与 Vite 8.3.1。当前候选 rc.7 已发布到 npm next，框架包安装相同版本：
 

@@ -6,6 +6,94 @@ import { _createMemoryHistory } from '../src/router/history.js';
 import { RouteError, _redirect } from '../src/router/navigation.js';
 
 const Page = defineComponent(() => null);
+it.each([
+  ['before', true],
+  ['after', true],
+  ['before', false],
+  ['after', false],
+] as const)(
+  '路由主动提交期间监听器同步改写历史，最新地址接管导航（%s/allow=%s）',
+  async (order, allow) => {
+    const routes = _defineRoutes({ page: { path: '/:page', component: Page } });
+    const history = _createMemoryHistory('/home');
+    const redirect = () =>
+      history.listen((event) => {
+        if ((event.location.state as { step?: number } | undefined)?.step === 1)
+          history.replace('/second', { step: 2 });
+      });
+    if (order === 'before') redirect();
+    const router = _createRouter(routes, { history });
+    try {
+      await router.resolve();
+      router.start();
+      router.beforeEach(({ to }) => to.location.href !== '/second' || allow);
+      if (order === 'after') redirect();
+      expect((await router.navigate('/first', { state: { step: 1 } })).status).toBe('cancelled');
+      await router.resolve();
+      expect(router.state.location.href).toBe(allow ? '/second' : '/home');
+      expect(router.state.location.state).toEqual(allow ? { step: 2 } : undefined);
+      expect(history.location.href).toBe(router.state.location.href);
+      expect(history.location.index).toBe(allow ? 1 : 0);
+    } finally {
+      router.dispose();
+    }
+  },
+);
+
+it.each(['push', 'replace'] as const)(
+  '外部历史监听器同步 %s 后，旧事件不能覆盖新地址或 state',
+  async (operation) => {
+    const routes = _defineRoutes({ page: { path: '/:page', component: Page } });
+    const history = _createMemoryHistory('/home');
+    history.listen((event) => {
+      if ((event.location.state as { step?: number } | undefined)?.step === 1)
+        history[operation](operation === 'push' ? '/second' : '/first', { step: 2 });
+    });
+    const router = _createRouter(routes, { history });
+    try {
+      await router.resolve();
+      router.start();
+      history.push('/first', { step: 1 });
+      await router.resolve();
+      expect(history.location.href).toBe(operation === 'push' ? '/second' : '/first');
+      expect(router.state.location.href).toBe(history.location.href);
+      expect(router.state.location.state).toEqual({ step: 2 });
+    } finally {
+      router.dispose();
+    }
+  },
+);
+
+it.each(['loader', 'validate', 'guard'])(
+  '%s 同步销毁路由后返回失败 Promise，取消仍消费迟到拒绝',
+  async (phase) => {
+    let router!: ReturnType<typeof _createRouter>;
+    const fail = () => {
+      router.dispose();
+      return Promise.reject(new Error('late cancelled navigation'));
+    };
+    const routes = _defineRoutes({
+      home: { path: '/', component: Page },
+      next: _defineRoute('/next', {
+        component: Page,
+        load: () => (phase === 'loader' ? fail() : 1),
+        validateData: (value) => (phase === 'validate' ? fail() : Number(value)),
+      }),
+    });
+    router = _createRouter(routes);
+    try {
+      await router.resolve();
+      if (phase === 'guard') router.beforeEach(fail);
+      expect((await router.navigate(routes.next)).status).toBe('cancelled');
+      expect(router.disposed).toBe(true);
+      expect(router.state.location.pathname).toBe('/');
+      await new Promise<void>((resolve) => setImmediate(resolve));
+    } finally {
+      router.dispose();
+    }
+  },
+);
+
 function deferred<T>() {
   let resolve!: (value: T) => void;
   const promise = new Promise<T>((done) => {

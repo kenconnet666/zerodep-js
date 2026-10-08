@@ -1,13 +1,15 @@
 # 包边界与独立消费
 
-项目维护 core、use、ssr、compiler、vite 五包。官方 TypeScript 的平台二进制由其 npm 依赖提供，框架不再发布自己的平台 SDK。
+项目维护 core、use、ssr、compiler、vite 五包。当前源码选用 JetBrains TS7.1 的原始 GitHub 发行包；主包及平台包由根项目的 catalog/overrides 固定，框架不构建或发布自己的平台 SDK。此安装前提与已发布 rc.7 的微软 npm SDK 不同。
+
+采用当前源码工具链的独立项目，必须将同版本 [工作区配置](../pnpm-workspace.yaml) 中的 TypeScript 主包 URL 和 `@typescript/typescript-*` 平台 overrides 合并到项目根配置，再安装并保存锁文件。只指定主包 URL 不能保证取得尚未发布到 npm 的平台包。独立消费验收会复制这部分配置，不能把测试通过理解为任意未配置的 npm 项目都能直接安装；完整步骤见 [环境配置](environment-setup.md)。
 
 | 发布包              | 职责                                                                 |
 | ------------------- | -------------------------------------------------------------------- |
 | zerodep-js          | 浏览器与响应式运行时、类型声明、internal 编译协议、devtools 开发入口 |
-| zerodep-use         | history/router/storage，peer 依赖同版本 core                         |
+| zerodep-use         | history/router/storage/task，peer 依赖同版本 core                    |
 | zerodep-js-ssr      | 服务端渲染和序列化，peer 依赖 core                                   |
-| zerodep-js-compiler | Babel 转换、官方 TS7.1 检查与语言适配，属于开发工具                  |
+| zerodep-js-compiler | Babel 转换、选定 JetBrains TS7.1 检查与语言适配，属于开发工具        |
 | zerodep-js-vite     | 构建侧依赖 compiler，集成 Vite                                       |
 
 ## 应用与组件库
@@ -24,7 +26,7 @@ pnpm test:packages 使用本次固定 tgz 在工作区外安装，检查：
 
 - 包名、版本、许可证、导出、源码和映射完整。
 - 安装结果不链接回工作区，不残留 workspace/catalog/link/file 协议。
-- 官方 TS7.1 与 Babel 能独立编译预编译组件库，声明保留泛型和类型反例。
+- 选定 SDK 与 Babel 能独立编译预编译组件库，声明保留泛型和类型反例。
 - CSR/SSR、节点接管、绑定、路由、存储和卸载使用实际发布包。
 - 生产浏览器不包含开发工具、其他框架或重复运行时。
 

@@ -12,6 +12,8 @@ import type { HydrationSession } from './hydration.js';
 import { bindControl, notifySelect } from './controls.js';
 import { HTML, attributeNamespace, eventName, nativeAttributes } from '../native/attributes.js';
 import { PropertyBindings } from './properties.js';
+import { synchronous } from '../runtime/synchronous.js';
+import { rollback } from './utils.js';
 
 const properties = new Set(['value', 'checked', 'selected', 'muted']);
 
@@ -69,7 +71,7 @@ export function attachAttributes(
       (left, right) => Number(properties.has(left)) - Number(properties.has(right)),
     );
     for (const name of names) {
-      if (control && (name === 'value' || name === 'checked')) continue;
+      if (control?.owns(name)) continue;
       const value = next.get(name) ?? null;
       if (previous.get(name) !== value) setAttribute(element, name, value);
     }
@@ -124,15 +126,22 @@ export function attachRef(element: Element, input: Props, owner: Scope): void {
     try {
       _untrack(() =>
         scope!.run(() => {
-          const cleanup: unknown = reference(element);
-          if (typeof cleanup === 'function') _onCleanup(cleanup as () => void);
+          const cleanup: unknown = synchronous(
+            reference(element),
+            'DOM ref 必须同步返回清理函数或 undefined。',
+          );
+          if (typeof cleanup === 'function') {
+            // ref 可以在调用中卸载自己的根；新返回的资源此时必须立即释放。
+            if (scope!.disposed) synchronous(cleanup(), '清理函数必须同步完成。');
+            else _onCleanup(cleanup as () => void);
+          }
         }),
       );
     } catch (error) {
-      scope.dispose();
+      const failed = scope;
       scope = undefined;
       previous = undefined;
-      throw error;
+      rollback(failed, error);
     }
   });
 }

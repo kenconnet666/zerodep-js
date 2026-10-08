@@ -4,6 +4,20 @@ import { _defineRoutes, matchRoutes, routePath } from '../src/router/routes.js';
 const Page = defineComponent(() => null);
 const url = (path: string) => new URL(path, 'http://router.test');
 
+it('误传异步 parseSearch 时报告同步错误，消费其迟到拒绝', async () => {
+  const routes = _defineRoutes({
+    page: {
+      path: '/',
+      component: Page,
+      parseSearch: async () => {
+        throw new Error('late search');
+      },
+    },
+  });
+  expect(() => matchRoutes(routes, url('/'))).toThrow('同步');
+  await new Promise<void>((resolve) => setImmediate(resolve));
+});
+
 it('静态、参数、可选和通配路径按明确优先级匹配并正确编码', () => {
   const routes = _defineRoutes({
     all: { path: '/*rest', component: Page },

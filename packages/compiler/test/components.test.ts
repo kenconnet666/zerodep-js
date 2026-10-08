@@ -6,6 +6,75 @@ import { reactive } from '../../core/src/runtime/state.js';
 import { compile } from '../src/index.js';
 
 describe('组件参数转换', () => {
+  it('可选 props 参数仍接收实时只读对象，不丢失属性', () => {
+    let read!: () => unknown;
+    const View = execute(
+      `
+import { _component } from 'zerodep-js';
+const result = _component((props?: { label?: string }) => {
+  capture(() => props?.label ?? '默认');
+  return null;
+});`,
+      {
+        capture: (fn: () => unknown) => {
+          read = fn;
+        },
+      },
+    ) as Parameters<typeof runtime.setupComponent>[0];
+    const input = reactive<{ label?: string }>({});
+    const stop = _createRoot((dispose) => {
+      runtime.setupComponent(View, input);
+      return dispose;
+    });
+    try {
+      expect(read()).toBe('默认');
+      input.label = '更新';
+      expect(read()).toBe('更新');
+      delete input.label;
+      expect(read()).toBe('默认');
+    } finally {
+      stop();
+    }
+  });
+
+  it('命名参数可以读取原型 getter，但实时 rest 保持自有可枚举边界', () => {
+    let read!: () => unknown;
+    const View = execute(
+      `
+import { _component } from 'zerodep-js';
+const result = _component(({ title = 'default', ...rest }) => {
+  capture(() => [title, rest.visible, rest.hidden, rest.secret, Object.keys(rest)]);
+  return null;
+});`,
+      {
+        capture: (fn: () => unknown) => {
+          read = fn;
+        },
+      },
+    ) as Parameters<typeof runtime.setupComponent>[0];
+    class Input {
+      visible = 'A';
+      get title() {
+        return 'prototype title';
+      }
+      get hidden() {
+        throw new Error('rest 不应读取原型 getter');
+      }
+    }
+    const input = Object.defineProperty(new Input(), 'secret', { value: 'private' });
+    const stop = _createRoot((dispose) => {
+      runtime.setupComponent(View, input);
+      return dispose;
+    });
+    try {
+      expect(read()).toEqual(['prototype title', 'A', undefined, undefined, ['visible']]);
+      input.visible = 'B';
+      expect(read()).toEqual(['prototype title', 'B', undefined, undefined, ['visible']]);
+    } finally {
+      stop();
+    }
+  });
+
   it('直接解构读取最新 props，初始值变化不重置局部状态，事件调用最新回调', () => {
     let increment!: () => void;
     let read!: () => number[];

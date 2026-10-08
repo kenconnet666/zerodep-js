@@ -7,6 +7,9 @@ import {
 } from 'zerodep-use/router';
 import { routes } from './routes.js';
 import { Workspace } from './App.js';
+import { hydrateCss } from 'zerodep-css/browser';
+
+hydrateCss();
 
 const root = document.querySelector<HTMLElement>('#app');
 if (!root) throw new Error('缺少任务空间入口。');

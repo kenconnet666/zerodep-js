@@ -141,13 +141,14 @@ export function asRouteError(error: unknown, fallback = 500): RouteError {
 }
 export const cancelled = Symbol('cancelled-navigation');
 export function abortable<T>(value: T | PromiseLike<T>, signal: AbortSignal): Promise<T> {
-  if (signal.aborted) return Promise.reject(cancelled);
   return new Promise((resolve, reject) => {
     const abort = () => {
       signal.removeEventListener('abort', abort);
       reject(cancelled);
     };
-    signal.addEventListener('abort', abort, { once: true });
+    // loader/守卫可能在返回 Promise 前同步销毁路由；取消后仍须消费其迟到拒绝。
+    if (signal.aborted) abort();
+    else signal.addEventListener('abort', abort, { once: true });
     Promise.resolve(value).then(
       (result) => {
         signal.removeEventListener('abort', abort);

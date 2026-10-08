@@ -60,7 +60,7 @@ const NameField = _component(
 
 其他字段遵循相同规则：open 对应 onOpenChange，checked 对应 onCheckedChange。组件可以绑定多个字段，无关必填 props 仍必须提供；父组件拥有数据，子组件通过回调请求改变。
 
-2026-10-06 已在 WebStorm 2026.2.3 实测项目 TS7.1 `+zerodep.2`：NameField 的 bind:value 可跳到原 value 声明，手动补全和英文输入 bind:va 的自动候选均有效。TypeScript 设置选择 SDK 内的平台包，不能只看 SDK 根的版本显示，详见[开发环境设置](development.md)。Ctrl+空格可能被输入法截获，必要时使用“代码 → 代码补全 → 基本”；代码中的冒号使用 ASCII `:`，不使用输入法生成的 `：`。
+当前源码固定 JetBrains TS7.1；WebStorm 原生类型引擎与框架 LSP 的配置、适用 EAP 构建和补丁步骤统一见 [环境配置](environment-setup.md)。不要继续安装旧的自维护 SDK 或照搬旧平台包选择方式。Ctrl+空格可能被输入法截获，必要时使用“代码 → 代码补全 → 基本”；代码中的冒号使用 ASCII `:`，不使用输入法生成的 `：`。
 
 ## 快照和撤销
 
@@ -106,6 +106,7 @@ export const Editor = _component(() => {
 - undo/redo 在已记录的版本之间移动，尚未 commit 的编辑不另占一条记录。恢复未提交编辑到保存点用 reset；不要期待 undo 自动捕获未提交的当前内容。
 - 撤销后再 commit 会丢弃原来的重做分支。limit 默认 50，表示可撤销操作数，另保留保存点；超出容量丢弃最旧记录，保存点仍可 reset。
 - read/write 必须同步。复制或写入失败会抛出错误，历史游标保持不变；任意自定义 write 的外部副作用不能由工具回滚，应用应保持它简单直接。
+- read/write 中不能再次修改同一历史句柄，重入会立即报错；允许 dispose 或卸载所有者，此时外层操作返回 false，不恢复已释放的记录。异常不会锁住句柄，后续操作仍可继续。
 - canUndo/canRedo/length/index/disposed 可用于响应式显示。组件内创建时自动随作用域释放；组件外创建时由调用方 dispose。释放后记录清空，操作返回 false。
 - 底层仍是 _snapshot，遵循结构化克隆规则。它能备份数据，不负责撤销已发送的请求、数据库操作或 DOM 操作。
 

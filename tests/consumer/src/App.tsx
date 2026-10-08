@@ -7,7 +7,10 @@ import {
   _getAbortSignal,
   _snapshot,
   _lazy,
+  _id,
+  Portal,
 } from 'zerodep-js';
+import { _task } from 'zerodep-use/task';
 import { _history } from 'zerodep-use/history';
 import { _persistLocal } from 'zerodep-use/storage';
 import {
@@ -20,6 +23,18 @@ import {
   _useRoute,
 } from 'zerodep-use/router';
 import { Counter, Label } from '@zerodep-consumer/counter';
+import { Css, WidthCss } from 'zerodep-css';
+import { css } from 'zerodep-js/css';
+import { _head } from 'zerodep-js/head';
+
+const s = new Css();
+class OpacityWidth extends WidthCss {
+  protected override readonly name = 'opacity';
+}
+class MappedCss extends Css {
+  override readonly width = new OpacityWidth();
+}
+const mapped = new MappedCss();
 
 const LazyCounter = _lazy(() =>
   import('@zerodep-consumer/counter').then((module) => module.Counter),
@@ -50,6 +65,12 @@ const packedRoutes = _defineRoutes({
 });
 
 export const App = _component(({ title }: { title: string }) => {
+  _head(() => ({ title, description: '独立包消费' }));
+  let width = _state(120);
+  let mappedValue = _state('auto');
+  const className = css(s.width.px(width));
+  const inputId = _id();
+  const task = _task((value: string) => Promise.resolve(value));
   let input: HTMLInputElement | undefined = undefined;
   let message = _state('等待');
   let routed = _state(false);
@@ -82,6 +103,7 @@ export const App = _component(({ title }: { title: string }) => {
     { id: 2, name: '乙' },
   ]);
   _onMount(() => {
+    void task.run('task-ready');
     const signal = _getAbortSignal();
     document.body.dataset.fixtureEffect = 'active';
     return () => {
@@ -94,8 +116,38 @@ export const App = _component(({ title }: { title: string }) => {
       style={{ containerType: 'inline-size', '--package-consumer': '1', color: 'black !important' }}
     >
       <h1>{title}</h1>
+      <button
+        data-packed-css-grow
+        onClick={() => {
+          width += 10;
+        }}
+      >
+        加宽
+      </button>
+      <div data-packed-css class={className}>
+        打包样式
+      </div>
+      <div
+        data-packed-mapped-css
+        class={css(mapped.width.raw('0.5'), mapped.width.raw(mappedValue))}
+      >
+        继承作者的无效值保留先前有效声明
+      </div>
+      <button
+        data-packed-mapped-update
+        onClick={() => {
+          mappedValue = '0.8';
+        }}
+      >
+        更新继承作者值
+      </button>
       <Counter label="打包" onCount={(value) => (message = String(value))} />
-      <input aria-label="消息" bind:value={message} bind:this={input} />
+      <label for={inputId}>消息</label>
+      <input id={inputId} aria-label="消息" bind:value={message} bind:this={input} />
+      <span data-packed-task>{task.data}</span>
+      <Portal>
+        <span data-packed-portal>外层内容</span>
+      </Portal>
       <button data-reference-focus onClick={() => input?.focus()}>
         聚焦消息
       </button>

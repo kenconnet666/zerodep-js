@@ -36,7 +36,30 @@ let name = _state('');
 - 没有匹配选项时客户端 selectedIndex 为 -1；如需无 JavaScript 的 SSR 首屏也显示空态，请提供 value="" 的占位选项。
 - 文件输入通过 files 读取选择，不能设置非空 value/defaultValue。需要主动清空时使用空 value 或原生表单重置。
 
+## 成组选择
+
+`bind:group` 对 radio 使用字符串模型，对 checkbox 使用字符串数组模型。首版要求原生 input 明确写出静态 type="radio"/"checkbox" 和字符串 value；有 spread 时，把 type/value 写在所有 spread 后。不与 checked/defaultChecked/bind:checked 同用。组件自身的 bind:group 仍遵循普通 onGroupChange 回调约定。
+
+```tsx
+let selected = _state<string[]>([]);
+let choice = _state<'a' | 'b'>('a');
+<input type="checkbox" value="a" bind:group={selected} />;
+<input type="radio" name={groupName} value="b" bind:group={choice} />;
+```
+
+radio 的原生 name/form 分组仍由浏览器管理：同一原生组使用同一模型，不同实例可用 _id 生成不同 name。写回的是声明的 value，而不是外部修改过的 DOM value，字面量/联合类型因此可准确检查。
+
+checkbox 选中时向模型末尾追加，取消时只移除当前值，不原地修改原数组、不重复加入。现有项的顺序与暂未显示的选择均保留；页面重排不重排模型。需要 DOM 选项顺序时可在业务层按选项过滤模型。SSR、接管前编辑和 form reset 复用既有 checked 控制流程；默认 reset 仍服从模型，要清空模型就在 onReset 中显式赋值。
+
+## 展开状态
+
+原生 details 可使用 `let open = _state(false); <details bind:open={open}>...</details>`。浏览器 toggle 写回 boolean，绑定先写回，再执行用户 onToggle；若回调拒绝变化，DOM 会重新服从模型。不能同时提供普通 open 或覆盖私有 data-zj-open 标记。普通 details 的既有 open 属性行为不变，此绑定不处理 dialog 的模态显示。
+
+SSR 为 bind:open 保存独立初值标记，因为 details.open 会直接修改 HTML 属性，不能从该属性判断服务端原值。接管先校验标记，再保留用户接管前的展开/关闭并写回模型；错误或缺失的标记仍按 hydration 不匹配处理。成功接管移除标记。原生 toggle 可以合并多次快速变化，不承诺每次赋值都产生独立事件。
+
 ## 重置与接管
+
+output 是受控文本输出，children 接受文本值和文本数组，不承载子元素/子组件。原生 form.reset 在部分浏览器中会重建其 Text 节点，因此框架按文本绑定重新取得实际节点，不在 output 内放结构标记。需要富内容的状态区域使用普通容器和 role="status"；不要手动写 output.value/defaultValue 与框架争用内容。
 
 reset 事件的默认动作之后，非受控字段回到首次默认值，受控字段重新服从当前模型。如果业务希望同时重置模型，在 onReset 中显式赋初值；preventDefault 会保留浏览器当前状态。
 

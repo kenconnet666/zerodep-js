@@ -6,6 +6,7 @@ import {
   HTML,
 } from '../native/attributes.js';
 import type { Props } from '../runtime/props.js';
+import { hasOpenBinding, OPEN_STATE_ATTRIBUTE } from '../native/bindings.js';
 import { childContainer, type Container, type NodeRange } from './utils.js';
 
 export class HydrationError extends Error {
@@ -94,6 +95,15 @@ export class HydrationCursor {
       throw new HydrationError('区域内存在多余节点，请检查服务端与客户端初始数据或 HTML 结构。');
   }
 
+  id(): string {
+    const node = this.current;
+    const match = node?.nodeType === 8 && /^zj:id:(zj-[a-f0-9]{32})$/.exec(node.textContent ?? '');
+    if (!node || node === this.end || !match) throw new HydrationError('组件 ID 标记缺失或无效。');
+    this.current = node.nextSibling;
+    this.session.own(node);
+    return match[1]!;
+  }
+
   text(expected: string): Text | undefined {
     if (!expected) return undefined;
     const node = this.current;
@@ -136,9 +146,17 @@ export class HydrationCursor {
 
   attributes(element: Element, input: Props): void {
     const expected = nativeAttributes(input, element.localName, element.namespaceURI ?? HTML);
+    const disclosure =
+      element.namespaceURI === HTML && element.localName === 'details' && hasOpenBinding(input);
+    if (
+      disclosure &&
+      element.getAttribute(OPEN_STATE_ATTRIBUTE) !== (expected.has('open') ? '1' : '0')
+    )
+      throw new HydrationError('details 的展开初值标记缺失或与客户端不同。');
     const option = element.localName === 'option' && element.closest('select') !== null;
     if (option) this.session.optionDefaults.set(element, expected.has('selected'));
     for (const [name, value] of expected) {
+      if (disclosure && name === 'open') continue;
       if (option && name === 'selected') continue;
       const namespace = attributeNamespace(name, element.namespaceURI ?? HTML);
       const actual =
@@ -151,6 +169,7 @@ export class HydrationCursor {
         throw new HydrationError(`<${element.localName}> 的 ${name} 属性不同。`);
     }
     for (const attribute of element.attributes) {
+      if (disclosure && [OPEN_STATE_ATTRIBUTE, 'open'].includes(attribute.name)) continue;
       // option.selected 可能来自父 select 的 value，稍后由 select 属性绑定接管。
       if (option && attribute.name === 'selected') continue;
       if (!expected.has(attribute.name))

@@ -54,6 +54,10 @@ export const wrongData = <zj-typed-widget prop:data={{ label: 1 }} />;
 export const bypassModel = <input prop:value="错误入口" />;
 // @ts-expect-error output.value 会改写 JSX 子内容。
 export const contentOwnership = <output value="错误入口" />;
+const richOutput = <strong>内容</strong>;
+// @ts-expect-error output 由原生表单控制文本；富内容使用普通状态容器。
+export const outputElement = <output children={richOutput} />;
+export const outputText = <output>{['合计：', 1, null, false]}</output>;
 // @ts-expect-error 无法通过 property 绕过 DOM 内容所有权。
 export const rawHtml = <div prop:innerHTML="<b>原始内容</b>" />;
 // @ts-expect-error select.length 会重写受框架管理的选项。

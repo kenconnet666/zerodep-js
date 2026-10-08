@@ -1,3 +1,7 @@
+// @ts-expect-error ref 要同步返回，不能用 async 回调替代资源清理。
+export const asyncRef = <div ref={async () => {}} />;
+export const cleanupRef = <div ref={(element) => () => element.removeAttribute('data-active')} />;
+
 export const attributes = (
   <>
     <button commandFor="dialog" command="show-modal" popoverTarget="help" />

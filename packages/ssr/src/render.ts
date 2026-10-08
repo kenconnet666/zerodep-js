@@ -10,8 +10,14 @@ import {
   textValue,
   elementText,
   nativeAttributes,
+  renderedHead,
+  synchronous,
+  type HeadData,
+  hasOpenBinding,
+  OPEN_STATE_ATTRIBUTE,
   selectionValues,
   setupComponent,
+  createId,
   element,
   dynamic,
   _untrack,
@@ -66,11 +72,15 @@ function render(value: Renderable, owner: Scope, context: Context): string {
   if (value == null || typeof value === 'boolean') return '';
   if (typeof value === 'string' || typeof value === 'number' || typeof value === 'bigint')
     return escapeText(textValue(value));
-  if (typeof value !== 'object') throw new Error('无效的服务端渲染值。');
   if (Array.isArray(value)) return value.map((item) => render(item, owner, context)).join('');
-  if (!(TEMPLATE in value)) throw new Error('无效的服务端渲染值。');
+  if (typeof value !== 'object' || !(TEMPLATE in value)) {
+    synchronous(value, '渲染内容不能是 Promise；请先准备异步数据再渲染。');
+    throw new Error('无效的服务端渲染值。');
+  }
   if (value.kind === 'fragment')
     return value.children.map((child) => render(child, owner, context)).join('');
+  // 不读取 target/children，服务端也不会执行 Portal 子组件的初始化代码。
+  if (value.kind === 'portal') return range('portal', '');
   if (value.kind === 'dynamic')
     return range(
       'dynamic',
@@ -135,12 +145,20 @@ function render(value: Renderable, owner: Scope, context: Context): string {
     }
   }
   if (typeof value.tag !== 'string')
-    return scoped(owner, (scope) =>
-      render(setupComponent(value.tag as AnyComponent, value.props), scope, context),
-    );
+    return scoped(owner, (scope) => {
+      let markers = '';
+      const body = setupComponent(value.tag as AnyComponent, value.props, () => {
+        const id = createId();
+        markers += `<!--zj:id:${id}-->`;
+        return id;
+      });
+      return markers + render(body, scope, context);
+    });
   const namespace = namespaceFor(value.tag, context.namespace, context.tag, context.encoding);
   const tag = elementName(value.tag, namespace);
   const attributes = nativeAttributes(value.props, tag, namespace);
+  if (namespace === HTML && tag === 'details' && hasOpenBinding(value.props))
+    attributes.set(OPEN_STATE_ATTRIBUTE, attributes.has('open') ? '1' : '0');
   if (namespace === HTML && tag === 'option' && context.selection) {
     const optionValue =
       attributes.get('value') ??
@@ -193,14 +211,20 @@ function render(value: Renderable, owner: Scope, context: Context): string {
   return `${output}</${tag}>`;
 }
 
-/** 同步完成一棵请求内树，再释放全部资源；不存在跨请求的组件实例注册表。 */
-export function renderToString<C extends AnyComponent>(
+export interface RenderResult {
+  readonly html: string;
+  readonly head: HeadData;
+}
+
+/** 同步完成请求内的树和元信息收集，再释放全部资源。 */
+export function _render<C extends AnyComponent>(
   component: C,
   ...[options]: Arguments<C>
-): string {
+): RenderResult {
   const scope = new Scope(null);
   scope.server = true;
   let output = '';
+  let head: HeadData = {};
   const errors: unknown[] = [];
   try {
     output = _untrack(() =>
@@ -211,6 +235,7 @@ export function renderToString<C extends AnyComponent>(
         }),
       ),
     );
+    head = renderedHead(scope);
   } catch (error) {
     errors.push(error);
   }
@@ -221,5 +246,13 @@ export function renderToString<C extends AnyComponent>(
   }
   if (errors.length === 1) throw errors[0];
   if (errors.length) throw new AggregateError(errors, '服务端渲染与资源清理失败。');
-  return output;
+  return { html: output, head };
+}
+
+/** 仅需要正文的调用方保持原来的字符串接口。 */
+export function renderToString<C extends AnyComponent>(
+  component: C,
+  ...args: Arguments<C>
+): string {
+  return _render(component, ...args).html;
 }

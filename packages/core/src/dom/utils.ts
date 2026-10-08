@@ -55,8 +55,8 @@ export function createRange(
   return { start, end };
 }
 
-export function moveRange(range: NodeRange, parent: Container, before: Node): void {
-  if (range.end.nextSibling === before) return;
+export function moveRange(range: NodeRange, parent: Container, before: Node | null): void {
+  if (range.end.parentNode === parent && range.end.nextSibling === before) return;
   let node: Node | null = range.start;
   while (node) {
     const next: Node | null = node.nextSibling;
@@ -71,7 +71,7 @@ export function moveRange(range: NodeRange, parent: Container, before: Node): vo
     if (node === range.end) return;
     node = next;
   }
-  throw new Error('列表节点范围已被外部 DOM 操作破坏。');
+  throw new Error('节点范围已被外部 DOM 操作破坏。');
 }
 
 /** insertBefore 的兼容路径可能丢失焦点；只恢复仍在文档中的原输入。 */

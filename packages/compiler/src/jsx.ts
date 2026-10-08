@@ -6,7 +6,12 @@ type Helper = (name: string, args: t.Expression[]) => t.CallExpression;
 type Report = (node: t.Node, code: string, message: string) => void;
 
 /** JSX 先变为惰性描述，再处理变量绑定，避免在组件初始化时读取动态属性。 */
-export function transformJsx(ast: t.File, helper: Helper, report: Report): boolean {
+export function transformJsx(
+  ast: t.File,
+  helper: Helper,
+  report: Report,
+  decorate?: (node: t.JSXElement, attributes: t.Expression) => t.Expression,
+): boolean {
   let transformed = false;
   const templates = new WeakSet<t.Node>();
   function tagName(
@@ -106,18 +111,61 @@ export function transformJsx(ast: t.File, helper: Helper, report: Report): boole
             } else if (native) {
               if (!(
                 (property === 'value' && ['input', 'textarea', 'select'].includes(tag.name)) ||
-                (['checked', 'valueAsNumber'].includes(property) && tag.name === 'input')
+                (['checked', 'valueAsNumber', 'group'].includes(property) &&
+                  tag.name === 'input') ||
+                (property === 'open' && tag.name === 'details')
               ))
                 report(attribute, 'ZJ1403', `<${tag.name}> 不支持 bind:${property}。`);
-              const owned = property === 'valueAsNumber' ? 'value' : property;
+              if (property === 'group') {
+                const attrs = node.openingElement.attributes;
+                const typeIndex = attrs.findLastIndex(
+                  (item) =>
+                    t.isJSXAttribute(item) && t.isJSXIdentifier(item.name, { name: 'type' }),
+                );
+                const valueIndex = attrs.findLastIndex(
+                  (item) =>
+                    t.isJSXAttribute(item) && t.isJSXIdentifier(item.name, { name: 'value' }),
+                );
+                const lastSpread = attrs.findLastIndex((item) => t.isJSXSpreadAttribute(item));
+                const typeAttr = attrs[typeIndex];
+                const typeValue = t.isJSXAttribute(typeAttr) ? typeAttr.value : null;
+                const literal = t.isJSXExpressionContainer(typeValue)
+                  ? typeValue.expression
+                  : typeValue;
+                if (
+                  !t.isStringLiteral(literal) ||
+                  !['radio', 'checkbox'].includes(literal.value.toLowerCase()) ||
+                  typeIndex <= lastSpread ||
+                  valueIndex <= lastSpread
+                )
+                  report(
+                    attribute,
+                    'ZJ1405',
+                    'bind:group 需要在展开属性后明确声明 type="radio"/"checkbox" 和字符串 value。',
+                  );
+              }
+              if (
+                (property === 'group' && boundNames.has('checked')) ||
+                (property === 'checked' && boundNames.has('group'))
+              )
+                report(attribute, 'ZJ1404', 'bind:group 与 bind:checked 不能同时声明。');
+              const owned =
+                property === 'group'
+                  ? 'checked'
+                  : property === 'valueAsNumber'
+                    ? 'value'
+                    : property;
               if (
                 node.openingElement.attributes.some(
                   (other) =>
                     t.isJSXAttribute(other) &&
                     t.isJSXIdentifier(other.name) &&
-                    [owned, owned === 'checked' ? 'defaultChecked' : 'defaultValue'].includes(
-                      other.name.name,
-                    ),
+                    [
+                      owned,
+                      ...(property === 'open'
+                        ? ['data-zj-open']
+                        : [owned === 'checked' ? 'defaultChecked' : 'defaultValue']),
+                    ].includes(other.name.name),
                 )
               )
                 report(attribute, 'ZJ1404', `bind:${property} 与普通模型属性冲突。`);
@@ -162,9 +210,10 @@ export function transformJsx(ast: t.File, helper: Helper, report: Report): boole
         const native = t.isJSXIdentifier(tag) && /^[a-z]/.test(tag.name);
         const tagValue = native ? t.stringLiteral(tag.name) : tagName(tag);
         const original = helper('props', [t.arrayExpression(sources)]);
-        const attributes = bindings.length
+        let attributes: t.Expression = bindings.length
           ? helper('bindProps', [original, t.arrayExpression(bindings)])
           : original;
+        if (decorate) attributes = decorate(node, attributes);
         const hasKey = node.openingElement.attributes.some(
           (attribute) =>
             t.isJSXSpreadAttribute(attribute) ||

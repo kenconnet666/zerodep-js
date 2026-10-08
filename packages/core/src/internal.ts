@@ -21,10 +21,13 @@ export {
   assertCanWrite,
 } from './runtime/reactivity.js';
 export { state } from './runtime/state.js';
-export { defineComponent, setupComponent, COMPONENT } from './runtime/component.js';
+export { synchronous } from './runtime/synchronous.js';
+export { defineComponent, setupComponent, createId, COMPONENT } from './runtime/component.js';
 export { prop, props, restProps } from './runtime/props.js';
 export type { Props } from './runtime/props.js';
-export { bindProps } from './native/bindings.js';
+export { renderedHead, headData } from './runtime/head.js';
+export type { HeadData } from './runtime/head.js';
+export { bindProps, hasOpenBinding, OPEN_STATE_ATTRIBUTE } from './native/bindings.js';
 export {
   element,
   dynamic,

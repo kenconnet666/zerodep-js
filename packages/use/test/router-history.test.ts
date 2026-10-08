@@ -2,6 +2,33 @@ import { expect, it } from 'vitest';
 import { _createMemoryHistory, _createBrowserHistory, internalURL } from '../src/router/history.js';
 import { state } from 'zerodep-js/internal';
 
+it.each(['push', 'replace'] as const)(
+  '%s 的监听器同步写入下一条历史时，原事件和返回值保持原操作',
+  (operation) => {
+    const history = _createMemoryHistory('/');
+    const changes: string[] = [];
+    history.listen((event) => {
+      if (event.location.href === '/first') history.push('/second');
+    });
+    history.listen((event) =>
+      changes.push(`${event.action}:${event.location.href}:${event.location.index}:${event.delta}`),
+    );
+    try {
+      const result = history[operation]('/first');
+      const index = operation === 'push' ? 1 : 0;
+      expect(changes).toEqual([
+        `push:/second:${index + 1}:1`,
+        `${operation}:/first:${index}:${index}`,
+      ]);
+      expect(result.href).toBe('/first');
+      expect(result.index).toBe(index);
+      expect(history.location.href).toBe('/second');
+    } finally {
+      history.dispose();
+    }
+  },
+);
+
 it('memory 历史支持前后退、替换和截断前进分支', () => {
   const history = _createMemoryHistory({ entries: ['/a', '/b'], index: 0 });
   const changes: string[] = [];

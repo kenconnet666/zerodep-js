@@ -21,6 +21,37 @@ const rows = [{ id: 1, title: 'row' }];
 const control = `const Field = _component((props: { value: string; onValueChange: (value: string) => void; label?: string }) => <span>{props.value}</span>);\n`;
 const cases = [
   {
+    name: '任务重置提示',
+    source:
+      header +
+      `import { _task } from 'zerodep-use/task';
+const App = _component(() => { const task = _task((value: number) => value); task.rese¦(); return null; });`,
+    expected: 'reset',
+    word: 'rese',
+    details: true,
+  },
+  {
+    name: '页面元信息字段',
+    source:
+      header +
+      `import { _head } from 'zerodep-js/head';
+const App = _component(() => { _head(() => ({ tit¦: '标题' })); return null; });`,
+    expected: 'title',
+    word: 'tit',
+  },
+  {
+    name: '主题作者方法文档',
+    source:
+      header +
+      `import { Css } from 'zerodep-css';
+import { _createCssContext } from 'zerodep-js/css';
+const theme = _createCssContext<Css>();
+const App = _component(() => { const s = theme.useCss(); s.width.p¦(20); return null; });`,
+    expected: 'px',
+    word: 'p',
+    details: true,
+  },
+  {
     name: 'DOM 引用绑定',
     source:
       header + `let node: HTMLInputElement | undefined; const view = <input bind:th¦={node} />;`,
@@ -155,11 +186,28 @@ const cases = [
     edit: true,
   },
   {
+    name: 'checkbox 成组绑定',
+    source:
+      header +
+      `let selected = _state<string[]>([]); const view = <input type="checkbox" value="a" bind:gr¦={selected} />;`,
+    expected: 'bind:group',
+    word: 'bind:gr',
+    edit: true,
+  },
+  {
     name: 'textarea 绑定',
     source: header + `const view = <textarea bind:v¦={text} />;`,
     expected: 'bind:value',
     word: 'bind:v',
     absent: ['bind:checked'],
+    edit: true,
+  },
+  {
+    name: 'details 展开绑定',
+    source: header + `const view = <details bind:op¦={checked} />;`,
+    expected: 'bind:open',
+    word: 'bind:op',
+    absent: ['bind:value', 'bind:checked'],
     edit: true,
   },
   {

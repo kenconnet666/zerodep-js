@@ -1,5 +1,8 @@
 import { _mount, _hydrate } from 'zerodep-js';
 import { App } from './App.js';
+import { hydrateCss } from 'zerodep-css/browser';
+
+hydrateCss();
 
 declare global {
   interface Window {

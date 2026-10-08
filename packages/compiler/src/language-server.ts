@@ -17,7 +17,7 @@ import {
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { LanguageWorkspace } from './language-workspace.js';
 
-// 显式 reader/writer 避免库在 stdin 关闭时立即退出，先释放本连接拥有的官方子进程。
+// 显式 reader/writer 避免库在 stdin 关闭时立即退出，先释放本连接拥有的SDK 子进程。
 const connection = createConnection(
   new StreamMessageReader(process.stdin),
   new StreamMessageWriter(process.stdout),

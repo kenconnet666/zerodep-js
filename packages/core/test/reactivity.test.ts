@@ -344,6 +344,17 @@ describe('作用域和调度', () => {
     expect(() => _flushSync()).toThrow('同步返回');
   });
 
+  it('误传失败的异步 effect 时报告同步错误，不另产生未处理的拒绝', async () => {
+    root(() => {
+      // @ts-expect-error 异步 effect 无自动清理协议，JS 调用仍应消费错误 Promise。
+      _effect(async () => {
+        throw new Error('late effect');
+      });
+    });
+    expect(() => _flushSync()).toThrow('同步返回');
+    await new Promise<void>((resolve) => setImmediate(resolve));
+  });
+
   it('执行中卸载仍释放回调返回的资源', () => {
     const cleanup = vi.fn();
     const source = new Source(0);
@@ -358,6 +369,35 @@ describe('作用域和调度', () => {
     expect(cleanup).toHaveBeenCalledOnce();
     expect(source.subscribers.size).toBe(0);
   });
+
+  it.each(['registered', 'effect', 'self-dispose'])(
+    '异步清理明确报错并释放其他资源（%s）',
+    async (kind) => {
+      const cleaned = vi.fn();
+      const asynchronous = async () => {
+        throw new Error('late cleanup');
+      };
+      let stop!: Cleanup;
+      _createRoot((dispose) => {
+        stop = dispose;
+        _onCleanup(cleaned);
+        if (kind === 'registered') _onCleanup(asynchronous);
+        else
+          _effect(() => {
+            if (kind === 'self-dispose') dispose();
+            return asynchronous;
+          });
+      });
+      if (kind === 'self-dispose') expect(() => _flushSync()).toThrow('清理函数必须同步');
+      else {
+        _flushSync();
+        expect(stop).toThrow('清理函数必须同步');
+      }
+      expect(cleaned).toHaveBeenCalledTimes(1);
+      expect(stop).not.toThrow();
+      await new Promise<void>((resolve) => setImmediate(resolve));
+    },
+  );
 
   it('清理期间不能创建新的孤立资源', () => {
     const trigger = new Source(0);

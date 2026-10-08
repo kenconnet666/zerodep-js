@@ -2,6 +2,10 @@ import { _mount, _hydrate, type MountOptions } from 'zerodep-js';
 import { App } from './App.js';
 import { registerPropertyElement } from './examples/property-elements.js';
 import './style.css';
+import { hydrateCss } from 'zerodep-css/browser';
+
+// 必须在组件登记客户端规则前恢复 SSR 清单；CSR 页面没有清单时直接返回。
+hydrateCss();
 
 // 主示例明确开启诊断面板，框架的普通开发构建只负责 HMR。
 if (import.meta.env.DEV) void import('zerodep-js/devtools').then(({ _inspect }) => _inspect());

@@ -1,12 +1,20 @@
 import { Scope, getScope, renderEffect, _untrack, type Cleanup } from '../runtime/reactivity.js';
-import { setupComponent, type AnyComponent, type ComponentProps } from '../runtime/component.js';
+import {
+  createId,
+  setupComponent,
+  type AnyComponent,
+  type ComponentProps,
+} from '../runtime/component.js';
 import { TEMPLATE, element, type DynamicTemplate, type Renderable } from '../runtime/template.js';
 import { attachAttributes, attachRef } from './attributes.js';
 import { notifySelect } from './controls.js';
+import { bindHeadDocument } from '../runtime/head.js';
+import { synchronous } from '../runtime/synchronous.js';
 import type { Props } from '../runtime/props.js';
 import { childContainer, createRange, insert, rollback, type Container } from './utils.js';
 import { renderList } from './list.js';
 import { renderBoundary } from './boundary.js';
+import { renderPortal } from './portal.js';
 import { HydrationError, HydrationCursor, hydrationRoot } from './hydration.js';
 import {
   HTML,
@@ -112,8 +120,10 @@ export function renderValue(
     for (const item of value) renderValue(item, parent, before, namespaceParent, hydration);
     return;
   }
-  if (typeof value !== 'object' || !(TEMPLATE in value))
+  if (typeof value !== 'object' || !(TEMPLATE in value)) {
+    synchronous(value, '渲染内容不能是 Promise；请先准备异步数据再渲染。');
     throw new Error('无效 JSX 内容；函数请显式调用，对象请转换为可呈现值。');
+  }
   if (value.kind === 'fragment') {
     for (const child of value.children)
       renderValue(child, parent, before, namespaceParent, hydration);
@@ -131,13 +141,22 @@ export function renderValue(
     renderBoundary(value, parent, before, namespaceParent, renderValue, hydration);
     return;
   }
+  if (value.kind === 'portal') {
+    renderPortal(value, parent, before, renderValue, hydration);
+    return;
+  }
   if (typeof value.tag !== 'string') {
     const scope = new Scope();
     try {
       _untrack(() =>
         scope.run(() =>
           renderValue(
-            setupComponent(value.tag as AnyComponent, value.props),
+            setupComponent(value.tag as AnyComponent, value.props, () => {
+              if (hydration) return hydration.id();
+              const id = createId();
+              insert(parent.ownerDocument!.createComment('zj:id:' + id), parent, before);
+              return id;
+            }),
             parent,
             before,
             namespaceParent,
@@ -185,6 +204,10 @@ export function renderValue(
     const bindText = () =>
       renderEffect(() => {
         const content = fixed ? initial : elementText(node.localName, value.props);
+        if (node.localName === 'output' && text?.parentNode !== node) {
+          // WebKit 在原生 reset 中即使文本未变也会重建节点；继续绑定实际输出节点。
+          text = node.firstChild?.nodeType === 3 ? (node.firstChild as Text) : undefined;
+        }
         if (text) text.data = content;
         else if (content) {
           text = node.ownerDocument.createTextNode(content);
@@ -212,6 +235,7 @@ export function _mount<C extends AnyComponent>(component: C, options: MountOptio
   const { target } = options;
   if (roots.has(target)) throw new Error('目标容器已挂载，请先调用其 disposer。');
   const scope = new Scope(null);
+  bindHeadDocument(scope, target.ownerDocument);
   const dispose = () => {
     try {
       scope.dispose();
@@ -240,6 +264,7 @@ export function _hydrate<C extends AnyComponent>(
   const { target } = options;
   if (roots.has(target)) throw new Error('目标容器已挂载，请先调用其 disposer。');
   const scope = new Scope(null);
+  bindHeadDocument(scope, target.ownerDocument);
   const cursor = hydrationRoot(target);
   const dispose = () => {
     try {

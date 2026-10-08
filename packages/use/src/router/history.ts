@@ -16,6 +16,7 @@ export interface HistoryChange {
 export interface RouterHistory {
   readonly kind: 'memory' | 'browser' | 'hash';
   readonly origin: string;
+  /** 当前入口的稳定只读快照；生效操作切换该对象，监听事件引用同一快照。 */
   readonly location: HistoryEntry;
   readonly window?: Window | undefined;
   href(path: string): string;
@@ -70,8 +71,9 @@ export function _createMemoryHistory(
     if (disposed) throw new Error('历史已销毁。');
   };
   const emit = (action: HistoryChange['action'], delta: number) => {
-    for (const listener of [...listeners])
-      listener({ action, delta, location: entries[position]! });
+    // 监听器可以同步触发下一次操作；本轮通知仍属于原来的历史入口。
+    const location = entries[position]!;
+    for (const listener of [...listeners]) listener({ action, delta, location });
   };
   return {
     kind: 'memory',
@@ -94,14 +96,15 @@ export function _createMemoryHistory(
     },
     replace(path, state) {
       active();
-      entries[position] = make(
+      const next = make(
         urlPath(internalURL(path, entries[position]!.href, origin)),
         state,
         position,
         entries[position]!.key,
       );
+      entries[position] = next;
       emit('replace', 0);
-      return entries[position]!;
+      return next;
     },
     go(delta) {
       active();
@@ -173,8 +176,9 @@ function createWindowHistory(kind: 'browser' | 'hash', target?: Window): RouterH
   current = read();
   windows.add(browser);
   function emit(action: HistoryChange['action'], previous: HistoryEntry) {
-    const delta = current.group === previous.group ? current.index - previous.index : null;
-    for (const listener of [...listeners]) listener({ action, delta, location: current });
+    const location = current;
+    const delta = location.group === previous.group ? location.index - previous.index : null;
+    for (const listener of [...listeners]) listener({ action, delta, location });
   }
   const receive = () => {
     const previous = current;

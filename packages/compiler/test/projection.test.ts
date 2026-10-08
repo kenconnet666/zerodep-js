@@ -63,6 +63,38 @@ async function check(source: string) {
   }
 }
 
+it('details 展开绑定保留 DOM 事件类型，并检查 boolean 写回', async () => {
+  expect(
+    (
+      await check(
+        `let open = _state(false); const view = <details bind:open={open} onToggle={event => { const element: HTMLDetailsElement = event.currentTarget; void element; }} />;`,
+      )
+    ).diagnostics,
+  ).toEqual([]);
+  for (const source of [
+    `let open: false = false; const view = <details bind:open={open} />;`,
+    `let open = 'no'; const view = <details bind:open={open} />;`,
+    `const model: {readonly open: boolean} = {open:false}; const view = <details bind:open={model.open} />;`,
+  ])
+    expect((await check(source)).diagnostics.length).toBeGreaterThan(0);
+});
+
+it('group 写回按选项值检查字符串联合与只读数组，拒绝错误控件形状', async () => {
+  for (const source of [
+    `let selected = _state<'a'|'b'>('a');const view=<input type="radio" value="b" bind:group={selected}/>;`,
+    `let selected = _state<readonly ('a'|'b')[]>([]);const view=<input type="checkbox" value="a" bind:group={selected}/>;`,
+  ])
+    expect((await check(source)).diagnostics).toEqual([]);
+  for (const source of [
+    `let selected = _state<'a'|'b'>('a');const view=<input type="radio" value="c" bind:group={selected}/>;`,
+    `let selected = _state<('a'|'b')[]>([]);const view=<input type="checkbox" value="c" bind:group={selected}/>;`,
+    `let selected = _state<string[]>([]);const view=<input type="radio" value="a" bind:group={selected}/>;`,
+    `let selected = _state('a');const view=<input type="checkbox" value="a" bind:group={selected}/>;`,
+    `const model:{readonly value:string}={value:'a'};const view=<input type="radio" value="b" bind:group={model.value}/>;`,
+  ])
+    expect((await check(source)).diagnostics.length).toBeGreaterThan(0);
+});
+
 it('真实 core 类型检查 DOM 引用写回和后续读取，无需定制 checker', async () => {
   for (const type of ['HTMLInputElement', 'Element']) {
     const { diagnostics } = await check(`let input: ${type} | undefined = undefined;

@@ -64,6 +64,35 @@ const result = { numeric, multiple, get number(){return number;}, get items(){re
   expect(result.items).toEqual(['a', 'b']);
 });
 
+it('details 的 toggle 写回 boolean，用户回调读取更新后的状态', () => {
+  const result = execute(`
+import { _state } from 'zerodep-js';
+let open = _state(false); const calls = [];
+const view = <details bind:open={open} onToggle={() => calls.push(open)} />;
+const result = { view, calls, get open(){return open}, change(value){open=value} };`) as {
+    view: ElementTemplate;
+    calls: boolean[];
+    open: boolean;
+    change(value: boolean): void;
+  };
+  expect(result.view.props.open).toBe(false);
+  (result.view.props['on:toggle'] as Function)({ currentTarget: { open: true } });
+  expect(result.open).toBe(true);
+  expect(result.calls).toEqual([true]);
+  result.change(false);
+  expect(result.view.props.open).toBe(false);
+});
+
+it('details 绑定拒绝错误标签、重复 open 和私有 SSR 标记', () => {
+  for (const markup of [
+    '<dialog bind:open={open} />',
+    '<div bind:open={open} />',
+    '<details open bind:open={open} />',
+    '<details bind:open={open} data-zj-open="1" />',
+  ])
+    expect(() => compile(`let open = false; const view = ${markup};`, 'details.tsx')).toThrow();
+});
+
 it('拒绝不可写表达式、保留属性、重复绑定及冲突的原生值', () => {
   for (const source of [
     `let name=''; const view=<input bind:value={name.trim()} />;`,

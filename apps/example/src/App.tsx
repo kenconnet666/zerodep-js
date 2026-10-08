@@ -13,6 +13,13 @@ import { LifecycleExample } from './examples/LifecycleExample.js';
 import { StorageExample } from './examples/StorageExample.js';
 import { AuthoringExample } from './examples/AuthoringExample.js';
 import { ReferenceExample } from './examples/ReferenceExample.js';
+import { IdExample } from './examples/IdExample.js';
+import { PortalExample } from './examples/PortalExample.js';
+import { CssExample } from './examples/CssExample.js';
+import { DisclosureExample } from './examples/DisclosureExample.js';
+import { GroupExample } from './examples/GroupExample.js';
+import { HeadExample } from './examples/HeadExample.js';
+import { _head } from 'zerodep-js/head';
 
 const Button = _component(
   ({ type = 'button', children, ...attrs }: JSX.IntrinsicElements['button']) => (
@@ -75,6 +82,7 @@ const Counter = _component(
 type AppProps = { mode?: RenderMode; onUnmount?: () => void };
 
 export const App = _component(({ mode = 'csr', onUnmount }: AppProps) => {
+  _head(() => ({ title: 'zerodep-js example', description: '基础 API 验收' }));
   let ready = _state(false);
   _effect(() => {
     ready = true;
@@ -92,6 +100,10 @@ export const App = _component(({ mode = 'csr', onUnmount }: AppProps) => {
   return (
     <main style={{ '--step': step }}>
       <p class="eyebrow">框架运行验证</p>
+      <CssExample />
+      <DisclosureExample />
+      <GroupExample />
+      <HeadExample />
       <h1>zerodep-js</h1>
       <p>
         当前首屏模式：<strong data-mode>{mode.toUpperCase()}</strong>
@@ -208,6 +220,8 @@ export const App = _component(({ mode = 'csr', onUnmount }: AppProps) => {
       <StorageExample />
       <AuthoringExample />
       <ReferenceExample />
+      <IdExample />
+      <PortalExample />
       <p data-client-status>{ready ? '客户端已接入' : '等待客户端接管'}</p>
       <p class="note">同一 App 验证客户端渲染与服务端渲染接管。</p>
       <button type="button" data-unmount onClick={() => onUnmount?.()}>

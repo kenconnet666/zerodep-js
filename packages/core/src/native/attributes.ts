@@ -4,6 +4,7 @@ import { clientProperty, ownsContent, propertyName } from './properties.js';
 import { styleText } from './style.js';
 import { textValue } from './text.js';
 import { svgAliases } from './data.js';
+import { synchronous } from '../runtime/synchronous.js';
 
 export { textValue } from './text.js';
 
@@ -14,7 +15,8 @@ export const voidTags = new Set(
   'area base br col embed hr img input link meta param source track wbr'.split(' '),
 );
 export const rawTextTags = new Set(['script', 'style', 'iframe', 'xmp', 'noembed', 'noframes']);
-export const textTags = new Set(['title', 'textarea', 'option', ...rawTextTags]);
+// output 的 form.reset 会替换子文本，不能在其中依赖结构注释或持久 Text 节点身份。
+export const textTags = new Set(['title', 'textarea', 'option', 'output', ...rawTextTags]);
 const asciiLower = (value: string) => value.replace(/[A-Z]/g, (letter) => letter.toLowerCase());
 // HTML 解析器会修正这些 SVG 名称；createElementNS 必须使用相同拼写。
 const svgTags = new Map(
@@ -188,12 +190,14 @@ export function attributeValue(name: string, value: unknown, namespace = HTML): 
 /** 文本专用元素不能放入结构标记，也不能把模板对象直接转成字符串。 */
 export function textContent(value: Renderable): string {
   if (value == null || typeof value === 'boolean') return '';
-  if (typeof value !== 'object') return textValue(value);
+  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'bigint')
+    return textValue(value);
   if (Array.isArray(value)) return value.map(textContent).join('');
-  if (TEMPLATE in value) {
+  if (typeof value === 'object' && TEMPLATE in value) {
     if (value.kind === 'dynamic') return textContent(value.value.read());
     if (value.kind === 'fragment') return value.children.map(textContent).join('');
   }
+  synchronous(value, '渲染内容不能是 Promise；请先准备异步数据再渲染。');
   throw new Error('文本专用元素只接受文本、数组和派生文本，不接受子组件或元素。');
 }
 

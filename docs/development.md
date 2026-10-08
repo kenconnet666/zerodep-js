@@ -1,6 +1,6 @@
 # 开发、类型检查与框架诊断
 
-官方 TS7.1 dev 负责类型检查与语言服务，Babel 负责框架转换与语义诊断，Vite 负责开发和打包。工具职责、检查投影和编辑器边界见 [工具链](tooling.md)。
+固定的 JetBrains TS7.1 SDK 负责类型检查与语言服务，Babel 负责框架转换与语义诊断，Vite 负责开发和打包。工具职责、检查投影和编辑器边界见 [工具链](tooling.md)，换机按 [环境配置](environment-setup.md) 操作。
 
 ## 运行时与应用工具源码职责
 
@@ -17,9 +17,9 @@ use 和 SSR 均通过同版本 core 的公开 API 与必要的 internal 协议�
 
 ## 检查入口
 
-在本仓库运行 `pnpm check`。应用项目使用 `zerodep-check -p tsconfig.json`，通过官方 API 检查类型，同时执行框架规则。
+CI 使用 `pnpm check` 做完整工程检查。本地只运行改动相关的文件/类型夹具检查和焦点测试，不把完整测试列为每次提交的本地前置。应用项目使用 `zerodep-check -p tsconfig.json`，通过选定 SDK 检查类型，同时执行框架规则。
 
-zerodep-js-compiler 的 compile 输出 JS/map，diagnose 检查单文件框架语义。普通包与声明输出使用官方 tsc，框架应用使用 Vite。
+zerodep-js-compiler 的 compile 输出 JS/map，diagnose 检查单文件框架语义。普通包与声明输出使用选定 SDK 的 tsc，框架应用使用 Vite。
 
 ## 自然解构与实时读取
 
@@ -111,7 +111,7 @@ ZJ1501 是保守的源码边界检查，不是第二套 TypeScript 类型系统�
 
 项目桥接器使用官方 LSP/API 和 Babel 检查投影；补全从真实 JSX 属性类型取符号，导航跟随声明映射。独立验证入口为 `pnpm lsp:verify` 与 `pnpm lsp:completions`，本机配置通过 `pnpm lsp:setup` 生成。
 
-WebStorm 选择 `node_modules/typescript`。IDE 的官方服务与项目桥接器是独立入口：选择官方 SDK 不会自动加载框架增强。官方源码检查和框架检查之间的区别、绑定限制见 [工具链](tooling.md)。IDE MCP 曾漏报编辑器可见的 TS 错误，不能把空诊断作为验收证据。
+WebStorm 的服务驱动类型引擎选择同版本的 **TypeScript 7（原生）**，缓存与 EAP 代理补丁按 [环境配置](environment-setup.md) 操作；项目工具从 `node_modules/typescript` 读取 SDK。这是两个独立入口，原生 SDK 不会自动加载框架增强。源码检查和框架检查之间的区别、绑定限制见 [工具链](tooling.md)。IDE MCP 曾漏报编辑器可见的 TS 错误，不能把空诊断作为验收证据。
 
 MCP 传输使用 vscode-jsonrpc 与 JSON Schema 校验，未引入 MCP SDK 或 Zod。修改桥接器后，已运行 MCP 进程需重新加载；先完成独立验证，再检查当前会话。
 

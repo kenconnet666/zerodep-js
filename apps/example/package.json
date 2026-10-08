@@ -15,7 +15,8 @@
     "zerodep-js": "workspace:*",
     "zerodep-js-ssr": "workspace:*",
     "sirv": "catalog:",
-    "zerodep-use": "workspace:*"
+    "zerodep-use": "workspace:*",
+    "zerodep-css": "catalog:"
   },
   "devDependencies": {
     "zerodep-js-compiler": "workspace:*",

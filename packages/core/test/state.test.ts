@@ -4,9 +4,11 @@ import {
   _createRoot,
   _effect,
   _flushSync,
+  _untrack,
   type Cleanup,
 } from '../src/runtime/reactivity.js';
 import { reactive, state } from '../src/runtime/state.js';
+import { runInNewContext } from 'node:vm';
 
 const roots: Cleanup[] = [];
 function observe(fn: () => void): void {
@@ -22,6 +24,38 @@ afterEach(() => {
 });
 
 describe('属性级对象状态', () => {
+  it('锁定的数组原生方法保持精确身份，不违反 Proxy 的 get 不变量', () => {
+    const input = Object.defineProperty([] as number[], 'push', { value: Array.prototype.push });
+    const rows = reactive(input);
+    expect(rows.push).toBe(Array.prototype.push);
+    expect(rows.push(1)).toBe(1);
+    expect(rows).toEqual([1]);
+  });
+
+  it('属性锁定改变实际返回身份时，冷派生不会保留旧代理', () => {
+    const child = { n: 1 };
+    const input = reactive({ child });
+    const read = new Derived(() => input.child);
+    expect(read.read()).not.toBe(child);
+    Object.defineProperty(input, 'child', { configurable: false, writable: false });
+    expect(input.child).toBe(child);
+    expect(read.read()).toBe(child);
+  });
+
+  it.each(['new', 'existing'])(
+    'defineProperty 锁定 %s 属性时保持调用方指定的代理值身份',
+    (kind) => {
+      const child = reactive({ n: 1 });
+      const input = reactive<Record<string, unknown>>({});
+      if (kind === 'existing') Object.defineProperty(input, 'child', { value: {}, writable: true });
+      expect(() =>
+        Object.defineProperty(input, 'child', { value: child, writable: false }),
+      ).not.toThrow();
+      expect(input.child).toBe(child);
+      expect(Object.getOwnPropertyDescriptor(input, 'child')?.value).toBe(child);
+    },
+  );
+
   it('getter 在读取其他依赖前抛错，替换字段后冷派生和 effect 都能恢复', () => {
     const object = reactive({
       get value(): number {
@@ -243,6 +277,99 @@ describe('数组状态', () => {
       rows.push(2);
     });
     expect(rows).toEqual([1, 2]);
+  });
+
+  it('sort 用户比较回调中的读取正常跟踪，内部索引读取不使排序自循环', () => {
+    const rows = reactive([3, 1, 2]);
+    const direction = state(1);
+    let calls = 0;
+    observe(() => {
+      calls++;
+      rows.sort((left, right) => direction.read() * (left - right));
+    });
+    expect(rows).toEqual([1, 2, 3]);
+    expect(calls).toBe(1);
+    _flushSync(() => direction.write(-1));
+    expect(rows).toEqual([3, 2, 1]);
+    expect(calls).toBe(2);
+  });
+
+  it('sort 对象字段读取可使排序更新，显式 untrack 仍能关闭跟踪', () => {
+    const rows = reactive([
+      { id: 'a', rank: 2 },
+      { id: 'b', rank: 1 },
+    ]);
+    const a = rows[0]!;
+    observe(() => {
+      rows.sort((left, right) => left.rank - right.rank);
+    });
+    expect(rows.map((row) => row.id)).toEqual(['b', 'a']);
+    _flushSync(() => {
+      a.rank = 0;
+    });
+    expect(rows.map((row) => row.id)).toEqual(['a', 'b']);
+    const direction = state(1);
+    const numbers = reactive([2, 1]);
+    let calls = 0;
+    observe(() => {
+      calls++;
+      _untrack(() => numbers.sort((left, right) => direction.read() * (left - right)));
+    });
+    _flushSync(() => direction.write(-1));
+    expect(calls).toBe(1);
+    expect(numbers).toEqual([1, 2]);
+  });
+
+  it('替换数组方法会使调用方更新，不返回旧的缓存方法', () => {
+    const rows = reactive([1, 2]);
+    let calls = 0;
+    observe(() => {
+      calls++;
+      rows.reverse();
+    });
+    const replacement = vi.fn(function (this: number[]) {
+      return this;
+    });
+    _flushSync(() => {
+      rows.reverse = replacement;
+    });
+    expect(calls).toBe(2);
+    expect(replacement).toHaveBeenCalledTimes(1);
+    expect(rows.reverse).toBe(replacement);
+  });
+
+  it('跨 realm 普通数组的变更方法不意外订阅内部 length', () => {
+    const rows = reactive(runInNewContext('[]') as number[]);
+    let calls = 0;
+    observe(() => {
+      calls++;
+      // 有限写入也能识别错误重跑，避免回归用例本身制造无限循环。
+      if (calls === 1) rows.push(1);
+    });
+    expect(calls).toBe(1);
+    expect([...rows]).toEqual([1]);
+  });
+
+  it('Array 子类保持类身份与私有字段，整体替换仍可跟踪', () => {
+    class Rows extends Array<number> {
+      #label = 'rows';
+      get label() {
+        return this.#label;
+      }
+    }
+    const rows = new Rows(1, 2);
+    expect(reactive(rows)).toBe(rows);
+    const model = state(rows);
+    expect(model.read().label).toBe('rows');
+    const seen: number[] = [];
+    observe(() => {
+      seen.push(model.read().length);
+    });
+    rows.push(3);
+    _flushSync();
+    expect(seen).toEqual([2]);
+    _flushSync(() => model.write(new Rows(1, 2, 3, 4)));
+    expect(seen).toEqual([2, 4]);
   });
 
   it('截短失败造成部分删除时依然通知真实状态', () => {
