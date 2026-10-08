@@ -1,5 +1,23 @@
 # 变更记录
 
+## 1.0.0-rc.8 — 基础 API 与原生 CSS 集成，准备中
+
+以下为本轮候选范围，尚不代表已发布。五包使用同一版本；最终源码、CI、固定 tgz 与注册表消费结果见 docs/api-hardening-handoff.md。
+
+- 新增 `_id()`、`zerodep-use/task` 的 `_task(loader, { initial })` 与 reset/retry/cancel、保留逻辑父级所有权的 Portal，以及可选 `zerodep-js/head` 的 `_head()`。
+- 新增原生 details 的 `bind:open` 和 radio/checkbox 的字符串 `bind:group`，保留 reset、接管前编辑和写回类型检查；output 使用受控纯文本，富内容使用普通容器。
+- 可选 `zerodep-js/css` 接入 CSS 作者、命名 css 自动追踪、直接变量保守绑定和 `_createCssContext`，覆盖 SSR 样式恢复、Portal/懒加载主题和 CSS HMR。
+- 修复清理期间停止自身/销毁根、引用回调内卸载、错误边界重入、路由取消与历史重入、持久化停止后重新连接、Proxy 不变量和快照边界；保留异常来源与其余资源清理。
+- 完善组件泛型、可选 props、默认值和实时 rest；语言补全覆盖任务 reset、head、CSS 主题及新的原生绑定。
+
+安装与迁移注意事项：
+
+- IDE 与项目固定 JetBrains `7.1.0-dev.jetbrains.20261006.2`，替换 rc.7 的微软 nightly。独立应用需合并 docs/packages.md 中说明的主包 URL 和根级平台 overrides，并保存锁文件；不能只执行普通 npm TypeScript 版本安装。
+- core 的 CSS 子入口保持可选，使用时安装所要求的 zerodep-css 版本；不会把旧 Vue/Svelte 模板编译器或其 TS6 引入框架工具链。
+- `renderToString()` 仍返回正文字符串。使用 head 管理时改用 `_render()` 的 `{ html, head }`，交给文档模板组合；title/description 默认值放到根组件 `_head()`，避免重复声明。
+- `_task` 的 initial 建立成功初态但不自动请求；reset 回到 idle 并清空数据、错误与重试输入，cancel 保留现有数据。Portal 的逻辑 context 继承不等于搬运实际 DOM 上的 CSS 变量。
+- 应用与预编译组件库统一升级五包并重建，继续共享同一 core；未增加完整组件库、流式 SSR 或新的外部框架宿主。
+
 ## 1.0.0-rc.7 — 官方 TS7.1 与 Babel，2026-10-07
 
 五包已发布到 npm next，源码 `ccffb8b` 的 [完整 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/37618603078) 和 [发布及注册表消费](https://github.com/kenconnet666/zerodep-js/actions/runs/37619281796) 均通过。[GitHub 预发布](https://github.com/kenconnet666/zerodep-js/releases/tag/v1.0.0-rc.7) 保存五份原始 tgz 与包含注册表验证时间的账本；SHA-512、版本和 next 标签一致，稳定 latest 未提升。

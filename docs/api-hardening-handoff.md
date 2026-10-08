@@ -1,14 +1,14 @@
 # 基础 API 维护交接
 
-更新：2026-10-08。用户于北京时间约 07:58 延长 20 分钟，本轮截至约 08:19；到时停止新增工作并保留下面的远端待办。本文区分源码完成、CI 验收和发布，不把待运行的检查当作通过。
+更新：2026-10-08。用户已在恢复工具环境后要求继续执行 CSS 发布、框架消费与新 RC 交付。此前约 08:19 结束的限时窗口是历史记录，不作为本轮截止时间。本文区分源码完成、CI 验收和发布。
 
 ## 最新授权与环境
 
-- 用户最新要求：周额度到 0 后继续使用已有余额，07:58:37 再延长 20 分钟，约至北京时间 2026-10-08 08:18:37（UTC 00:18:37）结束，预留提交、清理与交接时间。此前 08:00 截止及“余额仅少量用于交接”已被替代；不购买、不重置额度。本地只做改动相关焦点检查，完整测试全部交 CI。
-- 最近账户读数：周额度已用 98%，余额 61,804.0163505000；这些是账户共享数据，不能精确归因到本任务，也不是 token 数。
-- zerodep-js：当前主目录，分支 codex/webstorm-ts71-integration；完整验收基线为 97319ae / CI 37702203453。延长窗口又提交生命周期修复 3ae393b、可选参数类型修复 3b96b09、补充组合测试 7f75127；最新代码/测试 CI 为 37706472895，不能沿用旧绿灯。
+- 本地只做改动相关焦点检查，完整测试全部交 CI；阶段提交并推送，同提交完整验收后发布固定 tgz 到 next，不提升 latest。
+- zerodep-js：当前主目录，分支 codex/webstorm-ts71-integration；最新代码/测试基线 7f75127 的 CI 37706472895 已全部通过，之后三个提交仅更新文档。本轮发布工具和 CSS 消费改动需要新的 CI。
 - zerodep-css：相邻目录 main，提交 593cebde73d62234f0d38c635cf0c56ca368faa9，六包源码版本 0.3.1，尚未发布。主框架 catalog 仍为已发布 0.3.0。
-- Node 24.18.0、pnpm 10.34.5；框架固定 JetBrains TS7.1.0-dev.jetbrains.20261006.2，Babel/Vite 分工不变。CSS 仓库保留自己的 TS6，不进入主框架运行时/SDK 依赖图。
+- 本次本机 Node 24.12.0、pnpm 10.34.5；CI 按 .node-version 使用 Node 24.18.0。框架固定 JetBrains TS7.1.0-dev.jetbrains.20261006.2，Babel/Vite 分工不变。CSS 仓库保留自己的 TS6，不进入主框架运行时/SDK 依赖图。
+- WebStorm EAP 263.6259.34 的 SDK 缓存与代理补丁已恢复，实际 TS/代理进程均使用选定版本；IDE 错误修复与泛型刷新实测通过。项目 zerodep_js_lsp 已重新生成并加载，当前 Codex 会话完成 TS2322 错误→修复及悬浮验证；独立服务与 54/54 补全也通过。
 
 ## 已交付源码
 
@@ -31,28 +31,29 @@
 
 ## 当前 CI 与发布边界
 
-- 08:17 核对：7f75127 / CI 37706472895 的工程检查、六平台 SDK、Linux/Windows 独立消费已通过，只剩 Chromium/Firefox/WebKit 三浏览器任务仍在运行，没有已确认失败。前一轮 3ae393b 被后续推送按工作流并发策略取消；不记为通过。随后文档提交不改变代码/测试。
+- 7f75127 / [CI 37706472895](https://github.com/kenconnet666/zerodep-js/actions/runs/37706472895)：工程检查、六平台 SDK、Linux/Windows 独立消费和三浏览器全部通过，分支规则跳过发布产物任务。
 - 延长窗口新增修复：effect 重跑前的 cleanup/abort 可以停止自身或销毁根，调度器清理后检查 disposed，不再误报“不能进入已销毁作用域”。两项回归先复现失败，再与响应式单测共 34 项通过；只做这两个测试文件和改动文件 lint，完整测试交新提交 CI。
 - 随后补齐清理停止根并抛错的组合回归：保留原始错误、其他根继续更新、最终解除全部订阅。该生命周期测试文件当前 10 项通过；它与前述 34 项有重合，不能相加冒充新增数量。
 - 可选 props 参数修复：ComponentProps 不再把 `(props?: { label?: string })` 误判成无参数组件。三个合法的客户端/SSR 类型用例先复现 TS2322，再通过只包含两份类型夹具的 TS7 检查；真实 Babel 组件参数测试 18 项通过，新增独立包消费类型反例交 CI。没有放宽必填属性或无参数组件的限制，临时类型配置已删除。
 - 主框架 97319ae / CI 37702203453：verify、六平台 SDK、两平台独立消费、三浏览器全部通过；其中 verify 的 56 个测试文件、452 项 Vitest 测试及 54/54 补全通过；补全数量已由脚本 AST 与 CI 日志复核。发布产物任务按分支规则跳过，不能据此声称已发布。
 - 先前完整通过的主框架基线：5b93e73 / 37692576724、e4d8cf5 / 37690013428、6fa1088 / 37684887284。更早失败与修复记录保存在 Git 历史，不覆盖后来提交的验收。
-- CSS 593cebd / CI 37688602400：最近只剩 performance (templates) 未结束，其 job 为 113022729179，仍显示运行 .github/actions/setup，未开始基准。其余功能、类型、三浏览器、生命周期、元框架等任务已通过。
-- 该运行仍活跃；下载未完成 job 的日志返回 BlobNotFound，不是程序失败证据。没有取消/重启它，也没有跳过发布门禁。
+- CSS 593cebd / [CI 37688602400](https://github.com/kenconnet666/zerodep-css/actions/runs/37688602400)：完整成功。原 performance (templates) 在 Playwright 安装系统依赖时因 Ubuntu 镜像源请求停滞超过六小时而取消，性能探针尚未开始；恢复时只重跑该任务，setup 和原有全部探针随后成功，没有更改断言。
 - 本轮框架新 API 尚未发布到 npm；框架源码包版本仍 1.0.0-rc.7，注册表现有 rc.7 不包含全部源码新能力。不得覆盖已发布版本或提升 latest。
 
 ## CSS 0.3.1 候选与待应用测试
 
 CSS 修复核对 authorInputs 的底层 name 数据值，拒绝将改名或 getter 作者套用系统属性优化，正常扩展关键字仍可绑定。修复前两个用例失败，修复后构建、生成检查、六包类型/Vue/Svelte 检查、绑定焦点与 5 项 inline 用例通过。
 
-固定候选位于相邻 CSS 仓库 test-results/release，manifest.json 记录提交 593cebd、六个 tgz 的 SHA512。zerodep-css-0.3.1.tgz 已用于主框架工作区外独立消费，验证真实 opacity 层叠和更新、声明、组件库、CSR/SSR、接管、表单、卸载。
+此前机器保留的候选未随 Git 转移到当前机器；原工作区外消费结果属于此前产物。当前已从同一源码 593cebd 重新构建六包，并通过 packed Node/browser 入口及消费类型检查。新固定候选位于相邻 CSS 仓库 test-results/release，manifest.json 记录 commit 与本批 SHA512；原 tgz 与 manifest 已保存到 v0.3.1 GitHub 草稿供恢复。
+
+npm 首包 zerodep-css@0.3.1 返回受理处理中，立即查询仍为 404，发布脚本因此停止，其他五包尚未尝试。恢复前先查询该版本并比对摘要；未公开时不能重新上传。只使用已冻结文件，不重打包。
 
 主框架新增的两处消费用例保存于 [.design/pending-css-0.3.1-consumer.patch](../.design/pending-css-0.3.1-consumer.patch)，尚未应用到当前分支。它包含 scripts/verify-packages.mjs 和 tests/consumer/src/App.tsx 的已验证修改；不能在旧 0.3.0 依赖下启用。补丁已验证可以应用，避免遗留必须等待新依赖的脏工作区。
 
 ## 恢复交付顺序
 
-1. 在 CSS 仓库核对 CI 37688602400 的同一提交完整成功。若仍运行就保留；若终止失败，先读日志定位再修复或重跑失败任务，不能凭等待时长重启。
-2. 核对 CSS main 干净、HEAD 与 origin/main 为 593cebd，manifest.commit 和 tgz 摘要相符。随后执行 pnpm release:publish（默认 next），不重新构造另一批包。缺少本机候选时需从相同源码重新构建、打包并验证新的固定产物，不能冒充旧摘要已验收。
+1. CSS 593cebd 的完整 CI 已通过；先核对 npm 已受理首包的公开状态与摘要，再继续剩余包的发布，不重复上传未知状态的版本。
+2. 核对 CSS main 干净、HEAD 与 origin/main 为 593cebd，manifest.commit 和 tgz 摘要相符。继续执行 pnpm release:publish（默认 next），脚本跳过注册表中摘要一致的已发布包。换机恢复原产物的方法见 docs/releasing.md。
 3. 核对六包注册表版本、dist.integrity 与 next。原有五包 latest 应保持 0.2.0，compiler 的 latest 保持 0.3.0；不自动提升 latest。
 4. 回主框架，将 catalog 的 zerodep-css 固定为 0.3.1，并将 core 的 CSS peer 下限改为 ^0.3.1。应用补丁：git apply --check .design/pending-css-0.3.1-consumer.patch，确认后 git apply 同一路径。
 5. 安装并检查 lockfile，只接受所需 CSS 变更。若 pnpm 丢掉未变 SDK 的 SHA512，应从可信 HEAD 恢复这些完整性字段，再 frozen 安装；不能删摘要绕过验证。
@@ -68,4 +69,4 @@ CSS 修复核对 authorInputs 的底层 name 数据值，拒绝将改名或 gett
 - Windows 仅按核对后的准确路径逐文件/链接删除，再删除空目录，不递归删除、不遍历链接、不动根 .git。只清理本任务进程与产物。
 - 本地优先焦点测试，不重复运行已通过且未受影响的全集。LSP 探针会创建临时源码，不能与同工作区 check/build 并行。
 - 延长窗口已再次核对源码目录无空目录、临时 props 类型配置已删除、待应用 CSS 补丁仍可应用。README、开发、工具链和换机指南明确完整检查由 CI 执行；开发指南的 WebStorm 入口已与原生预览/类型引擎配置保持一致。
-- 08:17 再次核对 CSS 六个 0.3.1 tgz 的 SHA-512 全部匹配提交 593cebd 的 manifest；原候选保留，未重新打包或发布。两仓库工作区干净，新增框架提交已推送。
+- 本轮不复用此前机器的本地产物摘要；发布说明记录重新冻结的来源与验证结果。临时 IDE/LSP 探针已删除，用户 IDE 配置、共享 pnpm store 和应用数据保留。
