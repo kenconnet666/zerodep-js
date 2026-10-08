@@ -122,11 +122,14 @@ try {
       assert(!sourceManifest.dependencies['zerodep-use'], 'core 不能反向依赖应用工具。');
     }
     if (name === 'use') {
+      assert(
+        ![...files].some((file) => /^(src|dist)\/task\./.test(file)),
+        'use 包不能残留已删除的 task 源码或构建文件。',
+      );
       assert.deepEqual(Object.keys(sourceManifest.exports).sort(), [
         './history',
         './router',
         './storage',
-        './task',
       ]);
       assert.deepEqual(Object.keys(sourceManifest.peerDependencies), ['zerodep-js']);
       assert.equal(Object.keys(sourceManifest.dependencies ?? {}).length, 0);
@@ -339,7 +342,6 @@ try {
     await expect(page.locator('[data-packed-mapped-css]')).toHaveCSS('opacity', '0.5');
     await page.locator('[data-packed-mapped-update]').click();
     await expect(page.locator('[data-packed-mapped-css]')).toHaveCSS('opacity', '0.8');
-    await expect(page.locator('[data-packed-task]')).toHaveText('task-ready');
     await expect(page.locator('[data-packed-portal]')).toHaveText('外层内容');
     assert(
       await page

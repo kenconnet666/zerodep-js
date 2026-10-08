@@ -7,7 +7,7 @@
 | 发布包              | 职责                                                                 |
 | ------------------- | -------------------------------------------------------------------- |
 | zerodep-js          | 浏览器与响应式运行时、类型声明、internal 编译协议、devtools 开发入口 |
-| zerodep-use         | history/router/storage/task，peer 依赖同版本 core                    |
+| zerodep-use         | history/router/storage，peer 依赖同版本 core                         |
 | zerodep-js-ssr      | 服务端渲染和序列化，peer 依赖 core                                   |
 | zerodep-js-compiler | Babel 转换、选定 JetBrains TS7.1 检查与语言适配，属于开发工具        |
 | zerodep-js-vite     | 构建侧依赖 compiler，集成 Vite                                       |

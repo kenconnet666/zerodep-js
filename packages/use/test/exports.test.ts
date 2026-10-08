@@ -1,13 +1,11 @@
 import { expect, it } from 'vitest';
 import * as router from 'zerodep-use/router';
 import * as storage from 'zerodep-use/storage';
-import * as task from 'zerodep-use/task';
 
 it('应用工具子入口直接提供下划线函数及路由组件', () => {
   for (const [module, names] of [
     [router, ['createRouter', 'defineRoute', 'defineRoutes', 'useRoute', 'useRouter', 'redirect']],
     [storage, ['persistLocal', 'persistSession']],
-    [task, ['task']],
   ] as const)
     for (const name of names) {
       expect(Object.hasOwn(module, name)).toBe(false);
@@ -16,4 +14,8 @@ it('应用工具子入口直接提供下划线函数及路由组件', () => {
   expect(router.Router).toBeTypeOf('function');
   expect(router.Outlet).toBeTypeOf('function');
   expect(router.Link).toBeTypeOf('function');
+});
+
+it('不再公开 task 子入口', () => {
+  expect(() => import.meta.resolve('zerodep-use/task')).toThrow();
 });

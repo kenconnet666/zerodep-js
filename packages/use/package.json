@@ -26,10 +26,6 @@
     "./storage": {
       "types": "./dist/storage.d.ts",
       "import": "./dist/storage.js"
-    },
-    "./task": {
-      "types": "./dist/task.d.ts",
-      "import": "./dist/task.js"
     }
   },
   "scripts": {

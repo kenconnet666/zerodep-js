@@ -1,5 +1,7 @@
 # 当前执行记录
 
+当前源码已按后续用户决定移除 `_task`，改用普通 async/await 请求，见 [普通请求](requests.md)。以下 rc.8 与更早阶段为历史交付，不表示该入口仍受当前源码支持。
+
 当前基础 API、CSS、CI 和待发布状态以 [维护交接](api-hardening-handoff.md) 为准。下文保留各阶段当时的版本与验证证据；历史“未实施”及 SDK 结论不能替代后续阶段。
 
 2026-10-08 收尾：CSS 六包 0.3.1 已发布并核验 next/摘要，框架已固定消费；PR #1 合入 main 的源码 fe2a7b4 通过 [完整 CI 37729962027](https://github.com/kenconnet666/zerodep-js/actions/runs/37729962027)，五包 rc.8 使用同次 CI 冻结的 tgz 发布到 next，[发布流程 37730703039](https://github.com/kenconnet666/zerodep-js/actions/runs/37730703039) 完成工作区外注册表安装、类型、预编译库、CSR/SSR、接管、表单和卸载验证。两仓库均未提升 latest，原始产物与账本已保存到各自 GitHub 预发布。

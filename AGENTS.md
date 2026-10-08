@@ -11,6 +11,8 @@
 - 保留显式变量式 _state/_derived（无 .value）、_component 参数解构/默认值/实时 rest、bind、DOM bind:this、_lazy、快照历史和开发状态保留。不能以弱化类型或生命周期、表单、列表、SSR 断言完成迁移。
 - 选择性参考 Svelte 的语义和资源所有权，参考 Vue Devtools 的使用体验；无需复制其全部功能。以 docs/production-plan.md、docs/semantics.md 和 .design/standard-toolchain-plan.md 为执行依据。
 
+- 2026-10-08 后续决定：删除 `_task` 整组 API，不新增 `_query`；参考 Svelte 的普通 async/await 请求，复用现有状态与生命周期。保留 useCss 写法，服务端 CSS 标签由应用自己拼接，不改动该流程。
+
 ## 结构与 API
 
 - core 提供响应式与 DOM 运行时；use 提供 router/storage/history；ssr 提供服务端适配；compiler 提供 Babel 转换与选定 TS SDK 适配；vite 提供开发和打包。不要创建空包、无用途抽象层或框架宿主演示。

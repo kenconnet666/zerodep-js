@@ -1,5 +1,11 @@
 # 变更记录
 
+## 未发布 — 移除 task 工具
+
+- 删除 `_task`、Task/TaskOptions/TaskResult 与整个 `zerodep-use/task` 子入口，不保留兼容别名。请求直接使用 async/await、页面状态及已有生命周期信号。
+- 任务工作台保留旧查询丢弃、卸载取消、错误重试、SSR 首屏和保存冲突保护；同步移除专属补全、消费夹具与旧构建产物。已发布 rc.8 不变。
+- CSS 的服务端标签拼接和 useCss 不变；未新增 `_query` 或实验性异步渲染机制。
+
 ## 1.0.0-rc.8 — 基础 API 与原生 CSS 集成，2026-10-08
 
 五包已发布到 npm next，源码为 `fe2a7b4`。[main 完整 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/37729962027) 与 [发布及注册表消费](https://github.com/kenconnet666/zerodep-js/actions/runs/37730703039) 均成功；[GitHub 预发布](https://github.com/kenconnet666/zerodep-js/releases/tag/v1.0.0-rc.8) 保存原始五包 tgz 与最终账本，SHA-512、next 和注册表版本逐项一致，latest 未提升。基础 API 与工具链改动经 [PR #1](https://github.com/kenconnet666/zerodep-js/pull/1) 合入 main。

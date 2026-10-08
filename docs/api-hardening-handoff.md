@@ -2,6 +2,12 @@
 
 更新：2026-10-08。CSS 0.3.1 与框架 1.0.0-rc.8 均已发布到 next，完整 CI、固定产物与注册表验收完成。此前限时窗口已结束，本页记录最终交付与恢复依据。
 
+## 当前源码的后续变更
+
+用户已决定删除 `_task` 整组 API；当前源码移除 task 子入口、实现、类型及专属测试，任务工作台改用普通 async 请求。保留原有竞态、取消、错误恢复、SSR 首屏与草稿断言，增加首屏不重复查询的回归。CSS 标签拼接与 useCss 保持不变。下面的 rc.8 发布证据属于删除前版本，不能作为本次改动的验收；rc.8 原始发行包不改写。
+
+本地完成相关类型检查、包声明及示例 client/server 构建，12 项入口/生命周期单测与任务页 Chromium 11 项通过；语言补全只验证相关包导入用例，完整平台、三浏览器和剩余补全交新提交 CI。新增文档为 requests.md，不增加替代任务 API，也不改变同步生命周期的约定。
+
 ## 最新授权与环境
 
 - 本地只做改动相关焦点检查，完整测试全部交 CI；阶段提交并推送，同提交完整验收后发布固定 tgz 到 next，不提升 latest。
@@ -14,7 +20,7 @@
 
 | 范围               | 已实现或修复的契约                                                                                                              | 验收入口                                                        |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| 任务               | initial 建立成功初态但不请求；reset 清空数据/错误/重试输入；取消与同步 abort 重入安全；初值 getter 只读一次                     | docs/tasks.md、packages/use/test/task.test.ts                   |
+| 请求               | 普通 async/await、页面状态、生命周期取消；旧查询不得覆盖新结果或冲突草稿                                                        | docs/requests.md、tests/e2e/tasks.spec.ts                       |
 | 绑定               | details bind:open；radio/checkbox 字符串 bind:group；原生 reset、接管前编辑、写回类型与稀疏数组校验                             | docs/forms.md、compiler/SSR group 与 disclosure 测试、tests/e2e |
 | output             | 受控纯文本 TextRenderable，原生 reset 后重新取得实际文本节点；富内容用普通容器                                                  | docs/forms.md、SSR/类型反例、WebKit 回归                        |
 | 状态与快照         | 数组用户比较器追踪、跨 realm/子类边界、锁定属性 Proxy 不变量；显示标签不能伪装普通数据或集合                                    | core state/reactivity/snapshot 测试                             |
@@ -25,7 +31,7 @@
 | CSS                | 命名 css 追踪、直接变量保守绑定、class 前 spread、参数求值顺序、调用源码映射、_createCssContext                                 | docs/css.md、compiler CSS 19 项、类型与独立消费                 |
 | 页面元信息         | _head 只处理 title/description；按字段覆盖/销毁恢复、Document/SSR 根隔离；_render 返回 {html,head}                              | docs/head.md、core/SSR head、浏览器及独立消费                   |
 | CSS 组合           | 普通/局部/Portal/动态导入主题；加载期间切换主题；CSS HMR 尺寸/颜色、单宿主与开发 SSR 样式接管                                   | css.spec.ts、verify-dev.mjs，已进入 97319ae 完整 CI             |
-| 工具与文档         | 54 项语言补全含任务 reset、head 和主题作者方法；旧 SDK 操作说明移出当前指南，研究保留为历史                                     | lsp:verify、lsp:completions、environment-setup.md               |
+| 工具与文档         | 补全保留 head 和主题作者方法，移除 task.reset 专属用例；旧 SDK 操作说明移出当前指南，研究保留为历史                             | lsp:verify、lsp:completions、environment-setup.md               |
 
 组件仅为验收夹具，没有建立组件库。watch、防抖、ref 组合、class 合并、复杂外部订阅、流式/异步组件 SSR 等未进入本轮。
 

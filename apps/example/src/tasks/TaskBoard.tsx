@@ -1,7 +1,6 @@
-import { _component, _state, _derived, _effect, _onCleanup, For } from 'zerodep-js';
+import { _component, _state, _derived, _effect, _getAbortSignal, For } from 'zerodep-js';
 import type { RenderMode } from 'zerodep-js-ssr';
 import { _persistLocal } from 'zerodep-use/storage';
-import { _task } from 'zerodep-use/task';
 import { ApiFailure, listTasks, createTask, updateTask, deleteTask } from './api.js';
 import {
   titleSchema,
@@ -37,35 +36,45 @@ export const TaskBoard = _component(({ initial, mode = 'csr', embedded = false }
       },
     },
   );
-  const request = _task(({ q, selected }: { q: string; selected: TaskFilter }, signal) =>
-    listTasks({ query: q, filter: selected }, signal),
-  );
-  const loading = _derived(request.pending);
+  let loading = _state(false);
   let creating = _state(false);
   let ready = _state(false);
-  const loadError = _derived(
-    request.status === 'error'
-      ? request.error instanceof Error
-        ? request.error.message
-        : '查询失败，请重试。'
-      : '',
-  );
+  let loadError = _state('');
   let createError = _state('');
   let notice = _state('');
   const query = _derived(search.trim());
   const completed = _derived(tasks.filter((task) => task.completed).length);
-  const lifetime = new AbortController();
+  const lifetime = _getAbortSignal();
+  let request: AbortController | undefined;
   let first = true;
-  _onCleanup(() => {
-    lifetime.abort();
-  });
   _effect(() => {
     ready = true;
   });
 
-  async function load(q = query, selected = filter): Promise<void> {
-    const result = await request.run({ q, selected });
-    if (result.status === 'success') tasks = result.data.tasks;
+  function cancelQuery(): void {
+    request?.abort();
+    loading = false;
+    loadError = '';
+  }
+
+  async function load(q = query, selected = filter, owner = lifetime): Promise<void> {
+    if (owner.aborted) return;
+    request?.abort();
+    request = new AbortController();
+    // 生命周期信号处理卸载/条件变化；本次请求的控制器供手动刷新和冲突处理取消。
+    const signal = AbortSignal.any([owner, request.signal]);
+    loading = true;
+    loadError = '';
+    try {
+      const result = await listTasks({ query: q, filter: selected }, signal);
+      // 即使传输层忽略取消，也不能让旧结果覆盖新查询或冲突草稿。
+      if (!signal.aborted) tasks = result.tasks;
+    } catch (error) {
+      if (!signal.aborted)
+        loadError = error instanceof Error ? error.message : '查询失败，请重试。';
+    } finally {
+      if (!signal.aborted) loading = false;
+    }
   }
 
   _effect(() => {
@@ -83,7 +92,7 @@ export const TaskBoard = _component(({ initial, mode = 'csr', embedded = false }
       first = false;
       if (start && q === start.query && selected === start.filter) return;
     }
-    void load(q, selected);
+    void load(q, selected, _getAbortSignal());
   });
 
   function merge(saved: Task) {
@@ -93,9 +102,9 @@ export const TaskBoard = _component(({ initial, mode = 'csr', embedded = false }
   }
 
   function preserveConflict(error: unknown): void {
-    if (lifetime.signal.aborted || !(error instanceof ApiFailure) || !error.current) return;
+    if (lifetime.aborted || !(error instanceof ApiFailure) || !error.current) return;
     // 冲突中的新标题可能不再匹配搜索；立即重查会删除这一行并丢掉尚未确认的草稿。
-    request.cancel();
+    cancelQuery();
     merge(error.current);
     notice = '检测到冲突，请先核对未保存的内容';
   }
@@ -106,9 +115,9 @@ export const TaskBoard = _component(({ initial, mode = 'csr', embedded = false }
     patch: Omit<TaskUpdate, 'revision'>,
   ): Promise<Task> {
     try {
-      const saved = await updateTask(id, { ...patch, revision }, lifetime.signal);
-      if (!lifetime.signal.aborted) {
-        request.cancel();
+      const saved = await updateTask(id, { ...patch, revision }, lifetime);
+      if (!lifetime.aborted) {
+        cancelQuery();
         merge(saved);
         notice = '任务已保存';
         await load();
@@ -122,9 +131,9 @@ export const TaskBoard = _component(({ initial, mode = 'csr', embedded = false }
 
   async function remove(id: string, revision: number): Promise<void> {
     try {
-      await deleteTask(id, revision, lifetime.signal);
-      if (!lifetime.signal.aborted) {
-        request.cancel();
+      await deleteTask(id, revision, lifetime);
+      if (!lifetime.aborted) {
+        cancelQuery();
         tasks = tasks.filter((task) => task.id !== id);
         notice = '任务已删除';
         await load();
@@ -147,17 +156,17 @@ export const TaskBoard = _component(({ initial, mode = 'csr', embedded = false }
     creating = true;
     createError = '';
     try {
-      await createTask(parsed.data, lifetime.signal);
-      if (!lifetime.signal.aborted) {
+      await createTask(parsed.data, lifetime);
+      if (!lifetime.aborted) {
         if (newTitle === submitted) newTitle = '';
         notice = '任务已添加';
         await load();
       }
     } catch (error) {
-      if (!lifetime.signal.aborted)
+      if (!lifetime.aborted)
         createError = error instanceof Error ? error.message : '添加失败，请重试。';
     } finally {
-      if (!lifetime.signal.aborted) creating = false;
+      if (!lifetime.aborted) creating = false;
     }
   }
 

@@ -1,6 +1,6 @@
 # zerodep-use
 
-zerodep-js 的可选应用工具，提供路由、浏览器持久化、编辑历史和显式异步任务。通过同版本 `zerodep-js` peer 共享响应式与组件所有权；不依赖 Vue、React 或 Svelte。
+zerodep-js 的可选应用工具，提供路由、浏览器持久化和编辑历史。通过同版本 `zerodep-js` peer 共享响应式与组件所有权；不依赖 Vue、React 或 Svelte。
 
 ```tsx
 import { _component, _state } from 'zerodep-js';
@@ -22,6 +22,6 @@ export const Preferences = _component(() => {
 
 这些能力由本包提供；原 core 的 router/storage 入口直接移除。状态宏、快照和通用生命周期仍来自 `zerodep-js`。页面创建使用 _mount/_hydrate，旧 _createPage 宿主协议已移除。存储封装格式与之前版本兼容，拆包不重置已有草稿或偏好。
 
-`zerodep-use/task` 提供 `_task(loader)`，通过 run/retry/cancel 和只读状态管理最后一次任务。需在组件或 createRoot 中创建，随所属作用域释放；SSR 不启动任务。取消及时结束等待，即使第三方 Promise 忽略 AbortSignal，也不会接受其迟到结果。它不提供通用请求缓存或自动跨 await 跟踪。
+请求直接使用 async/await 与 fetch；需要取消时使用 core 的 _getAbortSignal 和标准 AbortSignal。当前源码已删除 task 子入口，不提供替代的查询工具。
 
 SSR 时持久化不访问浏览器存储，路由按请求创建。语义与边界见[路由指南](https://github.com/kenconnet666/zerodep-js/blob/main/docs/routing.md)、[持久化指南](https://github.com/kenconnet666/zerodep-js/blob/main/docs/storage.md)；实际版本发布状态见[变更记录](https://github.com/kenconnet666/zerodep-js/blob/main/CHANGELOG.md)。

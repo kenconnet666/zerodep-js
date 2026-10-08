@@ -8,14 +8,14 @@
 
 ## 工作区
 
-| 包                | 职责                                                       |
-| ----------------- | ---------------------------------------------------------- |
-| packages/core     | 响应式、组件、DOM、生命周期、JSX 类型和运行时协议          |
-| packages/use      | router、storage、history、task 子入口，通过 peer 共享 core |
-| packages/ssr      | 请求隔离、HTML 渲染、转义和数据编码                        |
-| packages/compiler | Babel 转换、框架检查、选定 TS7.1 与语言工具适配            |
-| packages/vite     | 转换接入、依赖扫描和开发更新                               |
-| apps/example      | 使用实际包产物的 CSR/SSR 示例和任务应用                    |
+| 包                | 职责                                                 |
+| ----------------- | ---------------------------------------------------- |
+| packages/core     | 响应式、组件、DOM、生命周期、JSX 类型和运行时协议    |
+| packages/use      | router、storage、history 子入口，通过 peer 共享 core |
+| packages/ssr      | 请求隔离、HTML 渲染、转义和数据编码                  |
+| packages/compiler | Babel 转换、框架检查、选定 TS7.1 与语言工具适配      |
+| packages/vite     | 转换接入、依赖扫描和开发更新                         |
+| apps/example      | 使用实际包产物的 CSR/SSR 示例和任务应用              |
 
 不提供外部框架运行时适配，也不把预编译组件库链接到工作区源码。
 
@@ -52,7 +52,7 @@ export const Counter = _component(({ step = 1 }: { step?: number }) => {
 
 保留变量式读写、组件参数解构/默认值/实时 rest，以及原生和组件 bind、DOM bind:this。它们都是标准 TSX 语法，由框架编译器实现响应式语义；普通局部变量不隐式变为响应式。
 
-rc.8 提供 `_id()` 用于 SSR/接管一致的组件无障碍 ID，`zerodep-use/task` 的 `_task(loader)` 用于显式可取消异步任务。契约与用法见 [API](docs/api.md#组件-id) 和 [异步任务](docs/tasks.md)。
+`_id()` 提供 SSR/接管一致的组件 ID。当前源码已移除 rc.8 中的 task 工具，请直接使用 async/await、状态和生命周期回调；见 [普通请求](docs/requests.md)。
 
 `<Portal>内容</Portal>` 可以把弹层内容放到 body，仍随原父组件更新和销毁；指定位置使用 `target={container}`。SSR 只留占位，接管成功后再显示。它也属于当前分支新增能力，详见 [Portal](docs/api.md#portal把内容放到页面外层)。
 

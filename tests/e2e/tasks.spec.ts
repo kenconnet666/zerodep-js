@@ -99,6 +99,25 @@ for (const mode of ['csr', 'ssr'] as const) {
   });
 }
 
+test('SSR 首屏不重复请求，手动刷新仍可重新查询', async ({ page, tasks }) => {
+  const task = await tasks.create('首屏');
+  let queries = 0;
+  await page.route('**/api/tasks?*', (route) => {
+    queries++;
+    return route.continue();
+  });
+  await page.goto(tasks.url('ssr'));
+  await expect(page.locator('#app')).toHaveAttribute('data-client-ready', 'true');
+  await expect(page.locator(`[data-task-id="${task.id}"]`)).toBeVisible();
+  await page.evaluate(() => new Promise(requestAnimationFrame));
+  expect(queries).toBe(0);
+  const response = page.waitForResponse((item) => new URL(item.url()).pathname === '/api/tasks');
+  await page.getByRole('button', { name: '刷新列表' }).click();
+  expect((await response).ok()).toBe(true);
+  await expect(page.getByRole('button', { name: '刷新列表' })).toBeEnabled();
+  expect(queries).toBe(1);
+});
+
 test('任务页面切换渲染模式保留查询与状态筛选', async ({ page, request, tasks }) => {
   const open = await tasks.create('待处理');
   const done = await tasks.create('已完成');

@@ -21,16 +21,6 @@ const rows = [{ id: 1, title: 'row' }];
 const control = `const Field = _component((props: { value: string; onValueChange: (value: string) => void; label?: string }) => <span>{props.value}</span>);\n`;
 const cases = [
   {
-    name: '任务重置提示',
-    source:
-      header +
-      `import { _task } from 'zerodep-use/task';
-const App = _component(() => { const task = _task((value: number) => value); task.rese¦(); return null; });`,
-    expected: 'reset',
-    word: 'rese',
-    details: true,
-  },
-  {
     name: '页面元信息字段',
     source:
       header +
