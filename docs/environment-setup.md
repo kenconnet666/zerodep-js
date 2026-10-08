@@ -1,6 +1,6 @@
 # 换机环境配置
 
-更新：2026-10-08。本文对应 rc.8 候选源码；npm 已发布的 rc.7 仍是此前微软 nightly 版本。源码合入与发布状态见 [维护交接](api-hardening-handoff.md)，不要用旧 rc.7 的依赖配置代替本文指定的 SDK。
+更新：2026-10-08。本文对应 main 与已发布的 rc.8；旧 rc.7 使用此前微软 nightly。源码和注册表验收证据见 [维护交接](api-hardening-handoff.md)，不要用旧 rc.7 的依赖配置代替本文指定的 SDK。
 
 ## 1. 固定版本与获取方式
 
@@ -18,7 +18,7 @@
 
 ```powershell
 npm install --global pnpm@10.34.5
-git clone --branch codex/webstorm-ts71-integration https://github.com/kenconnet666/zerodep-js.git
+git clone https://github.com/kenconnet666/zerodep-js.git
 Set-Location zerodep-js
 node --version
 pnpm --version
@@ -153,4 +153,4 @@ node scripts/language-services/webstorm-patch.mjs $webstormInstall restore
 
 示例使用 catalog 固定的 zerodep-css@0.3.1。换机无需相邻 CSS 源码目录；它自己的 TS6 不替换本项目 TS7。CSS 仓库的模板编译器已拆为 zerodep-css-compiler，本项目不依赖它。接线见 [原生 CSS](css.md)。
 
-CSS 0.3.1 核心包已从 npm 注册表核对版本和 SHA-512，与本轮固定 tgz 一致。catalog 固定 npm 版本，换机按锁文件安装即可；完整六包发布状态与恢复入口见 [维护交接](api-hardening-handoff.md)。
+CSS 0.3.1 六包已发布到 next 并核对 SHA-512，原 tgz 与核验记录保存在 [GitHub 预发布](https://github.com/kenconnet666/zerodep-css/releases/tag/v0.3.1)。本项目只消费核心包；catalog 固定 npm 版本，换机按锁文件安装即可，latest 未提升。

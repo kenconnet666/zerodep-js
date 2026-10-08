@@ -4,7 +4,7 @@
 
 优先保证实现简单、容易维护、使用方便、类型提示准确，并用适当中文注释解释关键语义。性能不是首要目标，不维护自有 TypeScript 分支、原生 SDK 或跨命令编译后台。
 
-> 当前源码准备 1.0.0-rc.8：固定 JetBrains TS7.1，补齐基础 API 与可选 CSS 集成。npm next 仍为此前的 rc.7；新候选的 CI、发布和注册表消费状态见 [维护交接](docs/api-hardening-handoff.md)，稳定 latest 未提升。
+> 五包 1.0.0-rc.8 已发布到 npm next：固定 JetBrains TS7.1，补齐基础 API 与可选 CSS 0.3.1 集成，完整 CI 与注册表消费均通过。安装当前候选请指定精确版本或 @next，稳定 latest 未提升；证据见 [维护交接](docs/api-hardening-handoff.md)。
 
 ## 工作区
 
@@ -52,7 +52,7 @@ export const Counter = _component(({ step = 1 }: { step?: number }) => {
 
 保留变量式读写、组件参数解构/默认值/实时 rest，以及原生和组件 bind、DOM bind:this。它们都是标准 TSX 语法，由框架编译器实现响应式语义；普通局部变量不隐式变为响应式。
 
-当前分支新增 `_id()` 用于 SSR/接管一致的组件无障碍 ID，`zerodep-use/task` 的 `_task(loader)` 用于显式可取消异步任务；两者尚未发布到 npm rc.7。契约与用法见 [API](docs/api.md#组件-id) 和 [异步任务](docs/tasks.md)。
+rc.8 提供 `_id()` 用于 SSR/接管一致的组件无障碍 ID，`zerodep-use/task` 的 `_task(loader)` 用于显式可取消异步任务。契约与用法见 [API](docs/api.md#组件-id) 和 [异步任务](docs/tasks.md)。
 
 `<Portal>内容</Portal>` 可以把弹层内容放到 body，仍随原父组件更新和销毁；指定位置使用 `target={container}`。SSR 只留占位，接管成功后再显示。它也属于当前分支新增能力，详见 [Portal](docs/api.md#portal把内容放到页面外层)。
 
@@ -78,4 +78,4 @@ pnpm lsp:completions
 
 框架源码使用 MIT License；成熟依赖按各自许可证分发，core 的生成数据来源见包内 THIRD_PARTY_NOTICES.md。
 
-当前分支支持可选 [原生 CSS](docs/css.md)：`const className = css(...)` 自动追踪，直接响应式值保守绑定元素变量。复用 zerodep-css，无需 bx 或额外 Vite 插件。该框架入口尚未发布到 npm rc.7。
+rc.8 支持可选 [原生 CSS](docs/css.md)：`const className = css(...)` 自动追踪，直接响应式值保守绑定元素变量。复用 zerodep-css，无需 bx 或额外 Vite 插件。

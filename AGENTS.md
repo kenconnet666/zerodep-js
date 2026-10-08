@@ -7,7 +7,7 @@
 - 2026-10-08 当前重点是已有/新增基础 API 与 CSS 协作。组件只作为验收夹具，不实现或发布完整 Dialog/Button/TextField 等组件，不建立组件库；组件库另行规划。新候选须先确认契约，当前主计划为 docs/production-plan.md。
 - 2026-10-07 用户最新决定：IDE 与项目统一固定 JetBrains TypeScript 7.1.0-dev.jetbrains.20261006.2，Babel 框架转换和 Vite 不变。此决定取代此前追随微软 nightly 的版本选择；只维护这一 TS7.1，不回退 TS6、不维护多版本兼容或定制 TS 内核补丁。已授权为 WebStorm EAP 类型引擎适配 ts-go-proxy，先备份并验证；SDK 与平台包从 JetBrains GitHub Release 原始发行地址安装，精确 URL 和校验信息进入 pnpm catalog/overrides/lockfile。
 - 首要目标是简单易维护、方便使用、良好类型提示与适当中文注释。性能次要；不为减少依赖或解析次数引入复杂后台、缓存和协议。
-- 2026-10-08 用户已授权按基础 API 计划自主执行、完善测试和修复，并允许为简洁性适当调整 API；在实施前记录选定契约，不必逐项再次确认。本地只跑相关焦点检查，完整测试交 CI。当前按交接计划恢复 CSS 0.3.1 发布、框架消费与新 RC 交付；此前限时窗口已经结束，不作为本轮截止时间，不触发额度重置或购买。
+- 2026-10-08 用户已授权按基础 API 计划自主执行、完善测试和修复，并允许为简洁性适当调整 API；在实施前记录选定契约，不必逐项再次确认。本地只跑相关焦点检查，完整测试交 CI。CSS 0.3.1 与框架 rc.8 已交付，发布/恢复证据见 docs/api-hardening-handoff.md；此前限时窗口已经结束，不作为后续截止时间，不触发额度重置或购买。
 - 保留显式变量式 _state/_derived（无 .value）、_component 参数解构/默认值/实时 rest、bind、DOM bind:this、_lazy、快照历史和开发状态保留。不能以弱化类型或生命周期、表单、列表、SSR 断言完成迁移。
 - 选择性参考 Svelte 的语义和资源所有权，参考 Vue Devtools 的使用体验；无需复制其全部功能。以 docs/production-plan.md、docs/semantics.md 和 .design/standard-toolchain-plan.md 为执行依据。
 

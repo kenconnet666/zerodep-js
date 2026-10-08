@@ -1,8 +1,8 @@
 # 变更记录
 
-## 1.0.0-rc.8 — 基础 API 与原生 CSS 集成，准备中
+## 1.0.0-rc.8 — 基础 API 与原生 CSS 集成，2026-10-08
 
-以下为本轮候选范围，尚不代表已发布。五包使用同一版本；最终源码、CI、固定 tgz 与注册表消费结果见 docs/api-hardening-handoff.md。
+五包已发布到 npm next，源码为 `fe2a7b4`。[main 完整 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/37729962027) 与 [发布及注册表消费](https://github.com/kenconnet666/zerodep-js/actions/runs/37730703039) 均成功；[GitHub 预发布](https://github.com/kenconnet666/zerodep-js/releases/tag/v1.0.0-rc.8) 保存原始五包 tgz 与最终账本，SHA-512、next 和注册表版本逐项一致，latest 未提升。基础 API 与工具链改动经 [PR #1](https://github.com/kenconnet666/zerodep-js/pull/1) 合入 main。
 
 - 新增 `_id()`、`zerodep-use/task` 的 `_task(loader, { initial })` 与 reset/retry/cancel、保留逻辑父级所有权的 Portal，以及可选 `zerodep-js/head` 的 `_head()`。
 - 新增原生 details 的 `bind:open` 和 radio/checkbox 的字符串 `bind:group`，保留 reset、接管前编辑和写回类型检查；output 使用受控纯文本，富内容使用普通容器。

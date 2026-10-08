@@ -71,7 +71,7 @@ catalog 固定 CSS 0.3.1，core 可选 CSS peer 下限为 ^0.3.1，框架保持�
 
 跨仓库联调可先执行 `pnpm test:packages --css-tarball <候选.tgz>`。正常安装按精确版本和锁文件恢复，不要求相邻 CSS 仓库存在，也不提交临时绝对路径依赖。
 
-CSS 0.3.1 核心包已从 npm 注册表核对版本和 SHA-512，与本轮固定 tgz 一致。该版本修复继承作者改写底层属性名或使用 getter 时的优化判断，保留无效值前的有效声明。catalog 固定 npm 版本，换机按锁文件安装即可；完整六包发布进度见 [维护交接](api-hardening-handoff.md)。
+CSS 0.3.1 六包已发布到 next，版本与 SHA-512 已和 [GitHub 预发布](https://github.com/kenconnet666/zerodep-css/releases/tag/v0.3.1) 中的固定 tgz 核对一致。该版本修复继承作者改写底层属性名或使用 getter 时的优化判断，保留无效值前的有效声明。本项目只消费核心包，catalog 固定 npm 版本，换机按锁文件安装即可；latest 未提升。
 
 ## CSS 作者上下文
 
