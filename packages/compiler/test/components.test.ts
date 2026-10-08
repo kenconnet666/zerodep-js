@@ -6,6 +6,37 @@ import { reactive } from '../../core/src/runtime/state.js';
 import { compile } from '../src/index.js';
 
 describe('组件参数转换', () => {
+  it('可选 props 参数仍接收实时只读对象，不丢失属性', () => {
+    let read!: () => unknown;
+    const View = execute(
+      `
+import { _component } from 'zerodep-js';
+const result = _component((props?: { label?: string }) => {
+  capture(() => props?.label ?? '默认');
+  return null;
+});`,
+      {
+        capture: (fn: () => unknown) => {
+          read = fn;
+        },
+      },
+    ) as Parameters<typeof runtime.setupComponent>[0];
+    const input = reactive<{ label?: string }>({});
+    const stop = _createRoot((dispose) => {
+      runtime.setupComponent(View, input);
+      return dispose;
+    });
+    try {
+      expect(read()).toBe('默认');
+      input.label = '更新';
+      expect(read()).toBe('更新');
+      delete input.label;
+      expect(read()).toBe('默认');
+    } finally {
+      stop();
+    }
+  });
+
   it('命名参数可以读取原型 getter，但实时 rest 保持自有可枚举边界', () => {
     let read!: () => unknown;
     const View = execute(

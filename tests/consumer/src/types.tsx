@@ -1,6 +1,6 @@
 import { compile, type CompileResult } from 'zerodep-js-compiler';
 import { Counter, Label } from '@zerodep-consumer/counter';
-import { _mount, type ComponentProps } from 'zerodep-js';
+import { _component, _mount, type ComponentProps } from 'zerodep-js';
 import { _createScope, _snapshot } from 'zerodep-js';
 import { _defineRoute, _defineRoutes, _createRouter, Link } from 'zerodep-use/router';
 import { _persistLocal, _persistSession } from 'zerodep-use/storage';
@@ -89,6 +89,12 @@ const LazyCounter = _lazy(async () => Counter);
 <LazyCounter />;
 
 const props: ComponentProps<typeof Counter> = { label: '声明消费', initial: 2 };
+const OptionalParameter = _component((props?: { label?: string }) => props?.label ?? null);
+const optionalProps: ComponentProps<typeof OptionalParameter> = { label: '可选参数' };
+_mount(OptionalParameter, { target: document.body, props: optionalProps });
+_render(OptionalParameter, { props: optionalProps });
+// @ts-expect-error 包声明不能把可选参数中的属性类型放宽。
+_render(OptionalParameter, { props: { label: 123 } });
 <button popoverTarget="help" />;
 <svg>
   <feGaussianBlur stdDeviation="1 2" />

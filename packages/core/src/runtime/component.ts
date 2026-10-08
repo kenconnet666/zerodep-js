@@ -26,7 +26,7 @@ export type Component<F extends (...args: never[]) => Renderable> = F & {
 
 export type AnyComponent = Component<(...args: never[]) => Renderable>;
 export type ComponentProps<C extends AnyComponent> =
-  Parameters<C> extends [infer P, ...unknown[]] ? P : Record<string, never>;
+  Parameters<C> extends [] ? Record<string, never> : NonNullable<Parameters<C>[0]>;
 export function _component<F extends (...args: never[]) => Renderable>(_setup: F): Component<F> {
   throw new Error('_component 必须经过 zerodep-js 编译器转换。');
 }

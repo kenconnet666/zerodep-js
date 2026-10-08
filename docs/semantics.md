@@ -76,6 +76,7 @@
 - 错误边界重建期间，清理回调再次调用 reset 并入当前重建，不递归挂载第二份子树；后续事件仍可重新 reset。纯派生中不能调用 reset，边界销毁后它不再生效。
 - 普通 map 保持普通计算，不默认为有身份保留的列表机制。
 - `_mount(App, { target, props })`、`_hydrate(App, { target, props })` 返回 disposer；SSR 从同步 `renderToString(App, { props })` 建立正确基线。
+- 根入口按 props 对象的字段判断是否必须提供 props。可选的 props 参数仍保留对象字段类型，不能被当成无参数组件；无参数组件继续拒绝多余属性。
 - 完整生产目标包括受控表单、IME/选区、错误恢复、context、ref、属性转发、声明消费、HMR、SSR/hydration 与安全边界；不以只支持计数器代替完成。
 - SSR/CSR 由应用入口选择，切换模式允许重新导航；不承诺把已挂载实例无刷新迁移到服务端。
 - SSR 每请求独立 scope，用户 effect 不在服务端执行；不自动序列化全部 props，客户端初始数据需要明确的传输边界。
