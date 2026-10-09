@@ -67,7 +67,9 @@ LSP 探针会在主示例目录创建临时源码，不与同一工作区的应�
 
 `zerodep-language-server --stdio` 是 compiler 包提供的标准 LSP 入口。传输与增量文档管理使用微软的 vscode-languageserver / vscode-languageserver-textdocument；它与 MCP 复用官方进程、框架检查和源码映射。编辑器连接关闭时释放官方进程与监听，多个未保存文件共享该连接的缓冲区，临时检查投影不会覆盖原文。
 
-本机 WebStorm 已安装 LSP4IJ，可按其 [自定义服务器文档](https://github.com/redhat-developer/lsp4ij/blob/main/docs/UserDefinedLanguageServer.md) 导入模板，无需开发 JetBrains 插件：
+2026-10-09 当前 WebStorm 使用内置 TypeScript 服务与内置 React 插件的通用 JSX/TSX 支持。用户启用 React 插件后确认 `bind:checked` 原语法的编辑能力可用，保留现有绑定 API。LSP4IJ 的额外框架服务器接入已撤销，其补全详情等待曾造成 IDE 界面线程卡死；不再将这条接入路线作为本机默认配置。
+
+以下保留标准 LSP 模板的历史接入步骤，供独立客户端验证参考，不表示当前 WebStorm 正在使用。LSP4IJ 的模板格式见其 [自定义服务器文档](https://github.com/redhat-developer/lsp4ij/blob/main/docs/UserDefinedLanguageServer.md)：
 
 1. 运行 `pnpm build:packages` 与 `pnpm lsp:setup`。
 2. 在 WebStorm 的“语言服务器”设置中点击“＋”，在模板菜单选择 Import from custom template。
@@ -77,7 +79,7 @@ LSP 探针会在主示例目录创建临时源码，不与同一工作区的应�
 
 标准协议测试覆盖跨文件未保存修改、Unicode 增量范围、绑定写回负例与修复、重命名、引用及自动导入。Windows URI 的盘符大小写和编码差异先归一化；同一绑定在投影中的读写引用合并为原文的一次编辑。补全 resolve 重开原投影并映射自动导入编辑，有限的菜单上下文在连接关闭时释放。
 
-不声明生成代码的格式化、语义 token 或未经验证的编辑能力。WebStorm 本机已实测绑定错误/修复、补全、悬浮与导航，当前状态见执行记录。
+不声明生成代码的格式化、语义 token 或未经验证的编辑能力。历史验证记录不代表当前 IDE 已启用该服务，当前接入以本节开头为准。
 
 WebStorm 自带补全与 LSP4IJ 可能同时展示同名普通候选。本机 TaskBoard 探针确认 LSP 在属性名和表达式位置各只返回一个 task，解析后的类型分别为 Task 和 NoInfer<Task>；候选列表中另一项来自 IDE 的补全合并。当前 LSP4IJ 用户配置不提供关闭 IDE 原生补全贡献者的开关。保留完整官方类型候选，不通过限制普通补全能力去掩盖界面重复；不能将没有行内详情直接解释为 any。
 

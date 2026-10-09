@@ -139,6 +139,12 @@ pnpm lsp:completions --case UI自动导入
 
 `pnpm lsp:completions --case UI调用跳转` 覆盖 `useCss`、`useLang`、`useLocale` 补全后定位到函数声明的行为。IDE 高亮与单次跳转仍须人工验收，不能用这项协议测试替代。
 
+### JSX/TSX 属性补全与绑定跳转
+
+WebStorm 内置的 **React 插件需要启用**。该插件同时提供其他 JSX 框架的组件/属性补全、文档和重构支持，并不要求项目依赖 React。2026-10-09 本机停用它时出现 `bind:checked` 缺少补全和导航；用户重新启用后确认原语法恢复可用。因此保留 `bind:checked={checked}`，不因编辑器配置问题更改绑定 API。
+
+本机已撤销 LSP4IJ 的额外框架服务器接入：其补全详情等待曾阻塞 IDE 界面线程。WebStorm 使用内置 TypeScript 服务与上述 JSX 支持；框架写回检查继续由 `zerodep-check`、CI 和 Codex 项目工具执行，不以普通类型提示代替可写目标检查。
+
 ### 使用项目 Prettier
 
 设置 → 语言和框架 → JavaScript → Prettier：
@@ -170,7 +176,7 @@ pnpm lsp:completions
 `lsp:setup` 自动写入本机 Node/项目绝对路径，生成 `.codex/config.toml` 和 `.codex/lsp4ij/`。它们已被忽略，换机或移动仓库后应重新生成，不能复制旧机器生成的文件。
 
 - **Codex 项目工具**：生成配置中的 `zerodep_js_lsp` 是 MCP 服务，供 Codex 查询框架语言能力。独立验证通过后重新加载 Codex；生成配置不等于当前会话已换进程。
-- **WebStorm 框架增强**：安装 LSP4IJ，在语言服务器设置中 Import from custom template，选择 `.codex/lsp4ij` 文件夹。模板限定当前项目，之后测试 bind 提示、错误修复和跳转。
+- **WebStorm 编辑支持**：使用内置 TypeScript 服务，并启用内置 React 插件提供通用 JSX/TSX 支持；当前不接入 LSP4IJ 框架服务器。生成的标准 LSP 模板仍可用于独立验证或其他编辑器。
 - **WebStorm IDE MCP**：在 EAP 的 MCP Server 设置里启用服务，复制它实际显示的 streamable-http 地址；在 Codex 的用户配置中更新现有 `[mcp_servers.webstorm]` 的 `url`。本机曾使用 `http://127.0.0.1:64543/stream`，**新机器端口不保证相同**。项目语言 MCP 与 IDE MCP 是两项配置。
 
 Zerodep LSP 与 IDE 原生补全可能合并出同名候选。类型引擎与框架增强的覆盖范围也不同；不要全局关闭其他项目的 TS 服务来消除重复。具体边界见 [工具链](tooling.md)。
