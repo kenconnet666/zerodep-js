@@ -110,7 +110,48 @@ node scripts/language-services/webstorm-patch.mjs $webstormInstall check
 
 验证必须包含实际行为：悬浮变量、泛型组件参数、修改类型后的刷新、制造一个类型错误再修复。已知 IDE MCP 的 `get_file_problems` 可能漏报 TypeScript 错误，空列表不是通过证据；同时看编辑器红线。仅看版本显示或按钮可勾选也不够。
 
-## 5. 框架 LSP 与 Codex MCP
+## 5. 编辑器补全与格式化
+
+以下配置已在 WebStorm 263.6259.34 与官方 TS7.1 上验证。Registry 属于 IDE 设置，升级 WebStorm 后应重新验证；`.idea` 中的格式化配置属于当前项目，不提交个人 IDE 文件。
+
+### 自动导入使用公开包入口
+
+此构建默认的 IDE 补全会把 `useCss` 导入为 `zerodep-js-ui/src`，尽管该子路径没有公开。TS7 标准 LSP 返回的路径是正确的 `zerodep-js-ui`。在 Find Action → Registry 中将以下两项取消勾选：
+
+| Registry 键                                                     | 值      | 作用                                      |
+| --------------------------------------------------------------- | ------- | ----------------------------------------- |
+| `typescript.service.completion.customServiceContributorEnabled` | `false` | 改用标准 LSP 补全                         |
+| `typescript.service.completion.ownContributorsEnabled`          | `false` | 服务补全可用时，不再混入 IDE 自有补全候选 |
+
+保留 TypeScript 语言服务和服务驱动的类型引擎。已在真实编辑器验证：输入 `useC` 并接受补全后，`useCss` 会合并到现有 `zerodep-js-ui` 导入，悬浮类型仍可用。不需要为错误提示开放 `/src` 导出。
+
+可用焦点探针检查服务端新增导入和合并导入两种情况：
+
+```powershell
+pnpm lsp:completions --case UI自动导入
+```
+
+该命令验证项目 LSP；WebStorm 的候选选择仍需在编辑器中实际测试。如果 `Ctrl+Space` 被中文输入法占用，用菜单“代码 → 代码补全 → 基本”验证，再在 Keymap 给 Basic Completion 选择不冲突的快捷键。
+
+### 使用项目 Prettier
+
+设置 → 语言和框架 → JavaScript → Prettier：
+
+- 选择手动配置，包路径指向当前仓库的 `node_modules/prettier`。
+- 勾选“执行重新设置代码格式操作时运行”和“保存时运行”。
+- 将 Prettier 应用于依赖作用域之外的文件，让同仓库的各子包也使用根配置。
+- 文件范围使用 `**/*.{js,jsx,ts,tsx,mjs,cjs,mts,cts,json,css,html,md,yml,yaml}`。
+- 优先使用 Prettier 配置，`.prettierignore` 自动查找；粘贴时运行按个人习惯保留。
+
+根 `.prettierrc.json` 和 `.editorconfig` 负责统一缩进、引号和换行，不要另设一套 IDE 格式规则。只对正在编辑的文件自动格式化，不在保存时运行全仓库构建或测试。上述保存与重新格式化入口见 [WebStorm Prettier 文档](https://www.jetbrains.com/help/webstorm/prettier.html)。
+
+JavaScript 语言版本保持 ECMAScript 6+；项目实际语言与构建目标由 tsconfig/Vite 中的 ES2025 配置决定。日常开发使用 Vite，不启用 TypeScript“在更改时重新编译”。
+
+### 设置窗口的焦点异常
+
+本机曾出现 `SettingsNonModalDialog.onWindowActivated/onWindowDeactivated` 路径上的 `LockAccessDisallowed`。在“高级设置”搜索“对话框”，取消“在非模式对话框中显示设置”（英文为 Show settings in a non-modal dialog），使设置恢复为关闭后才能继续操作编辑器的普通对话框。这是针对该触发路径的规避配置，不代表 IDE 底层线程问题已经修复；语言服务和类型引擎保持开启。选项行为见 [JetBrains 高级设置说明](https://www.jetbrains.com/help/idea/advanced-settings.html#user-interface)。
+
+## 6. 框架 LSP 与 Codex MCP
 
 项目 LSP 和 WebStorm 原生 LSP 使用同版本、同一发行二进制。项目保留 bind 写回、源码映射等增强，不连接 IDE 私有管道。
 
@@ -128,16 +169,16 @@ pnpm lsp:completions
 
 Zerodep LSP 与 IDE 原生补全可能合并出同名候选。类型引擎与框架增强的覆盖范围也不同；不要全局关闭其他项目的 TS 服务来消除重复。具体边界见 [工具链](tooling.md)。
 
-## 6. 回退与故障定位
+## 7. 回退与故障定位
 
-| 现象                               | 先检查                                                         |
-| ---------------------------------- | -------------------------------------------------------------- |
-| 下载版本 404                       | 是否使用仓库固定的 GitHub Release tarball，而非 npm 的同名版本 |
-| Cannot update an inactive snapshot | 新 SDK 配上了旧代理；检查补丁状态和实际服务进程版本            |
-| 类型引擎置灰                       | 是否选了原生预览项，版本是否正确，IDE build 是否受支持         |
-| 版本正确但提示陈旧                 | 重启 TypeScript 服务；项目 MCP 则重新加载 Codex                |
-| 标准 TS 正常，但 bind 写回错误漏检 | 框架 LSP 是否已导入并启用，不能只依赖原生 SDK                  |
-| 补丁脚本拒绝哈希                   | IDE 已变更，先核对新构建，不改脚本断言强行覆盖                 |
+| 现象                               | 先检查                                                          |
+| ---------------------------------- | --------------------------------------------------------------- |
+| IDE 下载版本 404                   | 核对 Registry 版本，并按第 3 节从项目官方 npm SDK 准备 IDE 缓存 |
+| Cannot update an inactive snapshot | 新 SDK 配上了旧代理；检查补丁状态和实际服务进程版本             |
+| 类型引擎置灰                       | 是否选了原生预览项，版本是否正确，IDE build 是否受支持          |
+| 版本正确但提示陈旧                 | 重启 TypeScript 服务；项目 MCP 则重新加载 Codex                 |
+| 标准 TS 正常，但 bind 写回错误漏检 | 框架 LSP 是否已导入并启用，不能只依赖原生 SDK                   |
+| 补丁脚本拒绝哈希                   | IDE 已变更，先核对新构建，不改脚本断言强行覆盖                  |
 
 关闭 IDE 后可恢复原代理：
 

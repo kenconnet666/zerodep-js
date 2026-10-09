@@ -20,6 +20,25 @@ const rows = [{ id: 1, title: 'row' }];
 `;
 const control = `const Field = _component((props: { value: string; onValueChange: (value: string) => void; label?: string }) => <span>{props.value}</span>);\n`;
 const cases = [
+  {
+    name: 'UI自动导入-合并包入口',
+    directory: 'apps/docs/src',
+    source: "import { Provider } from 'zerodep-js-ui'; void Provider; export const hook = useC¦;",
+    expected: 'useCss',
+    word: 'useC',
+    autoImport: true,
+    importFrom: 'zerodep-js-ui',
+  },
+  {
+    name: 'UI自动导入-新增包入口',
+    directory: 'apps/docs/src',
+    source: 'export const hook = useC¦;',
+    expected: 'useCss',
+    word: 'useC',
+    autoImport: true,
+    importFrom: 'zerodep-js-ui',
+  },
+
   ...[
     ['borderWidth', '_thin', '细边框'],
     ['borderWidth', '_thick', '粗边框'],
@@ -597,6 +616,21 @@ try {
             applied = applied.slice(0, edit.start) + edit.text + applied.slice(edit.end);
             boundary = edit.start;
           }
+        }
+        if (entry.importFrom) {
+          const imports = [...applied.matchAll(/import\s*\{([^}]+)\}\s*from\s*['"]([^'"]+)['"]/g)];
+          assert(
+            imports.some(
+              (match) =>
+                match[2] === entry.importFrom &&
+                match[1].split(',').some((name) => name.trim() === entry.expected),
+            ),
+            '自动导入必须命中公开包入口',
+          );
+          assert(
+            !imports.some((match) => match[2].startsWith(entry.importFrom + '/')),
+            '不能自动导入未公开的包内源码',
+          );
         }
         await writeFile(file, applied);
       });
