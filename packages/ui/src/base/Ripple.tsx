@@ -10,7 +10,7 @@ export type RippleProps = Omit<JSX.IntrinsicElements['span'], 'children' | 'colo
   children?: never;
 };
 
-/** 放在 position:relative 的直接父 button 内，只拥有自己的视觉层和事件资源。 */
+/** 放在 position:relative 的直接父 button/a 内，只拥有视觉层和事件资源。 */
 export const Ripple = _component(
   ({ disabled = false, centered = false, color, class: className, ...rest }: RippleProps) => {
     const s = useCss();
@@ -19,8 +19,8 @@ export const Ripple = _component(
       const node = layer;
       if (!node || disabled) return;
       const parent = node.parentElement;
-      if (!parent || parent.localName !== 'button')
-        throw new Error('Ripple 需要直接放在 button 内。');
+      if (!parent || !['button', 'a'].includes(parent.localName))
+        throw new Error('Ripple 需要直接放在 button 或 a 内。');
       const view = node.ownerDocument.defaultView!;
       const media = view.matchMedia('(prefers-reduced-motion: reduce)');
       let remove: (() => void) | undefined;

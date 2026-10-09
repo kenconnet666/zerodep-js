@@ -62,6 +62,9 @@ export function _press(element: HTMLElement, options: PressOptions): () => void 
         ![' ', 'Enter'].includes(event.key)
       )
         return;
+      // 链接的 Space 保留滚动语义，不显示按钮式按压反馈。
+      if (element.localName === 'a' && (event.key !== 'Enter' || !element.hasAttribute('href')))
+        return;
       finish();
       active = event.key;
       options.onStart({

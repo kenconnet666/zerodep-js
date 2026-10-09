@@ -1,6 +1,6 @@
 # Button 系列与 Flex 实施规划
 
-日期：2026-10-09。本文是 [生产主计划](production-plan.md) 第 12 节的详细设计。组件与布局范围已由用户确定；下列 API、默认值和阶段方案为本轮研究后的推荐，尚未实现。
+日期：2026-10-09。本文是 [生产主计划](production-plan.md) 第 12 节的实施依据。用户已授权进入目标模式完整执行。采用下列 API、默认值和阶段方案，加载使用原生 disabled；实现与验证进度在交接时统一整理。
 
 ## 1. 最新范围与验收起点
 
@@ -8,7 +8,7 @@
 - 布局组件统一叫 Flex，不保留 Group 别名，不创建 ButtonGroup、IconButtonGroup、ToggleButtonGroup。
 - Flex 除排列、间距、换行外，需要可选 attached 模式，处理相连控件的中间圆角、共享接缝和焦点层级。
 - MenuButton 暂不做。Menu、浮层定位、菜单导航、关闭层管理、焦点陷阱和虚拟列表不进入本次实施，不安装 Floating UI。
-- 在当前主目录工作；UI 保持 private。本轮是规划交付，确认方案后再分阶段实现。
+- 在当前主目录工作；UI 保持 private。按阶段实现并提交推送；完成后精简失效/重复文档，建立最终交接文档。
 - 起点提交 915f950 的完整 [CI 37943848823](https://github.com/kenconnet666/zerodep-js/actions/runs/37943848823) 已成功；不能把该结果用于后续组件提交。
 
 ## 2. 当前已有能力与真正缺口
@@ -42,7 +42,7 @@ Button/IconButton/ToggleButton 用 button；LinkButton 用 a。避免一个带 a
 
 上一轮提出加载期间保留焦点。本轮建议首版优先采用原生禁用：button 的有效 disabled = disabled || loading。这样 SSR 接管前也有原生保护，无须自己模拟全部按钮/表单激活路径。MUI 同样把 loading 定义为显示指示器并禁用按钮。[MUI Button API](https://mui.com/material-ui/api/button/)
 
-代价必须明确：动态 disabled 可能改变焦点与 Tab 行为，不能承诺加载期间保持焦点。本次不自动把焦点抢回，也不默认安装焦点恢复器。若用户选择保留焦点方案，需另加可聚焦禁用、点击与表单默认行为拦截，以及 SSR 接管前的保护设计；这会扩大首版范围。首版最终选择在实施前确认并写回本文。
+执行选择：button 的有效 disabled = disabled || loading。动态 disabled 可能改变焦点与 Tab 行为，不承诺加载期间保持焦点，不自动把焦点抢回，也不安装焦点恢复器。
 
 ## 4. 共用视觉与属性契约
 

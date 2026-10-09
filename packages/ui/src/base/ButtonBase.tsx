@@ -44,6 +44,7 @@ export const ButtonBase = _component(
       s.padding.raw(0),
       s.cursor.raw(disabled ? 'default' : 'pointer'),
       s.opacity.raw(disabled ? s.keywords.opacity._disabled : undefined),
+      s._selector('&[hidden]', s.display.none),
       s._focusVisible(
         s.outlineStyle.solid,
         s.outlineWidth.em(0.125),
@@ -57,7 +58,7 @@ export const ButtonBase = _component(
         type={type}
         disabled={disabled}
         onClick={(event) => {
-          if (!disabled) onClick?.(event);
+          if (!disabled && !event.currentTarget.matches(':disabled')) onClick?.(event);
         }}
         class={_mergeClasses(style, className)}
       >

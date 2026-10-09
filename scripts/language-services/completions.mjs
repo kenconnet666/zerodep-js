@@ -21,6 +21,27 @@ const rows = [{ id: 1, title: 'row' }];
 const control = `const Field = _component((props: { value: string; onValueChange: (value: string) => void; label?: string }) => <span>{props.value}</span>);\n`;
 const cases = [
   ...[
+    ['Button', 'variant', 'outline'],
+    ['Button', 'color', '_primary'],
+    ['IconButton', 'size', '_lg'],
+    ['LinkButton', 'backgroundColor', '_surface'],
+    ['Flex', 'alignItems', 'center'],
+  ].map(([component, property, member]) => ({
+    name: `按钮属性-${component}.${property}`,
+    directory: 'apps/docs/src',
+    source: `import { ${component} } from 'zerodep-js-ui'; import { Search } from '@lucide/icons'; const view = <${component} ${component === 'IconButton' ? 'icon={Search} aria-label="搜索"' : component === 'LinkButton' ? 'href="/docs"' : ''} ${property}="${member.slice(0, -1)}¦" />;`,
+    expected: member,
+    word: member.slice(0, -1),
+  })),
+  {
+    name: '按钮属性-Toggle槽状态',
+    directory: 'apps/docs/src',
+    source:
+      "import { ToggleButton } from 'zerodep-js-ui'; const view = <ToggleButton pressed={false} onPressedChange={() => {}} slotSpinner={state => ({ color: state.pres¦ ? '_primary' : 'currentColor' })} />;",
+    expected: 'pressed',
+    word: 'pres',
+  },
+  ...[
     ['Text', 'color', '_muted'],
     ['Text', 'weight', '_semibold'],
     ['Ripple', 'color', '_primary'],
