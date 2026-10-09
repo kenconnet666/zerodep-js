@@ -70,8 +70,8 @@ catalogs:
       specifier: 1.9.0
       version: 1.9.0
     typescript:
-      specifier: https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-v7.1.0-dev.jetbrains.20261006.2.tgz
-      version: 7.1.0-dev.jetbrains.20261006.2
+      specifier: 7.1.0-dev.20261008.1
+      version: 7.1.0-dev.20261008.1
     vite:
       specifier: 8.3.1
       version: 8.3.1
@@ -90,15 +90,6 @@ catalogs:
     vscode-languageserver-types:
       specifier: 3.18.4
       version: 3.18.4
-
-overrides:
-  '@typescript/typescript-win32-x64@7.1.0-dev.jetbrains.20261006.2': https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-win32-x64-v7.1.0-dev.jetbrains.20261006.2.tgz
-  '@typescript/typescript-win32-arm64@7.1.0-dev.jetbrains.20261006.2': https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-win32-arm64-v7.1.0-dev.jetbrains.20261006.2.tgz
-  '@typescript/typescript-linux-x64@7.1.0-dev.jetbrains.20261006.2': https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-linux-x64-v7.1.0-dev.jetbrains.20261006.2.tgz
-  '@typescript/typescript-linux-arm64@7.1.0-dev.jetbrains.20261006.2': https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-linux-arm64-v7.1.0-dev.jetbrains.20261006.2.tgz
-  '@typescript/typescript-linux-arm@7.1.0-dev.jetbrains.20261006.2': https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-linux-arm-v7.1.0-dev.jetbrains.20261006.2.tgz
-  '@typescript/typescript-darwin-x64@7.1.0-dev.jetbrains.20261006.2': https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-darwin-x64-v7.1.0-dev.jetbrains.20261006.2.tgz
-  '@typescript/typescript-darwin-arm64@7.1.0-dev.jetbrains.20261006.2': https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-darwin-arm64-v7.1.0-dev.jetbrains.20261006.2.tgz
 
 importers:
 
@@ -136,7 +127,7 @@ importers:
         version: 1.9.0
       typescript:
         specifier: 'catalog:'
-        version: https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-v7.1.0-dev.jetbrains.20261006.2.tgz
+        version: 7.1.0-dev.20261008.1
       vite:
         specifier: 'catalog:'
         version: 8.3.1(@types/node@24.13.5)
@@ -176,7 +167,7 @@ importers:
     devDependencies:
       typescript:
         specifier: 'catalog:'
-        version: https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-v7.1.0-dev.jetbrains.20261006.2.tgz
+        version: 7.1.0-dev.20261008.1
       vite:
         specifier: 'catalog:'
         version: 8.3.1(@types/node@24.13.5)
@@ -201,7 +192,7 @@ importers:
     devDependencies:
       typescript:
         specifier: 'catalog:'
-        version: https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-v7.1.0-dev.jetbrains.20261006.2.tgz
+        version: 7.1.0-dev.20261008.1
       vite:
         specifier: 'catalog:'
         version: 8.3.1(@types/node@24.13.5)
@@ -231,7 +222,7 @@ importers:
         version: 0.3.31
       typescript:
         specifier: 'catalog:'
-        version: https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-v7.1.0-dev.jetbrains.20261006.2.tgz
+        version: 7.1.0-dev.20261008.1
       vscode-jsonrpc:
         specifier: 'catalog:'
         version: 9.0.3
@@ -272,7 +263,7 @@ importers:
     devDependencies:
       typescript:
         specifier: 'catalog:'
-        version: https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-v7.1.0-dev.jetbrains.20261006.2.tgz
+        version: 7.1.0-dev.20261008.1
 
   packages/css:
     dependencies:
@@ -285,7 +276,7 @@ importers:
         version: 24.13.5
       typescript:
         specifier: 'catalog:'
-        version: https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-v7.1.0-dev.jetbrains.20261006.2.tgz
+        version: 7.1.0-dev.20261008.1
       zerodep-js:
         specifier: workspace:*
         version: link:../core
@@ -297,7 +288,7 @@ importers:
         version: 24.13.5
       typescript:
         specifier: 'catalog:'
-        version: https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-v7.1.0-dev.jetbrains.20261006.2.tgz
+        version: 7.1.0-dev.20261008.1
       zerodep-js:
         specifier: workspace:*
         version: link:../core
@@ -316,7 +307,7 @@ importers:
     devDependencies:
       typescript:
         specifier: 'catalog:'
-        version: https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-v7.1.0-dev.jetbrains.20261006.2.tgz
+        version: 7.1.0-dev.20261008.1
       vite:
         specifier: 'catalog:'
         version: 8.3.1(@types/node@24.13.5)
@@ -916,51 +907,44 @@ packages:
   '@types/node@24.13.5':
     resolution: {integrity: sha512-TXyindR+lBr22aJIdMQzCFHPHR6cR4js838mRDCSz5hOKWZvZwsXSSiXDmjRj4iJmgl+sR9O+1mkoVBSMadNug==}
 
-  '@typescript/typescript-darwin-arm64@https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-darwin-arm64-v7.1.0-dev.jetbrains.20261006.2.tgz':
-    resolution: {integrity: sha512-fxfX/qpSutcxyXCaEGBrVAk4RhuG0hXMxMod9Z5Urpk9MhblK3MAYb3b23kimpa2LJo6M/qPU25pbI3y33D6rw==, tarball: https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-darwin-arm64-v7.1.0-dev.jetbrains.20261006.2.tgz}
-    version: 7.1.0-dev.jetbrains.20261006.2
+  '@typescript/typescript-darwin-arm64@7.1.0-dev.20261008.1':
+    resolution: {integrity: sha512-kwcULzED0iril/I2+RyjiESxUnrjd1FrEgl8NMDx7cjLBzHTkpEGRq/Dx3MejLOTtBFMjMYQ6pS9e5tvGhENaw==}
     engines: {node: '>=16.20.0'}
     cpu: [arm64]
     os: [darwin]
 
-  '@typescript/typescript-darwin-x64@https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-darwin-x64-v7.1.0-dev.jetbrains.20261006.2.tgz':
-    resolution: {integrity: sha512-dtaaKKLe2KPe9LtBs7HoqEKHn/exQaRuu2o7f/F1/yqr/cuATP86pC6vOORZQHkMuWL9wFs87NjqYE30Zmd1kA==, tarball: https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-darwin-x64-v7.1.0-dev.jetbrains.20261006.2.tgz}
-    version: 7.1.0-dev.jetbrains.20261006.2
+  '@typescript/typescript-darwin-x64@7.1.0-dev.20261008.1':
+    resolution: {integrity: sha512-FWy0++LUEY5LfxA9j/mtpj0hEa0z8OyRDATuozm3QsIbLq4s79OrIy4jnSKeQHWA3g63hHX79A9nzVhn0igpcA==}
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [darwin]
 
-  '@typescript/typescript-linux-arm64@https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-linux-arm64-v7.1.0-dev.jetbrains.20261006.2.tgz':
-    resolution: {integrity: sha512-trxu+m4zfvAXEKpWuJNWEcW4FpD9+fUNvqa2SNhyiGGg8mii9wyC1Sz//sqblfS5NcE+iCVsWWeMF7wXYK7mqQ==, tarball: https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-linux-arm64-v7.1.0-dev.jetbrains.20261006.2.tgz}
-    version: 7.1.0-dev.jetbrains.20261006.2
+  '@typescript/typescript-linux-arm64@7.1.0-dev.20261008.1':
+    resolution: {integrity: sha512-UNcmGp8wDmwQ2LtZI241unHoIkFXFyHLgdAw6Th7OsWakhwl9vzV30YVF7vtGeOR46xW5gA7XC4DyVw4otsCgg==}
     engines: {node: '>=16.20.0'}
     cpu: [arm64]
     os: [linux]
 
-  '@typescript/typescript-linux-arm@https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-linux-arm-v7.1.0-dev.jetbrains.20261006.2.tgz':
-    resolution: {integrity: sha512-SBEY1RP7/la1sQVmMFBTngfHPJ2WNziRhdukGgSno701TB+zXoV/+e9su4LzfkHtU2S0oGklqLnkv0Qu4duSsA==, tarball: https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-linux-arm-v7.1.0-dev.jetbrains.20261006.2.tgz}
-    version: 7.1.0-dev.jetbrains.20261006.2
+  '@typescript/typescript-linux-arm@7.1.0-dev.20261008.1':
+    resolution: {integrity: sha512-ssZlwAQutnjtIajZ8yVIT3ZfoyRTmPOrRSJmTMM9kNKwzwo+/qLt/F13c1gZNPEOESdmi9HIVijf7aUf0b3YAw==}
     engines: {node: '>=16.20.0'}
     cpu: [arm]
     os: [linux]
 
-  '@typescript/typescript-linux-x64@https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-linux-x64-v7.1.0-dev.jetbrains.20261006.2.tgz':
-    resolution: {integrity: sha512-hMzTakMpxrw3wyTdLG6shN32fWFb4Q+kEIjsMaRBMX89gGB/pGG9VbI2FIULXjC8guEltz2yp5/YGa+UX8AFhA==, tarball: https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-linux-x64-v7.1.0-dev.jetbrains.20261006.2.tgz}
-    version: 7.1.0-dev.jetbrains.20261006.2
+  '@typescript/typescript-linux-x64@7.1.0-dev.20261008.1':
+    resolution: {integrity: sha512-IrFrXv4xCm367mzjCBC7JMJ3mc+ShiG3VFS/RkUemjpYxKVamj6vVTiFuSmAqipM31wICk36zzf0Z5JRbk2HaQ==}
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [linux]
 
-  '@typescript/typescript-win32-arm64@https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-win32-arm64-v7.1.0-dev.jetbrains.20261006.2.tgz':
-    resolution: {integrity: sha512-PtAwUaPPwOvwuGWarjtcAQnHYP/C84KwapKbgdYoCrNm2m3F83caYTPGhuj7N/m1hOMx+hkJsb9ZH5LEKfeFOw==, tarball: https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-win32-arm64-v7.1.0-dev.jetbrains.20261006.2.tgz}
-    version: 7.1.0-dev.jetbrains.20261006.2
+  '@typescript/typescript-win32-arm64@7.1.0-dev.20261008.1':
+    resolution: {integrity: sha512-F/EbCJVItYPn0eODppLW2v7cb9tJB2ojiwFmPF+WQVmlUk8RbiZapcP/kfb3wgKEFEXYNwMSFRIPLhlAVlwteA==}
     engines: {node: '>=16.20.0'}
     cpu: [arm64]
     os: [win32]
 
-  '@typescript/typescript-win32-x64@https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-win32-x64-v7.1.0-dev.jetbrains.20261006.2.tgz':
-    resolution: {integrity: sha512-wHGJM1HpmkWmrXCWl2fUOFOSgEA4tBXE5vjdrIDMv378Y3KOmIJlr0sh5TF7FjJkBkZ/Ixyq4Aau2PH9UVkQZg==, tarball: https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-win32-x64-v7.1.0-dev.jetbrains.20261006.2.tgz}
-    version: 7.1.0-dev.jetbrains.20261006.2
+  '@typescript/typescript-win32-x64@7.1.0-dev.20261008.1':
+    resolution: {integrity: sha512-biCwDfpv/twCU1nMP0+0wGQGZ2vkJ3qupAoDYDf+H9ZxbuHMMYM3uKqmZyNz7XrMwqWG1TVWV0CIP+WOwRKkCw==}
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [win32]
@@ -1258,9 +1242,8 @@ packages:
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
-  typescript@https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-v7.1.0-dev.jetbrains.20261006.2.tgz:
-    resolution: {integrity: sha512-XucutXa0MBfgTaM5KIILZI4W5o9qqz1biodmXQcZHq7PsZE3I46Ac44TYEOP41+pCMlZmWwRETI3IRs7q8SB3Q==, tarball: https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-v7.1.0-dev.jetbrains.20261006.2.tgz}
-    version: 7.1.0-dev.jetbrains.20261006.2
+  typescript@7.1.0-dev.20261008.1:
+    resolution: {integrity: sha512-uLsmzahldysHoZtETvHwK+sxWMk6yufIIunCWho7l3EuWVzVc/K2wjkj2r2Tg3GJ+gj4WGrv8VcxHc4yujc1ng==}
     engines: {node: '>=16.20.0'}
     hasBin: true
 
@@ -1811,25 +1794,25 @@ snapshots:
     dependencies:
       undici-types: 7.18.2
 
-  '@typescript/typescript-darwin-arm64@https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-darwin-arm64-v7.1.0-dev.jetbrains.20261006.2.tgz':
+  '@typescript/typescript-darwin-arm64@7.1.0-dev.20261008.1':
     optional: true
 
-  '@typescript/typescript-darwin-x64@https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-darwin-x64-v7.1.0-dev.jetbrains.20261006.2.tgz':
+  '@typescript/typescript-darwin-x64@7.1.0-dev.20261008.1':
     optional: true
 
-  '@typescript/typescript-linux-arm64@https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-linux-arm64-v7.1.0-dev.jetbrains.20261006.2.tgz':
+  '@typescript/typescript-linux-arm64@7.1.0-dev.20261008.1':
     optional: true
 
-  '@typescript/typescript-linux-arm@https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-linux-arm-v7.1.0-dev.jetbrains.20261006.2.tgz':
+  '@typescript/typescript-linux-arm@7.1.0-dev.20261008.1':
     optional: true
 
-  '@typescript/typescript-linux-x64@https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-linux-x64-v7.1.0-dev.jetbrains.20261006.2.tgz':
+  '@typescript/typescript-linux-x64@7.1.0-dev.20261008.1':
     optional: true
 
-  '@typescript/typescript-win32-arm64@https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-win32-arm64-v7.1.0-dev.jetbrains.20261006.2.tgz':
+  '@typescript/typescript-win32-arm64@7.1.0-dev.20261008.1':
     optional: true
 
-  '@typescript/typescript-win32-x64@https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-win32-x64-v7.1.0-dev.jetbrains.20261006.2.tgz':
+  '@typescript/typescript-win32-x64@7.1.0-dev.20261008.1':
     optional: true
 
   '@vitest/mocker@5.0.3(vite@8.3.1(@types/node@24.13.5))':
@@ -2087,15 +2070,15 @@ snapshots:
   tslib@2.8.1:
     optional: true
 
-  typescript@https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-v7.1.0-dev.jetbrains.20261006.2.tgz:
+  typescript@7.1.0-dev.20261008.1:
     optionalDependencies:
-      '@typescript/typescript-darwin-arm64': https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-darwin-arm64-v7.1.0-dev.jetbrains.20261006.2.tgz
-      '@typescript/typescript-darwin-x64': https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-darwin-x64-v7.1.0-dev.jetbrains.20261006.2.tgz
-      '@typescript/typescript-linux-arm': https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-linux-arm-v7.1.0-dev.jetbrains.20261006.2.tgz
-      '@typescript/typescript-linux-arm64': https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-linux-arm64-v7.1.0-dev.jetbrains.20261006.2.tgz
-      '@typescript/typescript-linux-x64': https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-linux-x64-v7.1.0-dev.jetbrains.20261006.2.tgz
-      '@typescript/typescript-win32-arm64': https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-win32-arm64-v7.1.0-dev.jetbrains.20261006.2.tgz
-      '@typescript/typescript-win32-x64': https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-win32-x64-v7.1.0-dev.jetbrains.20261006.2.tgz
+      '@typescript/typescript-darwin-arm64': 7.1.0-dev.20261008.1
+      '@typescript/typescript-darwin-x64': 7.1.0-dev.20261008.1
+      '@typescript/typescript-linux-arm': 7.1.0-dev.20261008.1
+      '@typescript/typescript-linux-arm64': 7.1.0-dev.20261008.1
+      '@typescript/typescript-linux-x64': 7.1.0-dev.20261008.1
+      '@typescript/typescript-win32-arm64': 7.1.0-dev.20261008.1
+      '@typescript/typescript-win32-x64': 7.1.0-dev.20261008.1
 
   undici-types@7.18.2: {}
 

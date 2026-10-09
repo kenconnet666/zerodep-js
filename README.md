@@ -24,7 +24,7 @@
 
 完整换机步骤见 [环境配置](docs/environment-setup.md)，包括 SDK、WebStorm 补丁、MCP/LSP 和回退。
 
-使用 Node 24、pnpm 10.34.5；当前工作区使用 JetBrains TypeScript 7.1.0-dev.jetbrains.20261006.2。安装不需要 Go 或 TypeScript 源码仓库。
+使用 Node 24、pnpm 10.34.5；当前工作区使用 微软官方 TypeScript 7.1.0-dev.20261008.1。安装不需要 Go 或 TypeScript 源码仓库。
 
 ```sh
 pnpm install --frozen-lockfile

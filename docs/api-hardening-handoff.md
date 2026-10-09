@@ -2,6 +2,12 @@
 
 更新：2026-10-09。当前源码改为单仓库维护 CSS，Vite 并入 compiler；新布局尚未发布。已发布 rc.9 为此前的通用适配接口版本，不能当作包含本次精简。下面历史发布记录保留当时状态。
 
+## 官方 SDK 切换（2026-10-09）
+
+项目与 IDE 固定微软官方 npm TypeScript 7.1.0-dev.20261008.1，替代旧 JetBrains 分支；删除七个平台 overrides，独立消费安装不再复制平台 URL。IDE Registry 为 v7.1.0-dev.20261008.1，TypeScript 7（原生）和服务驱动类型引擎已确认启用，实际 LSP/代理进程命令行使用新缓存目录。缓存二进制 SHA256 与 pnpm 安装的官方包一致。原 ts-go-proxy 补丁可直接复用，未新增补丁或修改 SDK；独立代理查询和 IDE _thin 符号说明通过。
+
+本地通过包编译、配置类型检查、frozen 安装、项目 LSP 的诊断错误/修复/绑定导航/重命名验证、26 项主题补全与定义，以及工作区外 tgz 的类型/CSR/SSR/接管消费。完整平台、浏览器和语言矩阵交本提交 CI，未结束不记为通过。本机 Registry 与项目编译器设置备份保留在 test-results/ts-upgrade，IDE 原代理备份仍在安装目录，历史 SDK 缓存未删除。
+
 ## 本轮架构精简
 
 - packages/css 迁入原 CSS 仓库 e5a0bfe 的作者、生成器、关键字、运行时及测试，只支持 zerodep-js。Vue/Svelte/Nuxt/Kit、bx 与旧主题预设不迁入；亮暗主题继续由 UI Provider 维护。原仓库本轮未修改或继续发布。

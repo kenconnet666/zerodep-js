@@ -1,6 +1,6 @@
 # 编译、检查与语言工具
 
-当前源码按用户最新要求固定 JetBrains `typescript@7.1.0-dev.jetbrains.20261006.2` 与 Babel 8，Vite 负责开发和打包。项目不再编译、打补丁或分发 TypeScript SDK。接口变化集中在 `packages/compiler` 的适配层，只维护选定的 TS7.1 版本。
+当前源码按用户最新要求固定微软官方 `typescript@7.1.0-dev.20261008.1` 与 Babel 8，Vite 负责开发和打包。项目不再编译、打补丁或分发 TypeScript SDK。接口变化集中在 `packages/compiler` 的适配层，只维护选定的 TS7.1 版本。
 
 换机、安装缓存、应用补丁与回退的完整步骤见 [环境配置](environment-setup.md)。
 
@@ -8,7 +8,7 @@
 
 | 工作                                    | 负责工具                                        |
 | --------------------------------------- | ----------------------------------------------- |
-| TypeScript 类型、声明与基础语言服务     | 选定的 JetBrains TS7.1                          |
+| TypeScript 类型、声明与基础语言服务     | 选定的 微软官方 TS7.1                           |
 | 变量式响应性、组件、JSX、bind、框架诊断 | Babel 框架编译器                                |
 | 模块解析与打包、监听、开发服务器        | Vite                                            |
 | 通用 lint                               | 现有 Oxlint；ESLint 正式支持 TS7 后优先评估切换 |
@@ -79,21 +79,21 @@ WebStorm 自带补全与 LSP4IJ 可能同时展示同名普通候选。本机 Ta
 
 ### WebStorm 的服务驱动类型引擎
 
-按用户最新决定，IDE 与项目统一固定 JetBrains `7.1.0-dev.jetbrains.20261006.2`。SDK 来自 [JetBrains GitHub Release](https://github.com/JetBrains/typescript-go/releases/tag/v7.1.0-dev.jetbrains.20261006.2)，catalog 固定主包 HTTPS tarball，overrides 固定七个平台 tarball，锁文件记录完整性校验。`pnpm install --frozen-lockfile` 可直接重现，不依赖 IDE 缓存，也不修改 SDK 内核。
+按 2026-10-09 最新决定，IDE 与项目统一使用微软官方 npm typescript@7.1.0-dev.20261008.1。catalog 固定版本，主包与七个平台包的完整性写入 lockfile；移除 JetBrains GitHub 下载和平台 overrides，不修改 SDK 内核。
 
 EAP 263.6259.34 原始代理使用旧快照 API，与新 SDK 不兼容。用户授权直接修改 IDE 代理；补丁只将两个 API 调用改为 getCurrentLanguageServerSnapshot，并将两个按配置路径查找项目的调用改为 getConfiguredProject，保留原有快照租约和释放逻辑。
 
 `scripts/language-services/webstorm-patch.mjs <IDE目录> check|apply|restore` 管理此本机补丁。脚本只接受已验证的原文件/补丁 SHA256，备份保存在代理文件旁的 index.js.original-263.6259.34；不分发 JetBrains 代理源码。IDE 更新后校验不符就停止，需重新研究，不能盲目套用旧补丁。
 
-IDE Registry 的 typescript.native-preview.ts-go.version 设为 v7.1.0-dev.jetbrains.20261006.2，TypeScript 选择“TypeScript 7（原生）”，开启“服务驱动的类型引擎”。发行包须先进入该版本的预览缓存，再重启 TypeScript 服务。本机已确认进程使用新 SDK，实际类型查询返回 string、泛型 number | undefined 和对象属性类型。
+IDE Registry 的 typescript.native-preview.ts-go.version 设为 v7.1.0-dev.20261008.1，TypeScript 选择“TypeScript 7（原生）”，开启“服务驱动的类型引擎”。发行包须先进入该版本的预览缓存，再重启 TypeScript 服务。本机已确认 IDE 的 LSP 与代理进程使用官方新 SDK；独立代理类型查询返回 string，IDE 的 _thin 查询返回声明及中文说明；框架诊断、泛型绑定导航和错误修复循环另由项目 LSP 验证。
 
 ### 与 WebStorm 复用 LSP 的范围
 
-[JetBrains/typescript-go](https://github.com/JetBrains/typescript-go) 为公开的 Apache-2.0 分支。实际 WebStorm 进程使用 tsc --lsp --stdio，项目 TypeScriptService 也使用相同发行版本和启动参数；双方各自拥有文档连接和进程，不共享 IDE 私有管道。
+项目与 IDE 预览缓存使用同一份微软官方 TypeScript 发行二进制，各自运行 tsc --lsp --stdio 并管理独立文档连接。IDE 自身的 ts-go-proxy 仍使用已验证的 API 适配补丁，这不改变 SDK 来源。
 
 [JetBrains 公开 LSP API](https://plugins.jetbrains.com/docs/intellij/language-server-protocol.html) 是 IDE 的客户端/插件集成 API，不是可直接代替 TypeScript 的服务端。ts-go-proxy 则以 IDE 专有 JSON 命令连接 SDK API，服务于类型引擎，不能作为标准 stdio LSP 配置。
 
-项目现有 Zerodep LSP 仍保留必要的 bind 写回检查、源码映射和命名空间导航，底层统一使用同一份 JetBrains SDK。若把入口直接换成原生 tsc LSP，会丢失这些框架增强。无需再维护第二个通用语言服务器或复制 WebStorm 插件；IDE 专有能力通过 WebStorm MCP 读取，框架能力通过项目服务读取。
+项目现有 Zerodep LSP 仍保留必要的 bind 写回检查、源码映射和命名空间导航，底层统一使用同一份 微软官方 SDK。若把入口直接换成原生 tsc LSP，会丢失这些框架增强。无需再维护第二个通用语言服务器或复制 WebStorm 插件；IDE 专有能力通过 WebStorm MCP 读取，框架能力通过项目服务读取。
 
 ## 生成类型与注释
 

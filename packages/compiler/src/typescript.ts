@@ -1,7 +1,7 @@
 import { createRequire } from 'node:module';
 import { dirname, resolve } from 'node:path';
 
-/** 二进制完全由JetBrains 发行平台包提供，框架不构建或分发自己的 SDK。 */
+/** 二进制由微软官方 TypeScript 平台包提供，框架不构建或分发自己的 SDK。 */
 export function compilerPath(): string {
   const require = createRequire(import.meta.url);
   const sdk = require.resolve('typescript/package.json');

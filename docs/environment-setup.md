@@ -1,16 +1,16 @@
 # 换机环境配置
 
-更新：2026-10-08。本文对应 main 与已发布的 rc.8；旧 rc.7 使用此前微软 nightly。源码和注册表验收证据见 [维护交接](api-hardening-handoff.md)，不要用旧 rc.7 的依赖配置代替本文指定的 SDK。
+更新：2026-10-09。当前源码与 IDE 使用微软官方 TypeScript 7.1.0-dev.20261008.1；此前 JetBrains 分支与旧 npm 框架发行记录属于历史状态。
 
 ## 1. 固定版本与获取方式
 
-| 项目            | 本轮验证版本                   | 依据                                     |
-| --------------- | ------------------------------ | ---------------------------------------- |
-| Node.js         | 24.18.0                        | 根目录 `.node-version`                   |
-| pnpm            | 10.34.5                        | 根目录 `package.json` 的 packageManager  |
-| TypeScript SDK  | 7.1.0-dev.jetbrains.20261006.2 | pnpm catalog、平台 overrides 与 lockfile |
-| WebStorm        | 2026.3 EAP，build 263.6259.34  | 只对此构建验证了 IDE 代理补丁            |
-| Babel / Vite 等 | 使用锁文件                     | 不单独安装或升级 latest                  |
+| 项目            | 本轮验证版本                  | 依据                                    |
+| --------------- | ----------------------------- | --------------------------------------- |
+| Node.js         | 24.18.0                       | 根目录 `.node-version`                  |
+| pnpm            | 10.34.5                       | 根目录 `package.json` 的 packageManager |
+| TypeScript SDK  | 7.1.0-dev.20261008.1          | pnpm catalog 与 lockfile                |
+| WebStorm        | 2026.3 EAP，build 263.6259.34 | 只对此构建验证了 IDE 代理补丁           |
+| Babel / Vite 等 | 使用锁文件                    | 不单独安装或升级 latest                 |
 
 本机 IDE 实测平台是 Windows x64。仓库配置了七个平台 SDK，但这不等于各平台的 IDE 补丁都已人工验证。其他 WebStorm 构建必须先检查兼容性；不能只因版本名称相近就应用补丁。
 
@@ -27,9 +27,9 @@ pnpm exec tsc --version
 pnpm build:packages
 ```
 
-最后一个版本检查应返回 `Version 7.1.0-dev.jetbrains.20261006.2`。不需要 Go、TypeScript 源码仓库或自行编译 SDK。
+最后一个版本检查应返回 `Version 7.1.0-dev.20261008.1`。不需要 Go、TypeScript 源码仓库或自行编译 SDK。
 
-SDK 未发布到 npm 注册表，主包和平台包直接来自 [JetBrains GitHub Release](https://github.com/JetBrains/typescript-go/releases/tag/v7.1.0-dev.jetbrains.20261006.2)。完整 HTTPS 地址由 `pnpm-workspace.yaml` 固定，下载完整性由 `pnpm-lock.yaml` 校验。不能用单独一条 `pnpm add typescript@版本号` 代替工作区安装，也不能只复制主包而遗漏平台包。
+SDK 主包与七个平台包均来自微软官方 npm 发行版。pnpm-workspace.yaml 精确固定主包版本，pnpm-lock.yaml 记录平台版本及完整性，不需要 GitHub URL 或平台 overrides。独立项目可使用 pnpm add -D typescript@7.1.0-dev.20261008.1。
 
 若 GitHub 下载失败，先恢复网络或使用已配置的包管理器代理，再重试同一条 frozen-lockfile 安装。不要改版本号、删除锁文件或从其他 SDK 目录拼装文件。
 
@@ -45,7 +45,7 @@ pnpm lsp:verify
 pnpm lsp:completions
 ```
 
-CI 在各自任务中执行这些检查；语言探针会临时创建示例源码，不能与同工作区的 check/build 并行。补全探针的全部用例都应通过，总数以当前脚本输出为准，服务版本应为上述 JetBrains SDK。完整浏览器与独立包消费同样由 CI 执行。完整远端 CI 尚未结束时，不能把本机焦点检查当作六平台和三浏览器矩阵全部通过。
+CI 在各自任务中执行这些检查；语言探针会临时创建示例源码，不能与同工作区的 check/build 并行。补全探针的全部用例都应通过，总数以当前脚本输出为准，服务版本应为上述 微软官方 SDK。完整浏览器与独立包消费同样由 CI 执行。完整远端 CI 尚未结束时，不能把本机焦点检查当作六平台和三浏览器矩阵全部通过。
 
 ## 3. WebStorm SDK 缓存
 
@@ -64,7 +64,7 @@ import { createHash } from 'node:crypto';
 import { compilerPath } from './packages/compiler/dist/typescript.js';
 
 assert.equal(process.platform, 'win32', '这段安装步骤只用于 Windows');
-const version = '7.1.0-dev.jetbrains.20261006.2';
+const version = '7.1.0-dev.20261008.1';
 const sdk = realpathSync('node_modules/typescript');
 assert.equal(JSON.parse(readFileSync(join(sdk, 'package.json'), 'utf8')).version, version);
 const binary = compilerPath();
@@ -96,14 +96,14 @@ node scripts/language-services/webstorm-patch.mjs $webstormInstall apply
 node scripts/language-services/webstorm-patch.mjs $webstormInstall check
 ```
 
-最终应显示 `patched: true`。脚本只接受已验证的 build 263.6259.34 原代理或补丁文件，先备份再改动；原文件在 `plugins/javascript-plugin/ts-go-proxy/index.js.original-263.6259.34`。不能跳过 SHA256 断言来给其他 IDE 版本强行打补丁。
+官方 7.1.0-dev.20261008.1 可复用现有代理补丁，已验证原生 API 查询，不需要新增 SDK 补丁。最终应显示 `patched: true`。脚本只接受已验证的 build 263.6259.34 原代理或补丁文件，先备份再改动；原文件在 `plugins/javascript-plugin/ts-go-proxy/index.js.original-263.6259.34`。不能跳过 SHA256 断言来给其他 IDE 版本强行打补丁。
 
 启动 WebStorm，在 Find Action（Ctrl+Shift+A）打开 Registry：
 
 1. 找到 `typescript.native-preview.ts-go.version`。
-2. 完整替换为 **`v7.1.0-dev.jetbrains.20261006.2`**，注意保留开头的 `v`。
+2. 完整替换为 **`v7.1.0-dev.20261008.1`**，注意保留开头的 `v`。
 3. 设置 → 语言和框架 → TypeScript，选择 **TypeScript 7（原生）**。
-4. 确认显示的版本为 `7.1.0-dev.jetbrains.20261006.2`，勾选 TypeScript 语言服务和服务驱动的类型引擎。
+4. 确认显示的版本为 `7.1.0-dev.20261008.1`，勾选 TypeScript 语言服务和服务驱动的类型引擎。
 5. 执行 Find Action → Restart TypeScript Service。
 
 这条路线通过 IDE 原生预览项启用类型引擎；选择项目 `node_modules/typescript` 可能仍受到 IDE 版本准入限制，不能把两种选择混为一谈。
@@ -145,7 +145,7 @@ Zerodep LSP 与 IDE 原生补全可能合并出同名候选。类型引擎与框
 node scripts/language-services/webstorm-patch.mjs $webstormInstall restore
 ```
 
-恢复后同时把 IDE Registry 的预览版本恢复为该 EAP 原配 `v7.1.0-dev.jetbrains.20260721.2`，再启动 IDE。此操作只恢复 IDE；项目仍保持新 SDK。若要求项目也回退，必须另行更改 catalog、平台 overrides、锁文件和对应 API 适配，不能只换一个 package.json 版本。
+恢复后同时把 IDE Registry 的预览版本恢复为该 EAP 原配 `v7.1.0-dev.jetbrains.20260721.2`，再启动 IDE。此操作只恢复 IDE；项目仍保持新 SDK。若要求项目也回退，必须另行更改 catalog、锁文件和对应 API 适配，不能只换一个 package.json 版本。
 
 升级 IDE 前保存补丁状态和原文件。旧补丁是否仍需要、原生 SDK 是否已支持，应重新验证。本文记录的是一次可复现的已验证组合，不承诺后续 EAP 自动兼容。
 

@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import { copyFile, readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
+// 此 API 适配同时验证过微软官方 7.1.0-dev.20261008.1；保留原补丁字节及哈希。
 // 只适配已验证的 EAP 代理；IDE 升级后哈希不同就停止，避免误改新版本。
 const [installation, mode = 'check'] = process.argv.slice(2);
 assert(

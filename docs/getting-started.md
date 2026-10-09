@@ -1,6 +1,6 @@
 # 开始使用 zerodep-js
 
-zerodep-js 使用标准 TSX、显式变量式状态和一次初始化的组件。当前源码采用固定的 JetBrains TS7.1、Babel 与 Vite；发布状态见 [执行记录](execution.md)和[变更记录](../CHANGELOG.md)。源码工作区运行方式见 [环境配置](environment-setup.md)。
+zerodep-js 使用标准 TSX、显式变量式状态和一次初始化的组件。当前源码采用固定的 微软官方 TS7.1、Babel 与 Vite；发布状态见 [执行记录](execution.md)和[变更记录](../CHANGELOG.md)。源码工作区运行方式见 [环境配置](environment-setup.md)。
 
 ## 当前源码工作区
 
@@ -11,7 +11,7 @@ pnpm install --frozen-lockfile
 pnpm dev
 ```
 
-工作区统一使用 JetBrains TypeScript 7.1.0-dev.jetbrains.20261006.2；原始发行 URL 和平台 overrides 见 [工具链](tooling.md)。不需要 Go、自建 SDK 或相邻 CSS 仓库。npm 已发布版本的安装记录见维护交接，不与当前源码入口混用。
+工作区统一使用 微软官方 TypeScript 7.1.0-dev.20261008.1；官方 npm 安装方式见 [工具链](tooling.md)。不需要 Go、自建 SDK 或相邻 CSS 仓库。npm 已发布版本的安装记录见维护交接，不与当前源码入口混用。
 
 应用 package.json 的基本脚本：
 

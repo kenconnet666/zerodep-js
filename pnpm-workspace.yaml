@@ -24,7 +24,7 @@ catalog:
   property-information: 7.2.0
   sirv: 3.0.2
   smol-toml: 1.9.0
-  typescript: https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-v7.1.0-dev.jetbrains.20261006.2.tgz
+  typescript: 7.1.0-dev.20261008.1
   vite: 8.3.1
   vitest: 5.0.3
   vscode-jsonrpc: 9.0.3
@@ -35,13 +35,3 @@ catalog:
 autoInstallPeers: false
 
 onlyBuiltDependencies: []
-
-# JetBrains SDK 的平台包未发布到 npm，固定使用 JetBrains 原始发行文件。
-overrides:
-  '@typescript/typescript-win32-x64@7.1.0-dev.jetbrains.20261006.2': https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-win32-x64-v7.1.0-dev.jetbrains.20261006.2.tgz
-  '@typescript/typescript-win32-arm64@7.1.0-dev.jetbrains.20261006.2': https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-win32-arm64-v7.1.0-dev.jetbrains.20261006.2.tgz
-  '@typescript/typescript-linux-x64@7.1.0-dev.jetbrains.20261006.2': https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-linux-x64-v7.1.0-dev.jetbrains.20261006.2.tgz
-  '@typescript/typescript-linux-arm64@7.1.0-dev.jetbrains.20261006.2': https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-linux-arm64-v7.1.0-dev.jetbrains.20261006.2.tgz
-  '@typescript/typescript-linux-arm@7.1.0-dev.jetbrains.20261006.2': https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-linux-arm-v7.1.0-dev.jetbrains.20261006.2.tgz
-  '@typescript/typescript-darwin-x64@7.1.0-dev.jetbrains.20261006.2': https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-darwin-x64-v7.1.0-dev.jetbrains.20261006.2.tgz
-  '@typescript/typescript-darwin-arm64@7.1.0-dev.jetbrains.20261006.2': https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-darwin-arm64-v7.1.0-dev.jetbrains.20261006.2.tgz

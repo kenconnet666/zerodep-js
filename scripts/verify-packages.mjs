@@ -44,7 +44,7 @@ const consumer = resolve(fixture, 'consumer');
 const archives = resolve(fixture, 'archives');
 const executable = /\.[cm]?js$/.test(pnpm) ? process.execPath : pnpm;
 const prefix = executable === pnpm ? [] : [pnpm];
-// 消费安装连 store 也隔离，避免宿主缓存元数据缺失掩盖 HTTPS tarball 的完整性验证。
+// 消费安装连 store 也隔离，避免宿主缓存掩盖发行依赖的完整性验证。
 const env = { ...process.env, CI: 'true', npm_config_store_dir: resolve(fixture, 'store') };
 if (values.registry) env.npm_config_registry = 'https://registry.npmjs.org/';
 delete env.NODE_PATH;
@@ -75,9 +75,7 @@ try {
   manifest.devDependencies = {};
   manifest.pnpm = { overrides: {} };
   const catalog = await readFile(resolve(root, 'pnpm-workspace.yaml'), 'utf8');
-  // 发行 SDK 使用固定 HTTPS tarball；复制平台覆盖，独立消费不依赖 IDE 缓存。
-  for (const match of catalog.matchAll(/^  '(@typescript\/[^']+)': (https:\/\/\S+)$/gm))
-    manifest.pnpm.overrides[match[1]] = match[2];
+  // SDK 与平台包使用微软官方 npm 发行版，不再复制 IDE 专用平台覆盖。
   for (const name of ['typescript', 'vite', '@types/node']) {
     const version = catalog.match(new RegExp(`^  ['"]?${name}['"]?: (\\S+)$`, 'm'))?.[1];
     assert(version, `找不到 ${name} 的固定 catalog 版本。`);
