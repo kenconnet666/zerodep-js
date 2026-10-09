@@ -186,10 +186,14 @@ type BindingChoice<P, K extends keyof P & string> =
 type BindingConditions<P> = {
   [K in BindableKeys<P>]: (value: BindingChoice<P, K>) => void;
 }[BindableKeys<P>];
+// 同态键重映射保留模板索引下的显式必填成员（如 aria-label）；Omit 会丢失它们。
+type UnboundProps<P> = {
+  [K in keyof P as K extends BindableKeys<P> | ChangeName<BindableKeys<P>> ? never : K]: P[K];
+};
 export type ComponentBindings<P> = P extends unknown
   ? [BindableKeys<P>] extends [never]
     ? P
-    : Omit<P, BindableKeys<P> | ChangeName<BindableKeys<P>>> &
+    : UnboundProps<P> &
         (BindingConditions<P> extends (value: infer Conditions) => void ? Conditions : never)
   : never;
 type ControlValues<T> = T extends HTMLSelectElement
