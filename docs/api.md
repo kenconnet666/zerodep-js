@@ -2,17 +2,13 @@
 
 页面元信息使用 `zerodep-js/head` 的 `_head(() => ({ title, description }))`；SSR 的 `_render` 返回正文与元信息，`renderToString` 保持字符串接口。生命周期与模板接线见 [页面元信息](head.md)。
 
-本文对应当前源码；rc.8 之后已移除 task/scope 并新增注入 store，尚未发布新候选。发布边界见 [环境配置](environment-setup.md)和[交接记录](api-hardening-handoff.md)。core 顶层函数直接使用单下划线名称；路由和持久化来自独立 zerodep-use，旧 core 子入口直接移除，不保留转发或 deprecated。JSX 组件、类型/类和实例方法保持原名。
+本文对应当前源码；rc.8 之后移除 task/scope，2026-10-09 又删除整个 zerodep-use 包及路由、store、持久化和历史工具。尚未发布新候选，发布边界见 [环境配置](environment-setup.md)和[交接记录](api-hardening-handoff.md)。core 顶层函数直接使用单下划线名称；不保留旧入口转发或 deprecated。JSX 组件、类型/类和实例方法保持原名。
 
 公共运行时从 `zerodep-js` 导入，Vite 插件来自 `zerodep-js-vite`，独立编译来自 `zerodep-js-compiler`，服务端入口来自 `zerodep-js-ssr`。下面记录当前实际契约；安装与声明消费见 [开始使用](getting-started.md)和[包产物](packages.md)。
 
-`bind:value` / `bind:checked` / `bind:valueAsNumber` 与组件绑定、`zerodep-use/history` 的 _history、core 的 _lazy 的前后写法、数据类型、撤销边界和 SSR 占位规则见 [编写指南](authoring.md)。分组与展开绑定见 [表单](forms.md)。
-
-可选 `zerodep-use/store` 提供 `_createStore`：父组件 provideStore 后，后代才能 useStore；配置 persist 可自动保存，支持 Web Storage、IndexedDB 和自定义异步适配器。见 [store](store.md)。
+`bind:value` / `bind:checked` / `bind:valueAsNumber`、组件绑定、_snapshot 与 _lazy 的数据类型和 SSR 占位规则见 [编写指南](authoring.md)。分组与展开绑定见 [表单](forms.md)。
 
 请求使用普通 async/await 与 fetch，数据和错误由页面按需要保存；生命周期取消沿用 `_getAbortSignal()`。示例见 [普通请求](requests.md)。
-
-可选 `zerodep-use/router` 提供 _defineRoute/_defineRoutes、_createRouter、browser/hash/memory history、Router/Outlet/Link、_useRoute/_useRouter、_onBeforeLeave、_redirect/RouteError。包含类型化参数、取消/预加载、布局复用、错误恢复和 SSR 数据准备，详见 [路由](routing.md)。这些扩展均不改变状态宏写法。
 
 ## 状态宏与组件
 

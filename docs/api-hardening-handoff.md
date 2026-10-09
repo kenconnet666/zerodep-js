@@ -26,7 +26,7 @@ CSS [v0.3.2 预发布](https://github.com/kenconnet666/zerodep-css/releases/tag/
 
 ## 注入 store 的后续变更
 
-当前源码进一步删除 `_createScope` 与 `ScopeHandle`，保留内部 Scope 和生命周期断言。新增 `zerodep-use/store`：必须提供后向下读取；持久化配置在提供者处，保存普通 JSON，支持 Web Storage、IndexedDB 和自定义同步/异步适配器。不保留旧 storage 入口、数据封装或迁移逻辑。路由预加载、其他工具和 CSS 接线不变。本次代码使用独立的新提交验收，不套用下面 rc.8 的发布结论。
+当前源码已删除 `_createScope` 与 `ScopeHandle`，保留内部 Scope 和生命周期断言。2026-10-09 按用户决定删除整个 packages/use，先前的注入 store、持久化、路由与历史工具均不再维护或使用，也不搬入 core/UI。基础任务页保留状态与 HTTP 数据功能，移除持久化草稿；Provider 与 CSS 接线不变。后续源码发布清单为四包，以下 rc.8 五包记录仅为历史交付证据。
 
 本地验证：相关应用与工具类型检查均 0 错误，包声明与 client/server 构建通过；33 项 store/生命周期/入口单测、30 项 Chromium 存储/任务/路由用例通过，包含真实 IndexedDB 的 CSR/SSR 恢复、刷新、跨标签通知和清除。4 项相关 LSP 补全通过。新适配器的异步读写、失败、次序和清理通过受控延迟用例验证，没有连接真实 Redis；后端接线由用户实现 StorageAdapter。
 
@@ -106,3 +106,9 @@ CSS 修复核对 authorInputs 的底层 name 数据值，拒绝将改名或 gett
 - 本地优先焦点测试，不重复运行已通过且未受影响的全集。LSP 探针会创建临时源码，不能与同工作区 check/build 并行。
 - 待应用 CSS 补丁已消费并删除；临时发布脚本和日志已逐文件清理。README、开发、工具链和换机指南明确完整检查由 CI 执行；WebStorm 入口与原生预览/类型引擎配置保持一致。
 - 本轮不复用此前机器的本地产物摘要；发布说明记录重新冻结的来源与验证结果。临时 IDE/LSP 探针已删除，用户 IDE 配置、共享 pnpm store 和应用数据保留。
+
+## 2026-10-09 应用工具包精简
+
+删除 packages/use、路由工作区和存储专用示例/测试，移除 consumer 与语言补全中的工具包用例。core 的快照恢复与双向绑定验收继续保留；构建引用、工作区依赖和发布说明改为当前四包清单。历史 npm 版本与冻结发布产物不修改。
+
+本地通过 frozen-lockfile 安装、示例框架检查及 CSR/SSR 构建、示例和工具 TypeScript 检查、18 项 Chromium 的绑定/快照/按需加载/任务用例、发布工具焦点集成用例、四包 tgz 工作区外安装/声明/CSR/SSR/接管/卸载验证，以及相关 lint/格式和文档链接检查。独立消费明确验证 zerodep-use 及其 router/store/history 子入口不可导入。完整平台与三浏览器仍交本次提交 CI，不复用前一提交的通过结论。

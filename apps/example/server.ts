@@ -30,7 +30,7 @@ if (!Number.isInteger(port) || port < 0 || port > 65535) {
 }
 
 let vite: ViteDevServer | undefined;
-type Page = 'index' | 'tasks' | 'workspace';
+type Page = 'index' | 'tasks';
 let loadPage: (url: string, page: Page) => Promise<{ template: string; entry: ServerEntry }>;
 let tasks: TasksDatabase | undefined;
 function database(): TasksDatabase {
@@ -57,12 +57,10 @@ const server = createServer((request, response) => {
 server.requestTimeout = 15_000;
 
 if (values.production) {
-  const [index, tasks, workspace] = await Promise.all(
-    ['index', 'tasks', 'workspace'].map((page) =>
-      readFile(resolve(root, `dist/client/${page}.html`), 'utf8'),
-    ),
+  const [index, tasks] = await Promise.all(
+    ['index', 'tasks'].map((page) => readFile(resolve(root, `dist/client/${page}.html`), 'utf8')),
   );
-  const templates = { index: index!, tasks: tasks!, workspace: workspace! };
+  const templates = { index: index!, tasks: tasks! };
   const entry: ServerEntry = await import(
     pathToFileURL(resolve(root, 'dist/server/entry-server.js')).href
   );
@@ -119,49 +117,27 @@ async function handle(request: IncomingMessage, response: ServerResponse): Promi
     reply(response, 405, 'Method not allowed.');
     return;
   }
-  const workspace = url.pathname === '/workspace' || url.pathname.startsWith('/workspace/');
-  if (url.pathname !== '/' && url.pathname !== '/tasks' && !workspace) {
+  if (url.pathname !== '/' && url.pathname !== '/tasks') {
     if (vite) vite.middlewares(request, response, () => reply(response, 404, 'Not found.'));
     else if (url.pathname.startsWith('/assets/') && assets) {
       assets(request, response, () => reply(response, 404, 'Not found.'));
     } else reply(response, 404, 'Not found.');
     return;
   }
-  // fragment 不会发送给 HTTP 服务端，hash 示例统一在客户端解析和挂载。
-  const mode =
-    workspace && url.searchParams.get('history') === 'hash'
-      ? 'csr'
-      : (url.searchParams.get('render') ?? defaultMode);
+  const mode = url.searchParams.get('render') ?? defaultMode;
   if (mode !== 'csr' && mode !== 'ssr') {
     reply(response, 400, 'The render query must be csr or ssr.');
     return;
   }
 
-  const page = workspace ? 'workspace' : url.pathname === '/tasks' ? 'tasks' : 'index';
+  const page = url.pathname === '/tasks' ? 'tasks' : 'index';
   const initial = page === 'tasks' ? database().list(taskQuery(url)) : undefined;
   const { template, entry } = await loadPage(url.pathname + url.search, page);
-  const controller = new AbortController();
-  const abort = () => controller.abort();
-  response.once('close', abort);
-  let routed: Awaited<ReturnType<ServerEntry['renderWorkspace']>> | undefined;
-  try {
-    if (workspace)
-      routed = await entry.renderWorkspace(template, mode, url.href, controller.signal);
-  } finally {
-    response.off('close', abort);
-  }
-  if (routed?.redirect) {
-    response.writeHead(routed.status, { Location: routed.redirect, 'Cache-Control': 'no-store' });
-    response.end();
-    return;
-  }
-  const html = routed
-    ? routed.html
-    : initial
-      ? await entry.renderTasks(template, mode, initial)
-      : await entry.render(template, mode);
+  const html = initial
+    ? await entry.renderTasks(template, mode, initial)
+    : await entry.render(template, mode);
   if (response.destroyed) return;
-  response.writeHead(routed?.status ?? 200, {
+  response.writeHead(200, {
     'Content-Type': 'text/html; charset=utf-8',
     'Cache-Control': 'no-store',
     'Content-Length': Buffer.byteLength(html),

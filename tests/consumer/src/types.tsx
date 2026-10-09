@@ -2,9 +2,6 @@ import { compile, type CompileResult } from 'zerodep-js-compiler';
 import { Counter, Label } from '@zerodep-consumer/counter';
 import { _component, _mount, type ComponentProps } from 'zerodep-js';
 import { _getAbortSignal, _snapshot } from 'zerodep-js';
-import { _defineRoute, _defineRoutes, _createRouter, Link } from 'zerodep-use/router';
-import { _createStore, _indexedDBStorage, type StorageAdapter } from 'zerodep-use/store';
-import { _history } from 'zerodep-use/history';
 import { _lazy } from 'zerodep-js';
 import { _createRoot, _id } from 'zerodep-js';
 import { Css } from 'zerodep-css';
@@ -58,12 +55,6 @@ let selected: string[] = [];
 <input bind:value={boundText} />;
 // @ts-expect-error 文本绑定不会把 number 偷换成 string。
 <input bind:value={boundNumber} />;
-_history({
-  read: () => boundText,
-  write: (next) => {
-    boundText = next;
-  },
-}).undo();
 const LazyCounter = _lazy(async () => Counter);
 <LazyCounter label="按需" />;
 // @ts-expect-error 按需包装保留原组件的必填 props。
@@ -101,17 +92,6 @@ _mount(Counter, { target: document.body });
   }}
 />;
 
-const routes = _defineRoutes({
-  item: _defineRoute('/items/:id', {
-    load: ({ params }) => ({ id: params.id }),
-  }),
-});
-const router = _createRouter(routes);
-router.href(routes.item, { params: { id: '1' } });
-// @ts-expect-error 独立安装仍保留命名参数类型。
-router.href(routes.item, { params: { id: 1 } });
-// @ts-expect-error 子入口泛型 Link 不丢失必填参数。
-<Link to={routes.item} />;
 export const signal: AbortSignal = _createRoot((dispose) => {
   const signal = _getAbortSignal();
   dispose();
@@ -125,25 +105,3 @@ const futureContent = Promise.resolve('稍后');
 <output children={futureContent} />;
 // @ts-expect-error DOM ref 必须同步返回，异步资源显式启动并清理。
 <div ref={async () => {}} />;
-const consumerStore = _createStore<{ enabled: boolean }>();
-_createRoot((dispose) => {
-  const saved = consumerStore.provideStore(
-    { enabled: true },
-    { persist: { key: 'typed-object', storage: _indexedDBStorage(), pick: ['enabled'] } },
-  );
-  consumerStore.useStore().enabled satisfies boolean;
-  saved.save() satisfies Promise<boolean>;
-  // @ts-expect-error 注入字段类型不可丢失。
-  consumerStore.useStore().enabled = 1;
-  // @ts-expect-error pick 只能选择已定义字段。
-  consumerStore.provideStore({ enabled: false }, { persist: { key: 'bad', pick: ['missing'] } });
-  dispose();
-});
-const remoteStorage: StorageAdapter = {
-  async getItem() {
-    return null;
-  },
-  async setItem() {},
-  async removeItem() {},
-};
-void remoteStorage;

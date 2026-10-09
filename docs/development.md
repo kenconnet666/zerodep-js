@@ -11,9 +11,9 @@
 | native/                                 | 客户端与 SSR 共用的名称、文本、样式、序列化和 property 所有权规则，以及生成的属性数据 |
 | index.ts / internal.ts / jsx-runtime.ts | 公共运行时、编译 ABI 与 JSX 类型入口                                                  |
 
-上表均位于 packages/core/src。应用工具独立位于 packages/use/src：store.ts 提供必须注入的 store，storage/ 管理持久化与同步/异步适配器；router/ 管理匹配、历史、导航、SSR 数据与页面呈现。存储不再提供独立的 read/write 公共入口。
+上表均位于 packages/core/src。packages/use 已删除，不再维护路由、store、持久化及撤销重做工具。UI Provider 直接复用 core 的上下文与 CSS 注入，未迁入这些工具的实现。
 
-use 和 SSR 均通过同版本 core 的公开 API 与必要的 internal 协议共享组件身份、调度和所有权，不能跨包导入 core/src 或复制状态内核；core 不反向依赖 use。不要在 runtime/native 中增加 window/document 访问。生成数据维护入口仍为 scripts/generate-native.mjs，产物在 native/data.ts。改目录时同步检查声明映射、生成脚本、资源验证与独立消费，移除已经失效的旧构建文件。
+UI 和 SSR 均通过同版本 core 的公开 API 与必要的 internal 协议共享组件身份、调度和所有权，不能跨包导入 core/src 或复制状态内核；core 不反向依赖 UI。不要在 runtime/native 中增加 window/document 访问。生成数据维护入口仍为 scripts/generate-native.mjs，产物在 native/data.ts。改目录时同步检查声明映射、生成脚本、资源验证与独立消费，移除已经失效的旧构建文件。
 
 ## 检查入口
 

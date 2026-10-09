@@ -1,6 +1,5 @@
 import { _component, _state, _derived, _effect, _getAbortSignal, For } from 'zerodep-js';
 import type { RenderMode } from 'zerodep-js-ssr';
-import { _createStore } from 'zerodep-use/store';
 import { ApiFailure, listTasks, createTask, updateTask, deleteTask } from './api.js';
 import {
   titleSchema,
@@ -12,8 +11,6 @@ import {
 import { TaskItem } from './TaskItem.js';
 import './tasks.css';
 
-const { provideStore: provideDraft } = _createStore<{ text: string }>();
-
 type Props = { initial?: TaskPage; mode?: RenderMode; embedded?: boolean };
 
 export const TaskBoard = _component(({ initial, mode = 'csr', embedded = false }: Props) => {
@@ -22,17 +19,6 @@ export const TaskBoard = _component(({ initial, mode = 'csr', embedded = false }
   let search = _state(start?.query ?? '');
   let filter = _state<TaskFilter>(start?.filter ?? 'all');
   const draft = _state({ text: '' });
-  const draftStorage = provideDraft(draft, {
-    persist: {
-      key: 'zerodep.example.task-draft',
-      writeDelay: 150,
-      validate(value) {
-        if (!value || typeof value !== 'object' || typeof Reflect.get(value, 'text') !== 'string')
-          throw new Error('保存的草稿格式无效');
-        return { text: Reflect.get(value, 'text') as string };
-      },
-    },
-  });
   let loading = _state(false);
   let creating = _state(false);
   let ready = _state(false);
@@ -213,11 +199,6 @@ export const TaskBoard = _component(({ initial, mode = 'csr', embedded = false }
           {creating ? '添加中…' : '添加任务'}
         </button>
       </form>
-      {draftStorage.error !== undefined && (
-        <p class="task-error" data-draft-storage-error>
-          草稿暂时无法保存到此浏览器，输入内容仍保留。
-        </p>
-      )}
       {createError && (
         <p role="alert" class="task-error">
           {createError}

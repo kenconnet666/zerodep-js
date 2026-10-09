@@ -8,16 +8,15 @@
 
 ## 工作区
 
-| 包                | 职责                                               |
-| ----------------- | -------------------------------------------------- |
-| packages/core     | 响应式、组件、DOM、生命周期、JSX 类型和运行时协议  |
-| packages/use      | router、store、history 子入口，通过 peer 共享 core |
-| packages/ssr      | 请求隔离、HTML 渲染、转义和数据编码                |
-| packages/compiler | Babel 转换、框架检查、选定 TS7.1 与语言工具适配    |
-| packages/vite     | 转换接入、依赖扫描和开发更新                       |
-| apps/example      | 使用实际包产物的 CSR/SSR 示例和任务应用            |
-| packages/ui       | Provider、亮暗主题、语言与日期时区，暂不发布       |
-| apps/docs         | 组件库与框架文档应用                               |
+| 包                | 职责                                              |
+| ----------------- | ------------------------------------------------- |
+| packages/core     | 响应式、组件、DOM、生命周期、JSX 类型和运行时协议 |
+| packages/ssr      | 请求隔离、HTML 渲染、转义和数据编码               |
+| packages/compiler | Babel 转换、框架检查、选定 TS7.1 与语言工具适配   |
+| packages/vite     | 转换接入、依赖扫描和开发更新                      |
+| apps/example      | 使用实际包产物的 CSR/SSR 示例和任务应用           |
+| packages/ui       | Provider、亮暗主题、语言与日期时区，暂不发布      |
+| apps/docs         | 组件库与框架文档应用                              |
 
 不提供外部框架运行时适配，也不把预编译组件库链接到工作区源码。
 
@@ -34,7 +33,7 @@ pnpm build
 pnpm preview
 ```
 
-开发默认端口 5173，生产预览默认端口 4173。主示例支持 CSR/SSR、任务路由和工作区；应用数据保存在 apps/example/.data，测试使用独立临时数据。
+开发默认端口 5173，生产预览默认端口 4173。主示例支持 CSR/SSR 和独立任务页面；应用数据保存在 apps/example/.data，测试使用独立临时数据。
 
 组件库与文档工程已独立准备：`pnpm dev:docs` 启动文档站（5174），`pnpm build:ui` 构建组件库，`pnpm build:docs` 构建文档站，`pnpm preview:docs` 预览产物（4174）。根命令 `pnpm dev` 仍只启动原有示例和框架包监听，`pnpm build` 包含两个应用。目录和后续放置代码的位置见 [组件库](packages/ui/README.md) 与 [文档应用](apps/docs/README.md)。
 
@@ -62,7 +61,7 @@ export const Counter = _component(({ step = 1 }: { step?: number }) => {
 
 Vite 使用 zerodep-js-vite 的 zerodep()。应用 TS 配置使用 jsx: preserve、jsxImportSource: zerodep-js。客户端通过 _mount/_hydrate 返回的 disposer 卸载；服务端使用独立 SSR 入口。
 
-当前源码提供必须向下注入的 [store](docs/store.md)，可选择自动保存到 localStorage、sessionStorage、IndexedDB 或自定义异步后端；不新增全局单例。此变更尚未进入 rc.8 发行包。
+2026-10-09 起，当前源码已删除整个 zerodep-use 包，不再提供路由、store、持久化和撤销重做工具。core 的状态、上下文、快照以及 UI Provider 保留；旧 npm 发行记录不变。
 
 ## 验证与工具
 

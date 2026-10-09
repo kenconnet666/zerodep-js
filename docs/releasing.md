@@ -37,7 +37,7 @@ npm 可能先受理上传、稍后才能查询。账本保留 attemptedAt/accept
 
 ## 换机恢复固定产物
 
-`.release/` 是忽略目录，Git 拉取不会恢复其中的 tgz。优先从对应 GitHub 预发布下载五包 tgz 与 release.json；尚未建立预发布时，从同一源码提交的成功 CI 下载 `release-candidate`。每次恢复都核对账本 revision、包版本、文件集合与 SHA-512，再继续 `release:ci`，不能以当前构建替换已尝试上传的产物。
+`.release/` 是忽略目录，Git 拉取不会恢复其中的 tgz。优先从对应 GitHub 预发布下载该版本账本列出的全部 tgz 与 release.json（历史 rc.8 为五包，后续源码清单已减为四包）；尚未建立预发布时，从同一源码提交的成功 CI 下载 `release-candidate`。每次恢复都核对账本 revision、包版本、文件集合与 SHA-512，再继续 `release:ci`，不能以当前构建替换已尝试上传的产物。
 
 CSS 仓库的候选位于 `test-results/release/`，使用 manifest.json 记录 commit 和六包摘要。发布后将原 tgz 与 manifest 保存到对应 GitHub 预发布，供换机恢复。若尚未发布且原产物确实无法恢复，只能从指定源码重新构建、冻结并重新执行产物消费验证；新的摘要是新的验收记录，不能沿用此前本机产物的通过结论。
 

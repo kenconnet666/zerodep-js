@@ -195,9 +195,6 @@ importers:
       zerodep-js-ssr:
         specifier: workspace:*
         version: link:../../packages/ssr
-      zerodep-use:
-        specifier: workspace:*
-        version: link:../../packages/use
     devDependencies:
       typescript:
         specifier: 'catalog:'
@@ -313,18 +310,6 @@ importers:
       zerodep-js-vite:
         specifier: workspace:*
         version: link:../vite
-
-  packages/use:
-    devDependencies:
-      typescript:
-        specifier: 'catalog:'
-        version: https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-v7.1.0-dev.jetbrains.20261006.2.tgz
-      zerodep-js:
-        specifier: workspace:*
-        version: link:../core
-      zerodep-js-ssr:
-        specifier: workspace:*
-        version: link:../ssr
 
   packages/vite:
     dependencies:

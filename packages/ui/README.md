@@ -1,6 +1,6 @@
 # zerodep-js-ui
 
-组件库已提供 Provider、亮暗主题、中文/英文语言包和地区/时区工具。包保持 private，不加入现有五包发布流程。
+组件库已提供 Provider、亮暗主题、中文/英文语言包和地区/时区工具。包保持 private，不加入框架四包发布流程。
 
 - `src/components/`：组件源码。
 - `src/index.ts`：公开导出入口。

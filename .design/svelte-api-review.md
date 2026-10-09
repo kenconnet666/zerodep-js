@@ -1,5 +1,7 @@
 # Svelte API 对照与取舍
 
+2026-10-09 范围更新：packages/use 已整体删除；下文的路由/store/历史工具讨论仅保留为研究记录，不代表当前维护能力。
+
 日期：2026-10-07，范围校正于 2026-10-08。本文保留历史研究依据，`_id` 与 Portal 已实施；rc.8 曾加入的 `_task` 已按后续用户决定删除，其余描述是当时的候选。当前执行范围以 [基础 API 主计划](../docs/production-plan.md) 为准：组件只作验收，组件库后续再做。研究基于当时 core/use/ssr 源码、语义和表单测试；Svelte 基准为本地 5.56.10，提交 `15720b16a5ef33e3e1f4301c77b94ec375070e73`。线上文档可能更新，涉及实际语义时优先看固定源码。
 
 筛选标准：简单维护、容易使用、准确类型提示、资源与 SSR 正确性。性能不是排序依据。TSX 已能用普通表达式、函数和类型表达得更直接的部分，不算缺口，不为 API 数量或语法对齐复制 Svelte。
@@ -47,7 +49,7 @@ Svelte 的 await/boundary/settled 等能力能协调异步结果与呈现。当�
 
 必须验证同步抛错、拒绝 Promise、依赖切换、过期成功/失败、卸载取消、不支持取消的第三方 Promise、重试以及 SSR 不意外发起客户端副作用。只有语义明确后再考虑 pending 边界；不能用一个全局 settled 去等待任意用户 Promise。
 
-依据：[现有取消作用域](../packages/core/src/runtime/lifecycle.ts)、[现有路由](../packages/use/src/router/router.ts)、[Svelte boundary](https://svelte.dev/docs/svelte/svelte-boundary)、[Svelte runtime API](https://svelte.dev/docs/svelte/svelte)。代价中等。
+依据：[现有取消作用域](../packages/core/src/runtime/lifecycle.ts)、[Svelte boundary](https://svelte.dev/docs/svelte/svelte-boundary)、[Svelte runtime API](https://svelte.dev/docs/svelte/svelte)。代价中等。
 
 ### 3. 退场动画与卸载协调：真实缺口，但不急于做完整动画框架
 

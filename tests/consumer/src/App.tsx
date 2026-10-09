@@ -3,34 +3,16 @@ import {
   _state,
   For,
   _onMount,
-  _onCleanup,
   _getAbortSignal,
   _snapshot,
   _lazy,
   _id,
   Portal,
 } from 'zerodep-js';
-import { _history } from 'zerodep-use/history';
-import { _createStore } from 'zerodep-use/store';
-import {
-  _createRouter,
-  _createMemoryHistory,
-  _defineRoutes,
-  _defineRoute,
-  Router,
-  Link,
-  _useRoute,
-} from 'zerodep-use/router';
 import { Counter, Label } from '@zerodep-consumer/counter';
 import { Css, WidthCss, SystemKeywords, systemKeywords } from 'zerodep-css';
 import { css } from 'zerodep-js/css';
 import { _head } from 'zerodep-js/head';
-
-const { provideStore: provideMessage, useStore: useMessage } = _createStore<{ message: string }>();
-const StoreMessage = _component(() => {
-  const messages = useMessage();
-  return <span data-packed-store>{messages.message}</span>;
-});
 
 const s = new Css();
 class OpacityWidth extends WidthCss {
@@ -53,30 +35,6 @@ const LazyCounter = _lazy(() =>
   import('@zerodep-consumer/counter').then((module) => module.Counter),
 );
 
-const PackedPage = _component(() => {
-  const route = _useRoute();
-  const initial = route.params.id;
-  return (
-    <section data-packed-page>
-      <span data-route-id>{route.params.id}</span>
-      <span data-route-initial>{initial}</span>
-      <Link to={packedRoutes.page} params={{ id: 'next' }}>
-        下一页
-      </Link>
-      <Link to={packedRoutes.keyed} params={{ id: 'one' }}>
-        记录一
-      </Link>
-      <Link to={packedRoutes.keyed} params={{ id: 'two' }}>
-        记录二
-      </Link>
-    </section>
-  );
-});
-const packedRoutes = _defineRoutes({
-  page: { path: '/packed/:id', component: PackedPage },
-  keyed: _defineRoute('/keyed/:id', { component: PackedPage, key: ({ params }) => params.id }),
-});
-
 export const App = _component(({ title }: { title: string }) => {
   _head(() => ({ title, description: '独立包消费' }));
   let width = _state(120);
@@ -87,17 +45,7 @@ export const App = _component(({ title }: { title: string }) => {
   const inputId = _id();
   let input: HTMLInputElement | undefined = undefined;
   const messages = _state({ message: '等待' });
-  let routed = _state(false);
   let lazyVisible = _state(false);
-  const history = _history({
-    read: () => messages.message,
-    write: (next) => {
-      messages.message = next;
-    },
-  });
-  const router = _createRouter(packedRoutes, { history: _createMemoryHistory('/packed/start') });
-  _onCleanup(() => router.dispose());
-  provideMessage(messages, { persist: { key: 'package-message', pick: ['message'] } });
   const rows = _state([
     { id: 1, name: '甲' },
     { id: 2, name: '乙' },
@@ -158,21 +106,11 @@ export const App = _component(({ title }: { title: string }) => {
       <Counter label="打包" onCount={(value) => (messages.message = String(value))} />
       <label for={inputId}>消息</label>
       <input id={inputId} aria-label="消息" bind:value={messages.message} bind:this={input} />
-      <StoreMessage />
       <Portal>
         <span data-packed-portal>外层内容</span>
       </Portal>
       <button data-reference-focus onClick={() => input?.focus()}>
         聚焦消息
-      </button>
-      <button data-history-commit onClick={() => history.commit()}>
-        记录消息
-      </button>
-      <button data-history-undo onClick={() => history.undo()}>
-        撤销消息
-      </button>
-      <button data-history-redo onClick={() => history.redo()}>
-        重做消息
       </button>
       <button
         data-lazy-open
@@ -199,15 +137,6 @@ export const App = _component(({ title }: { title: string }) => {
       >
         复制快照
       </button>
-      <button
-        data-open-router
-        onClick={() => {
-          routed = true;
-        }}
-      >
-        打开路由
-      </button>
-      {routed ? <Router router={router} /> : null}
     </main>
   );
 });

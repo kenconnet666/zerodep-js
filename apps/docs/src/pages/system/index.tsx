@@ -14,8 +14,8 @@ export const SystemPage = _component(() => (
         <a href="https://github.com/kenconnet666/zerodep-js/blob/main/docs/api.md">基础 API</a>
       </li>
       <li>
-        <a href="https://github.com/kenconnet666/zerodep-js/blob/main/docs/store.md">
-          Store 与持久化
+        <a href="https://github.com/kenconnet666/zerodep-js/blob/main/docs/provider.md">
+          Provider 与主题
         </a>
       </li>
       <li>

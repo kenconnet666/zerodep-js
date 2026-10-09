@@ -10,7 +10,6 @@ import { PropertyExample } from './examples/PropertyExample.js';
 import { StyleExample } from './examples/StyleExample.js';
 import { TaskExample } from './examples/TaskExample.js';
 import { LifecycleExample } from './examples/LifecycleExample.js';
-import { StorageExample } from './examples/StorageExample.js';
 import { AuthoringExample } from './examples/AuthoringExample.js';
 import { ReferenceExample } from './examples/ReferenceExample.js';
 import { IdExample } from './examples/IdExample.js';
@@ -217,7 +216,6 @@ export const App = _component(({ mode = 'csr', onUnmount }: AppProps) => {
       <StyleExample />
       <TaskExample />
       <LifecycleExample />
-      <StorageExample />
       <AuthoringExample />
       <ReferenceExample />
       <IdExample />

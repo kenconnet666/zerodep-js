@@ -62,53 +62,9 @@ const NameField = _component(
 
 当前源码固定 JetBrains TS7.1；WebStorm 原生类型引擎与框架 LSP 的配置、适用 EAP 构建和补丁步骤统一见 [环境配置](environment-setup.md)。不要继续安装旧的自维护 SDK 或照搬旧平台包选择方式。Ctrl+空格可能被输入法截获，必要时使用“代码 → 代码补全 → 基本”；代码中的冒号使用 ASCII `:`，不使用输入法生成的 `：`。
 
-## 快照和撤销
+## 快照备份
 
 `const saved = form` 只是多一个指向原数据的变量，改 form 时 saved 也跟着变。`const saved = _snapshot(form)` 才是独立备份；恢复时用 `form = _snapshot(saved)`，避免下一次编辑改掉备份。
-
-需要撤销、重做多次编辑时使用可选工具：
-
-```tsx
-import { _component, _state } from 'zerodep-js';
-import { _history } from 'zerodep-use/history';
-
-export const Editor = _component(() => {
-  let form = _state({ name: '原来的姓名' });
-  const history = _history(
-    {
-      read: () => form,
-      write: (next) => {
-        form = next;
-      },
-    },
-    { limit: 30 },
-  );
-
-  return (
-    <>
-      <input bind:value={form.name} />
-      <button onClick={() => history.commit()}>记录这次编辑</button>
-      <button disabled={!history.canUndo} onClick={() => history.undo()}>
-        撤销
-      </button>
-      <button disabled={!history.canRedo} onClick={() => history.redo()}>
-        重做
-      </button>
-      <button onClick={() => history.reset()}>恢复保存点</button>
-    </>
-  );
-});
-```
-
-例如初始姓名是“甲”，改成“乙”后 commit，再改成“丙”后 commit：undo 恢复“乙”，redo 恢复“丙”，reset 恢复“甲”。服务器保存成功后调用 clear，把当前数据作为新的保存点；之后 reset 就回到这次保存的数据。
-
-- commit 是显式操作边界，每次调用都记录一份快照，即使数据相同也不自动去重。它不会自动记录每个键盘字符；可按业务在一次操作结束、失焦或保存草稿时调用。
-- undo/redo 在已记录的版本之间移动，尚未 commit 的编辑不另占一条记录。恢复未提交编辑到保存点用 reset；不要期待 undo 自动捕获未提交的当前内容。
-- 撤销后再 commit 会丢弃原来的重做分支。limit 默认 50，表示可撤销操作数，另保留保存点；超出容量丢弃最旧记录，保存点仍可 reset。
-- read/write 必须同步。复制或写入失败会抛出错误，历史游标保持不变；任意自定义 write 的外部副作用不能由工具回滚，应用应保持它简单直接。
-- read/write 中不能再次修改同一历史句柄，重入会立即报错；允许 dispose 或卸载所有者，此时外层操作返回 false，不恢复已释放的记录。异常不会锁住句柄，后续操作仍可继续。
-- canUndo/canRedo/length/index/disposed 可用于响应式显示。组件内创建时自动随作用域释放；组件外创建时由调用方 dispose。释放后记录清空，操作返回 false。
-- 底层仍是 _snapshot，遵循结构化克隆规则。它能备份数据，不负责撤销已发送的请求、数据库操作或 DOM 操作。
 
 ## 按需下载组件
 

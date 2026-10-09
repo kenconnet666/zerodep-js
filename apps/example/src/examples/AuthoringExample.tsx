@@ -1,5 +1,4 @@
 import { _component, _state, _lazy, _snapshot } from 'zerodep-js';
-import { _history } from 'zerodep-use/history';
 
 const NameField = _component(
   ({ value, onValueChange }: { value: string; onValueChange: (value: string) => void }) => (
@@ -39,15 +38,6 @@ export const AuthoringExample = _component(() => {
   let form = _state({ name: '保存的姓名' });
   let show = _state(false);
   const initial = _snapshot(form);
-  const history = _history(
-    {
-      read: () => form,
-      write: (next) => {
-        form = next;
-      },
-    },
-    { limit: 20 },
-  );
 
   return (
     <section aria-label="绑定、快照和按需加载">
@@ -96,23 +86,22 @@ export const AuthoringExample = _component(() => {
         从代码修改输入
       </button>
 
-      <h3>快照是独立副本，历史记录保存多次编辑</h3>
+      <h3>快照是独立副本</h3>
       <label>
-        历史姓名
+        快照姓名
         <input bind:value={form.name} />
       </label>
       <p>
-        最初的快照：<span data-history-snapshot>{initial.name}</span>
+        最初的快照：<span data-snapshot-name>{initial.name}</span>
       </p>
-      <button onClick={() => history.commit()}>记录这次编辑</button>
-      <button disabled={!history.canUndo} onClick={() => history.undo()}>
-        撤销编辑
+
+      <button
+        onClick={() => {
+          form = _snapshot(initial);
+        }}
+      >
+        恢复初始快照
       </button>
-      <button disabled={!history.canRedo} onClick={() => history.redo()}>
-        重做编辑
-      </button>
-      <button onClick={() => history.reset()}>恢复保存点</button>
-      <button onClick={() => history.clear()}>把当前内容设为保存点</button>
 
       <h3>显示时才加载组件</h3>
       <button

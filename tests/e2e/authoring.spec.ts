@@ -23,22 +23,16 @@ for (const mode of ['csr', 'ssr']) {
     await expect(section.getByLabel('双向多选')).toHaveValues(['b']);
     await expect(section.getByLabel('组件双向输入')).toHaveValue('代码修改组件');
   });
-  test(`${mode} 编辑历史保留备份并能切换保存点`, async ({ page }) => {
+  test(`${mode} 编辑与恢复不修改初始快照`, async ({ page }) => {
     await page.goto(`/?render=${mode}`);
-    const input = page.getByLabel('历史姓名');
+    const input = page.getByLabel('快照姓名');
     await input.fill('第一次编辑');
-    await page.getByRole('button', { name: '记录这次编辑', exact: true }).click();
+    await expect(page.locator('[data-snapshot-name]')).toHaveText('保存的姓名');
+    await page.getByRole('button', { name: '恢复初始快照' }).click();
+    await expect(input).toHaveValue('保存的姓名');
     await input.fill('第二次编辑');
-    await page.getByRole('button', { name: '记录这次编辑', exact: true }).click();
-    await expect(page.locator('[data-history-snapshot]')).toHaveText('保存的姓名');
-    await page.getByRole('button', { name: '撤销编辑', exact: true }).click();
-    await expect(input).toHaveValue('第一次编辑');
-    await page.getByRole('button', { name: '重做编辑', exact: true }).click();
-    await expect(input).toHaveValue('第二次编辑');
-    await page.getByRole('button', { name: '把当前内容设为保存点', exact: true }).click();
-    await input.fill('尚未保存');
-    await page.getByRole('button', { name: '恢复保存点', exact: true }).click();
-    await expect(input).toHaveValue('第二次编辑');
+    await page.getByRole('button', { name: '恢复初始快照' }).click();
+    await expect(input).toHaveValue('保存的姓名');
   });
   test(`${mode} 按需组件失败可重试，关闭后重建局部状态`, async ({ page }) => {
     const errors: string[] = [];
@@ -53,7 +47,7 @@ for (const mode of ['csr', 'ssr']) {
     await expect(page.locator('[data-lazy-details]')).toHaveCount(0);
     await page.getByRole('button', { name: '打开按需组件', exact: true }).click();
     await expect(page.getByRole('button', { name: '按需组件计数：0', exact: true })).toBeVisible();
-    await page.getByLabel('历史姓名').fill('实时属性');
+    await page.getByLabel('快照姓名').fill('实时属性');
     await expect(page.locator('[data-lazy-name]')).toHaveText('实时属性');
     expect(errors).toEqual([]);
   });

@@ -13,7 +13,7 @@ pnpm add zerodep-js@1.0.0-rc.7
 pnpm add -D zerodep-js-compiler@1.0.0-rc.7 zerodep-js-vite@1.0.0-rc.7 typescript@7.1.0-dev.20261007.1 vite@8.3.1
 ```
 
-SSR 应用另装 zerodep-js-ssr@1.0.0-rc.7；路由、持久化和历史使用 zerodep-use@1.0.0-rc.7。官方平台二进制随 TypeScript 安装，不需要 Go 或自建 SDK。
+SSR 应用另装与 core 同版本的 zerodep-js-ssr。当前源码不再维护或使用 zerodep-use。官方平台二进制随 TypeScript 安装，不需要 Go 或自建 SDK。
 
 应用 package.json 的基本脚本：
 

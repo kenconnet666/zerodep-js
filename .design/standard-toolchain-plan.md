@@ -1,5 +1,7 @@
 # 官方 TS7 与标准 TSX 工具链简化方案
 
+2026-10-09 范围更新：用户决定删除 use，当前框架发布清单为 core、ssr、compiler、vite 四包，UI 单独保持 private。下文五包收敛讨论属于历史方案。
+
 当前版本决定（2026-10-07）：用户要求 IDE 与项目统一使用 `7.1.0-dev.jetbrains.20261006.2`。从 JetBrains 发行地址安装原始 SDK，保留 Babel/Vite 分工、框架语义和类型断言，不维护 SDK 补丁。下文的微软 nightly 迁移记录属于此前阶段；当前配置和验证以 docs/tooling.md 与 docs/execution.md 为准。
 
 日期：2026-10-07。状态：方案已执行，官方工具链的 rc.7 已通过完整 CI、IDE 试点与注册表消费并发布。下文保留迁移决策、边界和验收依据；最终证据见 [执行记录](../docs/execution.md)。

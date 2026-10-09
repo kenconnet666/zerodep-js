@@ -8,9 +8,6 @@ import {
 import { App } from './App.js';
 import { TaskBoard } from './tasks/TaskBoard.js';
 import type { TaskPage } from './tasks/schema.js';
-import { _createRouter, _createMemoryHistory } from 'zerodep-use/router';
-import { routes } from './workspace/routes.js';
-import { Workspace } from './workspace/App.js';
 import { createServerCssHost, withCssHost, serializeCssRules } from 'zerodep-css/server';
 
 async function renderPage(options: DocumentOptions): Promise<string> {
@@ -46,35 +43,4 @@ export function renderTasks(
     mode,
     render: () => _render(TaskBoard, { props: { initial, mode } }),
   });
-}
-
-export async function renderWorkspace(
-  template: string,
-  mode: RenderMode,
-  url: string,
-  signal?: AbortSignal,
-) {
-  const router = _createRouter(routes, { history: _createMemoryHistory(url) });
-  const abort = () => router.dispose();
-  signal?.addEventListener('abort', abort, { once: true });
-  try {
-    signal?.throwIfAborted();
-    const result = mode === 'ssr' ? await router.resolve() : undefined;
-    if (result?.status === 'error') throw result.error;
-    if (result?.status === 'committed' && result.redirect)
-      return { html: '', status: result.redirect.status, redirect: result.state.location.href };
-    const initial = mode === 'ssr' ? router.dehydrate() : null;
-    const marker = '<!--route-data-->';
-    if (template.indexOf(marker) < 0 || template.indexOf(marker) !== template.lastIndexOf(marker))
-      throw new Error('路由页面需要唯一的初始化数据位置。');
-    const html = await renderPage({
-      template: template.replace(marker, () => serializeData(initial)),
-      mode,
-      render: () => _render(Workspace, { props: { router } }),
-    });
-    return { html, status: mode === 'ssr' ? router.state.statusCode : 200, redirect: undefined };
-  } finally {
-    signal?.removeEventListener('abort', abort);
-    router.dispose();
-  }
 }

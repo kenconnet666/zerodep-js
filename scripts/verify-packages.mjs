@@ -121,19 +121,6 @@ try {
       assert(!sourceManifest.exports['./router'] && !sourceManifest.exports['./storage']);
       assert(!sourceManifest.dependencies['zerodep-use'], 'core 不能反向依赖应用工具。');
     }
-    if (name === 'use') {
-      assert(
-        ![...files].some((file) => /^(src|dist)\/(task|storage)\./.test(file)),
-        'use 包不能残留已删除的 task/storage 入口文件。',
-      );
-      assert.deepEqual(Object.keys(sourceManifest.exports).sort(), [
-        './history',
-        './router',
-        './store',
-      ]);
-      assert.deepEqual(Object.keys(sourceManifest.peerDependencies), ['zerodep-js']);
-      assert.equal(Object.keys(sourceManifest.dependencies ?? {}).length, 0);
-    }
     assert(
       [...files].every((file) => !/tsbuildinfo|(^|\/)(test|node_modules|\.codex)(\/|$)/.test(file)),
       `${name} 混入构建缓存或测试。`,
@@ -207,27 +194,14 @@ try {
       '--eval',
       `
     import assert from 'node:assert/strict';
-    import { _createRoot, _flushSync } from 'zerodep-js';
-    import { _createStore } from 'zerodep-use/store';
-    import { _createRouter } from 'zerodep-use/router';
-    for (const specifier of ['zerodep-js/router', 'zerodep-js/storage', 'zerodep-use/storage', 'zerodep-use']) {
+    for (const specifier of ['zerodep-js/router', 'zerodep-js/storage']) {
       await assert.rejects(import(specifier), { code: 'ERR_PACKAGE_PATH_NOT_EXPORTED' });
     }
-    assert.equal(typeof _createRouter, 'function');
+    for (const specifier of ['zerodep-use', 'zerodep-use/router', 'zerodep-use/store', 'zerodep-use/history']) {
+      await assert.rejects(import(specifier), { code: 'ERR_MODULE_NOT_FOUND' });
+    }
     assert.equal('_createPage' in await import('zerodep-js'), false, '旧页面宿主 API 必须移除');
     assert.equal('_createScope' in await import('zerodep-js'), false, '旧 scope API 必须移除');
-    const store = _createStore();
-    const owned = _createRoot(dispose => {
-      const data = { n: 0 };
-      const persistence = store.provideStore(data, { persist: { key: 'probe', storage: { async getItem() { return null; }, async setItem() {}, async removeItem() {} } } });
-      assert.equal(store.useStore(), data, '消费端必须先注入再共享原对象');
-      return { dispose, persistence };
-    });
-    try {
-      _flushSync();
-      assert.equal(await owned.persistence.restore(), true);
-      assert.equal(owned.persistence.ready, true, 'use 必须共享调用方的 core 所有权和调度器');
-    } finally { owned.dispose(); }
   `,
     ],
     { cwd: consumer, env, windowsHide: true, encoding: 'utf8' },
@@ -355,7 +329,6 @@ try {
     await expect(page.locator('[data-packed-mapped-css]')).toHaveCSS('opacity', '0.5');
     await page.locator('[data-packed-mapped-update]').click();
     await expect(page.locator('[data-packed-mapped-css]')).toHaveCSS('opacity', '0.8');
-    await expect(page.locator('[data-packed-store]')).toHaveText('等待');
     await expect(page.locator('[data-packed-portal]')).toHaveText('外层内容');
     assert(
       await page
@@ -369,33 +342,15 @@ try {
     await expect(page.locator('[data-row]')).toHaveText(['甲', '乙']);
     await page.locator('[data-counter]').click();
     await expect(page.locator('output')).toHaveText('2');
-    await expect(page.locator('[data-packed-store]')).toHaveText('2');
     await page.getByLabel('消息').fill('独立输入');
     await page.locator('[data-reference-focus]').click();
     await expect(page.getByLabel('消息')).toBeFocused();
     await expect(page.locator('output')).toHaveText('独立输入');
-    await page.locator('[data-history-commit]').click();
-    await page.getByLabel('消息').fill('下一次输入');
-    await page.locator('[data-history-commit]').click();
-    await page.locator('[data-history-undo]').click();
-    await expect(page.getByLabel('消息')).toHaveValue('独立输入');
-    await page.locator('[data-history-redo]').click();
-    await expect(page.getByLabel('消息')).toHaveValue('下一次输入');
     await page.locator('[data-lazy-open]').click();
     await expect(page.getByRole('button', { name: /^按需打包/ })).toBeVisible();
     await expect(page.locator('body')).toHaveAttribute('data-fixture-effect', 'active');
     await page.locator('[data-copy]').click();
     await expect(page.locator('output')).toHaveText('副本/甲');
-    await expect(page.locator('[data-packed-store]')).toHaveText('副本/甲');
-    await page.locator('[data-open-router]').click();
-    await expect(page.locator('[data-route-id]')).toHaveText('start');
-    await page.getByRole('link', { name: '下一页' }).click();
-    await expect(page.locator('[data-route-id]')).toHaveText('next');
-    await expect(page.locator('[data-route-initial]')).toHaveText('start');
-    await page.getByRole('link', { name: '记录一' }).click();
-    await expect(page.locator('[data-route-initial]')).toHaveText('one');
-    await page.getByRole('link', { name: '记录二' }).click();
-    await expect(page.locator('[data-route-initial]')).toHaveText('two');
     assert.equal(
       await page.evaluate(() => window.remountFixture()),
       true,
@@ -407,10 +362,6 @@ try {
     await expect(page.locator('[data-packed-portal]')).toHaveCount(0);
     await expect(page.locator('body')).toHaveAttribute('data-fixture-effect', 'disposed');
     await expect(page.locator('body')).toHaveAttribute('data-fixture-aborted', 'true');
-    assert.deepEqual(
-      await page.evaluate(() => JSON.parse(localStorage.getItem('package-message'))),
-      { message: '副本/甲' },
-    );
     assert.deepEqual(failures, []);
     await page.close();
   }
