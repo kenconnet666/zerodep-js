@@ -24,6 +24,7 @@ const cases = [
     ['Text', 'color', '_muted'],
     ['Text', 'weight', '_semibold'],
     ['Ripple', 'color', '_primary'],
+    ['ButtonBase', 'size', '_md'],
   ].map(([component, property, member]) => ({
     name: `基础属性-${component}.${property}`,
     directory: 'apps/docs/src',

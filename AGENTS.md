@@ -19,6 +19,7 @@
 
 - 2026-10-09：core 提供 DomRef/_composeRefs 并允许 DOM bind:this 与 ref 共存；UI src/utils 承担组件组合与按压工具，src/base 提供 Icon/Text/Ripple/Spinner/ButtonBase。仅维护 UI src/index.ts 根入口，由 pnpm ui:generate 自动生成，pnpm ui:check 校验；不创建子目录 index.ts。
 - 组件使用独立 slotXxx 属性转发底层参数，例如 slotRipple；多个部件分别提供各自属性，不使用统一 slotProps 对象。对象/状态回调仍复用单槽解析与合并工具。
+- 基础组件 size 表示 CSS 字号基准；Icon/Spinner 宽高 1em，ButtonBase 默认继承字号且不预设间距。组件内部比例可用 em，边框/焦点、最小点击区域和页面布局分别约束；不把字号等同于密度或固定高度。
 
 - core 提供响应式与 DOM 运行时；css 提供原生 CSS；ssr 提供服务端渲染；compiler 提供 Babel/CSS 转换、compiler/vite 入口和 TS7/LSP；ui 提供 Provider 与组件。packages/use 和 packages/vite 已删除，不保留兼容包。
 - 框架顶层公开函数使用单下划线，声明本身使用该名称，入口直接导出。UI Provider 的消费入口沿用已确认的 useCss 写法，同类入口为 useLang/useLocale。JSX 组件、类型、类和对象成员保持常规命名。删除旧入口，不保留 deprecated 别名或兼容转发。

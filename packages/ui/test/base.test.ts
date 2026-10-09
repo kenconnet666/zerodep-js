@@ -46,6 +46,11 @@ it('ButtonBase 保留原生按钮语义、独立焦点样式及可关闭 Ripple'
   expect(forwarded.html).toContain('data-slot="ripple"');
   expect(forwarded.html).not.toContain('slotRipple=');
   expect(forwarded.css).toContain('color:#123456;');
+  const sized = render(ButtonBase, { size: '_lg', children: '搜索' });
+  expect(sized.css).toContain('font-size:1.125rem;');
+  expect(sized.html).not.toContain(' size=');
+  const inherited = render(ButtonBase, { size: undefined });
+  expect(inherited.css).not.toContain('font-size:undefined');
 });
 it('Ripple SSR 只输出视觉层，不读取 document 或安装监听', () => {
   const result = render(Ripple, { color: '_primary' });

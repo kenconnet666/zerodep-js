@@ -4,6 +4,7 @@ import type { CssValue } from 'zerodep-js-css';
 const text: TextProps = { as: 'h2', color: '_primary', weight: 500, size: '1.25rem' };
 const color: CssValue<'color'> = '_primary';
 const button: ButtonBaseProps = {
+  size: '_md',
   slotRipple: (state) => ({ color: state.disabled ? '_disabled' : '_primary' }),
 };
 const ripple: SlotProps<RippleProps, { disabled: boolean }> = (state) => ({
@@ -17,4 +18,6 @@ const invalidSlot: ButtonBaseProps = { slotRipple: { disabled: false } };
 const legacySlot: ButtonBaseProps = { slotProps: { ripple: { color: '_primary' } } };
 // @ts-expect-error 颜色不接受裸数字。
 const invalidColor: CssValue<'color'> = 5;
-void [text, color, button, ripple, invalidTag, invalidSlot, legacySlot, invalidColor];
+// @ts-expect-error size 是 CSS 字号，不把裸数字隐式转换为像素。
+const invalidSize: ButtonBaseProps = { size: 16 };
+void [text, color, button, ripple, invalidTag, invalidSlot, legacySlot, invalidColor, invalidSize];

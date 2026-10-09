@@ -60,18 +60,19 @@ export const BaseDemo = _component(() => {
           <ButtonBase
             disabled={disabled}
             ripple={ripple}
+            size="_md"
             aria-label="基础搜索"
             onClick={() => {
               clicks++;
             }}
-            style="width:160px;height:48px;border:1px solid currentColor;border-radius:8px;gap:8px;"
+            style="padding:.625em 1em;line-height:1.25;min-block-size:2.5rem;min-inline-size:2.5rem;border:1px solid currentColor;border-radius:.5em;gap:.5em;"
             slotRipple={(state) => ({
               color: state.disabled ? '_disabled' : '_primary',
               'data-ripple': true,
               ref: observe,
             })}
           >
-            <Icon icon={Search} />
+            <Icon icon={Search} size="1.125em" />
             <Text>搜索</Text>
           </ButtonBase>
           <Spinner size="24px" color="_primary" aria-label="正在加载" data-spinner />

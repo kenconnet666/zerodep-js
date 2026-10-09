@@ -1,5 +1,5 @@
 import { _component, _derived, type JSX } from 'zerodep-js';
-import { css, _mergeClasses } from 'zerodep-js-css';
+import { css, _mergeClasses, type CssValue } from 'zerodep-js-css';
 import { useCss } from '../provider/context.js';
 import { Ripple, type RippleProps } from './Ripple.js';
 import { _resolveSlotProps, type SlotProps } from '../utils/slot-props.js';
@@ -7,7 +7,9 @@ import { _resolveSlotProps, type SlotProps } from '../utils/slot-props.js';
 export interface ButtonBaseState {
   readonly disabled: boolean;
 }
-export type ButtonBaseProps = JSX.IntrinsicElements['button'] & {
+export type ButtonBaseProps = Omit<JSX.IntrinsicElements['button'], 'size'> & {
+  /** 组件根字号基准；内部 em 尺寸随之变化，省略时继承，不设置固定高度。 */
+  size?: CssValue<'fontSize'>;
   ripple?: boolean | undefined;
   /** 转发给 Ripple 的属性或状态回调；disabled 仍由按钮拥有。 */
   slotRipple?: SlotProps<Omit<RippleProps, 'disabled' | 'children'>, ButtonBaseState> | undefined;
@@ -19,6 +21,7 @@ export const ButtonBase = _component(
     type = 'button',
     disabled = false,
     ripple = true,
+    size,
     slotRipple,
     class: className,
     children,
@@ -34,6 +37,7 @@ export const ButtonBase = _component(
       s.alignItems.center,
       s.justifyContent.center,
       s.font.inherit,
+      s.fontSize.raw(size),
       s.color.inherit,
       s.backgroundColor.transparent,
       s.border.raw('0'),

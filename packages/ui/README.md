@@ -93,6 +93,8 @@ Ripple 直接放在 position:relative 的 button 内，自己的 span 负责绝�
 
 ButtonBase 是后续按钮的原生底座，默认 type=button；支持原生按钮属性、disabled 和 ripple 开关。关闭 Ripple 后保留 focus-visible 轮廓。slotRipple 可为对象或接收 {disabled} 的纯函数；disabled 由底座拥有，槽不能覆盖。
 
+ButtonBase 的 size 与 Icon/Text/Spinner 一致，表示根字号（CssValue<'fontSize'>），不是固定高度或密度档位；可写 `_md`、`20px`、`1.25rem`，省略/undefined 时继承，裸数字不自动补 px。底座本身仍不预设内边距。
+
 ```tsx
 <ButtonBase
   aria-label="搜索"
@@ -117,3 +119,34 @@ CssValue<K, Theme> 和 _mergeClasses 在 zerodep-js-css 中；DomRef<T> 与 _com
 运行 pnpm ui:generate 更新 src/index.ts；pnpm ui:check 检查过期与重复导出，已进入 CI 的 pnpm check。生成器用 Babel AST 读取 base/utils 下的具名声明，递归收集并区分 type 导出；拒绝链接、子目录 index.ts 和重复名称。Provider 的上下文实现通过明确入口清单限制，避免暴露内部键。
 
 组件转发使用独立 slotXxx 属性：当前为 slotRipple，后续部件分别使用 slotIcon、slotText 等自己的属性。无统一 slotProps 对象。SlotProps<P, S> 与 _resolveSlotProps/_mergeSlotProps 是单槽通用工具，不改变这一使用约定。
+
+## 字号与 em 尺寸
+
+组件根字号作为局部比例基准。Icon/Spinner 宽高保持 1em，可用 size="1.125em" 相对父字号放大一次；不要同时再把宽高设为 1.125em，以免叠加比例。Text 默认继承，不必重复指定字号。
+
+以下是文档站的组合试点，比例值留在示例中，尚未成为成品 Button 的视觉契约。代码在组件初始化中执行，并由上层 Provider 提供主题：
+
+```tsx
+const s = useCss();
+const buttonStyle = css(
+  s.lineHeight.raw(1.25),
+  s.paddingBlock.em(0.625),
+  s.paddingInline.em(1),
+  s.gap.em(0.5),
+  s.borderRadius.em(0.5),
+  s.border.raw('1px solid currentColor'),
+  s.minBlockSize.rem(2.5),
+  s.minInlineSize.rem(2.5),
+);
+
+<ButtonBase size="_md" class={buttonStyle}>
+  <Icon icon={Search} size="1.125em" />
+  <Text>搜索</Text>
+</ButtonBase>;
+```
+
+在根字号 16px 的页面中，样例的最小点击区域为 40px；14/16/20px 基准的单行文字按钮高度分别为 40/42/52px。图标和间距随组件字号变化，边框保持 1px、焦点轮廓保持 2px。仅图标按钮独立设置对称内边距；长文字通过自然高度容纳，不写死 height。
+
+`font-size` 上的 em 相对父字号，padding/gap 等属性上的 em 相对元素自身字号。局部 Text/Icon 显式字号只改变该部件；根字号及根 em 内边距保持原值，但内容变化仍可能改变自然高度。页面布局、组件密度与最小点击区域继续独立设计，不把所有长度都换成 em。
+
+`apps/docs/src/pages/components/SizingDemo.tsx` 展示纯文字、图文、仅图标、加载和长文字，以及继承/局部覆盖。`tests/e2e/sizing.spec.ts` 验证真实 CSR/SSR 的计算尺寸与动态撤销。

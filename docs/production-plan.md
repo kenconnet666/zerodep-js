@@ -123,3 +123,10 @@
 - Ripple 使用真实 pointer/keyboard 事件，只负责视觉，不模拟业务 click；处理取消、移出、滚动、失焦、禁用和卸载。动画只在挂载后创建并在清理时取消，减少动态效果时省略扩散。Spinner 用 CSS 媒体查询尊重减少动态效果。
 - 工具先保持小型、明确的 DOM/作用域职责；不新增 ref 数组、对象 ref、attachment 语法、全局焦点管理器、弹层或路由工具。焦点视觉优先 CSS，焦点范围/组内导航随未来控件实施。
 - 用户要求只保留 UI src/index.ts；scripts/generate-ui-exports.mjs 解析 AST 自动生成 base/utils 公开声明及选定 Provider API，pnpm ui:check 已接入完整检查。子目录不维护 index.ts。
+
+## 11. 字号与相对尺寸（2026-10-09 已授权）
+
+- 基础组件的 size 统一表示字号输入，使用 CssValue<'fontSize'>，省略时继承；ButtonBase 增加同一入口。Icon/Spinner 保持宽高 1em，局部比例只通过其自身字号表达一次。
+- ButtonBase 保持原生语义与无预设间距的底座，不在此阶段创建成品 Button 或密度枚举。按钮内边距、图文间距和圆角的 em 比例在文档组合样例中试点；字体与组件密度分开。
+- 采用讨论中的比例样例：line-height 1.25、padding-block 0.625em、padding-inline 1em、gap 0.5em、图标字号 1.125em。边框 1px、焦点轮廓 2px；最小点击区域用独立的 2.5rem 约束。尺寸样例值归组合示例，不扩充全局 token。
+- 用 14/16/20px 基准验证纯文字、图文、仅图标、加载和长文字；同时覆盖主题字号、继承、动态撤销 size、局部字号覆盖和 SSR/接管。新 Button/密度 API 待本轮完成后继续讨论。
