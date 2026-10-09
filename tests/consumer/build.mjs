@@ -46,6 +46,7 @@ await build({
   ...common,
   plugins: [inspect('cssTree')],
   build: {
+    target: 'es2025',
     lib: { entry: 'src/css-tree.ts', formats: ['es'], fileName: 'css-tree' },
     outDir: 'dist/css-tree',
     minify: true,

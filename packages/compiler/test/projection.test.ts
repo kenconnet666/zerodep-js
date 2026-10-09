@@ -34,7 +34,7 @@ async function check(source: string) {
           exactOptionalPropertyTypes: true,
           jsx: 'preserve',
           jsxImportSource: 'zerodep-js',
-          target: 'es2023',
+          target: 'es2025',
           module: 'preserve',
           moduleResolution: 'bundler',
           types: [],

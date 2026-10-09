@@ -83,9 +83,13 @@ export function zerodep(options: ZerodepOptions = {}): Plugin {
       // 相对模式按应用 root 解释；常规转换与预扫描共享这个闭包。
       filter = createFilter(options.include, options.exclude, { resolve: config.root });
     },
-    config() {
+    config(config) {
       // 依赖扫描不执行 Vite 的常规 transform，必须看到同一份宏/JSX 转换结果。
-      return { optimizeDeps: { rolldownOptions: { plugins: [compiler] } } };
+      return {
+        // 与工作区 tsc 目标一致；应用可通过 Vite 的 build.target 显式覆盖。
+        build: { target: config.build?.target ?? 'es2025' },
+        optimizeDeps: { rolldownOptions: { plugins: [compiler] } },
+      };
     },
   };
 }

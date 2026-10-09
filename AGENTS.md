@@ -20,6 +20,7 @@
 - core 提供响应式与 DOM 运行时；css 提供原生 CSS；ssr 提供服务端渲染；compiler 提供 Babel/CSS 转换、compiler/vite 入口和 TS7/LSP；ui 提供 Provider 与组件。packages/use 和 packages/vite 已删除，不保留兼容包。
 - 框架顶层公开函数使用单下划线，声明本身使用该名称，入口直接导出。UI Provider 的消费入口沿用已确认的 useCss 写法，同类入口为 useLang/useLocale。JSX 组件、类型、类和对象成员保持常规命名。删除旧入口，不保留 deprecated 别名或兼容转发。
 - 普通包由选定 SDK 的 tsc 构建，框架应用由 Vite 转换；不能把未经宏转换的 TS 擦除产物冒充可执行应用。
+- TypeScript target/lib 与 compiler/vite 默认构建目标统一 ES2025；不要退回旧基线或改为随版本变化的 ESNext。新 API 的类型声明不代替运行时支持，不默认注入 polyfill。
 - 共享版本放在 pnpm catalog，包间依赖使用 workspace:*。使用 Node 24 和 package.json 固定的 pnpm，不添加其他包管理器锁文件。
 - 优先使用成熟依赖；ESLint 的 TS 支持满足选定版本时再评估替换现有 lint，不引入 TS6 或自造通用 linter。项目不引入 Zod，MCP 使用 JSON Schema、vscode-jsonrpc 与标准 stdio JSON-RPC。
 - 生成数据应有明确维护入口与检查命令。中文注释解释语义、原因、资源责任，不机械复述代码。

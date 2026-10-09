@@ -1045,7 +1045,8 @@ interface Common0<T extends Element> extends NativeIndexProps {
   'prop:scrollTop'?: number | undefined;
   'prop:setAttributeNode'?: ((attr: Attr) => Attr | null) | undefined;
   'prop:setAttributeNodeNS'?: ((attr: Attr) => Attr | null) | undefined;
-  'prop:setHTMLUnsafe'?: ((html: string) => void) | undefined;
+  'prop:setHTML'?: ((html: string, options?: SetHTMLOptions) => void) | undefined;
+  'prop:setHTMLUnsafe'?: ((html: string, options?: SetHTMLUnsafeOptions) => void) | undefined;
   'prop:setPointerCapture'?: ((pointerId: number) => void) | undefined;
   'prop:slot'?: string | undefined;
   'prop:tabIndex'?: number | undefined;
@@ -2035,7 +2036,8 @@ interface Common1<T extends Element> extends NativeIndexProps {
   'prop:scrollTop'?: number | undefined;
   'prop:setAttributeNode'?: ((attr: Attr) => Attr | null) | undefined;
   'prop:setAttributeNodeNS'?: ((attr: Attr) => Attr | null) | undefined;
-  'prop:setHTMLUnsafe'?: ((html: string) => void) | undefined;
+  'prop:setHTML'?: ((html: string, options?: SetHTMLOptions) => void) | undefined;
+  'prop:setHTMLUnsafe'?: ((html: string, options?: SetHTMLUnsafeOptions) => void) | undefined;
   'prop:setPointerCapture'?: ((pointerId: number) => void) | undefined;
   'prop:showPopover'?: ((options?: ShowPopoverOptions) => void) | undefined;
   'prop:slot'?: string | undefined;
@@ -3072,7 +3074,8 @@ interface Common2<T extends Element> extends NativeIndexProps {
   'prop:scrollTop'?: number | undefined;
   'prop:setAttributeNode'?: ((attr: Attr) => Attr | null) | undefined;
   'prop:setAttributeNodeNS'?: ((attr: Attr) => Attr | null) | undefined;
-  'prop:setHTMLUnsafe'?: ((html: string) => void) | undefined;
+  'prop:setHTML'?: ((html: string, options?: SetHTMLOptions) => void) | undefined;
+  'prop:setHTMLUnsafe'?: ((html: string, options?: SetHTMLUnsafeOptions) => void) | undefined;
   'prop:setPointerCapture'?: ((pointerId: number) => void) | undefined;
   'prop:slot'?: string | undefined;
   'prop:tabIndex'?: number | undefined;
@@ -4020,7 +4023,8 @@ interface Common3<T extends Element> extends NativeIndexProps {
   'prop:scrollTop'?: number | undefined;
   'prop:setAttributeNode'?: ((attr: Attr) => Attr | null) | undefined;
   'prop:setAttributeNodeNS'?: ((attr: Attr) => Attr | null) | undefined;
-  'prop:setHTMLUnsafe'?: ((html: string) => void) | undefined;
+  'prop:setHTML'?: ((html: string, options?: SetHTMLOptions) => void) | undefined;
+  'prop:setHTMLUnsafe'?: ((html: string, options?: SetHTMLUnsafeOptions) => void) | undefined;
   'prop:setPointerCapture'?: ((pointerId: number) => void) | undefined;
   'prop:slot'?: string | undefined;
   'prop:tabIndex'?: number | undefined;
@@ -5076,7 +5080,8 @@ interface Common4<T extends Element> extends NativeIndexProps {
   'prop:scrollTop'?: number | undefined;
   'prop:setAttributeNode'?: ((attr: Attr) => Attr | null) | undefined;
   'prop:setAttributeNodeNS'?: ((attr: Attr) => Attr | null) | undefined;
-  'prop:setHTMLUnsafe'?: ((html: string) => void) | undefined;
+  'prop:setHTML'?: ((html: string, options?: SetHTMLOptions) => void) | undefined;
+  'prop:setHTMLUnsafe'?: ((html: string, options?: SetHTMLUnsafeOptions) => void) | undefined;
   'prop:setPointerCapture'?: ((pointerId: number) => void) | undefined;
   'prop:slot'?: string | undefined;
   'prop:tabIndex'?: number | undefined;
@@ -6307,7 +6312,8 @@ interface Common5<T extends Element> extends NativeIndexProps {
   'prop:scrollTop'?: number | undefined;
   'prop:setAttributeNode'?: ((attr: Attr) => Attr | null) | undefined;
   'prop:setAttributeNodeNS'?: ((attr: Attr) => Attr | null) | undefined;
-  'prop:setHTMLUnsafe'?: ((html: string) => void) | undefined;
+  'prop:setHTML'?: ((html: string, options?: SetHTMLOptions) => void) | undefined;
+  'prop:setHTMLUnsafe'?: ((html: string, options?: SetHTMLUnsafeOptions) => void) | undefined;
   'prop:setPointerCapture'?: ((pointerId: number) => void) | undefined;
   'prop:slot'?: string | undefined;
   'prop:tabIndex'?: number | undefined;
@@ -7537,7 +7543,8 @@ interface Common6<T extends Element> extends NativeIndexProps {
   'prop:scrollTop'?: number | undefined;
   'prop:setAttributeNode'?: ((attr: Attr) => Attr | null) | undefined;
   'prop:setAttributeNodeNS'?: ((attr: Attr) => Attr | null) | undefined;
-  'prop:setHTMLUnsafe'?: ((html: string) => void) | undefined;
+  'prop:setHTML'?: ((html: string, options?: SetHTMLOptions) => void) | undefined;
+  'prop:setHTMLUnsafe'?: ((html: string, options?: SetHTMLUnsafeOptions) => void) | undefined;
   'prop:setPointerCapture'?: ((pointerId: number) => void) | undefined;
   'prop:slot'?: string | undefined;
   'prop:tabIndex'?: number | undefined;
@@ -7858,9 +7865,9 @@ interface AProps2 extends Common0<HTMLAnchorElement | MathMLElement | SVGAElemen
   ping?: string | null | undefined;
   popover?: string | null | undefined;
   'prop:download'?: string | undefined;
-  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => DOMRect) | undefined;
-  'prop:getCTM'?: (() => DOMMatrix | null) | undefined;
-  'prop:getScreenCTM'?: (() => DOMMatrix | null) | undefined;
+  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => SVGRect) | undefined;
+  'prop:getCTM'?: (() => SVGMatrix | null) | undefined;
+  'prop:getScreenCTM'?: (() => SVGMatrix | null) | undefined;
   'prop:hreflang'?: string | undefined;
   'prop:ping'?: string | undefined;
   'prop:referrerPolicy'?: string | undefined;
@@ -7958,9 +7965,9 @@ interface AProps5 extends Common0<HTMLAnchorElement | MathMLElement | SVGAElemen
   name?: string | number | null | undefined;
   ping?: string | number | null | undefined;
   'prop:download'?: string | undefined;
-  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => DOMRect) | undefined;
-  'prop:getCTM'?: (() => DOMMatrix | null) | undefined;
-  'prop:getScreenCTM'?: (() => DOMMatrix | null) | undefined;
+  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => SVGRect) | undefined;
+  'prop:getCTM'?: (() => SVGMatrix | null) | undefined;
+  'prop:getScreenCTM'?: (() => SVGMatrix | null) | undefined;
   'prop:hreflang'?: string | undefined;
   'prop:ping'?: string | undefined;
   'prop:referrerPolicy'?: string | undefined;
@@ -8054,9 +8061,9 @@ interface AProps8 extends Common0<HTMLAnchorElement | MathMLElement | SVGAElemen
   name?: string | number | null | undefined;
   ping?: string | null | undefined;
   'prop:download'?: string | undefined;
-  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => DOMRect) | undefined;
-  'prop:getCTM'?: (() => DOMMatrix | null) | undefined;
-  'prop:getScreenCTM'?: (() => DOMMatrix | null) | undefined;
+  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => SVGRect) | undefined;
+  'prop:getCTM'?: (() => SVGMatrix | null) | undefined;
+  'prop:getScreenCTM'?: (() => SVGMatrix | null) | undefined;
   'prop:hreflang'?: string | undefined;
   'prop:ping'?: string | undefined;
   'prop:referrerPolicy'?: string | undefined;
@@ -8172,6 +8179,7 @@ interface AreaProps extends Common1<HTMLAreaElement> {
   'prop:host'?: string | undefined;
   'prop:hostname'?: string | undefined;
   'prop:href'?: string | undefined;
+  'prop:hreflang'?: string | undefined;
   'prop:noHref'?: boolean | undefined;
   'prop:password'?: string | undefined;
   'prop:pathname'?: string | undefined;
@@ -8185,6 +8193,7 @@ interface AreaProps extends Common1<HTMLAreaElement> {
   'prop:shape'?: string | undefined;
   'prop:target'?: string | undefined;
   'prop:toString'?: (() => string) | undefined;
+  'prop:type'?: string | undefined;
   'prop:username'?: string | undefined;
   referrerpolicy?: string | null | undefined;
   referrerPolicy?: string | null | undefined;
@@ -8216,6 +8225,7 @@ interface AudioProps extends Common1<HTMLAudioElement> {
     ((kind: TextTrackKind, label?: string, language?: string) => TextTrack) | undefined;
   'prop:autoplay'?: boolean | undefined;
   'prop:canPlayType'?: ((type: string) => CanPlayTypeResult) | undefined;
+  'prop:captureStream'?: (() => MediaStream) | undefined;
   'prop:controls'?: boolean | undefined;
   'prop:crossOrigin'?: string | null | undefined;
   'prop:currentTime'?: number | undefined;
@@ -8512,6 +8522,7 @@ interface CanvasProps extends Common1<HTMLCanvasElement> {
         ): ImageBitmapRenderingContext | null;
         (contextId: 'webgl', options?: WebGLContextAttributes): WebGLRenderingContext | null;
         (contextId: 'webgl2', options?: WebGLContextAttributes): WebGL2RenderingContext | null;
+        (contextId: 'webgpu'): GPUCanvasContext | null;
         (contextId: string, options?: any): RenderingContext | null;
       }
     | undefined;
@@ -8571,10 +8582,10 @@ interface CaptionProps extends Common1<HTMLTableCaptionElement> {
 }
 interface CircleProps extends Common2<SVGCircleElement> {
   crossOrigin?: string | number | null | undefined;
-  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => DOMRect) | undefined;
-  'prop:getCTM'?: (() => DOMMatrix | null) | undefined;
-  'prop:getPointAtLength'?: ((distance: number) => DOMPoint) | undefined;
-  'prop:getScreenCTM'?: (() => DOMMatrix | null) | undefined;
+  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => SVGRect) | undefined;
+  'prop:getCTM'?: (() => SVGMatrix | null) | undefined;
+  'prop:getPointAtLength'?: ((distance: number) => SVGPoint) | undefined;
+  'prop:getScreenCTM'?: (() => SVGMatrix | null) | undefined;
   'prop:getTotalLength'?: (() => number) | undefined;
   'prop:isPointInFill'?: ((point?: DOMPointInit) => boolean) | undefined;
   'prop:isPointInStroke'?: ((point?: DOMPointInit) => boolean) | undefined;
@@ -8686,9 +8697,9 @@ interface DatalistProps extends Common1<HTMLDataListElement> {
 }
 interface DefsProps extends Common2<SVGDefsElement> {
   crossOrigin?: string | number | null | undefined;
-  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => DOMRect) | undefined;
-  'prop:getCTM'?: (() => DOMMatrix | null) | undefined;
-  'prop:getScreenCTM'?: (() => DOMMatrix | null) | undefined;
+  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => SVGRect) | undefined;
+  'prop:getCTM'?: (() => SVGMatrix | null) | undefined;
+  'prop:getScreenCTM'?: (() => SVGMatrix | null) | undefined;
 }
 interface DelProps extends Common1<HTMLModElement> {
   children?:
@@ -8860,10 +8871,10 @@ interface DlProps extends Common1<HTMLDListElement> {
 }
 interface EllipseProps extends Common2<SVGEllipseElement> {
   crossOrigin?: string | number | null | undefined;
-  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => DOMRect) | undefined;
-  'prop:getCTM'?: (() => DOMMatrix | null) | undefined;
-  'prop:getPointAtLength'?: ((distance: number) => DOMPoint) | undefined;
-  'prop:getScreenCTM'?: (() => DOMMatrix | null) | undefined;
+  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => SVGRect) | undefined;
+  'prop:getCTM'?: (() => SVGMatrix | null) | undefined;
+  'prop:getPointAtLength'?: ((distance: number) => SVGPoint) | undefined;
+  'prop:getScreenCTM'?: (() => SVGMatrix | null) | undefined;
   'prop:getTotalLength'?: (() => number) | undefined;
   'prop:isPointInFill'?: ((point?: DOMPointInit) => boolean) | undefined;
   'prop:isPointInStroke'?: ((point?: DOMPointInit) => boolean) | undefined;
@@ -9027,9 +9038,9 @@ interface FilterProps extends Common2<SVGFilterElement> {
 }
 interface ForeignObjectProps extends Common2<SVGForeignObjectElement> {
   crossOrigin?: string | number | null | undefined;
-  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => DOMRect) | undefined;
-  'prop:getCTM'?: (() => DOMMatrix | null) | undefined;
-  'prop:getScreenCTM'?: (() => DOMMatrix | null) | undefined;
+  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => SVGRect) | undefined;
+  'prop:getCTM'?: (() => SVGMatrix | null) | undefined;
+  'prop:getScreenCTM'?: (() => SVGMatrix | null) | undefined;
 }
 interface FormProps extends Common1<HTMLFormElement> {
   accept?: string | null | undefined;
@@ -9092,9 +9103,9 @@ interface FormProps extends Common1<HTMLFormElement> {
 }
 interface GProps extends Common2<SVGGElement> {
   crossOrigin?: string | number | null | undefined;
-  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => DOMRect) | undefined;
-  'prop:getCTM'?: (() => DOMMatrix | null) | undefined;
-  'prop:getScreenCTM'?: (() => DOMMatrix | null) | undefined;
+  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => SVGRect) | undefined;
+  'prop:getCTM'?: (() => SVGMatrix | null) | undefined;
+  'prop:getScreenCTM'?: (() => SVGMatrix | null) | undefined;
 }
 interface H1Props extends Common1<HTMLHeadingElement> {
   align?: string | null | undefined;
@@ -9301,9 +9312,9 @@ interface IframeProps extends Common1<HTMLIFrameElement> {
 interface ImageProps extends Common2<SVGImageElement> {
   crossOrigin?: string | null | undefined;
   'prop:crossOrigin'?: string | null | undefined;
-  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => DOMRect) | undefined;
-  'prop:getCTM'?: (() => DOMMatrix | null) | undefined;
-  'prop:getScreenCTM'?: (() => DOMMatrix | null) | undefined;
+  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => SVGRect) | undefined;
+  'prop:getCTM'?: (() => SVGMatrix | null) | undefined;
+  'prop:getScreenCTM'?: (() => SVGMatrix | null) | undefined;
 }
 interface ImgProps extends Common1<HTMLImageElement> {
   align?: string | null | undefined;
@@ -9319,7 +9330,7 @@ interface ImgProps extends Common1<HTMLImageElement> {
     | null
     | undefined;
   crossorigin?: string | null | undefined;
-  crossOrigin?: string | null | undefined;
+  crossOrigin?: 'anonymous' | 'use-credentials' | null | undefined;
   decoding?: 'async' | 'auto' | 'sync' | null | undefined;
   fetchpriority?: string | null | undefined;
   fetchPriority?: 'auto' | 'high' | 'low' | null | undefined;
@@ -9336,7 +9347,7 @@ interface ImgProps extends Common1<HTMLImageElement> {
   'prop:align'?: string | undefined;
   'prop:alt'?: string | undefined;
   'prop:border'?: string | undefined;
-  'prop:crossOrigin'?: string | null | undefined;
+  'prop:crossOrigin'?: 'anonymous' | 'use-credentials' | null | undefined;
   'prop:decode'?: (() => Promise<void>) | undefined;
   'prop:decoding'?: 'async' | 'auto' | 'sync' | undefined;
   'prop:fetchPriority'?: 'auto' | 'high' | 'low' | undefined;
@@ -9453,6 +9464,7 @@ interface InputProps extends Common1<HTMLInputElement> {
   'prop:autocomplete'?: AutoFill | undefined;
   'prop:capture'?: string | undefined;
   'prop:checkValidity'?: (() => boolean) | undefined;
+  'prop:colorSpace'?: string | undefined;
   'prop:dirName'?: string | undefined;
   'prop:disabled'?: boolean | undefined;
   'prop:files'?: FileList | null | undefined;
@@ -9622,10 +9634,10 @@ interface LiProps extends Common1<HTMLLIElement> {
 }
 interface LineProps extends Common2<SVGLineElement> {
   crossOrigin?: string | number | null | undefined;
-  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => DOMRect) | undefined;
-  'prop:getCTM'?: (() => DOMMatrix | null) | undefined;
-  'prop:getPointAtLength'?: ((distance: number) => DOMPoint) | undefined;
-  'prop:getScreenCTM'?: (() => DOMMatrix | null) | undefined;
+  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => SVGRect) | undefined;
+  'prop:getCTM'?: (() => SVGMatrix | null) | undefined;
+  'prop:getPointAtLength'?: ((distance: number) => SVGPoint) | undefined;
+  'prop:getScreenCTM'?: (() => SVGMatrix | null) | undefined;
   'prop:getTotalLength'?: (() => number) | undefined;
   'prop:isPointInFill'?: ((point?: DOMPointInit) => boolean) | undefined;
   'prop:isPointInStroke'?: ((point?: DOMPointInit) => boolean) | undefined;
@@ -10107,10 +10119,10 @@ interface PProps extends Common1<HTMLParagraphElement> {
 }
 interface PathProps extends Common2<SVGPathElement> {
   crossOrigin?: string | number | null | undefined;
-  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => DOMRect) | undefined;
-  'prop:getCTM'?: (() => DOMMatrix | null) | undefined;
+  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => SVGRect) | undefined;
+  'prop:getCTM'?: (() => SVGMatrix | null) | undefined;
   'prop:getPointAtLength'?: ((distance: number) => DOMPoint) | undefined;
-  'prop:getScreenCTM'?: (() => DOMMatrix | null) | undefined;
+  'prop:getScreenCTM'?: (() => SVGMatrix | null) | undefined;
   'prop:getTotalLength'?: (() => number) | undefined;
   'prop:isPointInFill'?: ((point?: DOMPointInit) => boolean) | undefined;
   'prop:isPointInStroke'?: ((point?: DOMPointInit) => boolean) | undefined;
@@ -10148,20 +10160,20 @@ interface PictureProps extends Common1<HTMLPictureElement> {
 }
 interface PolygonProps extends Common2<SVGPolygonElement> {
   crossOrigin?: string | number | null | undefined;
-  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => DOMRect) | undefined;
-  'prop:getCTM'?: (() => DOMMatrix | null) | undefined;
-  'prop:getPointAtLength'?: ((distance: number) => DOMPoint) | undefined;
-  'prop:getScreenCTM'?: (() => DOMMatrix | null) | undefined;
+  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => SVGRect) | undefined;
+  'prop:getCTM'?: (() => SVGMatrix | null) | undefined;
+  'prop:getPointAtLength'?: ((distance: number) => SVGPoint) | undefined;
+  'prop:getScreenCTM'?: (() => SVGMatrix | null) | undefined;
   'prop:getTotalLength'?: (() => number) | undefined;
   'prop:isPointInFill'?: ((point?: DOMPointInit) => boolean) | undefined;
   'prop:isPointInStroke'?: ((point?: DOMPointInit) => boolean) | undefined;
 }
 interface PolylineProps extends Common2<SVGPolylineElement> {
   crossOrigin?: string | number | null | undefined;
-  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => DOMRect) | undefined;
-  'prop:getCTM'?: (() => DOMMatrix | null) | undefined;
-  'prop:getPointAtLength'?: ((distance: number) => DOMPoint) | undefined;
-  'prop:getScreenCTM'?: (() => DOMMatrix | null) | undefined;
+  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => SVGRect) | undefined;
+  'prop:getCTM'?: (() => SVGMatrix | null) | undefined;
+  'prop:getPointAtLength'?: ((distance: number) => SVGPoint) | undefined;
+  'prop:getScreenCTM'?: (() => SVGMatrix | null) | undefined;
   'prop:getTotalLength'?: (() => number) | undefined;
   'prop:isPointInFill'?: ((point?: DOMPointInit) => boolean) | undefined;
   'prop:isPointInStroke'?: ((point?: DOMPointInit) => boolean) | undefined;
@@ -10233,10 +10245,10 @@ interface RadialGradientProps extends Common2<SVGRadialGradientElement> {
 }
 interface RectProps extends Common2<SVGRectElement> {
   crossOrigin?: string | number | null | undefined;
-  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => DOMRect) | undefined;
-  'prop:getCTM'?: (() => DOMMatrix | null) | undefined;
-  'prop:getPointAtLength'?: ((distance: number) => DOMPoint) | undefined;
-  'prop:getScreenCTM'?: (() => DOMMatrix | null) | undefined;
+  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => SVGRect) | undefined;
+  'prop:getCTM'?: (() => SVGMatrix | null) | undefined;
+  'prop:getPointAtLength'?: ((distance: number) => SVGPoint) | undefined;
+  'prop:getScreenCTM'?: (() => SVGMatrix | null) | undefined;
   'prop:getTotalLength'?: (() => number) | undefined;
   'prop:isPointInFill'?: ((point?: DOMPointInit) => boolean) | undefined;
   'prop:isPointInStroke'?: ((point?: DOMPointInit) => boolean) | undefined;
@@ -10641,26 +10653,26 @@ interface StyleProps3 extends Common5<HTMLStyleElement | SVGStyleElement> {
 interface SvgProps extends Common2<SVGSVGElement> {
   crossOrigin?: string | number | null | undefined;
   'prop:animationsPaused'?: (() => boolean) | undefined;
-  'prop:checkEnclosure'?: ((element: SVGElement, rect: DOMRectReadOnly) => boolean) | undefined;
-  'prop:checkIntersection'?: ((element: SVGElement, rect: DOMRectReadOnly) => boolean) | undefined;
+  'prop:checkEnclosure'?: ((element: SVGElement, rect: SVGRect) => boolean) | undefined;
+  'prop:checkIntersection'?: ((element: SVGElement, rect: SVGRect) => boolean) | undefined;
   'prop:createSVGAngle'?: (() => SVGAngle) | undefined;
   'prop:createSVGLength'?: (() => SVGLength) | undefined;
-  'prop:createSVGMatrix'?: (() => DOMMatrix) | undefined;
+  'prop:createSVGMatrix'?: (() => SVGMatrix) | undefined;
   'prop:createSVGNumber'?: (() => SVGNumber) | undefined;
-  'prop:createSVGPoint'?: (() => DOMPoint) | undefined;
-  'prop:createSVGRect'?: (() => DOMRect) | undefined;
+  'prop:createSVGPoint'?: (() => SVGPoint) | undefined;
+  'prop:createSVGRect'?: (() => SVGRect) | undefined;
   'prop:createSVGTransform'?: (() => SVGTransform) | undefined;
   'prop:createSVGTransformFromMatrix'?: ((matrix?: DOMMatrix2DInit) => SVGTransform) | undefined;
   'prop:currentScale'?: number | undefined;
   'prop:deselectAll'?: (() => void) | undefined;
   'prop:forceRedraw'?: (() => void) | undefined;
-  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => DOMRect) | undefined;
-  'prop:getCTM'?: (() => DOMMatrix | null) | undefined;
+  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => SVGRect) | undefined;
+  'prop:getCTM'?: (() => SVGMatrix | null) | undefined;
   'prop:getCurrentTime'?: (() => number) | undefined;
   'prop:getElementById'?: ((elementId: string) => Element | null) | undefined;
   'prop:getEnclosureList'?:
     | ((
-        rect: DOMRectReadOnly,
+        rect: SVGRect,
         referenceElement: SVGElement | null,
       ) => NodeListOf<
         | SVGCircleElement
@@ -10677,7 +10689,7 @@ interface SvgProps extends Common2<SVGSVGElement> {
     | undefined;
   'prop:getIntersectionList'?:
     | ((
-        rect: DOMRectReadOnly,
+        rect: SVGRect,
         referenceElement: SVGElement | null,
       ) => NodeListOf<
         | SVGCircleElement
@@ -10692,7 +10704,7 @@ interface SvgProps extends Common2<SVGSVGElement> {
         | SVGUseElement
       >)
     | undefined;
-  'prop:getScreenCTM'?: (() => DOMMatrix | null) | undefined;
+  'prop:getScreenCTM'?: (() => SVGMatrix | null) | undefined;
   'prop:onafterprint'?: ((this: WindowEventHandlers, ev: Event) => any) | null | undefined;
   'prop:onbeforeprint'?: ((this: WindowEventHandlers, ev: Event) => any) | null | undefined;
   'prop:onbeforeunload'?:
@@ -10731,9 +10743,9 @@ interface SvgProps extends Common2<SVGSVGElement> {
 }
 interface SwitchProps extends Common2<SVGSwitchElement> {
   crossOrigin?: string | number | null | undefined;
-  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => DOMRect) | undefined;
-  'prop:getCTM'?: (() => DOMMatrix | null) | undefined;
-  'prop:getScreenCTM'?: (() => DOMMatrix | null) | undefined;
+  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => SVGRect) | undefined;
+  'prop:getCTM'?: (() => SVGMatrix | null) | undefined;
+  'prop:getScreenCTM'?: (() => SVGMatrix | null) | undefined;
 }
 interface SymbolProps extends Common2<SVGSymbolElement> {
   crossOrigin?: string | number | null | undefined;
@@ -10932,16 +10944,16 @@ interface TemplateProps extends Common1<HTMLTemplateElement> {
 }
 interface TextProps extends Common2<SVGTextElement> {
   crossOrigin?: string | number | null | undefined;
-  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => DOMRect) | undefined;
+  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => SVGRect) | undefined;
   'prop:getCharNumAtPosition'?: ((point?: DOMPointInit) => number) | undefined;
   'prop:getComputedTextLength'?: (() => number) | undefined;
-  'prop:getCTM'?: (() => DOMMatrix | null) | undefined;
-  'prop:getEndPositionOfChar'?: ((charnum: number) => DOMPoint) | undefined;
-  'prop:getExtentOfChar'?: ((charnum: number) => DOMRect) | undefined;
+  'prop:getCTM'?: (() => SVGMatrix | null) | undefined;
+  'prop:getEndPositionOfChar'?: ((charnum: number) => SVGPoint) | undefined;
+  'prop:getExtentOfChar'?: ((charnum: number) => SVGRect) | undefined;
   'prop:getNumberOfChars'?: (() => number) | undefined;
   'prop:getRotationOfChar'?: ((charnum: number) => number) | undefined;
-  'prop:getScreenCTM'?: (() => DOMMatrix | null) | undefined;
-  'prop:getStartPositionOfChar'?: ((charnum: number) => DOMPoint) | undefined;
+  'prop:getScreenCTM'?: (() => SVGMatrix | null) | undefined;
+  'prop:getStartPositionOfChar'?: ((charnum: number) => SVGPoint) | undefined;
   'prop:getSubStringLength'?: ((charnum: number, nchars: number) => number) | undefined;
   'prop:selectSubString'?: ((charnum: number, nchars: number) => void) | undefined;
 }
@@ -11024,16 +11036,16 @@ interface TextareaProps extends Common1<HTMLTextAreaElement> {
 }
 interface TextPathProps extends Common2<SVGTextPathElement> {
   crossOrigin?: string | number | null | undefined;
-  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => DOMRect) | undefined;
+  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => SVGRect) | undefined;
   'prop:getCharNumAtPosition'?: ((point?: DOMPointInit) => number) | undefined;
   'prop:getComputedTextLength'?: (() => number) | undefined;
-  'prop:getCTM'?: (() => DOMMatrix | null) | undefined;
-  'prop:getEndPositionOfChar'?: ((charnum: number) => DOMPoint) | undefined;
-  'prop:getExtentOfChar'?: ((charnum: number) => DOMRect) | undefined;
+  'prop:getCTM'?: (() => SVGMatrix | null) | undefined;
+  'prop:getEndPositionOfChar'?: ((charnum: number) => SVGPoint) | undefined;
+  'prop:getExtentOfChar'?: ((charnum: number) => SVGRect) | undefined;
   'prop:getNumberOfChars'?: (() => number) | undefined;
   'prop:getRotationOfChar'?: ((charnum: number) => number) | undefined;
-  'prop:getScreenCTM'?: (() => DOMMatrix | null) | undefined;
-  'prop:getStartPositionOfChar'?: ((charnum: number) => DOMPoint) | undefined;
+  'prop:getScreenCTM'?: (() => SVGMatrix | null) | undefined;
+  'prop:getStartPositionOfChar'?: ((charnum: number) => SVGPoint) | undefined;
   'prop:getSubStringLength'?: ((charnum: number, nchars: number) => number) | undefined;
   'prop:selectSubString'?: ((charnum: number, nchars: number) => void) | undefined;
 }
@@ -11242,16 +11254,16 @@ interface TrackProps extends Common1<HTMLTrackElement> {
 }
 interface TspanProps extends Common2<SVGTSpanElement> {
   crossOrigin?: string | number | null | undefined;
-  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => DOMRect) | undefined;
+  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => SVGRect) | undefined;
   'prop:getCharNumAtPosition'?: ((point?: DOMPointInit) => number) | undefined;
   'prop:getComputedTextLength'?: (() => number) | undefined;
-  'prop:getCTM'?: (() => DOMMatrix | null) | undefined;
-  'prop:getEndPositionOfChar'?: ((charnum: number) => DOMPoint) | undefined;
-  'prop:getExtentOfChar'?: ((charnum: number) => DOMRect) | undefined;
+  'prop:getCTM'?: (() => SVGMatrix | null) | undefined;
+  'prop:getEndPositionOfChar'?: ((charnum: number) => SVGPoint) | undefined;
+  'prop:getExtentOfChar'?: ((charnum: number) => SVGRect) | undefined;
   'prop:getNumberOfChars'?: (() => number) | undefined;
   'prop:getRotationOfChar'?: ((charnum: number) => number) | undefined;
-  'prop:getScreenCTM'?: (() => DOMMatrix | null) | undefined;
-  'prop:getStartPositionOfChar'?: ((charnum: number) => DOMPoint) | undefined;
+  'prop:getScreenCTM'?: (() => SVGMatrix | null) | undefined;
+  'prop:getStartPositionOfChar'?: ((charnum: number) => SVGPoint) | undefined;
   'prop:getSubStringLength'?: ((charnum: number, nchars: number) => number) | undefined;
   'prop:selectSubString'?: ((charnum: number, nchars: number) => void) | undefined;
 }
@@ -11289,9 +11301,9 @@ interface UlProps extends Common1<HTMLUListElement> {
 }
 interface UseProps extends Common2<SVGUseElement> {
   crossOrigin?: string | number | null | undefined;
-  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => DOMRect) | undefined;
-  'prop:getCTM'?: (() => DOMMatrix | null) | undefined;
-  'prop:getScreenCTM'?: (() => DOMMatrix | null) | undefined;
+  'prop:getBBox'?: ((options?: SVGBoundingBoxOptions) => SVGRect) | undefined;
+  'prop:getCTM'?: (() => SVGMatrix | null) | undefined;
+  'prop:getScreenCTM'?: (() => SVGMatrix | null) | undefined;
 }
 interface VideoProps extends Common1<HTMLVideoElement> {
   autoplay?: boolean | null | undefined;
@@ -11322,6 +11334,7 @@ interface VideoProps extends Common1<HTMLVideoElement> {
   'prop:autoplay'?: boolean | undefined;
   'prop:cancelVideoFrameCallback'?: ((handle: number) => void) | undefined;
   'prop:canPlayType'?: ((type: string) => CanPlayTypeResult) | undefined;
+  'prop:captureStream'?: (() => MediaStream) | undefined;
   'prop:controls'?: boolean | undefined;
   'prop:crossOrigin'?: string | null | undefined;
   'prop:currentTime'?: number | undefined;

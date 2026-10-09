@@ -1,5 +1,6 @@
 import { expect, it, vi } from 'vitest';
 import { resolve } from 'node:path';
+import { resolveConfig } from 'vite';
 import { zerodep, type ZerodepOptions } from '../src/vite.js';
 
 type Transform = (
@@ -43,6 +44,16 @@ function transforms(options: ZerodepOptions) {
   };
 }
 const source = `import { _state } from 'zerodep-js'; let count = _state(0); count++;`;
+
+it('构建默认使用 ES2025，保留应用显式配置的目标', async () => {
+  const defaults = await resolveConfig({ configFile: false, plugins: [zerodep()] }, 'build');
+  expect(defaults.build.target).toBe('es2025');
+  const configured = await resolveConfig(
+    { configFile: false, plugins: [zerodep()], build: { target: 'es2023' } },
+    'build',
+  );
+  expect(configured.build.target).toBe('es2023');
+});
 
 it('转换与项目类型检查分离，但框架结构诊断始终执行', async () => {
   const root = resolve('apps/example');

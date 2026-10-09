@@ -15,7 +15,7 @@ it('项目入口检查未被页面引用的源码，并把绑定写回错误定�
           strict: true,
           jsx: 'preserve',
           jsxImportSource: 'zerodep-js',
-          target: 'es2023',
+          target: 'es2025',
           module: 'preserve',
           moduleResolution: 'bundler',
           types: [],

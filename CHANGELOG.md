@@ -2,6 +2,9 @@
 
 ## 未发布 — 单仓库 CSS 与构建工具精简
 
+- TypeScript target/lib、消费夹具及 Vite 插件默认输出统一升级到 ES2025，Vite 仍允许应用显式覆盖目标；未自动注入 polyfill。
+- 使用官方新 SDK 重新生成 DOM/JSX 声明，修复 SDK 升级后生成结果过期导致的 CI 失败。
+
 - IDE 与项目统一切换到微软官方 TypeScript 7.1.0-dev.20261008.1，移除 JetBrains SDK GitHub 地址和七个平台 overrides；保留已验证的 WebStorm EAP 代理 API 适配与服务驱动类型引擎，不修改 SDK。
 
 - CSS 隐式变量支持含明确响应式来源的简单运算、比较、条件与逻辑短路参数；连续尺寸更新复用规则，保留特殊 CSS 值回退、求值顺序及跨组件/别名边界。响应式仍只缓存最近结果。

@@ -20,3 +20,5 @@ const result = compile(source, 'App.tsx');
 当前固定 微软官方 SDK `7.1.0-dev.20261008.1`，完整获取方式见 `docs/environment-setup.md`。开发版接口变化集中在本包的检查与语言工具适配中，不维护 TS6 或旧版本兼容线路。完整工具接入与迁移状态见仓库执行记录；CLI/协议检查通过不代表具体 IDE 的操作验收已完成。
 
 Vite 插件直接从 zerodep-js-compiler/vite 导入 zerodep，默认处理 TSX 与 CSS，不提供 extensions 或独立 CSS 插件。CSS 运行时代码属于 packages/css，编译器只生成对其 internal 的调用。
+
+zerodep() 默认将 Vite 构建目标设为 es2025，与工作区 TypeScript 目标一致；应用可以用 build.target 覆盖。插件不自动提供标准库 API 的 polyfill。

@@ -29,7 +29,7 @@ it('标准编辑器协议保留跨文件未保存内容、增量修改、绑定�
         strict: true,
         jsx: 'preserve',
         jsxImportSource: 'zerodep-js',
-        target: 'es2023',
+        target: 'es2025',
         module: 'preserve',
         moduleResolution: 'bundler',
         types: [],

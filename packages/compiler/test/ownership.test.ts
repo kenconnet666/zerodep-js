@@ -22,7 +22,7 @@ async function fixture() {
       compilerOptions: {
         strict: true,
         types: [],
-        target: 'es2023',
+        target: 'es2025',
         module: 'preserve',
         declaration: true,
         outDir: './out',

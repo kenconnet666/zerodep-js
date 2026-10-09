@@ -23,7 +23,7 @@ it('官方 LSP 与 API 共用未保存文档的类型，命名空间补全可应
           module: 'preserve',
           moduleResolution: 'bundler',
           types: [],
-          target: 'es2023',
+          target: 'es2025',
           paths: {
             'zerodep-js': [resolve('packages/core/src/index.ts')],
             'zerodep-js/*': [resolve('packages/core/src/*')],
