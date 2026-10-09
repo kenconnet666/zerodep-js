@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile, writeFile } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
 import { resolve } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { pathToFileURL, fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 import { root } from './environment.mjs';
 import { service, closeService } from './language-client.mjs';
@@ -20,6 +20,43 @@ const rows = [{ id: 1, title: 'row' }];
 `;
 const control = `const Field = _component((props: { value: string; onValueChange: (value: string) => void; label?: string }) => <span>{props.value}</span>);\n`;
 const cases = [
+  ...[
+    ['borderWidth', '_thin', '细边框'],
+    ['borderWidth', '_thick', '粗边框'],
+    ['color', '_primary', '主操作颜色'],
+    ['backgroundColor', '_surface', '容器表面'],
+    ['borderColor', '_border', '边框颜色'],
+    ['outlineColor', '_focus', '焦点提示'],
+    ['fill', '_text', '主要文字'],
+    ['stroke', '_muted', '次要文字'],
+    ['fontFamily', '_sans', '无衬线字体'],
+    ['fontSize', '_md', '正文字号'],
+    ['fontWeight', '_semibold', '半粗字重'],
+    ['lineHeight', '_normal', '常规行高'],
+    ['height', '_md', '常规控件高度'],
+    ['padding', '_md', '常规间距'],
+    ['paddingInline', '_md', '常规间距'],
+    ['paddingBlock', '_md', '常规间距'],
+    ['margin', '_md', '常规间距'],
+    ['marginInline', '_md', '常规间距'],
+    ['marginBlock', '_md', '常规间距'],
+    ['gap', '_md', '常规间距'],
+    ['borderRadius', '_full', '胶囊圆角'],
+    ['opacity', '_disabled', '禁用状态透明度'],
+    ['transitionDuration', '_fast', '快速动效时长'],
+    ['animationDuration', '_slow', '缓慢动效时长'],
+    ['transitionTimingFunction', '_standard', '标准缓动曲线'],
+    ['boxShadow', '_md', '常规阴影'],
+  ].map(([property, member, documentation]) => ({
+    name: `UI主题定义-${property}.${member}`,
+    directory: 'apps/docs/src',
+    source: `import { useCss } from 'zerodep-js-ui'; const s = useCss(); s.${property}.${member.slice(0, -1)}¦;`,
+    expected: member,
+    word: member.slice(0, -1),
+    details: true,
+    documentation,
+    definition: 'packages/ui/src/theme/tokens.ts',
+  })),
   {
     name: 'CSS说明-display.inlineFlex',
     source: "import { Css } from 'zerodep-js-css'; const s = new Css(); s.display.inlineFle¦;",
@@ -463,7 +500,9 @@ const App = _component(() => { const s = theme.useCss(); s.width.p¦(20); return
   },
 ];
 
-const selectedCases = values.case ? cases.filter((entry) => entry.name === values.case) : cases;
+const selectedCases = values.case
+  ? cases.filter((entry) => entry.name === values.case || entry.name.startsWith(values.case + '-'))
+  : cases;
 assert(selectedCases.length > 0, '没有匹配的补全用例。');
 
 const created = [];
@@ -485,7 +524,10 @@ try {
     values.binary ? { bin: resolve(values.binary), args: ['--lsp', '--stdio'] } : undefined,
   );
   for (const [index, entry] of selectedCases.entries()) {
-    const file = resolve(root, `apps/example/src/__completion_${id}_${index}.tsx`);
+    const file = resolve(
+      root,
+      `${entry.directory ?? 'apps/example/src'}/__completion_${id}_${index}.tsx`,
+    );
     const cursor = entry.source.indexOf('¦');
     const text = entry.source.replace('¦', '');
     await writeFile(file, text, { flag: 'wx' });
@@ -575,6 +617,26 @@ try {
         const documentation =
           typeof hover?.contents === 'string' ? hover.contents : (hover?.contents?.value ?? '');
         assert(documentation.includes(entry.documentation), '悬浮缺少对应语义的中文说明');
+      }
+      if (entry.definition) {
+        const definitions = await language.run(doc, () =>
+          language.request('textDocument/definition', {
+            textDocument: { uri: doc.uri },
+            position,
+          }),
+        );
+        const expectedFile = resolve(root, entry.definition).toLowerCase();
+        const match = (definitions ?? []).find(
+          (item) => fileURLToPath(item.targetUri ?? item.uri).toLowerCase() === expectedFile,
+        );
+        assert(match, '定义没有映射到主题关键字源码：' + JSON.stringify(definitions));
+        const target = await readFile(resolve(root, entry.definition), 'utf8');
+        const range = match.targetSelectionRange ?? match.range;
+        assert.equal(
+          target.slice(offset(target, range.start), offset(target, range.end)),
+          entry.expected,
+          '定义未指向正确成员',
+        );
       }
       console.log('通过：' + entry.name);
     } catch (error) {

@@ -2,6 +2,8 @@
 
 ## 未发布 — 单仓库 CSS 与构建工具精简
 
+- UI 主题关键字改为显式只读成员声明，恢复 _thin、颜色、间距等成员的定义导航和中文提示；保持 CSS 值类型与亮暗主题数据，新增 26 项实际 TS7 补全、hover 和源码定位回归。
+
 - 新增 zerodep-js-css 工作区包，迁入 CSS 作者、生成数据、关键字、隐式变量与浏览器/SSR 样式收集；移除跨框架适配和 bx，亮暗主题只在 UI 维护。
 - Vite 插件并入 zerodep-js-compiler/vite，删除独立 vite 包；CSS 转换内置，删除 CompileExtension、extensions 配置和公开 adapter 入口。
 - CSS 生成器复用 Babel，统一固定 JetBrains TS7，不引入 TS6。应用、UI、SSR、独立消费与语言测试统一使用本地工作区包。
