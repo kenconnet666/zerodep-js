@@ -12,11 +12,14 @@ import { checkGuards } from './guards.js';
 import { coreImport } from './imports.js';
 import { Development } from './development.js';
 import { isCssCall, prepareCss } from './css.js';
+import type { CompileExtension } from './extensions.js';
+export type { CompileExtension, PreparedExtension } from './extensions.js';
 
 export { CompileError } from './diagnostics.js';
 export type { Diagnostic } from './diagnostics.js';
 
 export interface CompileOptions {
+  extensions?: readonly CompileExtension[];
   runtimeModule?: string;
   /** Vite 开发转换使用；生产和预编译库默认不注入调试/HMR 协议。 */
   development?: boolean;
@@ -112,12 +115,18 @@ function transformFramework(
 
   const forCallbacks = collectForCallbacks(ast, report);
   checkGuards(ast, forCallbacks, report);
+  const extensions = (options.extensions ?? []).map((extension) =>
+    extension.prepare({ ast, program, source, filename }),
+  );
   const css = prepareCss(ast, program, source);
   const hasJsx = transformJsx(ast, helper, report, (node, attributes) => {
     const result = css.elements.get(node);
-    return result
+    let combined = result
       ? css.call('cssProps', [attributes, t.arrowFunctionExpression([], result)])
       : attributes;
+    for (const extension of extensions)
+      combined = extension.elementProps?.(node, combined) ?? combined;
+    return combined;
   });
   program.scope.crawl();
   transformForCallbacks(ast, forCallbacks, helper, report);
@@ -215,7 +224,12 @@ function transformFramework(
     VariableDeclarator(path) {
       if (!t.isIdentifier(path.node.id) || !path.getFunctionParent()) return;
       const init = path.get('init');
-      if (!css.records.has(path.node) && (!init.isCallExpression() || !isCssCall(init))) return;
+      if (
+        !css.records.has(path.node) &&
+        (!init.isCallExpression() || !isCssCall(init)) &&
+        !extensions.some((extension) => extension.derived?.(path))
+      )
+        return;
       const binding = path.scope.getBinding(path.node.id.name)!;
       if (binding.kind !== 'const') {
         report(path.node, 'ZJ1600', '自动追踪的 css 声明使用 const；修改样式来源的状态即可。');
@@ -326,6 +340,7 @@ function transformFramework(
         errors.length ||
         generated.has(path.node) ||
         css.identifiers.has(path.node) ||
+        extensions.some((extension) => extension.ownsIdentifier?.(path.node)) ||
         path.findParent((parent) => parent.isTSType())
       )
         return;

@@ -1,7 +1,8 @@
 import { createFilter, normalizePath, type FilterPattern, type Plugin, type Rolldown } from 'vite';
-import { compile } from 'zerodep-js-compiler';
+import { compile, type CompileExtension } from 'zerodep-js-compiler';
 
 export interface ZerodepOptions {
+  extensions?: readonly CompileExtension[];
   include?: FilterPattern;
   exclude?: FilterPattern;
 }
@@ -28,6 +29,7 @@ export function zerodep(options: ZerodepOptions = {}): Plugin {
         if (/\.m?js$/.test(filename) && !code.includes('zerodep-js')) return null;
         try {
           const result = compile(code, filename, {
+            extensions: options.extensions ?? [],
             development,
             hmr: this.environment?.config.consumer !== 'server',
           });
@@ -69,6 +71,7 @@ export function zerodep(options: ZerodepOptions = {}): Plugin {
       }
       // 最后一个组件被移除时，新模块不再有自接收代码；直接刷新，避免旧回调失效后残留旧页面。
       const result = compile(await context.read(), normalizePath(context.file), {
+        extensions: options.extensions ?? [],
         development: true,
         hmr: true,
       });
