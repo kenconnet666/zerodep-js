@@ -116,14 +116,16 @@ node scripts/language-services/webstorm-patch.mjs $webstormInstall check
 
 ### 自动导入使用公开包入口
 
-此构建默认的 IDE 补全会把 `useCss` 导入为 `zerodep-js-ui/src`，尽管该子路径没有公开。TS7 标准 LSP 返回的路径是正确的 `zerodep-js-ui`。在 Find Action → Registry 中将以下两项取消勾选：
+UI 包已使用下述源码类型入口。此时应保留 WebStorm 原生补全，以同时获得正确的包入口和自动调用括号。在 Find Action → Registry 中保持以下两项默认勾选：
 
-| Registry 键                                                     | 值      | 作用                                      |
-| --------------------------------------------------------------- | ------- | ----------------------------------------- |
-| `typescript.service.completion.customServiceContributorEnabled` | `false` | 改用标准 LSP 补全                         |
-| `typescript.service.completion.ownContributorsEnabled`          | `false` | 服务补全可用时，不再混入 IDE 自有补全候选 |
+| Registry 键                                                     | 值     | 作用                            |
+| --------------------------------------------------------------- | ------ | ------------------------------- |
+| `typescript.service.completion.customServiceContributorEnabled` | `true` | 保留 TypeScript 专用补全处理    |
+| `typescript.service.completion.ownContributorsEnabled`          | `true` | 保留 IDE 原生函数补全及括号插入 |
 
-保留 TypeScript 语言服务和服务驱动的类型引擎。已在真实编辑器验证：输入 `useC` 并接受补全后，`useCss` 会合并到现有 `zerodep-js-ui` 导入，悬浮类型仍可用。不需要为错误提示开放 `/src` 导出。
+保留 TypeScript 语言服务和服务驱动的类型引擎。已在真实编辑器验证：已有导入时，补全 `const s = useC` 得到 `const s = useCss()`；没有导入时，会同时补入 `from 'zerodep-js-ui'` 和调用括号。不需要开放 `/src` 导出。
+
+此前曾关闭上述两项以绕开错误的 `/src` 导入，但标准 LSP 对导入别名只插入函数名，失去了 IDE 的自动括号处理；源码类型入口修复后应撤销这项临时规避。设置 → 编辑器 → 常规 → 代码补全中的“适用时自动插入括号”保留开启，见 [WebStorm 补全说明](https://www.jetbrains.com/help/webstorm/auto-completing-code.html)。
 
 可用焦点探针检查服务端新增导入和合并导入两种情况：
 
