@@ -26,7 +26,7 @@ const cases = [
     source: `import { ${hook} } from 'zerodep-js-ui';\nexport const probe = () => ${hook.slice(0, -1)}¦();`,
     expected: hook,
     word: hook.slice(0, -1),
-    definition: 'packages/ui/src/components/provider/context.ts',
+    definition: 'packages/ui/src/provider/context.ts',
   })),
   {
     name: 'UI自动导入-合并包入口',
@@ -82,7 +82,7 @@ const cases = [
     word: member.slice(0, -1),
     details: true,
     documentation,
-    definition: 'packages/ui/src/theme/tokens.ts',
+    definition: 'packages/ui/src/provider/theme/tokens.ts',
   })),
   {
     name: 'CSS说明-display.inlineFlex',

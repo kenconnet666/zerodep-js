@@ -1,9 +1,9 @@
 import { _createContext, _useContext } from 'zerodep-js';
 import { createCssContext } from 'zerodep-js-css';
 import type { Css } from 'zerodep-js-css';
-import type { UiTheme } from '../../theme/theme.js';
-import type { UiLanguage } from '../../lang/types.js';
-import type { UiLocale } from '../../locale.js';
+import type { UiTheme } from './theme/theme.js';
+import type { UiLanguage } from './lang/types.js';
+import type { UiLocale } from './locale.js';
 
 // 模块只共享键；值和 CSS 作者由每个 Provider 的组件作用域持有。
 export const themeContext = _createContext<() => UiTheme>();

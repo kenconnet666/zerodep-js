@@ -18,7 +18,7 @@ import {
   type ProviderProps,
   type UiLanguage,
 } from '../dist/index.js';
-import { createLocale } from '../src/locale.js';
+import { createLocale } from '../src/provider/locale.js';
 
 function render(input: ProviderProps = {}) {
   const records: string[] = [];

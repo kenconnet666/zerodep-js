@@ -2,12 +2,14 @@
 
 组件库已提供 Provider、亮暗主题、中文/英文语言包和地区/时区工具。包保持 private，不加入框架四包发布流程。
 
-- `src/components/`：组件源码。
+- `src/provider/`：Provider 组件、上下文与相关基础配置。
 - `src/index.ts`：公开导出入口。
-- `src/theme/`：继承 SystemKeywords 的主题，保留系统属性及关键字。
-- `src/lang/`：内置语言包和自定义语言包契约。
-- `src/locale.ts`：基于 Intl、date-fns、@date-fns/tz 的格式化与日期转换。
+- `src/provider/theme/`：继承 SystemKeywords 的主题，保留系统属性及关键字。
+- `src/provider/lang/`：内置语言包和自定义语言包契约。
+- `src/provider/locale.ts`：基于 Intl、date-fns、@date-fns/tz 的格式化与日期转换。
 - `dist/`：构建后的 ESM、类型声明和 source map。
+
+后续组件按职责直接放在 `src/input/`、`src/display/` 等目录下，不再增加 `components` 层；目录随实现创建，公开 API 统一从 `src/index.ts` 导出。
 
 从仓库根目录执行 `pnpm build:ui`。构建先检查框架语义，再由 Vite + zerodep 插件转换 TSX，最后由固定的 TypeScript 7.1 生成声明；不能用普通 tsc 擦除结果执行组件宏。
 
