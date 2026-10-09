@@ -4,7 +4,7 @@
 
 - 直接在当前主目录工作，只有用户明确要求才创建或使用新工作树。保留用户已有改动。
 - 独立 TSX 细粒度响应式框架。2026-10-09 用户确认只维护本仓库 CSS：packages/css 承担作者、生成数据和浏览器/SSR 宿主；compiler 内置 CSS 转换和 Vite 插件，不维护 Vue/Svelte 适配、CompileExtension、公开 adapter 或 bx。相邻 zerodep-css 仓库只作为历史迁移来源，不继续开发或发布。
-- 2026-10-08 用户已授权建立 packages/ui 与 apps/docs，并确认实施 div Provider、继承 SystemKeywords 的亮暗主题、独立语言/地区/时区，以及日期库接入。契约见 docs/provider.md；UI 仍保持 private，其他组件另行讨论。框架主计划为 docs/production-plan.md。
+- 2026-10-08 用户已授权建立 packages/ui 与 apps/docs，并确认实施 div Provider、继承 SystemKeywords 的亮暗主题、独立语言/地区/时区，以及日期库接入。契约见 docs/provider.md；UI 仍保持 private。2026-10-09 已授权在 packages/ui/src/base 实施 Icon，静态导入 Lucide 数据；通用主题/token 归 packages/css，组件专用默认值留在组件内部，基础属性复用 CSS 输入类型。其他组件另行讨论。框架主计划为 docs/production-plan.md。
 - 2026-10-09 用户最新决定：IDE 与项目统一固定微软官方 TypeScript 7.1.0-dev.20261008.1，取代此前 JetBrains 分支。主包与平台包直接使用官方 npm 发行版，catalog 精确锁定并由 lockfile 校验；不维护 SDK 内核补丁或多版本兼容。Babel/Vite 不变；已授权备份并适配 WebStorm EAP 的 ts-go-proxy，开启服务驱动类型引擎并验证实际行为。
 - 首要目标是简单易维护、方便使用、良好类型提示与适当中文注释。性能次要；不为减少依赖或解析次数引入复杂后台、缓存和协议。
 - 2026-10-08 用户已授权按基础 API 计划自主执行、完善测试和修复，并允许为简洁性适当调整 API；在实施前记录选定契约，不必逐项再次确认。本地只跑相关焦点检查，完整测试交 CI。CSS 0.3.1 与框架 rc.8 已交付，发布/恢复证据见 docs/api-hardening-handoff.md；此前限时窗口已经结束，不作为后续截止时间，不触发额度重置或购买。

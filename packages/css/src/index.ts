@@ -14,3 +14,7 @@ export {
   cssStats,
 } from './browser.js';
 export { createCssContext } from './context.js';
+
+export { UiTheme, type UiColors } from './theme/theme.js';
+export { LightTheme, lightTheme } from './theme/light.js';
+export { DarkTheme, darkTheme } from './theme/dark.js';

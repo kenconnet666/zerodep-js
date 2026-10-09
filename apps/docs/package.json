@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@lucide/icons": "catalog:",
     "date-fns": "catalog:",
     "zerodep-js-css": "workspace:*",
     "zerodep-js": "workspace:*",

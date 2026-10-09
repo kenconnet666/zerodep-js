@@ -19,6 +19,7 @@
     "zerodep-js-css": "workspace:*"
   },
   "dependencies": {
+    "@lucide/icons": "catalog:",
     "date-fns": "catalog:",
     "@date-fns/tz": "catalog:"
   },

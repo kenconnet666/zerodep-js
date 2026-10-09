@@ -1,6 +1,6 @@
 # zerodep-js-css
 
-zerodep-js 自带的 CSS 包。作者、系统关键字、单位、选择器、隐式变量和浏览器/SSR 样式管理均在本仓库维护，不包含 Vue/Svelte 适配或 bx；亮暗主题只在 packages/ui 维护。
+zerodep-js 自带的 CSS 包。作者、系统关键字、单位、选择器、隐式变量和浏览器/SSR 样式管理均在本仓库维护，不包含 Vue/Svelte 适配或 bx；通用 UiTheme token 与亮暗主题在本包 src/theme 中维护，Provider 只负责注入作用域。
 
 ```tsx
 import { Css, css } from 'zerodep-js-css';

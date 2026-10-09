@@ -30,6 +30,9 @@ catalogs:
     '@jridgewell/trace-mapping':
       specifier: 0.3.31
       version: 0.3.31
+    '@lucide/icons':
+      specifier: 1.54.0
+      version: 1.54.0
     '@playwright/test':
       specifier: 1.63.0
       version: 1.63.0
@@ -149,6 +152,9 @@ importers:
 
   apps/docs:
     dependencies:
+      '@lucide/icons':
+        specifier: 'catalog:'
+        version: 1.54.0
       date-fns:
         specifier: 'catalog:'
         version: 4.4.0
@@ -301,6 +307,9 @@ importers:
       '@date-fns/tz':
         specifier: 'catalog:'
         version: 1.5.0
+      '@lucide/icons':
+        specifier: 'catalog:'
+        version: 1.54.0
       date-fns:
         specifier: 'catalog:'
         version: 4.4.0
@@ -479,6 +488,9 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
+
+  '@lucide/icons@1.54.0':
+    resolution: {integrity: sha512-uz1UYRqG8eRW0u9FULOSUKj8B8tfc7h9Lu0lDEfNsBzG1/PQOkSQTeCKKVyzGa9J7CyKbhSXGAhA3bC2aVoxmQ==}
 
   '@napi-rs/wasm-runtime@1.2.5':
     resolution: {integrity: sha512-HshSvXzmBxNzqejd3k/KemgQ3hdREUYFRRrgxOZ+gPljDIsO2SDZrVZMd4Z/HsxudQbE62OVyVFE8z9BCurfjA==}
@@ -1562,6 +1574,8 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.6.0
+
+  '@lucide/icons@1.54.0': {}
 
   '@napi-rs/wasm-runtime@1.2.5(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)':
     dependencies:

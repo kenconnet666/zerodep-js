@@ -1,7 +1,5 @@
 import { _createContext, _useContext } from 'zerodep-js';
-import { createCssContext } from 'zerodep-js-css';
-import type { Css } from 'zerodep-js-css';
-import type { UiTheme } from './theme/theme.js';
+import { createCssContext, type Css, type UiTheme } from 'zerodep-js-css';
 import type { UiLanguage } from './lang/types.js';
 import type { UiLocale } from './locale.js';
 

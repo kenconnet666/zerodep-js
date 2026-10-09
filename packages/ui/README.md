@@ -1,10 +1,11 @@
 # zerodep-js-ui
 
-组件库已提供 Provider、亮暗主题、中文/英文语言包和地区/时区工具。包保持 private，不加入框架四包发布流程。
+组件库提供 Provider、Icon、中文/英文语言包和地区/时区工具。亮暗主题与通用 token 由 zerodep-js-css 提供。包保持 private，不加入框架四包发布流程。
 
 - `src/provider/`：Provider 组件、上下文与相关基础配置。
 - `src/index.ts`：公开导出入口。
-- `src/provider/theme/`：继承 SystemKeywords 的主题，保留系统属性及关键字。
+- `src/base/Icon.tsx`：静态 Lucide 图标，颜色/尺寸复用 CSS 主题类型。
+- 通用主题位于 `packages/css/src/theme/`，从 `zerodep-js-css` 导入。
 - `src/provider/lang/`：内置语言包和自定义语言包契约。
 - `src/provider/locale.ts`：基于 Intl、date-fns、@date-fns/tz 的格式化与日期转换。
 - `dist/`：构建后的 ESM、类型声明和 source map。
@@ -18,7 +19,8 @@
 运行时和 zerodep-js-css 由应用提供，组件库不打包第二份实例。组件示例和使用说明放在 `apps/docs/src/pages/components/`。
 
 ```tsx
-import { Provider, lightTheme, zhCN, useCss, useLang, useLocale } from 'zerodep-js-ui';
+import { Provider, zhCN, useCss, useLang, useLocale } from 'zerodep-js-ui';
+import { lightTheme } from 'zerodep-js-css';
 
 <Provider theme={lightTheme} lang={zhCN} locale="zh-CN" timeZone="Asia/Shanghai">
   <App />
@@ -51,3 +53,29 @@ locale.formatNumber(1234.5);
 Portal 保留组件上下文，但不会自动继承原 DOM 上的字体/lang/dir；在 Portal 内放 `<Provider>...</Provider>` 即可重新应用继承配置。SSR 要传入与客户端首屏相同的配置，并由应用收集 CSS 和拼接标签；Provider 不改变现有 SSR 输出流程。
 
 相关检查：根目录 `pnpm test:ui`；浏览器场景位于 `tests/e2e/provider.spec.ts`，随现有三浏览器 CI 运行。
+
+## Icon
+
+Icon 在 Provider 内使用，直接渲染 SVG。图标数据来自静态导入的 `@lucide/icons`，按需打包；不会在运行时按名称下载。
+
+```tsx
+import { Search, Check } from '@lucide/icons';
+import { Icon, Provider } from 'zerodep-js-ui';
+
+<Provider>
+  <Icon icon={Search} />
+  <Icon icon={Search} color="_primary" size="_lg" />
+  <Icon icon={Check} color="var(--brand-color)" size="20px" aria-label="已完成" />
+  <button aria-label="搜索">
+    <Icon icon={Search} />
+  </button>
+</Provider>;
+```
+
+color/size 直接复用 CSS 作者 color.raw/fontSize.raw 的参数类型，保留主题关键字和原始 CSS 值。省略时继承文字颜色/字号，默认宽高为 1em；size 对应 font-size，数字不自动补 px。`s.keywords.color._primary` 是可传入的原值，`s.color._primary` 是 css(...) 使用的完整声明。
+
+strokeWidth、width/height、viewBox、事件、class/style 等原生 SVG 属性可透传；用户 class 在默认样式之后组合，style 遵循原生规则。Icon 的内容由 icon 数据负责，不同时提供 children 入口。
+
+默认图标作为装饰设置 aria-hidden；传入 aria-label 或 aria-labelledby 时默认作为 role=img 的有名称图形。显式 aria 属性可覆盖默认值。只有图标的按钮由按钮提供操作名称。
+
+组件/SSR 用例在 `packages/ui/test/icon.test.ts`；真实 CSR/SSR 接管、主题和更新验证在 `tests/e2e/icon.spec.ts`。组件只消费本地可信图标数据，应用自己的动态图标选择可使用普通条件表达式。

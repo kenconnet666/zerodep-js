@@ -52,3 +52,7 @@ export type { CssString } from './generated/base.js';
 export type { CssRule, CssInput } from './registry.js';
 export type { CssSelector } from './selectors.js';
 export { createCssContext } from './context.js';
+
+export { UiTheme, type UiColors } from './theme/theme.js';
+export { LightTheme, lightTheme } from './theme/light.js';
+export { DarkTheme, darkTheme } from './theme/dark.js';

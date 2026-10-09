@@ -1,5 +1,5 @@
 import { systemKeywords } from 'zerodep-js-css';
-import type { UiTheme, UiColors } from '../dist/index.js';
+import type { UiTheme, UiColors } from 'zerodep-js-css';
 
 // 定义导航不能以收窄为默认字面量或放宽成 any 为代价。
 const border: UiTheme['borderWidth'] = {

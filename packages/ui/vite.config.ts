@@ -9,7 +9,8 @@ export default defineConfig({
     minify: false,
     rolldownOptions: {
       // 宿主应用提供同一份运行时和样式引擎，避免组件库打入重复实例。
-      external: (id) => /^(zerodep-js|zerodep-js-css|date-fns|@date-fns\/tz)(\/|$)/.test(id),
+      external: (id) =>
+        /^(zerodep-js|zerodep-js-css|date-fns|@date-fns\/tz|@lucide\/icons)(\/|$)/.test(id),
     },
   },
 });

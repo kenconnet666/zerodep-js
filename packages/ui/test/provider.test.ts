@@ -1,3 +1,4 @@
+import { lightTheme, darkTheme, UiTheme } from 'zerodep-js-css';
 import { describe, expect, it } from 'vitest';
 import { _createRoot } from 'zerodep-js';
 import { defineComponent, element } from 'zerodep-js/internal';
@@ -7,14 +8,11 @@ import { createServerCssHost, withCssHost } from 'zerodep-js-css/server';
 import { addDays } from 'date-fns';
 import {
   Provider,
-  lightTheme,
-  darkTheme,
   zhCN,
   enUS,
   useCss,
   useLang,
   useLocale,
-  UiTheme,
   type ProviderProps,
   type UiLanguage,
 } from '../dist/index.js';

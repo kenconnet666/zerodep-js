@@ -20,6 +20,16 @@ const rows = [{ id: 1, title: 'row' }];
 `;
 const control = `const Field = _component((props: { value: string; onValueChange: (value: string) => void; label?: string }) => <span>{props.value}</span>);\n`;
 const cases = [
+  ...[
+    ['color', '_primary'],
+    ['size', '_lg'],
+  ].map(([property, member]) => ({
+    name: `Icon属性-${property}`,
+    directory: 'apps/docs/src',
+    source: `import { Icon } from 'zerodep-js-ui'; import { Search } from '@lucide/icons'; const view = <Icon icon={Search} ${property}="${member.slice(0, -1)}¦" />;`,
+    expected: member,
+    word: member.slice(0, -1),
+  })),
   ...['useCss', 'useLang', 'useLocale'].map((hook) => ({
     name: 'UI调用跳转-' + hook,
     directory: 'apps/docs/src',
@@ -82,7 +92,7 @@ const cases = [
     word: member.slice(0, -1),
     details: true,
     documentation,
-    definition: 'packages/ui/src/provider/theme/tokens.ts',
+    definition: 'packages/css/src/theme/tokens.ts',
   })),
   {
     name: 'CSS说明-display.inlineFlex',

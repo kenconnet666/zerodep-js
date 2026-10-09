@@ -1,5 +1,6 @@
 import { _component } from 'zerodep-js';
 import { ProviderDemo } from './ProviderDemo.js';
+import { IconDemo } from './IconDemo.js';
 
 export const ComponentsPage = _component(() => (
   <section id="components" aria-labelledby="components-heading">
@@ -9,5 +10,6 @@ export const ComponentsPage = _component(() => (
       组件源码按职责放在 <code>packages/ui/src</code> 下，Provider 位于 <code>provider</code> 目录。
     </p>
     <ProviderDemo />
+    <IconDemo />
   </section>
 ));
