@@ -10,7 +10,8 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : 2,
   reporter: 'list',
-  outputDir: './test-results',
+  // Playwright 会清空输出目录；与 IDE 备份及其他验证产物分开。
+  outputDir: './test-results/e2e',
   use: {
     baseURL,
     trace: 'retain-on-failure',

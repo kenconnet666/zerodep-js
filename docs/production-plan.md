@@ -12,7 +12,7 @@
 
 - 首要目标是简单维护、使用直接、类型提示准确、错误可定位以及适当中文注释。性能次要，不以绑定率、包体积或基准数字驱动复杂设计。
 - 保持显式变量式 _state/_derived、普通 TSX、_component 参数解构/默认值/实时 rest、既有 bind、For、Portal 和作用域模型。
-- 框架示例中的按钮、输入、任务行、确认弹窗仍用于验证基础 API。组件库已实施 Provider 基础设施与 base/Icon，其他成品组件、变体系统和 UI 发布另行讨论。
+- 框架示例中的按钮、输入、任务行、确认弹窗仍用于验证基础 API。组件库已实施 Provider 与 base/Icon/Text/Ripple/Spinner/ButtonBase，其他成品组件、变体系统和 UI 发布另行讨论。
 - 不以整页样式迁移率为目标。只迁移验证所需片段，保留仍有用途的原生 CSS、示例和业务逻辑。
 - 现有实现先审计为“已覆盖 / 真实缺口 / 不适用”，只修复实际问题、补足确有价值的用法，不重新实现已有能力。
 
@@ -118,6 +118,8 @@
 
 - core 导出 DomRef/_composeRefs：按顺序初始化、逆序清理，失败回滚与同步契约复用现有作用域。DOM bind:this 与 ref 可共存，先写引用，再初始化行为；行为清理后清空引用。仍只支持 DOM 和简单可写变量，SSR 不执行，接管成功后执行。
 - CSS 提供 CssValue 属性输入类型；UI 的 src/utils 提供 slotProps 解析/合并、事件组合与按压反馈工具，复用 core 的生命周期和取消机制。普通属性显式 undefined 可覆盖，class 保留双方类名，style 使用现有规范化后按声明顺序组合，DOM 事件仅显式选定项组合，ref 使用 core 组合；不深度合并任意对象。
+- CSS 的 _mergeClasses 合并同宿主生成类的声明并保留外部类名，外部样式仍按正常层叠。组件声明标记为可移除的纯包装，按需消费 Icon 不会带入未使用的 Spinner 图标。
 - src/base 实施 Text（有限原生文字标签、CSS 排版输入）、Ripple（直接父 button 上的视觉按压层）、Spinner（Lucide 图形与局部旋转）、ButtonBase（原生 button 底座、默认 type=button、disabled、独立 focus-visible 和 ripple slotProps）。按钮的语义默认值由底座拥有，slotProps 先用于 Ripple，后续成品按钮再扩展 Icon/Text 等具名槽。
 - Ripple 使用真实 pointer/keyboard 事件，只负责视觉，不模拟业务 click；处理取消、移出、滚动、失焦、禁用和卸载。动画只在挂载后创建并在清理时取消，减少动态效果时省略扩散。Spinner 用 CSS 媒体查询尊重减少动态效果。
 - 工具先保持小型、明确的 DOM/作用域职责；不新增 ref 数组、对象 ref、attachment 语法、全局焦点管理器、弹层或路由工具。焦点视觉优先 CSS，焦点范围/组内导航随未来控件实施。
+- 用户要求只保留 UI src/index.ts；scripts/generate-ui-exports.mjs 解析 AST 自动生成 base/utils 公开声明及选定 Provider API，pnpm ui:check 已接入完整检查。子目录不维护 index.ts。

@@ -1,7 +1,6 @@
 import { _component, _derived, type JSX, type Template } from 'zerodep-js';
 import { element } from 'zerodep-js/internal';
-import { css } from 'zerodep-js-css';
-import type { Css, UiTheme } from 'zerodep-js-css';
+import { css, _mergeClasses, type CssValue } from 'zerodep-js-css';
 import type { LucideIconData, LucideIconNode } from '@lucide/icons';
 import { buildLucideIconNode } from '@lucide/icons/build';
 import { useCss } from '../provider/context.js';
@@ -10,9 +9,9 @@ export type IconProps = Omit<JSX.IntrinsicElements['svg'], 'children' | 'color'>
   /** 静态导入的 Lucide 图标数据；不在运行时按名称下载图标。 */
   icon: LucideIconData;
   /** 当前主题颜色关键字或原始 CSS 颜色；省略时继承文字颜色。 */
-  color?: Parameters<Css<UiTheme>['color']['raw']>[0] | undefined;
+  color?: CssValue<'color'>;
   /** 对应 font-size，图标宽高为 1em；省略时继承周围字号，数字不自动补 px。 */
-  size?: Parameters<Css<UiTheme>['fontSize']['raw']>[0] | undefined;
+  size?: CssValue<'fontSize'>;
   children?: never;
 };
 
@@ -36,6 +35,13 @@ export const Icon = _component(({ icon, color, size, class: className, ...rest }
     return { attributes, children: children.map(renderNode) };
   });
   const named = _derived(Boolean(rest['aria-label'] || rest['aria-labelledby']));
+  const style = css(
+    s.display.inlineBlock,
+    s.verticalAlign.middle,
+    s.flexShrink.raw(0),
+    s.color.raw(color),
+    s.fontSize.raw(size),
+  );
   return (
     <svg
       {...svg.attributes}
@@ -43,14 +49,7 @@ export const Icon = _component(({ icon, color, size, class: className, ...rest }
       role={named ? 'img' : undefined}
       aria-hidden={named ? undefined : true}
       {...rest}
-      class={css(
-        s.display.inlineBlock,
-        s.verticalAlign.middle,
-        s.flexShrink.raw(0),
-        s.color.raw(color),
-        s.fontSize.raw(size),
-        className,
-      )}
+      class={_mergeClasses(style, className)}
     >
       {svg.children}
     </svg>

@@ -64,6 +64,20 @@ export function createRuleRegistry(
   };
   return {
     css,
+    mergeClasses(this: void, ...values: readonly (string | null | undefined | false)[]): string {
+      const bodies: string[] = [];
+      const external = new Set<string>();
+      for (const value of values) {
+        if (!value) continue;
+        for (const name of value.split(/\s+/).filter(Boolean)) {
+          const rule = byName.get(name);
+          if (rule && (!rule.kind || rule.kind === 'class')) bodies.push(rule.body);
+          else external.add(name);
+        }
+      }
+      // 本宿主生成类按声明顺序合并；外部类名保留原样，遵循普通 CSS 层叠。
+      return [bodies.length ? css(...bodies) : '', ...external].filter(Boolean).join(' ');
+    },
     keyframes: (...parts: CssInput[]) => register(joinFragments(parts), 'keyframes'),
     globalCss(this: void, key: string, ...parts: CssInput[]): void {
       if (!parts.length) {

@@ -230,6 +230,8 @@ export function transformComponents(
       transformReturns(setup, helper);
       // setup 语句执行一次，返回的渲染表达式保留独立的更新位置。
       path.node.callee = helper('defineComponent', []).callee;
+      // 定义组件只建立包装函数；未使用的组件及其静态图标应允许打包器移除。
+      t.addComment(path.node, 'leading', '#__PURE__');
       transformed = true;
     },
   });

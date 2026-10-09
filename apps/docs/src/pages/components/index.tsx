@@ -1,6 +1,7 @@
 import { _component } from 'zerodep-js';
 import { ProviderDemo } from './ProviderDemo.js';
 import { IconDemo } from './IconDemo.js';
+import { BaseDemo } from './BaseDemo.js';
 
 export const ComponentsPage = _component(() => (
   <section id="components" aria-labelledby="components-heading">
@@ -11,5 +12,6 @@ export const ComponentsPage = _component(() => (
     </p>
     <ProviderDemo />
     <IconDemo />
+    <BaseDemo />
   </section>
 ));

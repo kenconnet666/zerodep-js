@@ -6,6 +6,7 @@ export type { CssSelector } from './selectors.js';
 
 export {
   css,
+  _mergeClasses,
   keyframes,
   globalCss,
   hydrateCss,
@@ -13,6 +14,7 @@ export {
   disposeCss,
   cssStats,
 } from './browser.js';
+export type { CssValue } from './value-types.js';
 export { createCssContext } from './context.js';
 
 export { UiTheme, type UiColors } from './theme/theme.js';

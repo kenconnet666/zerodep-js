@@ -4,6 +4,7 @@ import { serializeStyleRules } from './serialization.js';
 export { serializeCssRules } from './serialization.js';
 
 export interface ServerCssHost {
+  mergeClasses(...values: readonly (string | null | undefined | false)[]): string;
   css(...parts: CssInput[]): string;
   keyframes(...parts: CssInput[]): string;
   globalCss(key: string, ...parts: CssInput[]): void;
@@ -17,6 +18,7 @@ const current = new AsyncLocalStorage<ServerCssHost>();
 export function createServerCssHost(options: { nonce?: string } = {}): ServerCssHost {
   const registry = createRuleRegistry(() => {});
   return {
+    mergeClasses: registry.mergeClasses,
     css: registry.css,
     keyframes: registry.keyframes,
     globalCss: registry.globalCss,
@@ -43,6 +45,9 @@ export function requireHost(): ServerCssHost {
   return host;
 }
 export const keyframes = (...parts: CssInput[]): string => requireHost().keyframes(...parts);
+export const _mergeClasses = (...values: readonly (string | null | undefined | false)[]): string =>
+  requireHost().mergeClasses(...values);
+export type { CssValue } from './value-types.js';
 export const globalCss = (key: string, ...parts: CssInput[]): void =>
   requireHost().globalCss(key, ...parts);
 

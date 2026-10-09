@@ -21,6 +21,25 @@ const rows = [{ id: 1, title: 'row' }];
 const control = `const Field = _component((props: { value: string; onValueChange: (value: string) => void; label?: string }) => <span>{props.value}</span>);\n`;
 const cases = [
   ...[
+    ['Text', 'color', '_muted'],
+    ['Text', 'weight', '_semibold'],
+    ['Ripple', 'color', '_primary'],
+  ].map(([component, property, member]) => ({
+    name: `基础属性-${component}.${property}`,
+    directory: 'apps/docs/src',
+    source: `import { ${component} } from 'zerodep-js-ui'; const view = <${component} ${property}="${member.slice(0, -1)}¦" />;`,
+    expected: member,
+    word: member.slice(0, -1),
+  })),
+  {
+    name: '基础属性-slotProps状态',
+    directory: 'apps/docs/src',
+    source:
+      "import { ButtonBase } from 'zerodep-js-ui'; const view = <ButtonBase slotProps={{ripple: state => ({color: state.dis¦ ? '_disabled' : '_primary'})}} />;",
+    expected: 'disabled',
+    word: 'dis',
+  },
+  ...[
     ['color', '_primary'],
     ['size', '_lg'],
   ].map(([property, member]) => ({

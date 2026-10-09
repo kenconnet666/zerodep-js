@@ -15,3 +15,5 @@ const card = css(s.padding.rem(1), s.display.flex);
 生成数据来自固定的 csstype，使用 pnpm css:generate 更新，pnpm css:check 验证。生成器复用 Babel，不需要 TS6；中文文档、类型用例和实际 TS7 补全在当前仓库验证。源码来源为原 zerodep-css 仓库 e5a0bfe，第三方许可见 THIRD_PARTY_NOTICES.md。
 
 完整写法与边界见仓库 docs/css.md。
+
+组件属性可复用 `CssValue<'color'>`、`CssValue<'fontSize'>` 等输入类型，默认包含 UiTheme 的关键字；第二个类型参数可指定自定义主题。`_mergeClasses(...values)` 合并本宿主生成类的声明并保留外部类名，适合组件 class 与 slotProps 转发；普通外部类名仍按 CSS 层叠规则生效。
