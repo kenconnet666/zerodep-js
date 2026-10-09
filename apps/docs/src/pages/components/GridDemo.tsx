@@ -23,7 +23,7 @@ export const GridDemo = _component(() => {
           max="5"
           value={columns}
           onInput={(event) => {
-            columns = Math.max(1, Math.min(5, Number(event.currentTarget.value) || 1));
+            columns = Math.max(1, Math.min(5, Math.trunc(Number(event.currentTarget.value)) || 1));
           }}
         />
       </label>
@@ -35,7 +35,7 @@ export const GridDemo = _component(() => {
           max="12"
           value={count}
           onInput={(event) => {
-            count = Math.max(0, Math.min(12, Number(event.currentTarget.value) || 0));
+            count = Math.max(0, Math.min(12, Math.trunc(Number(event.currentTarget.value)) || 0));
           }}
         />
       </label>
