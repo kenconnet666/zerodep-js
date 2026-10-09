@@ -21,6 +21,18 @@ const rows = [{ id: 1, title: 'row' }];
 const control = `const Field = _component((props: { value: string; onValueChange: (value: string) => void; label?: string }) => <span>{props.value}</span>);\n`;
 const cases = [
   ...[
+    ['columns', 'subgrid'],
+    ['autoFlow', 'row'],
+    ['justifyItems', 'stretch'],
+    ['gap', '_md'],
+  ].map(([property, member]) => ({
+    name: `Grid属性-${property}`,
+    directory: 'apps/docs/src',
+    source: `import { Grid } from 'zerodep-js-ui'; const view = <Grid ${property}="${member.slice(0, -1)}¦" />;`,
+    expected: member,
+    word: member.slice(0, -1),
+  })),
+  ...[
     ['Button', 'variant', 'outline'],
     ['Button', 'color', '_primary'],
     ['IconButton', 'size', '_lg'],

@@ -2,6 +2,13 @@
 
 当前目录：C:\Users\lionheart\WebstormProjects\zerodep-js，分支 main。先读 AGENTS.md，再检查 git status、HEAD 和对应 CI；旧发行版和旧交接快照不能代表当前源码。
 
+## 后续 Grid（2026-10-09）
+
+- 新增 layout/Grid.tsx 与 GridDemo，根导出扩至 47 项。普通网格支持 CSS 轨道/自动填充/跨格；attached 用明确数字列数、零间距、按行单格处理二维接缝与末行不满的阶梯外轮廓。无新增依赖、测量观察器或断点系统。
+- 稳定 API 见 [Grid](grid.md)。类型与 SSR 用例在 grid-types.tsx、grid.test.ts，CSR/SSR 浏览器矩阵在 tests/e2e/grid.spec.ts；不沿用前一轮按钮的 CI 作为 Grid 验收。
+- 本地通过 Grid SSR 4 项（连同 Flex/按钮回归共 11 项）、Chromium CSR/SSR 6 项（含 80 组列数/项数圆角组合）、UI/docs 构建、类型正反例、4 项补全、47 个根导出检查和相关 lint/格式。新提交的完整矩阵仍以当前 HEAD 工程 CI 为准。
+- 上一提交 2b525c3 的完整 CI 37951272868 已成功。
+
 ## 本轮结果
 
 - 已实现 Button、IconButton、ToggleButton、LinkButton、Flex。MenuButton 明确暂不做；不保留 Group 名称或各类专用 Group。

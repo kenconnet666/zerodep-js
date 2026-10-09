@@ -87,6 +87,8 @@ equal 沿主轴分配空间；纵向等高需要容器有明确可分配高度�
 
 Flex 不共享或改写子项的 variant/disabled/loading/pressed，不自动加 toolbar 角色，也不实现方向键导航。可显式提供 role=group 和名称，Tab 仍逐个访问原生控件。
 
+需要同时对齐行列或二维相连时使用 [Grid](grid.md)。Flex 的换行仍属于一维主轴布局，不跨行推算相连圆角。
+
 ## Flex 相连布局
 
 ```tsx

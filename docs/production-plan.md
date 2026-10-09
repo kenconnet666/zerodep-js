@@ -149,3 +149,9 @@
 - 加载采用原生 disabled || loading；不承诺保留焦点，不自动恢复焦点。LinkButton 不可用时移除 href。ToggleButton 使用受控 pressed/onPressedChange 与 bind:pressed。
 - core 修复绑定类型映射丢失 ARIA 必填成员的问题，没有新增运行时 API。UI 私有样式/内容不进入根入口，自动入口增加 layout 扫描。
 - 本地相关检查与中文提交按阶段完成；完整矩阵由同一提交 CI 验证，UI 仍 private，不进行 npm 发布。
+
+## 13. Grid 二维布局
+
+2026-10-09 用户授权新增 Grid。复用现有 CSS 作者，数字 columns 表示等宽列，普通模式可直接传原生轨道、自动填充、命名区域和自动放置；子项跨格使用原生 CSS。详细契约见 [Grid](grid.md)。
+
+attached 使用明确的正整数列数、零间距与按行单格布局，CSS 选择器按可见兼容子项计算二维接缝和外侧凸角，末行不足时保留阶梯外轮廓，不插入占位。不新增测量观察器或断点 DSL，不将相连保证扩展到 auto-fit、dense、跨格或 CSS order；DOM 列表重排正常支持。

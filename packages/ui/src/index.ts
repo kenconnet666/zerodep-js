@@ -13,6 +13,7 @@ export {
   ToggleButton,
 } from './base/ToggleButton.js';
 export { type FlexProps, Flex } from './layout/Flex.js';
+export { type GridProps, Grid } from './layout/Grid.js';
 export { useCss, useLang, useLocale } from './provider/context.js';
 export { enUS } from './provider/lang/en-US.js';
 export { type UiLanguage } from './provider/lang/types.js';

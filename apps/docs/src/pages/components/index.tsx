@@ -5,6 +5,7 @@ import { BaseDemo } from './BaseDemo.js';
 import { SizingDemo } from './SizingDemo.js';
 import { MeasurementDemo } from './MeasurementDemo.js';
 import { ButtonDemo } from './ButtonDemo.js';
+import { GridDemo } from './GridDemo.js';
 
 export const ComponentsPage = _component(() => (
   <section id="components" aria-labelledby="components-heading">
@@ -19,5 +20,6 @@ export const ComponentsPage = _component(() => (
     <SizingDemo />
     <MeasurementDemo />
     <ButtonDemo />
+    <GridDemo />
   </section>
 ));

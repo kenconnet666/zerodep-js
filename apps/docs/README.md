@@ -6,6 +6,8 @@
 
 ButtonDemo 展示 Button/IconButton/ToggleButton/LinkButton 与 Flex，包含原生表单、受控切换、加载、独立槽转发和相连布局的隐藏/重排/RTL/纵向书写。稳定 API 说明集中在 [按钮与 Flex](../../docs/buttons.md)。
 
+GridDemo 展示原生自动填充/跨列，以及二维相连的动态列数、项数、隐藏、重排、RTL 和纵向书写，契约见 [Grid](../../docs/grid.md)。
+
 从仓库根目录执行：
 
 ```sh
