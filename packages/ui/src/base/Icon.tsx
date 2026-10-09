@@ -23,8 +23,8 @@ function renderNode([tag, attributes, children]: LucideIconNode): Template {
 
 export const Icon = _component(({ icon, color, size, class: className, ...rest }: IconProps) => {
   const s = useCss();
-  const svg = _derived(
-    buildLucideIconNode(icon, {
+  const svg = _derived.by(() => {
+    const [, attributes, children = []] = buildLucideIconNode(icon, {
       size: '1em',
       includeDefaultClasses: false,
       attributeNames: {
@@ -32,12 +32,13 @@ export const Icon = _component(({ icon, color, size, class: className, ...rest }
         'stroke-linecap': 'strokeLinecap',
         'stroke-linejoin': 'strokeLinejoin',
       },
-    }),
-  );
+    });
+    return { attributes, children: children.map(renderNode) };
+  });
   const named = _derived(Boolean(rest['aria-label'] || rest['aria-labelledby']));
   return (
     <svg
-      {...svg[1]}
+      {...svg.attributes}
       focusable="false"
       role={named ? 'img' : undefined}
       aria-hidden={named ? undefined : true}
@@ -51,7 +52,7 @@ export const Icon = _component(({ icon, color, size, class: className, ...rest }
         className,
       )}
     >
-      {svg[2]?.map(renderNode)}
+      {svg.children}
     </svg>
   );
 });
