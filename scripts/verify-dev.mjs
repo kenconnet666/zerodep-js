@@ -128,9 +128,11 @@ hydrateCss();
 _inspect();
 globalThis.__loads = (globalThis.__loads ?? 0) + 1;
 globalThis.__disposals = 0;
+globalThis.__hmrErrors = [];
 const options = { target: document.querySelector('#app'), props: { onDestroy() {globalThis.__disposals++;} } };
 let dispose = _mount(App, options);
 if (import.meta.hot) {
+  import.meta.hot.on('vite:error', ({err}) => globalThis.__hmrErrors.push(err.message));
   import.meta.hot.accept('./App.tsx', (next) => {if (next) {dispose();dispose = _mount(next.App, options);}});
   import.meta.hot.dispose(() => dispose());
 }
@@ -237,6 +239,11 @@ if(import.meta.hot)import.meta.hot.dispose(stop);
   await writeFile(resolve(fixture, 'App.tsx'), source('错误版本', true));
   await page.waitForFunction(() =>
     document.querySelector('vite-error-overlay')?.shadowRoot?.textContent?.includes('ZJ1203'),
+  );
+  // hotUpdate 的错误通过 HMR 发送，不保证经过服务端 logger；在错误阶段验证实际诊断通道。
+  assert(
+    await page.evaluate(() => globalThis.__hmrErrors.some((message) => message.includes('ZJ1203'))),
+    '非法 props 写入必须通过 vite:error 送达浏览器',
   );
   assert.equal(await page.locator('#app').getByRole('button').textContent(), '版本二:0');
   await writeFile(resolve(fixture, 'App.tsx'), source('版本三'));
@@ -352,7 +359,6 @@ if(import.meta.hot)import.meta.hot.dispose(stop);
   await writeFile(resolve(fixture, 'App.tsx'), "export {App} from './Replacement.tsx';");
   await expect(page.locator('#app h1')).toHaveText('转发入口');
   await expect(page.locator('[data-local-count]')).toHaveText('9');
-  assert(logs.some((message) => String(message).includes('ZJ1203')));
   assert.equal(
     await page.evaluate(() => globalThis.__documentProbe),
     undefined,
