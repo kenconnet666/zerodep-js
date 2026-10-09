@@ -9,7 +9,9 @@
 - `src/provider/locale.ts`：基于 Intl、date-fns、@date-fns/tz 的格式化与日期转换。
 - `dist/`：构建后的 ESM、类型声明和 source map。
 
-后续组件按职责直接放在 `src/input/`、`src/display/` 等目录下，不再增加 `components` 层；目录随实现创建，公开 API 统一从 `src/index.ts` 导出。
+后续组件按职责直接放在 `src/input/`、`src/display/`、`src/feedback/`、`src/layout/`、`src/navigation/` 下，不再增加 `components` 层。这五个目录目前仅放置 `.gitkeep`，用于在 Git 中保留目录，不代表已有组件实现；公开 API 统一从 `src/index.ts` 导出。
+
+本阶段交接见 [2026-10-09 交接文档](../../docs/handoff-2026-10-09.md)。
 
 从仓库根目录执行 `pnpm build:ui`。构建先检查框架语义，再由 Vite + zerodep 插件转换 TSX，最后由固定的 TypeScript 7.1 生成声明；不能用普通 tsc 擦除结果执行组件宏。
 
