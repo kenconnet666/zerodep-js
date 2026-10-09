@@ -42,6 +42,10 @@ it('ButtonBase 保留原生按钮语义、独立焦点样式及可关闭 Ripple'
   expect(result.html).not.toContain('aria-hidden');
   expect(result.css).toContain(':focus-visible');
   expect(render(ButtonBase, { type: 'submit', children: '提交' }).html).toContain('type="submit"');
+  const forwarded = render(ButtonBase, { slotRipple: { color: '#123456', 'data-slot': 'ripple' } });
+  expect(forwarded.html).toContain('data-slot="ripple"');
+  expect(forwarded.html).not.toContain('slotRipple=');
+  expect(forwarded.css).toContain('color:#123456;');
 });
 it('Ripple SSR 只输出视觉层，不读取 document 或安装监听', () => {
   const result = render(Ripple, { color: '_primary' });

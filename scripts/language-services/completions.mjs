@@ -32,10 +32,10 @@ const cases = [
     word: member.slice(0, -1),
   })),
   {
-    name: '基础属性-slotProps状态',
+    name: '基础属性-slotRipple状态',
     directory: 'apps/docs/src',
     source:
-      "import { ButtonBase } from 'zerodep-js-ui'; const view = <ButtonBase slotProps={{ripple: state => ({color: state.dis¦ ? '_disabled' : '_primary'})}} />;",
+      "import { ButtonBase } from 'zerodep-js-ui'; const view = <ButtonBase slotRipple={state => ({color: state.dis¦ ? '_disabled' : '_primary'})} />;",
     expected: 'disabled',
     word: 'dis',
   },

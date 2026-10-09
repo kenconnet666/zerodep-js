@@ -91,12 +91,12 @@ Spinner 复用 Lucide 图形，继承 Icon 的颜色/尺寸与可访问属性；
 
 Ripple 直接放在 position:relative 的 button 内，自己的 span 负责绝对定位和裁剪。color 接受主题关键字/CSS 值；centered 控制从中心扩散，键盘总从中心反馈。disabled、指针取消/移出、滚动、失焦和卸载均会结束按压。它不合成 click，也不承担焦点语义。
 
-ButtonBase 是后续按钮的原生底座，默认 type=button；支持原生按钮属性、disabled 和 ripple 开关。关闭 Ripple 后保留 focus-visible 轮廓。slotProps.ripple 可为对象或接收 {disabled} 的纯函数；disabled 由底座拥有，槽不能覆盖。
+ButtonBase 是后续按钮的原生底座，默认 type=button；支持原生按钮属性、disabled 和 ripple 开关。关闭 Ripple 后保留 focus-visible 轮廓。slotRipple 可为对象或接收 {disabled} 的纯函数；disabled 由底座拥有，槽不能覆盖。
 
 ```tsx
 <ButtonBase
   aria-label="搜索"
-  slotProps={{ ripple: (state) => ({ color: state.disabled ? '_disabled' : '_primary' }) }}
+  slotRipple={(state) => ({ color: state.disabled ? '_disabled' : '_primary' })}
 >
   <Icon icon={Search} />
   <Text weight="_semibold">搜索</Text>
@@ -115,3 +115,5 @@ CssValue<K, Theme> 和 _mergeClasses 在 zerodep-js-css 中；DomRef<T> 与 _com
 ## 自动维护唯一入口
 
 运行 pnpm ui:generate 更新 src/index.ts；pnpm ui:check 检查过期与重复导出，已进入 CI 的 pnpm check。生成器用 Babel AST 读取 base/utils 下的具名声明，递归收集并区分 type 导出；拒绝链接、子目录 index.ts 和重复名称。Provider 的上下文实现通过明确入口清单限制，避免暴露内部键。
+
+组件转发使用独立 slotXxx 属性：当前为 slotRipple，后续部件分别使用 slotIcon、slotText 等自己的属性。无统一 slotProps 对象。SlotProps<P, S> 与 _resolveSlotProps/_mergeSlotProps 是单槽通用工具，不改变这一使用约定。

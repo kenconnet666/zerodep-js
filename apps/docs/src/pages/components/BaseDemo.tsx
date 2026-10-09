@@ -65,13 +65,11 @@ export const BaseDemo = _component(() => {
               clicks++;
             }}
             style="width:160px;height:48px;border:1px solid currentColor;border-radius:8px;gap:8px;"
-            slotProps={{
-              ripple: (state) => ({
-                color: state.disabled ? '_disabled' : '_primary',
-                'data-ripple': true,
-                ref: observe,
-              }),
-            }}
+            slotRipple={(state) => ({
+              color: state.disabled ? '_disabled' : '_primary',
+              'data-ripple': true,
+              ref: observe,
+            })}
           >
             <Icon icon={Search} />
             <Text>搜索</Text>
@@ -82,7 +80,7 @@ export const BaseDemo = _component(() => {
       <output data-base-clicks>{clicks}</output>
       <output data-base-refs>{refs}</output>
       <pre>
-        <code>{`<ButtonBase slotProps={{ ripple: { color: '_primary' } }}>
+        <code>{`<ButtonBase slotRipple={{ color: '_primary' }}>
   <Icon icon={Search} />
   <Text weight="_semibold">搜索</Text>
 </ButtonBase>`}</code>
