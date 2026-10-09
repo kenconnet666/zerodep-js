@@ -315,10 +315,10 @@ try {
       'content',
       '独立包消费',
     );
-    await expect(page.locator('[data-packed-css]')).toHaveCSS('width', '120px');
+    await expect(page.locator('[data-packed-css]')).toHaveCSS('width', '121px');
     const cssClass = await page.locator('[data-packed-css]').getAttribute('class');
     await page.locator('[data-packed-css-grow]').click();
-    await expect(page.locator('[data-packed-css]')).toHaveCSS('width', '130px');
+    await expect(page.locator('[data-packed-css]')).toHaveCSS('width', '131px');
     assert.equal(await page.locator('[data-packed-css]').getAttribute('class'), cssClass);
     const keywordNode = page.locator('[data-packed-keyword]');
     const keywordClass = await keywordNode.getAttribute('class');

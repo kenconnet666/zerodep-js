@@ -40,6 +40,35 @@ function directState(path: NodePath, node: t.Node): boolean {
   return name === '_state' || name === '_derived';
 }
 
+/** undefined 表示不接管；false 为普通值，true 表示含明确的响应式来源。
+ * 只组合简单表达式，不展开函数、属性 getter 或赋值；参数仍整体求值一次。
+ */
+function reactiveValue(path: NodePath, node: t.Node): boolean | undefined {
+  if (t.isIdentifier(node)) return directState(path, node);
+  if (
+    t.isNumericLiteral(node) ||
+    t.isStringLiteral(node) ||
+    t.isBooleanLiteral(node) ||
+    t.isNullLiteral(node) ||
+    t.isBigIntLiteral(node)
+  )
+    return false;
+  if (t.isTSAsExpression(node) || t.isTSSatisfiesExpression(node) || t.isTSNonNullExpression(node))
+    return reactiveValue(path, node.expression);
+  if (t.isUnaryExpression(node) && ['+', '-', '!', '~'].includes(node.operator))
+    return reactiveValue(path, node.argument);
+  let parts: t.Node[];
+  if (
+    (t.isBinaryExpression(node) && !['in', 'instanceof'].includes(node.operator)) ||
+    t.isLogicalExpression(node)
+  )
+    parts = [node.left, node.right];
+  else if (t.isConditionalExpression(node)) parts = [node.test, node.consequent, node.alternate];
+  else return undefined;
+  const values = parts.map((part) => reactiveValue(path, part));
+  return values.includes(undefined) ? undefined : values.some(Boolean);
+}
+
 function nativeClass(path: NodePath): NodePath<t.JSXElement> | undefined {
   const container = path.parentPath;
   const attribute = container?.parentPath;
@@ -126,7 +155,7 @@ export function prepareCss(ast: t.File, program: NodePath<t.Program>, source: st
         if (
           !t.isCallExpression(argument) ||
           argument.arguments.length !== 1 ||
-          !directState(path, argument.arguments[0]!)
+          reactiveValue(path, argument.arguments[0]!) !== true
         )
           return argument;
         const method = argument.callee;

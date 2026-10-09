@@ -70,7 +70,7 @@ const Card = _component(({ name, initial }: { name: string; initial: number }) =
   let width = _state(initial);
   let active = _state(false);
   const height = _derived(24);
-  // css 声明自动追踪；直接尺寸使用元素变量，颜色条件按普通 JS 重算。
+  // css 声明自动追踪；尺寸和简单条件的安全结果都使用元素变量。
   const className = css(
     s.width.px(width),
     s.height.px(height),
@@ -103,6 +103,12 @@ const Card = _component(({ name, initial }: { name: string; initial: number }) =
       </div>
       <div data-css-inline={name} class={css(s.width.px(width))}>
         内联样式
+      </div>
+      <div
+        data-css-expression={name}
+        class={css(s.width.px(width + 1), s.height.px(active ? height * 2 : height))}
+      >
+        表达式样式
       </div>
       <div
         {...{ title: 'spread', style: { '--user-spread': 'kept' } }}

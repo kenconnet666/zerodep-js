@@ -92,6 +92,10 @@ for (const mode of ['csr', 'ssr']) {
     await expect(first).toHaveCSS('width', '120px');
     await expect(first).toHaveCSS('color', 'rgb(0, 0, 255)');
     await expect(second).toHaveCSS('width', '180px');
+    const expression = page.locator('[data-css-expression=first]');
+    await expect(expression).toHaveCSS('width', '121px');
+    await expect(expression).toHaveCSS('height', '24px');
+    const expressionClass = await expression.getAttribute('class');
     const name = await first.getAttribute('class');
     const ruleCount = () =>
       page
@@ -102,6 +106,8 @@ for (const mode of ['csr', 'ssr']) {
     await expect(first).toHaveCSS('width', '160px');
     await expect(page.locator('[data-css-inline=first]')).toHaveCSS('width', '160px');
     await expect(page.locator('[data-css-spread=first]')).toHaveCSS('width', '160px');
+    await expect(expression).toHaveCSS('width', '161px');
+    expect(await expression.getAttribute('class')).toBe(expressionClass);
     await expect(second).toHaveCSS('width', '180px');
     expect(await first.getAttribute('class')).toBe(name);
     expect(await ruleCount()).toBe(rules);
@@ -110,6 +116,9 @@ for (const mode of ['csr', 'ssr']) {
     );
     await page.locator('[data-css-toggle=first]').click();
     await expect(first).toHaveCSS('color', 'rgb(255, 0, 0)');
+    await expect(expression).toHaveCSS('height', '48px');
+    expect(await first.getAttribute('class')).toBe(name);
+    expect(await ruleCount()).toBe(rules);
     await expect(second).toHaveCSS('color', 'rgb(0, 0, 255)');
     await expect(page.locator('[data-css-portal]')).toHaveCSS('position', 'fixed');
     await page.locator('[data-css-visible]').click();

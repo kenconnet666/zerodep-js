@@ -41,7 +41,7 @@ export const App = _component(({ title }: { title: string }) => {
   let mappedValue = _state('auto');
   let keyword = _state('#245fc5');
   const themed = new Css(() => new PackedTheme(keyword));
-  const className = css(s.width.px(width));
+  const className = css(s.width.px(width + 1));
   const inputId = _id();
   let input: HTMLInputElement | undefined = undefined;
   const messages = _state({ message: '等待' });

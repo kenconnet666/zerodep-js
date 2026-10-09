@@ -117,8 +117,13 @@ return <Widget class={name}><div class={css(s._hover(s.color._primary))} /></Wid
     ).code;
     expect(code).not.toContain('cssKeyword');
   });
-  it.each([false, true])('CSS 生成的调用映射回原始作者与 css 调用（named=%s）', (named) => {
-    const expression = 'css(s.width.px(width))';
+  it.each([
+    [false, 'width'],
+    [true, 'width'],
+    [false, 'width + 1'],
+    [true, 'width + 1'],
+  ] as const)('CSS 调用源码映射（named=%s，参数=%s）', (named, argument) => {
+    const expression = `css(s.width.px(${argument}))`;
     const line = named ? `const name = ${expression};` : `return <div class={${expression}} />;`;
     const source = [
       "import { _state } from 'zerodep-js';",
@@ -383,7 +388,7 @@ const result = [before, first.view.props.class, first.view.props.style, second.v
     });
   }
 
-  it('条件、计算参数、普通别名与跨组件 class 保留重算', () => {
+  it('算术参数绑定，声明级条件、普通别名与跨组件 class 保留重算', () => {
     const code = compile(
       `
 import { _state } from 'zerodep-js';
@@ -395,7 +400,7 @@ function create() {
 }`,
       'example.tsx',
     ).code;
-    expect(code).not.toContain('cssBinding');
+    expect(code.match(/\.cssBinding\(/g)).toHaveLength(1);
     expect(code).toContain('.derived(');
   });
 

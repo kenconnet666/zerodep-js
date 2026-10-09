@@ -45,8 +45,8 @@ export const App = _component(({onDestroy}:{onDestroy?:()=>void}) => {
   let count = _state(${initial});
   let node = _state<HTMLInputElement | undefined>(undefined);
   const form = _state({name:'初始'});
-  const width = _derived(count + 100);
-  const className = css(s.width.px(width), s.color.raw('${color}'));
+  const width = _derived(count);
+  const className = css(s.width.px(width + 100), s.color.raw('${color}'));
   const inputId = _id();
   _onMount(() => {
     globalThis.__boundInput = () => node;
