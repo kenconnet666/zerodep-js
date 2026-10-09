@@ -133,6 +133,10 @@ pnpm lsp:completions --case UI自动导入
 
 该命令验证项目 LSP；WebStorm 的候选选择仍需在编辑器中实际测试。如果 `Ctrl+Space` 被中文输入法占用，用菜单“代码 → 代码补全 → 基本”验证，再在 Keymap 给 Basic Completion 选择不冲突的快捷键。
 
+当前私有工作区包 `zerodep-js-ui` 的 `exports["."].types` 直接指向 `src/index.ts`，运行时入口仍指向经过框架转换的 `dist/index.js`。这是为了让开发中的 UI 源码直接参与类型检查和导航：在上述 EAP 中，使用 `dist/index.d.ts` 时 TS7 能返回正确定义，但 IDE 的符号高亮缺失，调用处跳转先停在本文件 import；切换源码类型入口后已验证单次 Ctrl+B 直达函数实现。包名导入保持不变，不开放 `/src` 子路径。UI 正式发布前需重新验收发行包的源码/声明文件包含范围。
+
+`pnpm lsp:completions --case UI调用跳转` 覆盖 `useCss`、`useLang`、`useLocale` 补全后定位到函数声明的行为。IDE 高亮与单次跳转仍须人工验收，不能用这项协议测试替代。
+
 ### 使用项目 Prettier
 
 设置 → 语言和框架 → JavaScript → Prettier：

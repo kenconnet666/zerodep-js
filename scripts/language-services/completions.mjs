@@ -20,6 +20,14 @@ const rows = [{ id: 1, title: 'row' }];
 `;
 const control = `const Field = _component((props: { value: string; onValueChange: (value: string) => void; label?: string }) => <span>{props.value}</span>);\n`;
 const cases = [
+  ...['useCss', 'useLang', 'useLocale'].map((hook) => ({
+    name: 'UI调用跳转-' + hook,
+    directory: 'apps/docs/src',
+    source: `import { ${hook} } from 'zerodep-js-ui';\nexport const probe = () => ${hook.slice(0, -1)}¦();`,
+    expected: hook,
+    word: hook.slice(0, -1),
+    definition: 'packages/ui/src/components/provider/context.ts',
+  })),
   {
     name: 'UI自动导入-合并包入口',
     directory: 'apps/docs/src',
@@ -663,7 +671,7 @@ try {
         const match = (definitions ?? []).find(
           (item) => fileURLToPath(item.targetUri ?? item.uri).toLowerCase() === expectedFile,
         );
-        assert(match, '定义没有映射到主题关键字源码：' + JSON.stringify(definitions));
+        assert(match, '定义没有映射到预期源码：' + JSON.stringify(definitions));
         const target = await readFile(resolve(root, entry.definition), 'utf8');
         const range = match.targetSelectionRange ?? match.range;
         assert.equal(
