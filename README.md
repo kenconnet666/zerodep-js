@@ -4,19 +4,19 @@
 
 优先保证实现简单、容易维护、使用方便、类型提示准确，并用适当中文注释解释关键语义。性能不是首要目标，不维护自有 TypeScript 分支、原生 SDK 或跨命令编译后台。
 
-> 五包 1.0.0-rc.8 已发布到 npm next：固定 JetBrains TS7.1，补齐基础 API 与可选 CSS 0.3.1 集成，完整 CI 与注册表消费均通过。安装当前候选请指定精确版本或 @next，稳定 latest 未提升；证据见 [维护交接](docs/api-hardening-handoff.md)。
+> 当前源码已收拢为 core、css、compiler、ssr：CSS 在本仓库维护，Vite 插件来自 compiler/vite。新结构尚未发布；既有 rc.9 npm 产物仍是旧布局，不能用旧包验证下面的新入口。历史发行证据见 [维护交接](docs/api-hardening-handoff.md)。
 
 ## 工作区
 
-| 包                | 职责                                              |
-| ----------------- | ------------------------------------------------- |
-| packages/core     | 响应式、组件、DOM、生命周期、JSX 类型和运行时协议 |
-| packages/ssr      | 请求隔离、HTML 渲染、转义和数据编码               |
-| packages/compiler | Babel 转换、框架检查、选定 TS7.1 与语言工具适配   |
-| packages/vite     | 转换接入、依赖扫描和开发更新                      |
-| apps/example      | 使用实际包产物的 CSR/SSR 示例和任务应用           |
-| packages/ui       | Provider、亮暗主题、语言与日期时区，暂不发布      |
-| apps/docs         | 组件库与框架文档应用                              |
+| 包                | 职责                                                  |
+| ----------------- | ----------------------------------------------------- |
+| packages/core     | 响应式、组件、DOM、生命周期、JSX 类型和运行时协议     |
+| packages/ssr      | 请求隔离、HTML 渲染、转义和数据编码                   |
+| packages/compiler | Babel/CSS 转换、Vite 插件、框架检查与 TS7.1 语言服务  |
+| packages/css      | CSS 作者、关键字、隐式变量运行时与浏览器/SSR 样式收集 |
+| apps/example      | 使用实际包产物的 CSR/SSR 示例和任务应用               |
+| packages/ui       | Provider、亮暗主题、语言与日期时区，暂不发布          |
+| apps/docs         | 组件库与框架文档应用                                  |
 
 不提供外部框架运行时适配，也不把预编译组件库链接到工作区源码。
 
@@ -59,7 +59,7 @@ export const Counter = _component(({ step = 1 }: { step?: number }) => {
 
 `<Portal>内容</Portal>` 可以把弹层内容放到 body，仍随原父组件更新和销毁；指定位置使用 `target={container}`。SSR 只留占位，接管成功后再显示。它也属于当前分支新增能力，详见 [Portal](docs/api.md#portal把内容放到页面外层)。
 
-Vite 使用 zerodep-js-vite 的 zerodep()。应用 TS 配置使用 jsx: preserve、jsxImportSource: zerodep-js。客户端通过 _mount/_hydrate 返回的 disposer 卸载；服务端使用独立 SSR 入口。
+Vite 使用 zerodep-js-compiler/vite 的 zerodep()。应用 TS 配置使用 jsx: preserve、jsxImportSource: zerodep-js。客户端通过 _mount/_hydrate 返回的 disposer 卸载；服务端使用独立 SSR 入口。
 
 2026-10-09 起，当前源码已删除整个 zerodep-use 包，不再提供路由、store、持久化和撤销重做工具。core 的状态、上下文、快照以及 UI Provider 保留；旧 npm 发行记录不变。
 
@@ -83,4 +83,4 @@ pnpm lsp:completions
 
 框架源码使用 MIT License；成熟依赖按各自许可证分发，core 的生成数据来源见包内 THIRD_PARTY_NOTICES.md。
 
-rc.8 支持可选 [原生 CSS](docs/css.md)：`const className = css(...)` 自动追踪，直接响应式值保守绑定元素变量。复用 zerodep-css，无需 bx 或额外 Vite 插件。
+原生 [CSS](docs/css.md) 由工作区 zerodep-js-css 提供：命名 css 自动追踪，安全动态值隐式绑定元素变量；zerodep() 默认完成转换，无需适配器或扩展配置。

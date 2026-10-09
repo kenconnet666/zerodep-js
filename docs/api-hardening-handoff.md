@@ -1,6 +1,14 @@
 # 基础 API 维护交接
 
-更新：2026-10-09。CSS 当前消费版本为 0.3.3，框架已发布版本仍为 1.0.0-rc.8。后续源码变更与各批发布证据分开记录，不能把旧发行版视为包含最新改动。此前限时窗口已结束，本页记录交付与恢复依据。
+更新：2026-10-09。当前源码改为单仓库维护 CSS，Vite 并入 compiler；新布局尚未发布。已发布 rc.9 为此前的通用适配接口版本，不能当作包含本次精简。下面历史发布记录保留当时状态。
+
+## 本轮架构精简
+
+- packages/css 迁入原 CSS 仓库 e5a0bfe 的作者、生成器、关键字、运行时及测试，只支持 zerodep-js。Vue/Svelte/Nuxt/Kit、bx 与旧主题预设不迁入；亮暗主题继续由 UI Provider 维护。原仓库本轮未修改或继续发布。
+- packages/vite 已删除，Vite 插件在 zerodep-js-compiler/vite；CSS 转换内置。CompileExtension、extensions 配置及 zerodep-js/adapter 均删除，不保留旧入口。
+- 生成器改用 Babel 解析固定 csstype，除路径与 bx 文档清理外，502 个属性和 12,586 个关键字的生成结果不变；共享 TS7.1、LSP、构建和发布清单。临时本地 tgz 覆盖及旧构建文件已清理。
+- 修复多层 props/rest 转发递归枚举造成的 Provider 卡顿。属性描述符读取跟踪结构变化；焦点测试覆盖新增/删除/可枚举性切换、覆盖顺序和多层读取，不放宽浏览器断言。
+- 本地通过：包编译与配置/应用类型检查，UI 与两个应用 CSR/SSR 构建，CSS 运行时/关键字文档 30 项，框架/CSS/Provider 焦点 42 项，以及 props/state/CSS 56 项（两组有重叠）；Chromium CSS/Provider 11 项；实际 TS7 的 CSS hover/补全；工作区外 tgz 消费检查；Vite 热更新及开发 SSR。完整平台与浏览器矩阵交当前提交 CI，尚不能记录为通过。
 
 ## 当前源码的后续变更
 

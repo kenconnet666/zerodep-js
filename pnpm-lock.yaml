@@ -90,9 +90,6 @@ catalogs:
     vscode-languageserver-types:
       specifier: 3.18.4
       version: 3.18.4
-    zerodep-css:
-      specifier: 0.3.3
-      version: 0.3.3
 
 overrides:
   '@typescript/typescript-win32-x64@7.1.0-dev.jetbrains.20261006.2': https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-win32-x64-v7.1.0-dev.jetbrains.20261006.2.tgz
@@ -107,6 +104,9 @@ importers:
 
   .:
     devDependencies:
+      '@babel/parser':
+        specifier: 'catalog:'
+        version: 8.0.6
       '@playwright/test':
         specifier: 'catalog:'
         version: 1.63.0
@@ -146,21 +146,27 @@ importers:
       vscode-jsonrpc:
         specifier: 'catalog:'
         version: 9.0.3
-      zerodep-css:
-        specifier: 'catalog:'
-        version: 0.3.3
+      zerodep-js:
+        specifier: workspace:*
+        version: link:packages/core
+      zerodep-js-compiler:
+        specifier: workspace:*
+        version: link:packages/compiler
+      zerodep-js-css:
+        specifier: workspace:*
+        version: link:packages/css
 
   apps/docs:
     dependencies:
       date-fns:
         specifier: 'catalog:'
         version: 4.4.0
-      zerodep-css:
-        specifier: 'catalog:'
-        version: 0.3.3
       zerodep-js:
         specifier: workspace:*
         version: link:../../packages/core
+      zerodep-js-css:
+        specifier: workspace:*
+        version: link:../../packages/css
       zerodep-js-ssr:
         specifier: workspace:*
         version: link:../../packages/ssr
@@ -177,21 +183,18 @@ importers:
       zerodep-js-compiler:
         specifier: workspace:*
         version: link:../../packages/compiler
-      zerodep-js-vite:
-        specifier: workspace:*
-        version: link:../../packages/vite
 
   apps/example:
     dependencies:
       sirv:
         specifier: 'catalog:'
         version: 3.0.2
-      zerodep-css:
-        specifier: 'catalog:'
-        version: 0.3.3
       zerodep-js:
         specifier: workspace:*
         version: link:../../packages/core
+      zerodep-js-css:
+        specifier: workspace:*
+        version: link:../../packages/css
       zerodep-js-ssr:
         specifier: workspace:*
         version: link:../../packages/ssr
@@ -205,9 +208,6 @@ importers:
       zerodep-js-compiler:
         specifier: workspace:*
         version: link:../../packages/compiler
-      zerodep-js-vite:
-        specifier: workspace:*
-        version: link:../../packages/vite
 
   packages/compiler:
     dependencies:
@@ -251,6 +251,15 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 24.13.5
+      vite:
+        specifier: 'catalog:'
+        version: 8.3.1(@types/node@24.13.5)
+      zerodep-js:
+        specifier: workspace:*
+        version: link:../core
+      zerodep-js-css:
+        specifier: workspace:*
+        version: link:../css
 
   packages/core:
     dependencies:
@@ -264,9 +273,22 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-v7.1.0-dev.jetbrains.20261006.2.tgz
-      zerodep-css:
+
+  packages/css:
+    dependencies:
+      csstype:
         specifier: 'catalog:'
-        version: 0.3.3
+        version: 3.2.3
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.13.5
+      typescript:
+        specifier: 'catalog:'
+        version: https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-v7.1.0-dev.jetbrains.20261006.2.tgz
+      zerodep-js:
+        specifier: workspace:*
+        version: link:../core
 
   packages/ssr:
     devDependencies:
@@ -279,6 +301,9 @@ importers:
       zerodep-js:
         specifier: workspace:*
         version: link:../core
+      zerodep-js-css:
+        specifier: workspace:*
+        version: link:../css
 
   packages/ui:
     dependencies:
@@ -295,37 +320,18 @@ importers:
       vite:
         specifier: 'catalog:'
         version: 8.3.1(@types/node@24.13.5)
-      zerodep-css:
-        specifier: 'catalog:'
-        version: 0.3.3
       zerodep-js:
         specifier: workspace:*
         version: link:../core
       zerodep-js-compiler:
         specifier: workspace:*
         version: link:../compiler
+      zerodep-js-css:
+        specifier: workspace:*
+        version: link:../css
       zerodep-js-ssr:
         specifier: workspace:*
         version: link:../ssr
-      zerodep-js-vite:
-        specifier: workspace:*
-        version: link:../vite
-
-  packages/vite:
-    dependencies:
-      zerodep-js-compiler:
-        specifier: workspace:*
-        version: link:../compiler
-    devDependencies:
-      '@types/node':
-        specifier: 'catalog:'
-        version: 24.13.5
-      typescript:
-        specifier: 'catalog:'
-        version: https://github.com/JetBrains/typescript-go/releases/download/v7.1.0-dev.jetbrains.20261006.2/typescript-v7.1.0-dev.jetbrains.20261006.2.tgz
-      vite:
-        specifier: 'catalog:'
-        version: 8.3.1(@types/node@24.13.5)
 
 packages:
 
@@ -1377,10 +1383,6 @@ packages:
     engines: {node: '>=20.11'}
     hasBin: true
 
-  zerodep-css@0.3.3:
-    resolution: {integrity: sha512-fpxXAXqodq8CzT3oUUYH8c+XwAaBCo5HXutvdQCiiJkzYTU5AcwdN3hLsy+uF1C6cl8AndUC63Crfxa8uQ7Rpw==}
-    engines: {node: '>=24'}
-
 snapshots:
 
   '@babel/code-frame@8.0.6':
@@ -2153,7 +2155,3 @@ snapshots:
       vscode-languageserver-protocol: 3.18.4
 
   why-is-node-running@3.2.1: {}
-
-  zerodep-css@0.3.3:
-    dependencies:
-      csstype: 3.2.3

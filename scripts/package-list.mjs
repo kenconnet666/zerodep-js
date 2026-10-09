@@ -3,7 +3,7 @@ export const packages = [
   { folder: 'core', name: 'zerodep-js', kind: 'framework' },
   { folder: 'ssr', name: 'zerodep-js-ssr', kind: 'framework' },
   { folder: 'compiler', name: 'zerodep-js-compiler', kind: 'tool' },
-  { folder: 'vite', name: 'zerodep-js-vite', kind: 'framework' },
+  { folder: 'css', name: 'zerodep-js-css', kind: 'framework' },
 ];
 
 export const releasePackages = packages;

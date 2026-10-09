@@ -1,7 +1,6 @@
 import { createHash } from 'node:crypto';
 import traverse, { type Binding, type NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
-import { coreImport } from './imports.js';
 
 export function isCssCall(path: NodePath): path is NodePath<t.CallExpression> {
   if (!path.isCallExpression() || !t.isIdentifier(path.node.callee)) return false;
@@ -12,7 +11,7 @@ export function isCssCall(path: NodePath): path is NodePath<t.CallExpression> {
     (t.isIdentifier(imported) ? imported.name : imported.value) === 'css' &&
     binding.parentPath.isImportDeclaration() &&
     binding.parentPath.node.importKind !== 'type' &&
-    binding.parentPath.node.source.value === 'zerodep-js/css'
+    binding.parentPath.node.source.value === 'zerodep-js-css'
   );
 }
 
@@ -26,8 +25,19 @@ function directState(path: NodePath, node: t.Node): boolean {
     : t.isMemberExpression(callee) && t.isIdentifier(callee.object)
       ? callee.object
       : undefined;
-  const role = id && coreImport(init.scope.getBinding(id.name));
-  return role === 'state' || role === 'derived';
+  const imported = id && init.scope.getBinding(id.name)?.path;
+  if (
+    !imported ||
+    !imported.isImportSpecifier() ||
+    imported.node.importKind === 'type' ||
+    !imported.parentPath.isImportDeclaration() ||
+    imported.parentPath.node.importKind === 'type' ||
+    imported.parentPath.node.source.value !== 'zerodep-js'
+  )
+    return false;
+  const role = imported.node.imported;
+  const name = t.isIdentifier(role) ? role.name : role.value;
+  return name === '_state' || name === '_derived';
 }
 
 function nativeClass(path: NodePath): NodePath<t.JSXElement> | undefined {
@@ -173,7 +183,7 @@ export function prepareCss(ast: t.File, program: NodePath<t.Program>, source: st
       'body',
       t.importDeclaration(
         [t.importNamespaceSpecifier(namespace)],
-        t.stringLiteral('zerodep-js/css/internal'),
+        t.stringLiteral('zerodep-js-css/internal'),
       ),
     );
   return { elements, records, identifiers, call };

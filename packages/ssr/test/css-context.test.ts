@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest';
-import { Css } from 'zerodep-css';
-import { _createCssContext } from 'zerodep-js/css';
+import { Css } from 'zerodep-js-css';
+import { createCssContext } from 'zerodep-js-css';
 import { defineComponent, element } from 'zerodep-js/internal';
 import { renderToString } from '../src/render.js';
 
@@ -12,7 +12,7 @@ it('模块级 CSS context 只共享键，作者数据按 SSR 请求隔离', () =
       this.name = name;
     }
   }
-  const { provideCss, useCss } = _createCssContext<NamedCss>();
+  const { provideCss, useCss } = createCssContext<NamedCss>();
   const Child = defineComponent(() => useCss().name);
   const App = defineComponent(({ name }: { name: string }) => {
     provideCss(new NamedCss(name));

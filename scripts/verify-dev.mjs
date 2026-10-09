@@ -4,7 +4,7 @@ import { createRequire } from 'node:module';
 import { dirname, resolve, relative, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { chromium, expect } from '@playwright/test';
-import { zerodep } from '../packages/vite/dist/index.js';
+import { zerodep } from '../packages/compiler/dist/vite.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const example = resolve(root, 'apps/example');
@@ -38,8 +38,8 @@ export const App = _component(({ onDestroy }: {onDestroy?: () => void;}) => {
 `;
 const localSource = (label, initial = 0, failure = false, mixed = false, color = 'blue') => `
 import {_component,_state,_derived,_onMount,_onCleanup,_getAbortSignal,_id} from 'zerodep-js';
-import {Css} from 'zerodep-css';
-import {css} from 'zerodep-js/css';
+import {Css} from 'zerodep-js-css';
+import {css} from 'zerodep-js-css';
 const s = new Css();
 export const App = _component(({onDestroy}:{onDestroy?:()=>void}) => {
   let count = _state(${initial});
@@ -117,10 +117,10 @@ export function verifyReferences() {
     `
 import { _mount } from 'zerodep-js';
 import { _inspect } from 'zerodep-js/devtools';
-import { Css } from 'zerodep-css';
-import { css } from 'zerodep-js/css';
-import 'zerodep-js/css/internal';
-import { hydrateCss } from 'zerodep-css/browser';
+import { Css } from 'zerodep-js-css';
+import { css } from 'zerodep-js-css';
+import 'zerodep-js-css/internal';
+import { hydrateCss } from 'zerodep-js-css';
 import { App } from './App.tsx';
 // 预先声明夹具随后使用的依赖，避免新增依赖触发 Vite 的整页重新优化。
 void Css; void css;
@@ -139,7 +139,7 @@ if (import.meta.hot) {
   await writeFile(
     resolve(fixture, 'server.ts'),
     `import { renderToString } from 'zerodep-js-ssr';
-import { createServerCssHost, withCssHost, serializeCssRules } from 'zerodep-css/server';
+import { createServerCssHost, withCssHost, serializeCssRules } from 'zerodep-js-css/server';
 import { App } from './App.tsx';
 export const render = () => {
   const host = createServerCssHost();
@@ -151,7 +151,7 @@ export const render = () => {
     resolve(fixture, 'hydrate.ts'),
     `
 import {_hydrate} from 'zerodep-js';
-import {hydrateCss} from 'zerodep-css/browser';
+import {hydrateCss} from 'zerodep-js-css';
 import {App} from './App.tsx';
 hydrateCss();
 const target=document.querySelector('#app');
@@ -167,7 +167,7 @@ if(import.meta.hot)import.meta.hot.dispose(stop);
     customLogger: logger,
     plugins: [
       // 这些运行时/HMR 夹具含故意的动态全局，不把它们当作项目类型检查用例。
-      zerodep({ typeCheck: false }),
+      zerodep(),
       {
         name: 'hydration-probe',
         configureServer(vite) {
@@ -207,7 +207,7 @@ if(import.meta.hot)import.meta.hot.dispose(stop);
       // 与示例的完整写入策略一致，保证连续的错误与修复都经过真实文件监听。
       watch: { awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 20 } },
     },
-    ssr: { noExternal: ['zerodep-js', 'zerodep-js-ssr'] },
+    ssr: { noExternal: ['zerodep-js', 'zerodep-js-ssr', 'zerodep-js-css'] },
   });
   await server.listen();
   const address = server.httpServer.address();

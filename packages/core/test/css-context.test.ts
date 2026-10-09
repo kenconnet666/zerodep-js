@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { Css, SystemKeywords, ColorKeywords } from 'zerodep-css';
-import { _createCssContext } from '../src/css-context.js';
-import { source } from '../src/internal.js';
-import { _createRoot, _effect, _flushSync } from '../src/runtime/reactivity.js';
+import { Css, SystemKeywords, ColorKeywords } from 'zerodep-js-css';
+import { createCssContext } from 'zerodep-js-css';
+import { source } from 'zerodep-js/internal';
+import { _createRoot, _effect, _flushSync } from 'zerodep-js';
 
 class AppCss extends Css {
   readonly name = 'app';
@@ -10,7 +10,7 @@ class AppCss extends Css {
 
 describe('CSS 作者作用域', () => {
   it('保留作者对象身份和扩展类型，子域覆盖不影响父域', () => {
-    const { provideCss, useCss } = _createCssContext<AppCss>();
+    const { provideCss, useCss } = createCssContext<AppCss>();
     const outer = new AppCss();
     const inner = new AppCss();
     _createRoot((dispose) => {
@@ -34,8 +34,8 @@ describe('CSS 作者作用域', () => {
   });
 
   it('不同根与不同工厂不串值，缺少作者和重复提供明确报错', () => {
-    const one = _createCssContext();
-    const two = _createCssContext();
+    const one = createCssContext();
+    const two = createCssContext();
     expect(() => one.useCss()).toThrow('作用域');
     _createRoot((dispose) => {
       try {
@@ -71,7 +71,7 @@ describe('CSS 作者作用域', () => {
       }
     }
     const theme = source(new Theme('blue'));
-    const { provideCss, useCss } = _createCssContext();
+    const { provideCss, useCss } = createCssContext();
     const seen: string[] = [];
     const dispose = _createRoot((stop) => {
       provideCss(new Css(() => theme.read()));

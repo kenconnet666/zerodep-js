@@ -86,3 +86,5 @@ export function update(
   target.write(next);
   return prefix ? next : previous;
 }
+
+export { styleText } from './native/style.js';

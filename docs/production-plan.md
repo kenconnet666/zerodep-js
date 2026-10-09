@@ -1,6 +1,6 @@
 # 基础 API 完善与 CSS 协作计划
 
-更新：2026-10-08。框架基础 API、编译/类型工具及与 zerodep-css 的集成继续维护。用户后续已授权搭建组件库/文档站并实施 Provider 基础设施，具体契约见 [Provider](provider.md)；这项授权取代下文对 Provider 和基础组件目录的早期限制，其他完整组件仍另行讨论。
+更新：2026-10-09。当前包边界以 docs/packages.md 为准：CSS 收入本仓库，Vite 并入 compiler，删除外部适配器与 bx。框架基础 API、编译/类型工具及原生 CSS 能力继续维护。用户后续已授权搭建组件库/文档站并实施 Provider 基础设施，具体契约见 [Provider](provider.md)；这项授权取代下文对 Provider 和基础组件目录的早期限制，其他完整组件仍另行讨论。
 
 2026-10-08 用户已授权按本计划自主执行并适当调整 API，实施前记录明确契约；无须为已在范围内的取舍逐项再确认。已有契约以 [语义](semantics.md)、[API](api.md) 和 [CSS](css.md) 为准；选定候选后更新公开契约并通过测试验收。持续检查点见 [交接记录](api-hardening-handoff.md)。
 
@@ -19,7 +19,7 @@
 ## 2. 当前基线
 
 - zerodep-js 固定 JetBrains TS7.1.0-dev.jetbrains.20261006.2、Babel 和 Vite；不退回 TS6，不建立多版本兼容或自定义 TS 内核。
-- zerodep-css 核心包已升级为 npm 0.3.2，保留继承作者层叠回归，并接入主题关键字的运行时安全变量绑定。CSS 仓库保留 TS6.0.3 构建；旧 Vue/Svelte TS AST 编译器独立位于 zerodep-css-compiler，本项目不依赖它。
+- CSS 作者与运行时迁入 packages/css，Babel 转换属于 compiler；统一 TS7，不维护 Vue/Svelte 适配。
 - css 自动追踪、直接变量保守绑定、SSR 样式收集/恢复、_id、Portal 已落地。
 - 框架提交 b34b0f3 的 CI 已确认通过：基础检查、六个平台工具链、Linux/Windows 独立消费和三浏览器。CSS 提交 ca86a9d 的完整 CI 也已通过。规划提交后的 CI 状态另行记录，不把这些证据套到后续实现。
 
@@ -51,7 +51,7 @@
 
 先用现有 Css(() => theme) 和框架 context 验证：主题替换、子树覆盖、Portal/懒加载中的逻辑继承、请求隔离和自定义关键字提示。逻辑 context 的继承与 CSS 变量在实际 DOM 上的继承需要区分，不能宣称 Portal 自动搬运所有 CSS 变量。
 
-已采用 _createCssContext 薄封装，并覆盖嵌套提供、根隔离和 SSR 请求隔离。组件库 Provider 复用此能力和 zerodep-css 的 SystemKeywords/Css，不建立第二套 CSS 属性作者或全局主题注册表。
+已采用 createCssContext 薄封装，并覆盖嵌套提供、根隔离和 SSR 请求隔离。组件库 Provider 复用此能力和 zerodep-js-css 的 SystemKeywords/Css，不建立第二套 CSS 属性作者或全局主题注册表。
 
 ### 4.3 SSR、接管与开发工具
 
@@ -62,26 +62,26 @@
 
 ## 5. 新增基础 API（源码已实现，持续验收）
 
-| API                         | 当前契约                                                                                                          | 入口与文档                                     |
-| --------------------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| 原生 bind:group             | radio 字符串、checkbox 字符串数组；静态 type/明确 value 在所有 spread 后；写回声明值；原生 name/form 分组保持一致 | compiler/core/类型投影；[表单](forms.md)       |
-| 原生 details 的 bind:open   | 用户 toggle 写回 boolean，模型控制展开；验证 SSR 原值后接纳接管前操作；没有 Dialog 模态协议                       | compiler/core/类型投影；[表单](forms.md)       |
-| _createCssContext<AppCss>() | provideCss/useCss 薄封装，保留作者类型，缺失提供者报错；复用既有 context                                          | 可选 zerodep-js/css；[CSS](css.md)             |
-| _head(() => data)           | 只支持 title/description；同步纯读取、SSR 收集、客户端更新、按字段覆盖和卸载恢复，多文档隔离                      | 可选 zerodep-js/head 与 ssr；[元信息](head.md) |
+| API                        | 当前契约                                                                                                          | 入口与文档                                     |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| 原生 bind:group            | radio 字符串、checkbox 字符串数组；静态 type/明确 value 在所有 spread 后；写回声明值；原生 name/form 分组保持一致 | compiler/core/类型投影；[表单](forms.md)       |
+| 原生 details 的 bind:open  | 用户 toggle 写回 boolean，模型控制展开；验证 SSR 原值后接纳接管前操作；没有 Dialog 模态协议                       | compiler/core/类型投影；[表单](forms.md)       |
+| createCssContext<AppCss>() | provideCss/useCss 薄封装，保留作者类型，缺失提供者报错；复用既有 context                                          | 可选 zerodep-js-css；[CSS](css.md)             |
+| _head(() => data)          | 只支持 title/description；同步纯读取、SSR 收集、客户端更新、按字段覆盖和卸载恢复，多文档隔离                      | 可选 zerodep-js/head 与 ssr；[元信息](head.md) |
 
 这些是源码实现状态，不表示新 npm 版本已发布，也不替代同一提交完整 CI。当前重点转向组合与错误路径审计，阶段证据和待验收项集中在 [交接记录](api-hardening-handoff.md)。授权允许继续有价值的完善，不为清单数量扩充 API。
 
 以下暂不进入本轮：完整 Dialog/Button/TextField 等组件、视觉主题/变体组件体系、退场动画协调、通用 Suspense/流式 SSR、请求缓存/并发策略、watch、防抖、ref 组合、class 合并和复杂外部订阅。
 
-## 6. 两仓库职责与依赖
+## 6. 单仓库职责与依赖
 
-| 归属                     | 负责内容                                                                                                                              |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
-| zerodep-css              | 作者类和类型、生成数据、关键字/单位/选择器、系统方法判断、框架无关变量声明辅助、浏览器/SSR 宿主和安全序列化；保持 Vue/Svelte 适配回归 |
-| zerodep-js compiler/core | Babel TSX 转换、响应式来源判断、JS 求值和覆盖顺序、DOM 属性/生命周期、类型投影、框架 context 接入                                     |
-| zerodep-js ssr/vite      | 文档组合、SSR/接管接线、开发/HMR 与构建器集成                                                                                         |
+| 归属                     | 负责内容                                                                                          |
+| ------------------------ | ------------------------------------------------------------------------------------------------- |
+| packages/css             | 作者、关键字、单位、选择器、隐式变量辅助、浏览器/SSR 样式收集                                     |
+| zerodep-js compiler/core | Babel TSX 转换、响应式来源判断、JS 求值和覆盖顺序、DOM 属性/生命周期、类型投影、框架 context 接入 |
+| zerodep-js ssr/compiler  | 文档组合、SSR/接管接线、开发/HMR 与构建器集成                                                     |
 
-两个仓库使用各自固定 TS，不共享 AST 或编译器实例。通过发布 JS 与声明交付，应用 catalog 使用精确 npm 版本、lockfile 验证摘要；跨仓库必要变更分别测试、中文提交、推送，未发布改动先用固定 tgz 做消费验证。
+同仓库统一固定 TS7.1，CSS 转换复用框架 Babel AST。包间使用 workspace 依赖；发布清单为 core、css、compiler、ssr，UI 暂不发布。完整 CI 验证通过后再准备新版本，不继续旧 CSS 仓库的发布任务。
 
 ## 7. 执行阶段与完成条件
 

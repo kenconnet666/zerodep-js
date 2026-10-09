@@ -1,5 +1,5 @@
 /* oxlint-disable typescript/no-misused-spread -- SystemKeywords 属性组是只读的原始值字段；按 CSS 库的公开契约展开，不复制作者方法。 */
-import { SystemKeywords, systemKeywords, type KeywordValues } from 'zerodep-css';
+import { SystemKeywords, systemKeywords, type KeywordValues } from 'zerodep-js-css';
 
 /** 按用途命名，同一套颜色可用于文字、背景、边框及 SVG。 */
 export type UiColors = Readonly<

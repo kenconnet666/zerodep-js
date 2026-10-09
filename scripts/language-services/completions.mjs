@@ -21,8 +21,57 @@ const rows = [{ id: 1, title: 'row' }];
 const control = `const Field = _component((props: { value: string; onValueChange: (value: string) => void; label?: string }) => <span>{props.value}</span>);\n`;
 const cases = [
   {
+    name: 'CSS说明-display.inlineFlex',
+    source: "import { Css } from 'zerodep-js-css'; const s = new Css(); s.display.inlineFle¦;",
+    expected: 'inlineFlex',
+    word: 'inlineFle',
+    details: true,
+    documentation: '行内排版',
+  },
+  {
+    name: 'CSS说明-objectFit.cover',
+    source: "import { Css } from 'zerodep-js-css'; const s = new Css(); s.objectFit.cove¦;",
+    expected: 'cover',
+    word: 'cove',
+    details: true,
+    documentation: '完整',
+  },
+  {
+    name: 'CSS说明-position.sticky',
+    source: "import { Css } from 'zerodep-js-css'; const s = new Css(); s.position.stick¦;",
+    expected: 'sticky',
+    word: 'stick',
+    details: true,
+    documentation: 'auto',
+  },
+  {
+    name: 'CSS说明-overflow.clip',
+    source: "import { Css } from 'zerodep-js-css'; const s = new Css(); s.overflow.cli¦;",
+    expected: 'clip',
+    word: 'cli',
+    details: true,
+    documentation: '不建立滚动容器',
+  },
+  {
+    name: 'CSS说明-width.rem',
+    source: "import { Css } from 'zerodep-js-css'; const s = new Css(); s.width.re¦;",
+    expected: 'rem',
+    word: 're',
+    details: true,
+    documentation: '根元素字号',
+  },
+  {
+    name: 'CSS说明-width.clamp',
+    source: "import { Css } from 'zerodep-js-css'; const s = new Css(); s.width.clam¦;",
+    expected: 'clamp',
+    word: 'clam',
+    details: true,
+    documentation: '下限和上限',
+  },
+
+  {
     name: 'CSS公共关键字语义文档',
-    source: `import { Css } from 'zerodep-css'; const s = new Css(); s.backgroundColor.inhe¦;`,
+    source: `import { Css } from 'zerodep-js-css'; const s = new Css(); s.backgroundColor.inhe¦;`,
     expected: 'inherit',
     word: 'inhe',
     details: true,
@@ -30,7 +79,7 @@ const cases = [
   },
   {
     name: 'CSS属性用途文档',
-    source: `import { Css } from 'zerodep-css'; const s = new Css(); s.fontSi¦;`,
+    source: `import { Css } from 'zerodep-js-css'; const s = new Css(); s.fontSi¦;`,
     expected: 'fontSize',
     word: 'fontSi',
     details: true,
@@ -38,7 +87,7 @@ const cases = [
   },
   {
     name: 'CSS主题扩展成员文档',
-    source: `import { Css, SystemKeywords, systemKeywords } from 'zerodep-css';
+    source: `import { Css, SystemKeywords, systemKeywords } from 'zerodep-js-css';
 class Theme extends SystemKeywords {
   override readonly fontSize = {
     ...systemKeywords.fontSize,
@@ -65,9 +114,9 @@ const App = _component(() => { _head(() => ({ tit¦: '标题' })); return null; 
     name: '主题作者方法文档',
     source:
       header +
-      `import { Css } from 'zerodep-css';
-import { _createCssContext } from 'zerodep-js/css';
-const theme = _createCssContext<Css>();
+      `import { Css } from 'zerodep-js-css';
+import { createCssContext } from 'zerodep-js-css';
+const theme = createCssContext<Css>();
 const App = _component(() => { const s = theme.useCss(); s.width.p¦(20); return null; });`,
     expected: 'px',
     word: 'p',

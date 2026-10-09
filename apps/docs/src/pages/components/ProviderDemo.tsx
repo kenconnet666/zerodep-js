@@ -1,5 +1,5 @@
 import { _component, _state, Portal } from 'zerodep-js';
-import { css } from 'zerodep-js/css';
+import { css } from 'zerodep-js-css';
 import { addDays } from 'date-fns';
 import {
   Provider,

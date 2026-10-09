@@ -3,24 +3,30 @@ import { Derived } from './reactivity.js';
 export type Props = Record<PropertyKey, unknown>;
 export type PropSource = Record<PropertyKey, () => unknown> | (() => unknown);
 
-function readonlyView(read: (key: PropertyKey) => unknown, keys: () => PropertyKey[]): Props {
+function readonlyView(
+  read: (key: PropertyKey) => unknown,
+  keys: () => PropertyKey[],
+  contains: (key: PropertyKey) => boolean,
+): Props {
   const reject = (): never => {
     throw new Error('组件 props 是只读输入，请通过回调通知数据拥有者。');
   };
   return new Proxy(Object.create(null) as Props, {
     get: (_target, key) => read(key),
-    has: (_target, key) => keys().includes(key),
+    has: (_target, key) => contains(key),
     ownKeys: () => keys() as (string | symbol)[],
     getOwnPropertyDescriptor: (_target, key) =>
-      keys().includes(key)
-        ? { configurable: true, enumerable: true, get: () => read(key) }
-        : undefined,
+      contains(key) ? { configurable: true, enumerable: true, get: () => read(key) } : undefined,
     set: reject,
     deleteProperty: reject,
     defineProperty: reject,
     setPrototypeOf: reject,
     preventExtensions: reject,
   });
+}
+
+function hasEnumerable(value: object, key: PropertyKey): boolean {
+  return Reflect.getOwnPropertyDescriptor(value, key)?.enumerable === true;
 }
 
 function enumerableKeys(value: object): PropertyKey[] {
@@ -47,14 +53,16 @@ export function props(sources: readonly PropSource[]): Props {
     (key) => {
       for (let index = inputs.length - 1; index >= 0; index--) {
         const input = inputs[index]!();
-        // 键集合也参与跟踪，保证缺失属性的新增与原型同名属性的覆盖可见。
-        if (enumerableKeys(input).includes(key)) {
+        // 只查当前键；多层 props/rest 转发不能在每次读取时递归枚举整组属性。
+        // 响应式对象的属性描述符读取同样跟踪键的新增和删除。
+        if (hasEnumerable(input, key)) {
           return input[key];
         }
       }
       return undefined;
     },
     () => [...new Set(inputs.flatMap((input) => enumerableKeys(input())))],
+    (key) => inputs.some((input) => hasEnumerable(input(), key)),
   );
 }
 
@@ -62,6 +70,7 @@ export function readonlyProps(input: object): Props {
   return readonlyView(
     (key) => Reflect.get(input, key),
     () => enumerableKeys(input),
+    (key) => hasEnumerable(input, key),
   );
 }
 
@@ -76,7 +85,8 @@ export function prop(input: Props, key: PropertyKey, fallback?: () => unknown): 
 export function restProps(input: Props, excluded: readonly PropertyKey[]): Props {
   const removed = new Set(excluded);
   return readonlyView(
-    (key) => (removed.has(key) || !enumerableKeys(input).includes(key) ? undefined : input[key]),
+    (key) => (removed.has(key) || !hasEnumerable(input, key) ? undefined : input[key]),
     () => enumerableKeys(input).filter((key) => !removed.has(key)),
+    (key) => !removed.has(key) && hasEnumerable(input, key),
   );
 }

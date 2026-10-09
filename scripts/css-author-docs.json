@@ -1,0 +1,1295 @@
+{
+  "properties": {
+    "accentColor": "设置复选框、单选框等原生控件的强调色；具体使用部位由浏览器决定。",
+    "alignContent": "分配布局容器交叉轴或块轴上的剩余空间，控制内容整体的对齐。",
+    "alignItems": "设置容器内项目在交叉轴或块轴上的默认对齐方式。",
+    "alignSelf": "单独覆盖一个项目的交叉轴或块轴对齐方式。",
+    "alignTracks": "旧版瀑布流布局提案中沿块轴对齐轨道的属性；使用前核对实现与规范版本。",
+    "alignmentBaseline": "选择行内或 SVG 文本参与对齐时使用的基线。",
+    "all": "批量重置 CSS 属性；不重置 direction、unicode-bidi 和自定义属性。",
+    "anchorName": "为元素声明锚点名称，供锚点定位的元素引用。",
+    "anchorScope": "限制锚点名称的可见范围，避免同名锚点跨组件互相影响。",
+    "animation": "集中设置关键帧动画的名称、时长、缓动、延迟、次数及播放行为。",
+    "animationComposition": "设置动画效果与底层属性值的替换、叠加或累积方式。",
+    "animationDelay": "设置动画开始前的延迟；负值表示从动画中途开始播放。",
+    "animationDirection": "设置动画按正向、反向或交替方向播放。",
+    "animationDuration": "设置动画完成一次循环的时长。",
+    "animationFillMode": "设置动画在有效播放区间之外是否应用关键帧样式。",
+    "animationIterationCount": "设置动画循环次数，或无限循环。",
+    "animationName": "选择要播放的 @keyframes 动画名称。",
+    "animationPlayState": "控制动画运行或暂停，暂停后可从原位置继续。",
+    "animationRange": "设置动画附着到时间线的起止范围。",
+    "animationRangeEnd": "设置动画在时间线上的附着范围终点。",
+    "animationRangeStart": "设置动画在时间线上的附着范围起点。",
+    "animationTimeline": "选择驱动动画的时间线，例如文档时间或滚动进度。",
+    "animationTimingFunction": "设置动画每个关键帧区间内进度变化的缓动函数。",
+    "appearance": "控制元素是否采用平台原生控件外观。",
+    "aspectRatio": "设置盒子的首选宽高比，参与自动尺寸计算。",
+    "backdropFilter": "对元素背后的图像区域应用模糊等滤镜，通常需要透明或半透明背景。",
+    "backfaceVisibility": "控制经过三维变换后背向观察者的元素背面是否可见。",
+    "background": "集中设置背景颜色、图像、位置、尺寸、重复及绘制区域。",
+    "backgroundAttachment": "设置背景图像相对于视口、元素或局部滚动内容的固定方式。",
+    "backgroundBlendMode": "设置背景图层彼此之间以及与背景色之间的混合模式。",
+    "backgroundClip": "设置背景允许绘制到的边界区域。",
+    "backgroundColor": "设置元素背景颜色，位于背景图像下方。",
+    "backgroundImage": "设置一个或多个背景图像或渐变图层。",
+    "backgroundOrigin": "设置背景图像定位所依据的盒子区域。",
+    "backgroundPosition": "设置背景图像在定位区域内的位置。",
+    "backgroundPositionX": "设置背景图像的水平位置。",
+    "backgroundPositionY": "设置背景图像的垂直位置。",
+    "backgroundRepeat": "设置背景图像在水平和垂直方向上的重复方式。",
+    "backgroundSize": "设置背景图像尺寸，以及覆盖或完整容纳图像的缩放方式。",
+    "baselineShift": "使 SVG 文本基线相对于其基准位置偏移。",
+    "blockSize": "设置逻辑块轴尺寸；水平书写时通常对应高度。",
+    "border": "同时设置四边边框的宽度、线型和颜色。",
+    "borderBlock": "设置逻辑块轴起始侧和结束侧的边框。",
+    "borderBlockColor": "设置逻辑块轴两侧边框颜色。",
+    "borderBlockEnd": "设置逻辑块轴结束侧边框的宽度、线型和颜色。",
+    "borderBlockEndColor": "设置逻辑块轴结束侧的边框颜色。",
+    "borderBlockEndStyle": "设置逻辑块轴结束侧的边框线型。",
+    "borderBlockEndWidth": "设置逻辑块轴结束侧的边框宽度。",
+    "borderBlockStart": "设置逻辑块轴起始侧边框的宽度、线型和颜色。",
+    "borderBlockStartColor": "设置逻辑块轴起始侧的边框颜色。",
+    "borderBlockStartStyle": "设置逻辑块轴起始侧的边框线型。",
+    "borderBlockStartWidth": "设置逻辑块轴起始侧的边框宽度。",
+    "borderBlockStyle": "设置逻辑块轴两侧的边框线型。",
+    "borderBlockWidth": "设置逻辑块轴两侧的边框宽度。",
+    "borderBottom": "设置下边框的宽度、线型和颜色。",
+    "borderBottomColor": "设置下边框颜色。",
+    "borderBottomLeftRadius": "设置左下角边框的圆角半径。",
+    "borderBottomRightRadius": "设置右下角边框的圆角半径。",
+    "borderBottomStyle": "设置下边框线型。",
+    "borderBottomWidth": "设置下边框宽度。",
+    "borderCollapse": "设置表格相邻单元格边框合并还是分离。",
+    "borderColor": "设置四边边框颜色，支持按上、右、下、左顺序简写。",
+    "borderEndEndRadius": "设置逻辑块轴结束侧与行内轴结束侧相交角的圆角。",
+    "borderEndStartRadius": "设置逻辑块轴结束侧与行内轴起始侧相交角的圆角。",
+    "borderImage": "设置用作边框的图像及其切片、宽度、外扩和重复方式。",
+    "borderImageOutset": "设置边框图像超出边框盒的距离。",
+    "borderImageRepeat": "设置边框图像切片沿边框的重复或拉伸方式。",
+    "borderImageSlice": "设置边框图像的切片位置及是否填充中间区域。",
+    "borderImageSource": "指定边框使用的图像或渐变。",
+    "borderImageWidth": "设置边框图像各边的绘制宽度。",
+    "borderInline": "设置逻辑行内轴起始侧和结束侧的边框。",
+    "borderInlineColor": "设置逻辑行内轴两侧边框颜色。",
+    "borderInlineEnd": "设置逻辑行内轴结束侧边框的宽度、线型和颜色。",
+    "borderInlineEndColor": "设置逻辑行内轴结束侧边框颜色。",
+    "borderInlineEndStyle": "设置逻辑行内轴结束侧边框线型。",
+    "borderInlineEndWidth": "设置逻辑行内轴结束侧边框宽度。",
+    "borderInlineStart": "设置逻辑行内轴起始侧边框的宽度、线型和颜色。",
+    "borderInlineStartColor": "设置逻辑行内轴起始侧边框颜色。",
+    "borderInlineStartStyle": "设置逻辑行内轴起始侧边框线型。",
+    "borderInlineStartWidth": "设置逻辑行内轴起始侧边框宽度。",
+    "borderInlineStyle": "设置逻辑行内轴两侧边框线型。",
+    "borderInlineWidth": "设置逻辑行内轴两侧边框宽度。",
+    "borderLeft": "设置左边框的宽度、线型和颜色。",
+    "borderLeftColor": "设置左边框颜色。",
+    "borderLeftStyle": "设置左边框线型。",
+    "borderLeftWidth": "设置左边框宽度。",
+    "borderRadius": "设置四个角的圆角半径；斜杠语法可分别指定水平和垂直半径。",
+    "borderRight": "设置右边框的宽度、线型和颜色。",
+    "borderRightColor": "设置右边框颜色。",
+    "borderRightStyle": "设置右边框线型。",
+    "borderRightWidth": "设置右边框宽度。",
+    "borderSpacing": "设置分离边框模型下表格单元格之间的水平和垂直间距。",
+    "borderStartEndRadius": "设置逻辑块轴起始侧与行内轴结束侧相交角的圆角。",
+    "borderStartStartRadius": "设置逻辑块轴起始侧与行内轴起始侧相交角的圆角。",
+    "borderStyle": "设置四边边框线型。",
+    "borderTop": "设置上边框的宽度、线型和颜色。",
+    "borderTopColor": "设置上边框颜色。",
+    "borderTopLeftRadius": "设置左上角边框的圆角半径。",
+    "borderTopRightRadius": "设置右上角边框的圆角半径。",
+    "borderTopStyle": "设置上边框线型。",
+    "borderTopWidth": "设置上边框宽度。",
+    "borderWidth": "设置四边边框宽度；可见边框通常还需要非 none 的线型。",
+    "bottom": "设置定位元素相对于其定位参照的下侧偏移。",
+    "boxDecorationBreak": "设置盒子被分成多行、多栏或多页时装饰如何绘制。",
+    "boxShadow": "设置盒子的外部或内部阴影，可叠加多层。",
+    "boxSizing": "决定 width、height 等尺寸是否包含内边距和边框。",
+    "breakAfter": "设置元素之后的分页、分栏或区域分片行为。",
+    "breakBefore": "设置元素之前的分页、分栏或区域分片行为。",
+    "breakInside": "设置元素内部是否允许分页、分栏或区域分片。",
+    "captionSide": "设置表格标题相对于表格的放置侧。",
+    "caret": "集中设置文本插入光标的颜色和形状。",
+    "caretColor": "设置可编辑内容中的文本插入光标颜色。",
+    "caretShape": "设置文本插入光标的形状。",
+    "clear": "要求元素避让指定侧的前置浮动元素。",
+    "clip": "使用旧式矩形裁剪绝对定位元素；新代码优先考虑 clip-path。",
+    "clipPath": "通过基本形状、路径或引用裁剪元素的可见区域。",
+    "clipRule": "设置 SVG 裁剪路径判断内部区域所用的填充规则。",
+    "color": "设置文字前景色，同时作为 currentColor 的来源。",
+    "colorAdjust": "控制输出设备对颜色的自动调整；这是 print-color-adjust 的旧名称。",
+    "colorInterpolation": "设置 SVG 图形颜色插值所用的色彩空间。",
+    "colorInterpolationFilters": "设置 SVG 滤镜效果进行颜色计算时所用的色彩空间。",
+    "colorRendering": "向 SVG 渲染器提供颜色绘制质量与速度之间的偏好。",
+    "colorScheme": "声明元素支持的配色方案，影响原生控件、滚动条等浏览器绘制内容。",
+    "columnCount": "设置多栏布局的目标栏数。",
+    "columnFill": "设置多栏内容顺序填充还是尽量均衡栏高。",
+    "columnGap": "设置布局中相邻列之间的间距。",
+    "columnRule": "设置多栏之间分隔线的宽度、线型和颜色。",
+    "columnRuleColor": "设置多栏分隔线的颜色。",
+    "columnRuleStyle": "设置多栏分隔线的线型。",
+    "columnRuleWidth": "设置多栏分隔线的宽度。",
+    "columnSpan": "设置多栏布局中的元素是否跨越所有栏。",
+    "columnWidth": "设置多栏布局的首选栏宽，实际栏宽由容器空间决定。",
+    "columns": "同时设置多栏布局的首选栏宽和目标栏数。",
+    "contain": "声明尺寸、布局、绘制或样式隔离，限制子树对外部的影响。",
+    "containIntrinsicBlockSize": "设置块轴尺寸隔离或跳过内容渲染时使用的替代内部尺寸。",
+    "containIntrinsicHeight": "设置高度隔离或跳过内容渲染时使用的替代内部高度。",
+    "containIntrinsicInlineSize": "设置行内轴尺寸隔离或跳过内容渲染时使用的替代内部尺寸。",
+    "containIntrinsicSize": "集中设置尺寸隔离时使用的替代内部宽高。",
+    "containIntrinsicWidth": "设置宽度隔离或跳过内容渲染时使用的替代内部宽度。",
+    "container": "同时声明查询容器的名称和类型。",
+    "containerName": "为查询容器命名，供 @container 条件规则选择。",
+    "containerType": "建立指定类型的查询容器，并施加所需的隔离行为。",
+    "content": "设置生成内容、替换内容或伪元素的内容。",
+    "contentVisibility": "控制是否渲染元素内容，并允许浏览器跳过暂时不可见的子树。",
+    "counterIncrement": "增加或减少指定 CSS 计数器的值。",
+    "counterReset": "创建或重置 CSS 计数器。",
+    "counterSet": "设置已有 CSS 计数器的值，必要时创建计数器。",
+    "cursor": "设置指针位于元素上方时显示的光标。",
+    "cx": "设置 SVG 圆或椭圆中心的横坐标。",
+    "cy": "设置 SVG 圆或椭圆中心的纵坐标。",
+    "d": "设置 SVG path 元素的路径数据。",
+    "direction": "设置文本基本方向，参与双向文本及部分布局计算。",
+    "display": "决定元素是否生成布局盒子，以及元素自身和内部内容如何排版。",
+    "dominantBaseline": "选择 SVG 文本布局的主导基线及基线表。",
+    "emptyCells": "控制分离边框表格中空单元格的边框和背景是否绘制。",
+    "fieldSizing": "控制表单控件采用固定默认尺寸还是根据内容调整尺寸。",
+    "fill": "设置 SVG 图形内部的填充绘制方式。",
+    "fillOpacity": "设置 SVG 填充的不透明度，不影响描边。",
+    "fillRule": "设置复杂 SVG 路径的内部区域判定规则。",
+    "filter": "对元素的最终图像应用模糊、亮度等滤镜。",
+    "flex": "集中设置弹性项目的增长系数、收缩系数和基础尺寸。",
+    "flexBasis": "设置弹性项目分配剩余空间之前的主轴基础尺寸。",
+    "flexDirection": "设置弹性容器的主轴方向及项目排列方向。",
+    "flexFlow": "同时设置弹性布局的主轴方向和换行方式。",
+    "flexGrow": "设置弹性项目分配正剩余空间时的增长系数。",
+    "flexShrink": "设置弹性项目空间不足时的收缩系数。",
+    "flexWrap": "设置弹性项目是否换行，以及多行的排列方向。",
+    "float": "将元素浮动到指定侧，使相邻行内内容围绕它排列。",
+    "floodColor": "设置 SVG feFlood 或相关滤镜的洪泛颜色。",
+    "floodOpacity": "设置 SVG 洪泛滤镜颜色的不透明度。",
+    "font": "集中设置字体样式、粗细、大小、行高和字体族等信息。",
+    "fontFamily": "设置按优先级排列的字体族及通用字体回退。",
+    "fontFeatureSettings": "通过 OpenType 特性标签控制字体的底层排版功能。",
+    "fontKerning": "设置是否应用字体提供的字偶间距调整。",
+    "fontLanguageOverride": "覆盖字体排版使用的语言系统标签，不改变文本实际语言。",
+    "fontOpticalSizing": "控制支持光学尺寸轴的字体是否按字号优化字形。",
+    "fontPalette": "选择或覆盖彩色字体使用的调色板。",
+    "fontSize": "设置字体大小，也影响 em 等相对单位的计算。",
+    "fontSizeAdjust": "按字体特征尺寸调整字号，减少字体回退造成的视觉变化。",
+    "fontSmooth": "控制字体平滑的非标准属性；使用前核对目标浏览器。",
+    "fontStretch": "选择字体的宽窄字面；font-width 是其较新的名称。",
+    "fontStyle": "选择正常、斜体或倾斜字体样式。",
+    "fontSynthesis": "控制缺少真实字体字形时浏览器可否合成粗体、斜体等样式。",
+    "fontSynthesisPosition": "控制浏览器是否可以合成上标和下标字形。",
+    "fontSynthesisSmallCaps": "控制浏览器是否可以合成小型大写字形。",
+    "fontSynthesisStyle": "控制浏览器是否可以合成倾斜字体。",
+    "fontSynthesisWeight": "控制浏览器是否可以合成加粗字体。",
+    "fontVariant": "集中设置字体的连字、大小写、数字及其他变体。",
+    "fontVariantAlternates": "选择字体提供的替代字形。",
+    "fontVariantCaps": "设置小型大写等大小写字形变体。",
+    "fontVariantEastAsian": "设置东亚文字字形及宽度变体。",
+    "fontVariantEmoji": "设置字符优先采用文本字形还是 emoji 字形。",
+    "fontVariantLigatures": "设置字体连字的启用方式。",
+    "fontVariantNumeric": "设置数字的等宽、比例、分数及其他排版变体。",
+    "fontVariantPosition": "选择字体提供的上标或下标字形。",
+    "fontVariationSettings": "直接设置可变字体各个轴的数值。",
+    "fontWeight": "设置字体粗细，实际可用字重取决于字体。",
+    "fontWidth": "选择字体的宽窄字面，不是通过变换拉伸元素。",
+    "forcedColorAdjust": "控制元素是否参与系统强制颜色模式的自动替换。",
+    "gap": "设置行与列之间的间距，用于 Grid、Flex 和多栏等布局。",
+    "glyphOrientationVertical": "设置竖排 SVG 字形方向的旧属性；新代码优先考虑 text-orientation。",
+    "grid": "集中设置显式和隐式网格的轨道、区域及自动放置方式。",
+    "gridArea": "设置网格项目的区域名，或行起点、列起点、行终点、列终点。",
+    "gridAutoColumns": "设置隐式生成的网格列尺寸。",
+    "gridAutoFlow": "设置网格自动放置算法的行列方向及是否密集填洞。",
+    "gridAutoRows": "设置隐式生成的网格行尺寸。",
+    "gridColumn": "设置网格项目的列起点和列终点。",
+    "gridColumnEnd": "设置网格项目的列终止线或跨越范围。",
+    "gridColumnStart": "设置网格项目的列起始线或跨越范围。",
+    "gridRow": "设置网格项目的行起点和行终点。",
+    "gridRowEnd": "设置网格项目的行终止线或跨越范围。",
+    "gridRowStart": "设置网格项目的行起始线或跨越范围。",
+    "gridTemplate": "集中设置显式网格的行、列和命名区域。",
+    "gridTemplateAreas": "用区域名称矩阵定义网格布局区域。",
+    "gridTemplateColumns": "定义显式网格的列轨道尺寸及网格线名称。",
+    "gridTemplateRows": "定义显式网格的行轨道尺寸及网格线名称。",
+    "hangingPunctuation": "控制标点是否可以悬挂在行盒边缘之外。",
+    "height": "设置元素的物理高度，盒子范围受 box-sizing 影响。",
+    "hyphenateCharacter": "设置自动断词时插入的断字符号。",
+    "hyphenateLimitChars": "限制可断词的最小单词长度以及断点两侧的最少字符数。",
+    "hyphens": "设置文字断词和连字符插入的方式；自动断词依赖语言和词典。",
+    "imageOrientation": "设置图像是否按元数据等信息调整方向。",
+    "imageRendering": "向浏览器指定图像缩放时的插值与清晰度偏好。",
+    "imageResolution": "设置图像的分辨率解释方式；使用前核对目标浏览器支持。",
+    "initialLetter": "设置段落首字下沉或抬升时占用的行数与对齐位置。",
+    "initialLetterAlign": "设置首字下沉时字形与正文使用的对齐基线。",
+    "inlineSize": "设置逻辑行内轴尺寸；水平书写时通常对应宽度。",
+    "inset": "同时设置定位元素的上、右、下、左偏移。",
+    "insetBlock": "设置定位元素沿逻辑块轴的起始和结束偏移。",
+    "insetBlockEnd": "设置定位元素在逻辑块轴结束侧的偏移。",
+    "insetBlockStart": "设置定位元素在逻辑块轴起始侧的偏移。",
+    "insetInline": "设置定位元素沿逻辑行内轴的起始和结束偏移。",
+    "insetInlineEnd": "设置定位元素在逻辑行内轴结束侧的偏移。",
+    "insetInlineStart": "设置定位元素在逻辑行内轴起始侧的偏移。",
+    "interpolateSize": "控制动画是否允许在数值尺寸与内部尺寸关键字之间插值。",
+    "isolation": "控制元素是否建立独立的层叠上下文，隔离混合效果。",
+    "justifyContent": "分配布局主轴或行内轴的剩余空间，控制内容整体对齐。",
+    "justifyItems": "设置容器内项目在行内轴上的默认对齐方式；不控制 Flex 项目的主轴对齐。",
+    "justifySelf": "单独设置项目在其布局区域内的行内轴对齐方式。",
+    "justifyTracks": "旧版瀑布流布局提案中沿行内轴对齐轨道的属性；使用前核对实现与规范版本。",
+    "left": "设置定位元素相对于其定位参照的左侧偏移。",
+    "letterSpacing": "设置字符之间额外增加或减少的间距。",
+    "lightingColor": "设置 SVG 光照滤镜使用的光源颜色。",
+    "lineBreak": "设置东亚文字标点等字符的换行严格程度。",
+    "lineClamp": "限制块容器显示的行数及截断行为；使用前核对所需语法的支持情况。",
+    "lineHeight": "设置行盒高度；无单位数值按元素自身字号计算。",
+    "lineHeightStep": "设置行盒高度向上取整使用的步长。",
+    "listStyle": "集中设置列表标记的类型、图像和位置。",
+    "listStyleImage": "设置用作列表标记的图像。",
+    "listStylePosition": "设置列表标记位于主块盒内部还是外部。",
+    "listStyleType": "设置列表标记或计数器的样式。",
+    "margin": "设置盒子四周的外边距，可使用负值或自动外边距。",
+    "marginBlock": "设置逻辑块轴起始侧和结束侧的外边距。",
+    "marginBlockEnd": "设置逻辑块轴结束侧的外边距。",
+    "marginBlockStart": "设置逻辑块轴起始侧的外边距。",
+    "marginBottom": "设置下外边距。",
+    "marginInline": "设置逻辑行内轴起始侧和结束侧的外边距。",
+    "marginInlineEnd": "设置逻辑行内轴结束侧的外边距。",
+    "marginInlineStart": "设置逻辑行内轴起始侧的外边距。",
+    "marginLeft": "设置左外边距。",
+    "marginRight": "设置右外边距。",
+    "marginTop": "设置上外边距。",
+    "marginTrim": "控制容器边缘处子元素外边距的裁减。",
+    "marker": "同时设置 SVG 路径起点、中间顶点和终点的标记图形。",
+    "markerEnd": "设置 SVG 路径终点的标记图形。",
+    "markerMid": "设置 SVG 路径中间顶点的标记图形。",
+    "markerStart": "设置 SVG 路径起点的标记图形。",
+    "mask": "集中设置遮罩图层的图像、位置、尺寸、重复及合成方式。",
+    "maskBorder": "设置基于九宫格图像切片的边框遮罩。",
+    "maskBorderMode": "设置边框遮罩使用 alpha 还是亮度信息。",
+    "maskBorderOutset": "设置边框遮罩超出边框盒的距离。",
+    "maskBorderRepeat": "设置边框遮罩切片的重复或拉伸方式。",
+    "maskBorderSlice": "设置边框遮罩图像的切片位置。",
+    "maskBorderSource": "设置边框遮罩的源图像。",
+    "maskBorderWidth": "设置边框遮罩各边的宽度。",
+    "maskClip": "设置遮罩效果允许作用的裁剪区域。",
+    "maskComposite": "设置多个遮罩图层之间的合成运算。",
+    "maskImage": "设置遮罩使用的图像、渐变或 SVG 遮罩引用。",
+    "maskMode": "设置遮罩按 alpha、亮度或源类型解释。",
+    "maskOrigin": "设置遮罩图像定位所依据的盒子。",
+    "maskPosition": "设置遮罩图像在定位区域中的位置。",
+    "maskRepeat": "设置遮罩图像的重复方式。",
+    "maskSize": "设置遮罩图像的尺寸。",
+    "maskType": "设置 SVG mask 元素使用亮度还是 alpha 作为遮罩。",
+    "masonryAutoFlow": "旧版瀑布流布局提案中的自动放置策略；使用前核对实现与规范版本。",
+    "mathDepth": "设置数学公式的嵌套深度，用于数学字号等排版计算。",
+    "mathShift": "控制数学上标采用正常还是压缩的垂直偏移。",
+    "mathStyle": "设置数学公式采用正常还是紧凑排版。",
+    "maxBlockSize": "限制元素逻辑块轴的最大尺寸。",
+    "maxHeight": "限制元素的最大物理高度。",
+    "maxInlineSize": "限制元素逻辑行内轴的最大尺寸。",
+    "maxLines": "限制分片上下文中的最大行数；属于需核对支持情况的截行能力。",
+    "maxWidth": "限制元素的最大物理宽度。",
+    "minBlockSize": "设置元素逻辑块轴的最小尺寸。",
+    "minHeight": "设置元素的最小物理高度。",
+    "minInlineSize": "设置元素逻辑行内轴的最小尺寸。",
+    "minWidth": "设置元素的最小物理宽度。",
+    "mixBlendMode": "设置元素整体与其背后内容的颜色混合方式。",
+    "motion": "设置运动路径的旧式简写；对应现代 offset 属性族。",
+    "motionDistance": "设置沿运动路径行进距离的旧属性；对应 offset-distance。",
+    "motionPath": "设置运动路径的旧属性；对应 offset-path。",
+    "motionRotation": "设置运动路径旋转方式的旧属性；对应 offset-rotate。",
+    "objectFit": "设置替换元素的内容如何适应其内容盒，例如图像的裁切和缩放。",
+    "objectPosition": "设置替换元素内容在内容盒内的对齐位置。",
+    "objectViewBox": "设置替换元素内容的可视区域，控制用于呈现的图像范围。",
+    "offset": "集中设置运动路径、起始位置、距离、方向和锚点。",
+    "offsetAnchor": "设置元素沿运动路径移动时与路径相接的内部锚点。",
+    "offsetDistance": "设置元素沿运动路径行进的距离。",
+    "offsetPath": "设置元素运动所沿用的路径。",
+    "offsetPosition": "设置运动路径的初始位置。",
+    "offsetRotate": "设置元素沿运动路径移动时的方向和附加旋转。",
+    "offsetRotation": "设置路径旋转的旧名称；新代码使用 offset-rotate。",
+    "opacity": "设置元素及其子树合成后的整体不透明度。",
+    "order": "设置 Flex 或 Grid 项目的视觉排列顺序，不改变 DOM 顺序。",
+    "orphans": "设置分页或分栏断点前需保留的最少行数。",
+    "outline": "设置盒子外围轮廓线的宽度、线型和颜色，不占布局空间。",
+    "outlineColor": "设置轮廓线颜色。",
+    "outlineOffset": "设置轮廓线与边框边缘之间的距离。",
+    "outlineStyle": "设置轮廓线线型。",
+    "outlineWidth": "设置轮廓线宽度。",
+    "overflow": "设置内容超出盒子时的裁剪和滚动行为。",
+    "overflowAnchor": "控制元素是否参与滚动锚定，以减少内容变化造成的视口跳动。",
+    "overflowBlock": "设置逻辑块轴上的溢出行为。",
+    "overflowClipBox": "设置溢出裁剪参照盒的非标准属性；使用前核对目标浏览器。",
+    "overflowClipMargin": "设置 overflow:clip 的裁剪边界允许向外扩展的距离。",
+    "overflowInline": "设置逻辑行内轴上的溢出行为。",
+    "overflowWrap": "设置不可正常断开的长文本是否允许额外换行。",
+    "overflowX": "设置水平方向的溢出行为。",
+    "overflowY": "设置垂直方向的溢出行为。",
+    "overlay": "反映元素是否位于顶层，主要用于顶层退出过渡；通常由浏览器管理。",
+    "overscrollBehavior": "控制滚动到边界后的滚动链和越界反馈行为。",
+    "overscrollBehaviorBlock": "控制逻辑块轴上到达滚动边界后的行为。",
+    "overscrollBehaviorInline": "控制逻辑行内轴上到达滚动边界后的行为。",
+    "overscrollBehaviorX": "控制水平方向到达滚动边界后的行为。",
+    "overscrollBehaviorY": "控制垂直方向到达滚动边界后的行为。",
+    "padding": "设置内容与边框之间的四边内边距，不接受负值。",
+    "paddingBlock": "设置逻辑块轴起始侧和结束侧的内边距。",
+    "paddingBlockEnd": "设置逻辑块轴结束侧的内边距。",
+    "paddingBlockStart": "设置逻辑块轴起始侧的内边距。",
+    "paddingBottom": "设置下内边距。",
+    "paddingInline": "设置逻辑行内轴起始侧和结束侧的内边距。",
+    "paddingInlineEnd": "设置逻辑行内轴结束侧的内边距。",
+    "paddingInlineStart": "设置逻辑行内轴起始侧的内边距。",
+    "paddingLeft": "设置左内边距。",
+    "paddingRight": "设置右内边距。",
+    "paddingTop": "设置上内边距。",
+    "page": "选择分页媒体中使用的命名页面类型。",
+    "paintOrder": "设置 SVG 填充、描边和标记的绘制先后顺序。",
+    "perspective": "设置观察子元素三维变换时的透视距离。",
+    "perspectiveOrigin": "设置三维透视的观察原点。",
+    "placeContent": "同时设置 align-content 与 justify-content。",
+    "placeItems": "同时设置 align-items 与 justify-items。",
+    "placeSelf": "同时设置 align-self 与 justify-self。",
+    "pointerEvents": "设置元素何时可以成为指针命中目标；SVG 还支持按填充和描边命中。",
+    "position": "设置元素的定位方式，并决定偏移属性如何参与布局。",
+    "positionAnchor": "选择绝对定位元素使用的默认锚点。",
+    "positionArea": "选择相对于锚点的定位区域。",
+    "positionTry": "同时设置锚点定位的候选回退方式及尝试顺序。",
+    "positionTryFallbacks": "设置锚点定位溢出时尝试的替代位置。",
+    "positionTryOrder": "设置锚点定位候选方案的尝试顺序。",
+    "positionVisibility": "设置锚点定位元素根据锚点可见性和溢出情况是否显示。",
+    "printColorAdjust": "设置打印时浏览器是否可以为节墨或可读性调整颜色。",
+    "quotes": "设置生成引号所用的开闭字符对。",
+    "r": "设置 SVG 圆的半径。",
+    "resize": "设置用户是否能调整元素尺寸以及可调整的方向。",
+    "right": "设置定位元素相对于其定位参照的右侧偏移。",
+    "rotate": "独立设置元素旋转，不必重写 transform 中的其他变换。",
+    "rowGap": "设置布局中相邻行之间的间距。",
+    "rubyAlign": "设置注音文字与基底文字之间剩余空间的分配方式。",
+    "rubyMerge": "设置相邻注音容器的合并方式；使用前核对目标浏览器。",
+    "rubyOverhang": "控制注音文字是否可以悬伸到相邻文本上方。",
+    "rubyPosition": "设置注音文字相对于基底文字的位置。",
+    "rx": "设置 SVG 椭圆的水平半径，或矩形的水平圆角半径。",
+    "ry": "设置 SVG 椭圆的垂直半径，或矩形的垂直圆角半径。",
+    "scale": "独立设置元素的缩放比例。",
+    "scrollBehavior": "设置由导航或滚动 API 触发的滚动采用即时还是平滑方式。",
+    "scrollInitialTarget": "将元素声明为祖先滚动容器首次呈现时的候选滚动吸附目标。",
+    "scrollMargin": "设置元素滚动目标区域的四边外扩距离，不改变普通布局外边距。",
+    "scrollMarginBlock": "设置滚动目标区域在逻辑块轴两侧的外扩距离。",
+    "scrollMarginBlockEnd": "设置滚动目标区域在逻辑块轴结束侧的外扩距离。",
+    "scrollMarginBlockStart": "设置滚动目标区域在逻辑块轴起始侧的外扩距离。",
+    "scrollMarginBottom": "设置滚动目标区域下侧的外扩距离。",
+    "scrollMarginInline": "设置滚动目标区域在逻辑行内轴两侧的外扩距离。",
+    "scrollMarginInlineEnd": "设置滚动目标区域在逻辑行内轴结束侧的外扩距离。",
+    "scrollMarginInlineStart": "设置滚动目标区域在逻辑行内轴起始侧的外扩距离。",
+    "scrollMarginLeft": "设置滚动目标区域左侧的外扩距离。",
+    "scrollMarginRight": "设置滚动目标区域右侧的外扩距离。",
+    "scrollMarginTop": "设置滚动目标区域上侧的外扩距离。",
+    "scrollPadding": "设置滚动容器最佳可视区域的四边内缩距离。",
+    "scrollPaddingBlock": "设置滚动容器最佳可视区域在逻辑块轴两侧的内缩距离。",
+    "scrollPaddingBlockEnd": "设置滚动容器最佳可视区域在逻辑块轴结束侧的内缩距离。",
+    "scrollPaddingBlockStart": "设置滚动容器最佳可视区域在逻辑块轴起始侧的内缩距离。",
+    "scrollPaddingBottom": "设置滚动容器最佳可视区域下侧的内缩距离。",
+    "scrollPaddingInline": "设置滚动容器最佳可视区域在逻辑行内轴两侧的内缩距离。",
+    "scrollPaddingInlineEnd": "设置滚动容器最佳可视区域在逻辑行内轴结束侧的内缩距离。",
+    "scrollPaddingInlineStart": "设置滚动容器最佳可视区域在逻辑行内轴起始侧的内缩距离。",
+    "scrollPaddingLeft": "设置滚动容器最佳可视区域左侧的内缩距离。",
+    "scrollPaddingRight": "设置滚动容器最佳可视区域右侧的内缩距离。",
+    "scrollPaddingTop": "设置滚动容器最佳可视区域上侧的内缩距离。",
+    "scrollSnapAlign": "设置元素作为滚动吸附目标时在块轴和行内轴上的对齐位置。",
+    "scrollSnapMargin": "设置滚动吸附区域外扩的旧名称；新代码使用 scroll-margin。",
+    "scrollSnapMarginBottom": "设置滚动吸附区域下侧外扩的旧名称；新代码使用 scroll-margin-bottom。",
+    "scrollSnapMarginLeft": "设置滚动吸附区域左侧外扩的旧名称；新代码使用 scroll-margin-left。",
+    "scrollSnapMarginRight": "设置滚动吸附区域右侧外扩的旧名称；新代码使用 scroll-margin-right。",
+    "scrollSnapMarginTop": "设置滚动吸附区域上侧外扩的旧名称；新代码使用 scroll-margin-top。",
+    "scrollSnapStop": "设置滚动时是否允许越过该元素的吸附位置。",
+    "scrollSnapType": "设置滚动容器的吸附轴和吸附强度。",
+    "scrollTimeline": "同时声明滚动进度时间线的名称和轴。",
+    "scrollTimelineAxis": "设置滚动进度时间线所观察的滚动轴。",
+    "scrollTimelineName": "声明基于当前容器滚动进度的时间线名称。",
+    "scrollbarColor": "设置滚动条滑块和轨道的颜色。",
+    "scrollbarGutter": "设置是否预留滚动条槽位，以减少滚动条出现时的布局变化。",
+    "scrollbarWidth": "设置滚动条采用正常、较细或隐藏的外观。",
+    "shapeImageThreshold": "设置从图像 alpha 信息提取环绕形状时的阈值。",
+    "shapeMargin": "设置文字环绕形状之外的额外间距。",
+    "shapeOutside": "设置浮动元素周围行内内容所环绕的形状。",
+    "shapeRendering": "向 SVG 渲染器提供图形绘制精度与速度的偏好。",
+    "speakAs": "设置语音呈现时文字、数字和标点的朗读方式；使用前核对语音媒体支持。",
+    "stopColor": "设置 SVG 渐变 stop 节点的颜色。",
+    "stopOpacity": "设置 SVG 渐变 stop 节点的不透明度。",
+    "stroke": "设置 SVG 图形轮廓的描边绘制方式。",
+    "strokeColor": "设置描边颜色的扩展属性；常规 SVG 优先使用 stroke 并核对支持情况。",
+    "strokeDasharray": "设置 SVG 描边虚线中线段与空隙的长度序列。",
+    "strokeDashoffset": "设置 SVG 虚线描边相对于路径起点的偏移。",
+    "strokeLinecap": "设置开放 SVG 子路径端点的描边形状。",
+    "strokeLinejoin": "设置 SVG 路径转角处描边的连接形状。",
+    "strokeMiterlimit": "限制尖角连接的延伸比例，超过阈值时改变连接形状。",
+    "strokeOpacity": "设置 SVG 描边的不透明度，不影响填充。",
+    "strokeWidth": "设置 SVG 描边宽度。",
+    "tabSize": "设置保留制表符时每个制表位的宽度。",
+    "tableLayout": "设置表格列宽采用自动还是固定布局算法。",
+    "textAlign": "设置块容器中行内内容的水平或逻辑方向对齐。",
+    "textAlignLast": "设置段落最后一行或强制换行前一行的对齐方式。",
+    "textAnchor": "设置 SVG 文本片段相对于定位点的锚定方式。",
+    "textAutospace": "设置中西文、数字等不同文字系统之间的自动间距。",
+    "textBox": "同时设置文本盒边缘参照及首尾空白裁减。",
+    "textBoxEdge": "选择文本盒裁减或对齐使用的字体边缘度量。",
+    "textBoxTrim": "裁减文本块开头或结尾的额外行高空白。",
+    "textCombineUpright": "设置竖排文字中多个字符是否合成为一个横排字形单元。",
+    "textDecoration": "集中设置文本装饰线的位置、线型、颜色及粗细。",
+    "textDecorationColor": "设置文本装饰线颜色。",
+    "textDecorationLine": "设置下划线、上划线或删除线等装饰线位置。",
+    "textDecorationSkip": "设置文本装饰线跳过哪些内容；具体语法需核对支持情况。",
+    "textDecorationSkipInk": "设置装饰线是否避让字形的笔画。",
+    "textDecorationStyle": "设置文本装饰线的实线、波浪线等线型。",
+    "textDecorationThickness": "设置文本装饰线粗细。",
+    "textEmphasis": "同时设置文字着重号的样式和颜色。",
+    "textEmphasisColor": "设置文字着重号颜色。",
+    "textEmphasisPosition": "设置文字着重号位于文字的哪一侧。",
+    "textEmphasisStyle": "设置文字着重号的形状和填充方式。",
+    "textIndent": "设置文本行的缩进距离。",
+    "textJustify": "设置两端对齐时增加间距的算法。",
+    "textOrientation": "设置竖排模式下字符的方向。",
+    "textOverflow": "设置被裁剪的行内溢出文本如何提示，例如显示省略号。",
+    "textRendering": "向渲染器提供文本速度、可读性或几何精度的偏好。",
+    "textShadow": "设置文字及其装饰的阴影，可叠加多层。",
+    "textSizeAdjust": "控制移动浏览器为提升可读性而进行的文字自动放大。",
+    "textSpacingTrim": "设置东亚文字标点等字符周围空白的裁减。",
+    "textTransform": "设置文字显示时的大小写、全角或其他字形转换。",
+    "textUnderlineOffset": "设置下划线相对于默认位置的偏移。",
+    "textUnderlinePosition": "设置下划线相对于文字基线或竖排文字的放置方式。",
+    "textWrap": "同时设置文本是否换行及换行策略。",
+    "textWrapMode": "设置文本是否允许软换行。",
+    "textWrapStyle": "设置文本换行的排版策略，例如平衡各行长度。",
+    "timelineScope": "扩大命名动画时间线的可引用作用域。",
+    "top": "设置定位元素相对于其定位参照的上侧偏移。",
+    "touchAction": "声明浏览器可以处理的触摸平移与缩放手势。",
+    "transform": "按顺序组合平移、旋转、缩放等二维或三维变换。",
+    "transformBox": "设置变换及其原点所依据的参照盒。",
+    "transformOrigin": "设置元素变换的原点。",
+    "transformStyle": "控制子元素的三维位置保留在三维空间还是展平。",
+    "transition": "集中设置属性变化过渡的目标、时长、缓动、延迟和行为。",
+    "transitionBehavior": "控制离散属性是否可以启动 CSS 过渡。",
+    "transitionDelay": "设置属性变化后开始过渡的延迟。",
+    "transitionDuration": "设置过渡从开始到完成的时长。",
+    "transitionProperty": "指定发生变化时需要过渡的 CSS 属性。",
+    "transitionTimingFunction": "设置过渡进度变化的缓动函数。",
+    "translate": "独立设置元素在二维或三维空间中的平移。",
+    "unicodeBidi": "设置元素如何参与 Unicode 双向文本算法，通常与 direction 配合。",
+    "userSelect": "设置用户是否可以选取元素中的文本。",
+    "vectorEffect": "设置 SVG 图形变换时对描边等矢量效果的处理。",
+    "verticalAlign": "设置行内级盒子或表格单元格的垂直对齐，不用于普通块盒居中。",
+    "viewTimeline": "同时声明基于元素可见进度的时间线名称与轴。",
+    "viewTimelineAxis": "设置可见进度时间线所观察的滚动轴。",
+    "viewTimelineInset": "设置可见进度时间线使用的滚动视口内缩范围。",
+    "viewTimelineName": "声明基于元素进入和离开滚动视口的时间线名称。",
+    "viewTransitionClass": "为视图过渡的快照伪元素分组，以便共用样式。",
+    "viewTransitionName": "为视图过渡中的元素命名，以匹配前后状态的快照。",
+    "visibility": "设置元素是否可见；隐藏通常保留布局空间。",
+    "whiteSpace": "设置空白折叠和换行处理方式。",
+    "whiteSpaceCollapse": "设置空格、制表符和换行符如何折叠或保留。",
+    "widows": "设置分页或分栏断点后需保留的最少行数。",
+    "width": "设置元素的物理宽度，盒子范围受 box-sizing 影响。",
+    "willChange": "提前告知浏览器可能发生变化的属性，便于准备优化资源。",
+    "wordBreak": "设置单词内部或文字之间的断行规则。",
+    "wordSpacing": "设置单词或词间分隔符的额外间距。",
+    "wordWrap": "设置长文本的额外换行行为；是 overflow-wrap 的兼容名称。",
+    "writingMode": "设置水平或竖直书写模式，以及行和块的推进方向。",
+    "x": "设置适用 SVG 元素的水平几何坐标。",
+    "y": "设置适用 SVG 元素的垂直几何坐标。",
+    "zIndex": "设置元素在所属层叠上下文中的层叠级别。",
+    "zoom": "设置元素及其布局的缩放比例，与 transform:scale 的布局行为不同。"
+  },
+  "details": {
+    "display": {
+      "remarks": "外部显示类型决定元素自身以块级还是行内级方式参与周围布局；内部布局方式决定内容使用普通流、Flex 或 Grid 等布局。此属性不继承；例如 div 通常由浏览器默认样式设置为 block。",
+      "examples": ["css(s.display.flex, s.alignItems.center, s.gap.rem(0.5))"],
+      "commonValues": ["block", "inline", "flex", "inline-flex", "grid", "none"],
+      "usage": "选择容器的布局方式；具体对齐、间距和换行由对应布局属性控制。",
+      "see": "https://developer.mozilla.org/zh-CN/docs/Web/CSS/Reference/Properties/display"
+    },
+    "position": {
+      "remarks": "偏移通常通过 top/right/bottom/left 或逻辑 inset 属性设置。fixed 和 absolute 的包含块也可能由 transform 等属性建立。",
+      "examples": ["css(s.position.sticky, s.top.px(0))"],
+      "commonValues": ["static", "relative", "absolute", "fixed", "sticky"],
+      "usage": "建立定位参照、覆盖层、固定区域或滚动吸附内容。"
+    },
+    "margin": {
+      "remarks": "1/2/3/4 个值依次表示：四边；上下/左右；上/左右/下；上/右/下/左。块布局中的垂直外边距可能折叠。",
+      "examples": [
+        "s.margin.px(8, 16) // margin:8px 16px;",
+        "s.margin.raw('0 auto') // margin:0 auto;"
+      ],
+      "usage": "控制盒子外侧与相邻内容的距离；布局项统一间隔可考虑容器 gap。"
+    },
+    "padding": {
+      "remarks": "1/2/3/4 个值依次表示：四边；上下/左右；上/左右/下；上/右/下/左。不能使用负值或 auto。",
+      "examples": ["s.padding.rem(0.5, 1) // padding:0.5rem 1rem;"],
+      "usage": "控制文字或子元素与组件边框之间的留白。"
+    },
+    "gap": {
+      "remarks": "两个值依次为 row-gap 和 column-gap；在 Flex 中对应项目还是行间距取决于 flex-direction。它不增加容器外缘的间距。",
+      "examples": ["s.gap.px(8, 16) // gap:8px 16px;"],
+      "usage": "给 Flex/Grid 项目设置统一间隔，避免逐个项目添加 margin。"
+    },
+    "width": {
+      "remarks": "百分比依据包含块解析；auto、内部尺寸和最小/最大约束共同决定最终使用尺寸。",
+      "examples": [
+        "s.width.rem(20) // width:20rem;",
+        "s.width.clamp('12rem', '50vw', '40rem') // width:clamp(12rem, 50vw, 40rem);"
+      ],
+      "commonValues": ["auto", "min-content", "max-content", "fit-content"],
+      "usage": "控制物理宽度；支持书写模式的布局可优先考虑 inline-size。"
+    },
+    "height": {
+      "remarks": "百分比高度能否解析取决于包含块的尺寸确定方式；设置 100% 不自动等于视口高度。",
+      "usage": "控制物理高度；滚动面板通常结合 max-height 和 overflow。",
+      "examples": ["css(s.maxHeight.rem(20), s.overflowY.auto)"]
+    },
+    "color": {
+      "remarks": "改变文字和 currentColor 的来源，不会自动改变背景。颜色函数方法返回完整 color 声明。",
+      "examples": [
+        "s.color.rgb(255, 0, 0, 0.5) // color:rgb(255 0 0 / 0.5);",
+        "s.color.oklch(0.7, 0.15, 250) // color:oklch(0.7 0.15 250);"
+      ]
+    },
+    "opacity": {
+      "remarks": "0 完全透明，1 完全不透明；作用于整个子树的合成结果。透明元素仍可能接受点击和键盘焦点。",
+      "examples": ["s.opacity.raw(0.5) // opacity:0.5;"],
+      "usage": "统一调整整个元素子树的透明度；只需背景半透明时应使用带 alpha 的背景色。"
+    },
+    "zIndex": {
+      "remarks": "数值只在所属层叠上下文内比较；更大的数值不保证盖过其他层叠上下文。Flex/Grid 项目也可以使用 z-index。",
+      "usage": "控制同一层叠上下文中的浮层顺序，排查遮挡时先确认祖先层叠上下文。",
+      "examples": ["css(s.position.relative, s.zIndex.raw(1))"]
+    },
+    "flexShrink": {
+      "remarks": "实际收缩还与 flex-basis 成比例；自动最小尺寸可能阻止项目继续缩小。",
+      "usage": "控制空间不足时是否允许缩小；设置为 0 可避免图标或固定控件收缩。",
+      "examples": ["s.flexShrink.raw(0)"]
+    },
+    "minWidth": {
+      "remarks": "Flex/Grid 项目的 auto 最小尺寸可能由内容决定。需要允许其收缩时，可以按布局目的设置 min-width:0。",
+      "usage": "给控件设置最小可用宽度，或用 0 允许 Flex/Grid 子项突破自动内容最小宽度。",
+      "examples": ["s.minWidth.px(0)"]
+    },
+    "lineHeight": {
+      "remarks": "无单位数字作为倍数继承；长度值按长度继承。单独设置行高不会自动实现多行文本垂直居中。",
+      "examples": ["s.lineHeight.raw(1.5) // line-height:1.5;"],
+      "usage": "控制正文行间节奏；可继承的字号倍数通常比固定长度更适合嵌套文字。"
+    },
+    "textOverflow": {
+      "remarks": "本属性不自行制造溢出。单行省略通常还需要受限宽度、overflow:hidden 和 white-space:nowrap。",
+      "commonValues": ["ellipsis", "clip"],
+      "usage": "受限宽度中的单行标题或标签。多行截断需要单独的布局和截行方案。",
+      "examples": [
+        "css(s.maxWidth.rem(12), s.whiteSpace.nowrap, s.overflow.hidden, s.textOverflow.ellipsis)"
+      ]
+    },
+    "order": {
+      "remarks": "不改变源代码、朗读及通常的 Tab 顺序，避免用视觉重排破坏阅读顺序。"
+    },
+    "willChange": {
+      "remarks": "仅对即将发生的变化短期使用；长期或大量声明可能占用额外资源，并提前改变层叠上下文。"
+    },
+    "gridTemplateColumns": {
+      "examples": [
+        "s.gridTemplateColumns.repeat(3, 'minmax(0, 1fr)') // grid-template-columns:repeat(3, minmax(0, 1fr));"
+      ],
+      "remarks": "每个轨道值定义一列；fr 分配剩余空间。需要允许长内容所在列缩小时，可使用 minmax(0, 1fr)。",
+      "usage": "响应式卡片、表单标签与输入框的列布局。"
+    },
+    "gridAutoFlow": {
+      "remarks": "dense 可能改变视觉顺序，但不改变 DOM 和键盘导航顺序。",
+      "commonValues": ["row", "column", "dense"],
+      "usage": "控制未明确指定位置的网格项目如何自动填入轨道。",
+      "examples": ["css(s.display.grid, s.gridAutoFlow.row)"]
+    },
+    "transform": {
+      "remarks": "多个变换的顺序会影响结果。变换通常不改变元素在普通文档流中预留的尺寸。",
+      "usage": "平移、旋转和缩放的视觉效果；需要改变普通流占位时应调整布局属性。",
+      "examples": ["s.transform.raw('translateX(8px) scale(1.05)')"]
+    },
+    "colorScheme": {
+      "remarks": "声明支持的方案不等于为应用生成主题颜色；文字、背景和业务 token 仍需自行定义。"
+    },
+    "scrollSnapType": {
+      "remarks": "轴和吸附强度的组合通过 raw 写入，例如 x mandatory；单独声明轴时省略的强度按 CSS 规则处理。",
+      "examples": ["s.scrollSnapType.raw('x mandatory') // scroll-snap-type:x mandatory;"]
+    },
+    "boxSizing": {
+      "commonValues": ["content-box", "border-box"],
+      "usage": "确定组件声明宽高时是否把 padding 和 border 算在尺寸内。",
+      "examples": ["css(s.boxSizing.borderBox, s.width.rem(20), s.padding.rem(1))"]
+    },
+    "inlineSize": {
+      "remarks": "水平书写时通常对应 width，竖直书写时通常对应 height。实际尺寸还受 min-inline-size/max-inline-size 和 box-sizing 约束。",
+      "usage": "希望布局尺寸跟随书写模式变化的组件。",
+      "examples": ["s.inlineSize.rem(20)"]
+    },
+    "blockSize": {
+      "remarks": "水平书写时通常对应 height，竖直书写时通常对应 width。",
+      "usage": "使用逻辑轴表达内容块尺寸。",
+      "examples": ["s.blockSize.rem(10)"]
+    },
+    "maxWidth": {
+      "remarks": "限制最终宽度，不会单独要求元素达到该宽度。最小尺寸约束可能优先于较小的最大尺寸。",
+      "usage": "限制正文行长、弹窗宽度或响应式内容区。",
+      "examples": ["css(s.width.percent(100), s.maxWidth.rem(48))"]
+    },
+    "aspectRatio": {
+      "remarks": "通常需要至少一个轴为自动尺寸才参与尺寸计算；两个轴都被明确尺寸约束时，不会强行保持比例。",
+      "usage": "图片占位、视频和卡片封面区域。",
+      "examples": ["css(s.aspectRatio.raw('16 / 9'), s.width.percent(100))"]
+    },
+    "flex": {
+      "remarks": "依次对应 flex-grow、flex-shrink、flex-basis。作用于弹性项目，应先由父容器建立 Flex 布局。",
+      "commonValues": ["auto", "none"],
+      "usage": "分配弹性布局中的剩余空间，或让项目保持自身尺寸。",
+      "examples": ["s.flex.raw('1 1 0%')", "s.flex.none"]
+    },
+    "flexBasis": {
+      "remarks": "在剩余空间分配前确定项目的主轴基础尺寸；设置为 auto 时先参考对应的 width/height。",
+      "commonValues": ["auto", "content"],
+      "usage": "为侧栏、内容区或重复项目指定弹性分配的起始尺寸。",
+      "examples": ["s.flexBasis.rem(16)"]
+    },
+    "flexGrow": {
+      "remarks": "数值是分配正剩余空间的相对权重，不是最终宽度百分比。只有容器存在剩余空间时才发挥作用。",
+      "usage": "让主内容区填充工具栏或行布局的剩余空间。",
+      "examples": ["s.flexGrow.raw(1)"]
+    },
+    "flexDirection": {
+      "commonValues": ["row", "column", "row-reverse", "column-reverse"],
+      "remarks": "row 沿行内轴，column 沿块轴；不能始终按“水平/垂直”理解。反转只改变视觉排列，不改变 DOM 顺序。",
+      "examples": ["css(s.display.flex, s.flexDirection.column, s.gap.rem(1))"]
+    },
+    "flexWrap": {
+      "commonValues": ["nowrap", "wrap", "wrap-reverse"],
+      "usage": "标签、按钮等项目不足一行时允许分行。",
+      "examples": ["css(s.display.flex, s.flexWrap.wrap, s.gap.rem(0.5))"]
+    },
+    "alignItems": {
+      "commonValues": ["stretch", "center", "baseline", "start", "end"],
+      "remarks": "Flex 中沿交叉轴对齐；Grid 中通常沿块轴对齐。单个项目可以用 align-self 覆盖。",
+      "usage": "图标与文字居中、表单控件基线对齐或项目拉伸。",
+      "examples": ["css(s.display.flex, s.alignItems.center)"]
+    },
+    "alignSelf": {
+      "commonValues": ["auto", "stretch", "baseline"],
+      "usage": "只改变某一个项目的交叉轴或块轴对齐，不改变同组其他项目。",
+      "examples": ["s.alignSelf.center"]
+    },
+    "justifyContent": {
+      "commonValues": ["center", "space-between", "space-around", "space-evenly"],
+      "remarks": "Flex 中沿主轴分配空间，Grid 中沿行内轴对齐网格整体。没有剩余空间时，空间分配效果可能不明显。",
+      "examples": ["css(s.display.flex, s.justifyContent.spaceBetween)"]
+    },
+    "gridTemplateRows": {
+      "remarks": "每个轨道值定义一行，未显式定义的行使用 grid-auto-rows。",
+      "usage": "区分固定工具栏和可伸缩内容区域。",
+      "examples": ["s.gridTemplateRows.raw('auto minmax(0, 1fr)')"]
+    },
+    "overflow": {
+      "commonValues": ["visible", "hidden", "clip", "auto", "scroll"],
+      "remarks": "一个值同时设置两轴；两个值依次设置 overflow-x、overflow-y。通常需要尺寸约束才会出现可滚动的溢出。",
+      "usage": "滚动面板、内容裁剪和受限尺寸区域。",
+      "examples": ["css(s.maxHeight.rem(20), s.overflow.auto)"]
+    },
+    "overflowX": {
+      "commonValues": ["auto", "hidden", "clip"],
+      "remarks": "和 overflow-y 的组合可能改变计算值；例如另一轴是 auto 时，visible 可能按 auto 计算。",
+      "usage": "横向滚动标签、宽表格或水平内容裁剪。",
+      "examples": ["s.overflowX.auto"]
+    },
+    "overflowY": {
+      "commonValues": ["auto", "hidden", "clip"],
+      "remarks": "通常配合 height/max-height 或可收缩的布局区域使用。",
+      "usage": "纵向列表和弹窗内容区。",
+      "examples": ["css(s.maxHeight.rem(20), s.overflowY.auto)"]
+    },
+    "overscrollBehavior": {
+      "commonValues": ["auto", "contain", "none"],
+      "usage": "阻止弹窗或内部滚动面板到达边界后继续滚动外层页面。",
+      "examples": ["css(s.overflowY.auto, s.overscrollBehavior.contain)"]
+    },
+    "scrollBehavior": {
+      "remarks": "主要影响导航和滚动 API 触发的滚动，不会把所有用户滚动强制变成动画。",
+      "usage": "锚点跳转或程序化滚动；应同时考虑减少动态效果的用户偏好。",
+      "examples": ["s.scrollBehavior.smooth"]
+    },
+    "whiteSpace": {
+      "commonValues": ["normal", "nowrap", "pre", "pre-wrap", "pre-line", "break-spaces"],
+      "remarks": "同时影响空白折叠和软换行。它不负责给溢出内容添加省略号。",
+      "usage": "单行标签、保留换行的用户文本和代码片段。",
+      "examples": ["s.whiteSpace.preWrap"]
+    },
+    "overflowWrap": {
+      "commonValues": ["normal", "anywhere", "break-word"],
+      "usage": "防止 URL、标识符等长文本撑破容器。",
+      "examples": ["s.overflowWrap.anywhere"]
+    },
+    "wordBreak": {
+      "commonValues": ["normal", "break-all", "keep-all"],
+      "remarks": "按字符和语言控制断行。仅需避免超长单词溢出时，通常先考虑 overflow-wrap。",
+      "examples": ["s.wordBreak.normal"]
+    },
+    "textAlign": {
+      "commonValues": ["start", "end", "center", "justify"],
+      "remarks": "控制块容器中的行内内容，不是块盒自身的位置，也不是 Flex/Grid 项目的对齐。",
+      "usage": "正文、标题和表格单元格中的文本对齐。",
+      "examples": ["s.textAlign.start"]
+    },
+    "fontSize": {
+      "remarks": "改变字形大小，并影响 em 等相对长度；行盒高度还由 line-height 决定。",
+      "usage": "建立文字层级，根字号相对尺寸可用 rem 表达。",
+      "examples": ["css(s.fontSize.rem(1), s.lineHeight.raw(1.5))"]
+    },
+    "fontWeight": {
+      "commonValues": ["normal", "bold", "bolder", "lighter"],
+      "remarks": "最终字形取决于已加载字体和可用字重；变量字体可支持连续的字重范围。",
+      "usage": "正文、强调文字和标题的视觉层级。",
+      "examples": ["s.fontWeight.raw(600)"]
+    },
+    "objectFit": {
+      "commonValues": ["fill", "contain", "cover", "none", "scale-down"],
+      "remarks": "控制 img、video 等替换内容在盒子内部的缩放与裁剪；不改变盒子本身的 width/height。",
+      "usage": "封面裁剪、头像和完整图像预览。",
+      "examples": ["css(s.width.px(80), s.height.px(80), s.objectFit.cover)"]
+    },
+    "backgroundSize": {
+      "commonValues": ["auto", "contain", "cover"],
+      "remarks": "改变背景图像的尺寸，不改变元素尺寸；位置由 background-position 决定。",
+      "usage": "背景封面或需要完整显示的背景装饰。",
+      "examples": ["css(s.backgroundSize.cover, s.backgroundPosition.raw('center'))"]
+    },
+    "borderRadius": {
+      "remarks": "1/2/3/4 个半径依次控制四角、两组对角、三组角和逐角。它裁剪自身背景，但不会单独保证裁剪所有后代内容。",
+      "usage": "卡片、按钮、头像的圆角外观。",
+      "examples": ["s.borderRadius.px(8)"]
+    },
+    "boxShadow": {
+      "remarks": "阴影不占布局空间，可用逗号叠加；与 border/outline 的用途和绘制位置不同。",
+      "usage": "浮层层次、卡片边缘或内凹效果。",
+      "examples": ["s.boxShadow.raw('0 2px 8px rgb(0 0 0 / 0.15)')"]
+    },
+    "outline": {
+      "remarks": "不占布局空间，可用 outline-offset 调整距离；键盘焦点指示不应被无替代地移除。",
+      "usage": "控件焦点指示和不影响布局的轮廓。",
+      "examples": [
+        "s._focusVisible(s.outline.raw('2px solid currentColor'), s.outlineOffset.px(2))"
+      ]
+    },
+    "visibility": {
+      "commonValues": ["visible", "hidden", "collapse"],
+      "usage": "需要隐藏内容但通常保留其布局占位的场景。",
+      "examples": ["s.visibility.hidden"]
+    },
+    "pointerEvents": {
+      "commonValues": ["auto", "none"],
+      "remarks": "控制指针命中，不等同于原生 disabled，也不会单独阻止键盘交互。",
+      "usage": "允许指针穿过装饰层；可交互控件的禁用应同时处理行为和语义。",
+      "examples": ["s.pointerEvents.none"]
+    },
+    "userSelect": {
+      "commonValues": ["auto", "text", "none", "all"],
+      "usage": "调整拖拽控件中的文本选取，或让代码片段整段选中。",
+      "examples": ["s.userSelect.all"]
+    },
+    "touchAction": {
+      "commonValues": ["manipulation", "pan-x", "pan-y", "none"],
+      "remarks": "描述浏览器可接管的触摸手势，手势开始后再修改通常不会改变当前手势的处理。",
+      "usage": "拖拽控件与页面滚动之间分配触摸方向；保留用户所需的缩放能力。",
+      "examples": ["s.touchAction.panY"]
+    },
+    "isolation": {
+      "commonValues": ["auto", "isolate"],
+      "usage": "建立局部层叠边界，或限制混合模式影响范围。",
+      "examples": ["s.isolation.isolate"]
+    },
+    "transition": {
+      "remarks": "只对属性变化创建过渡；不会自动触发变化。建议明确列出目标属性，避免 all 意外过渡布局变化。",
+      "usage": "悬停、选中和展开状态之间的平滑变化。",
+      "examples": ["s.transition.raw('opacity 160ms ease')"]
+    },
+    "animationFillMode": {
+      "commonValues": ["none", "forwards", "backwards", "both"],
+      "remarks": "控制动画有效播放区间之外的样式，不会把最终值写回普通 CSS 声明。",
+      "usage": "控制延迟阶段和播放结束后的动画呈现。",
+      "examples": ["s.animationFillMode.forwards"]
+    },
+    "contain": {
+      "commonValues": ["content", "strict", "size", "paint", "style"],
+      "remarks": "不同隔离类型会改变布局和绘制语义，不能仅当作无副作用的性能开关。",
+      "usage": "边界明确且尺寸、溢出行为经过验证的独立区域。",
+      "examples": ["s.contain.content"]
+    },
+    "contentVisibility": {
+      "commonValues": ["visible", "auto", "hidden"],
+      "remarks": "允许跳过子树渲染；跳过时的占位尺寸可由 contain-intrinsic-size 提供。",
+      "usage": "页面中较长、暂时位于视口外的独立内容区域。",
+      "examples": ["s.contentVisibility.auto"]
+    },
+    "containerType": {
+      "commonValues": ["normal", "inline-size", "size"],
+      "remarks": "建立尺寸查询容器会同时引入必要的隔离语义；容器本身的样式通常由祖先查询容器决定。",
+      "usage": "让组件按所在容器尺寸响应，而不是只按视口响应。",
+      "examples": ["s.containerType.inlineSize"]
+    }
+  },
+  "globalKeywords": {
+    "inherit": "使用父元素该属性的计算值，即使这个属性默认不继承。",
+    "initial": "使用 CSS 规范定义的初始值，不是浏览器默认样式表给元素设置的值。",
+    "unset": "继承型属性按 inherit 处理，非继承型属性按 initial 处理。",
+    "revert": "按层叠来源回退该属性，可能恢复用户或浏览器样式；不等同于 initial。",
+    "revert-layer": "回退当前层叠层对该属性的贡献，让较早层的声明参与决定结果。"
+  },
+  "valueKeywords": {
+    "currentColor": "引用当前 color 的计算值；用于 color 自身时按继承的颜色解析。",
+    "transparent": "完全透明的颜色值；不会隐藏元素、取消布局或阻止交互。"
+  },
+  "keywordAliases": {
+    "marginBlock": "margin",
+    "marginBlockStart": "margin",
+    "marginBlockEnd": "margin",
+    "marginInline": "margin",
+    "marginInlineStart": "margin",
+    "marginInlineEnd": "margin",
+    "marginTop": "margin",
+    "marginRight": "margin",
+    "marginBottom": "margin",
+    "marginLeft": "margin",
+    "wordWrap": "overflowWrap",
+    "overflowX": "overflow",
+    "overflowY": "overflow",
+    "overflowBlock": "overflow",
+    "overflowInline": "overflow",
+    "overscrollBehaviorX": "overscrollBehavior",
+    "overscrollBehaviorY": "overscrollBehavior",
+    "overscrollBehaviorBlock": "overscrollBehavior",
+    "overscrollBehaviorInline": "overscrollBehavior",
+    "textWrapStyle": "textWrap",
+    "textWrapMode": "textWrap",
+    "height": "width",
+    "inlineSize": "width",
+    "blockSize": "width",
+    "backgroundSize": "maskSize"
+  },
+  "keywords": {
+    "margin": {
+      "auto": "由布局模式分配自动外边距；在 Flex/Grid 中可吸收剩余空间，不保证所有方向都自动居中。"
+    },
+    "alignSelf": {
+      "auto": "使用父容器的 align-items 对齐方式。",
+      "stretch": "在自动尺寸和最小/最大约束允许时拉伸当前项目。",
+      "baseline": "让当前项目参与基线对齐，不等同于底边对齐。"
+    },
+    "justifySelf": {
+      "auto": "采用父容器 justify-items 等上下文决定的对齐方式；不用于 Flex 项目的主轴分配。",
+      "stretch": "在自动尺寸和最小/最大约束允许时沿行内轴拉伸。"
+    },
+    "minWidth": {
+      "auto": "自动最小尺寸由布局模式决定；Flex/Grid 项目可能受内容最小宽度限制。"
+    },
+    "fontWeight": {
+      "normal": "正常字重，等价于数值 400。",
+      "bold": "粗体字重，等价于数值 700。",
+      "bolder": "相对于继承字重选择更粗的字重，不是简单加一个固定数值。",
+      "lighter": "相对于继承字重选择更细的字重，不是简单减一个固定数值。"
+    },
+    "lineHeight": {
+      "normal": "由浏览器和字体度量确定行高，没有固定的跨字体倍数。"
+    },
+    "textAlign": {
+      "start": "按当前书写方向的行内起始侧对齐。",
+      "end": "按当前书写方向的行内结束侧对齐。",
+      "center": "将行内内容在行盒中居中，不会让块盒自身居中。",
+      "justify": "调整行内间距使文字两端对齐；最后一行通常由 text-align-last 控制。"
+    },
+    "animationFillMode": {
+      "none": "动画有效区间之外不应用动画关键帧值。",
+      "forwards": "播放结束后保留最后生效关键帧的效果；最后帧取决于方向和循环次数。",
+      "backwards": "延迟阶段应用最先生效关键帧的效果，具体帧取决于播放方向。",
+      "both": "同时应用 backwards 和 forwards 的区间外效果。"
+    },
+    "backgroundClip": {
+      "text": "把背景裁剪到文字字形；显示背景文字效果通常还需要透明的文字颜色。"
+    },
+    "borderStyle": {
+      "none": "不绘制边框，并使对应边框计算宽度为零。",
+      "hidden": "通常与 none 类似；在表格边框合并冲突中优先隐藏边框。",
+      "solid": "绘制连续实线边框。"
+    },
+    "display": {
+      "block": "生成块级盒子，内部默认采用普通流布局。",
+      "inline": "生成行内盒子，参与行内排版；普通非替换行内盒子的宽高不按块盒规则应用。",
+      "inline-block": {
+        "summary": "外部参与行内排版，内部建立独立格式化上下文，可设置宽高。",
+        "comparison": "与 inline 相比可设置宽高，内部建立独立格式化上下文；与 inline-flex 相比，内部使用普通流而非 Flex。",
+        "usage": "需要宽高、内边距且随文本同行排列的小盒子。",
+        "notes": "相邻行内级盒子之间的文本空白仍可能形成间距，vertical-align 会影响它在行内的位置。",
+        "examples": [
+          "css(s.display.inlineBlock, s.width.rem(2), s.height.rem(2), s.verticalAlign.middle)"
+        ]
+      },
+      "flex": {
+        "summary": "生成块级弹性容器，直接子元素参与 Flex 布局。",
+        "effect": "容器自身以块级方式参与普通流，直接子元素成为弹性项目；可分配剩余空间、对齐和换行。",
+        "comparison": "inline-flex 使用相同的内部布局，但容器对外按行内级盒子排列。",
+        "usage": "工具栏、横向导航、纵向堆叠和一维内容排列。",
+        "notes": "默认主轴为 row，默认不换行；主轴方向还受书写方向影响。",
+        "examples": ["css(s.display.flex, s.alignItems.center, s.justifyContent.spaceBetween)"]
+      },
+      "inline-flex": {
+        "summary": "创建行内级的 Flex 容器。",
+        "effect": "对外：在普通文档流中作为一个整体参与行内排版，可以与文字或其他行内内容位于同一行。\n对内：直接子元素使用 Flex 布局，可通过 alignItems、justifyContent、gap 等控制对齐和间距。",
+        "comparison": "与 flex 的区别是容器自身的外部排版方式，内部弹性布局机制相同；inline-flex 对应双关键字写法 inline flex。",
+        "usage": "图标与文字组合、标签等需要内部弹性对齐，同时以行内方式排列的内容。",
+        "notes": "子项换行由 flex-wrap 控制。当容器自身是 Flex/Grid 项目时，其外部排版还受父布局控制。",
+        "examples": ["css(s.display.inlineFlex, s.alignItems.center, s.gap.rem(0.375))"]
+      },
+      "grid": {
+        "summary": "生成块级网格容器，直接子元素参与 Grid 布局。",
+        "effect": "直接子元素进入网格，行列轨道和命名区域共同决定项目位置与尺寸。",
+        "comparison": "Flex 更侧重单个主轴；Grid 可以同时控制行和列。inline-grid 则改变容器对外的显示类型。",
+        "usage": "卡片网格、表单对齐和二维页面区域布局。",
+        "examples": [
+          "css(s.display.grid, s.gridTemplateColumns.repeat(3, 'minmax(0, 1fr)'), s.gap.rem(1))"
+        ]
+      },
+      "inline-grid": {
+        "summary": "生成行内级网格容器，内部仍使用 Grid 布局。",
+        "comparison": "与 grid 的内部网格布局相同，但容器在普通流中按行内级盒子排列。",
+        "usage": "需要行列对齐并与周围文字同行的小型内容组。",
+        "examples": [
+          "css(s.display.inlineGrid, s.gridTemplateColumns.repeat(2, 'auto'), s.gap.rem(0.25))"
+        ]
+      },
+      "flow-root": {
+        "summary": "建立独立块格式化上下文，可包住内部浮动并隔离部分外边距折叠。",
+        "comparison": "与普通 block 相比，显式建立独立块格式化上下文；无需借助 overflow:hidden，也不会因此裁剪溢出。",
+        "usage": "让容器包住内部浮动，或隔离内外的部分外边距折叠。",
+        "examples": ["css(s.display.flowRoot, s.padding.rem(1))"]
+      },
+      "contents": {
+        "summary": "通常不生成元素自身的主盒子，让子盒子参与外层布局；背景、边框等失去承载盒，应核对可访问性行为。",
+        "effect": "普通元素自身不再提供主盒子，子盒子可参与外层 Flex/Grid 等布局。",
+        "usage": "保留 DOM 包装节点，同时让内部项目进入外层布局。",
+        "notes": "替换元素等存在特殊规则；应检查语义和可访问性，不要把它当作无条件删除包装盒的替代。",
+        "examples": ["s.display.contents"]
+      },
+      "none": {
+        "summary": "不生成元素及其后代的布局盒子，通常也从可访问性树中移除。",
+        "comparison": "visibility:hidden 通常保留布局空间；opacity:0 只改变透明度，通常仍能交互。",
+        "usage": "从当前布局中隐藏一段内容。",
+        "notes": "不能靠它保留可聚焦交互；重新显示时需按组件需求管理焦点。",
+        "examples": ["s.display.none"]
+      },
+      "list-item": "生成带列表标记的主盒子，标记由 list-style 等属性控制。"
+    },
+    "position": {
+      "static": "参与普通文档流，top/right/bottom/left 等定位偏移不生效。",
+      "relative": {
+        "summary": "保留普通流中的原位置，再按偏移移动绘制位置；不会为偏移后的区域重新排版。",
+        "usage": "为绝对定位后代提供定位参照，或做不改变其他元素排布的视觉偏移。",
+        "comparison": "absolute 会脱离普通流；relative 仍保留原占位。",
+        "examples": ["s.position.relative"]
+      },
+      "absolute": {
+        "summary": "脱离普通文档流，按包含块定位；包含块通常由定位祖先或 transform 等属性建立。",
+        "usage": "容器内部的角标、图标覆盖和定位装饰。",
+        "notes": "通常在预期的容器上设置 position:relative；元素不为自己保留普通流占位。",
+        "examples": ["css(s.position.absolute, s.top.px(0), s.right.px(0))"]
+      },
+      "fixed": {
+        "summary": "脱离普通流，通常相对视口固定；某些祖先属性会建立不同的包含块。",
+        "comparison": "absolute 通常跟随其包含块滚动；fixed 在以视口为包含块时保持视口位置。",
+        "usage": "固定工具栏或覆盖层。",
+        "notes": "祖先的 transform 等属性可能改变固定定位的包含块；z-index 仍受层叠上下文约束。",
+        "examples": ["css(s.position.fixed, s.inset.px(0))"]
+      },
+      "sticky": {
+        "summary": "保留流内位置，在滚动范围内按 inset 约束吸附。对应轴至少一个 inset 须非 auto，并受滚动祖先和包含块限制。",
+        "usage": "滚动列表的分组标题、吸顶工具栏。",
+        "comparison": "与 fixed 不同，它保留流内占位，并受自身所在包含块的范围约束。",
+        "notes": "对应轴至少一个 inset 必须非 auto；祖先 overflow 可能改变滚动参照。",
+        "examples": ["css(s.position.sticky, s.top.px(0))"]
+      }
+    },
+    "overflow": {
+      "visible": "允许内容绘制到盒子外；与另一轴的设置组合时计算值可能变化。",
+      "hidden": {
+        "summary": "裁剪溢出且不显示滚动条，但仍是可通过脚本等方式滚动的滚动容器。",
+        "comparison": "clip 不建立滚动容器；hidden 仍可通过脚本或焦点移动滚动。",
+        "usage": "需要裁剪且仍保留程序化滚动的容器。",
+        "notes": "可能成为 sticky 后代的滚动参照，不能把它仅理解成视觉裁剪。",
+        "examples": ["s.$property.hidden"]
+      },
+      "clip": {
+        "summary": "在裁剪边界截断内容，不建立滚动容器，也不支持程序化滚动。",
+        "comparison": "与 hidden 不同，不支持程序化滚动，也不单独建立块格式化上下文。",
+        "usage": "只裁剪绘制，不希望该轴成为滚动容器的区域。",
+        "notes": "两轴设置会影响计算结果；与另一轴 auto/scroll 等组合时，要检查最终溢出行为。",
+        "examples": ["s.$property.clip"]
+      },
+      "auto": {
+        "summary": "按溢出情况提供滚动机制；滚动条外观和是否占空间由环境决定。",
+        "usage": "内容超过受限尺寸时可以滚动的面板。",
+        "comparison": "scroll 通常始终预留或显示滚动机制；auto 根据溢出情况显示滚动条，外观由平台决定。",
+        "examples": ["s.$property.auto"]
+      },
+      "scroll": "建立滚动容器，通常即使未溢出也显示滚动条；具体外观由平台决定。",
+      "overlay": "历史兼容值，现代实现通常将其作为 auto 的别名；不保证滚动条覆盖在内容上。"
+    },
+    "boxSizing": {
+      "content-box": {
+        "summary": "指定尺寸仅计算内容盒，内边距和边框额外增加外部尺寸。",
+        "usage": "希望明确指定纯内容区尺寸时。",
+        "examples": ["css(s.boxSizing.contentBox, s.width.px(100), s.padding.px(10))"]
+      },
+      "border-box": {
+        "summary": "指定尺寸包含内容、内边距和边框，但不包含外边距。",
+        "comparison": "content-box 在声明宽高之外再加内边距和边框。",
+        "usage": "希望组件的指定宽高包含内边距和边框时。",
+        "notes": "仍不包含 margin；最小/最大尺寸和布局约束仍参与计算。",
+        "examples": ["css(s.boxSizing.borderBox, s.width.rem(20), s.padding.rem(1))"]
+      }
+    },
+    "flex": {
+      "auto": {
+        "summary": "等价于 1 1 auto：可增长、可收缩，基础尺寸由主尺寸属性或内容决定。",
+        "usage": "让项目以自身尺寸为基础参与剩余空间分配。",
+        "comparison": "1 1 0% 以零百分比为基础分配，auto 的基础尺寸通常受内容或主尺寸属性影响。",
+        "notes": "最终比例还受最小/最大尺寸约束，不保证所有项目等宽。",
+        "examples": ["s.flex.auto"]
+      },
+      "none": {
+        "summary": "等价于 0 0 auto：不增长也不收缩，保留自动基础尺寸。",
+        "usage": "防止工具栏中的图标或固定控件被压缩。",
+        "comparison": "auto 会增长和收缩；none 两者都不参与。",
+        "examples": ["s.flex.none"]
+      }
+    },
+    "flexBasis": {
+      "auto": "先参考主轴对应的 width 或 height；该值也为 auto 时由内容决定。",
+      "content": "按内容确定基础尺寸，而不直接使用 width 或 height 作为基础尺寸。"
+    },
+    "flexDirection": {
+      "row": "主轴沿行内方向排列；不一定是从左到右，取决于书写方向。",
+      "row-reverse": "反转行内方向的视觉排列，不改变 DOM 顺序。",
+      "column": "主轴沿块方向排列；水平书写时通常从上到下。",
+      "column-reverse": "反转块方向的视觉排列，不改变 DOM 顺序。"
+    },
+    "flexWrap": {
+      "nowrap": "保持单行；项目仍可能收缩或溢出。",
+      "wrap": {
+        "summary": "空间不足时形成多行，沿交叉轴正常方向排列。",
+        "comparison": "nowrap 保持单行；wrap-reverse 反转交叉轴上各行的排列方向。",
+        "notes": "换行不会自动均分每行项目宽度，尺寸仍由各项目的 flex 配置决定。",
+        "examples": ["css(s.display.flex, s.flexWrap.wrap)"]
+      },
+      "wrap-reverse": "允许换行并反转交叉轴上各行的排列方向。"
+    },
+    "alignItems": {
+      "center": {
+        "summary": "将各项目在交叉轴或块轴的对齐区域中居中。",
+        "comparison": "justify-content 控制 Flex 主轴上的内容分布；align-items 控制交叉轴。",
+        "usage": "横向图标和文字的垂直对齐。",
+        "examples": ["css(s.display.inlineFlex, s.alignItems.center)"]
+      },
+      "stretch": {
+        "summary": "在自动尺寸及最小/最大约束允许时拉伸项目，不强制覆盖显式尺寸。",
+        "notes": "项目在对齐轴有显式尺寸或受最小/最大尺寸约束时，不一定填满可用区域。",
+        "comparison": "center 保持项目尺寸并居中；stretch 尝试扩大自动尺寸。",
+        "examples": ["css(s.display.flex, s.alignItems.stretch)"]
+      },
+      "baseline": "按项目的对齐基线对齐，不等同于底边对齐。",
+      "normal": "由布局模式决定行为，许多场景类似 stretch，但存在内部尺寸等例外。",
+      "start": "按对齐轴的逻辑起始侧对齐。",
+      "end": "按对齐轴的逻辑结束侧对齐。",
+      "flex-start": "在 Flex 中按交叉轴起始侧对齐；交叉轴方向受换行方式影响。",
+      "flex-end": "在 Flex 中按交叉轴结束侧对齐。"
+    },
+    "justifyContent": {
+      "center": "将整体内容放在主轴或行内轴的中间，不改变项目内部文字对齐。",
+      "space-between": {
+        "summary": "首尾项目贴两端，剩余空间等分到相邻项目之间。",
+        "comparison": "space-evenly 在两端也保留等量空间；space-around 的边缘空间只有项目之间的一半。",
+        "notes": "只有一个项目时靠起始侧，不会自动居中。",
+        "usage": "工具栏左侧标题和右侧操作分居两端。",
+        "examples": ["css(s.display.flex, s.justifyContent.spaceBetween, s.alignItems.center)"]
+      },
+      "space-around": "每个项目两侧分配相等空间，容器边缘的空间是相邻项目间的一半。",
+      "space-evenly": {
+        "summary": "容器两端和相邻项目之间分配相等空间。",
+        "usage": "希望容器两端和项目之间空隙一致的导航或操作组。",
+        "examples": ["css(s.display.flex, s.justifyContent.spaceEvenly)"]
+      },
+      "flex-start": "Flex 内容靠主轴起点排列；起点受 flex-direction 影响。",
+      "flex-end": "Flex 内容靠主轴终点排列。",
+      "stretch": "在支持的布局中拉伸自动尺寸的内容；Flex 主轴增长通常由 flex-grow 控制。"
+    },
+    "width": {
+      "auto": "让布局算法决定尺寸，不保证等于父元素尺寸。",
+      "min-content": "采用内容的最小内部尺寸，文字会考虑可用的软换行机会。",
+      "max-content": "采用内容的最大内部尺寸，通常不进行软换行。",
+      "fit-content": "在最小和最大内部尺寸之间按可用空间夹取尺寸。"
+    },
+    "maskSize": {
+      "auto": "依据图像内部尺寸、比例及另一维的设置确定尺寸。",
+      "contain": "保持图像比例并使整张图像容纳于定位区域，可能留下空白。",
+      "cover": "保持图像比例并覆盖整个定位区域，超出部分可能被裁剪。"
+    },
+    "objectFit": {
+      "fill": "把内容拉伸到内容盒，可能改变原有宽高比。",
+      "contain": {
+        "summary": "保留宽高比并完整放入内容盒，可能留下空白。",
+        "usage": "希望完整显示的商品图或图像预览。",
+        "comparison": "cover 优先填满盒子并可能裁剪；contain 优先保留完整内容。",
+        "examples": ["css(s.width.rem(20), s.height.rem(12), s.objectFit.contain)"]
+      },
+      "cover": {
+        "summary": "保留宽高比并填满内容盒，可能裁掉部分图像。",
+        "comparison": "contain 保证完整图像可见但可能留白；fill 可能改变图像比例。",
+        "usage": "固定尺寸头像、卡片封面。",
+        "notes": "裁剪位置由 object-position 控制，盒子尺寸仍需另外设置。",
+        "examples": ["css(s.width.px(80), s.height.px(80), s.objectFit.cover)"]
+      },
+      "none": "不按内容盒缩放替换内容。",
+      "scale-down": "在 none 和 contain 中选择得到较小内容尺寸的方案。"
+    },
+    "visibility": {
+      "visible": "正常显示元素。",
+      "hidden": {
+        "summary": "隐藏绘制但通常保留布局空间；后代可显式恢复 visible。",
+        "comparison": "display:none 不保留布局盒；opacity:0 不会以相同方式移除交互和可访问性。",
+        "usage": "暂时隐藏占位内容。",
+        "examples": ["s.visibility.hidden"]
+      },
+      "collapse": "对表格行列等特定布局有折叠语义，其他场景通常类似 hidden；应核对具体布局行为。"
+    },
+    "pointerEvents": {
+      "none": {
+        "summary": "元素本身不成为指针命中目标；不等于禁用，仍可能通过 Tab 获焦，后代也可恢复命中。",
+        "usage": "覆盖在内容上方但不应拦截点击的装饰层。",
+        "notes": "后代可以恢复命中；来自后代的事件仍可能经过祖先监听器。",
+        "examples": ["s.pointerEvents.none"]
+      },
+      "auto": "采用当前元素类型的默认命中规则。"
+    },
+    "userSelect": {
+      "none": "阻止常规文本选取，不是内容保护或访问控制。",
+      "text": "允许文本选取。",
+      "all": "将元素内容作为整体选取单元。",
+      "auto": "由父级与元素上下文决定使用的选取行为。"
+    },
+    "whiteSpace": {
+      "normal": "折叠连续空白和源换行，允许软换行。",
+      "nowrap": {
+        "summary": "折叠空白并禁止软换行；不会自行生成省略号。",
+        "comparison": "pre 也不进行普通软换行，但会保留连续空白。",
+        "usage": "单行标签；结合宽度约束、overflow 和 text-overflow 实现省略。",
+        "examples": ["css(s.whiteSpace.nowrap, s.overflow.hidden, s.textOverflow.ellipsis)"]
+      },
+      "pre": "保留空白和源换行，不进行普通软换行。",
+      "pre-wrap": {
+        "summary": "保留空白和源换行，同时允许软换行。",
+        "comparison": "pre 不进行普通软换行；pre-line 会折叠连续空格。",
+        "usage": "需要保留用户换行和空格，同时允许适应容器宽度的文本。",
+        "examples": ["s.whiteSpace.preWrap"]
+      },
+      "pre-line": "折叠空格等空白但保留源换行，同时允许软换行。",
+      "break-spaces": "保留空白并允许在保留的空格后换行；行末空格占据空间。"
+    },
+    "overflowWrap": {
+      "anywhere": {
+        "summary": "必要时允许在长文本任意位置断行，这些机会参与 min-content 尺寸计算。",
+        "comparison": "break-word 的额外断点不按 anywhere 的方式参与最小内容宽度计算；word-break:break-all 更积极地拆分普通单词。",
+        "usage": "展示不可控的长 URL 或无空格文本。",
+        "examples": ["s.$property.anywhere"]
+      },
+      "break-word": "必要时允许长文本断行，但新增断点不按 anywhere 的方式参与 min-content 计算。",
+      "normal": "只使用正常换行机会，不为长单词额外断行。"
+    },
+    "wordBreak": {
+      "break-all": "允许在更多字符间断行以防溢出，可能拆开普通单词。",
+      "keep-all": "限制中日韩文字内部断行，其他文字仍按正常规则处理。",
+      "normal": "按语言的默认断行规则处理。"
+    },
+    "textWrap": {
+      "wrap": "允许软换行。",
+      "nowrap": "禁止软换行，但不取消显式强制换行。",
+      "balance": "尝试让各行长度更均衡，常用于标题；可处理行数由浏览器决定。",
+      "pretty": "使用偏向排版质量的换行策略，例如减少末行孤立短词。",
+      "stable": "编辑时尽量不改变较早行的换行位置。"
+    },
+    "textOverflow": {
+      "ellipsis": {
+        "summary": "用省略号提示被裁剪的行内溢出；还需要限制尺寸并配置溢出规则。",
+        "usage": "给确实发生行内溢出的单行内容添加省略提示。",
+        "notes": "不会自动限制宽度、禁用换行或实现多行省略。Flex/Grid 子项还可能需要 min-width:0。",
+        "examples": [
+          "css(s.minWidth.px(0), s.whiteSpace.nowrap, s.overflow.hidden, s.textOverflow.ellipsis)"
+        ]
+      },
+      "clip": "直接裁剪溢出文本，不添加省略标记。"
+    },
+    "contentVisibility": {
+      "auto": "允许浏览器跳过与用户暂不相关的内容渲染，仍需维护布局和可访问性语义。",
+      "hidden": "跳过内容渲染，行为不同于只隐藏绘制的 visibility:hidden。",
+      "visible": "正常渲染内容，不由此属性跳过子树。"
+    },
+    "contain": {
+      "strict": "组合 size、layout、style 和 paint 隔离；尺寸隔离可能影响自动尺寸。",
+      "content": "组合 layout、style 和 paint 隔离，不包含 size 隔离。",
+      "size": "计算盒子尺寸时不依赖后代内容，通常需要显式或替代内部尺寸。",
+      "paint": "将后代绘制限制在隔离边界内。",
+      "style": "隔离计数器等特定样式副作用，不会阻止普通 CSS 继承或选择器匹配。"
+    },
+    "containerType": {
+      "inline-size": "建立行内轴尺寸查询容器，不同时隔离块轴尺寸。",
+      "size": "建立两个轴的尺寸查询容器，内容不再直接决定其隔离尺寸。",
+      "normal": "不建立尺寸查询容器；仍可用于支持的样式查询。"
+    },
+    "gridAutoFlow": {
+      "row": "优先沿行放置项目，必要时创建新的隐式行。",
+      "column": "优先沿列放置项目，必要时创建新的隐式列。",
+      "dense": "尝试回填前面留下的空洞，可能让视觉顺序与 DOM 顺序不同。"
+    },
+    "overscrollBehavior": {
+      "auto": "采用默认滚动链和边界反馈。",
+      "contain": "阻止滚动链传播到祖先，同时可保留当前容器的边界反馈。",
+      "none": "阻止滚动链，并抑制当前容器的默认越界反馈。"
+    },
+    "isolation": {
+      "isolate": "建立独立层叠上下文，使混合效果在该分组内处理。",
+      "auto": "由其他属性是否需要层叠上下文决定，不强制隔离。"
+    },
+    "transitionBehavior": {
+      "allow-discrete": "允许离散属性启动过渡；切换时机仍由各属性的动画规则决定。",
+      "normal": "不为离散属性启动普通 CSS 过渡。"
+    },
+    "interpolateSize": {
+      "allow-keywords": "允许受支持的内部尺寸关键字与长度/百分比之间插值，不保证两个关键字之间可以插值。",
+      "numeric-only": "保持仅数值尺寸之间的插值行为。"
+    },
+    "touchAction": {
+      "none": "禁用浏览器在该区域处理的平移和缩放手势，可能影响用户缩放可访问性。",
+      "manipulation": "允许平移和连续缩放，通常禁用双击缩放等额外手势。",
+      "pan-x": "允许浏览器处理水平单指平移。",
+      "pan-y": "允许浏览器处理垂直单指平移。"
+    },
+    "strokeLinecap": {
+      "butt": "在端点处平直截断描边，不向外延伸。",
+      "round": "使用半圆端帽，向端点外延伸半个描边宽度。",
+      "square": "使用方形端帽，向端点外延伸半个描边宽度。"
+    },
+    "fillRule": {
+      "evenodd": "按射线穿过路径次数的奇偶性判断内部，适合交叠或有孔路径。",
+      "nonzero": "按有方向的绕数判断路径内部，子路径方向会影响结果。"
+    }
+  }
+}

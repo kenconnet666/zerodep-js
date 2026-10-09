@@ -2,7 +2,7 @@ import { _mount, _hydrate, type MountOptions } from 'zerodep-js';
 import { App } from './App.js';
 import { registerPropertyElement } from './examples/property-elements.js';
 import './style.css';
-import { hydrateCss } from 'zerodep-css/browser';
+import { hydrateCss } from 'zerodep-js-css';
 
 // 必须在组件登记客户端规则前恢复 SSR 清单；CSR 页面没有清单时直接返回。
 hydrateCss();

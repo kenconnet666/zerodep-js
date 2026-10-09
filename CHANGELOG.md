@@ -1,6 +1,13 @@
 # 变更记录
 
-## 未发布 — 删除应用工具包与 API 精简
+## 未发布 — 单仓库 CSS 与构建工具精简
+
+- 新增 zerodep-js-css 工作区包，迁入 CSS 作者、生成数据、关键字、隐式变量与浏览器/SSR 样式收集；移除跨框架适配和 bx，亮暗主题只在 UI 维护。
+- Vite 插件并入 zerodep-js-compiler/vite，删除独立 vite 包；CSS 转换内置，删除 CompileExtension、extensions 配置和公开 adapter 入口。
+- CSS 生成器复用 Babel，统一固定 JetBrains TS7，不引入 TS6。应用、UI、SSR、独立消费与语言测试统一使用本地工作区包。
+- 修复 props/rest 多层转发重复枚举导致的 Provider 切换卡顿，保留可枚举性、覆盖顺序和响应式更新语义。
+
+以下为此前同批未发布的 API 精简：
 
 - 删除 `_createScope` 和 `ScopeHandle`，保留内部生命周期管理。
 - 2026-10-09 删除整个 packages/use，不再维护 zerodep-use 的 router/store/history、持久化和 IndexedDB 适配器；清理依赖、专用示例/测试和发布清单，不迁移实现、不保留兼容入口。任务页保留页面状态与服务端 CRUD，取消浏览器草稿持久化。

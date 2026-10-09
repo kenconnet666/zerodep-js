@@ -11,7 +11,7 @@ const result = compile(source, 'App.tsx');
 // result.code 为运行代码，result.map 为 source map。
 ```
 
-应用通过 `zerodep-js-vite` 使用编译器。项目检查使用 `zerodep-check -p tsconfig.json`，会同时执行官方类型检查和框架规则。`--json` 输出结构化诊断；显式文件/目录和 `--stdin` 模式仅检查框架语义。
+应用通过 `zerodep-js-compiler/vite` 使用编译器。项目检查使用 `zerodep-check -p tsconfig.json`，会同时执行官方类型检查和框架规则。`--json` 输出结构化诊断；显式文件/目录和 `--stdin` 模式仅检查框架语义。
 
 预编译组件库使用 Vite library mode 输出 JS，官方 `tsc --emitDeclarationOnly` 输出声明，并在构建前运行 `zerodep-check`。Babel 与 TypeScript 只属于开发工具依赖，不进入浏览器运行时。
 
@@ -19,4 +19,4 @@ const result = compile(source, 'App.tsx');
 
 当前固定 JetBrains 原生 SDK `7.1.0-dev.jetbrains.20261006.2`，完整获取方式见 `docs/environment-setup.md`。开发版接口变化集中在本包的检查与语言工具适配中，不维护 TS6 或旧版本兼容线路。完整工具接入与迁移状态见仓库执行记录；CLI/协议检查通过不代表具体 IDE 的操作验收已完成。
 
-从 zerodep-js/css 导入的 css 命名声明自动派生，直接响应式参数可编译为原生元素 CSS 变量；复杂表达式和跨组件类名仍正常重算，不引入另一个 TSX 解析器。
+Vite 插件直接从 zerodep-js-compiler/vite 导入 zerodep，默认处理 TSX 与 CSS，不提供 extensions 或独立 CSS 插件。CSS 运行时代码属于 packages/css，编译器只生成对其 internal 的调用。

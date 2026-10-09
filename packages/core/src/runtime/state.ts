@@ -220,6 +220,11 @@ export function reactive<T>(value: T): T {
       keys.read();
       return Reflect.ownKeys(target);
     },
+    getOwnPropertyDescriptor(target, key) {
+      // props 查询单个键的可枚举性时，也需要观察新增、删除与 enumerable 变化。
+      keys.read();
+      return Reflect.getOwnPropertyDescriptor(target, key);
+    },
     preventExtensions() {
       throw new Error('响应式对象不能原地冻结；请使用独立快照或初始化为不可变对象。');
     },

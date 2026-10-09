@@ -151,6 +151,4 @@ node scripts/language-services/webstorm-patch.mjs $webstormInstall restore
 
 ## 原生 CSS 依赖
 
-示例使用 catalog 固定的 zerodep-css@0.3.2。换机无需相邻 CSS 源码目录；它自己的 TS6 不替换本项目 TS7。CSS 仓库的模板编译器已拆为 zerodep-css-compiler，本项目不依赖它。接线见 [原生 CSS](css.md)。
-
-CSS 0.3.2 的固定六包来自完整通过的 [CI 37787188898](https://github.com/kenconnet666/zerodep-css/actions/runs/37787188898)，核心包的 npm SHA-512 与锁文件一致。本项目只消费核心包；换机按锁文件安装即可，latest 不提升。完整发行记录见维护交接。
+CSS 已迁入 packages/css，与框架共用工作区依赖、TS7、构建和 LSP。换机只需当前仓库，无需相邻 CSS 仓库或 TS6。见 [原生 CSS](css.md)。

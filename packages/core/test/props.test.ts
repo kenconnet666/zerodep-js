@@ -4,6 +4,46 @@ import { reactive } from '../src/runtime/state.js';
 import { _createRoot, _effect, _flushSync } from '../src/runtime/reactivity.js';
 
 describe('组件输入视图', () => {
+  it('多层转发只查询所需属性，不随属性数量反复枚举', () => {
+    const ownKeys = vi.fn(Reflect.ownKeys);
+    const input = new Proxy(
+      Object.fromEntries(Array.from({ length: 40 }, (_, i) => ['p' + i, i])),
+      { ownKeys },
+    );
+    let view = props([() => input]);
+    for (let i = 0; i < 5; i++) {
+      const parent = view;
+      view = props([() => restProps(parent, ['p0'])]);
+    }
+    expect(view.p39).toBe(39);
+    expect(view.p0).toBeUndefined();
+    expect(ownKeys).not.toHaveBeenCalled();
+  });
+
+  it('嵌套转发在可枚举性切换后重新选择覆盖来源', () => {
+    const input = reactive<Record<string, unknown>>({ label: '覆盖' });
+    const view = restProps(props([{ label: () => '默认' }, () => input]), []);
+    const values: unknown[] = [];
+    const dispose = _createRoot((stop) => {
+      _effect(() => {
+        values.push(view.label);
+      });
+      return stop;
+    });
+    try {
+      _flushSync();
+      _flushSync(() => {
+        Object.defineProperty(input, 'label', { enumerable: false });
+      });
+      _flushSync(() => {
+        Object.defineProperty(input, 'label', { enumerable: true });
+      });
+      expect(values).toEqual(['覆盖', '默认', '覆盖']);
+    } finally {
+      dispose();
+    }
+  });
+
   it('实时 rest 只暴露未排除的自有可枚举属性，不读取原型 getter 或隐藏字段', () => {
     const hidden = vi.fn(() => 'prototype secret');
     const input = Object.create(Object.defineProperty({}, 'inherited', { get: hidden })) as Record<

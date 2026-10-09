@@ -4,20 +4,20 @@ import { _component, _mount, type ComponentProps } from 'zerodep-js';
 import { _getAbortSignal, _snapshot } from 'zerodep-js';
 import { _lazy } from 'zerodep-js';
 import { _createRoot, _id } from 'zerodep-js';
-import { Css } from 'zerodep-css';
-import { css, _createCssContext } from 'zerodep-js/css';
+import { Css } from 'zerodep-js-css';
+import { css, createCssContext } from 'zerodep-js-css';
 import { _head, type HeadData } from 'zerodep-js/head';
 import { _render, type RenderResult } from 'zerodep-js-ssr';
 
 const cssAuthor = new Css();
 const styleClass: string = css(cssAuthor.width.px(12));
 <div class={styleClass} />;
-// @ts-expect-error CSS 作者类型跨 TS6/TS7 保持单位参数约束。
+// @ts-expect-error CSS 作者类型通过公开包入口保持单位参数约束。
 cssAuthor.width.px('12px');
 class ProjectCss extends Css {
   readonly label = 'project';
 }
-const projectCss = _createCssContext<ProjectCss>();
+const projectCss = createCssContext<ProjectCss>();
 _createRoot((dispose) => {
   projectCss.provideCss(new ProjectCss());
   projectCss.useCss().label satisfies string;

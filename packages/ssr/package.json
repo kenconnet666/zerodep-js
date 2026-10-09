@@ -35,7 +35,8 @@
   "devDependencies": {
     "@types/node": "catalog:",
     "zerodep-js": "workspace:*",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "zerodep-js-css": "workspace:*"
   },
   "license": "MIT",
   "author": "kenconnet666",

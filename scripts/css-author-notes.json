@@ -1,0 +1,53 @@
+{
+  "properties": [
+    {
+      "name": "gap",
+      "maxArguments": 2,
+      "percentage": true
+    },
+    {
+      "name": "margin",
+      "maxArguments": 4,
+      "percentage": true
+    },
+    {
+      "name": "padding",
+      "maxArguments": 4,
+      "percentage": true
+    },
+    {
+      "name": "borderSpacing",
+      "maxArguments": 2
+    },
+    {
+      "name": "backgroundPosition",
+      "maxArguments": 2,
+      "percentage": true
+    },
+    {
+      "name": "backgroundSize",
+      "maxArguments": 2,
+      "percentage": true
+    },
+    {
+      "name": "marginBlock",
+      "maxArguments": 2,
+      "percentage": true
+    },
+    {
+      "name": "marginInline",
+      "maxArguments": 2,
+      "percentage": true
+    },
+    {
+      "name": "paddingBlock",
+      "maxArguments": 2,
+      "percentage": true
+    },
+    {
+      "name": "paddingInline",
+      "maxArguments": 2,
+      "percentage": true
+    }
+  ]
+}

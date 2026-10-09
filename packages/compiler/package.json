@@ -25,6 +25,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./vite": {
+      "types": "./dist/vite.d.ts",
+      "import": "./dist/vite.js"
     }
   },
   "scripts": {
@@ -47,7 +51,10 @@
   },
   "devDependencies": {
     "@types/convert-source-map": "catalog:",
-    "@types/node": "catalog:"
+    "@types/node": "catalog:",
+    "zerodep-js-css": "workspace:*",
+    "zerodep-js": "workspace:*",
+    "vite": "catalog:"
   },
   "license": "MIT",
   "author": "kenconnet666",
@@ -63,5 +70,8 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
+  },
+  "peerDependencies": {
+    "vite": "^8.3.1"
   }
 }

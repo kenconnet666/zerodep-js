@@ -2,7 +2,7 @@
 
 2026-10-08 用户确认后实施。Provider 渲染 div，主题、语言、地区、时区分别采用“本层显式值 → 父层 → 根默认值”。根默认亮色、简体中文、zh-CN、Asia/Shanghai。不自动读取操作系统设置。
 
-主题继承 zerodep-css 的 SystemKeywords，亮暗共享关键字结构，整套替换；CSS 通过现有 _createCssContext 和 Css(() => 当前主题) 注入。不会改写全局 html/body 或代替应用输出 SSR CSS 标签。Provider 设置本区域 lang、dir、color-scheme、字体、文字与背景；外部 class 最后组合。Portal 内组件读取相同逻辑上下文，但 DOM 继承属性仍取决于真实挂载位置，弹层可再包一层不传参数的 Provider。
+主题继承 zerodep-js-css 的 SystemKeywords，亮暗共享关键字结构，整套替换；CSS 通过现有 createCssContext 和 Css(() => 当前主题) 注入。不会改写全局 html/body 或代替应用输出 SSR CSS 标签。Provider 设置本区域 lang、dir、color-scheme、字体、文字与背景；外部 class 最后组合。Portal 内组件读取相同逻辑上下文，但 DOM 继承属性仍取决于真实挂载位置，弹层可再包一层不传参数的 Provider。
 
 消费入口沿用 useCss，并提供 useLang、useLocale。它们在组件初始化调用，返回稳定对象，后续渲染或事件中读取字段；原始主题从 useCss().keywords 读取，避免额外维护一套主题代理。Provider 自身可省略参数，但组件消费必须有上层 Provider，不提供全局单例。
 

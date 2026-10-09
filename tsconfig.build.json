@@ -1,9 +1,17 @@
 {
   "files": [],
   "references": [
-    { "path": "./packages/core" },
-    { "path": "./packages/compiler" },
-    { "path": "./packages/ssr" },
-    { "path": "./packages/vite" }
+    {
+      "path": "./packages/core"
+    },
+    {
+      "path": "./packages/compiler"
+    },
+    {
+      "path": "./packages/ssr"
+    },
+    {
+      "path": "./packages/css"
+    }
   ]
 }

@@ -1,6 +1,6 @@
 import { _component, _derived, _provideContext, _useContext, type JSX } from 'zerodep-js';
-import { css } from 'zerodep-js/css';
-import { Css } from 'zerodep-css';
+import { css } from 'zerodep-js-css';
+import { Css } from 'zerodep-js-css';
 import { lightTheme } from '../../theme/light.js';
 import type { UiTheme } from '../../theme/theme.js';
 import { zhCN } from '../../lang/zh-CN.js';

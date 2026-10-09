@@ -1,5 +1,5 @@
 import { _hydrate, _mount } from 'zerodep-js';
-import { hydrateCss } from 'zerodep-css/browser';
+import { hydrateCss } from 'zerodep-js-css';
 import { App } from './App.js';
 import './style.css';
 

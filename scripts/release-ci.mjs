@@ -98,7 +98,7 @@ if (existing) {
   const notes = resolve(directory, 'notes.md');
   await writeFile(
     notes,
-    `候选 ${version}，源码 ${revision}。\n\n包含 core、ssr、compiler、vite 四包。框架由 Babel 转换，类型和语言服务固定使用 JetBrains TS7.1.0-dev.jetbrains.20261006.2。SDK 与平台包来自 JetBrains 原始 GitHub 发行文件；独立项目需按 docs/packages.md 配置根级平台 overrides，不分发自建 SDK。产物来自同一提交的完整 CI；发布到 npm next，不提升稳定标签。\n\n具体变更及安装要求见 CHANGELOG.md、docs/packages.md 和 docs/environment-setup.md。\n`,
+    `候选 ${version}，源码 ${revision}。\n\n包含 core、ssr、compiler、css 四包。框架由 Babel 转换，类型和语言服务固定使用 JetBrains TS7.1.0-dev.jetbrains.20261006.2。SDK 与平台包来自 JetBrains 原始 GitHub 发行文件；独立项目需按 docs/packages.md 配置根级平台 overrides，不分发自建 SDK。产物来自同一提交的完整 CI；发布到 npm next，不提升稳定标签。\n\n具体变更及安装要求见 CHANGELOG.md、docs/packages.md 和 docs/environment-setup.md。\n`,
   );
   await gh([
     'release',

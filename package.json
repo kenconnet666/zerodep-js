@@ -14,7 +14,7 @@
     "dev:csr": "pnpm build:packages && pnpm --filter @zerodep-js/example dev --render-mode csr",
     "dev:ssr": "pnpm build:packages && pnpm --filter @zerodep-js/example dev --render-mode ssr",
     "build:packages": "tsc -b tsconfig.build.json",
-    "check": "pnpm native:check && pnpm build:packages && pnpm check:projects && pnpm lint",
+    "check": "pnpm native:check && pnpm css:check && pnpm build:packages && pnpm check:projects && pnpm lint",
     "check:projects": "pnpm --filter zerodep-js-ui build && node packages/compiler/dist/cli.js -p apps/docs/tsconfig.json && node packages/compiler/dist/cli.js -p apps/example/tsconfig.json && node packages/compiler/dist/cli.js -p tsconfig.tools.json",
     "check:config": "tsc -p tsconfig.tools.json",
     "build": "pnpm build:packages && pnpm --filter zerodep-js-ui build && pnpm --filter @zerodep-js/docs build && pnpm --filter @zerodep-js/example build",
@@ -49,7 +49,10 @@
     "lsp:verify": "node scripts/language-services/verify.mjs",
     "lsp:completions": "node scripts/language-services/completions.mjs .",
     "lsp:inspect": "node scripts/language-services/inspect.mjs .",
-    "test:compiler": "pnpm --filter zerodep-js-compiler build && vitest run --config vitest.compiler.config.ts"
+    "test:compiler": "pnpm --filter zerodep-js-compiler build && vitest run --config vitest.compiler.config.ts",
+    "css:generate": "node scripts/generate-css-author.mjs --write",
+    "css:check": "node scripts/generate-css-author.mjs --check",
+    "test:css": "node --test packages/css/test/runtime/*.test.mjs packages/css/test/package/*.test.mjs"
   },
   "devDependencies": {
     "@prettier/plugin-oxc": "catalog:",
@@ -65,6 +68,9 @@
     "vitest": "catalog:",
     "vscode-jsonrpc": "catalog:",
     "vite": "catalog:",
-    "zerodep-css": "catalog:"
+    "zerodep-js-css": "workspace:*",
+    "zerodep-js": "workspace:*",
+    "zerodep-js-compiler": "workspace:*",
+    "@babel/parser": "catalog:"
   }
 }

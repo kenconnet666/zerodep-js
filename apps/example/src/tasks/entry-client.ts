@@ -1,7 +1,7 @@
 import { _mount, _hydrate, type MountOptions } from 'zerodep-js';
 import { TaskBoard } from './TaskBoard.js';
 import { pageSchema } from './schema.js';
-import { hydrateCss } from 'zerodep-css/browser';
+import { hydrateCss } from 'zerodep-js-css';
 
 hydrateCss();
 

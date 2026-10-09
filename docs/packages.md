@@ -1,15 +1,15 @@
 # 包边界与独立消费
 
-框架发布清单保留 core、ssr、compiler、vite 四包；UI 为私有组件库。2026-10-09 已删除 use 包，不再提供其路由、store、持久化与历史入口。当前源码选用 JetBrains TS7.1 的原始 GitHub 发行包；主包及平台包由根项目的 catalog/overrides 固定，框架不构建或发布自己的平台 SDK。此安装前提与已发布 rc.7 的微软 npm SDK 不同。
+框架发布清单保留 core、ssr、compiler、css 四包；UI 为私有组件库。2026-10-09 已删除 use 包，不再提供其路由、store、持久化与历史入口。当前源码选用 JetBrains TS7.1 的原始 GitHub 发行包；主包及平台包由根项目的 catalog/overrides 固定，框架不构建或发布自己的平台 SDK。此安装前提与已发布 rc.7 的微软 npm SDK 不同。
 
 采用当前源码工具链的独立项目，必须将同版本 [工作区配置](../pnpm-workspace.yaml) 中的 TypeScript 主包 URL 和 `@typescript/typescript-*` 平台 overrides 合并到项目根配置，再安装并保存锁文件。只指定主包 URL 不能保证取得尚未发布到 npm 的平台包。独立消费验收会复制这部分配置，不能把测试通过理解为任意未配置的 npm 项目都能直接安装；完整步骤见 [环境配置](environment-setup.md)。
 
-| 发布包              | 职责                                                                 |
-| ------------------- | -------------------------------------------------------------------- |
-| zerodep-js          | 浏览器与响应式运行时、类型声明、internal 编译协议、devtools 开发入口 |
-| zerodep-js-ssr      | 服务端渲染和序列化，peer 依赖 core                                   |
-| zerodep-js-compiler | Babel 转换、选定 JetBrains TS7.1 检查与语言适配，属于开发工具        |
-| zerodep-js-vite     | 构建侧依赖 compiler，集成 Vite                                       |
+| 发布包              | 职责                                                                           |
+| ------------------- | ------------------------------------------------------------------------------ |
+| zerodep-js          | 浏览器与响应式运行时、类型声明、internal 编译协议、devtools 开发入口           |
+| zerodep-js-ssr      | 服务端渲染和序列化，peer 依赖 core                                             |
+| zerodep-js-compiler | Babel/CSS 转换、Vite 子入口、选定 JetBrains TS7.1 检查与语言适配，属于开发工具 |
+| zerodep-js-css      | CSS 作者、关键字、样式生成和浏览器/SSR 宿主，peer 依赖 core                    |
 
 ## 应用与组件库
 

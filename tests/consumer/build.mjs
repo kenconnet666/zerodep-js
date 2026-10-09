@@ -1,6 +1,6 @@
 import { writeFile } from 'node:fs/promises';
 import { build } from 'vite';
-import { zerodep } from 'zerodep-js-vite';
+import { zerodep } from 'zerodep-js-compiler/vite';
 
 const reports = {};
 function inspect(name) {
@@ -40,6 +40,15 @@ await build({
     outDir: 'dist/tree',
     sourcemap: true,
     minify: false,
+  },
+});
+await build({
+  ...common,
+  plugins: [inspect('cssTree')],
+  build: {
+    lib: { entry: 'src/css-tree.ts', formats: ['es'], fileName: 'css-tree' },
+    outDir: 'dist/css-tree',
+    minify: true,
   },
 });
 await writeFile('dist/build-report.json', JSON.stringify(reports, null, 2));

@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { Css, SystemKeywords, systemKeywords } from 'zerodep-css';
-import { createServerCssHost, withCssHost } from 'zerodep-css/server';
+import { Css, SystemKeywords, systemKeywords } from 'zerodep-js-css';
+import { createServerCssHost, withCssHost } from 'zerodep-js-css/server';
 import { execute } from './execute.js';
 import { compile } from '../src/index.js';
-import { cssBinding } from '../../core/src/css-internal.js';
+import { cssBinding } from 'zerodep-js-css/internal';
 import { TraceMap, originalPositionFor } from '@jridgewell/trace-mapping';
 
 function run(source: string) {
@@ -14,7 +14,7 @@ function run(source: string) {
 
 describe('原生 CSS 编译', () => {
   it('关键字绑定源码映射仍指向原始成员读取', () => {
-    const source = `import { css } from 'zerodep-js/css';
+    const source = `import { css } from 'zerodep-js-css';
 function view() { return <div class={css(s.color._primary)} />; }`;
     const result = compile(source, 'KeywordMap.tsx');
     const lines = result.code.split('\n');
@@ -47,7 +47,7 @@ function view() { return <div class={css(s.color._primary)} />; }`;
         execute(
           `
 import { _state } from 'zerodep-js';
-import { css } from 'zerodep-js/css';
+import { css } from 'zerodep-js-css';
 function create() {
  let theme = _state.raw(new Theme());
  let external = _state('#123456');
@@ -97,7 +97,7 @@ const result = create();`,
     const result = withCssHost(host, () =>
       execute(
         `
-import { css } from 'zerodep-js/css';
+import { css } from 'zerodep-js-css';
 const attrs = <div class={css(s.color._primary)} />.props;
 const result = { class: attrs.class, style: attrs.style };`,
         { s },
@@ -110,7 +110,7 @@ const result = { class: attrs.class, style: attrs.style };`,
 
   it('嵌套选择器和跨组件主题类名保持原声明，不要求隐藏的变量传递', () => {
     const code = compile(
-      `import { css } from 'zerodep-js/css';
+      `import { css } from 'zerodep-js-css';
 function view() { const name = css(s.color._primary);
 return <Widget class={name}><div class={css(s._hover(s.color._primary))} /></Widget>; }`,
       'theme.tsx',
@@ -122,7 +122,7 @@ return <Widget class={name}><div class={css(s._hover(s.color._primary))} /></Wid
     const line = named ? `const name = ${expression};` : `return <div class={${expression}} />;`;
     const source = [
       "import { _state } from 'zerodep-js';",
-      "import { css } from 'zerodep-js/css';",
+      "import { css } from 'zerodep-js-css';",
       'function view() {',
       'let width = _state(20);',
       line,
@@ -149,7 +149,7 @@ return <Widget class={name}><div class={css(s._hover(s.color._primary))} /></Wid
   it('真实 TSX 的直接派生值求参改变作者时，保留原方法并回退普通声明', () => {
     const { result, host } = run(`
 import { _derived } from 'zerodep-js';
-import { css } from 'zerodep-js/css';
+import { css } from 'zerodep-js-css';
 function create() {
  const width = _derived.by(() => {
    Object.defineProperty(s, 'width', { value: { px: () => 'width:999px;' } });
@@ -188,7 +188,7 @@ const result = create();`);
       const call = 'css(s.width.px(width))';
       const { result, host } = run(`
 import { _state } from 'zerodep-js';
-import { css } from 'zerodep-js/css';
+import { css } from 'zerodep-js-css';
 function create() {
  let width = _state(20);
  let attrs = _state({ class: 'old', style: { color: 'red', '--user': 'first' } });
@@ -216,7 +216,7 @@ const result = create();`);
   it('最后的 spread 可能覆盖类名时，保留原生 class/style 覆盖语义', () => {
     const { result } = run(`
 import { _state } from 'zerodep-js';
-import { css } from 'zerodep-js/css';
+import { css } from 'zerodep-js-css';
 function create() {
  let width = _state(20);
  let attrs = _state({ class: 'external', style: 'width:80px' });
@@ -233,7 +233,7 @@ const result = create();`);
   it('spread 引入 key 后仍能读取绑定结果，key 改变不混用元素变量', () => {
     const { result } = run(`
 import { _state } from 'zerodep-js';
-import { css } from 'zerodep-js/css';
+import { css } from 'zerodep-js-css';
 function create() {
  let width = _state(20); let id = _state('a');
  const template = <div {...{ key: id }} class={css(s.width.px(width))} />;
@@ -286,7 +286,7 @@ const result = create();`);
       execute(
         `
 import { _derived } from 'zerodep-js';
-import { css } from 'zerodep-js/css';
+import { css } from 'zerodep-js-css';
 function create() {
  const width = _derived.by(() => { record('value'); return 20; });
  const element = <div class={css(s.width.px(width))} />;
@@ -300,7 +300,7 @@ const result = create();`,
     expect(host.cssText()).toContain('width:20px;');
   });
   it('变量名称不依赖构建机器路径或换行风格', () => {
-    const source = `import { _state } from 'zerodep-js';\nimport { css } from 'zerodep-js/css';\nfunction view() { let width = _state(10); return <div class={css(s.width.px(width))} />; }`;
+    const source = `import { _state } from 'zerodep-js';\nimport { css } from 'zerodep-js-css';\nfunction view() { let width = _state(10); return <div class={css(s.width.px(width))} />; }`;
     const windows = compile(source.replaceAll('\n', '\r\n'), 'C:/app/Card.tsx').code;
     const linux = compile(source, '/home/runner/app/Card.tsx').code;
     expect(windows.match(/--zj-[a-z0-9-]+/g)).toEqual(linux.match(/--zj-[a-z0-9-]+/g));
@@ -309,7 +309,7 @@ const result = create();`,
   it('同名作者参数按作用域解析，展开覆盖 class 时不注入变量', () => {
     const { result } = run(`
 import { _state } from 'zerodep-js';
-import { css } from 'zerodep-js/css';
+import { css } from 'zerodep-js-css';
 function create() {
  let width = _state(10);
  function view(width) { return <div class={css(s.width.px(width))} />; }
@@ -323,7 +323,7 @@ const result = create();`);
   it('未进入的条件分支不提前求值', () => {
     const { result } = run(`
 import { _state } from 'zerodep-js';
-import { css } from 'zerodep-js/css';
+import { css } from 'zerodep-js-css';
 function create() {
  let width = _state(10); let enabled = _state(false);
  function fail() { throw new Error('inactive'); }
@@ -336,7 +336,7 @@ const result = create();`);
   it('命名条件样式自动派生，重复读取缓存，普通别名仍是快照', () => {
     const { result, host } = run(`
 import { _state } from 'zerodep-js';
-import { css as style } from 'zerodep-js/css';
+import { css as style } from 'zerodep-js-css';
 function create() {
  let active = _state(false);
  const className = style(s.color.raw(active ? 'red' : 'blue'));
@@ -358,7 +358,7 @@ const result = create();`);
       const call = 'css(s.width.px(width), s.color.raw(color))';
       const { result, host } = run(`
 import { _state } from 'zerodep-js';
-import { css } from 'zerodep-js/css';
+import { css } from 'zerodep-js-css';
 function create(initial) {
  let width = _state(initial);
  let color = _state('red');
@@ -387,7 +387,7 @@ const result = [before, first.view.props.class, first.view.props.style, second.v
     const code = compile(
       `
 import { _state } from 'zerodep-js';
-import { css } from 'zerodep-js/css';
+import { css } from 'zerodep-js-css';
 function create() {
  let width = _state(10); let active = _state(false); const saved = width;
  const a = css(s.width.px(width));
@@ -402,7 +402,7 @@ function create() {
   it('特殊值取消变量绑定，style 不留下上一次的变量', () => {
     const { result, host } = run(`
 import { _state } from 'zerodep-js';
-import { css } from 'zerodep-js/css';
+import { css } from 'zerodep-js-css';
 function create() {
  let color = _state('red');
  const view = <div class={css(s.color.raw(color))} />;
@@ -418,7 +418,7 @@ const result = create();`);
 
   it('模块常量、同名函数不成为派生，命名样式必须 const', () => {
     expect(
-      compile(`import { css } from 'zerodep-js/css'; const name = css('color:red;');`, 'plain.ts')
+      compile(`import { css } from 'zerodep-js-css'; const name = css('color:red;');`, 'plain.ts')
         .code,
     ).not.toContain('.derived(');
     expect(
@@ -426,7 +426,7 @@ const result = create();`);
     ).not.toContain('.derived(');
     expect(() =>
       compile(
-        `import { css } from 'zerodep-js/css'; function f() { let name = css('color:red;'); }`,
+        `import { css } from 'zerodep-js-css'; function f() { let name = css('color:red;'); }`,
         'plain.ts',
       ),
     ).toThrow('const');

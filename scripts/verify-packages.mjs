@@ -27,7 +27,6 @@ const { values } = parseArgs({
   options: {
     registry: { type: 'boolean', default: false },
     version: { type: 'string' },
-    'css-tarball': { type: 'string' },
   },
 });
 if (values.registry)
@@ -79,19 +78,12 @@ try {
   // 发行 SDK 使用固定 HTTPS tarball；复制平台覆盖，独立消费不依赖 IDE 缓存。
   for (const match of catalog.matchAll(/^  '(@typescript\/[^']+)': (https:\/\/\S+)$/gm))
     manifest.pnpm.overrides[match[1]] = match[2];
-  for (const name of ['typescript', 'vite', '@types/node', 'zerodep-css']) {
+  for (const name of ['typescript', 'vite', '@types/node']) {
     const version = catalog.match(new RegExp(`^  ['"]?${name}['"]?: (\\S+)$`, 'm'))?.[1];
     assert(version, `找不到 ${name} 的固定 catalog 版本。`);
     manifest.devDependencies[name] = version;
   }
-  if (values['css-tarball']) {
-    assert(!values.registry, '注册表验收不能替换 CSS 依赖。');
-    const source = await realpath(values['css-tarball']);
-    assert(source.endsWith('.tgz'), 'CSS 候选产物需要 tgz 文件。');
-    const archive = resolve(archives, 'zerodep-css.tgz');
-    await cp(source, archive);
-    manifest.devDependencies['zerodep-css'] = `file:${archive.replaceAll('\\', '/')}`;
-  }
+
   for (const item of selectedPackages) {
     const name = item.folder;
     const directory = resolve(root, 'packages', name);
@@ -136,7 +128,7 @@ try {
     const dependency = values.registry
       ? values.version
       : 'file:' + relative(consumer, file).replaceAll('\\', '/');
-    (['core', 'ssr', 'use'].includes(name) ? manifest.dependencies : manifest.devDependencies)[
+    (['core', 'ssr', 'css'].includes(name) ? manifest.dependencies : manifest.devDependencies)[
       packed.name
     ] = dependency;
     manifest.pnpm.overrides[packed.name] = dependency;
@@ -194,7 +186,7 @@ try {
       '--eval',
       `
     import assert from 'node:assert/strict';
-    for (const specifier of ['zerodep-js/router', 'zerodep-js/storage']) {
+    for (const specifier of ['zerodep-js/adapter', 'zerodep-js/router', 'zerodep-js/storage', 'zerodep-js/css', 'zerodep-js/css/internal']) {
       await assert.rejects(import(specifier), { code: 'ERR_PACKAGE_PATH_NOT_EXPORTED' });
     }
     for (const specifier of ['zerodep-use', 'zerodep-use/router', 'zerodep-use/store', 'zerodep-use/history']) {
@@ -231,7 +223,7 @@ try {
   await run(['run', 'build']);
   const report = await json(resolve(consumer, 'dist/build-report.json'));
   const clientModules = report.client.flatMap((chunk) => chunk.modules);
-  for (const build of ['client', 'server', 'tree'])
+  for (const build of ['client', 'server', 'tree', 'cssTree'])
     assert(
       report[build].every((chunk) =>
         chunk.modules.every((id) => !/\/dist\/(dev\/|devtools\.js)/.test(id)),
@@ -252,6 +244,18 @@ try {
     clientModules.some((id) => id.includes('/@csstools/css-tokenizer/')),
     '样式依赖未进入实际消费构建。',
   );
+  const cssModules = report.cssTree.flatMap((chunk) => chunk.modules);
+  assert(
+    !cssModules.some((id) =>
+      /\/zerodep-js\/|\/dist\/(browser|server|context|internal|generated\/author)\.js$/.test(id),
+    ),
+    '单属性作者不应带入完整作者、框架运行时或样式宿主。',
+  );
+  const isolatedCss = await import(
+    pathToFileURL(resolve(consumer, 'dist/css-tree/css-tree.js')).href
+  );
+  assert.equal(isolatedCss.red, 'color:red;');
+  assert.equal(typeof isolatedCss.marker, 'string');
   const treeModules = report.tree.flatMap((chunk) => chunk.modules);
   assert(
     !treeModules.some(

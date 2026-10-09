@@ -1,11 +1,18 @@
 # 原生 CSS
 
-作者 API 来自 `zerodep-css`，响应式入口是 `zerodep-js/css`，由现有 Vite/Babel 插件转换。无需额外插件或 bx；不使用 CSS 接入的应用无需安装 CSS 包。
+CSS 由本仓库 packages/css（包名 zerodep-js-css）提供，TSX 中的 CSS 调用由 compiler 内置转换。core 不依赖 CSS 包，不使用它的应用可以继续用普通 CSS。
+
+```ts
+import { zerodep } from 'zerodep-js-compiler/vite';
+export default { plugins: [zerodep()] };
+```
+
+工作区 SSR 联调需要让框架及 CSS 包同属一个模块加载环境，例如 `ssr.noExternal: ['zerodep-js', 'zerodep-js-ssr', 'zerodep-js-css']`。预编译组件库将框架与 CSS 包都设为 external，保留 Node/浏览器条件导出。普通 npm 独立消费则可全部 external；不要混合两份框架运行时。
 
 ```tsx
 import { _component, _state } from 'zerodep-js';
-import { Css } from 'zerodep-css';
-import { css } from 'zerodep-js/css';
+import { Css } from 'zerodep-js-css';
+import { css } from 'zerodep-js-css';
 
 const s = new Css();
 export const Card = _component(() => {
@@ -20,7 +27,7 @@ className 的公开类型仍是 string，依赖变化时自动重算，不必套
 
 ## 自动追踪
 
-识别从 `zerodep-js/css` 命名导入的 css，包括导入别名。函数内直接初始化命名 const 的调用使用派生缓存；输入应是纯样式计算。修改它读取的状态或 props 即可；命名样式不能用 let 再赋值。
+识别从 `zerodep-js-css` 命名导入的 css，包括导入别名。函数内直接初始化命名 const 的调用使用派生缓存；输入应是纯样式计算。修改它读取的状态或 props 即可；命名样式不能用 let 再赋值。
 
 模块顶层仍是普通 JS，不建立组件派生。SSR 登记需要请求宿主，因此顶层优先保存 `new Css()` 和声明片段，在组件中调用 css。其他库或局部同名函数不转换。普通 helper、字符串处理或别名不会自动成为新的派生声明。
 
@@ -68,7 +75,7 @@ let accent = _state('#245fc5');
 每请求新建 CSS 库自身宿主，完成组件渲染后收集并安全序列化：
 
 ```ts
-import { createServerCssHost, withCssHost, serializeCssRules } from 'zerodep-css/server';
+import { createServerCssHost, withCssHost, serializeCssRules } from 'zerodep-js-css/server';
 
 const host = createServerCssHost();
 const html = withCssHost(host, () => renderToString(App));
@@ -79,7 +86,7 @@ const styles =
 // 将 styles 插入 head；不要直接拼接未经处理的 CSS 或 JSON。
 ```
 
-客户端在 `_hydrate` / `_mount` 前调用 `hydrateCss()`，从 `zerodep-css/browser` 导入。没有 SSR 清单时直接返回；有清单则核对并恢复登记表。实例共享文档宿主，不能在子组件卸载时调用全局 disposeCss。元素变量需要 CSP 允许相应内联 style；标签 nonce 不会自动授权 style 属性。
+客户端在 `_hydrate` / `_mount` 前调用 `hydrateCss()`，从 `zerodep-js-css` 导入。没有 SSR 清单时直接返回；有清单则核对并恢复登记表。实例共享文档宿主，不能在子组件卸载时调用全局 disposeCss。元素变量需要 CSP 允许相应内联 style；标签 nonce 不会自动授权 style 属性。
 
 实际接线见示例应用 entry-server.ts、entry-client.ts 与 examples/CssExample.tsx。
 
@@ -87,18 +94,18 @@ const styles =
 
 CSS 0.3.3 已实现关键字压缩，当前项目从 npm 精确安装此版本。沿用原有写法：原始值只保存一份，按值和语义说明一致分组，公开作者/关键字构造器仍可继承。公开类型保持 ColorCss、ColorKeywords、FontSizeCss 等语义名称，公共集合使用 globalKeywords、colorKeywords、fontSizeKeywords；中文说明在 hover 和补全详情中均保留，不要求重复输出每个属性的完整声明示例。默认系统声明仍是自有字符串字段，主题读取和元素变量的安全回退不变。
 
-catalog 固定 CSS 0.3.3，core 可选 CSS peer 下限为 ^0.3.2（本轮没有新增运行时接口），框架保持选定 TS7.1 SDK。CSS 仓库用 TS6 构建 JS 与声明；本项目不运行它的旧 AST 编译器，也不安装 zerodep-css-compiler。旧编译器由 Vue/Svelte 适配器独立使用。
+CSS 与框架使用同仓库 workspace 依赖及同一套 JetBrains TS7.1。生成器通过 Babel 解析 csstype 声明；pnpm css:generate 更新，pnpm css:check 检查生成结果。没有外部 CSS 仓库或 TS6 依赖。
 
 跨仓库联调可先执行 `pnpm test:packages --css-tarball <候选.tgz>`。正常安装按精确版本和锁文件恢复，不要求相邻 CSS 仓库存在，也不提交临时绝对路径依赖。
 
-CSS 0.3.1 六包已发布到 next，版本与 SHA-512 已和 [GitHub 预发布](https://github.com/kenconnet666/zerodep-css/releases/tag/v0.3.1) 中的固定 tgz 核对一致。该版本修复继承作者改写底层属性名或使用 getter 时的优化判断，保留无效值前的有效声明。本项目只消费核心包，catalog 固定 npm 版本，换机按锁文件安装即可；latest 未提升。
+当前新包布局尚未发布到 npm；本地依赖由 pnpm workspace 连接，不使用临时 tgz 或本机绝对路径覆盖。
 
 ## CSS 作者上下文
 
-从 zerodep-js/css 导入 _createCssContext，在项目模块中创建一次工厂，组件初始化时提供作者，后代通过同一工厂读取。
+从 zerodep-js-css 导入 createCssContext，在项目模块中创建一次工厂，组件初始化时提供作者，后代通过同一工厂读取。
 
 ```tsx
-const { provideCss, useCss } = _createCssContext<AppCss>();
+const { provideCss, useCss } = createCssContext<AppCss>();
 
 // 提供者的初始化代码；AppCss 为项目自己的作者类。
 let theme = _state.raw(lightTheme);

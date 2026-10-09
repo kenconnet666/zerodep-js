@@ -8,7 +8,7 @@ import {
 import { App } from './App.js';
 import { TaskBoard } from './tasks/TaskBoard.js';
 import type { TaskPage } from './tasks/schema.js';
-import { createServerCssHost, withCssHost, serializeCssRules } from 'zerodep-css/server';
+import { createServerCssHost, withCssHost, serializeCssRules } from 'zerodep-js-css/server';
 
 async function renderPage(options: DocumentOptions): Promise<string> {
   const host = createServerCssHost();

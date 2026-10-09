@@ -16,7 +16,7 @@
   },
   "peerDependencies": {
     "zerodep-js": "workspace:*",
-    "zerodep-css": "catalog:"
+    "zerodep-js-css": "workspace:*"
   },
   "dependencies": {
     "date-fns": "catalog:",
@@ -26,9 +26,8 @@
     "typescript": "catalog:",
     "vite": "catalog:",
     "zerodep-js-ssr": "workspace:*",
-    "zerodep-css": "catalog:",
+    "zerodep-js-css": "workspace:*",
     "zerodep-js": "workspace:*",
-    "zerodep-js-compiler": "workspace:*",
-    "zerodep-js-vite": "workspace:*"
+    "zerodep-js-compiler": "workspace:*"
   }
 }

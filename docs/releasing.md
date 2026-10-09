@@ -1,6 +1,6 @@
 # 候选发布与恢复
 
-发布清单唯一维护于 scripts/package-list.mjs：core、ssr、use、compiler、vite。包使用同一个版本；当前 JetBrains SDK 与平台二进制来自原始 GitHub 发行文件，独立项目仍需相应根级平台 overrides，见 [包边界](packages.md)。
+发布清单唯一维护于 scripts/package-list.mjs：core、ssr、compiler、css。包使用同一个版本；当前 JetBrains SDK 与平台二进制来自原始 GitHub 发行文件，独立项目仍需相应根级平台 overrides，见 [包边界](packages.md)。
 
 ## 发布门槛
 

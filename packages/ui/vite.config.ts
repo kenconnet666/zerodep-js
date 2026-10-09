@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
-import { zerodep } from 'zerodep-js-vite';
+import { zerodep } from 'zerodep-js-compiler/vite';
 
 export default defineConfig({
   plugins: [zerodep()],
@@ -9,7 +9,7 @@ export default defineConfig({
     minify: false,
     rolldownOptions: {
       // 宿主应用提供同一份运行时和样式引擎，避免组件库打入重复实例。
-      external: (id) => /^(zerodep-js|zerodep-css|date-fns|@date-fns\/tz)(\/|$)/.test(id),
+      external: (id) => /^(zerodep-js|zerodep-js-css|date-fns|@date-fns\/tz)(\/|$)/.test(id),
     },
   },
 });

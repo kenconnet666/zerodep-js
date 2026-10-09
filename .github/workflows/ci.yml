@@ -67,6 +67,7 @@ jobs:
       # 示例也检查原始 TSX，避免框架投影通过而官方 IDE 仍报告类型错误。
       - run: pnpm exec tsc -p apps/example/tsconfig.json --noEmit
       - run: pnpm test
+      - run: pnpm test:css
       - run: pnpm test:stability
       - run: pnpm lsp:setup
       - run: pnpm lsp:verify

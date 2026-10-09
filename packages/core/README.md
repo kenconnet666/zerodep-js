@@ -2,7 +2,7 @@
 
 可选 `zerodep-js/head` 提供 `_head`，以同步读取函数维护页面标题/描述，随作用域释放；不依赖 CSS 包。SSR 使用 `_render` 收集元信息，见仓库 docs/head.md。
 
-zerodep-js 的响应式、组件、DOM 与 hydration 运行时。使用标准 TSX 和官方 TypeScript 7.1，框架源码须经过 `zerodep-js-compiler` 或 `zerodep-js-vite` 转换。样式边界采用 CSS Tools tokenizer，CSS 类型采用 csstype 的生成数据；不依赖其他组件框架运行时。
+zerodep-js 的响应式、组件、DOM 与 hydration 运行时。使用标准 TSX 和官方 TypeScript 7.1，框架源码须经过 `zerodep-js-compiler` 或 `zerodep-js-compiler/vite` 转换。样式边界采用 CSS Tools tokenizer，CSS 类型采用 csstype 的生成数据；不依赖其他组件框架运行时。
 
 ```tsx
 import { _component, _state, _mount } from 'zerodep-js';
@@ -26,4 +26,4 @@ _snapshot、_onMount/_getAbortSignal 与上下文继续留在 core。当前源�
 
 本文说明当前公开 API。框架与适配包统一版本，实际发布与验收状态见 [变更记录](https://github.com/kenconnet666/zerodep-js/blob/main/CHANGELOG.md)。
 
-可选 `zerodep-js/css` 子入口提供 css 自动追踪，需另装 `zerodep-css@0.3.0`。浏览器与 Node 请求宿主分别解析；普通框架入口不会加载 CSS 包或旧 TS 编译器。使用说明见仓库 docs/css.md。
+CSS 由同仓库 zerodep-js-css 提供；core 不依赖 CSS 包，也不提供 css 或 adapter 子入口。编译器内置 CSS 转换，写法见仓库 docs/css.md。

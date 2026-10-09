@@ -1,25 +1,12 @@
-# zerodep-css 原生接入
+# 原生 CSS 与编译器归属
 
-2026-10-08 后续范围以 [基础 API 主计划](../docs/production-plan.md) 为准。继续完善 CSS/主题/SSR 与框架 API 的协作；示例组件仅承担验收，不实施组件库或整页视觉重做。以下记录已经落地的接入边界，不把后续候选当成现有功能。
+2026-10-09 用户确认：停止维护相邻 zerodep-css，CSS 仅服务于 zerodep-js。此前跨仓库和多框架方案被本决定取代。
 
-2026-10-07。用户已批准执行。本文替代早期显式 bx / class 数组候选方案；用法与边界见 [CSS 指南](../docs/css.md)。
+- packages/css：迁入作者、属性生成器及数据、关键字、单位、选择器、浏览器/SSR 宿主、context 和隐式变量运行时。
+- packages/compiler：直接在既有 Babel AST 中处理 CSS；原 Vite 插件并入 /vite 子入口，普通转换、依赖扫描和 HMR 共用转换。
+- core 只提供框架运行时；CSS 通过 internal 复用派生缓存、props 与 style 序列化，不保留公开 adapter。
+- 删除 CompileExtension/扩展配置、bx 及绑定帧/订阅/专用样式表；不迁 Vue/Svelte/Nuxt/Kit 或 TS6 模板编译器。
+- UI Provider、亮暗主题、语言和时区仍属于 ui；useCss() 读取逻辑上层注入的作者，SSR 标签由应用编写。
+- 共享一份 JetBrains TS7.1、Babel、工作区构建、LSP 和 CI；生成器仅解析 csstype 声明数据，完整类型检查仍交固定 SDK。
 
-## 边界
-
-- CSS 作者 API、生成数据、规则宿主与 Vue/Svelte 模板转换归 zerodep-css；TSX 转换归现有 Babel 编译器。
-- CSS 0.3.0 将传统 TS AST 转换移入 `zerodep-css-compiler`，独立持有 TS6；核心不再要求消费者提供 TS。zerodep-js 不导入该模板编译器，保留选定 TS7。
-- `zerodep-js/css` 的 css 命名 const 声明自动派生，JSX 内联使用现有追踪；普通同名函数与模块顶层不改成派生。
-- 仅直接参数中的系统作者方法，且参数直接引用 `_state` / `_derived`，才尝试元素变量。不追踪普通别名，不提取条件分支、计算表达式、函数返回值或嵌套选择器。
-- 单位由 JS 拼接到元素 style，如 `24px`，不使用 CSS calc 补单位。
-- 用户看到的 class 仍是字符串。只有全部引用都落在可确认的原生 class 时才使用内部 class/style 结果；跨组件、展开覆盖或普通字符串处理回退为普通 CSS 重算。
-- 不增加 bx、class 合并、样式对象 DSL、全局类名反查、额外订阅或 CSS 专用资源树。
-
-## 保守转换
-
-原始无效声明与 var() 的计算值失效不同，CSS-wide 与 important 也不能无条件搬入自定义属性。共享 inlineDeclaration 检查系统作者身份，仅对可确认的非负单位值、系统关键字、颜色 hex 和有限 opacity 使用变量，其余值或覆写方法继续原调用。回退后移除旧私有变量。
-
-元素属性复用现有 Derived 和 DOM/SSR style 序列化。变量名来自规范化源码内容与调用计数，不依赖机器路径。多实例共享规则、各自持有元素变量；删除元素自然移除变量，无需新的销毁管理器。
-
-## 验证
-
-CSS 仓库检查六包类型、生成一致性、Vue/Svelte 编译、覆写/主题回退及打包消费。TSX 检查别名、作用域、条件惰性、直接与计算参数、spread、多实例、特殊值和跨机器名称。浏览器检查 CSR/SSR、无 JS 首屏、稳定规则、条件换色、卸载/重建与 Portal。独立安装用固定 tgz 或注册表版本，不保留本机依赖路径。两个仓库独立提交与 CI，尚在运行的矩阵不记为通过。
+API 和使用示例见 ../docs/css.md，包边界见 ../docs/packages.md。

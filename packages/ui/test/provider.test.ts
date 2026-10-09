@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { _createRoot } from 'zerodep-js';
 import { defineComponent, element } from 'zerodep-js/internal';
 import { renderToString } from 'zerodep-js-ssr';
-import { Css, SystemKeywords, systemKeywords } from 'zerodep-css';
-import { createServerCssHost, withCssHost } from 'zerodep-css/server';
+import { Css, SystemKeywords, systemKeywords } from 'zerodep-js-css';
+import { createServerCssHost, withCssHost } from 'zerodep-js-css/server';
 import { addDays } from 'date-fns';
 import {
   Provider,

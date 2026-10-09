@@ -1,6 +1,6 @@
 import { _component, _derived, _state, _lazy, Portal } from 'zerodep-js';
-import { Css } from 'zerodep-css';
-import { css } from 'zerodep-js/css';
+import { Css } from 'zerodep-js-css';
+import { css } from 'zerodep-js-css';
 import { Keywords, provideCss, useCss } from './css-theme.js';
 
 const s = new Css();

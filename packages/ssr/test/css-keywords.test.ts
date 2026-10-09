@@ -1,9 +1,9 @@
 import { expect, it } from 'vitest';
 import * as runtime from 'zerodep-js/internal';
 import * as publicRuntime from 'zerodep-js';
-import * as cssRuntime from 'zerodep-js/css/internal';
-import { Css, SystemKeywords, systemKeywords } from 'zerodep-css';
-import { createServerCssHost, withCssHost } from 'zerodep-css/server';
+import * as cssRuntime from 'zerodep-js-css/internal';
+import { Css, SystemKeywords, systemKeywords } from 'zerodep-js-css';
+import { createServerCssHost, withCssHost } from 'zerodep-js-css/server';
 import { execute } from '../../compiler/test/execute.js';
 import { renderToString } from '../src/render.js';
 
@@ -17,7 +17,7 @@ it('真实编译后的主题绑定在 SSR 输出变量，特殊值不输出且�
     }
   }
   const source = `import { _component } from 'zerodep-js';
-import { css } from 'zerodep-js/css';
+import { css } from 'zerodep-js-css';
 const App = _component(() => <div class={css(s.color._primary)} style={{ '--user': 'yes' }}>主题</div>);
 const result = render(App);`;
   const render = (value: string) => {

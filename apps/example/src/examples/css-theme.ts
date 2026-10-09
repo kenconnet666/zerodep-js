@@ -1,5 +1,5 @@
-import { Css, SystemKeywords, ColorKeywords } from 'zerodep-css';
-import { _createCssContext } from 'zerodep-js/css';
+import { Css, SystemKeywords, ColorKeywords } from 'zerodep-js-css';
+import { createCssContext } from 'zerodep-js-css';
 
 class Colors extends ColorKeywords {
   readonly _primary: string;
@@ -16,4 +16,4 @@ export class Keywords extends SystemKeywords {
   }
 }
 // 普通与按需模块复用同一上下文，动态导入不能另建一个 symbol。
-export const { provideCss, useCss } = _createCssContext<Css<Keywords>>();
+export const { provideCss, useCss } = createCssContext<Css<Keywords>>();

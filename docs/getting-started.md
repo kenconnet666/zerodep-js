@@ -2,18 +2,16 @@
 
 zerodep-js 使用标准 TSX、显式变量式状态和一次初始化的组件。当前源码采用固定的 JetBrains TS7.1、Babel 与 Vite；发布状态见 [执行记录](execution.md)和[变更记录](../CHANGELOG.md)。源码工作区运行方式见 [环境配置](environment-setup.md)。
 
-## 已发布 rc.7 的安装与构建入口
+## 当前源码工作区
 
-工作区源码已按用户要求切换为 JetBrains `7.1.0-dev.jetbrains.20261006.2`，使用仓库的 `pnpm install --frozen-lockfile`，下载来源和平台覆盖见 [工具链](tooling.md)。下方 npm rc.7 安装说明对应既有发布版本，尚不包含本次 SDK 调整。
-
-消费者使用 Node 24、官方 TypeScript 7.1.0-dev.20261007.1 与 Vite 8.3.1。当前候选 rc.7 已发布到 npm next，框架包安装相同版本：
+当前包布局尚未发布到 npm。使用 Node 24 与固定 pnpm，在仓库根运行：
 
 ```sh
-pnpm add zerodep-js@1.0.0-rc.7
-pnpm add -D zerodep-js-compiler@1.0.0-rc.7 zerodep-js-vite@1.0.0-rc.7 typescript@7.1.0-dev.20261007.1 vite@8.3.1
+pnpm install --frozen-lockfile
+pnpm dev
 ```
 
-SSR 应用另装与 core 同版本的 zerodep-js-ssr。当前源码不再维护或使用 zerodep-use。官方平台二进制随 TypeScript 安装，不需要 Go 或自建 SDK。
+工作区统一使用 JetBrains TypeScript 7.1.0-dev.jetbrains.20261006.2；原始发行 URL 和平台 overrides 见 [工具链](tooling.md)。不需要 Go、自建 SDK 或相邻 CSS 仓库。npm 已发布版本的安装记录见维护交接，不与当前源码入口混用。
 
 应用 package.json 的基本脚本：
 
@@ -35,7 +33,7 @@ Vite 插件同时处理普通转换和依赖扫描：
 ```ts
 // vite.config.ts
 import { defineConfig } from 'vite';
-import { zerodep } from 'zerodep-js-vite';
+import { zerodep } from 'zerodep-js-compiler/vite';
 
 export default defineConfig({ plugins: [zerodep()] });
 ```

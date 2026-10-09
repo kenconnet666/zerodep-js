@@ -1,6 +1,6 @@
 import { _createContext, _useContext } from 'zerodep-js';
-import { _createCssContext } from 'zerodep-js/css';
-import type { Css } from 'zerodep-css';
+import { createCssContext } from 'zerodep-js-css';
+import type { Css } from 'zerodep-js-css';
 import type { UiTheme } from '../../theme/theme.js';
 import type { UiLanguage } from '../../lang/types.js';
 import type { UiLocale } from '../../locale.js';
@@ -10,7 +10,7 @@ export const themeContext = _createContext<() => UiTheme>();
 export const languageContext = _createContext<UiLanguage>();
 export const localeContext = _createContext<UiLocale>();
 export const directionContext = _createContext<() => 'ltr' | 'rtl' | 'auto'>();
-const cssContext = _createCssContext<Css<UiTheme>>();
+const cssContext = createCssContext<Css<UiTheme>>();
 export const provideCss = cssContext.provideCss;
 
 export function useCss(): Css<UiTheme> {
