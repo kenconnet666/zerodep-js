@@ -104,6 +104,28 @@ const view = <input bind:this={input} />;`);
   }
 });
 
+it('bind:this 与显式或展开 ref 共存，双方类型分别检查', async () => {
+  for (const attrs of [
+    'bind:this={input} ref={el => {el.select();}}',
+    'ref={el => {el.select();}} bind:this={input}',
+    'bind:this={input} {...{ref: (el:HTMLInputElement) => {el.select();}}}',
+  ]) {
+    expect(
+      (await check(`let input:HTMLInputElement|undefined;const view=<input ${attrs}/>;`))
+        .diagnostics,
+    ).toEqual([]);
+  }
+  for (const attrs of [
+    'bind:this={input} ref={(el:HTMLSelectElement) => {}}',
+    'bind:this={input} {...{ref: (el:HTMLSelectElement) => {}}}',
+  ]) {
+    expect(
+      (await check(`let input:HTMLInputElement|undefined;const view=<input ${attrs}/>;`))
+        .diagnostics.length,
+    ).toBeGreaterThan(0);
+  }
+});
+
 it('真实 core 类型拒绝错误元素、只读属性、过窄目标与遗漏判空', async () => {
   const cases: [string, number][] = [
     [`let input: HTMLSelectElement | undefined; const view = <input bind:this={input} />;`, 2740],

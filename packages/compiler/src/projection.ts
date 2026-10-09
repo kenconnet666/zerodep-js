@@ -173,23 +173,35 @@ export function projectForCheck(
             t.assignmentExpression('=', t.cloneNode(target, true), t.identifier('undefined')),
             target,
           );
-          output.push(
-            t.inherits(
-              t.jsxAttribute(
-                t.jsxIdentifier('ref'),
-                t.jsxExpressionContainer(
-                  t.arrowFunctionExpression(
-                    [t.cloneNode(parameter)],
-                    t.blockStatement([
-                      t.expressionStatement(assignment),
-                      t.returnStatement(t.arrowFunctionExpression([], cleanup)),
-                    ]),
-                  ),
-                ),
+          // 用独立的原生 JSX 检查绑定写入，不覆盖用户 ref（含 spread）自身的类型检查。
+          const reference = t.jsxAttribute(
+            t.jsxIdentifier('ref'),
+            t.jsxExpressionContainer(
+              t.arrowFunctionExpression(
+                [t.cloneNode(parameter)],
+                t.blockStatement([
+                  t.expressionStatement(assignment),
+                  t.returnStatement(t.arrowFunctionExpression([], cleanup)),
+                ]),
               ),
-              attribute,
             ),
           );
+          const check = t.jsxElement(
+            t.jsxOpeningElement(t.cloneNode(opening.name, true), [reference], true),
+            null,
+            [],
+          );
+          const validate = t.callExpression(
+            t.arrowFunctionExpression(
+              [],
+              t.blockStatement([
+                t.expressionStatement(t.unaryExpression('void', check)),
+                t.returnStatement(t.objectExpression([])),
+              ]),
+            ),
+            [],
+          );
+          output.push(t.inherits(t.jsxSpreadAttribute(validate), attribute));
           handlers.delete(event);
         }
       }

@@ -101,13 +101,6 @@ export function transformJsx(
               const binding = t.isIdentifier(value) ? path.scope.getBinding(value.name) : undefined;
               if (!binding?.path.isVariableDeclarator())
                 report(attribute, 'ZJ1401', 'bind:this 需要可写的变量声明，不支持对象路径或参数。');
-              if (
-                node.openingElement.attributes.some(
-                  (other) =>
-                    t.isJSXAttribute(other) && t.isJSXIdentifier(other.name, { name: 'ref' }),
-                )
-              )
-                report(attribute, 'ZJ1404', 'bind:this 与 ref 不能同时声明。');
             } else if (native) {
               if (!(
                 (property === 'value' && ['input', 'textarea', 'select'].includes(tag.name)) ||

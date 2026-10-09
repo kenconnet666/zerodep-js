@@ -2,6 +2,7 @@ import type { Renderable, TextRenderable } from '../runtime/template.js';
 import type { HtmlAttributeValues, SvgAttributeValues, NativeEventAliases } from './data.js';
 import type { clientProperties, ownedProperties, formProperties } from './properties.js';
 import type { Style } from './style.js';
+import type { DomRef } from '../runtime/refs.js';
 
 export type { Style, StyleObject } from './style.js';
 
@@ -261,7 +262,7 @@ export type NativeProps<T extends Element> = (T extends Element
     className?: string | null | undefined;
     style?: Style | null | undefined;
     /** 同步取得元素，可返回清理函数；回调内卸载时立即清理新返回的资源。 */
-    ref?: ((element: T) => void | (() => void)) | undefined;
+    ref?: DomRef<T> | undefined;
     /** DOM 引用写入可写变量，卸载后为 undefined；不支持组件实例或对象路径。 */
     'bind:this'?: T | undefined;
     role?: string | null | undefined;

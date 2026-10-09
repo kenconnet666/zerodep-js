@@ -113,3 +113,11 @@
 - 类型和定义导航保持显式 token 成员及中文说明；LSP 用例验证 Icon 的颜色/尺寸关键字与迁移后的 token 定义位置。
 
 依据：[Lucide 图标数据](https://lucide.dev/guide/icons/)。发行包 1.54.0 的实际节点 builder 子入口为 @lucide/icons/build；以锁定包导出为准。
+
+## 10. 按钮基础设施（2026-10-09 已授权）
+
+- core 导出 DomRef/_composeRefs：按顺序初始化、逆序清理，失败回滚与同步契约复用现有作用域。DOM bind:this 与 ref 可共存，先写引用，再初始化行为；行为清理后清空引用。仍只支持 DOM 和简单可写变量，SSR 不执行，接管成功后执行。
+- CSS 提供 CssValue 属性输入类型；UI 的 src/utils 提供 slotProps 解析/合并、事件组合与按压反馈工具，复用 core 的生命周期和取消机制。普通属性显式 undefined 可覆盖，class 保留双方类名，style 使用现有规范化后按声明顺序组合，DOM 事件仅显式选定项组合，ref 使用 core 组合；不深度合并任意对象。
+- src/base 实施 Text（有限原生文字标签、CSS 排版输入）、Ripple（直接父 button 上的视觉按压层）、Spinner（Lucide 图形与局部旋转）、ButtonBase（原生 button 底座、默认 type=button、disabled、独立 focus-visible 和 ripple slotProps）。按钮的语义默认值由底座拥有，slotProps 先用于 Ripple，后续成品按钮再扩展 Icon/Text 等具名槽。
+- Ripple 使用真实 pointer/keyboard 事件，只负责视觉，不模拟业务 click；处理取消、移出、滚动、失焦、禁用和卸载。动画只在挂载后创建并在清理时取消，减少动态效果时省略扩散。Spinner 用 CSS 媒体查询尊重减少动态效果。
+- 工具先保持小型、明确的 DOM/作用域职责；不新增 ref 数组、对象 ref、attachment 语法、全局焦点管理器、弹层或路由工具。焦点视觉优先 CSS，焦点范围/组内导航随未来控件实施。

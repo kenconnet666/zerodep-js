@@ -1,5 +1,6 @@
 import { props, restProps, type Props } from '../runtime/props.js';
 import { eventName } from './attributes.js';
+import { _composeRefs, type DomRef } from '../runtime/refs.js';
 
 const BINDINGS = Symbol('zerodep.bindings');
 const OPEN_BINDING = Symbol('zerodep.details-open');
@@ -67,10 +68,6 @@ export function resolveBindings(tag: string | Function, input: Props): Props {
     if (name === 'this') {
       if (!native) throw new Error('bind:this 只支持 DOM 元素。');
       if (Object.hasOwn(values, 'ref')) throw new Error('bind:this 不能重复声明。');
-      const validateReference = () => {
-        if (Object.hasOwn(original, 'ref')) throw new Error('bind:this 与 ref 不能同时声明。');
-      };
-      validateReference();
       // ref 在正常挂载或成功接管后执行，SSR 只创建闭包、不写入 DOM 引用。
       const reference = (element: Element) => {
         write(element);
@@ -79,10 +76,7 @@ export function resolveBindings(tag: string | Function, input: Props): Props {
           if (read() === element) write(undefined);
         };
       };
-      values.ref = () => {
-        validateReference();
-        return reference;
-      };
+      values.ref = () => _composeRefs(reference, original.ref as DomRef<Element> | undefined);
       continue;
     }
     if (

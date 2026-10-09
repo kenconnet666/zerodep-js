@@ -8,6 +8,7 @@ export {
   _untrack,
 } from './runtime/reactivity.js';
 export type { Cleanup, EffectCallback } from './runtime/reactivity.js';
+export { _composeRefs, type DomRef } from './runtime/refs.js';
 export { _snapshot } from './runtime/snapshot.js';
 export { _onMount, _getAbortSignal } from './runtime/lifecycle.js';
 export { _state, _derived } from './runtime/macros.js';
