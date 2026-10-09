@@ -2,6 +2,8 @@
 
 更新：2026-10-09。当前包边界以 docs/packages.md 为准：CSS 收入本仓库，Vite 并入 compiler，删除外部适配器与 bx。框架基础 API、编译/类型工具及原生 CSS 能力继续维护。用户后续已授权搭建组件库/文档站并实施 Provider 基础设施，具体契约见 [Provider](provider.md)；这项授权取代下文对 Provider 和基础组件目录的早期限制，其他完整组件仍另行讨论。
 
+2026-10-09 后续安排：先修复当前 CI，再规划 Icon，尚未授权实现 Icon。用户明确通用 token 归入 CSS 主题工具，组件专用 token 留在组件内部；基础组件属性可直接接受对应 CSS 属性允许的类型。第 9 节记录本次原则和待确认方案，不把草案当作已实现 API。
+
 2026-10-08 用户已授权按本计划自主执行并适当调整 API，实施前记录明确契约；无须为已在范围内的取舍逐项再确认。已有契约以 [语义](semantics.md)、[API](api.md) 和 [CSS](css.md) 为准；选定候选后更新公开契约并通过测试验收。持续检查点见 [交接记录](api-hardening-handoff.md)。
 
 本轮基础 API 与 CSS 集成已作为 1.0.0-rc.8 交付：源码合入 main，CSS 固定 npm 0.3.1，完整 CI、五包发布及注册表消费通过。下文继续定义维护边界，不把已完成的候选交付重新列为未实施；后续易用性审查只处理真实缺口。用户随后决定删除 `_task` 整组 API，当前源码直接使用普通请求；CSS 的服务端标签拼接继续由应用负责，不改动。
@@ -96,3 +98,58 @@
 ## 8. 文档入口
 
 本文件是当前执行范围的唯一主计划。[Svelte API 对照](../.design/svelte-api-review.md) 保留来源与历史取舍，不覆盖本次组件库边界；[CSS 接入设计](../.design/zerodep-css-integration.md) 记录已落地实现；[执行记录](execution.md) 记录提交和验证证据；换机仍使用 [环境配置](environment-setup.md)。
+
+## 9. Icon 与 token 规划（讨论稿，尚未实现）
+
+### 用户已确定的原则
+
+- 通用颜色、字号、间距、圆角、动效等 token 由 CSS 主题工具集中维护，Provider 负责作用域注入。组件直接复用它们，不逐个复制为 iconColor、buttonColor 等等价 token。
+- 只有组件需要的默认值和样式规则留在组件内部；先使用普通局部常量和样式，不预建全局组件 token 注册器。
+- 基础组件的颜色、尺寸等属性复用 CSS 作者的输入类型，兼顾主题关键字提示与原生 CSS 值，不只接受有限语义枚举。
+- 图标来源已由用户选择：静态导入 Lucide 图标数据，主入口规划为 `Icon icon={Search}`。下面其他来源仅保留比较依据。
+- 本次只完成规划。现有 UiTheme/亮暗主题和 Provider 暂不迁移，Icon、依赖及公开入口均不新增。
+
+### 类型与主题处理建议
+
+目前 UiTheme.color 是一组关键字对象；单个 color 属性建议复用 `Parameters<Css<UiTheme>['color']['raw']>[0]`，size 建议复用 `Parameters<Css<UiTheme>['fontSize']['raw']>[0]`。现有 raw 已解析 `_primary` 等当前主题关键字，并支持普通 CSS 值；组件只调用同一作者，不建立第二套名称映射。
+
+拟议用法包括 `color="_primary"`、`color="#1677ff"`、`color="var(--brand-color)"`、`size="_lg"`、`size="1.25rem"`。传入主题原值时使用 `s.keywords.color._primary`；`s.color._primary` 是完整 CSS 声明，应放在 css(...) 中。主题切换依赖现有响应式读取；普通变量快照仍遵循现行语义。
+
+size 表示 font-size，SVG 默认宽高为 1em；省略时继承周围字号。数字和单位沿用 CSS 工具现有契约，不暗中把数字当作 px。color 省略时继承文字颜色，单色图形使用 currentColor。CSS 类型保留开放字符串的灵活性，不承诺编译时验证所有 CSS 字符串是否合法。
+
+实现前需列出 UiTheme 通用字段迁入 packages/css 手写主题模块的清单，确定类名与导出入口，并同步类型导航用例；不向生成的 SystemKeywords 文件手工添加主题预设，不让 CSS 包反向依赖 UI。
+
+### 图标来源选择
+
+| 方案                         | 用法方向                                               | 收益与成本                                                                 |
+| ---------------------------- | ------------------------------------------------------ | -------------------------------------------------------------------------- |
+| 静态 Lucide 数据，用户已选择 | `Icon icon={Search}`，Search 从 @lucide/icons 按需导入 | 现成图标、导入可检查、运行时无网络请求；需要薄层 SVG 节点渲染适配          |
+| SVG 外壳                     | `Icon` 的 children 直接放 path、circle 等              | 最灵活，复用当前 TSX/SSR；调用方管理图标内容或封装具名图标                 |
+| Iconify 多图标集             | `Icon` 接收离线 IconifyIcon 数据                       | 来源广、含尺寸信息；body 是 SVG 字符串，需额外确定解析、ID 与 SSR 接管处理 |
+
+参考 [Lucide 图标数据](https://lucide.dev/guide/icons/)、[MUI SvgIcon](https://mui.com/material-ui/api/svg-icon/)、[Iconify 数据契约](https://iconify.design/docs/types/iconify-icon.html)。Lucide 的 @lucide/icons 已提供独立数据与节点 builder，适合框架接入；目前只核对文档与 npm 可用性，尚未验证本框架集成。采用静态导入，不加入全量名称注册、网络加载或新的编译插件。自定义图标先遵循所选数据契约；SVG children 外壳暂不同时公开，以免首版维护两套内容入口。
+
+拟议用法（Icon 尚未实现）：
+
+```tsx
+import { Search, Check } from '@lucide/icons';
+import { Icon } from 'zerodep-js-ui';
+
+<Icon icon={Search} />;
+<Icon icon={Search} color="_primary" size="_lg" />;
+<Icon icon={Check} color="var(--brand-color)" size="1.25rem" aria-label="已完成" />;
+<button aria-label="搜索">
+  <Icon icon={Search} />
+</button>;
+```
+
+图标根尺寸从数据取得 viewBox；显示尺寸由 CSS 控制。Lucide 的节点和默认描边可通过官方 builder 取得，再由框架渲染；不直接调用依赖 document 的 DOM builder，不注入 SVG 字符串。实现时先确认本框架动态 SVG 标签/属性的消费和接管，再决定最小适配写法。
+
+### 组件边界与验收建议
+
+- 位置为 packages/ui/src/display/Icon.tsx，公开入口仍为 UI 根入口，UI 保持 private。
+- 根节点直接为 svg，不添加布局容器。复用框架的 SVG、组件、SSR 和接管能力，不用挂载后全页扫描替换图标。
+- 首版关注 icon、color、size、原生 SVG 属性、class/style 与可访问名称。strokeWidth 沿用原生 SVG 输入类型，默认值与图标风格由组件或图标数据负责；旋转、加载和点击按钮行为不自动并入 Icon。
+- 样式使用现有 css(...) 和 useCss，用户 class 在默认声明后组合，style 保留原生语义。Icon 同其他 UI 消费者一样要求上层 Provider，不引入隐式全局主题兜底。
+- 默认作为装饰图标隐藏于可访问树；提供 aria-label 或 aria-labelledby 时作为有名称的图形。按钮里的图标由按钮提供操作名称。原生可访问属性的覆盖优先级在实施前定清。
+- 验证主题替换和局部主题、CSS 值/单位、SVG 命名空间和 viewBox、图标替换、装饰与有名称两种模式、SSR/接管一致、按需导入和卸载。先做一项图标试点，验证真实编辑器属性补全，再扩充图标使用。
