@@ -5,7 +5,7 @@ import { pathToFileURL } from 'node:url';
 
 const url = 'http://127.0.0.1:4176';
 for (const mode of ['csr', 'ssr']) {
-  test(`${mode} 字号基准、em 比例、独立点击区域和局部覆盖`, async ({ page }) => {
+  test(`${mode} 字号基准、完整 em 比例和局部覆盖`, async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (error) => errors.push(error.message));
     if (mode === 'ssr') {
@@ -34,21 +34,39 @@ for (const mode of ['csr', 'ssr']) {
       const long = row.locator('[data-sizing="long"]');
       for (const button of [text, mixed, icon, loading, long]) {
         await expect(button).toHaveCSS('font-size', `${size}px`);
-        await expect(button).toHaveCSS('border-top-width', '1px');
+        expect(await button.evaluate((node) => node.style.borderTopWidth)).toBe('0.0625em');
         await expect(button).toHaveCSS('padding-top', `${size * 0.625}px`);
         const rect = (await button.boundingBox())!;
-        expect(rect.height).toBeGreaterThanOrEqual(40);
-        expect(rect.width).toBeGreaterThanOrEqual(40);
+        expect(rect.height).toBeGreaterThanOrEqual(size * 2.5);
+        expect(rect.width).toBeGreaterThanOrEqual(size * 2.5);
       }
       await expect(mixed).toHaveCSS('column-gap', `${size * 0.5}px`);
       await expect(mixed.locator('svg')).toHaveCSS('width', `${size * 1.125}px`);
       await expect(loading.locator('svg')).toHaveCSS('width', `${size * 1.125}px`);
-      expect((await text.boundingBox())!.height).toBeCloseTo(Math.max(40, size * 2.5 + 2), 1);
+      // 边框可能被浏览器量化；验证声明的 em 单位，并使用实际边框核对自然高度。
+      const border = await text.evaluate((node) =>
+        Number.parseFloat(getComputedStyle(node).borderTopWidth),
+      );
+      expect((await text.boundingBox())!.height).toBeCloseTo(size * 2.5 + border * 2, 1);
       expect((await long.boundingBox())!.height).toBeGreaterThan(
         (await mixed.boundingBox())!.height,
       );
       expect(await long.evaluate((node) => node.scrollWidth <= node.clientWidth)).toBe(true);
     }
+    const focused = page.locator('[data-sizing-row="16"] [data-sizing="text"]');
+    await focused.focus();
+    await page.keyboard.press('Tab');
+    await page.keyboard.press('Shift+Tab');
+    await expect(focused).toHaveCSS('outline-width', '2px');
+    await expect(focused).toHaveCSS('outline-offset', '2px');
+    const originalHeight = (await focused.boundingBox())!.height;
+    await focused.evaluate((node) => {
+      node.style.fontSize = '32px';
+    });
+    await expect(focused).toHaveCSS('outline-width', '4px');
+    await expect(focused).toHaveCSS('outline-offset', '4px');
+    await expect(focused).toHaveCSS('border-top-width', '2px');
+    expect((await focused.boundingBox())!.height).toBeCloseTo(originalHeight * 2, 1);
     const inherited = page.locator('[data-sizing-inherit]');
     await expect(inherited).toHaveCSS('font-size', '14px');
     await page.getByLabel('继承外围字号', { exact: true }).check();

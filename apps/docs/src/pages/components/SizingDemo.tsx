@@ -4,7 +4,7 @@ import { ButtonBase, Icon, Provider, Spinner, Text, type ButtonBaseProps } from 
 
 // 这是成品按钮设计前的比例试点；底座自身不内置这些视觉数值。
 const proportions =
-  'line-height:1.25;padding:.625em 1em;gap:.5em;border:1px solid currentColor;border-radius:.5em;min-block-size:2.5rem;min-inline-size:2.5rem;';
+  'line-height:1.25;padding:.625em 1em;gap:.5em;border:.0625em solid currentColor;border-radius:.5em;min-block-size:2.5em;min-inline-size:2.5em;';
 const Samples = _component(({ size, label }: { size: ButtonBaseProps['size']; label: string }) => (
   <div
     data-sizing-row={label}
@@ -46,7 +46,7 @@ export const SizingDemo = _component(() => {
     <section id="sizing-demo" aria-labelledby="sizing-heading">
       <h3 id="sizing-heading">字号与 em 比例</h3>
       <p>
-        根字号决定文字、图标、间距和内边距的比例；边框与焦点轮廓保持稳定。最小点击区域独立设置，长文字允许按钮自然增高。
+        根字号统一驱动文字、图标、间距、内边距、边框和焦点轮廓；默认不混入固定点击区域下限，长文字允许按钮自然增高。
       </p>
       <Provider>
         <Samples size="14px" label="14" />
@@ -73,8 +73,8 @@ export const SizingDemo = _component(() => {
   <Icon icon={Search} size="1.125em" />
   <Text>搜索</Text>
 </ButtonBase>
-// buttonStyle: padding .625em 1em; gap .5em; min-block-size 2.5rem
-// size={undefined} 恢复继承；点击区域由独立的 CSS 最小尺寸约束。`}</code>
+// buttonStyle: padding .625em 1em; gap .5em; min-block-size 2.5em
+// size={undefined} 恢复继承；默认视觉尺寸按字号缩放；应用可显式加入独立点击区域约束。`}</code>
       </pre>
     </section>
   );

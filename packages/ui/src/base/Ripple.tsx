@@ -37,10 +37,7 @@ export const Ripple = _component(
           const { width, height } = parent.getBoundingClientRect();
           const x = centered || point.pointerType === 'keyboard' ? width / 2 : point.x;
           const y = centered || point.pointerType === 'keyboard' ? height / 2 : point.y;
-          const diameter = Math.max(
-            1,
-            2 * Math.hypot(Math.max(x, width - x), Math.max(y, height - y)),
-          );
+          const diameter = 2 * Math.hypot(Math.max(x, width - x), Math.max(y, height - y));
           const wave = node.ownerDocument.createElement('span');
           wave.style.cssText = `position:absolute;pointer-events:none;border-radius:50%;background:currentColor;width:${diameter}px;height:${diameter}px;left:${x - diameter / 2}px;top:${y - diameter / 2}px;`;
           node.append(wave);
@@ -78,7 +75,7 @@ export const Ripple = _component(
     });
     const style = css(
       s.position.absolute,
-      s.inset.px(0),
+      s.inset.raw(0),
       s.borderRadius.inherit,
       s.overflow.hidden,
       s.pointerEvents.none,

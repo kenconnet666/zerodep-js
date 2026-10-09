@@ -1,5 +1,6 @@
 import type { TextProps, ButtonBaseProps, RippleProps, SlotProps } from '../src/index.js';
 import type { CssValue } from 'zerodep-js-css';
+import type { ProviderProps, ElementSize } from '../src/index.js';
 
 const text: TextProps = { as: 'h2', color: '_primary', weight: 500, size: '1.25rem' };
 const color: CssValue<'color'> = '_primary';
@@ -20,4 +21,20 @@ const legacySlot: ButtonBaseProps = { slotProps: { ripple: { color: '_primary' }
 const invalidColor: CssValue<'color'> = 5;
 // @ts-expect-error size 是 CSS 字号，不把裸数字隐式转换为像素。
 const invalidSize: ButtonBaseProps = { size: 16 };
-void [text, color, button, ripple, invalidTag, invalidSlot, legacySlot, invalidColor, invalidSize];
+const fluid: ProviderProps = { size: 'clamp(1rem, 2vw, 2rem)' };
+const measured: ElementSize = { inlineSize: 20, blockSize: 40 };
+// @ts-expect-error 测量结果使用只读 CSS 像素。
+measured.inlineSize = 30;
+void [
+  text,
+  color,
+  button,
+  ripple,
+  invalidTag,
+  invalidSlot,
+  legacySlot,
+  invalidColor,
+  invalidSize,
+  fluid,
+  measured,
+];

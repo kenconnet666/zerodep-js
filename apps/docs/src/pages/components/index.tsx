@@ -3,6 +3,7 @@ import { ProviderDemo } from './ProviderDemo.js';
 import { IconDemo } from './IconDemo.js';
 import { BaseDemo } from './BaseDemo.js';
 import { SizingDemo } from './SizingDemo.js';
+import { MeasurementDemo } from './MeasurementDemo.js';
 
 export const ComponentsPage = _component(() => (
   <section id="components" aria-labelledby="components-heading">
@@ -15,5 +16,6 @@ export const ComponentsPage = _component(() => (
     <IconDemo />
     <BaseDemo />
     <SizingDemo />
+    <MeasurementDemo />
   </section>
 ));

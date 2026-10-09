@@ -11,5 +11,11 @@ export { zhCN } from './provider/lang/zh-CN.js';
 export { type UiLocale } from './provider/locale.js';
 export { type ProviderProps, Provider } from './provider/Provider.js';
 export { _composeEventHandlers } from './utils/events.js';
+export {
+  type ElementSize,
+  _readFontSizePx,
+  _observeSize,
+  _observeFontSize,
+} from './utils/measure.js';
 export { type PressPoint, type PressOptions, _press } from './utils/press.js';
 export { type SlotProps, _resolveSlotProps, _mergeSlotProps } from './utils/slot-props.js';

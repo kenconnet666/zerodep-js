@@ -65,7 +65,7 @@ export const BaseDemo = _component(() => {
             onClick={() => {
               clicks++;
             }}
-            style="padding:.625em 1em;line-height:1.25;min-block-size:2.5rem;min-inline-size:2.5rem;border:1px solid currentColor;border-radius:.5em;gap:.5em;"
+            style="padding:.625em 1em;line-height:1.25;min-block-size:2.5em;min-inline-size:2.5em;border:.0625em solid currentColor;border-radius:.5em;gap:.5em;"
             slotRipple={(state) => ({
               color: state.disabled ? '_disabled' : '_primary',
               'data-ripple': true,

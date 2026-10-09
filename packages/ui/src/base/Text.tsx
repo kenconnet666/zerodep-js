@@ -30,7 +30,7 @@ export const Text = _component(
     const s = useCss();
     const Tag = _derived(as);
     const style = css(
-      s.margin.px(0),
+      s.margin.raw(0),
       s.fontSize.inherit,
       s.fontWeight.inherit,
       s.lineHeight.inherit,

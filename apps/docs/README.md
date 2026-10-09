@@ -2,7 +2,7 @@
 
 使用 zerodep-js 自身的 TSX 和 Vite。已提供 Provider 的主题、语言、地区、时区及 Portal 交互演示，以及 Icon 的静态图标、主题关键字、原生 CSS 值和可访问名称示例。
 
-基础组件与字号比例示例展示 Text/Ripple/Spinner/ButtonBase，以及 14/16/20px 根字号下的五种按钮组合。em 控制内部比例，最小点击区域、边框和焦点轮廓独立约束。
+基础组件与字号比例示例展示 Text/Ripple/Spinner/ButtonBase，以及 14/16/20px 根字号下的五种按钮组合。em 控制组件内部比例（含边框和焦点），不默认叠加独立点击区域下限。测量示例覆盖 vw/clamp/rem/%/CSS 变量/cqw、固定容器的字号观察和 Portal 字号镜像。
 
 从仓库根目录执行：
 

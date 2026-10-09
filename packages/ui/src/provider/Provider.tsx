@@ -1,5 +1,5 @@
 import { _component, _derived, _provideContext, _useContext, type JSX } from 'zerodep-js';
-import { css, Css, lightTheme, type UiTheme } from 'zerodep-js-css';
+import { css, Css, lightTheme, _mergeClasses, type UiTheme, type CssValue } from 'zerodep-js-css';
 import { zhCN } from './lang/zh-CN.js';
 import type { UiLanguage } from './lang/types.js';
 import { createLocale } from './locale.js';
@@ -11,7 +11,9 @@ import {
   themeContext,
 } from './context.js';
 
-export type ProviderProps = Omit<JSX.IntrinsicElements['div'], 'lang' | 'dir'> & {
+export type ProviderProps = Omit<JSX.IntrinsicElements['div'], 'lang' | 'dir' | 'size'> & {
+  /** 字号基准；根默认 _md，嵌套未指定时继承 DOM 父级，Portal 需显式桥接。 */
+  size?: CssValue<'fontSize'>;
   dir?: 'ltr' | 'rtl' | 'auto' | undefined;
   theme?: UiTheme | undefined;
   lang?: UiLanguage | undefined;
@@ -20,7 +22,17 @@ export type ProviderProps = Omit<JSX.IntrinsicElements['div'], 'lang' | 'dir'> &
 };
 
 export const Provider = _component(
-  ({ theme, lang, locale, timeZone, dir, class: className, children, ...rest }: ProviderProps) => {
+  ({
+    theme,
+    lang,
+    locale,
+    timeZone,
+    dir,
+    size,
+    class: className,
+    children,
+    ...rest
+  }: ProviderProps) => {
     const parentTheme = _useContext(themeContext);
     const parentLanguage = _useContext(languageContext);
     const parentLocale = _useContext(localeContext);
@@ -62,23 +74,18 @@ export const Provider = _component(
     // 方向也通过 getter 继承，不能把初始字符串当作后续配置。
     _provideContext(directionContext, () => direction);
     const s = provideCss(new Css<UiTheme>(readTheme));
+    const style = css(
+      s.colorScheme.raw(s.keywords.name),
+      s.fontFamily._sans,
+      s.fontSize.raw(size ?? (parentTheme ? 'inherit' : '_md')),
+      s.fontWeight._normal,
+      s.lineHeight._normal,
+      s.color._text,
+      s.backgroundColor._background,
+    );
 
     return (
-      <div
-        {...rest}
-        lang={language.code}
-        dir={direction}
-        class={css(
-          s.colorScheme.raw(s.keywords.name),
-          s.fontFamily._sans,
-          s.fontSize._md,
-          s.fontWeight._normal,
-          s.lineHeight._normal,
-          s.color._text,
-          s.backgroundColor._background,
-          className,
-        )}
-      >
+      <div {...rest} lang={language.code} dir={direction} class={_mergeClasses(style, className)}>
         {children}
       </div>
     );

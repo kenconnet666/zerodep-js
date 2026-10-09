@@ -41,13 +41,13 @@ export const ButtonBase = _component(
       s.color.inherit,
       s.backgroundColor.transparent,
       s.border.raw('0'),
-      s.padding.px(0),
+      s.padding.raw(0),
       s.cursor.raw(disabled ? 'default' : 'pointer'),
       s.opacity.raw(disabled ? s.keywords.opacity._disabled : undefined),
       s._focusVisible(
         s.outlineStyle.solid,
-        s.outlineWidth.px(2),
-        s.outlineOffset.px(2),
+        s.outlineWidth.em(0.125),
+        s.outlineOffset.em(0.125),
         s.outlineColor._focus,
       ),
     );

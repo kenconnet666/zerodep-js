@@ -50,6 +50,16 @@ function render(input: ProviderProps = {}) {
 }
 
 describe('Provider 真实构建产物', () => {
+  it('根字号使用主题，嵌套字号默认继承，显式字号允许 CSS 表达式', () => {
+    const defaults = render();
+    expect(defaults.rules.some((rule) => rule.body.includes('font-size:1rem;'))).toBe(true);
+    expect(defaults.rules.some((rule) => rule.body.includes('font-size:inherit;'))).toBe(true);
+    const custom = render({ size: 'clamp(1rem, 2vw, 2rem)' });
+    expect(
+      custom.rules.some((rule) => rule.body.includes('font-size:clamp(1rem, 2vw, 2rem);')),
+    ).toBe(true);
+    expect(custom.html).not.toContain(' size=');
+  });
   it('默认值、内层只覆盖主题、兄弟隔离，DOM 属性可透传', () => {
     const result = render({ id: 'provider-root', title: '示例' });
     expect(result.records).toEqual([

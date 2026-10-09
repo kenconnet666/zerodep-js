@@ -126,7 +126,39 @@
 
 ## 11. 字号与相对尺寸（2026-10-09 已授权）
 
+后续确认以自动等比为优先：组件内部边框、轮廓和偏移也用 em，默认不再混入独立 rem 最小点击区域。应用可显式加最小区域约束，但此时不承诺完全等比。size 保留 vw/rem/%/clamp()/var() 等 CSS 字号输入；浏览器负责解析，测量工具读取实际 CSS 像素。
+
+- 根 Provider 默认 _md，嵌套 Provider 未传 size 时继承 DOM 字号；显式 size 可覆盖。Portal 不跨 DOM 自动继承字号，浮层需要时同步触发容器解析后的像素字号。
+- UI utils 增加 _readFontSizePx、_observeFontSize、_observeSize：只在客户端按需使用，返回清理，读实际字号与布局 border-box。字号观察使用隐藏的 1em 探针，应放在可容纳子元素的 HTML 容器中；不对每个普通组件安装观察器，不手工解析 CSS 单位。
+- 字号/尺寸通知不等同于位置观察，不覆盖 transform 的视觉变化。浮层与虚拟列表的库接入仍留待对应组件；本轮用 Portal 继承桥接和固定尺寸容器验证工具。
+
 - 基础组件的 size 统一表示字号输入，使用 CssValue<'fontSize'>，省略时继承；ButtonBase 增加同一入口。Icon/Spinner 保持宽高 1em，局部比例只通过其自身字号表达一次。
 - ButtonBase 保持原生语义与无预设间距的底座，不在此阶段创建成品 Button 或密度枚举。按钮内边距、图文间距和圆角的 em 比例在文档组合样例中试点；字体与组件密度分开。
-- 采用讨论中的比例样例：line-height 1.25、padding-block 0.625em、padding-inline 1em、gap 0.5em、图标字号 1.125em。边框 1px、焦点轮廓 2px；最小点击区域用独立的 2.5rem 约束。尺寸样例值归组合示例，不扩充全局 token。
+- 采用讨论中的比例样例：line-height 1.25、padding-block 0.625em、padding-inline 1em、gap 0.5em、图标字号 1.125em。边框 0.0625em、焦点轮廓/偏移 0.125em；样例最小区域使用 2.5em，应用可显式选择额外下限。尺寸样例值归组合示例，不扩充全局 token。
 - 用 14/16/20px 基准验证纯文字、图文、仅图标、加载和长文字；同时覆盖主题字号、继承、动态撤销 size、局部字号覆盖和 SSR/接管。新 Button/密度 API 待本轮完成后继续讨论。
+
+## 12. 按钮与相关组件候选计划（待讨论，未实施）
+
+用户要求在字号与测量工作完成后规划。下面是下一阶段建议，不是已确认的公共 API；先试点 Button，再扩展同一套规则。
+
+| 顺序 | 组件                             | 目标与边界                                                                                         |
+| ---- | -------------------------------- | -------------------------------------------------------------------------------------------------- |
+| 1    | Button                           | 组合 ButtonBase、Icon、Text、Spinner、Ripple，验证完整操作按钮的外观、加载、表单与 slot 转发。     |
+| 2    | IconButton                       | 复用已验证的按钮规则，提供等比方形区域；要求 aria-label 或 aria-labelledby，加载时保留可访问名称。 |
+| 3    | ButtonGroup                      | 横向/纵向布局、相邻边框和圆角、共享视觉配置；普通按钮组保持原生 Tab 顺序，不默认作为 toolbar。     |
+| 后续 | ToggleButton / ToggleButtonGroup | 有真实选择场景时再确定单选、多选和键盘协议；状态用 aria-pressed，不能只换颜色。                    |
+| 后续 | LinkButton / MenuButton          | 导航用原生 a；菜单触发待菜单、弹层定位和焦点恢复一起实施，避免先暴露不完整的 as/href 协议。        |
+
+建议首版 Button：
+
+- variant 先限定 solid/outline/text，默认 solid；不同时引入 size 枚举和密度枚举。size 继续 CssValue<'fontSize'>，默认继承，所有专用几何比例在组件内部用 em。
+- color 保持 CSS 前景色语义，类型为 CssValue<'color'>；backgroundColor 使用对应 CSS 输入类型。variant 提供默认配色，显式属性覆盖；不让同一个 color 在不同 variant 下变成不同 CSS 属性，也不从任意 CSS 颜色推算文字对比色。默认实心配对使用主题 _primary/_onPrimary，自定义配色由调用方一起指定。
+- startIcon/endIcon 接收现有 LucideIconData；children 放按钮标签，内部使用 Text 的 span，保持自定义非交互行内容能力。按钮不嵌套链接或其他交互控件。
+- 每个部件单独转发：slotStartIcon、slotEndIcon、slotText、slotSpinner、slotRipple，支持对象与状态回调。根 button 的原生属性、class/style/ref 直接传入；不额外增加 slotRoot，不引入统一 slotProps。
+- 状态回调建议暴露 disabled/loading/variant；内容、图标来源、原生 type、busy 和禁止交互的语义由组件拥有，槽属性不能覆盖这些约束。用户 class/style 最后参与合并，ref 和事件沿用已有工具。
+- loading 由调用方控制，不自动执行异步函数或维护请求状态。保留原标签及占位以避免宽度跳动，Spinner 居中显示；aria-busy 标记忙碌。建议加载中阻止再次触发并保留当前焦点；这需要补齐底座可聚焦但不可激活的状态以及表单默认行为拦截，不能只添加 aria-disabled。显式 disabled 仍使用原生 disabled。
+- 原生 type 默认为 button，显式 submit/reset 保留表单语义。默认长文本自然换行，不强制省略；整行宽度先通过 class/style 表达。
+
+验证按组件逐步补充：字号等比与动态单位、亮暗主题与显式颜色、RTL 前后图标、加载前后宽度/名称/焦点、pointer 与 Enter/Space 防重复触发、原生 submit/reset、disabled、槽属性覆盖和生命周期、SSR/接管。普通按钮不安装尺寸或字号观察器；仅实际需要跨 DOM 或几何计算的组件使用测量工具。
+
+先讨论确认首版外观范围、颜色属性和加载焦点策略，再实施 Button；不在此阶段新增工具栏导航、焦点陷阱、全局焦点管理器或虚拟列表。

@@ -120,11 +120,15 @@ CssValue<K, Theme> 和 _mergeClasses 在 zerodep-js-css 中；DomRef<T> 与 _com
 
 组件转发使用独立 slotXxx 属性：当前为 slotRipple，后续部件分别使用 slotIcon、slotText 等自己的属性。无统一 slotProps 对象。SlotProps<P, S> 与 _resolveSlotProps/_mergeSlotProps 是单槽通用工具，不改变这一使用约定。
 
-## 字号与 em 尺寸
+## 字号、等比尺寸与测量
 
-组件根字号作为局部比例基准。Icon/Spinner 宽高保持 1em，可用 size="1.125em" 相对父字号放大一次；不要同时再把宽高设为 1.125em，以免叠加比例。Text 默认继承，不必重复指定字号。
+size 是 CSS 字号输入，允许主题关键字以及 px/rem/em/%/vw/cqw/clamp()/var() 等合法 CSS 写法。根 Provider 默认 _md（主题默认为 1rem）；嵌套 Provider 与普通组件未指定 size 时继承 DOM 父级字号。实际字体可能来自页面样式或用户环境，不假定为 16px。
 
-以下是文档站的组合试点，比例值留在示例中，尚未成为成品 Button 的视觉契约。代码在组件初始化中执行，并由上层 Provider 提供主题：
+Icon/Spinner 宽高为 1em，局部放大只通过 size 表达一次。ButtonBase 的焦点轮廓与偏移为 0.125em；底座不预设高度和内边距。组合示例的边框为 0.0625em、内边距为 0.625em 1em、gap 为 0.5em、最小区域为 2.5em，不再混入默认 rem 下限。应用可显式添加独立点击区域约束，但此时不承诺完全等比。
+
+字体栅格化、边框量化及长文字换行仍由浏览器处理，不能把“尺寸参数等比”当成最终图像严格相似。布局与显示坐标也不同：transform 可改变 getBoundingClientRect，但不改变 ResizeObserver 的布局尺寸。
+
+组件初始化中的样例：
 
 ```tsx
 const s = useCss();
@@ -134,19 +138,43 @@ const buttonStyle = css(
   s.paddingInline.em(1),
   s.gap.em(0.5),
   s.borderRadius.em(0.5),
-  s.border.raw('1px solid currentColor'),
-  s.minBlockSize.rem(2.5),
-  s.minInlineSize.rem(2.5),
+  s.border.raw('0.0625em solid currentColor'),
+  s.minBlockSize.em(2.5),
+  s.minInlineSize.em(2.5),
 );
-
-<ButtonBase size="_md" class={buttonStyle}>
+<ButtonBase size="clamp(0.875rem, 1vw + 0.5rem, 1.5rem)" class={buttonStyle}>
   <Icon icon={Search} size="1.125em" />
   <Text>搜索</Text>
 </ButtonBase>;
 ```
 
-在根字号 16px 的页面中，样例的最小点击区域为 40px；14/16/20px 基准的单行文字按钮高度分别为 40/42/52px。图标和间距随组件字号变化，边框保持 1px、焦点轮廓保持 2px。仅图标按钮独立设置对称内边距；长文字通过自然高度容纳，不写死 height。
+### 按需测量工具
 
-`font-size` 上的 em 相对父字号，padding/gap 等属性上的 em 相对元素自身字号。局部 Text/Icon 显式字号只改变该部件；根字号及根 em 内边距保持原值，但内容变化仍可能改变自然高度。页面布局、组件密度与最小点击区域继续独立设计，不把所有长度都换成 em。
+这些工具位于 src/utils/measure.ts，从 UI 根入口导入，仅在客户端有 DOM 后调用；普通组件不会自动创建观察器。
 
-`apps/docs/src/pages/components/SizingDemo.tsx` 展示纯文字、图文、仅图标、加载和长文字，以及继承/局部覆盖。`tests/e2e/sizing.spec.ts` 验证真实 CSR/SSR 的计算尺寸与动态撤销。
+| 工具                                | 契约                                                                                                                |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| _readFontSizePx(element)            | 读取连接元素的计算字号，返回 CSS px 数值；无法取得时返回 undefined，保留合法 0。                                    |
+| _observeFontSize(container, change) | 异步报告初始字号及变化，重复值不通知；创建隐藏的固定定位 1em 子节点，返回幂等清理。固定宽高容器的字号变化也可观察。 |
+| _observeSize(element, change)       | 异步报告布局 border-box 的 inlineSize/blockSize（CSS px）；不含 margin/transform，也不观察屏幕位置。返回幂等清理。  |
+
+字号观察只用于允许可测量 HTML 子节点的容器；input/textarea/select 等使用包装容器。探针不参与排版但确实是一个子节点，应避免对该容器使用依赖精确子节点数量的 CSS 规则。停止观察会断开 ResizeObserver、移除探针并忽略排队回调。字号探针应放在实际渲染子节点的容器中，Shadow DOM 使用其内容容器；_observeSize 沿用 ResizeObserver 边界，非替换的普通 inline 元素应观察其块级或 inline-block 包装。
+
+```tsx
+let host = _state<HTMLDivElement | undefined>(undefined);
+let fontPx = _state<number | undefined>(undefined);
+_effect(() => {
+  const node = host;
+  if (!node) return;
+  return _observeFontSize(node, (value) => {
+    fontPx = value;
+  });
+});
+// <div bind:this={host}>...</div>
+```
+
+浮层通过 Portal 改变 DOM 位置后，125%/em/cqw 等原始值的参考环境可能改变。默认跟随触发区时，将观察到的实际字号同步到浮层根节点，例如 style.fontSize = fontPx + 'px'，浮层内部仍用 em。连续变化的像素测量结果优先使用原生 style，避免逐值登记新的样式类；显式稳定字号也可用 Provider.size。用户显式设置浮层 size 时采用独立规则。
+
+不手工解析用户 CSS 字符串，不乘 devicePixelRatio。字体加载造成的内容换行需观察实际内容尺寸；字号观察不能代替全部布局通知。隐藏/未挂载元素的测量不能冒充有效几何尺寸。SSR 不执行观察；虚拟化等未来适配须明确首屏估计及接管后的重新测量策略，定位适配须另行处理滚动和坐标系。
+
+SizingDemo 和 MeasurementDemo 展示等比尺寸、vw/clamp/rem/%/CSS 变量/cqw、固定容器、停止/重启观察及 Portal 字号镜像；浏览器用例在 tests/e2e/sizing.spec.ts 和 measurement.spec.ts。
