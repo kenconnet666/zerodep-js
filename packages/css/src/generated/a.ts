@@ -42,12 +42,12 @@ class AccentColorCssRuntime extends CssProperty {
    * 原样生成 accent-color 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 accent-color:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 accent-color:value;，undefined 返回空字符串。
    * @example
    * s.accentColor.raw('inherit') // accent-color:inherit;
    */
-  raw(value: Property.AccentColor | CssString): string {
+  raw(value: Property.AccentColor | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -177,12 +177,12 @@ class AlignContentCssRuntime extends CssProperty {
    * 原样生成 align-content 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 align-content:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 align-content:value;，undefined 返回空字符串。
    * @example
    * s.alignContent.raw('inherit') // align-content:inherit;
    */
-  raw(value: Property.AlignContent | CssString): string {
+  raw(value: Property.AlignContent | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -234,12 +234,12 @@ class AlignItemsCssRuntime extends CssProperty {
    * 原样生成 align-items 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 align-items:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 align-items:value;，undefined 返回空字符串。
    * @example
    * s.alignItems.raw('inherit') // align-items:inherit;
    */
-  raw(value: Property.AlignItems | CssString): string {
+  raw(value: Property.AlignItems | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -304,12 +304,12 @@ class AlignSelfCssRuntime extends CssProperty {
    * 原样生成 align-self 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 align-self:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 align-self:value;，undefined 返回空字符串。
    * @example
    * s.alignSelf.raw('inherit') // align-self:inherit;
    */
-  raw(value: Property.AlignSelf | CssString): string {
+  raw(value: Property.AlignSelf | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -369,12 +369,12 @@ class AlignTracksCssRuntime extends CssProperty {
    * 原样生成 align-tracks 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 align-tracks:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 align-tracks:value;，undefined 返回空字符串。
    * @example
    * s.alignTracks.raw('inherit') // align-tracks:inherit;
    */
-  raw(value: Property.AlignTracks | CssString): string {
+  raw(value: Property.AlignTracks | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -426,12 +426,12 @@ class AlignmentBaselineCssRuntime extends CssProperty {
    * 原样生成 alignment-baseline 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 alignment-baseline:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 alignment-baseline:value;，undefined 返回空字符串。
    * @example
    * s.alignmentBaseline.raw('inherit') // alignment-baseline:inherit;
    */
-  raw(value: Property.AlignmentBaseline | CssString): string {
+  raw(value: Property.AlignmentBaseline | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -481,12 +481,12 @@ class AllCssRuntime extends CssProperty {
    * 原样生成 all 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 all:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 all:value;，undefined 返回空字符串。
    * @example
    * s.all.raw('inherit') // all:inherit;
    */
-  raw(value: Property.All | CssString): string {
+  raw(value: Property.All | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -536,12 +536,12 @@ class AnchorNameCssRuntime extends CssProperty {
    * 原样生成 anchor-name 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 anchor-name:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 anchor-name:value;，undefined 返回空字符串。
    * @example
    * s.anchorName.raw('inherit') // anchor-name:inherit;
    */
-  raw(value: Property.AnchorName | CssString): string {
+  raw(value: Property.AnchorName | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -593,12 +593,12 @@ class AnchorScopeCssRuntime extends CssProperty {
    * 原样生成 anchor-scope 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 anchor-scope:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 anchor-scope:value;，undefined 返回空字符串。
    * @example
    * s.anchorScope.raw('inherit') // anchor-scope:inherit;
    */
-  raw(value: Property.AnchorScope | CssString): string {
+  raw(value: Property.AnchorScope | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -650,12 +650,12 @@ class AnimationCssRuntime extends CssProperty {
    * 原样生成 animation 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 animation:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 animation:value;，undefined 返回空字符串。
    * @example
    * s.animation.raw('inherit') // animation:inherit;
    */
-  raw(value: Property.Animation | CssString): string {
+  raw(value: Property.Animation | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -785,12 +785,12 @@ class AnimationCompositionCssRuntime extends CssProperty {
    * 原样生成 animation-composition 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 animation-composition:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 animation-composition:value;，undefined 返回空字符串。
    * @example
    * s.animationComposition.raw('inherit') // animation-composition:inherit;
    */
-  raw(value: Property.AnimationComposition | CssString): string {
+  raw(value: Property.AnimationComposition | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -843,12 +843,12 @@ class AnimationDelayCssRuntime extends CssProperty {
    * 原样生成 animation-delay 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 animation-delay:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 animation-delay:value;，undefined 返回空字符串。
    * @example
    * s.animationDelay.raw('inherit') // animation-delay:inherit;
    */
-  raw(value: Property.AnimationDelay | CssString): string {
+  raw(value: Property.AnimationDelay | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -981,12 +981,12 @@ class AnimationDirectionCssRuntime extends CssProperty {
    * 原样生成 animation-direction 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 animation-direction:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 animation-direction:value;，undefined 返回空字符串。
    * @example
    * s.animationDirection.raw('inherit') // animation-direction:inherit;
    */
-  raw(value: Property.AnimationDirection | CssString): string {
+  raw(value: Property.AnimationDirection | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -1040,12 +1040,12 @@ class AnimationDurationCssRuntime extends CssProperty {
    * 原样生成 animation-duration 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 animation-duration:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 animation-duration:value;，undefined 返回空字符串。
    * @example
    * s.animationDuration.raw('inherit') // animation-duration:inherit;
    */
-  raw(value: Property.AnimationDuration | CssString): string {
+  raw(value: Property.AnimationDuration | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -1178,12 +1178,12 @@ class AnimationFillModeCssRuntime extends CssProperty {
    * 原样生成 animation-fill-mode 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 animation-fill-mode:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 animation-fill-mode:value;，undefined 返回空字符串。
    * @example
    * s.animationFillMode.raw('inherit') // animation-fill-mode:inherit;
    */
-  raw(value: Property.AnimationFillMode | CssString): string {
+  raw(value: Property.AnimationFillMode | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -1252,12 +1252,12 @@ class AnimationIterationCountCssRuntime extends CssProperty {
    * 原样生成 animation-iteration-count 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 animation-iteration-count:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 animation-iteration-count:value;，undefined 返回空字符串。
    * @example
    * s.animationIterationCount.raw('inherit') // animation-iteration-count:inherit;
    */
-  raw(value: Property.AnimationIterationCount | CssString): string {
+  raw(value: Property.AnimationIterationCount | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -1366,12 +1366,12 @@ class AnimationNameCssRuntime extends CssProperty {
    * 原样生成 animation-name 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 animation-name:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 animation-name:value;，undefined 返回空字符串。
    * @example
    * s.animationName.raw('inherit') // animation-name:inherit;
    */
-  raw(value: Property.AnimationName | CssString): string {
+  raw(value: Property.AnimationName | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -1423,12 +1423,12 @@ class AnimationPlayStateCssRuntime extends CssProperty {
    * 原样生成 animation-play-state 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 animation-play-state:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 animation-play-state:value;，undefined 返回空字符串。
    * @example
    * s.animationPlayState.raw('inherit') // animation-play-state:inherit;
    */
-  raw(value: Property.AnimationPlayState | CssString): string {
+  raw(value: Property.AnimationPlayState | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -1482,12 +1482,12 @@ class AnimationRangeCssRuntime extends LengthCssProperty {
    * 原样生成 animation-range 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 animation-range:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 animation-range:value;，undefined 返回空字符串。
    * @example
    * s.animationRange.raw('inherit') // animation-range:inherit;
    */
-  raw(value: Property.AnimationRange | CssString): string {
+  raw(value: Property.AnimationRange | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -1593,12 +1593,12 @@ class AnimationRangeEndCssRuntime extends LengthCssProperty {
    * 原样生成 animation-range-end 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 animation-range-end:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 animation-range-end:value;，undefined 返回空字符串。
    * @example
    * s.animationRangeEnd.raw('inherit') // animation-range-end:inherit;
    */
-  raw(value: Property.AnimationRangeEnd | CssString): string {
+  raw(value: Property.AnimationRangeEnd | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -1718,12 +1718,12 @@ class AnimationRangeStartCssRuntime extends LengthCssProperty {
    * 原样生成 animation-range-start 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 animation-range-start:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 animation-range-start:value;，undefined 返回空字符串。
    * @example
    * s.animationRangeStart.raw('inherit') // animation-range-start:inherit;
    */
-  raw(value: Property.AnimationRangeStart | CssString): string {
+  raw(value: Property.AnimationRangeStart | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -1845,12 +1845,12 @@ class AnimationTimelineCssRuntime extends CssProperty {
    * 原样生成 animation-timeline 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 animation-timeline:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 animation-timeline:value;，undefined 返回空字符串。
    * @example
    * s.animationTimeline.raw('inherit') // animation-timeline:inherit;
    */
-  raw(value: Property.AnimationTimeline | CssString): string {
+  raw(value: Property.AnimationTimeline | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -1907,12 +1907,12 @@ class AnimationTimingFunctionCssRuntime extends CssProperty {
    * 原样生成 animation-timing-function 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 animation-timing-function:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 animation-timing-function:value;，undefined 返回空字符串。
    * @example
    * s.animationTimingFunction.raw('inherit') // animation-timing-function:inherit;
    */
-  raw(value: Property.AnimationTimingFunction | CssString): string {
+  raw(value: Property.AnimationTimingFunction | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -1966,12 +1966,12 @@ class AppearanceCssRuntime extends CssProperty {
    * 原样生成 appearance 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 appearance:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 appearance:value;，undefined 返回空字符串。
    * @example
    * s.appearance.raw('inherit') // appearance:inherit;
    */
-  raw(value: Property.Appearance | CssString): string {
+  raw(value: Property.Appearance | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -2022,12 +2022,12 @@ class AspectRatioCssRuntime extends CssProperty {
    * 原样生成 aspect-ratio 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 aspect-ratio:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 aspect-ratio:value;，undefined 返回空字符串。
    * @example
    * s.aspectRatio.raw('inherit') // aspect-ratio:inherit;
    */
-  raw(value: Property.AspectRatio | CssString): string {
+  raw(value: Property.AspectRatio | CssString | undefined): string {
     return this.declaration(value);
   }
   /**

@@ -25,6 +25,14 @@ export const Card = _component(() => {
 
 className 的公开类型仍是 string，依赖变化时自动重算，不必套 `_derived`。也可直接写 `class={css(...)}`。普通快照规则不变：`const saved = className` 保存当时结果。
 
+所有系统属性的 `raw` 接受 `undefined`，返回空字符串以省略该声明，不输出 `color:undefined;`。因此可选值可以直接传入，无需每次在 css(...) 外加条件：
+
+```tsx
+const className = css(s.color.raw(color), s.fontSize.raw(size));
+```
+
+从有值变为 `undefined` 时，响应式样式移除对应声明及其私有 CSS 变量，恢复原有继承/层叠；之后重新赋值仍正常生效。`0` 保留为合法属性值，例如 `s.opacity.raw(0)` 输出 `opacity:0;`。返回类型仍为 string，主题关键字解析和其他格式化方法的参数契约不变。
+
 ## 自动追踪
 
 识别从 `zerodep-js-css` 命名导入的 css，包括导入别名。函数内直接初始化命名 const 的调用使用派生缓存；输入应是纯样式计算。修改它读取的状态或 props 即可；命名样式不能用 let 再赋值。

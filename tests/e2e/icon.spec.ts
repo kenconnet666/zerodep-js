@@ -69,6 +69,12 @@ for (const mode of ['csr', 'ssr']) {
     await page.getByLabel('自定义图标样式', { exact: true }).check();
     await expect(dynamic).toHaveCSS('color', 'rgb(120, 40, 160)');
     await expect(dynamic).toHaveCSS('width', '24px');
+    await page.getByLabel('继承文字样式', { exact: true }).check();
+    await expect(dynamic).toHaveCSS('color', 'rgb(10, 80, 120)');
+    await expect(dynamic).toHaveCSS('width', '30px');
+    await page.getByLabel('继承文字样式', { exact: true }).uncheck();
+    await expect(dynamic).toHaveCSS('color', 'rgb(120, 40, 160)');
+    await expect(dynamic).toHaveCSS('width', '24px');
     await page.getByLabel('自定义图标样式', { exact: true }).uncheck();
     await expect(dynamic).toHaveCSS('color', innerColor);
     await expect(dynamic).toHaveCSS('width', '18px');

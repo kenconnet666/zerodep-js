@@ -174,10 +174,10 @@ const base = [
   }),
   '  constructor(name: string) { this.name = name; }',
   jsdoc('原样拼接当前属性的声明。', {
-    params: { value: '属性值；不自动添加单位、不转义或校验。' },
-    returns: '形如 name:value; 的完整声明字符串。',
+    params: { value: '属性值；undefined 省略声明，不自动添加单位、不转义或校验。' },
+    returns: '形如 name:value; 的完整声明字符串，undefined 返回空字符串。',
   }),
-  '  protected declaration(value: string | number): string { return `${this.name}:${value};`; }',
+  '  protected declaration(value: string | number | undefined): string { return value === undefined ? "" : `${this.name}:${value};`; }',
   '}',
   '/** 共享长度单位方法；值的参照和限制仍由具体 CSS 属性决定。 */',
   'export class LengthCssProperty extends CssProperty {',
@@ -380,12 +380,14 @@ for (const name of names) {
   );
   lines.push(
     jsdoc(`原样生成 ${cssName} 声明，保留关键字补全并接受自定义 CSS 值。`, {
-      params: { value: '裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。' },
+      params: {
+        value: '裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。',
+      },
       remarks: '不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。',
-      returns: `完整声明字符串，形如 ${cssName}:value;。`,
+      returns: `完整声明字符串，形如 ${cssName}:value;，undefined 返回空字符串。`,
       examples: [`s.${name}.raw('inherit') // ${cssName}:inherit;`],
     }),
-    `raw(value: Property.${type} | CssString): string { return this.declaration(value); }`,
+    `raw(value: Property.${type} | CssString | undefined): string { return this.declaration(value); }`,
   );
   if (hasLength && maxArgs > 1)
     for (const [unit, suffix] of Object.entries(units))

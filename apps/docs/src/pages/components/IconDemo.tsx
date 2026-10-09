@@ -9,8 +9,9 @@ export const IconDemo = _component(() => {
   let visible = _state(true);
   let custom = _state(false);
   let label = _state(true);
-  const color = () => (custom ? 'var(--icon-demo-color)' : '_primary');
-  const size = (): IconProps['size'] => (custom ? '24px' : '_lg');
+  let inherit = _state(false);
+  const color = () => (inherit ? undefined : custom ? 'var(--icon-demo-color)' : '_primary');
+  const size = (): IconProps['size'] => (inherit ? undefined : custom ? '24px' : '_lg');
   return (
     <section id="icon-demo" aria-labelledby="icon-heading">
       <h3 id="icon-heading">Icon</h3>
@@ -34,6 +35,10 @@ export const IconDemo = _component(() => {
       <label>
         <input type="checkbox" bind:checked={visible} />
         显示图标示例
+      </label>
+      <label>
+        <input type="checkbox" bind:checked={inherit} />
+        继承文字样式
       </label>
       {visible && (
         <Provider theme={dark ? darkTheme : lightTheme}>

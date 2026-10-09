@@ -19,11 +19,11 @@ export class CssProperty {
   }
   /**
    * 原样拼接当前属性的声明。
-   * @param value 属性值；不自动添加单位、不转义或校验。
-   * @returns 形如 name:value; 的完整声明字符串。
+   * @param value 属性值；undefined 省略声明，不自动添加单位、不转义或校验。
+   * @returns 形如 name:value; 的完整声明字符串，undefined 返回空字符串。
    */
-  protected declaration(value: string | number): string {
-    return `${this.name}:${value};`;
+  protected declaration(value: string | number | undefined): string {
+    return value === undefined ? '' : `${this.name}:${value};`;
   }
 }
 /** 共享长度单位方法；值的参照和限制仍由具体 CSS 属性决定。 */

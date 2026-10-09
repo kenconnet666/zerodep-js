@@ -2,7 +2,7 @@
 
 更新：2026-10-09。当前包边界以 docs/packages.md 为准：CSS 收入本仓库，Vite 并入 compiler，删除外部适配器与 bx。框架基础 API、编译/类型工具及原生 CSS 能力继续维护。用户后续已授权搭建组件库/文档站并实施 Provider 基础设施，具体契约见 [Provider](provider.md)；这项授权取代下文对 Provider 和基础组件目录的早期限制，其他完整组件仍另行讨论。
 
-2026-10-09 后续安排：先修复当前 CI，再规划 Icon，尚未授权实现 Icon。用户明确通用 token 归入 CSS 主题工具，组件专用 token 留在组件内部；基础组件属性可直接接受对应 CSS 属性允许的类型。第 9 节记录本次原则和待确认方案，不把草案当作已实现 API。
+2026-10-09 后续安排：CI 修复已通过验收，用户随后授权实现 base/Icon。通用 token 归入 CSS 主题工具，组件专用 token 留在组件内部；基础组件属性直接接受对应 CSS 属性允许的类型。第 9 节记录当前实施契约。
 
 2026-10-08 用户已授权按本计划自主执行并适当调整 API，实施前记录明确契约；无须为已在范围内的取舍逐项再确认。已有契约以 [语义](semantics.md)、[API](api.md) 和 [CSS](css.md) 为准；选定候选后更新公开契约并通过测试验收。持续检查点见 [交接记录](api-hardening-handoff.md)。
 
@@ -12,7 +12,7 @@
 
 - 首要目标是简单维护、使用直接、类型提示准确、错误可定位以及适当中文注释。性能次要，不以绑定率、包体积或基准数字驱动复杂设计。
 - 保持显式变量式 _state/_derived、普通 TSX、_component 参数解构/默认值/实时 rest、既有 bind、For、Portal 和作用域模型。
-- 框架示例中的按钮、输入、任务行、确认弹窗仍用于验证基础 API。组件库目前只实施已确认的 Provider 基础设施，其他成品组件、变体系统和 UI 发布另行讨论。
+- 框架示例中的按钮、输入、任务行、确认弹窗仍用于验证基础 API。组件库已实施 Provider 基础设施与 base/Icon，其他成品组件、变体系统和 UI 发布另行讨论。
 - 不以整页样式迁移率为目标。只迁移验证所需片段，保留仍有用途的原生 CSS、示例和业务逻辑。
 - 现有实现先审计为“已覆盖 / 真实缺口 / 不适用”，只修复实际问题、补足确有价值的用法，不重新实现已有能力。
 
@@ -105,6 +105,7 @@
 
 - UiTheme、UiColors、亮暗主题及通用颜色、字号、间距、圆角、动效等 token 归 packages/css/src/theme，统一从 zerodep-js-css 导出；UI 不保留主题兼容转发。手写主题继承 SystemKeywords，不修改生成数据。Provider 继续负责作用域注入。
 - Icon 的 color/size 分别复用 color/fontSize 作者的 raw 参数类型，接受 _primary、_lg 等主题关键字及 CSS 原值。省略时继承周围文字的颜色和字号。默认宽高为 1em，数字不隐式转换为 px。
+- 后续用户授权 CSS 属性作者统一接受 raw(undefined)，返回空声明字符串，css(...) 中自然省略该项。响应式值撤销时清理旧声明与私有变量，恢复原有继承/层叠；保留合法 0 值。Icon 直接调用 raw(color)/raw(size)，不再逐项判断 undefined。
 - 单个 icon 属性接收 LucideIconData，不接收名称字符串或 children。调用方静态导入图标，自定义数据沿用 Lucide 契约。使用官方 @lucide/icons/build 节点 builder，再转换为框架模板，不扫描 DOM、不下载图标、不注入 SVG 字符串。
 - 根节点为 svg，viewBox 来自图标数据；透传原生 SVG 属性、事件、class/style。局部 display、vertical-align、flex-shrink 等规则留在组件内部。用户 class 在默认声明后组合，style 保留原生语义。
 - 默认装饰图标 aria-hidden=true；存在 aria-label/aria-labelledby 时默认 role=img，移除默认 aria-hidden。显式原生属性优先于默认值。按钮负责操作名称；Icon 不包含按钮或加载状态协议。

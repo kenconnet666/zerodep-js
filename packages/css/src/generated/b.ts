@@ -42,12 +42,12 @@ class BackdropFilterCssRuntime extends CssProperty {
    * 原样生成 backdrop-filter 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 backdrop-filter:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 backdrop-filter:value;，undefined 返回空字符串。
    * @example
    * s.backdropFilter.raw('inherit') // backdrop-filter:inherit;
    */
-  raw(value: Property.BackdropFilter | CssString): string {
+  raw(value: Property.BackdropFilter | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -100,12 +100,12 @@ class BackfaceVisibilityCssRuntime extends CssProperty {
    * 原样生成 backface-visibility 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 backface-visibility:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 backface-visibility:value;，undefined 返回空字符串。
    * @example
    * s.backfaceVisibility.raw('inherit') // backface-visibility:inherit;
    */
-  raw(value: Property.BackfaceVisibility | CssString): string {
+  raw(value: Property.BackfaceVisibility | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -159,12 +159,12 @@ class BackgroundCssRuntime extends LengthCssProperty {
    * 原样生成 background 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 background:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 background:value;，undefined 返回空字符串。
    * @example
    * s.background.raw('inherit') // background:inherit;
    */
-  raw(value: Property.Background | CssString): string {
+  raw(value: Property.Background | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -348,12 +348,12 @@ class BackgroundAttachmentCssRuntime extends CssProperty {
    * 原样生成 background-attachment 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 background-attachment:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 background-attachment:value;，undefined 返回空字符串。
    * @example
    * s.backgroundAttachment.raw('inherit') // background-attachment:inherit;
    */
-  raw(value: Property.BackgroundAttachment | CssString): string {
+  raw(value: Property.BackgroundAttachment | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -407,12 +407,12 @@ class BackgroundBlendModeCssRuntime extends CssProperty {
    * 原样生成 background-blend-mode 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 background-blend-mode:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 background-blend-mode:value;，undefined 返回空字符串。
    * @example
    * s.backgroundBlendMode.raw('inherit') // background-blend-mode:inherit;
    */
-  raw(value: Property.BackgroundBlendMode | CssString): string {
+  raw(value: Property.BackgroundBlendMode | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -466,12 +466,12 @@ class BackgroundClipCssRuntime extends CssProperty {
    * 原样生成 background-clip 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 background-clip:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 background-clip:value;，undefined 返回空字符串。
    * @example
    * s.backgroundClip.raw('inherit') // background-clip:inherit;
    */
-  raw(value: Property.BackgroundClip | CssString): string {
+  raw(value: Property.BackgroundClip | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -524,12 +524,12 @@ class BackgroundColorCssRuntime extends CssProperty {
    * 原样生成 background-color 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 background-color:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 background-color:value;，undefined 返回空字符串。
    * @example
    * s.backgroundColor.raw('inherit') // background-color:inherit;
    */
-  raw(value: Property.BackgroundColor | CssString): string {
+  raw(value: Property.BackgroundColor | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -659,12 +659,12 @@ class BackgroundImageCssRuntime extends CssProperty {
    * 原样生成 background-image 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 background-image:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 background-image:value;，undefined 返回空字符串。
    * @example
    * s.backgroundImage.raw('inherit') // background-image:inherit;
    */
-  raw(value: Property.BackgroundImage | CssString): string {
+  raw(value: Property.BackgroundImage | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -717,12 +717,12 @@ class BackgroundOriginCssRuntime extends CssProperty {
    * 原样生成 background-origin 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 background-origin:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 background-origin:value;，undefined 返回空字符串。
    * @example
    * s.backgroundOrigin.raw('inherit') // background-origin:inherit;
    */
-  raw(value: Property.BackgroundOrigin | CssString): string {
+  raw(value: Property.BackgroundOrigin | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -775,12 +775,12 @@ class BackgroundPositionCssRuntime extends LengthCssProperty {
    * 原样生成 background-position 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 background-position:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 background-position:value;，undefined 返回空字符串。
    * @example
    * s.backgroundPosition.raw('inherit') // background-position:inherit;
    */
-  raw(value: Property.BackgroundPosition | CssString): string {
+  raw(value: Property.BackgroundPosition | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -2090,12 +2090,12 @@ class BackgroundPositionXCssRuntime extends LengthCssProperty {
    * 原样生成 background-position-x 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 background-position-x:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 background-position-x:value;，undefined 返回空字符串。
    * @example
    * s.backgroundPositionX.raw('inherit') // background-position-x:inherit;
    */
-  raw(value: Property.BackgroundPositionX | CssString): string {
+  raw(value: Property.BackgroundPositionX | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -2217,12 +2217,12 @@ class BackgroundPositionYCssRuntime extends LengthCssProperty {
    * 原样生成 background-position-y 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 background-position-y:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 background-position-y:value;，undefined 返回空字符串。
    * @example
    * s.backgroundPositionY.raw('inherit') // background-position-y:inherit;
    */
-  raw(value: Property.BackgroundPositionY | CssString): string {
+  raw(value: Property.BackgroundPositionY | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -2344,12 +2344,12 @@ class BackgroundRepeatCssRuntime extends CssProperty {
    * 原样生成 background-repeat 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 background-repeat:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 background-repeat:value;，undefined 返回空字符串。
    * @example
    * s.backgroundRepeat.raw('inherit') // background-repeat:inherit;
    */
-  raw(value: Property.BackgroundRepeat | CssString): string {
+  raw(value: Property.BackgroundRepeat | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -2402,12 +2402,12 @@ class BackgroundSizeCssRuntime extends LengthCssProperty {
    * 原样生成 background-size 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 background-size:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 background-size:value;，undefined 返回空字符串。
    * @example
    * s.backgroundSize.raw('inherit') // background-size:inherit;
    */
-  raw(value: Property.BackgroundSize | CssString): string {
+  raw(value: Property.BackgroundSize | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -3727,12 +3727,12 @@ class BaselineShiftCssRuntime extends LengthCssProperty {
    * 原样生成 baseline-shift 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 baseline-shift:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 baseline-shift:value;，undefined 返回空字符串。
    * @example
    * s.baselineShift.raw('inherit') // baseline-shift:inherit;
    */
-  raw(value: Property.BaselineShift | CssString): string {
+  raw(value: Property.BaselineShift | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -3852,12 +3852,12 @@ class BlockSizeCssRuntime extends LengthCssProperty {
    * 原样生成 block-size 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 block-size:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 block-size:value;，undefined 返回空字符串。
    * @example
    * s.blockSize.raw('inherit') // block-size:inherit;
    */
-  raw(value: Property.BlockSize | CssString): string {
+  raw(value: Property.BlockSize | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -3968,12 +3968,12 @@ class BorderCssRuntime extends LengthCssProperty {
    * 原样生成 border 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border:value;，undefined 返回空字符串。
    * @example
    * s.border.raw('inherit') // border:inherit;
    */
-  raw(value: Property.Border | CssString): string {
+  raw(value: Property.Border | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -4150,12 +4150,12 @@ class BorderBlockCssRuntime extends LengthCssProperty {
    * 原样生成 border-block 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-block:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-block:value;，undefined 返回空字符串。
    * @example
    * s.borderBlock.raw('inherit') // border-block:inherit;
    */
-  raw(value: Property.BorderBlock | CssString): string {
+  raw(value: Property.BorderBlock | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -4338,12 +4338,12 @@ class BorderBlockColorCssRuntime extends CssProperty {
    * 原样生成 border-block-color 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-block-color:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-block-color:value;，undefined 返回空字符串。
    * @example
    * s.borderBlockColor.raw('inherit') // border-block-color:inherit;
    */
-  raw(value: Property.BorderBlockColor | CssString): string {
+  raw(value: Property.BorderBlockColor | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -4473,12 +4473,12 @@ class BorderBlockEndCssRuntime extends LengthCssProperty {
    * 原样生成 border-block-end 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-block-end:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-block-end:value;，undefined 返回空字符串。
    * @example
    * s.borderBlockEnd.raw('inherit') // border-block-end:inherit;
    */
-  raw(value: Property.BorderBlockEnd | CssString): string {
+  raw(value: Property.BorderBlockEnd | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -4662,12 +4662,12 @@ class BorderBlockEndColorCssRuntime extends CssProperty {
    * 原样生成 border-block-end-color 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-block-end-color:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-block-end-color:value;，undefined 返回空字符串。
    * @example
    * s.borderBlockEndColor.raw('inherit') // border-block-end-color:inherit;
    */
-  raw(value: Property.BorderBlockEndColor | CssString): string {
+  raw(value: Property.BorderBlockEndColor | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -4799,12 +4799,12 @@ class BorderBlockEndStyleCssRuntime extends CssProperty {
    * 原样生成 border-block-end-style 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-block-end-style:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-block-end-style:value;，undefined 返回空字符串。
    * @example
    * s.borderBlockEndStyle.raw('inherit') // border-block-end-style:inherit;
    */
-  raw(value: Property.BorderBlockEndStyle | CssString): string {
+  raw(value: Property.BorderBlockEndStyle | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -4858,12 +4858,12 @@ class BorderBlockEndWidthCssRuntime extends LengthCssProperty {
    * 原样生成 border-block-end-width 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-block-end-width:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-block-end-width:value;，undefined 返回空字符串。
    * @example
    * s.borderBlockEndWidth.raw('inherit') // border-block-end-width:inherit;
    */
-  raw(value: Property.BorderBlockEndWidth | CssString): string {
+  raw(value: Property.BorderBlockEndWidth | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -4972,12 +4972,12 @@ class BorderBlockStartCssRuntime extends LengthCssProperty {
    * 原样生成 border-block-start 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-block-start:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-block-start:value;，undefined 返回空字符串。
    * @example
    * s.borderBlockStart.raw('inherit') // border-block-start:inherit;
    */
-  raw(value: Property.BorderBlockStart | CssString): string {
+  raw(value: Property.BorderBlockStart | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -5161,12 +5161,12 @@ class BorderBlockStartColorCssRuntime extends CssProperty {
    * 原样生成 border-block-start-color 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-block-start-color:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-block-start-color:value;，undefined 返回空字符串。
    * @example
    * s.borderBlockStartColor.raw('inherit') // border-block-start-color:inherit;
    */
-  raw(value: Property.BorderBlockStartColor | CssString): string {
+  raw(value: Property.BorderBlockStartColor | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -5297,12 +5297,12 @@ class BorderBlockStartStyleCssRuntime extends CssProperty {
    * 原样生成 border-block-start-style 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-block-start-style:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-block-start-style:value;，undefined 返回空字符串。
    * @example
    * s.borderBlockStartStyle.raw('inherit') // border-block-start-style:inherit;
    */
-  raw(value: Property.BorderBlockStartStyle | CssString): string {
+  raw(value: Property.BorderBlockStartStyle | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -5355,12 +5355,12 @@ class BorderBlockStartWidthCssRuntime extends LengthCssProperty {
    * 原样生成 border-block-start-width 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-block-start-width:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-block-start-width:value;，undefined 返回空字符串。
    * @example
    * s.borderBlockStartWidth.raw('inherit') // border-block-start-width:inherit;
    */
-  raw(value: Property.BorderBlockStartWidth | CssString): string {
+  raw(value: Property.BorderBlockStartWidth | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -5469,12 +5469,12 @@ class BorderBlockStyleCssRuntime extends CssProperty {
    * 原样生成 border-block-style 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-block-style:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-block-style:value;，undefined 返回空字符串。
    * @example
    * s.borderBlockStyle.raw('inherit') // border-block-style:inherit;
    */
-  raw(value: Property.BorderBlockStyle | CssString): string {
+  raw(value: Property.BorderBlockStyle | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -5526,12 +5526,12 @@ class BorderBlockWidthCssRuntime extends LengthCssProperty {
    * 原样生成 border-block-width 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-block-width:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-block-width:value;，undefined 返回空字符串。
    * @example
    * s.borderBlockWidth.raw('inherit') // border-block-width:inherit;
    */
-  raw(value: Property.BorderBlockWidth | CssString): string {
+  raw(value: Property.BorderBlockWidth | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -6815,12 +6815,12 @@ class BorderBottomCssRuntime extends LengthCssProperty {
    * 原样生成 border-bottom 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-bottom:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-bottom:value;，undefined 返回空字符串。
    * @example
    * s.borderBottom.raw('inherit') // border-bottom:inherit;
    */
-  raw(value: Property.BorderBottom | CssString): string {
+  raw(value: Property.BorderBottom | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -7003,12 +7003,12 @@ class BorderBottomColorCssRuntime extends CssProperty {
    * 原样生成 border-bottom-color 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-bottom-color:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-bottom-color:value;，undefined 返回空字符串。
    * @example
    * s.borderBottomColor.raw('inherit') // border-bottom-color:inherit;
    */
-  raw(value: Property.BorderBottomColor | CssString): string {
+  raw(value: Property.BorderBottomColor | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -7139,12 +7139,12 @@ class BorderBottomLeftRadiusCssRuntime extends LengthCssProperty {
    * 原样生成 border-bottom-left-radius 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-bottom-left-radius:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-bottom-left-radius:value;，undefined 返回空字符串。
    * @example
    * s.borderBottomLeftRadius.raw('inherit') // border-bottom-left-radius:inherit;
    */
-  raw(value: Property.BorderBottomLeftRadius | CssString): string {
+  raw(value: Property.BorderBottomLeftRadius | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -8453,12 +8453,12 @@ class BorderBottomRightRadiusCssRuntime extends LengthCssProperty {
    * 原样生成 border-bottom-right-radius 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-bottom-right-radius:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-bottom-right-radius:value;，undefined 返回空字符串。
    * @example
    * s.borderBottomRightRadius.raw('inherit') // border-bottom-right-radius:inherit;
    */
-  raw(value: Property.BorderBottomRightRadius | CssString): string {
+  raw(value: Property.BorderBottomRightRadius | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -9767,12 +9767,12 @@ class BorderBottomStyleCssRuntime extends CssProperty {
    * 原样生成 border-bottom-style 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-bottom-style:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-bottom-style:value;，undefined 返回空字符串。
    * @example
    * s.borderBottomStyle.raw('inherit') // border-bottom-style:inherit;
    */
-  raw(value: Property.BorderBottomStyle | CssString): string {
+  raw(value: Property.BorderBottomStyle | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -9824,12 +9824,12 @@ class BorderBottomWidthCssRuntime extends LengthCssProperty {
    * 原样生成 border-bottom-width 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-bottom-width:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-bottom-width:value;，undefined 返回空字符串。
    * @example
    * s.borderBottomWidth.raw('inherit') // border-bottom-width:inherit;
    */
-  raw(value: Property.BorderBottomWidth | CssString): string {
+  raw(value: Property.BorderBottomWidth | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -9938,12 +9938,12 @@ class BorderCollapseCssRuntime extends CssProperty {
    * 原样生成 border-collapse 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-collapse:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-collapse:value;，undefined 返回空字符串。
    * @example
    * s.borderCollapse.raw('inherit') // border-collapse:inherit;
    */
-  raw(value: Property.BorderCollapse | CssString): string {
+  raw(value: Property.BorderCollapse | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -9995,12 +9995,12 @@ class BorderColorCssRuntime extends CssProperty {
    * 原样生成 border-color 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-color:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-color:value;，undefined 返回空字符串。
    * @example
    * s.borderColor.raw('inherit') // border-color:inherit;
    */
-  raw(value: Property.BorderColor | CssString): string {
+  raw(value: Property.BorderColor | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -10127,12 +10127,12 @@ class BorderEndEndRadiusCssRuntime extends LengthCssProperty {
    * 原样生成 border-end-end-radius 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-end-end-radius:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-end-end-radius:value;，undefined 返回空字符串。
    * @example
    * s.borderEndEndRadius.raw('inherit') // border-end-end-radius:inherit;
    */
-  raw(value: Property.BorderEndEndRadius | CssString): string {
+  raw(value: Property.BorderEndEndRadius | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -10241,12 +10241,12 @@ class BorderEndStartRadiusCssRuntime extends LengthCssProperty {
    * 原样生成 border-end-start-radius 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-end-start-radius:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-end-start-radius:value;，undefined 返回空字符串。
    * @example
    * s.borderEndStartRadius.raw('inherit') // border-end-start-radius:inherit;
    */
-  raw(value: Property.BorderEndStartRadius | CssString): string {
+  raw(value: Property.BorderEndStartRadius | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -10356,12 +10356,12 @@ class BorderImageCssRuntime extends CssProperty {
    * 原样生成 border-image 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-image:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-image:value;，undefined 返回空字符串。
    * @example
    * s.borderImage.raw('inherit') // border-image:inherit;
    */
-  raw(value: Property.BorderImage | CssString): string {
+  raw(value: Property.BorderImage | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -10466,12 +10466,12 @@ class BorderImageOutsetCssRuntime extends LengthCssProperty {
    * 原样生成 border-image-outset 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-image-outset:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-image-outset:value;，undefined 返回空字符串。
    * @example
    * s.borderImageOutset.raw('inherit') // border-image-outset:inherit;
    */
-  raw(value: Property.BorderImageOutset | CssString): string {
+  raw(value: Property.BorderImageOutset | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -12981,12 +12981,12 @@ class BorderImageRepeatCssRuntime extends CssProperty {
    * 原样生成 border-image-repeat 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-image-repeat:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-image-repeat:value;，undefined 返回空字符串。
    * @example
    * s.borderImageRepeat.raw('inherit') // border-image-repeat:inherit;
    */
-  raw(value: Property.BorderImageRepeat | CssString): string {
+  raw(value: Property.BorderImageRepeat | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -13038,12 +13038,12 @@ class BorderImageSliceCssRuntime extends CssProperty {
    * 原样生成 border-image-slice 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-image-slice:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-image-slice:value;，undefined 返回空字符串。
    * @example
    * s.borderImageSlice.raw('inherit') // border-image-slice:inherit;
    */
-  raw(value: Property.BorderImageSlice | CssString): string {
+  raw(value: Property.BorderImageSlice | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -13200,12 +13200,12 @@ class BorderImageSourceCssRuntime extends CssProperty {
    * 原样生成 border-image-source 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-image-source:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-image-source:value;，undefined 返回空字符串。
    * @example
    * s.borderImageSource.raw('inherit') // border-image-source:inherit;
    */
-  raw(value: Property.BorderImageSource | CssString): string {
+  raw(value: Property.BorderImageSource | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -13258,12 +13258,12 @@ class BorderImageWidthCssRuntime extends LengthCssProperty {
    * 原样生成 border-image-width 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-image-width:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-image-width:value;，undefined 返回空字符串。
    * @example
    * s.borderImageWidth.raw('inherit') // border-image-width:inherit;
    */
-  raw(value: Property.BorderImageWidth | CssString): string {
+  raw(value: Property.BorderImageWidth | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -15821,12 +15821,12 @@ class BorderInlineCssRuntime extends LengthCssProperty {
    * 原样生成 border-inline 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-inline:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-inline:value;，undefined 返回空字符串。
    * @example
    * s.borderInline.raw('inherit') // border-inline:inherit;
    */
-  raw(value: Property.BorderInline | CssString): string {
+  raw(value: Property.BorderInline | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -16009,12 +16009,12 @@ class BorderInlineColorCssRuntime extends CssProperty {
    * 原样生成 border-inline-color 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-inline-color:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-inline-color:value;，undefined 返回空字符串。
    * @example
    * s.borderInlineColor.raw('inherit') // border-inline-color:inherit;
    */
-  raw(value: Property.BorderInlineColor | CssString): string {
+  raw(value: Property.BorderInlineColor | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -16144,12 +16144,12 @@ class BorderInlineEndCssRuntime extends LengthCssProperty {
    * 原样生成 border-inline-end 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-inline-end:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-inline-end:value;，undefined 返回空字符串。
    * @example
    * s.borderInlineEnd.raw('inherit') // border-inline-end:inherit;
    */
-  raw(value: Property.BorderInlineEnd | CssString): string {
+  raw(value: Property.BorderInlineEnd | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -16333,12 +16333,12 @@ class BorderInlineEndColorCssRuntime extends CssProperty {
    * 原样生成 border-inline-end-color 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-inline-end-color:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-inline-end-color:value;，undefined 返回空字符串。
    * @example
    * s.borderInlineEndColor.raw('inherit') // border-inline-end-color:inherit;
    */
-  raw(value: Property.BorderInlineEndColor | CssString): string {
+  raw(value: Property.BorderInlineEndColor | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -16469,12 +16469,12 @@ class BorderInlineEndStyleCssRuntime extends CssProperty {
    * 原样生成 border-inline-end-style 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-inline-end-style:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-inline-end-style:value;，undefined 返回空字符串。
    * @example
    * s.borderInlineEndStyle.raw('inherit') // border-inline-end-style:inherit;
    */
-  raw(value: Property.BorderInlineEndStyle | CssString): string {
+  raw(value: Property.BorderInlineEndStyle | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -16527,12 +16527,12 @@ class BorderInlineEndWidthCssRuntime extends LengthCssProperty {
    * 原样生成 border-inline-end-width 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-inline-end-width:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-inline-end-width:value;，undefined 返回空字符串。
    * @example
    * s.borderInlineEndWidth.raw('inherit') // border-inline-end-width:inherit;
    */
-  raw(value: Property.BorderInlineEndWidth | CssString): string {
+  raw(value: Property.BorderInlineEndWidth | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -16641,12 +16641,12 @@ class BorderInlineStartCssRuntime extends LengthCssProperty {
    * 原样生成 border-inline-start 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-inline-start:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-inline-start:value;，undefined 返回空字符串。
    * @example
    * s.borderInlineStart.raw('inherit') // border-inline-start:inherit;
    */
-  raw(value: Property.BorderInlineStart | CssString): string {
+  raw(value: Property.BorderInlineStart | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -16830,12 +16830,12 @@ class BorderInlineStartColorCssRuntime extends CssProperty {
    * 原样生成 border-inline-start-color 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-inline-start-color:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-inline-start-color:value;，undefined 返回空字符串。
    * @example
    * s.borderInlineStartColor.raw('inherit') // border-inline-start-color:inherit;
    */
-  raw(value: Property.BorderInlineStartColor | CssString): string {
+  raw(value: Property.BorderInlineStartColor | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -16966,12 +16966,12 @@ class BorderInlineStartStyleCssRuntime extends CssProperty {
    * 原样生成 border-inline-start-style 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-inline-start-style:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-inline-start-style:value;，undefined 返回空字符串。
    * @example
    * s.borderInlineStartStyle.raw('inherit') // border-inline-start-style:inherit;
    */
-  raw(value: Property.BorderInlineStartStyle | CssString): string {
+  raw(value: Property.BorderInlineStartStyle | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -17024,12 +17024,12 @@ class BorderInlineStartWidthCssRuntime extends LengthCssProperty {
    * 原样生成 border-inline-start-width 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-inline-start-width:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-inline-start-width:value;，undefined 返回空字符串。
    * @example
    * s.borderInlineStartWidth.raw('inherit') // border-inline-start-width:inherit;
    */
-  raw(value: Property.BorderInlineStartWidth | CssString): string {
+  raw(value: Property.BorderInlineStartWidth | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -17138,12 +17138,12 @@ class BorderInlineStyleCssRuntime extends CssProperty {
    * 原样生成 border-inline-style 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-inline-style:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-inline-style:value;，undefined 返回空字符串。
    * @example
    * s.borderInlineStyle.raw('inherit') // border-inline-style:inherit;
    */
-  raw(value: Property.BorderInlineStyle | CssString): string {
+  raw(value: Property.BorderInlineStyle | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -17195,12 +17195,12 @@ class BorderInlineWidthCssRuntime extends LengthCssProperty {
    * 原样生成 border-inline-width 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-inline-width:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-inline-width:value;，undefined 返回空字符串。
    * @example
    * s.borderInlineWidth.raw('inherit') // border-inline-width:inherit;
    */
-  raw(value: Property.BorderInlineWidth | CssString): string {
+  raw(value: Property.BorderInlineWidth | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -18484,12 +18484,12 @@ class BorderLeftCssRuntime extends LengthCssProperty {
    * 原样生成 border-left 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-left:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-left:value;，undefined 返回空字符串。
    * @example
    * s.borderLeft.raw('inherit') // border-left:inherit;
    */
-  raw(value: Property.BorderLeft | CssString): string {
+  raw(value: Property.BorderLeft | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -18672,12 +18672,12 @@ class BorderLeftColorCssRuntime extends CssProperty {
    * 原样生成 border-left-color 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-left-color:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-left-color:value;，undefined 返回空字符串。
    * @example
    * s.borderLeftColor.raw('inherit') // border-left-color:inherit;
    */
-  raw(value: Property.BorderLeftColor | CssString): string {
+  raw(value: Property.BorderLeftColor | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -18807,12 +18807,12 @@ class BorderLeftStyleCssRuntime extends CssProperty {
    * 原样生成 border-left-style 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-left-style:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-left-style:value;，undefined 返回空字符串。
    * @example
    * s.borderLeftStyle.raw('inherit') // border-left-style:inherit;
    */
-  raw(value: Property.BorderLeftStyle | CssString): string {
+  raw(value: Property.BorderLeftStyle | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -18864,12 +18864,12 @@ class BorderLeftWidthCssRuntime extends LengthCssProperty {
    * 原样生成 border-left-width 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-left-width:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-left-width:value;，undefined 返回空字符串。
    * @example
    * s.borderLeftWidth.raw('inherit') // border-left-width:inherit;
    */
-  raw(value: Property.BorderLeftWidth | CssString): string {
+  raw(value: Property.BorderLeftWidth | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -18977,12 +18977,12 @@ class BorderRadiusCssRuntime extends LengthCssProperty {
    * 原样生成 border-radius 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-radius:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-radius:value;，undefined 返回空字符串。
    * @example
    * s.borderRadius.raw('inherit') // border-radius:inherit;
    */
-  raw(value: Property.BorderRadius | CssString): string {
+  raw(value: Property.BorderRadius | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -21543,12 +21543,12 @@ class BorderRightCssRuntime extends LengthCssProperty {
    * 原样生成 border-right 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-right:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-right:value;，undefined 返回空字符串。
    * @example
    * s.borderRight.raw('inherit') // border-right:inherit;
    */
-  raw(value: Property.BorderRight | CssString): string {
+  raw(value: Property.BorderRight | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -21731,12 +21731,12 @@ class BorderRightColorCssRuntime extends CssProperty {
    * 原样生成 border-right-color 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-right-color:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-right-color:value;，undefined 返回空字符串。
    * @example
    * s.borderRightColor.raw('inherit') // border-right-color:inherit;
    */
-  raw(value: Property.BorderRightColor | CssString): string {
+  raw(value: Property.BorderRightColor | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -21866,12 +21866,12 @@ class BorderRightStyleCssRuntime extends CssProperty {
    * 原样生成 border-right-style 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-right-style:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-right-style:value;，undefined 返回空字符串。
    * @example
    * s.borderRightStyle.raw('inherit') // border-right-style:inherit;
    */
-  raw(value: Property.BorderRightStyle | CssString): string {
+  raw(value: Property.BorderRightStyle | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -21923,12 +21923,12 @@ class BorderRightWidthCssRuntime extends LengthCssProperty {
    * 原样生成 border-right-width 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-right-width:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-right-width:value;，undefined 返回空字符串。
    * @example
    * s.borderRightWidth.raw('inherit') // border-right-width:inherit;
    */
-  raw(value: Property.BorderRightWidth | CssString): string {
+  raw(value: Property.BorderRightWidth | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -22036,12 +22036,12 @@ class BorderSpacingCssRuntime extends LengthCssProperty {
    * 原样生成 border-spacing 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-spacing:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-spacing:value;，undefined 返回空字符串。
    * @example
    * s.borderSpacing.raw('inherit') // border-spacing:inherit;
    */
-  raw(value: Property.BorderSpacing | CssString): string {
+  raw(value: Property.BorderSpacing | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -23324,12 +23324,12 @@ class BorderStartEndRadiusCssRuntime extends LengthCssProperty {
    * 原样生成 border-start-end-radius 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-start-end-radius:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-start-end-radius:value;，undefined 返回空字符串。
    * @example
    * s.borderStartEndRadius.raw('inherit') // border-start-end-radius:inherit;
    */
-  raw(value: Property.BorderStartEndRadius | CssString): string {
+  raw(value: Property.BorderStartEndRadius | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -23438,12 +23438,12 @@ class BorderStartStartRadiusCssRuntime extends LengthCssProperty {
    * 原样生成 border-start-start-radius 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-start-start-radius:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-start-start-radius:value;，undefined 返回空字符串。
    * @example
    * s.borderStartStartRadius.raw('inherit') // border-start-start-radius:inherit;
    */
-  raw(value: Property.BorderStartStartRadius | CssString): string {
+  raw(value: Property.BorderStartStartRadius | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -23553,12 +23553,12 @@ class BorderStyleCssRuntime extends CssProperty {
    * 原样生成 border-style 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-style:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-style:value;，undefined 返回空字符串。
    * @example
    * s.borderStyle.raw('inherit') // border-style:inherit;
    */
-  raw(value: Property.BorderStyle | CssString): string {
+  raw(value: Property.BorderStyle | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -23607,12 +23607,12 @@ class BorderTopCssRuntime extends LengthCssProperty {
    * 原样生成 border-top 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-top:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-top:value;，undefined 返回空字符串。
    * @example
    * s.borderTop.raw('inherit') // border-top:inherit;
    */
-  raw(value: Property.BorderTop | CssString): string {
+  raw(value: Property.BorderTop | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -23795,12 +23795,12 @@ class BorderTopColorCssRuntime extends CssProperty {
    * 原样生成 border-top-color 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-top-color:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-top-color:value;，undefined 返回空字符串。
    * @example
    * s.borderTopColor.raw('inherit') // border-top-color:inherit;
    */
-  raw(value: Property.BorderTopColor | CssString): string {
+  raw(value: Property.BorderTopColor | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -23930,12 +23930,12 @@ class BorderTopLeftRadiusCssRuntime extends LengthCssProperty {
    * 原样生成 border-top-left-radius 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-top-left-radius:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-top-left-radius:value;，undefined 返回空字符串。
    * @example
    * s.borderTopLeftRadius.raw('inherit') // border-top-left-radius:inherit;
    */
-  raw(value: Property.BorderTopLeftRadius | CssString): string {
+  raw(value: Property.BorderTopLeftRadius | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -25244,12 +25244,12 @@ class BorderTopRightRadiusCssRuntime extends LengthCssProperty {
    * 原样生成 border-top-right-radius 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-top-right-radius:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-top-right-radius:value;，undefined 返回空字符串。
    * @example
    * s.borderTopRightRadius.raw('inherit') // border-top-right-radius:inherit;
    */
-  raw(value: Property.BorderTopRightRadius | CssString): string {
+  raw(value: Property.BorderTopRightRadius | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -26558,12 +26558,12 @@ class BorderTopStyleCssRuntime extends CssProperty {
    * 原样生成 border-top-style 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-top-style:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-top-style:value;，undefined 返回空字符串。
    * @example
    * s.borderTopStyle.raw('inherit') // border-top-style:inherit;
    */
-  raw(value: Property.BorderTopStyle | CssString): string {
+  raw(value: Property.BorderTopStyle | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -26615,12 +26615,12 @@ class BorderTopWidthCssRuntime extends LengthCssProperty {
    * 原样生成 border-top-width 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-top-width:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-top-width:value;，undefined 返回空字符串。
    * @example
    * s.borderTopWidth.raw('inherit') // border-top-width:inherit;
    */
-  raw(value: Property.BorderTopWidth | CssString): string {
+  raw(value: Property.BorderTopWidth | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -26728,12 +26728,12 @@ class BorderWidthCssRuntime extends LengthCssProperty {
    * 原样生成 border-width 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-width:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 border-width:value;，undefined 返回空字符串。
    * @example
    * s.borderWidth.raw('inherit') // border-width:inherit;
    */
-  raw(value: Property.BorderWidth | CssString): string {
+  raw(value: Property.BorderWidth | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -29236,12 +29236,12 @@ class BottomCssRuntime extends LengthCssProperty {
    * 原样生成 bottom 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 bottom:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 bottom:value;，undefined 返回空字符串。
    * @example
    * s.bottom.raw('inherit') // bottom:inherit;
    */
-  raw(value: Property.Bottom | CssString): string {
+  raw(value: Property.Bottom | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -29355,12 +29355,12 @@ class BoxDecorationBreakCssRuntime extends CssProperty {
    * 原样生成 box-decoration-break 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 box-decoration-break:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 box-decoration-break:value;，undefined 返回空字符串。
    * @example
    * s.boxDecorationBreak.raw('inherit') // box-decoration-break:inherit;
    */
-  raw(value: Property.BoxDecorationBreak | CssString): string {
+  raw(value: Property.BoxDecorationBreak | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -29413,12 +29413,12 @@ class BoxShadowCssRuntime extends CssProperty {
    * 原样生成 box-shadow 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 box-shadow:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 box-shadow:value;，undefined 返回空字符串。
    * @example
    * s.boxShadow.raw('inherit') // box-shadow:inherit;
    */
-  raw(value: Property.BoxShadow | CssString): string {
+  raw(value: Property.BoxShadow | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -29476,12 +29476,12 @@ class BoxSizingCssRuntime extends CssProperty {
    * 原样生成 box-sizing 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 box-sizing:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 box-sizing:value;，undefined 返回空字符串。
    * @example
    * s.boxSizing.raw('inherit') // box-sizing:inherit;
    */
-  raw(value: Property.BoxSizing | CssString): string {
+  raw(value: Property.BoxSizing | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -29541,12 +29541,12 @@ class BreakAfterCssRuntime extends CssProperty {
    * 原样生成 break-after 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 break-after:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 break-after:value;，undefined 返回空字符串。
    * @example
    * s.breakAfter.raw('inherit') // break-after:inherit;
    */
-  raw(value: Property.BreakAfter | CssString): string {
+  raw(value: Property.BreakAfter | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -29597,12 +29597,12 @@ class BreakBeforeCssRuntime extends CssProperty {
    * 原样生成 break-before 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 break-before:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 break-before:value;，undefined 返回空字符串。
    * @example
    * s.breakBefore.raw('inherit') // break-before:inherit;
    */
-  raw(value: Property.BreakBefore | CssString): string {
+  raw(value: Property.BreakBefore | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -29654,12 +29654,12 @@ class BreakInsideCssRuntime extends CssProperty {
    * 原样生成 break-inside 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 break-inside:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 break-inside:value;，undefined 返回空字符串。
    * @example
    * s.breakInside.raw('inherit') // break-inside:inherit;
    */
-  raw(value: Property.BreakInside | CssString): string {
+  raw(value: Property.BreakInside | CssString | undefined): string {
     return this.declaration(value);
   }
 }

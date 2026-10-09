@@ -1,6 +1,6 @@
 # 组件库与框架文档
 
-使用 zerodep-js 自身的 TSX 和 Vite。已提供 Provider 的主题、语言、地区、时区及 Portal 交互演示。
+使用 zerodep-js 自身的 TSX 和 Vite。已提供 Provider 的主题、语言、地区、时区及 Portal 交互演示，以及 Icon 的静态图标、主题关键字、原生 CSS 值和可访问名称示例。
 
 从仓库根目录执行：
 

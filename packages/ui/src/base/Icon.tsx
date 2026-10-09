@@ -46,8 +46,8 @@ export const Icon = _component(({ icon, color, size, class: className, ...rest }
         s.display.inlineBlock,
         s.verticalAlign.middle,
         s.flexShrink.raw(0),
-        color !== undefined && s.color.raw(color),
-        size !== undefined && s.fontSize.raw(size),
+        s.color.raw(color),
+        s.fontSize.raw(size),
         className,
       )}
     >

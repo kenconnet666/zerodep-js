@@ -23,3 +23,8 @@ border._unknown satisfies string;
 // @ts-expect-error CSS 关键字值不能是函数。
 const invalid: UiColors['_primary'] = () => 'red';
 void invalid;
+
+import { Css, lightTheme } from 'zerodep-js-css';
+const themed = new Css(lightTheme);
+themed.color.raw(undefined) satisfies string;
+themed.fontSize.raw(undefined) satisfies string;

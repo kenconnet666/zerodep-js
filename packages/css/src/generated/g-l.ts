@@ -39,12 +39,12 @@ class GapCssRuntime extends LengthCssProperty {
    * 原样生成 gap 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 gap:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 gap:value;，undefined 返回空字符串。
    * @example
    * s.gap.raw('inherit') // gap:inherit;
    */
-  raw(value: Property.Gap | CssString): string {
+  raw(value: Property.Gap | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -1350,12 +1350,12 @@ class GlyphOrientationVerticalCssRuntime extends CssProperty {
    * 原样生成 glyph-orientation-vertical 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 glyph-orientation-vertical:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 glyph-orientation-vertical:value;，undefined 返回空字符串。
    * @example
    * s.glyphOrientationVertical.raw('inherit') // glyph-orientation-vertical:inherit;
    */
-  raw(value: Property.GlyphOrientationVertical | CssString): string {
+  raw(value: Property.GlyphOrientationVertical | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -1460,12 +1460,12 @@ class GridCssRuntime extends CssProperty {
    * 原样生成 grid 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 grid:value;，undefined 返回空字符串。
    * @example
    * s.grid.raw('inherit') // grid:inherit;
    */
-  raw(value: Property.Grid | CssString): string {
+  raw(value: Property.Grid | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -1511,12 +1511,12 @@ class GridAreaCssRuntime extends CssProperty {
    * 原样生成 grid-area 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid-area:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 grid-area:value;，undefined 返回空字符串。
    * @example
    * s.gridArea.raw('inherit') // grid-area:inherit;
    */
-  raw(value: Property.GridArea | CssString): string {
+  raw(value: Property.GridArea | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -1616,12 +1616,12 @@ class GridAutoColumnsCssRuntime extends LengthCssProperty {
    * 原样生成 grid-auto-columns 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid-auto-columns:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 grid-auto-columns:value;，undefined 返回空字符串。
    * @example
    * s.gridAutoColumns.raw('inherit') // grid-auto-columns:inherit;
    */
-  raw(value: Property.GridAutoColumns | CssString): string {
+  raw(value: Property.GridAutoColumns | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -1756,12 +1756,12 @@ class GridAutoFlowCssRuntime extends CssProperty {
    * 原样生成 grid-auto-flow 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid-auto-flow:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 grid-auto-flow:value;，undefined 返回空字符串。
    * @example
    * s.gridAutoFlow.raw('inherit') // grid-auto-flow:inherit;
    */
-  raw(value: Property.GridAutoFlow | CssString): string {
+  raw(value: Property.GridAutoFlow | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -1823,12 +1823,12 @@ class GridAutoRowsCssRuntime extends LengthCssProperty {
    * 原样生成 grid-auto-rows 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid-auto-rows:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 grid-auto-rows:value;，undefined 返回空字符串。
    * @example
    * s.gridAutoRows.raw('inherit') // grid-auto-rows:inherit;
    */
-  raw(value: Property.GridAutoRows | CssString): string {
+  raw(value: Property.GridAutoRows | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -1961,12 +1961,12 @@ class GridColumnCssRuntime extends CssProperty {
    * 原样生成 grid-column 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid-column:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 grid-column:value;，undefined 返回空字符串。
    * @example
    * s.gridColumn.raw('inherit') // grid-column:inherit;
    */
-  raw(value: Property.GridColumn | CssString): string {
+  raw(value: Property.GridColumn | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -2071,12 +2071,12 @@ class GridColumnEndCssRuntime extends CssProperty {
    * 原样生成 grid-column-end 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid-column-end:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 grid-column-end:value;，undefined 返回空字符串。
    * @example
    * s.gridColumnEnd.raw('inherit') // grid-column-end:inherit;
    */
-  raw(value: Property.GridColumnEnd | CssString): string {
+  raw(value: Property.GridColumnEnd | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -2183,12 +2183,12 @@ class GridColumnStartCssRuntime extends CssProperty {
    * 原样生成 grid-column-start 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid-column-start:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 grid-column-start:value;，undefined 返回空字符串。
    * @example
    * s.gridColumnStart.raw('inherit') // grid-column-start:inherit;
    */
-  raw(value: Property.GridColumnStart | CssString): string {
+  raw(value: Property.GridColumnStart | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -2293,12 +2293,12 @@ class GridRowCssRuntime extends CssProperty {
    * 原样生成 grid-row 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid-row:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 grid-row:value;，undefined 返回空字符串。
    * @example
    * s.gridRow.raw('inherit') // grid-row:inherit;
    */
-  raw(value: Property.GridRow | CssString): string {
+  raw(value: Property.GridRow | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -2397,12 +2397,12 @@ class GridRowEndCssRuntime extends CssProperty {
    * 原样生成 grid-row-end 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid-row-end:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 grid-row-end:value;，undefined 返回空字符串。
    * @example
    * s.gridRowEnd.raw('inherit') // grid-row-end:inherit;
    */
-  raw(value: Property.GridRowEnd | CssString): string {
+  raw(value: Property.GridRowEnd | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -2509,12 +2509,12 @@ class GridRowStartCssRuntime extends CssProperty {
    * 原样生成 grid-row-start 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid-row-start:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 grid-row-start:value;，undefined 返回空字符串。
    * @example
    * s.gridRowStart.raw('inherit') // grid-row-start:inherit;
    */
-  raw(value: Property.GridRowStart | CssString): string {
+  raw(value: Property.GridRowStart | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -2621,12 +2621,12 @@ class GridTemplateCssRuntime extends CssProperty {
    * 原样生成 grid-template 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid-template:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 grid-template:value;，undefined 返回空字符串。
    * @example
    * s.gridTemplate.raw('inherit') // grid-template:inherit;
    */
-  raw(value: Property.GridTemplate | CssString): string {
+  raw(value: Property.GridTemplate | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -2675,12 +2675,12 @@ class GridTemplateAreasCssRuntime extends CssProperty {
    * 原样生成 grid-template-areas 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid-template-areas:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 grid-template-areas:value;，undefined 返回空字符串。
    * @example
    * s.gridTemplateAreas.raw('inherit') // grid-template-areas:inherit;
    */
-  raw(value: Property.GridTemplateAreas | CssString): string {
+  raw(value: Property.GridTemplateAreas | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -2733,12 +2733,12 @@ class GridTemplateColumnsCssRuntime extends LengthCssProperty {
    * 原样生成 grid-template-columns 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid-template-columns:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 grid-template-columns:value;，undefined 返回空字符串。
    * @example
    * s.gridTemplateColumns.raw('inherit') // grid-template-columns:inherit;
    */
-  raw(value: Property.GridTemplateColumns | CssString): string {
+  raw(value: Property.GridTemplateColumns | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -2897,12 +2897,12 @@ class GridTemplateRowsCssRuntime extends LengthCssProperty {
    * 原样生成 grid-template-rows 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid-template-rows:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 grid-template-rows:value;，undefined 返回空字符串。
    * @example
    * s.gridTemplateRows.raw('inherit') // grid-template-rows:inherit;
    */
-  raw(value: Property.GridTemplateRows | CssString): string {
+  raw(value: Property.GridTemplateRows | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -3061,12 +3061,12 @@ class HangingPunctuationCssRuntime extends CssProperty {
    * 原样生成 hanging-punctuation 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 hanging-punctuation:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 hanging-punctuation:value;，undefined 返回空字符串。
    * @example
    * s.hangingPunctuation.raw('inherit') // hanging-punctuation:inherit;
    */
-  raw(value: Property.HangingPunctuation | CssString): string {
+  raw(value: Property.HangingPunctuation | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -3117,12 +3117,12 @@ class HeightCssRuntime extends LengthCssProperty {
    * 原样生成 height 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 height:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 height:value;，undefined 返回空字符串。
    * @example
    * s.height.raw('inherit') // height:inherit;
    */
-  raw(value: Property.Height | CssString): string {
+  raw(value: Property.Height | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -3241,12 +3241,12 @@ class HyphenateCharacterCssRuntime extends CssProperty {
    * 原样生成 hyphenate-character 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 hyphenate-character:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 hyphenate-character:value;，undefined 返回空字符串。
    * @example
    * s.hyphenateCharacter.raw('inherit') // hyphenate-character:inherit;
    */
-  raw(value: Property.HyphenateCharacter | CssString): string {
+  raw(value: Property.HyphenateCharacter | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -3299,12 +3299,12 @@ class HyphenateLimitCharsCssRuntime extends CssProperty {
    * 原样生成 hyphenate-limit-chars 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 hyphenate-limit-chars:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 hyphenate-limit-chars:value;，undefined 返回空字符串。
    * @example
    * s.hyphenateLimitChars.raw('inherit') // hyphenate-limit-chars:inherit;
    */
-  raw(value: Property.HyphenateLimitChars | CssString): string {
+  raw(value: Property.HyphenateLimitChars | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -3411,12 +3411,12 @@ class HyphensCssRuntime extends CssProperty {
    * 原样生成 hyphens 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 hyphens:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 hyphens:value;，undefined 返回空字符串。
    * @example
    * s.hyphens.raw('inherit') // hyphens:inherit;
    */
-  raw(value: Property.Hyphens | CssString): string {
+  raw(value: Property.Hyphens | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -3468,12 +3468,12 @@ class ImageOrientationCssRuntime extends CssProperty {
    * 原样生成 image-orientation 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 image-orientation:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 image-orientation:value;，undefined 返回空字符串。
    * @example
    * s.imageOrientation.raw('inherit') // image-orientation:inherit;
    */
-  raw(value: Property.ImageOrientation | CssString): string {
+  raw(value: Property.ImageOrientation | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -3630,12 +3630,12 @@ class ImageRenderingCssRuntime extends CssProperty {
    * 原样生成 image-rendering 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 image-rendering:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 image-rendering:value;，undefined 返回空字符串。
    * @example
    * s.imageRendering.raw('inherit') // image-rendering:inherit;
    */
-  raw(value: Property.ImageRendering | CssString): string {
+  raw(value: Property.ImageRendering | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -3688,12 +3688,12 @@ class ImageResolutionCssRuntime extends CssProperty {
    * 原样生成 image-resolution 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 image-resolution:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 image-resolution:value;，undefined 返回空字符串。
    * @example
    * s.imageResolution.raw('inherit') // image-resolution:inherit;
    */
-  raw(value: Property.ImageResolution | CssString): string {
+  raw(value: Property.ImageResolution | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -3745,12 +3745,12 @@ class InitialLetterCssRuntime extends CssProperty {
    * 原样生成 initial-letter 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 initial-letter:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 initial-letter:value;，undefined 返回空字符串。
    * @example
    * s.initialLetter.raw('inherit') // initial-letter:inherit;
    */
-  raw(value: Property.InitialLetter | CssString): string {
+  raw(value: Property.InitialLetter | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -3858,12 +3858,12 @@ class InitialLetterAlignCssRuntime extends CssProperty {
    * 原样生成 initial-letter-align 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 initial-letter-align:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 initial-letter-align:value;，undefined 返回空字符串。
    * @example
    * s.initialLetterAlign.raw('inherit') // initial-letter-align:inherit;
    */
-  raw(value: Property.InitialLetterAlign | CssString): string {
+  raw(value: Property.InitialLetterAlign | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -3916,12 +3916,12 @@ class InlineSizeCssRuntime extends LengthCssProperty {
    * 原样生成 inline-size 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 inline-size:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 inline-size:value;，undefined 返回空字符串。
    * @example
    * s.inlineSize.raw('inherit') // inline-size:inherit;
    */
-  raw(value: Property.InlineSize | CssString): string {
+  raw(value: Property.InlineSize | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -4031,12 +4031,12 @@ class InsetCssRuntime extends LengthCssProperty {
    * 原样生成 inset 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 inset:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 inset:value;，undefined 返回空字符串。
    * @example
    * s.inset.raw('inherit') // inset:inherit;
    */
-  raw(value: Property.Inset | CssString): string {
+  raw(value: Property.Inset | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -6536,12 +6536,12 @@ class InsetBlockCssRuntime extends LengthCssProperty {
    * 原样生成 inset-block 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 inset-block:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 inset-block:value;，undefined 返回空字符串。
    * @example
    * s.insetBlock.raw('inherit') // inset-block:inherit;
    */
-  raw(value: Property.InsetBlock | CssString): string {
+  raw(value: Property.InsetBlock | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -7822,12 +7822,12 @@ class InsetBlockEndCssRuntime extends LengthCssProperty {
    * 原样生成 inset-block-end 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 inset-block-end:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 inset-block-end:value;，undefined 返回空字符串。
    * @example
    * s.insetBlockEnd.raw('inherit') // inset-block-end:inherit;
    */
-  raw(value: Property.InsetBlockEnd | CssString): string {
+  raw(value: Property.InsetBlockEnd | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -7934,12 +7934,12 @@ class InsetBlockStartCssRuntime extends LengthCssProperty {
    * 原样生成 inset-block-start 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 inset-block-start:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 inset-block-start:value;，undefined 返回空字符串。
    * @example
    * s.insetBlockStart.raw('inherit') // inset-block-start:inherit;
    */
-  raw(value: Property.InsetBlockStart | CssString): string {
+  raw(value: Property.InsetBlockStart | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -8047,12 +8047,12 @@ class InsetInlineCssRuntime extends LengthCssProperty {
    * 原样生成 inset-inline 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 inset-inline:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 inset-inline:value;，undefined 返回空字符串。
    * @example
    * s.insetInline.raw('inherit') // inset-inline:inherit;
    */
-  raw(value: Property.InsetInline | CssString): string {
+  raw(value: Property.InsetInline | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -9333,12 +9333,12 @@ class InsetInlineEndCssRuntime extends LengthCssProperty {
    * 原样生成 inset-inline-end 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 inset-inline-end:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 inset-inline-end:value;，undefined 返回空字符串。
    * @example
    * s.insetInlineEnd.raw('inherit') // inset-inline-end:inherit;
    */
-  raw(value: Property.InsetInlineEnd | CssString): string {
+  raw(value: Property.InsetInlineEnd | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -9446,12 +9446,12 @@ class InsetInlineStartCssRuntime extends LengthCssProperty {
    * 原样生成 inset-inline-start 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 inset-inline-start:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 inset-inline-start:value;，undefined 返回空字符串。
    * @example
    * s.insetInlineStart.raw('inherit') // inset-inline-start:inherit;
    */
-  raw(value: Property.InsetInlineStart | CssString): string {
+  raw(value: Property.InsetInlineStart | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -9560,12 +9560,12 @@ class InterpolateSizeCssRuntime extends CssProperty {
    * 原样生成 interpolate-size 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 interpolate-size:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 interpolate-size:value;，undefined 返回空字符串。
    * @example
    * s.interpolateSize.raw('inherit') // interpolate-size:inherit;
    */
-  raw(value: Property.InterpolateSize | CssString): string {
+  raw(value: Property.InterpolateSize | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -9618,12 +9618,12 @@ class IsolationCssRuntime extends CssProperty {
    * 原样生成 isolation 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 isolation:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 isolation:value;，undefined 返回空字符串。
    * @example
    * s.isolation.raw('inherit') // isolation:inherit;
    */
-  raw(value: Property.Isolation | CssString): string {
+  raw(value: Property.Isolation | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -9683,12 +9683,12 @@ class JustifyContentCssRuntime extends CssProperty {
    * 原样生成 justify-content 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 justify-content:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 justify-content:value;，undefined 返回空字符串。
    * @example
    * s.justifyContent.raw('inherit') // justify-content:inherit;
    */
-  raw(value: Property.JustifyContent | CssString): string {
+  raw(value: Property.JustifyContent | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -9751,12 +9751,12 @@ class JustifyItemsCssRuntime extends CssProperty {
    * 原样生成 justify-items 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 justify-items:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 justify-items:value;，undefined 返回空字符串。
    * @example
    * s.justifyItems.raw('inherit') // justify-items:inherit;
    */
-  raw(value: Property.JustifyItems | CssString): string {
+  raw(value: Property.JustifyItems | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -9808,12 +9808,12 @@ class JustifySelfCssRuntime extends CssProperty {
    * 原样生成 justify-self 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 justify-self:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 justify-self:value;，undefined 返回空字符串。
    * @example
    * s.justifySelf.raw('inherit') // justify-self:inherit;
    */
-  raw(value: Property.JustifySelf | CssString): string {
+  raw(value: Property.JustifySelf | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -9865,12 +9865,12 @@ class JustifyTracksCssRuntime extends CssProperty {
    * 原样生成 justify-tracks 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 justify-tracks:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 justify-tracks:value;，undefined 返回空字符串。
    * @example
    * s.justifyTracks.raw('inherit') // justify-tracks:inherit;
    */
-  raw(value: Property.JustifyTracks | CssString): string {
+  raw(value: Property.JustifyTracks | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -9918,12 +9918,12 @@ class LeftCssRuntime extends LengthCssProperty {
    * 原样生成 left 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 left:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 left:value;，undefined 返回空字符串。
    * @example
    * s.left.raw('inherit') // left:inherit;
    */
-  raw(value: Property.Left | CssString): string {
+  raw(value: Property.Left | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -10036,12 +10036,12 @@ class LetterSpacingCssRuntime extends LengthCssProperty {
    * 原样生成 letter-spacing 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 letter-spacing:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 letter-spacing:value;，undefined 返回空字符串。
    * @example
    * s.letterSpacing.raw('inherit') // letter-spacing:inherit;
    */
-  raw(value: Property.LetterSpacing | CssString): string {
+  raw(value: Property.LetterSpacing | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -10149,12 +10149,12 @@ class LightingColorCssRuntime extends CssProperty {
    * 原样生成 lighting-color 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 lighting-color:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 lighting-color:value;，undefined 返回空字符串。
    * @example
    * s.lightingColor.raw('inherit') // lighting-color:inherit;
    */
-  raw(value: Property.LightingColor | CssString): string {
+  raw(value: Property.LightingColor | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -10284,12 +10284,12 @@ class LineBreakCssRuntime extends CssProperty {
    * 原样生成 line-break 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 line-break:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 line-break:value;，undefined 返回空字符串。
    * @example
    * s.lineBreak.raw('inherit') // line-break:inherit;
    */
-  raw(value: Property.LineBreak | CssString): string {
+  raw(value: Property.LineBreak | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -10340,12 +10340,12 @@ class LineClampCssRuntime extends CssProperty {
    * 原样生成 line-clamp 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 line-clamp:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 line-clamp:value;，undefined 返回空字符串。
    * @example
    * s.lineClamp.raw('inherit') // line-clamp:inherit;
    */
-  raw(value: Property.LineClamp | CssString): string {
+  raw(value: Property.LineClamp | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -10453,12 +10453,12 @@ class LineHeightCssRuntime extends LengthCssProperty {
    * 原样生成 line-height 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 line-height:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 line-height:value;，undefined 返回空字符串。
    * @example
    * s.lineHeight.raw('inherit') // line-height:inherit;
    */
-  raw(value: Property.LineHeight | CssString): string {
+  raw(value: Property.LineHeight | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -10584,12 +10584,12 @@ class LineHeightStepCssRuntime extends LengthCssProperty {
    * 原样生成 line-height-step 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 line-height-step:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 line-height-step:value;，undefined 返回空字符串。
    * @example
    * s.lineHeightStep.raw('inherit') // line-height-step:inherit;
    */
-  raw(value: Property.LineHeightStep | CssString): string {
+  raw(value: Property.LineHeightStep | CssString | undefined): string {
     return this.declaration(value);
   }
   /**
@@ -10698,12 +10698,12 @@ class ListStyleCssRuntime extends CssProperty {
    * 原样生成 list-style 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 list-style:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 list-style:value;，undefined 返回空字符串。
    * @example
    * s.listStyle.raw('inherit') // list-style:inherit;
    */
-  raw(value: Property.ListStyle | CssString): string {
+  raw(value: Property.ListStyle | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -10752,12 +10752,12 @@ class ListStyleImageCssRuntime extends CssProperty {
    * 原样生成 list-style-image 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 list-style-image:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 list-style-image:value;，undefined 返回空字符串。
    * @example
    * s.listStyleImage.raw('inherit') // list-style-image:inherit;
    */
-  raw(value: Property.ListStyleImage | CssString): string {
+  raw(value: Property.ListStyleImage | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -10810,12 +10810,12 @@ class ListStylePositionCssRuntime extends CssProperty {
    * 原样生成 list-style-position 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 list-style-position:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 list-style-position:value;，undefined 返回空字符串。
    * @example
    * s.listStylePosition.raw('inherit') // list-style-position:inherit;
    */
-  raw(value: Property.ListStylePosition | CssString): string {
+  raw(value: Property.ListStylePosition | CssString | undefined): string {
     return this.declaration(value);
   }
 }
@@ -10867,12 +10867,12 @@ class ListStyleTypeCssRuntime extends CssProperty {
    * 原样生成 list-style-type 声明，保留关键字补全并接受自定义 CSS 值。
    *
    * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；不包含属性名或末尾分号。数字不自动添加单位。
-   * @returns 完整声明字符串，形如 list-style-type:value;。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 list-style-type:value;，undefined 返回空字符串。
    * @example
    * s.listStyleType.raw('inherit') // list-style-type:inherit;
    */
-  raw(value: Property.ListStyleType | CssString): string {
+  raw(value: Property.ListStyleType | CssString | undefined): string {
     return this.declaration(value);
   }
 }

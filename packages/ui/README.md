@@ -74,6 +74,8 @@ import { Icon, Provider } from 'zerodep-js-ui';
 
 color/size 直接复用 CSS 作者 color.raw/fontSize.raw 的参数类型，保留主题关键字和原始 CSS 值。省略时继承文字颜色/字号，默认宽高为 1em；size 对应 font-size，数字不自动补 px。`s.keywords.color._primary` 是可传入的原值，`s.color._primary` 是 css(...) 使用的完整声明。
 
+CSS 作者支持 raw(undefined) 省略声明，Icon 直接调用 raw(color)/raw(size)。动态撤销这两个属性时会恢复周围文字样式，无需组件自行过滤可选值。
+
 strokeWidth、width/height、viewBox、事件、class/style 等原生 SVG 属性可透传；用户 class 在默认样式之后组合，style 遵循原生规则。Icon 的内容由 icon 数据负责，不同时提供 children 入口。
 
 默认图标作为装饰设置 aria-hidden；传入 aria-label 或 aria-labelledby 时默认作为 role=img 的有名称图形。显式 aria 属性可覆盖默认值。只有图标的按钮由按钮提供操作名称。

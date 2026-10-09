@@ -6,6 +6,11 @@ s.animationPlayState.raw('running');
 s.animationPlayState.raw('arbitrary-css-value');
 s.animationPlayState.running satisfies string;
 s.width.raw(0);
+s.color.raw(undefined) satisfies string;
+s.fontSize.raw(undefined) satisfies string;
+s.display.raw(undefined) satisfies string;
+// @ts-expect-error raw 只新增 undefined 省略语义，不接受布尔值。
+s.color.raw(false);
 s.width.min(0, '10px');
 s.opacity.max(0.25, 1);
 s.fontWeight.clamp(100, 400, 900);

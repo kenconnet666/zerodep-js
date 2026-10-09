@@ -8,15 +8,15 @@
 
 ## 工作区
 
-| 包                | 职责                                                  |
-| ----------------- | ----------------------------------------------------- |
-| packages/core     | 响应式、组件、DOM、生命周期、JSX 类型和运行时协议     |
-| packages/ssr      | 请求隔离、HTML 渲染、转义和数据编码                   |
-| packages/compiler | Babel/CSS 转换、Vite 插件、框架检查与 TS7.1 语言服务  |
-| packages/css      | CSS 作者、关键字、隐式变量运行时与浏览器/SSR 样式收集 |
-| apps/example      | 使用实际包产物的 CSR/SSR 示例和任务应用               |
-| packages/ui       | Provider、亮暗主题、语言与日期时区，暂不发布          |
-| apps/docs         | 组件库与框架文档应用                                  |
+| 包                | 职责                                                 |
+| ----------------- | ---------------------------------------------------- |
+| packages/core     | 响应式、组件、DOM、生命周期、JSX 类型和运行时协议    |
+| packages/ssr      | 请求隔离、HTML 渲染、转义和数据编码                  |
+| packages/compiler | Babel/CSS 转换、Vite 插件、框架检查与 TS7.1 语言服务 |
+| packages/css      | CSS 作者、关键字、通用主题与浏览器/SSR 样式收集      |
+| apps/example      | 使用实际包产物的 CSR/SSR 示例和任务应用              |
+| packages/ui       | Provider、Icon、语言与日期时区，暂不发布             |
+| apps/docs         | 组件库与框架文档应用                                 |
 
 不提供外部框架运行时适配，也不把预编译组件库链接到工作区源码。
 

@@ -13,6 +13,33 @@ function run(source: string) {
 }
 
 describe('原生 CSS 编译', () => {
+  it.each([false, true])('raw 可选值撤销声明与私有变量，随后能恢复（named=%s）', (named) => {
+    const { result, host } = run(`
+import { _state } from 'zerodep-js';
+import { css } from 'zerodep-js-css';
+function create() {
+  let color = _state<string | undefined>('#123456');
+  ${named ? 'const name = css(s.color.raw(color), s.display.block);' : ''}
+  const view = <div class={${named ? 'name' : 'css(s.color.raw(color), s.display.block)'}} style={{padding:'2px'}} />;
+  const read = () => ({className:view.props.class, style:view.props.style});
+  const before = read();
+  color = undefined;
+  const removed = read();
+  color = '#654321';
+  return [before, removed, read()];
+}
+const result = create();`);
+    const [before, removed, restored] = result as Array<{ className: string; style: string }>;
+    expect(before!.style).toContain('#123456');
+    expect(removed!.style).toContain('padding:2px');
+    expect(removed!.style).not.toContain('--zj-');
+    expect(host.rules().find((rule) => rule.className === removed!.className)?.body).toBe(
+      'display:block;',
+    );
+    expect(restored!.style).toContain('#654321');
+    expect(restored!.className).toBe(before!.className);
+    expect(host.cssText()).not.toContain('undefined');
+  });
   it('关键字绑定源码映射仍指向原始成员读取', () => {
     const source = `import { css } from 'zerodep-js-css';
 function view() { return <div class={css(s.color._primary)} />; }`;
