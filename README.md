@@ -84,3 +84,5 @@ pnpm lsp:completions
 框架源码使用 MIT License；成熟依赖按各自许可证分发，core 的生成数据来源见包内 THIRD_PARTY_NOTICES.md。
 
 原生 [CSS](docs/css.md) 由工作区 zerodep-js-css 提供：命名 css 自动追踪，安全动态值隐式绑定元素变量；zerodep() 默认完成转换，无需适配器或扩展配置。
+
+UI 的 [按钮与 Flex](docs/buttons.md) 已提供独立槽转发、等比尺寸、受控切换及相连布局。当前状态见 [UI 交接](docs/handoff-ui-buttons-2026-10-09.md)，UI 保持 private。

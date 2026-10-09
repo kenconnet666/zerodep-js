@@ -20,7 +20,10 @@ it('单独消费 Button 只包含使用图标与 Spinner，不带入其他成品
     },
   });
   const chunks = (Array.isArray(result) ? result : [result])
-    .flatMap((output) => output.output)
+    .flatMap((output) => {
+      if (!('output' in output)) throw new Error('按钮消费验证不应启动 watch');
+      return output.output;
+    })
     .filter((output) => output.type === 'chunk');
   const code = chunks.map((chunk) => chunk.code).join('\n');
   expect(code).not.toContain('Flex attached');

@@ -4,6 +4,8 @@
 
 基础组件与字号比例示例展示 Text/Ripple/Spinner/ButtonBase，以及 14/16/20px 根字号下的五种按钮组合。em 控制组件内部比例（含边框和焦点），不默认叠加独立点击区域下限。测量示例覆盖 vw/clamp/rem/%/CSS 变量/cqw、固定容器的字号观察和 Portal 字号镜像。
 
+ButtonDemo 展示 Button/IconButton/ToggleButton/LinkButton 与 Flex，包含原生表单、受控切换、加载、独立槽转发和相连布局的隐藏/重排/RTL/纵向书写。稳定 API 说明集中在 [按钮与 Flex](../../docs/buttons.md)。
+
 从仓库根目录执行：
 
 ```sh

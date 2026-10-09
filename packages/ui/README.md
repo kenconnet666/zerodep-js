@@ -1,19 +1,21 @@
 # zerodep-js-ui
 
-组件库提供 Provider、Icon、Text、Ripple、Spinner、ButtonBase、中文/英文语言包和地区/时区工具。亮暗主题与通用 token 由 zerodep-js-css 提供。包保持 private，不加入框架四包发布流程。
+组件库提供 Provider、Icon、Text、Ripple、Spinner、ButtonBase、Button/IconButton/ToggleButton/LinkButton、Flex，以及语言/地区工具。亮暗主题与通用 token 由 zerodep-js-css 提供。包保持 private，不加入框架四包发布流程。
 
 - `src/provider/`：Provider 组件、上下文与相关基础配置。
 - `src/index.ts`：公开导出入口。
 - `src/utils/`：slotProps、事件组合和按压资源工具；不设置子目录 index.ts。
 - `src/base/Icon.tsx`：静态 Lucide 图标，颜色/尺寸复用 CSS 主题类型。
+- `src/base/`：原生按钮底座、四类成品按钮及文字/加载/波纹。
+- `src/layout/Flex.tsx`：普通布局与相连控件；`src/internal/` 保存私有复用实现，不公开导出。
 - 通用主题位于 `packages/css/src/theme/`，从 `zerodep-js-css` 导入。
 - `src/provider/lang/`：内置语言包和自定义语言包契约。
 - `src/provider/locale.ts`：基于 Intl、date-fns、@date-fns/tz 的格式化与日期转换。
 - `dist/`：构建后的 ESM、类型声明和 source map。
 
-后续组件按职责直接放在 `src/input/`、`src/display/`、`src/feedback/`、`src/layout/`、`src/navigation/` 下，不再增加 `components` 层。这五个目录目前仅放置 `.gitkeep`，用于在 Git 中保留目录，不代表已有组件实现；公开 API 统一从 `src/index.ts` 导出。
+后续组件按职责放置，不增加 `components` 层；input/display/feedback/navigation 仍为预留目录。公开 API 统一从 `src/index.ts` 导出。
 
-本阶段交接见 [2026-10-09 交接文档](../../docs/handoff-2026-10-09.md)。
+成品组件契约与示例见 [按钮与 Flex](../../docs/buttons.md)，当前工程状态见 [UI 交接](../../docs/handoff-ui-buttons-2026-10-09.md)。
 
 从仓库根目录执行 `pnpm build:ui`。构建先检查框架语义，再由 Vite + zerodep 插件转换 TSX，最后由固定的 TypeScript 7.1 生成声明；不能用普通 tsc 擦除结果执行组件宏。
 
@@ -89,7 +91,7 @@ Text 的 as 选择 span/p/strong/em/small/code/h1-h6；color、size、weight、l
 
 Spinner 复用 Lucide 图形，继承 Icon 的颜色/尺寸与可访问属性；默认装饰，业务加载状态由调用方拥有。旋转周期为组件专用值，减少动态效果时关闭旋转。
 
-Ripple 直接放在 position:relative 的 button 内，自己的 span 负责绝对定位和裁剪。color 接受主题关键字/CSS 值；centered 控制从中心扩散，键盘总从中心反馈。disabled、指针取消/移出、滚动、失焦和卸载均会结束按压。它不合成 click，也不承担焦点语义。
+Ripple 直接放在 position:relative 的 button 或 a 内，自己的 span 负责绝对定位和裁剪。color 接受主题关键字/CSS 值；centered 控制从中心扩散，键盘总从中心反馈。链接的 Space 不产生按钮式反馈。disabled、指针取消/移出、滚动、失焦和卸载均会结束按压。它不合成 click，也不承担焦点语义。
 
 ButtonBase 是后续按钮的原生底座，默认 type=button；支持原生按钮属性、disabled 和 ripple 开关。关闭 Ripple 后保留 focus-visible 轮廓。slotRipple 可为对象或接收 {disabled} 的纯函数；disabled 由底座拥有，槽不能覆盖。
 
@@ -116,9 +118,9 @@ CssValue<K, Theme> 和 _mergeClasses 在 zerodep-js-css 中；DomRef<T> 与 _com
 
 ## 自动维护唯一入口
 
-运行 pnpm ui:generate 更新 src/index.ts；pnpm ui:check 检查过期与重复导出，已进入 CI 的 pnpm check。生成器用 Babel AST 读取 base/utils 下的具名声明，递归收集并区分 type 导出；拒绝链接、子目录 index.ts 和重复名称。Provider 的上下文实现通过明确入口清单限制，避免暴露内部键。
+运行 pnpm ui:generate 更新 src/index.ts；pnpm ui:check 检查过期与重复导出，已进入 CI 的 pnpm check。生成器用 Babel AST 读取 base/utils/layout 下的具名声明，递归收集并区分 type 导出；拒绝链接、子目录 index.ts 和重复名称。internal 不扫描，Provider 通过明确入口清单限制。
 
-组件转发使用独立 slotXxx 属性：当前为 slotRipple，后续部件分别使用 slotIcon、slotText 等自己的属性。无统一 slotProps 对象。SlotProps<P, S> 与 _resolveSlotProps/_mergeSlotProps 是单槽通用工具，不改变这一使用约定。
+组件转发使用独立 slotXxx 属性：slotRipple、slotIcon、slotStartIcon、slotEndIcon、slotText、slotSpinner。无统一 slotProps 对象。SlotProps<P, S> 与 _resolveSlotProps/_mergeSlotProps 是单槽通用工具。
 
 ## 字号、等比尺寸与测量
 

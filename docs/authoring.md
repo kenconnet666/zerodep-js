@@ -1,6 +1,6 @@
-# 输入绑定、编辑历史和按需组件
+# 输入绑定、快照和按需组件
 
-以下能力已包含在发布的 1.0.0-rc.7 中。使用同版本 core/compiler/Vite/use；当前编译输出协议为 2，需要重新构建应用及预编译组件库。
+本文说明当前源码的绑定、快照和按需组件。core/compiler/ssr 使用一致版本，Vite 插件从 compiler/vite 导入；packages/use 已移除。升级框架后重新构建应用及预编译组件库，历史发行记录见发布文档。
 
 ## 输入绑定
 
@@ -60,7 +60,7 @@ const NameField = _component(
 
 其他字段遵循相同规则：open 对应 onOpenChange，checked 对应 onCheckedChange。组件可以绑定多个字段，无关必填 props 仍必须提供；父组件拥有数据，子组件通过回调请求改变。
 
-当前源码固定 JetBrains TS7.1；WebStorm 原生类型引擎与框架 LSP 的配置、适用 EAP 构建和补丁步骤统一见 [环境配置](environment-setup.md)。不要继续安装旧的自维护 SDK 或照搬旧平台包选择方式。Ctrl+空格可能被输入法截获，必要时使用“代码 → 代码补全 → 基本”；代码中的冒号使用 ASCII `:`，不使用输入法生成的 `：`。
+当前源码固定微软官方 TypeScript 7.1.0-dev.20261008.1；WebStorm 原生类型引擎与框架 LSP 的配置、适用 EAP 构建和代理适配统一见 [环境配置](environment-setup.md)。不使用 JetBrains 分支或自维护 SDK。Ctrl+空格可能被输入法截获，必要时使用“代码 → 代码补全 → 基本”；代码中的冒号使用 ASCII `:`，不使用输入法生成的 `：`。
 
 ## 快照备份
 

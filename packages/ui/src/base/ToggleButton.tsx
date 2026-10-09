@@ -22,7 +22,9 @@ export type ToggleButtonProps = Omit<
   'size' | 'color' | 'children' | 'aria-busy' | 'aria-pressed' | 'type'
 > &
   ActionProps<ToggleButtonState> & {
+    /** 父级拥有的持续选中状态，可使用 bind:pressed。 */
     pressed: boolean;
+    /** 请求切换；父级不接受时仍显示原 pressed。 */
     onPressedChange: (pressed: boolean) => void;
     type?: never;
   } & (

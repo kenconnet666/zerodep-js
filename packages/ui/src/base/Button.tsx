@@ -10,8 +10,10 @@ import { useCss } from '../provider/context.js';
 export type ButtonVariant = 'solid' | 'outline' | 'text';
 export interface ButtonState {
   readonly variant: ButtonVariant;
+  /** 调用方显式禁用，不包含 loading。 */
   readonly disabled: boolean;
   readonly loading: boolean;
+  /** disabled || loading，用于判断当前能否激活。 */
   readonly unavailable: boolean;
 }
 export type ButtonProps = Omit<

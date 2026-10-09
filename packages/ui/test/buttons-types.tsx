@@ -1,6 +1,7 @@
 import { Search } from '@lucide/icons';
 import { _component, _state } from 'zerodep-js';
 import { Button, IconButton, ToggleButton, LinkButton, Flex } from '../src/index.js';
+import type { LinkButtonProps } from '../src/index.js';
 
 export const ButtonTypes = _component(() => {
   let pressed = _state(false);
@@ -43,15 +44,13 @@ const heading = <Button slotText={{ as: 'h1' }} />;
 const iconOverride = <Button slotStartIcon={{ icon: Search }} />;
 // @ts-expect-error 链接必须有地址。
 const missingHref = <LinkButton />;
-// @ts-expect-error 链接 ref 不会变成按钮。
-const linkRef = (
-  <LinkButton
-    href="/"
-    ref={(node: HTMLButtonElement) => {
-      node.disabled = true;
-    }}
-  />
-);
+const linkRef: LinkButtonProps = {
+  href: '/',
+  // @ts-expect-error 链接 ref 不会变成按钮。
+  ref: (node: HTMLButtonElement) => {
+    node.disabled = true;
+  },
+};
 // @ts-expect-error 内部图标不能通过槽成为另一可访问对象。
 const namedDecoration = <Button slotStartIcon={{ 'aria-label': '覆盖' }} />;
 void [

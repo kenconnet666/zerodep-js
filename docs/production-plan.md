@@ -73,7 +73,7 @@
 
 这些是源码实现状态，不表示新 npm 版本已发布，也不替代同一提交完整 CI。当前重点转向组合与错误路径审计，阶段证据和待验收项集中在 [交接记录](api-hardening-handoff.md)。授权允许继续有价值的完善，不为清单数量扩充 API。
 
-以下暂不进入本轮：完整 Dialog/Button/TextField 等组件、视觉主题/变体组件体系、退场动画协调、通用 Suspense/流式 SSR、请求缓存/并发策略、watch、防抖、ref 组合、class 合并和复杂外部订阅。
+当前未纳入 UI 范围的能力包括 Dialog/TextField、退场动画协调、通用 Suspense/流式 SSR、请求缓存/并发策略、watch、防抖和复杂外部订阅。按钮与基础组合能力的当前状态见第 10–12 节。
 
 ## 6. 单仓库职责与依赖
 
@@ -135,17 +135,17 @@
 - 基础组件的 size 统一表示字号输入，使用 CssValue<'fontSize'>，省略时继承；ButtonBase 增加同一入口。Icon/Spinner 保持宽高 1em，局部比例只通过其自身字号表达一次。
 - ButtonBase 保持原生语义与无预设间距的底座，不在此阶段创建成品 Button 或密度枚举。按钮内边距、图文间距和圆角的 em 比例在文档组合样例中试点；字体与组件密度分开。
 - 采用讨论中的比例样例：line-height 1.25、padding-block 0.625em、padding-inline 1em、gap 0.5em、图标字号 1.125em。边框 0.0625em、焦点轮廓/偏移 0.125em；样例最小区域使用 2.5em，应用可显式选择额外下限。尺寸样例值归组合示例，不扩充全局 token。
-- 用 14/16/20px 基准验证纯文字、图文、仅图标、加载和长文字；同时覆盖主题字号、继承、动态撤销 size、局部字号覆盖和 SSR/接管。新 Button/密度 API 待本轮完成后继续讨论。
+- 用 14/16/20px 基准验证纯文字、图文、仅图标、加载和长文字；同时覆盖主题字号、继承、动态撤销 size、局部字号覆盖和 SSR/接管。成品按钮与 Flex 的当前契约见第 12 节，不引入密度枚举。
 
-## 12. Button 系列与 Flex 规划（范围已确定，尚未实施）
+## 12. Button 系列与 Flex（源码已实现）
 
 2026-10-09 用户最新范围为 Button、IconButton、ToggleButton、LinkButton、Flex 及必要基础能力。Group 改名 Flex，不保留 Group 别名或独立 ButtonGroup/ToggleButtonGroup；MenuButton 暂不做。
 
-完整 API 草案、来源、取舍和验收矩阵见 [Button 系列与 Flex 实施规划](button-components-plan.md)。该文档细化本节，未实现的提议不能当作已有公共 API。
+用户随后授权完整执行。公共契约和使用边界见 [按钮与 Flex](buttons.md)，实现与验证记录见 [UI 交接](handoff-ui-buttons-2026-10-09.md)。原候选规划已由这两个入口替代。
 
 - Flex 负责横纵布局、间距、换行、等分和可选 attached 外观；attached 处理首尾圆角、中间无圆角、相邻边框、RTL、隐藏/动态子项和焦点层级，不接管选择状态或键盘导航。
 - 四类控件复用已有 ButtonBase/Icon/Text/Spinner/Ripple 与槽工具；LinkButton 使用原生 a，ToggleButton 复用 pressed/onPressedChange 的组件绑定。新增组件仍使用独立 slotXxx 属性。
 - size 继续是 CSS 字号，组件专用几何值用 em，通用 token 在 CSS，按钮外观复用代码在 UI 私有实现中。core 暂无新增 API；不为本次按钮引入定位库或通用焦点管理器。
-- 顺序：契约冻结 → Flex 普通布局 → Button 试点 → IconButton → ToggleButton → LinkButton → Flex attached 组合验收 → 集成交接。
-- 加载方案在详细规划中重新比较：建议首版使用原生 disabled，明确其焦点代价；先前保留焦点的提议需要额外事件与 SSR 保护设计。实施前确定，不静默改变契约。
-- 本轮只交付规划；后续阶段分别进行相关本地检查、中文提交和推送，完整矩阵由同一提交的 CI 验证。
+- 加载采用原生 disabled || loading；不承诺保留焦点，不自动恢复焦点。LinkButton 不可用时移除 href。ToggleButton 使用受控 pressed/onPressedChange 与 bind:pressed。
+- core 修复绑定类型映射丢失 ARIA 必填成员的问题，没有新增运行时 API。UI 私有样式/内容不进入根入口，自动入口增加 layout 扫描。
+- 本地相关检查与中文提交按阶段完成；完整矩阵由同一提交 CI 验证，UI 仍 private，不进行 npm 发布。
