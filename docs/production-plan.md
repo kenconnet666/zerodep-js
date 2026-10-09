@@ -137,28 +137,15 @@
 - 采用讨论中的比例样例：line-height 1.25、padding-block 0.625em、padding-inline 1em、gap 0.5em、图标字号 1.125em。边框 0.0625em、焦点轮廓/偏移 0.125em；样例最小区域使用 2.5em，应用可显式选择额外下限。尺寸样例值归组合示例，不扩充全局 token。
 - 用 14/16/20px 基准验证纯文字、图文、仅图标、加载和长文字；同时覆盖主题字号、继承、动态撤销 size、局部字号覆盖和 SSR/接管。新 Button/密度 API 待本轮完成后继续讨论。
 
-## 12. 按钮与相关组件候选计划（待讨论，未实施）
+## 12. Button 系列与 Flex 规划（范围已确定，尚未实施）
 
-用户要求在字号与测量工作完成后规划。下面是下一阶段建议，不是已确认的公共 API；先试点 Button，再扩展同一套规则。
+2026-10-09 用户最新范围为 Button、IconButton、ToggleButton、LinkButton、Flex 及必要基础能力。Group 改名 Flex，不保留 Group 别名或独立 ButtonGroup/ToggleButtonGroup；MenuButton 暂不做。
 
-| 顺序 | 组件                             | 目标与边界                                                                                         |
-| ---- | -------------------------------- | -------------------------------------------------------------------------------------------------- |
-| 1    | Button                           | 组合 ButtonBase、Icon、Text、Spinner、Ripple，验证完整操作按钮的外观、加载、表单与 slot 转发。     |
-| 2    | IconButton                       | 复用已验证的按钮规则，提供等比方形区域；要求 aria-label 或 aria-labelledby，加载时保留可访问名称。 |
-| 3    | ButtonGroup                      | 横向/纵向布局、相邻边框和圆角、共享视觉配置；普通按钮组保持原生 Tab 顺序，不默认作为 toolbar。     |
-| 后续 | ToggleButton / ToggleButtonGroup | 有真实选择场景时再确定单选、多选和键盘协议；状态用 aria-pressed，不能只换颜色。                    |
-| 后续 | LinkButton / MenuButton          | 导航用原生 a；菜单触发待菜单、弹层定位和焦点恢复一起实施，避免先暴露不完整的 as/href 协议。        |
+完整 API 草案、来源、取舍和验收矩阵见 [Button 系列与 Flex 实施规划](button-components-plan.md)。该文档细化本节，未实现的提议不能当作已有公共 API。
 
-建议首版 Button：
-
-- variant 先限定 solid/outline/text，默认 solid；不同时引入 size 枚举和密度枚举。size 继续 CssValue<'fontSize'>，默认继承，所有专用几何比例在组件内部用 em。
-- color 保持 CSS 前景色语义，类型为 CssValue<'color'>；backgroundColor 使用对应 CSS 输入类型。variant 提供默认配色，显式属性覆盖；不让同一个 color 在不同 variant 下变成不同 CSS 属性，也不从任意 CSS 颜色推算文字对比色。默认实心配对使用主题 _primary/_onPrimary，自定义配色由调用方一起指定。
-- startIcon/endIcon 接收现有 LucideIconData；children 放按钮标签，内部使用 Text 的 span，保持自定义非交互行内容能力。按钮不嵌套链接或其他交互控件。
-- 每个部件单独转发：slotStartIcon、slotEndIcon、slotText、slotSpinner、slotRipple，支持对象与状态回调。根 button 的原生属性、class/style/ref 直接传入；不额外增加 slotRoot，不引入统一 slotProps。
-- 状态回调建议暴露 disabled/loading/variant；内容、图标来源、原生 type、busy 和禁止交互的语义由组件拥有，槽属性不能覆盖这些约束。用户 class/style 最后参与合并，ref 和事件沿用已有工具。
-- loading 由调用方控制，不自动执行异步函数或维护请求状态。保留原标签及占位以避免宽度跳动，Spinner 居中显示；aria-busy 标记忙碌。建议加载中阻止再次触发并保留当前焦点；这需要补齐底座可聚焦但不可激活的状态以及表单默认行为拦截，不能只添加 aria-disabled。显式 disabled 仍使用原生 disabled。
-- 原生 type 默认为 button，显式 submit/reset 保留表单语义。默认长文本自然换行，不强制省略；整行宽度先通过 class/style 表达。
-
-验证按组件逐步补充：字号等比与动态单位、亮暗主题与显式颜色、RTL 前后图标、加载前后宽度/名称/焦点、pointer 与 Enter/Space 防重复触发、原生 submit/reset、disabled、槽属性覆盖和生命周期、SSR/接管。普通按钮不安装尺寸或字号观察器；仅实际需要跨 DOM 或几何计算的组件使用测量工具。
-
-先讨论确认首版外观范围、颜色属性和加载焦点策略，再实施 Button；不在此阶段新增工具栏导航、焦点陷阱、全局焦点管理器或虚拟列表。
+- Flex 负责横纵布局、间距、换行、等分和可选 attached 外观；attached 处理首尾圆角、中间无圆角、相邻边框、RTL、隐藏/动态子项和焦点层级，不接管选择状态或键盘导航。
+- 四类控件复用已有 ButtonBase/Icon/Text/Spinner/Ripple 与槽工具；LinkButton 使用原生 a，ToggleButton 复用 pressed/onPressedChange 的组件绑定。新增组件仍使用独立 slotXxx 属性。
+- size 继续是 CSS 字号，组件专用几何值用 em，通用 token 在 CSS，按钮外观复用代码在 UI 私有实现中。core 暂无新增 API；不为本次按钮引入定位库或通用焦点管理器。
+- 顺序：契约冻结 → Flex 普通布局 → Button 试点 → IconButton → ToggleButton → LinkButton → Flex attached 组合验收 → 集成交接。
+- 加载方案在详细规划中重新比较：建议首版使用原生 disabled，明确其焦点代价；先前保留焦点的提议需要额外事件与 SSR 保护设计。实施前确定，不静默改变契约。
+- 本轮只交付规划；后续阶段分别进行相关本地检查、中文提交和推送，完整矩阵由同一提交的 CI 验证。
