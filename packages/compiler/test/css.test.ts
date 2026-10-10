@@ -1,10 +1,19 @@
 import { describe, expect, it } from 'vitest';
 import { Css, SystemKeywords, systemKeywords } from 'zerodep-js-css';
 import { createServerCssHost, withCssHost } from 'zerodep-js-css';
-import { execute } from './execute.js';
+import { execute as executeRaw } from './execute.js';
+import { nativeAttributes } from '../../core/src/native/attributes.js';
+import type { Props } from 'zerodep-js';
 import { compile } from '../src/index.js';
 import { cssBinding } from 'zerodep-js-css';
 import { TraceMap, originalPositionFor } from '@jridgewell/trace-mapping';
+
+function execute(source: string, extra: Record<string, unknown> = {}) {
+  return executeRaw(source, {
+    ...extra,
+    attributes: (node: { props: Props }) => Object.fromEntries(nativeAttributes(node.props, 'div')),
+  });
+}
 
 function run(source: string) {
   const host = createServerCssHost();
@@ -13,6 +22,90 @@ function run(source: string) {
 }
 
 describe('原生 CSS 编译', () => {
+  it('className 替换共享样式时清除变量，显式 style 保留且最后覆盖', () => {
+    const { result } = run(`
+import { _state } from 'zerodep-js';
+import { css } from 'zerodep-js-css';
+function appearance(color) { return css(s.color.raw(color)); }
+function create() {
+  let plain = _state(false);
+  const view = <div class={appearance('#123456')} className={plain ? 'external' : appearance('#abcdef')} style={{color:'blue'}} />;
+  const before = attributes(view);
+  plain = true;
+  return [before, attributes(view)];
+}
+const result = create();`);
+    const [before, after] = result as Array<{ class: string; style: string }>;
+    expect(before!.style).toContain(':#abcdef;');
+    expect(before!.style).not.toContain('#123456');
+    expect(before!.style.endsWith('color:blue')).toBe(true);
+    expect(after).toEqual({ class: 'external', style: 'color:blue' });
+  });
+  it('共享函数的隐式样式经过 class 合并和组件转发，SSR 多实例不串值', () => {
+    const { result, host } = run(`
+import { _component, _state, renderToString } from 'zerodep-js';
+import { css, _mergeClasses } from 'zerodep-js-css';
+function appearance(color) { return css(s.color.raw(color)); }
+const Child = _component(({ class: name, ...rest }) => <button {...rest} class={_mergeClasses(css(s.display.block), name)} />);
+function create() {
+  let color = _state('#123456');
+  const App = _component(() => <div><Child class={appearance(color)} style={{color:'blue'}}/><Child class={appearance('#abcdef')}/></div>);
+  const before = renderToString(App);
+  color = '#654321';
+  const after = renderToString(App);
+  color = 'inherit';
+  return [before, after, renderToString(App)];
+}
+const result = create();`);
+    const [before, after, fallback] = result as string[];
+    expect(before).toContain(':#123456;');
+    expect(after).not.toContain('#123456');
+    expect(after).toContain(':#654321;');
+    for (const html of [before, after, fallback]) {
+      expect(html).toContain(':#abcdef;');
+      expect(html).toContain('color:blue');
+      expect(html).not.toContain('[object Object]');
+    }
+    expect(fallback).not.toContain('#654321');
+    expect(host.cssText()).toContain('color:inherit;');
+    expect(host.cssText()).not.toContain('#123456');
+    expect(host.cssText()).not.toContain('#654321');
+  });
+
+  it('主题 raw 关键字隐式绑定只读一次主题值，覆写 raw 保留原语义', () => {
+    let reads = 0;
+    class Theme extends SystemKeywords {
+      override readonly color = {
+        ...systemKeywords.color,
+        get _brand() {
+          reads++;
+          return '#123456';
+        },
+      };
+    }
+    const themed = new Css(new Theme());
+    const host = createServerCssHost();
+    withCssHost(host, () => {
+      const result = execute(
+        `import { css } from 'zerodep-js-css';
+function appearance(value) { return css(s.color.raw(value)); }
+const result = appearance('_brand');`,
+        { s: themed },
+      ) as { style: string };
+      expect(result.style).toContain(':#123456;');
+    });
+    expect(reads).toBe(1);
+    const custom = { color: { raw: (value: string) => 'background-color:' + value + ';' } };
+    withCssHost(host, () =>
+      execute(
+        `import { css } from 'zerodep-js-css';
+function appearance(value) { return css(s.color.raw(value)); }
+const result = appearance('red');`,
+        { s: custom },
+      ),
+    );
+    expect(host.cssText()).toContain('background-color:red;');
+  });
   it.each([false, true])('raw 可选值撤销声明与私有变量，随后能恢复（named=%s）', (named) => {
     const { result, host } = run(`
 import { _state } from 'zerodep-js';
@@ -21,7 +114,7 @@ function create() {
   let color = _state<string | undefined>('#123456');
   ${named ? 'const name = css(s.color.raw(color), s.display.block);' : ''}
   const view = <div class={${named ? 'name' : 'css(s.color.raw(color), s.display.block)'}} style={{padding:'2px'}} />;
-  const read = () => ({className:view.props.class, style:view.props.style});
+  const read = () => ({className:attributes(view).class, style:attributes(view).style});
   const before = read();
   color = undefined;
   const removed = read();
@@ -85,7 +178,7 @@ function create() {
  return values.map(value => {
    theme = new Theme(value);
    external = '#abcdef';
-   return [view.props.class, view.props.style, s.keywords.color._primary];
+   return [attributes(view).class, attributes(view).style, s.keywords.color._primary];
  });
 }
 const result = create();`,
@@ -125,24 +218,25 @@ const result = create();`,
       execute(
         `
 import { css } from 'zerodep-js-css';
-const attrs = <div class={css(s.color._primary)} />.props;
+const attrs = attributes(<div class={css(s.color._primary)} />);
 const result = { class: attrs.class, style: attrs.style };`,
         { s },
       ),
     ) as { class: string; style: string };
     expect(result.class).toBeTruthy();
-    expect(result.style).toBe('');
+    expect(result.style).toBeUndefined();
     expect(order).toEqual(['color', 'primary']);
   });
 
-  it('嵌套选择器和跨组件主题类名保持原声明，不要求隐藏的变量传递', () => {
+  it('跨组件主题类名携带变量，嵌套选择器仍保持原声明', () => {
     const code = compile(
       `import { css } from 'zerodep-js-css';
 function view() { const name = css(s.color._primary);
 return <Widget class={name}><div class={css(s._hover(s.color._primary))} /></Widget>; }`,
       'theme.tsx',
     ).code;
-    expect(code).not.toContain('cssKeyword');
+    expect(code.match(/\.cssKeyword\(/g)).toHaveLength(1);
+    expect(code).toContain('css(s._hover(s.color._primary))');
   });
   it.each([
     [false, 'width'],
@@ -188,12 +282,12 @@ function create() {
    return 20;
  });
  const node = <div class={css(s.width.px(width))} />;
- const attributes = node.props;
- return [attributes.class, attributes.style];
+ const attrs = attributes(node);
+ return [attrs.class, attrs.style];
 }
 const result = create();`);
     expect((result as string[])[0]).toBeTruthy();
-    expect((result as string[])[1]).toBe('');
+    expect((result as string[])[1]).toBeUndefined();
     expect(host.cssText()).toContain('width:20px;');
     expect(host.cssText()).not.toContain('999px');
   });
@@ -226,11 +320,11 @@ function create() {
  let attrs = _state({ class: 'old', style: { color: 'red', '--user': 'first' } });
  ${named ? `const name = ${call};` : ''}
  const template = <div {...attrs} class={${named ? 'name' : call}} />;
- const first = template.value.read().props;
+ const first = attributes(template.value.read());
  const before = [first.class, first.style];
  width = 40;
  attrs = { class: 'ignored', style: { color: 'blue', '--user': 'second' } };
- const next = template.value.read().props;
+ const next = attributes(template.value.read());
  return [before, next.class, next.style];
 }
 const result = create();`);
@@ -253,9 +347,9 @@ function create() {
  let width = _state(20);
  let attrs = _state({ class: 'external', style: 'width:80px' });
  const template = <div {...{ title: 'before' }} class={css(s.width.px(width))} {...attrs} />;
- const before = template.value.read().props.class;
+ const before = attributes(template.value.read()).class;
  attrs = { class: 'new', style: 'width:90px' };
- const after = template.value.read().props;
+ const after = attributes(template.value.read());
  return [before, after.class, after.style];
 }
 const result = create();`);
@@ -270,10 +364,10 @@ function create() {
  let width = _state(20); let id = _state('a');
  const template = <div {...{ key: id }} class={css(s.width.px(width))} />;
  const first = template.value.read();
- const before = first.props.style;
+ const before = attributes(first).style;
  id = 'b'; width = 30;
  const next = template.value.read();
- return [first === next, before, next.props.style];
+ return [first === next, before, attributes(next).style];
 }
 const result = create();`);
     const [same, before, after] = result as [boolean, string, string];
@@ -322,7 +416,7 @@ import { css } from 'zerodep-js-css';
 function create() {
  const width = _derived.by(() => { record('value'); return 20; });
  const element = <div class={css(s.width.px(width))} />;
- return element.props.class;
+ return attributes(element).class;
 }
 const result = create();`,
         { s: author, record: (value: string) => order.push(value) },
@@ -346,10 +440,11 @@ function create() {
  let width = _state(10);
  function view(width) { return <div class={css(s.width.px(width))} />; }
  const overridden = <div class={css(s.width.px(width))} {...{ class: 'external', style: 'color:red' }} />;
- return [view(50).props.style, overridden.value.read().props.class, overridden.value.read().props.style];
+ return [attributes(view(50)).style, attributes(overridden.value.read()).class, attributes(overridden.value.read()).style];
 }
 const result = create();`);
-    expect(result).toEqual([undefined, 'external', 'color:red']);
+    expect((result as string[])[0]).toContain(':50px;');
+    expect((result as string[]).slice(1)).toEqual(['external', 'color:red']);
   });
 
   it('未进入的条件分支不提前求值', () => {
@@ -360,7 +455,7 @@ function create() {
  let width = _state(10); let enabled = _state(false);
  function fail() { throw new Error('inactive'); }
  const name = css(s.width.px(width), enabled ? fail() : s.color.red);
- return <div class={name} />.props.class;
+ return attributes(<div class={name} />).class;
 }
 const result = create();`);
     expect(result).toMatch(/^z-/);
@@ -378,11 +473,14 @@ function create() {
  return [before, className, saved, className];
 }
 const result = create();`);
-    const values = result as string[];
+    const values = result as Array<{ class: string; style: string }>;
     expect(values[0]).not.toBe(values[1]);
     expect(values[0]).toBe(values[2]);
     expect(values[1]).toBe(values[3]);
-    expect(host.rules()).toHaveLength(2);
+    expect(values[0]!.class).toBe(values[1]!.class);
+    expect(values[0]!.style).toContain(':blue;');
+    expect(values[1]!.style).toContain(':red;');
+    expect(host.rules()).toHaveLength(1);
   });
 
   for (const named of [false, true]) {
@@ -399,9 +497,9 @@ function create(initial) {
  return { view, update() { width += 10; color = 'blue'; } };
 }
 const first = create(20), second = create(40);
-const before = [first.view.props.class, first.view.props.style, second.view.props.style];
+const before = [attributes(first.view).class, attributes(first.view).style, attributes(second.view).style];
 first.update();
-const result = [before, first.view.props.class, first.view.props.style, second.view.props.style];`);
+const result = [before, attributes(first.view).class, attributes(first.view).style, attributes(second.view).style];`);
       const [before, name, updated, other] = result as [string[], string, string, string];
       expect(name).toBe(before[0]);
       expect(before[1]).toContain(':20px');
@@ -415,7 +513,7 @@ const result = [before, first.view.props.class, first.view.props.style, second.v
     });
   }
 
-  it('算术参数绑定，声明级条件、普通别名与跨组件 class 保留重算', () => {
+  it('参数、快照值和跨组件 class 均可绑定，声明级条件保持原分支', () => {
     const code = compile(
       `
 import { _state } from 'zerodep-js';
@@ -427,7 +525,8 @@ function create() {
 }`,
       'example.tsx',
     ).code;
-    expect(code.match(/\.cssBinding\(/g)).toHaveLength(1);
+    expect(code.match(/\.cssBinding\(/g)).toHaveLength(3);
+    expect(code).toContain('? s.width.px(');
     expect(code).toContain('.derived(');
   });
 
@@ -438,13 +537,13 @@ import { css } from 'zerodep-js-css';
 function create() {
  let color = _state('red');
  const view = <div class={css(s.color.raw(color))} />;
- const before = view.props.style;
+ const before = attributes(view).style;
  color = 'initial';
- return [before, view.props.style, view.props.class];
+ return [before, attributes(view).style, attributes(view).class];
 }
 const result = create();`);
     expect((result as string[])[0]).toContain(':red');
-    expect((result as string[])[1]).toBe('');
+    expect((result as string[])[1]).toBeUndefined();
     expect(host.cssText()).toContain('color:initial;');
   });
 

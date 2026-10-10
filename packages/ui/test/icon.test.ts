@@ -1,3 +1,4 @@
+import { expectCssValue } from './style-assertions.js';
 import { describe, expect, it } from 'vitest';
 import { Search, Check, type LucideIconData } from '@lucide/icons';
 import { defineComponent, element, renderToString } from 'zerodep-js';
@@ -76,13 +77,13 @@ describe('Icon 真实构建产物', () => {
   it('CSS 关键字与原值共用主题工具，SSR 请求独立', () => {
     const light = render({ icon: Check, color: '_primary', size: '_lg' });
     const dark = render({ icon: Check, color: '_primary', size: '_lg' }, true);
-    expect(light.css).toContain('color:#245fc5;');
-    expect(dark.css).toContain(`color:${darkTheme.color._primary};`);
+    expectCssValue(light, 'color', '#245fc5');
+    expectCssValue(dark, 'color', darkTheme.color._primary);
     expect(light.css).toContain('font-size:1.125rem;');
     const raw = render({ icon: Check, color: 'var(--brand-color)', size: '20px' });
     expect(raw.css).toContain('color:var(--brand-color);');
     expect(raw.css).toContain('font-size:20px;');
-    expect(render({ icon: Check, color: '_primary' }).css).toContain('color:#245fc5;');
+    expectCssValue(render({ icon: Check, color: '_primary' }), 'color', '#245fc5');
   });
 
   it('自定义数据保留非正方形 viewBox、嵌套节点和属性转义', () => {

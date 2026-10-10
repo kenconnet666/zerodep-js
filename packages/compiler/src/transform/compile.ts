@@ -40,7 +40,7 @@ export interface CompileResult {
 }
 
 // 这是输出协议版本，不跟随普通修复版本变化；修改时须同步 core 的 runtime/bindings。
-const RUNTIME_ABI = 2;
+const RUNTIME_ABI = 3;
 
 interface ReactiveBinding {
   binding: Binding;
@@ -109,12 +109,7 @@ function transformFramework(
   const forCallbacks = collectForCallbacks(ast, report);
   checkGuards(ast, forCallbacks, report);
   const css = prepareCss(ast, program, source);
-  const hasJsx = transformJsx(ast, helper, report, (node, attributes) => {
-    const result = css.elements.get(node);
-    return result
-      ? css.call('cssProps', [attributes, t.arrowFunctionExpression([], result)])
-      : attributes;
-  });
+  const hasJsx = transformJsx(ast, helper, report);
   program.scope.crawl();
   transformForCallbacks(ast, forCallbacks, helper, report);
   program.scope.crawl();
@@ -321,7 +316,6 @@ function transformFramework(
       if (
         errors.length ||
         generated.has(path.node) ||
-        css.identifiers.has(path.node) ||
         path.findParent((parent) => parent.isTSType())
       )
         return;

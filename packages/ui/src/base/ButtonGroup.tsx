@@ -2,6 +2,7 @@ import { _component, type JSX } from 'zerodep-js';
 import { css, _mergeClasses, type CssValue } from 'zerodep-js-css';
 import { useCss } from '../provider/context.js';
 import type { UiTheme } from '../provider/theme/theme.js';
+import { buttonBorderWidth } from './button-style.js';
 
 export interface ButtonGroupProps extends Omit<JSX.IntrinsicElements['div'], 'size'> {
   /** 只支持一维相连，容器不换行。 */
@@ -50,13 +51,13 @@ export const ButtonGroup = _component(
             afterFirst,
             s.borderStartStartRadius.raw(0),
             s.borderEndStartRadius.raw(0),
-            s.marginInlineStart.raw('calc(-1 * var(--zj-action-border, 0.0625em))'),
+            s.marginInlineStart.em(-buttonBorderWidth),
           )
         : s._selector(
             afterFirst,
             s.borderStartStartRadius.raw(0),
             s.borderStartEndRadius.raw(0),
-            s.marginBlockStart.raw('calc(-1 * var(--zj-action-border, 0.0625em))'),
+            s.marginBlockStart.em(-buttonBorderWidth),
           ),
       direction === 'row'
         ? s._selector(beforeLast, s.borderStartEndRadius.raw(0), s.borderEndEndRadius.raw(0))

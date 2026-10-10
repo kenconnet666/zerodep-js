@@ -39,6 +39,7 @@
 - 2026-10-10 布局职责调整：Flex/Grid 仅提供普通布局，删除 attached、按钮子项检查和专用接缝样式。base/ButtonGroup 承担横向/纵向的一维相连，默认 role=group；不做二维，不提供 columns、换行或间距属性，不管理选择状态与方向键导航。此决定取代旧 Flex/Grid attached 契约，不保留兼容别名。
 - 2026-10-10 审查优化：按钮颜色先由主题作者解析，再复用 CSS 安全变量转换；特殊值保留原声明，用户 style 仍最后覆盖。Provider 仅复用当前配置的默认 Intl 格式器，自定义选项逐次读取，不累计历史配置。core 不再公开仅供内部使用的 HTML/SSR 工具。ButtonGroup 由 CSS 处理一维相连，删除仅用于警告的 DOM 子项检查；语言服务只忽略仓库根 .idea/.release/reports，继续监听 dist 与源码同名目录。
 - 不增加 Provider 样式覆盖层；向下传样式只作为确有需要的组件间协作方式，不预建通用体系。ButtonGroup 当前继续使用 CSS 继承和直接子项选择器。
+- UI 使用 css(...)、属性作者与 class 隐式绑定，不手工声明 CSS 变量或拼接工具生成的 style。CSS 共享函数返回 CssClass，_mergeClasses 保留动态值，原生元素统一展开；组件 class 类型复用 ClassValue/JSX 属性。不使用字符串拼接消费样式结果。按钮边框与相连接缝共用 buttonBorderWidth 数值。
 
 ## 验证与交付
 

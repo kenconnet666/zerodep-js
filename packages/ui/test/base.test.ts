@@ -1,3 +1,4 @@
+import { expectCssValue } from './style-assertions.js';
 import { expect, it } from 'vitest';
 import { defineComponent, element, renderToString } from 'zerodep-js';
 
@@ -48,7 +49,7 @@ it('ButtonBase 保留原生按钮语义、独立焦点样式及可关闭 Ripple'
   const forwarded = render(ButtonBase, { slotRipple: { color: '#123456', 'data-slot': 'ripple' } });
   expect(forwarded.html).toContain('data-slot="ripple"');
   expect(forwarded.html).not.toContain('slotRipple=');
-  expect(forwarded.css).toContain('color:#123456;');
+  expectCssValue(forwarded, 'color', '#123456');
   const sized = render(ButtonBase, { size: '_lg', children: '搜索' });
   expect(sized.css).toContain('font-size:1.125rem;');
   expect(sized.html).not.toContain(' size=');
@@ -58,5 +59,5 @@ it('ButtonBase 保留原生按钮语义、独立焦点样式及可关闭 Ripple'
 it('Ripple SSR 只输出视觉层，不读取 document 或安装监听', () => {
   const result = render(Ripple, { color: '_primary' });
   expect(result.html).toContain('aria-hidden="true"');
-  expect(result.css).toContain('pointer-events:none;');
+  expectCssValue(result, 'pointer-events', 'none');
 });

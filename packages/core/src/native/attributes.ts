@@ -227,6 +227,7 @@ export function elementText(tag: string, input: Props): string {
 }
 
 export function nativeAttributes(input: Props, tag: string, namespace = HTML): Map<string, string> {
+  let classStyle = '';
   if (input.value !== undefined && input.defaultValue !== undefined)
     throw new Error('value 与 defaultValue 不能同时提供。');
   if (input.checked !== undefined && input.defaultChecked !== undefined)
@@ -288,13 +289,27 @@ export function nativeAttributes(input: Props, tag: string, namespace = HTML): M
     )
       continue;
     const name = attributeName(key, namespace, tag);
+    let original = input[key];
+    if (name === 'class') {
+      classStyle = '';
+      if (original !== null && typeof original === 'object') {
+        const bundle = original as { class?: unknown; style?: unknown };
+        const className = bundle.class;
+        const style = bundle.style;
+        if (typeof className !== 'string' || typeof style !== 'string')
+          throw new Error('class 使用类名字符串或包含 class/style 字符串的样式结果。');
+        original = className;
+        classStyle = styleText(style);
+      }
+    }
     const value =
-      name === 'style'
-        ? styleText(input[key]) || null
-        : attributeValue(name, input[key], namespace);
+      name === 'style' ? styleText(original) || null : attributeValue(name, original, namespace);
     if (value === null) attributes.delete(name);
     else attributes.set(name, value);
   }
+  // 显式 style 始终在样式工具生成值之后；class 别名覆盖时只保留最终类的变量。
+  if (classStyle)
+    attributes.set('style', [classStyle, attributes.get('style')].filter(Boolean).join(';'));
   for (const name of propertyAttributes)
     if (attributes.has(name)) throw new Error(`${name} 不能同时由 attribute 和 prop:* 绑定。`);
   return attributes;

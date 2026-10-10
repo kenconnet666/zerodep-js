@@ -1,3 +1,4 @@
+import { expectCssValue } from './style-assertions.js';
 import { expect, it } from 'vitest';
 import { defineComponent, element, renderToString } from 'zerodep-js';
 
@@ -43,7 +44,7 @@ it('Grid 拒绝非法数字列数，普通轨道不附加按钮接缝', () => {
     expect(() => render({ columns })).toThrow('正安全整数');
   const result = render({ columns: 2, gap: '1em', alignContent: 'space-between' });
   expect(result.css).toContain('gap:1em;');
-  expect(result.css).toContain('align-content:space-between;');
+  expectCssValue(result, 'align-content', 'space-between');
   expect(result.css).not.toContain('data-ui-action');
   expect(result.css).not.toContain('margin-inline-start');
 });

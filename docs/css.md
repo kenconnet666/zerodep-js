@@ -41,46 +41,45 @@ const className = css(s.color.raw(color), s.fontSize.raw(size));
 
 ## 元素变量与重算
 
-原生元素 class 中直接读取注入主题的关键字（如 `s.color._primary`）也尝试元素变量绑定。编译器只标记读取位置，CSS 库根据每次读取的实际值和可信作者元数据决定是否绑定；普通系统常量仍直接输出。嵌套选择器、跨组件 class 和声明级条件沿用原范围，不改变 SSR CSS 标签拼接。
+css(...) 中直接读取注入主题的关键字（如 `s.color._primary`）也尝试元素变量绑定。编译器只标记读取位置，CSS 库根据每次读取的实际值和可信作者元数据决定是否绑定；普通系统常量仍直接输出。共享函数返回和跨组件 class 传递同样保留绑定；嵌套选择器与声明级条件保留原声明。不改变 SSR CSS 标签拼接。
 
-| 写法                                                      | 行为                                                 |
-| --------------------------------------------------------- | ---------------------------------------------------- |
-| `s.width.px(width)`，width 直接来自 `_state` / `_derived` | 系统方法和支持值使用元素变量                         |
-| `s.color.raw(color)`，color 直接来自上述标记              | 可确认的颜色值使用元素变量                           |
-| `s.color._primary`，s 是注入主题的作者                    | 每次读取后按安全值绑定，原值仍可通过 s.keywords 读取 |
-| `s.width.px(width * 2)`                                   | 含明确响应式来源的简单运算，安全结果使用元素变量     |
-| `s.color.raw(active ? 'red' : 'blue')`                    | 保留条件短路，安全结果使用元素变量                   |
-| `s._hover(s.width.px(width))`                             | 嵌套调用保留普通重算                                 |
-| 普通别名、自定义或覆写方法                                | 保留原调用，不猜测作者实现                           |
+| 写法                                               | 行为                                                 |
+| -------------------------------------------------- | ---------------------------------------------------- |
+| `s.width.px(width)`，width 为状态、参数或普通变量  | 系统方法和支持值使用元素变量                         |
+| `s.color.raw(color)`，color 为状态、参数或普通变量 | 可确认的颜色值使用元素变量                           |
+| `s.color._primary`，s 是注入主题的作者             | 每次读取后按安全值绑定，原值仍可通过 s.keywords 读取 |
+| `s.width.px(width * 2)`                            | 包含变量的简单运算，安全结果使用元素变量             |
+| `s.color.raw(active ? 'red' : 'blue')`             | 保留条件短路，安全结果使用元素变量                   |
+| `s._hover(s.width.px(width))`                      | 嵌套调用保留普通重算                                 |
+| 自定义或覆写方法                                   | 保留原调用，不猜测作者实现                           |
 
-参数允许标识符、原始字面量、一元数值/逻辑运算、算术/比较、三元条件以及 && / || / ??，可以组合；至少包含一个直接来自 _state/_derived 的词法绑定。普通变量继续按原值读取，不追溯快照别名。TS 的 as、satisfies 和非空断言不妨碍识别。函数调用、成员访问、赋值/自增、await/yield 等不接管；Math.max(width, 0) 可自行先写为 _derived，而不是在编译期猜测函数行为。
+参数允许标识符、原始字面量、一元数值/逻辑运算、算术/比较、三元条件以及 && / || / ??，可以组合；包含变量即可尝试绑定，支持共享函数参数和组件 props。普通变量仍按原值读取，不把快照别名变成响应式引用。TS 的 as、satisfies 和非空断言不妨碍识别。函数调用、成员访问、赋值/自增、await/yield 等不接管；Math.max(width, 0) 可自行先写为 _derived，而不是在编译期猜测函数行为。
 
 整个参数仍按 JavaScript 顺序求值一次，未进入的分支不执行。识别到表达式并不代表一定使用 CSS 变量：每次结果仍由原有安全分类判断，特殊值回退不改变层叠语义。响应式依旧只缓存最近一次结果，不增加历史值缓存。
 
 `.px(width)` 的绑定效果是 `width:var(--zj-...)`，配合元素 style 中完整的 `${width}px`。`.raw()` 不自动补单位，变量由编译器生成。
 
-优化范围是有限非负单位值、系统关键字、颜色十六进制值与 0–1 的 opacity。CSS-wide、important、未知值、负单位值、主题作者的方法调用或覆写方法均可继续使用，但保留原声明重算，避免改变层叠语义。条件分支不会提前计算。主题成员使用相同的安全值分类，不因类型标注为 string 就假设任意 CSS 字符串都可以等价转换。
+优化范围是有限非负单位值、系统关键字、颜色十六进制值与 0–1 的 opacity。CSS-wide、important、未知值、负单位值或覆写方法均可继续使用，但保留原声明重算，避免改变层叠语义。可信主题作者的 raw 方法先解析关键字，再使用相同的安全值分类；不重复读取主题 getter。条件分支不会提前计算。主题成员使用相同的安全值分类，不因类型标注为 string 就假设任意 CSS 字符串都可以等价转换。
 
 `inherit` / `initial` / `unset` / `revert` / `revert-layer` 始终作为目标属性的原始声明，不放入生成变量。值从普通颜色切换到这些关键字时，会更新类名并清除该项私有变量；恢复安全颜色后重新绑定。回退依然响应式，不表示冻结初值。
 
-已有 `var(--brand, inherit)`、calc()/复杂表达式原样使用，不再套一层自动变量。JS 中引用字符串变化时重新计算声明；CSS 中被引用变量变化由浏览器处理。用户定义的变量仍可直接绑定状态：
+组件只描述样式，不需要手工声明 CSS 变量、调用 cssBinding/cssResult 或拼接 style。共享函数同样可写：
 
 ```tsx
-let width = _state(120);
-let accent = _state('#245fc5');
-<div
-  class={css(s.width.raw('var(--card-width)'), s.color.raw('var(--card-accent)'))}
-  style={{ '--card-width': `${width}px`, '--card-accent': accent }}
-/>;
+function buttonStyle(color: CssValue<'color'>) {
+  return css(s.color.raw(color));
+}
+
+<ButtonBase class={_mergeClasses(buttonStyle(color), className)} />;
 ```
 
-这里若主动把 `--card-accent` 设置为 inherit，就表示继承该自定义属性，框架不会擅自解释为 color:inherit。需要在颜色与全局关键字之间切换时，直接使用 `s.color.raw(accent)` 或主题成员。用户 style 与 s.keywords 原始值始终保留。
+编译器和 CSS 工具自动生成变量并携带当前值，直到最终原生元素才展开。已有 var()/calc() 等复杂 CSS 值仍原样处理，不强行再套变量。
 
 作者接收者和方法先于参数求值；如果参数计算替换了作者属性，本次仍调用已经取得的方法，并保守回退为普通声明。不会为了元素变量绑定重新选择另一个方法，也不会重复计算参数。
 
-原生元素中，只要所有 spread 都位于显式 class 之前，就可附加变量；class 后仍有 spread 时保留普通重算。命名声明的全部读取都需直接用于这种 class；跨组件传递、字符串拼接或其他读取让该声明回退为普通 CSS 重算。现有 `class?: string` 不需改成样式对象协议。一般表达式重算可能增加规则，内容相同则复用。
+css(...) 的公开返回类型是 CssClass，可为普通类名或携带动态值的样式结果。直接传给 class，使用 css(...) 或 _mergeClasses(...) 组合；不要用字符串拼接、模板字符串或 classList.add() 处理样式结果。自定义组件的 class 属性复用 ClassValue 或原生 JSX 属性类型，并原样转发。
 
-生成变量合并进已有 style，保留用户声明。`--zj-` 是私有前缀，请勿手动覆盖。多实例独立持有元素变量，卸载自然清理，不创建 CSS 专用 effect 或订阅表。
+JSX spread 和 class/className 按原有覆盖顺序决定最终样式；覆盖掉的样式结果不会留下旧变量。共享结果不保存历史值，多个元素分别持有当前值。显式用户 style 保留并最后覆盖；--zj- 是工具内部前缀，不应手写。特殊值回退时对应变量自动移除，不创建 CSS 专用 effect 或订阅表。
 
 ## SSR 与接管
 
@@ -106,7 +105,7 @@ const styles =
 
 源码布局固定为 runtime/generated/util 三个目录，src 根目录仅 index.ts。小型声明工具和关键字机制在 util，宿主、规则表、组件上下文及动态绑定在 runtime。系统作者按需建立主题属性缓存，关键字查询只复用固定系统表，不记录用户历史值。
 
-所有 API（包括 SSR 收集器和编译器调用的 cssBinding/cssKeyword/cssResult/cssProps）统一从 zerodep-js-css 根入口导入，不再提供子入口。类型统一指向 dist/index.d.ts，并发布声明映射与源码；Vite 按标准 browser 字段将 Node 宿主替换为浏览器实现，源码不使用包内导入别名。
+所有 API（包括 SSR 收集器和编译器调用的 cssBinding/cssKeyword/cssResult）统一从 zerodep-js-css 根入口导入，不再提供子入口。类型统一指向 dist/index.d.ts，并发布声明映射与源码；Vite 按标准 browser 字段将 Node 宿主替换为浏览器实现，源码不使用包内导入别名。
 
 CSS 提供 SystemKeywords 和继承机制，不提供 UiTheme 或亮暗配色。UI 的主题从 zerodep-js-ui 导入；自定义作者也可直接继承 SystemKeywords。CssValue 的第二个参数指定主题类型，默认不包含 UI 自定义关键字。
 

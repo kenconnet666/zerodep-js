@@ -1,6 +1,9 @@
-import { css, Css, cssBinding, cssResult, type CssProps, type CssValue } from 'zerodep-js-css';
+import { css, type Css, type CssClass, type CssValue } from 'zerodep-js-css';
 import type { UiTheme } from '../provider/theme/theme.js';
 import type { ButtonVariant } from './Button.js';
+
+/** 标准按钮边框厚度，单位 em；ButtonGroup 使用相同数值重叠接缝。 */
+export const buttonBorderWidth = 0.0625;
 
 export interface ButtonStyleOptions {
   variant: ButtonVariant;
@@ -11,31 +14,11 @@ export interface ButtonStyleOptions {
   borderColor?: CssValue<'borderColor', UiTheme>;
 }
 
-const literalColors = new Css();
-
-/** 先由主题作者解析关键字，再复用 CSS 的保守转换；特殊值仍返回完整声明。 */
-function colorBinding(
-  property: 'color' | 'background-color' | 'border-color',
-  declaration: string,
-) {
-  const prefix = property + ':';
-  if (!declaration.startsWith(prefix) || !declaration.endsWith(';')) return declaration;
-  const value = declaration.slice(prefix.length, -1);
-  const member =
-    property === 'background-color'
-      ? 'backgroundColor'
-      : property === 'border-color'
-        ? 'borderColor'
-        : 'color';
-  return cssBinding(literalColors, member, 'raw', () => value, `--zj-button-${property}`);
-}
-
 /** 四类控件共用几何与相连协议；颜色变化只更新安全的元素变量。 */
-export function _buttonStyle(s: Css<UiTheme>, options: ButtonStyleOptions): CssProps {
+export function _buttonStyle(s: Css<UiTheme>, options: ButtonStyleOptions): CssClass {
   const { variant, iconOnly, pressed, color, backgroundColor, borderColor } = options;
   const filled = variant === 'solid' || pressed;
-  return cssResult(css, [
-    '--zj-action-border:0.0625em;',
+  return css(
     s.boxSizing.borderBox,
     s.position.relative,
     s.display.inlineFlex,
@@ -56,17 +39,11 @@ export function _buttonStyle(s: Css<UiTheme>, options: ButtonStyleOptions): CssP
     s.paddingInline.em(iconOnly ? 0 : 1),
     iconOnly && s.inlineSize.em(2.625),
     s.borderStyle.solid,
-    s.borderWidth.raw('var(--zj-action-border)'),
+    s.borderWidth.em(buttonBorderWidth),
     s.borderRadius.em(0.5),
-    colorBinding('color', s.color.raw(color ?? (filled ? '_onPrimary' : '_primary'))),
-    colorBinding(
-      'background-color',
-      s.backgroundColor.raw(backgroundColor ?? (filled ? '_primary' : 'transparent')),
-    ),
-    colorBinding(
-      'border-color',
-      s.borderColor.raw(borderColor ?? (variant === 'outline' ? '_primary' : 'transparent')),
-    ),
+    s.color.raw(color ?? (filled ? '_onPrimary' : '_primary')),
+    s.backgroundColor.raw(backgroundColor ?? (filled ? '_primary' : 'transparent')),
+    s.borderColor.raw(borderColor ?? (variant === 'outline' ? '_primary' : 'transparent')),
     s.cursor.pointer,
     s._selector('&[hidden]', s.display.none),
     s._selector('&:disabled, &[aria-disabled="true"]', s.cursor.notAllowed, s.opacity._disabled),
@@ -99,5 +76,5 @@ export function _buttonStyle(s: Css<UiTheme>, options: ButtonStyleOptions): CssP
       ),
       s._selector('&:disabled, &[aria-disabled="true"]', s.color.raw('GrayText'), s.opacity.raw(1)),
     ),
-  ]);
+  );
 }

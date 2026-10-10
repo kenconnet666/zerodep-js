@@ -1,7 +1,7 @@
 import type { Renderable, TextRenderable } from '../runtime/template.js';
 import type { HtmlAttributeValues, SvgAttributeValues, NativeEventAliases } from './data.js';
 import type { clientProperties, ownedProperties, formProperties } from './properties.js';
-import type { Style } from './style.js';
+import type { Style, ClassValue } from './style.js';
 
 export type { Style, StyleObject } from './style.js';
 
@@ -251,7 +251,7 @@ type AttributeLinks<T> = (T extends
     : {});
 
 export type NativeProps<T extends Element> = (T extends Element
-  ? Omit<ControlValues<T>, ContentProperties<T>>
+  ? Omit<ControlValues<T>, ContentProperties<T> | 'className'>
   : never) &
   EventProps<T> &
   ExternalEvents &
@@ -261,8 +261,8 @@ export type NativeProps<T extends Element> = (T extends Element
   AttributeLinks<T> & {
     children?: T extends HTMLOutputElement ? TextRenderable : Renderable;
     key?: string | number | symbol;
-    class?: string | false | null | undefined;
-    className?: string | null | undefined;
+    class?: ClassValue | false | null | undefined;
+    className?: ClassValue | null | undefined;
     style?: Style | null | undefined;
     /** 同步取得元素，可返回清理函数；回调内卸载时立即清理新返回的资源。 */
     ref?: ((element: T) => void | (() => void)) | undefined;

@@ -5,7 +5,7 @@ export {
   type ActionProps,
   type LabelProps,
 } from './base/button-props.js';
-export { type ButtonStyleOptions, _buttonStyle } from './base/button-style.js';
+export { buttonBorderWidth, type ButtonStyleOptions, _buttonStyle } from './base/button-style.js';
 export { type ButtonVariant, type ButtonState, type ButtonProps, Button } from './base/Button.js';
 export { type ButtonBaseState, type ButtonBaseProps, ButtonBase } from './base/ButtonBase.js';
 export { type ButtonContentProps, ButtonContent } from './base/ButtonContent.js';

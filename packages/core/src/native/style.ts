@@ -17,6 +17,13 @@ export type StyleObject = {
 } & { [K in `--${string}`]?: string | number | false | null | undefined };
 export type Style = string | StyleObject | false;
 
+/** 样式工具的类名及其元素级变量；组件可原样转发，原生渲染时才展开。 */
+export interface ClassStyle {
+  readonly class: string;
+  readonly style: string;
+}
+export type ClassValue = string | ClassStyle;
+
 function tokens(css: string, label: string) {
   return tokenizer(
     { css },

@@ -101,4 +101,4 @@ bind、_snapshot、_lazy 采用 [编写指南](authoring.md) 中的写回类型�
 
 ## CSS 派生标记
 
-`zerodep-js/css` 的命名 css 导入是可选编译标记：函数内 `const name = css(...)` 自动派生，普通函数和其他 const 仍遵循快照规则。类名对外保持 string。直接响应式参数只在确定的原生元素用途中保守转为元素变量，复杂表达式/跨组件传递继续重算。具体边界见 [原生 CSS](css.md)。
+`zerodep-js-css` 的命名 css 导入是编译标记：函数内 `const name = css(...)` 自动派生，普通函数和其他 const 仍遵循快照规则。css 返回 CssClass，允许安全动态值随共享函数结果和组件 class 传递，原生渲染再展开。使用 css/_mergeClasses 组合而非字符串拼接；自定义作者、嵌套选择器与不安全值保持原声明。具体边界见 [原生 CSS](css.md)。

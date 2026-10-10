@@ -3,6 +3,25 @@ import { styleText } from '../src/native/style.js';
 import { nativeAttributes } from '../src/native/attributes.js';
 import { textValue } from '../src/native/text.js';
 
+it('class 样式结果在原生边界展开，显式 style 最后覆盖，别名替换会移除旧变量', () => {
+  const bundle = { class: 'shared', style: '--zj-color:red;' };
+  for (const input of [
+    { class: bundle, style: { color: 'blue', '--zj-color': 'green' } },
+    { style: { color: 'blue', '--zj-color': 'green' }, class: bundle },
+  ]) {
+    const attrs = nativeAttributes(input, 'div');
+    expect(attrs.get('class')).toBe('shared');
+    expect(attrs.get('style')).toBe('--zj-color:red;;color:blue;--zj-color:green');
+  }
+  expect(
+    Object.fromEntries(nativeAttributes({ class: bundle, className: 'plain' }, 'div')),
+  ).toEqual({ class: 'plain' });
+  expect(
+    Object.fromEntries(nativeAttributes({ class: bundle, className: undefined }, 'div')),
+  ).toEqual({});
+  expect(() => nativeAttributes({ class: { class: 'bad', style: {} } }, 'div')).toThrow('class');
+});
+
 it('CSS 名称、厂商前缀和自定义属性使用同一段声明', () => {
   expect(
     styleText({

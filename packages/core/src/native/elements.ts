@@ -174,8 +174,8 @@ interface Common0<T extends Element> extends NativeIndexProps {
     | import('../runtime/template.js').Template
     | null
     | undefined;
-  class?: string | false | null | undefined;
-  className?: string | null | undefined;
+  class?: false | import('./style.js').ClassValue | null | undefined;
+  className?: import('./style.js').ClassValue | null | undefined;
   clip?: string | number | null | undefined;
   'clip-path'?: string | number | null | undefined;
   'clip-rule'?: string | number | null | undefined;
@@ -1359,8 +1359,8 @@ interface Common1<T extends Element> extends NativeIndexProps {
   autoFocus?: boolean | null | undefined;
   /** DOM 引用写入可写变量，卸载后为 undefined；不支持组件实例或对象路径。 */
   'bind:this'?: T | undefined;
-  class?: string | false | null | undefined;
-  className?: string | null | undefined;
+  class?: false | import('./style.js').ClassValue | null | undefined;
+  className?: import('./style.js').ClassValue | null | undefined;
   contenteditable?: string | number | boolean | null | undefined;
   contentEditable?: string | boolean | null | undefined;
   dir?: string | null | undefined;
@@ -2189,8 +2189,8 @@ interface Common2<T extends Element> extends NativeIndexProps {
     | import('../runtime/template.js').Template
     | null
     | undefined;
-  class?: string | false | null | undefined;
-  className?: string | null | undefined;
+  class?: false | import('./style.js').ClassValue | null | undefined;
+  className?: import('./style.js').ClassValue | null | undefined;
   clip?: string | number | null | undefined;
   'clip-path'?: string | number | null | undefined;
   'clip-rule'?: string | number | null | undefined;
@@ -3317,8 +3317,8 @@ interface Common3<T extends Element> extends NativeIndexProps {
     | import('../runtime/template.js').Template
     | null
     | undefined;
-  class?: string | false | null | undefined;
-  className?: string | null | undefined;
+  class?: false | import('./style.js').ClassValue | null | undefined;
+  className?: import('./style.js').ClassValue | null | undefined;
   columnalign?: string | null | undefined;
   columnspacing?: string | null | undefined;
   display?: 'block' | 'inline' | null | undefined;
@@ -4140,8 +4140,8 @@ interface Common4<T extends Element> extends NativeIndexProps {
     | import('../runtime/template.js').Template
     | null
     | undefined;
-  class?: string | false | null | undefined;
-  className?: string | null | undefined;
+  class?: false | import('./style.js').ClassValue | null | undefined;
+  className?: import('./style.js').ClassValue | null | undefined;
   clip?: string | number | null | undefined;
   'clip-path'?: string | number | null | undefined;
   'clip-rule'?: string | number | null | undefined;
@@ -5351,8 +5351,8 @@ interface Common5<T extends Element> extends NativeIndexProps {
     | import('../runtime/template.js').Template
     | null
     | undefined;
-  class?: string | false | null | undefined;
-  className?: string | null | undefined;
+  class?: false | import('./style.js').ClassValue | null | undefined;
+  className?: import('./style.js').ClassValue | null | undefined;
   clip?: string | number | null | undefined;
   'clip-path'?: string | number | null | undefined;
   'clip-rule'?: string | number | null | undefined;
@@ -6566,8 +6566,8 @@ interface Common6<T extends Element> extends NativeIndexProps {
     | import('../runtime/template.js').Template
     | null
     | undefined;
-  class?: string | false | null | undefined;
-  className?: string | null | undefined;
+  class?: false | import('./style.js').ClassValue | null | undefined;
+  className?: import('./style.js').ClassValue | null | undefined;
   clip?: string | number | null | undefined;
   'clip-path'?: string | number | null | undefined;
   'clip-rule'?: string | number | null | undefined;

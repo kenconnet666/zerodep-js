@@ -247,7 +247,7 @@ try {
     for (const name of ['compile', 'diagnose', 'zerodep']) assert.equal(typeof compiler[name], 'function');
     const css = await import('zerodep-js-css');
     for (const name of ['UiTheme', 'LightTheme', 'DarkTheme', 'lightTheme', 'darkTheme']) assert.equal(name in css, false);
-    for (const name of ['css', 'createServerCssHost', 'withCssHost', 'hydrateCss', 'cssBinding', 'cssKeyword', 'cssResult', 'cssProps']) assert.equal(typeof css[name], 'function');
+    for (const name of ['css', 'createServerCssHost', 'withCssHost', 'hydrateCss', 'cssBinding', 'cssKeyword', 'cssResult']) assert.equal(typeof css[name], 'function');
   `,
     ],
     { cwd: consumer, env, windowsHide: true, encoding: 'utf8' },

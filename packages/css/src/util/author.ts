@@ -1,4 +1,10 @@
 import type { KeywordValues, SystemKeywords } from '../generated/keywords.js';
+import type { ClassValue, ClassStyle } from 'zerodep-js';
+
+/** 可直接传给 JSX class，动态变量随样式一起经过组件和函数传递。 */
+export type CssClass = ClassValue;
+export type CssClassInput =
+  string | ClassStyle | false | null | undefined | readonly CssClassInput[];
 
 /** 原生声明片段；条件空项省略，只读数组按顺序展开。 */
 export type CssInput = string | false | null | undefined | readonly CssInput[];

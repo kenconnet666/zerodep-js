@@ -1,6 +1,6 @@
 export * from './generated/author.js';
 export type { CssString } from './generated/base.js';
-export type { CssInput, CssSelector, CssValue } from './util/author.js';
+export type { CssInput, CssSelector, CssValue, CssClass, CssClassInput } from './util/author.js';
 export {
   className,
   createServerCssHost,
@@ -21,4 +21,4 @@ export {
 } from './runtime/browser.js';
 
 // 编译器生成的调用也走包根；应用通常直接使用 css()。
-export { cssBinding, cssKeyword, cssResult, cssProps, type CssProps } from './runtime/bindings.js';
+export { cssBinding, cssKeyword, cssResult, type CssProps } from './runtime/bindings.js';

@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import traverse, { type Binding, type NodePath } from '@babel/traverse';
+import traverse, { type NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
 
 export function isCssCall(path: NodePath): path is NodePath<t.CallExpression> {
@@ -15,36 +15,11 @@ export function isCssCall(path: NodePath): path is NodePath<t.CallExpression> {
   );
 }
 
-function directState(path: NodePath, node: t.Node): boolean {
-  if (!t.isIdentifier(node)) return false;
-  const init = path.scope.getBinding(node.name)?.path;
-  if (!init?.isVariableDeclarator() || !t.isCallExpression(init.node.init)) return false;
-  const callee = init.node.init.callee;
-  const id = t.isIdentifier(callee)
-    ? callee
-    : t.isMemberExpression(callee) && t.isIdentifier(callee.object)
-      ? callee.object
-      : undefined;
-  const imported = id && init.scope.getBinding(id.name)?.path;
-  if (
-    !imported ||
-    !imported.isImportSpecifier() ||
-    imported.node.importKind === 'type' ||
-    !imported.parentPath.isImportDeclaration() ||
-    imported.parentPath.node.importKind === 'type' ||
-    imported.parentPath.node.source.value !== 'zerodep-js'
-  )
-    return false;
-  const role = imported.node.imported;
-  const name = t.isIdentifier(role) ? role.name : role.value;
-  return name === '_state' || name === '_derived';
-}
-
-/** undefined 表示不接管；false 为普通值，true 表示含明确的响应式来源。
+/** undefined 表示不接管；false 为字面量，true 表示含变量（包括参数和快照）。
  * 只组合简单表达式，不展开函数、属性 getter 或赋值；参数仍整体求值一次。
  */
-function reactiveValue(path: NodePath, node: t.Node): boolean | undefined {
-  if (t.isIdentifier(node)) return directState(path, node);
+function variableValue(node: t.Node): boolean | undefined {
+  if (t.isIdentifier(node)) return node.name !== 'undefined';
   if (
     t.isNumericLiteral(node) ||
     t.isStringLiteral(node) ||
@@ -54,9 +29,9 @@ function reactiveValue(path: NodePath, node: t.Node): boolean | undefined {
   )
     return false;
   if (t.isTSAsExpression(node) || t.isTSSatisfiesExpression(node) || t.isTSNonNullExpression(node))
-    return reactiveValue(path, node.expression);
+    return variableValue(node.expression);
   if (t.isUnaryExpression(node) && ['+', '-', '!', '~'].includes(node.operator))
-    return reactiveValue(path, node.argument);
+    return variableValue(node.argument);
   let parts: t.Node[];
   if (
     (t.isBinaryExpression(node) && !['in', 'instanceof'].includes(node.operator)) ||
@@ -65,43 +40,16 @@ function reactiveValue(path: NodePath, node: t.Node): boolean | undefined {
     parts = [node.left, node.right];
   else if (t.isConditionalExpression(node)) parts = [node.test, node.consequent, node.alternate];
   else return undefined;
-  const values = parts.map((part) => reactiveValue(path, part));
+  const values = parts.map((part) => variableValue(part));
   return values.includes(undefined) ? undefined : values.some(Boolean);
 }
 
-function nativeClass(path: NodePath): NodePath<t.JSXElement> | undefined {
-  const container = path.parentPath;
-  const attribute = container?.parentPath;
-  const opening = attribute?.parentPath;
-  if (
-    !container?.isJSXExpressionContainer() ||
-    !attribute?.isJSXAttribute() ||
-    !t.isJSXIdentifier(attribute.node.name, { name: 'class' }) ||
-    !opening?.isJSXOpeningElement()
-  )
-    return;
-  if (!t.isJSXIdentifier(opening.node.name) || !/^[a-z]/.test(opening.node.name.name)) return;
-  // class 之前的展开不会覆盖显式类名；之后的展开仍可能覆盖，保持原来的重算路径。
-  if (
-    opening.node.attributes
-      .slice(opening.node.attributes.indexOf(attribute.node) + 1)
-      .some((attr) => t.isJSXSpreadAttribute(attr)) ||
-    opening.node.attributes.filter(
-      (attr) => t.isJSXAttribute(attr) && t.isJSXIdentifier(attr.name, { name: 'class' }),
-    ).length !== 1
-  )
-    return;
-  return opening.parentPath as NodePath<t.JSXElement>;
-}
-
-/** 在 JSX 降低前确认最终元素；跨组件/别名逃逸继续使用普通字符串重算。 */
+/** 所有隐式绑定都携带样式结果，原生渲染统一展开；不追踪跨组件调用链。 */
 export function prepareCss(ast: t.File, program: NodePath<t.Program>, source: string) {
   const namespace = program.scope.generateUidIdentifier('css');
   const call = (name: string, args: t.Expression[]) =>
     t.callExpression(t.memberExpression(t.cloneNode(namespace), t.identifier(name)), args);
-  const elements = new WeakMap<t.JSXElement, t.Expression>();
   const records = new WeakSet<t.VariableDeclarator>();
-  const identifiers = new WeakSet<t.Node>();
   let count = 0;
   let used = false;
   let file: string | undefined;
@@ -109,21 +57,10 @@ export function prepareCss(ast: t.File, program: NodePath<t.Program>, source: st
     CallExpression(path) {
       if (!isCssCall(path)) return;
       const declaration = path.parentPath;
-      const binding: Binding | undefined =
-        declaration.isVariableDeclarator() && t.isIdentifier(declaration.node.id)
-          ? declaration.scope.getBinding(declaration.node.id.name)
-          : undefined;
-      const inline = nativeClass(path);
-      const references =
-        binding?.referencePaths.filter(
-          (reference) => !reference.findParent((parent) => parent.isTSType()),
-        ) ?? [];
-      const targets = inline ? [inline] : references.map(nativeClass);
-      // 模块顶层 css 是普通共享声明；组件内命名声明由后续阶段统一建立派生。
+      // 模块顶层普通 css 不建立组件绑定；JSX 内的调用按元素求值。
       if (
-        (!inline && (!binding || !path.getFunctionParent() || !binding.constant)) ||
-        !targets.length ||
-        targets.some((target) => !target)
+        !path.getFunctionParent() &&
+        !path.findParent((parent) => parent.isJSXExpressionContainer())
       )
         return;
       // 只有存在可接管的 CSS 调用才计算；客户端/SSR 仍按相同源码生成变量名。
@@ -156,7 +93,7 @@ export function prepareCss(ast: t.File, program: NodePath<t.Program>, source: st
         if (
           !t.isCallExpression(argument) ||
           argument.arguments.length !== 1 ||
-          reactiveValue(path, argument.arguments[0]!) !== true
+          variableValue(argument.arguments[0]!) !== true
         )
           return argument;
         const method = argument.callee;
@@ -190,21 +127,8 @@ export function prepareCss(ast: t.File, program: NodePath<t.Program>, source: st
         ]),
         path.node,
       );
-      if (inline) {
-        elements.set(inline.node, result);
-        // 原 class 不再求值；cssProps 用同一个派生结果生成 class 和 style。
-        path.replaceWith(t.stringLiteral(''));
-      } else if (binding && declaration.isVariableDeclarator()) {
-        records.add(declaration.node);
-        path.replaceWith(result);
-        for (let index = 0; index < references.length; index++) {
-          const id = t.identifier(binding.identifier.name);
-          identifiers.add(id);
-          const read = t.callExpression(t.memberExpression(id, t.identifier('read')), []);
-          elements.set(targets[index]!.node, read);
-          references[index]!.replaceWith(t.stringLiteral(''));
-        }
-      }
+      if (declaration.isVariableDeclarator()) records.add(declaration.node);
+      path.replaceWith(result);
       path.skip();
     },
   });
@@ -216,5 +140,5 @@ export function prepareCss(ast: t.File, program: NodePath<t.Program>, source: st
         t.stringLiteral('zerodep-js-css'),
       ),
     );
-  return { elements, records, identifiers, call };
+  return { records };
 }

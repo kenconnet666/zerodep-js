@@ -16,11 +16,15 @@ import {
 } from 'zerodep-js';
 
 import { Css } from 'zerodep-js-css';
-import { css, createCssContext } from 'zerodep-js-css';
+import { css, createCssContext, type CssClass } from 'zerodep-js-css';
 
 const cssAuthor = new Css();
-const styleClass: string = css(cssAuthor.width.px(12));
+const styleClass: CssClass = css(cssAuthor.width.px(12));
 <div class={styleClass} />;
+<div className={styleClass} />;
+// @ts-expect-error 样式可能携带动态值，不能声明为纯类名字符串。
+const plainClass: string = styleClass;
+void plainClass;
 // @ts-expect-error CSS 作者类型通过公开包入口保持单位参数约束。
 cssAuthor.width.px('12px');
 class ProjectCss extends Css {

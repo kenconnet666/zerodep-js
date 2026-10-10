@@ -1,5 +1,5 @@
-import { derived, props, styleText, type Props } from 'zerodep-js';
-import type { CssInput } from '../util/author.js';
+import type { CssClassInput, CssClass } from '../util/author.js';
+import type { ClassStyle } from 'zerodep-js';
 import { Css } from '../generated/author.js';
 import { hasKeywordSource, getKeywordBinding } from '../util/keywords.js';
 import { unitSuffix } from '../generated/base.js';
@@ -12,10 +12,7 @@ interface Value {
   variable: string;
   value: string | undefined;
 }
-export interface CssProps {
-  class: string;
-  style: string;
-}
+export type CssProps = ClassStyle;
 
 /** 编译器内部协议：和 TSX 一样保留接收者/方法先于参数求值的顺序。 */
 export function cssBinding(
@@ -31,6 +28,26 @@ export function cssBinding(
   const fn = target[member]!;
   const before = authorInputs(author, property, member);
   const value = read();
+  const keyword = getKeywordBinding(target);
+  if (
+    member === 'raw' &&
+    keyword?.method === fn &&
+    isSystemKeyword(target, property, keyword.raw)
+  ) {
+    const resolved = keyword.apply(value);
+    const text = /^--zj-[a-z0-9-]+$/.test(variable)
+      ? inlineValue(property, member, resolved.value)
+      : undefined;
+    return {
+      [VALUE]: true,
+      declaration:
+        text === undefined
+          ? resolved.declaration
+          : keyword.raw.call(target, `var(${variable})` as never),
+      variable,
+      value: text,
+    };
+  }
   const after = before && authorInputs(author, property, member);
   const same =
     before && after && before.length === after.length && before.every((v, i) => v === after[i]);
@@ -55,30 +72,28 @@ export function cssKeyword(target: unknown, member: string, variable: string): V
 }
 
 export function cssResult(
-  register: (...parts: CssInput[]) => string,
-  parts: (CssInput | Value)[],
+  register: (...parts: CssClassInput[]) => CssClass,
+  parts: (CssClassInput | Value)[],
 ): CssProps {
-  let style = '';
-  const declarations = parts.map((part) => {
+  const styles: string[] = [];
+  const resolve = (part: CssClassInput | Value): CssClassInput => {
     if (part && typeof part === 'object' && VALUE in part) {
-      if (part.value !== undefined) style += `${part.variable}:${part.value};`;
+      if (part.value !== undefined) styles.push(`${part.variable}:${part.value};`);
       return part.declaration;
     }
+    if (Array.isArray(part)) return part.map(resolve);
+    if (part && typeof part === 'object') {
+      const bundle = part as CssProps;
+      styles.push(bundle.style);
+      return { class: bundle.class, style: '' };
+    }
     return part;
-  });
-  return { class: register(...declarations), style };
-}
-
-/** CSS 库算声明和值，框架负责派生、JSX 属性覆盖与 style 序列化。 */
-export function cssProps(original: Props, calculate: () => CssProps): Props {
-  const result = derived(calculate);
-  return props([
-    () => original,
-    {
-      class: () => result.read().class,
-      style: () => [styleText(original.style), result.read().style].filter(Boolean).join(';'),
-    },
-  ]);
+  };
+  const result = register(...parts.map(resolve));
+  return {
+    class: typeof result === 'string' ? result : result.class,
+    style: [...styles, typeof result === 'string' ? '' : result.style].filter(Boolean).join(';'),
+  };
 }
 
 let system: Css | undefined;

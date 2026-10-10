@@ -2,7 +2,7 @@ import { Derived, Source } from './reactivity.js';
 
 /** 与编译输出保持稳定的协议入口；不兼容改动才递增，补丁修复不必递增。 */
 export function assertRuntime(expected: number): void {
-  const actual = 2;
+  const actual = 3;
   if (expected !== actual)
     throw Object.assign(
       new Error(

@@ -2,7 +2,6 @@ import { runInNewContext } from 'node:vm';
 import * as runtime from 'zerodep-js';
 import { compile } from '../src/index.js';
 import * as cssRuntime from 'zerodep-js-css';
-import { css } from 'zerodep-js-css';
 
 export function execute(source: string, extra: Record<string, unknown> = {}): unknown {
   const output = compile(source, 'example.tsx');
@@ -29,7 +28,7 @@ export function execute(source: string, extra: Record<string, unknown> = {}): un
     runtime,
     publicRuntime: runtime,
     cssRuntime,
-    cssPublic: { css },
+    cssPublic: cssRuntime,
     ...extra,
   });
 }

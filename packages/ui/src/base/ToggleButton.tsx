@@ -1,4 +1,4 @@
-import { _component, _derived, styleText, type JSX } from 'zerodep-js';
+import { _component, _derived, type JSX } from 'zerodep-js';
 import { _mergeClasses } from 'zerodep-js-css';
 import type { LucideIconData } from '@lucide/icons';
 import type { ButtonState } from './Button.js';
@@ -59,7 +59,6 @@ export const ToggleButton = _component(
     slotSpinner,
     slotRipple,
     class: className,
-    style: customStyle,
     ...rest
   }: ToggleButtonProps) => {
     const s = useCss();
@@ -90,8 +89,7 @@ export const ToggleButton = _component(
         aria-busy={loading || undefined}
         data-ui-action=""
         onClick={activate}
-        style={[style.style, styleText(customStyle)].filter(Boolean).join(';')}
-        class={_mergeClasses(style.class, className)}
+        class={_mergeClasses(style, className)}
         slotRipple={_resolveSlotProps(slotRipple, state)}
       >
         <ButtonContent

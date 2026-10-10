@@ -1,4 +1,11 @@
-import type { Style, StyleObject } from 'zerodep-js';
+import type { Style, StyleObject, ClassValue } from 'zerodep-js';
+
+const generated: ClassValue = { class: 'generated', style: '--zj-color:red;' };
+export const composedClass = <div class={generated} />;
+export const composedAlias = <div className={generated} />;
+export const composedSvg = <svg className={generated} />;
+// @ts-expect-error 样式结果的值必须是 CSS 字符串。
+export const invalidClass = <div class={{ class: 'invalid', style: 1 }} />;
 
 export const style: StyleObject = {
   margin: '1rem',

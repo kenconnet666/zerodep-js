@@ -63,8 +63,7 @@ it('从包根复用按钮内容与样式，不依赖私有路径', () => {
   const Custom = defineComponent(() => {
     const appearance = _buttonStyle(useCss(), { variant: 'outline', color: '#123456' });
     return element(ButtonBase, {
-      class: appearance.class,
-      style: appearance.style,
+      class: appearance,
       disabled: true,
       children: element(ButtonContent, { loading: true, children: '自定义按钮' }),
     });
@@ -72,9 +71,9 @@ it('从包根复用按钮内容与样式，不依赖私有路径', () => {
   const { html, css } = render(Custom, {});
   expect(html).toContain('自定义按钮');
   expect(html).toContain('disabled');
-  expect(html).toContain('--zj-button-color:#123456');
+  expect(html).toMatch(/--zj-[a-z0-9-]+:#123456;/);
   expect(html).toContain('data-ui-button-content');
-  expect(css).toContain('color:var(--zj-button-color)');
+  expect(css).toMatch(/color:var\(--zj-[a-z0-9-]+\)/);
 });
 
 it.each([Button, IconButton, ToggleButton, LinkButton])(
@@ -104,16 +103,16 @@ it.each([Button, IconButton, ToggleButton, LinkButton])(
         const html = renderToString(App, {
           props: { color, backgroundColor: color, borderColor: color },
         });
-        expect(html).toContain(`--zj-button-color:${color}`);
-        expect(html).toContain(`--zj-button-background-color:${color}`);
-        expect(html).toContain(`--zj-button-border-color:${color}`);
+        expect(html.match(new RegExp(`--zj-[a-z0-9-]+:${color};`, 'g'))).toHaveLength(3);
       }
       expect(host.rules()).toHaveLength(count);
       for (const color of ['inherit', 'revert', 'red!important', 'var(--custom-color)']) {
         const html = renderToString(App, {
           props: { color, style: { color: 'blue', '--user': 'kept' } },
         });
-        expect(html).not.toContain('--zj-button-color:');
+        expect(html).not.toMatch(
+          new RegExp(`--zj-[a-z0-9-]+:${color.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')};`),
+        );
         expect(html).toContain('color:blue;--user:kept');
         expect(host.cssText()).toContain(`color:${color};`);
       }
@@ -141,7 +140,9 @@ it('Button 加载首屏即原生禁用，保留标签并隔离槽语义', () => 
   expect(html).not.toContain('不应成为名称');
   expect(html).toContain('name="action"');
   expect(html).toContain('data-loading="true"');
-  expect(css).toContain('opacity:0;');
+  const opacityVariable = css.match(/opacity:var\((--zj-[a-z0-9-]+)\)/)?.[1];
+  expect(opacityVariable).toBeTruthy();
+  expect(html).toContain(`${opacityVariable}:0;`);
   expect(css).toContain('0.0625em');
   expect(css).toContain('cursor:not-allowed;');
 });
@@ -189,10 +190,12 @@ it('ButtonGroup 首屏拥有一维连接样式和分组语义', () => {
   });
   expect(html).toContain('role="group"');
   expect(html).toContain('aria-label="操作"');
-  expect(css).toContain('flex-wrap:nowrap;');
+  const wrapVariable = css.match(/flex-wrap:var\((--zj-[a-z0-9-]+)\)/)?.[1];
+  expect(wrapVariable).toBeTruthy();
+  expect(html).toContain(`${wrapVariable}:nowrap;`);
   expect(css).toContain('gap:0;');
   expect(css).toContain('border-start-start-radius:0;');
-  expect(css).toContain('margin-block-start:calc(');
+  expect(css).toContain('margin-block-start:-0.0625em;');
   expect(css).toContain(':nth-child(1 of [data-ui-action]:not([hidden]))');
   expect(css).not.toContain('grid-template-columns');
 });

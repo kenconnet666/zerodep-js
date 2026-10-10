@@ -28,6 +28,8 @@ interface KeywordBinding {
   property: string;
   members: ReadonlySet<string>;
   raw: (value: never) => string;
+  method: (value: unknown) => string;
+  apply(value: unknown): { value: unknown; declaration: string };
   read(member: string): { value: string | number; declaration: string };
 }
 // 只登记本库创建并冻结的视图；未知作者和代理继续执行原成员读取。
@@ -107,18 +109,17 @@ export function bindKeywords<A extends { raw(value: never): string }>(
       get: () => readKeyword(key).declaration,
     });
   }
-  Object.defineProperty(author, 'raw', {
-    value(value: unknown): string {
-      // raw 的原生值保持原样；_name 是显式主题引用。
-      return raw.call(
-        author,
-        (typeof value === 'string' && value.startsWith('_') && value in initial
-          ? readValue(value)
-          : value) as never,
-      );
-    },
-  });
-  keywordBindings.set(author, { property, members, raw, read: readKeyword });
+  const apply = (input: unknown) => {
+    // raw 与隐式变量绑定共用这次读取，不重复调用主题 getter。
+    const value =
+      typeof input === 'string' && input.startsWith('_') && input in initial
+        ? readValue(input)
+        : input;
+    return { value, declaration: raw.call(author, value as never) };
+  };
+  const method = (value: unknown) => apply(value).declaration;
+  Object.defineProperty(author, 'raw', { value: method });
+  keywordBindings.set(author, { property, members, raw, method, apply, read: readKeyword });
   return Object.freeze(author);
 }
 

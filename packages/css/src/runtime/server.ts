@@ -1,5 +1,5 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
-import type { CssInput } from '../util/author.js';
+import type { CssInput, CssClassInput, CssClass } from '../util/author.js';
 import type { ServerCssHost } from './rules.js';
 
 const current = new AsyncLocalStorage<ServerCssHost>();
@@ -9,7 +9,7 @@ export function withCssHost<T>(host: ServerCssHost, render: () => T): T {
   return current.run(host, render);
 }
 
-export function css(...parts: CssInput[]): string {
+export function css(...parts: CssClassInput[]): CssClass {
   return requireHost().css(...parts);
 }
 
@@ -19,7 +19,8 @@ function requireHost(): ServerCssHost {
   return host;
 }
 export const keyframes = (...parts: CssInput[]): string => requireHost().keyframes(...parts);
-export const _mergeClasses = (...values: readonly (string | null | undefined | false)[]): string =>
-  requireHost().mergeClasses(...values);
+export const _mergeClasses = (
+  ...values: readonly (CssClass | null | undefined | false)[]
+): CssClass => requireHost().mergeClasses(...values);
 export const globalCss = (key: string, ...parts: CssInput[]): void =>
   requireHost().globalCss(key, ...parts);

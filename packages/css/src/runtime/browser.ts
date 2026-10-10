@@ -5,7 +5,7 @@ import {
   type CssRule,
   type ServerCssHost,
 } from './rules.js';
-import type { CssInput } from '../util/author.js';
+import type { CssInput, CssClassInput, CssClass } from '../util/author.js';
 
 export interface BrowserCssOptions {
   nonce?: string;
@@ -113,13 +113,15 @@ function getHost(target: Document) {
 }
 
 /** 浏览器文档共享规则；每次调用只注册尚未出现的声明组合。 */
-export function css(...parts: CssInput[]): string {
+export function css(...parts: CssClassInput[]): CssClass {
   if (typeof document === 'undefined') throw new Error('CSS browser host is unavailable.');
   return getHost(document).registry.css(...parts);
 }
 
 /** 合并本宿主样式类并保留外部类名；不把外部类名当 CSS 声明。 */
-export function _mergeClasses(...values: readonly (string | null | undefined | false)[]): string {
+export function _mergeClasses(
+  ...values: readonly (CssClass | null | undefined | false)[]
+): CssClass {
   return getHost(document).registry.mergeClasses(...values);
 }
 

@@ -1,4 +1,4 @@
-import { joinFragments, type CssInput } from '../util/author.js';
+import { joinFragments, type CssInput, type CssClassInput, type CssClass } from '../util/author.js';
 
 /** 两路 32 位累积完整 UTF-16 输入；内容确定命名，冲突仍由登记器检查。 */
 export function hash(text: string): string {
@@ -64,35 +64,59 @@ export function createRuleRegistry(
     return name;
   }
 
-  function resolvePart(input: CssInput): string {
+  function resolvePart(input: CssClassInput, styles: string[], external: Set<string>): string {
     if (typeof input === 'string') {
       // 仅本库样式类使用 z- 前缀，仍以登记表精确匹配为准。
       return (input.startsWith('z-') ? byName.get(input)?.body : undefined) ?? input;
     }
-    return input ? input.map(resolvePart).join('') : '';
+    if (!input) return '';
+    if (Array.isArray(input))
+      return input.map((part) => resolvePart(part, styles, external)).join('');
+    const bundle = input as Exclude<CssClass, string>;
+    styles.push(bundle.style);
+    return bundle.class
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((name) => {
+        const rule = byName.get(name);
+        if (rule && (!rule.kind || rule.kind === 'class')) return rule.body;
+        external.add(name);
+        return '';
+      })
+      .join('');
   }
 
-  const css = (...parts: CssInput[]) => {
-    // rest 数组归本次调用所有；复用它，普通字符串路径不另建展开数组。
-    for (let index = 0; index < parts.length; index++) parts[index] = resolvePart(parts[index]);
-    const body = parts.join('');
-    return register(body, 'class');
+  const css = (...parts: CssClassInput[]): CssClass => {
+    const styles: string[] = [];
+    const external = new Set<string>();
+    const body = parts.map((part) => resolvePart(part, styles, external)).join('');
+    const name = [register(body, 'class'), ...external].join(' ');
+    return styles.some(Boolean) ? { class: name, style: styles.filter(Boolean).join(';') } : name;
   };
   return {
     css,
-    mergeClasses(this: void, ...values: readonly (string | null | undefined | false)[]): string {
+    mergeClasses(
+      this: void,
+      ...values: readonly (CssClass | null | undefined | false)[]
+    ): CssClass {
       const bodies: string[] = [];
+      const styles: string[] = [];
       const external = new Set<string>();
       for (const value of values) {
         if (!value) continue;
-        for (const name of value.split(/\s+/).filter(Boolean)) {
+        const names = typeof value === 'string' ? value : value.class;
+        if (typeof value !== 'string') styles.push(value.style);
+        for (const name of names.split(/\s+/).filter(Boolean)) {
           const rule = byName.get(name);
           if (rule && (!rule.kind || rule.kind === 'class')) bodies.push(rule.body);
           else external.add(name);
         }
       }
       // 本宿主生成类按声明顺序合并；外部类名保留原样，遵循普通 CSS 层叠。
-      return [bodies.length ? css(...bodies) : '', ...external].filter(Boolean).join(' ');
+      const name = [bodies.length ? register(bodies.join(''), 'class') : '', ...external]
+        .filter(Boolean)
+        .join(' ');
+      return styles.some(Boolean) ? { class: name, style: styles.filter(Boolean).join(';') } : name;
     },
     keyframes: (...parts: CssInput[]) => register(joinFragments(parts), 'keyframes'),
     globalCss(this: void, key: string, ...parts: CssInput[]): void {
@@ -185,8 +209,8 @@ export function serializeCssRules(rules: readonly CssRule[], options: { nonce?: 
 }
 
 export interface ServerCssHost {
-  mergeClasses(...values: readonly (string | null | undefined | false)[]): string;
-  css(...parts: CssInput[]): string;
+  mergeClasses(...values: readonly (CssClass | null | undefined | false)[]): CssClass;
+  css(...parts: CssClassInput[]): CssClass;
   keyframes(...parts: CssInput[]): string;
   globalCss(key: string, ...parts: CssInput[]): void;
   readonly nonce?: string;

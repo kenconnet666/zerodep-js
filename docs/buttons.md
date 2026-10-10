@@ -1,6 +1,6 @@
 # 按钮、ButtonGroup 与布局
 
-按钮的 color/backgroundColor/borderColor 先通过当前主题作者解析；安全颜色复用 CSS 包现有转换，写入每个元素的私有 CSS 变量，连续改变十六进制颜色不会不断登记新类。inherit/revert/!important、自定义 var() 等值沿用原始声明，不为优化改变层叠语义。用户 class 仍最后组合，style 在内部变量之后合并。ButtonGroup 负责一维相连；Flex/Grid 只做普通布局。
+按钮只使用 css(...) 与属性作者描述样式；共享函数和组件转发由编译器/CSS 工具自动绑定安全动态值，UI 不手工声明 CSS 变量或拼接 style。连续改变十六进制颜色不会不断登记新类。inherit/revert/!important、自定义 var() 等值沿用原始声明，不为优化改变层叠语义。用户 class 仍最后组合，显式 style 由原生渲染统一合并，保持调用方最后覆盖。ButtonGroup 负责一维相连；Flex/Grid 只做普通布局。
 
 从 zerodep-js-ui 根入口导入，在 Provider 内使用。UI 保持 private。所有 size 属性都是 CSS 字号，省略时继承；组件内部尺寸使用 em。通用 token 位于 UI Provider，按钮专用比例在 UI 内部。
 
@@ -114,7 +114,7 @@ import { ButtonGroup } from 'zerodep-js-ui';
 - 只处理直接兼容控件，不穿透 wrapper 或嵌套组；调用方保证子项结构，不扫描 DOM 或为不兼容内容发出运行时警告。
 - 自定义字号、边框厚度或 inline/important 圆角覆盖可能使接缝不齐或覆盖内侧零圆角；此时不承诺默认连接几何。优先统一 ButtonGroup.size、变体和边框。
 
-自定义控件可选择实现同一 CSS 协议：根添加 data-ui-action，使用 --zj-action-border 指定实际边框厚度（标准值 0.0625em），根具备 position:relative、明确边框及圆角。连接选择器只命中该标记的直接可见子项，且仅排除原生 hidden；不得借此把不兼容结构自动当成按钮。
+自定义控件可选择实现同一 CSS 协议：根添加 data-ui-action，使用 buttonBorderWidth 对应的 em 边框厚度（标准值 0.0625em），根具备 position:relative、明确边框及圆角。连接选择器只命中该标记的直接可见子项，且仅排除原生 hidden；不得借此把不兼容结构自动当成按钮。
 
 ButtonGroup 不提供互斥选择语义，不会让多个 ToggleButton 互斥。MenuButton、Toolbar、单选组和菜单焦点工具不属于本次范围。
 
@@ -122,6 +122,6 @@ ButtonGroup 不提供互斥选择语义，不会让多个 ToggleButton 互斥。
 
 交互示例：apps/docs/src/pages/components/ButtonDemo.tsx。组件及消费测试在 packages/ui/test/buttons.test.ts、flex.test.ts；真实 TSX 类型反例在 buttons-types.tsx；浏览器用例在 tests/e2e/buttons.spec.ts。补全使用 pnpm lsp:completions --case 按钮属性。
 
-按钮组件、内容和样式组合放在 base，布局放在 layout，不维护 internal 目录。ButtonContent/ButtonContentProps、_buttonStyle/ButtonStyleOptions、DecorationProps、AccessibleName、ActionProps 和 LabelProps 均从 zerodep-js-ui 根入口导出，可用于自定义按钮组合。_buttonStyle 返回 class/style，两者应同时传给根元素，以保留动态颜色变量。根入口由 pnpm ui:generate 维护，pnpm ui:check 校验，不创建子目录 index.ts。普通按钮/Flex 不读取像素尺寸；几何观察另见 [字号与测量](../packages/ui/README.md#字号等比尺寸与测量)。
+按钮组件、内容和样式组合放在 base，布局放在 layout，不维护 internal 目录。ButtonContent/ButtonContentProps、_buttonStyle/ButtonStyleOptions、DecorationProps、AccessibleName、ActionProps 和 LabelProps 均从 zerodep-js-ui 根入口导出，可用于自定义按钮组合。_buttonStyle 返回 CssClass，直接传给 class 或交给 _mergeClasses；动态值随样式结果传递，不需要拆成 class/style。buttonBorderWidth 是标准按钮与相连接缝共用的 em 数值。根入口由 pnpm ui:generate 维护，pnpm ui:check 校验，不创建子目录 index.ts。普通按钮/Flex 不读取像素尺寸；几何观察另见 [字号与测量](../packages/ui/README.md#字号等比尺寸与测量)。
 
 研究依据：[WAI-ARIA Button](https://www.w3.org/WAI/ARIA/apg/patterns/button/)、[Link](https://www.w3.org/WAI/ARIA/apg/patterns/link/)、[Toolbar](https://www.w3.org/WAI/ARIA/apg/patterns/toolbar/)、[Radix Flex](https://www.radix-ui.com/themes/docs/components/flex)、[Mantine Group](https://mantine.dev/core/group/)、[MUI Button 加载](https://mui.com/material-ui/api/button/)。本库使用自身运行时和原生元素，不引入上述组件库。
