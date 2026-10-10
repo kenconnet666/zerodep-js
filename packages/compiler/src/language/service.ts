@@ -9,7 +9,7 @@ import {
   StreamMessageWriter,
   type MessageConnection,
 } from 'vscode-jsonrpc/node';
-import { compilerPath } from './typescript.js';
+import { compilerPath } from '../checking/sdk.js';
 import { API } from 'typescript/unstable/async';
 
 export interface SourceDocument {

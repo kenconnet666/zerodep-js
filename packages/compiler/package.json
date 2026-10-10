@@ -3,7 +3,8 @@
   "version": "1.0.0-rc.9",
   "type": "module",
   "sideEffects": [
-    "./dist/cli.js"
+    "./dist/tooling/cli.js",
+    "./dist/language/server.js"
   ],
   "engines": {
     "node": ">=24.11 <25"
@@ -25,10 +26,6 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    },
-    "./vite": {
-      "types": "./dist/vite.d.ts",
-      "import": "./dist/vite.js"
     }
   },
   "scripts": {

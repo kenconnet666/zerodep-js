@@ -3,9 +3,9 @@ import { dirname, resolve } from 'node:path';
 import { API, type Diagnostic as TypeScriptDiagnostic } from 'typescript/unstable/async';
 import { createFileSystemLayer, serverFS, type FileSystemCallbacks } from 'typescript/unstable/fs';
 import { TraceMap, originalPositionFor } from '@jridgewell/trace-mapping';
-import { diagnose } from './index.js';
+import { diagnose } from '../transform/compile.js';
 import type { CheckProjection } from './projection.js';
-import type { Diagnostic } from './diagnostics.js';
+import type { Diagnostic } from '../transform/diagnostics.js';
 import { typedProjection } from './typed-projection.js';
 
 interface Source {

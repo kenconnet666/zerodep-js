@@ -61,7 +61,7 @@ import assert from 'node:assert/strict';
 import { cpSync, existsSync, mkdirSync, readFileSync, realpathSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { createHash } from 'node:crypto';
-import { compilerPath } from './packages/compiler/dist/typescript.js';
+import { compilerPath } from './packages/compiler/dist/checking/sdk.js';
 
 assert.equal(process.platform, 'win32', '这段安装步骤只用于 Windows');
 const version = '7.1.0-dev.20261008.1';
@@ -173,7 +173,7 @@ pnpm lsp:verify
 pnpm lsp:completions
 ```
 
-`lsp:setup` 自动写入本机 Node/项目绝对路径，生成 `.codex/config.toml` 和 `.codex/lsp4ij/`。它们已被忽略，换机或移动仓库后应重新生成，不能复制旧机器生成的文件。
+`lsp:setup` 自动写入本机 Node/项目绝对路径，只生成 `.codex/config.toml`。该文件已被忽略，换机或移动仓库后应重新生成，不能复制旧机器生成的文件。
 
 - **Codex 项目工具**：生成配置中的 `zerodep_js_lsp` 是 MCP 服务，供 Codex 查询框架语言能力。独立验证通过后重新加载 Codex；生成配置不等于当前会话已换进程。
 - **WebStorm 编辑支持**：使用内置 TypeScript 服务，并启用内置 React 插件提供通用 JSX/TSX 支持；当前不接入 LSP4IJ 框架服务器。生成的标准 LSP 模板仍可用于独立验证或其他编辑器。

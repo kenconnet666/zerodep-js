@@ -4,11 +4,11 @@ import { dirname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { TraceMap, generatedPositionFor, originalPositionFor } from '@jridgewell/trace-mapping';
 import type { CompletionItem, Position, Range } from 'vscode-languageserver-types';
-import { diagnose } from './index.js';
-import { TypeScriptService, type SourceDocument } from './language-service.js';
-import { namespacedAttributes, wrapJsxExpression } from './namespaced-attributes.js';
-import { projectForCheck } from './projection.js';
-import { typedProjection } from './typed-projection.js';
+import { diagnose } from '../transform/compile.js';
+import { TypeScriptService, type SourceDocument } from './service.js';
+import { namespacedAttributes, wrapJsxExpression } from './attributes.js';
+import { projectForCheck } from '../checking/projection.js';
+import { typedProjection } from '../checking/typed-projection.js';
 
 interface LanguageRequest {
   action: 'info' | 'lsp';

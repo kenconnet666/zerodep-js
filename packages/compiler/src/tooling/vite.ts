@@ -1,5 +1,5 @@
 import { createFilter, normalizePath, type FilterPattern, type Plugin, type Rolldown } from 'vite';
-import { compile } from './index.js';
+import { compile } from '../transform/compile.js';
 
 export interface ZerodepOptions {
   include?: FilterPattern;

@@ -33,7 +33,7 @@ Vite 插件同时处理普通转换和依赖扫描：
 ```ts
 // vite.config.ts
 import { defineConfig } from 'vite';
-import { zerodep } from 'zerodep-js-compiler/vite';
+import { zerodep } from 'zerodep-js-compiler';
 
 export default defineConfig({ plugins: [zerodep()] });
 ```

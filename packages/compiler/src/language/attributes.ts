@@ -15,8 +15,8 @@ import type {
   Position,
   Range,
 } from 'vscode-languageserver-types';
-import { TypeScriptService, type SourceDocument } from './language-service.js';
-import { declarationLocation } from './declaration-location.js';
+import { TypeScriptService, type SourceDocument } from './service.js';
+import { declarationLocation } from './declarations.js';
 
 export function offsetAt(text: string, position: Position): number {
   let offset = 0;

@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
-import { zerodep } from 'zerodep-js-compiler/vite';
+import { zerodep } from 'zerodep-js-compiler';
 import { fileURLToPath } from 'node:url';
 
 export default defineConfig(({ command }) => ({

@@ -15,7 +15,7 @@ import {
   type InitializeResult,
 } from 'vscode-languageserver/node';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { LanguageWorkspace } from './language-workspace.js';
+import { LanguageWorkspace } from './workspace.js';
 
 // 显式 reader/writer 避免库在 stdin 关闭时立即退出，先释放本连接拥有的SDK 子进程。
 const connection = createConnection(
@@ -40,7 +40,7 @@ connection.onInitialize(async (params: InitializeParams): Promise<InitializeResu
   if (!uri) throw new Error('请为语言服务配置项目根目录。');
   const expectedRoot = (params.initializationOptions as { projectRoot?: string } | undefined)
     ?.projectRoot;
-  // LSP4IJ 的服务器定义是全局的；导入本机模板后只在指定项目启用，不干扰其他工作区。
+  // 客户端可复用全局服务器配置；提供 projectRoot 时只在指定项目启用，不干扰其他工作区。
   if (expectedRoot && realpathSync.native(fileURLToPath(uri)) !== realpathSync.native(expectedRoot))
     return { capabilities: { textDocumentSync: TextDocumentSyncKind.None } };
   workspace = new LanguageWorkspace(fileURLToPath(uri));

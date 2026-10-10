@@ -1,18 +1,15 @@
 import { expect, it, vi } from 'vitest';
 import { resolve } from 'node:path';
 import { resolveConfig } from 'vite';
-import { zerodep, type ZerodepOptions } from '../src/vite.js';
+import { zerodep, type ZerodepOptions } from '../src/index.js';
 
 type Transform = (
   this: { error(error: { message: string }): never },
   code: string,
   id: string,
 ) => Promise<{ code: string } | null>;
-function managedPlugin(options: ZerodepOptions = {}) {
-  return zerodep(options);
-}
 function transforms(options: ZerodepOptions) {
-  const plugin = managedPlugin(options);
+  const plugin = zerodep(options);
   const root = resolve('apps/example').replaceAll('\\', '/');
   // 仅传入这两个钩子实际需要的配置，验证预扫描和常规转换持有同一规则。
   if (typeof plugin.configResolved !== 'function' || typeof plugin.config !== 'function')
@@ -63,7 +60,7 @@ it('转换与项目类型检查分离，但框架结构诊断始终执行', asyn
       throw new Error(error.message);
     },
   };
-  const plugin = managedPlugin();
+  const plugin = zerodep();
   Reflect.apply(plugin.configResolved as Function, undefined, [{ root, command: 'build' }]);
   const handler = (plugin.transform as { handler: Transform }).handler;
   const result = handler.call(context, 'export const value: string = 1;', file);
@@ -94,7 +91,7 @@ it('Windows 路径与虚拟模块在两条管线中的行为一致', async () =>
 });
 
 it('删除已登记组件文件直接刷新，不再读取已不存在的文件', async () => {
-  const plugin = managedPlugin();
+  const plugin = zerodep();
   if (typeof plugin.configResolved !== 'function' || typeof plugin.hotUpdate !== 'function')
     throw new Error('预期为函数钩子。');
   const root = resolve('apps/example').replaceAll('\\', '/');

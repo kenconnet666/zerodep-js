@@ -2,7 +2,7 @@ import { mkdtemp, rmdir, unlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { expect, it } from 'vitest';
-import { checkProject } from '../src/checker.js';
+import { checkProject } from '../src/checking/project.js';
 
 it('项目入口检查未被页面引用的源码，并把绑定写回错误定位到原文', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'zerodep-project-check-'));

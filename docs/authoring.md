@@ -1,6 +1,6 @@
 # 输入绑定、快照和按需组件
 
-本文说明当前源码的绑定、快照和按需组件。core/compiler/ssr 使用一致版本，Vite 插件从 compiler/vite 导入；packages/use 已移除。升级框架后重新构建应用及预编译组件库，历史发行记录见发布文档。
+本文说明当前源码的绑定、快照和按需组件。core/compiler/css 使用一致版本，Vite 插件从 `zerodep-js-compiler` 包根导入；packages/use 已移除。升级框架后重新构建应用及预编译组件库，历史发行记录见发布文档。
 
 ## 输入绑定
 

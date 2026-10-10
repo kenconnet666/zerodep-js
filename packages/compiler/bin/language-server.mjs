@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-import '../dist/language-server.js';
+import '../dist/language/server.js';

@@ -5,8 +5,8 @@ import { expect, it } from 'vitest';
 import { API } from 'typescript/unstable/async';
 import { createFileSystemLayer, serverFS, type FileSystemCallbacks } from 'typescript/unstable/fs';
 import { TraceMap, originalPositionFor } from '@jridgewell/trace-mapping';
-import { projectForCheck } from '../src/projection.js';
-import { typedProjection } from '../src/typed-projection.js';
+import { projectForCheck } from '../src/checking/projection.js';
+import { typedProjection } from '../src/checking/typed-projection.js';
 
 const root = resolve(import.meta.dirname, '../../..');
 const header = `import { _component, _state } from 'zerodep-js';\n`;

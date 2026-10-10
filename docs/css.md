@@ -3,7 +3,7 @@
 CSS 由本仓库 packages/css（包名 zerodep-js-css）提供，TSX 中的 CSS 调用由 compiler 内置转换。core 不依赖 CSS 包，不使用它的应用可以继续用普通 CSS。
 
 ```ts
-import { zerodep } from 'zerodep-js-compiler/vite';
+import { zerodep } from 'zerodep-js-compiler';
 export default { plugins: [zerodep()] };
 ```
 

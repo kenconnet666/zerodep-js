@@ -4,8 +4,8 @@ import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { expect, it } from 'vitest';
 import type { CompletionList, Location } from 'vscode-languageserver-types';
-import { TypeScriptService } from '../src/language-service.js';
-import { namespacedAttributes, positionAt, offsetAt } from '../src/namespaced-attributes.js';
+import { TypeScriptService } from '../src/language/service.js';
+import { namespacedAttributes, positionAt, offsetAt } from '../src/language/attributes.js';
 
 it('官方 LSP 与 API 共用未保存文档的类型，命名空间补全可应用并指向真实声明', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'zerodep-language-'));

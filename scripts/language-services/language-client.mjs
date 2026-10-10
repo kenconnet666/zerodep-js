@@ -1,5 +1,5 @@
 import { root, serviceConfig } from './environment.mjs';
-import { LanguageWorkspace } from '../../packages/compiler/dist/language-workspace.js';
+import { LanguageWorkspace } from '../../packages/compiler/dist/language/workspace.js';
 
 let active;
 export async function service(_kind, config) {

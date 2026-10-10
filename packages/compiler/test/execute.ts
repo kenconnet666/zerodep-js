@@ -5,7 +5,7 @@ import * as cssRuntime from 'zerodep-js-css';
 import { css } from 'zerodep-js-css';
 
 export function execute(source: string, extra: Record<string, unknown> = {}): unknown {
-  const output = compile(source, 'example.tsx', { runtimeModule: 'test-runtime' });
+  const output = compile(source, 'example.tsx');
   // 仅接线测试沙盒的模块导入，变量转换、严格模式与运行时都按真实模块执行。
   const code = output.code
     .replace(/^import \* as (\w+) from ["']zerodep-js-css["'];?/gm, 'const $1 = cssRuntime;')
@@ -14,7 +14,6 @@ export function execute(source: string, extra: Record<string, unknown> = {}): un
       (_statement, names: string) =>
         `const { ${names.trim().replace(/\s+as\s+/, ': ')} } = cssPublic;`,
     )
-    .replace(/import \* as (\w+) from ["']test-runtime["'];?/, 'const $1 = runtime;')
     .replace(/^import \{([^}]+)\} from ["']zerodep-js["'];?/gm, (_statement, names: string) => {
       const bindings = names
         .split(',')
@@ -24,7 +23,7 @@ export function execute(source: string, extra: Record<string, unknown> = {}): un
     });
   const linked = code.replace(
     /^import \* as (\w+) from ["']zerodep-js["'];?/gm,
-    'const $1 = publicRuntime;',
+    'const $1 = runtime;',
   );
   return runInNewContext(`"use strict";\n${linked}\nresult;`, {
     runtime,

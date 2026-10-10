@@ -15,7 +15,7 @@
     "dev:ssr": "pnpm build:packages && pnpm --filter @zerodep-js/example dev --render-mode ssr",
     "build:packages": "tsc -b tsconfig.build.json",
     "check": "pnpm native:check && pnpm css:check && pnpm ui:check && pnpm build:packages && pnpm check:projects && pnpm lint",
-    "check:projects": "pnpm --filter zerodep-js-ui build && node packages/compiler/dist/cli.js -p apps/docs/tsconfig.json && node packages/compiler/dist/cli.js -p apps/example/tsconfig.json && node packages/compiler/dist/cli.js -p tsconfig.tools.json",
+    "check:projects": "pnpm --filter zerodep-js-ui build && zerodep-check -p apps/docs/tsconfig.json && zerodep-check -p apps/example/tsconfig.json && zerodep-check -p tsconfig.tools.json",
     "check:config": "tsc -p tsconfig.tools.json",
     "build": "pnpm build:packages && pnpm --filter zerodep-js-ui build && pnpm --filter @zerodep-js/docs build && pnpm --filter @zerodep-js/example build",
     "build:ui": "pnpm build:packages && pnpm --filter zerodep-js-ui build",

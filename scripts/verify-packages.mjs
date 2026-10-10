@@ -123,6 +123,20 @@ try {
       assert(!sourceManifest.exports['./router'] && !sourceManifest.exports['./storage']);
       assert(!sourceManifest.dependencies['zerodep-use'], 'core 不能反向依赖应用工具。');
     }
+    if (name === 'compiler') {
+      assert.deepEqual(Object.keys(sourceManifest.exports), ['.'], 'compiler 只公开包根。');
+      assert.deepEqual(
+        [...files].filter((file) => /^src\/[^/]+$/.test(file)),
+        ['src/index.ts'],
+        'compiler 的 src 根目录只保留 index.ts。',
+      );
+      assert(
+        [...files]
+          .filter((file) => /^dist\/[^/]+\.js$/.test(file))
+          .every((file) => file === 'dist/index.js'),
+        'compiler 不得携带旧的根目录实现产物。',
+      );
+    }
     if (name === 'css') {
       assert.deepEqual(Object.keys(sourceManifest.exports), ['.'], 'CSS 只公开包根。');
       assert.equal(sourceManifest.exports['.'].types, './dist/index.d.ts');
@@ -219,7 +233,7 @@ try {
       '--eval',
       `
     import assert from 'node:assert/strict';
-    for (const specifier of ['zerodep-js/internal', 'zerodep-js/head', 'zerodep-js/devtools', 'zerodep-js/jsx-runtime', 'zerodep-js/adapter', 'zerodep-js/router', 'zerodep-js/storage', 'zerodep-js/css', 'zerodep-js/css/internal', 'zerodep-js-css/server', 'zerodep-js-css/internal']) {
+    for (const specifier of ['zerodep-js-compiler/vite', 'zerodep-js/internal', 'zerodep-js/head', 'zerodep-js/devtools', 'zerodep-js/jsx-runtime', 'zerodep-js/adapter', 'zerodep-js/router', 'zerodep-js/storage', 'zerodep-js/css', 'zerodep-js/css/internal', 'zerodep-js-css/server', 'zerodep-js-css/internal']) {
       await assert.rejects(import(specifier), { code: 'ERR_PACKAGE_PATH_NOT_EXPORTED' });
     }
     for (const specifier of ['zerodep-js-ssr', 'zerodep-js-ssr/data', 'zerodep-use', 'zerodep-use/router', 'zerodep-use/store', 'zerodep-use/history']) {
@@ -227,6 +241,8 @@ try {
     }
     assert.equal('_createPage' in await import('zerodep-js'), false, '旧页面宿主 API 必须移除');
     assert.equal('_createScope' in await import('zerodep-js'), false, '旧 scope API 必须移除');
+    const compiler = await import('zerodep-js-compiler');
+    for (const name of ['compile', 'diagnose', 'zerodep']) assert.equal(typeof compiler[name], 'function');
     const css = await import('zerodep-js-css');
     for (const name of ['UiTheme', 'LightTheme', 'DarkTheme', 'lightTheme', 'darkTheme']) assert.equal(name in css, false);
     for (const name of ['css', 'createServerCssHost', 'withCssHost', 'hydrateCss', 'cssBinding', 'cssKeyword', 'cssResult', 'cssProps']) assert.equal(typeof css[name], 'function');

@@ -4,7 +4,7 @@
 
 优先保证实现简单、容易维护、使用方便、类型提示准确，并用适当中文注释解释关键语义。性能不是首要目标，不维护自有 TypeScript 分支、原生 SDK 或跨命令编译后台。
 
-> 当前源码已收拢为 core、css、compiler：CSS 在本仓库维护，Vite 插件来自 compiler/vite。新结构尚未发布；既有 rc.9 npm 产物仍是旧布局，不能用旧包验证下面的新入口。历史发行证据见 [维护交接](docs/api-hardening-handoff.md)。
+> 当前源码已收拢为 core、css、compiler：CSS 在本仓库维护，Vite 插件来自 compiler 根入口。新结构尚未发布；既有 rc.9 npm 产物仍是旧布局，不能用旧包验证下面的新入口。历史发行证据见 [维护交接](docs/api-hardening-handoff.md)。
 
 ## 工作区
 
@@ -58,7 +58,7 @@ export const Counter = _component(({ step = 1 }: { step?: number }) => {
 
 `<Portal>内容</Portal>` 可以把弹层内容放到 body，仍随原父组件更新和销毁；指定位置使用 `target={container}`。SSR 只留占位，接管成功后再显示。它也属于当前分支新增能力，详见 [Portal](docs/api.md#portal把内容放到页面外层)。
 
-Vite 使用 zerodep-js-compiler/vite 的 zerodep()。应用 TS 配置使用 `jsx: "preserve"`、`types: ["zerodep-js"]`。客户端通过 _mount/_hydrate 返回的 disposer 卸载；服务端也从 `zerodep-js` 根入口导入 `renderToString` / `renderDocument`。
+Vite 使用 zerodep-js-compiler 的 zerodep()。应用 TS 配置使用 `jsx: "preserve"`、`types: ["zerodep-js"]`。客户端通过 _mount/_hydrate 返回的 disposer 卸载；服务端也从 `zerodep-js` 根入口导入 `renderToString` / `renderDocument`。
 
 2026-10-09 起，当前源码已删除整个 zerodep-use 包，不再提供路由、store、持久化和撤销重做工具。core 的状态、上下文、快照以及 UI Provider 保留；旧 npm 发行记录不变。
 

@@ -8,7 +8,7 @@ const s = new Css();
 const card = css(s.padding.rem(1), s.display.flex);
 ```
 
-应用使用 `zerodep-js-compiler/vite` 的 `zerodep()`，无需额外插件。组件内命名 css 声明自动追踪状态；安全动态值转换为元素 CSS 变量。UI 组件通过上层 Provider 的 useCss() 获取当前主题作者。业务作者可继承 Css/SystemKeywords，context 由 createCssContext() 提供，缺少上层提供者会报错。
+应用使用 `zerodep-js-compiler` 的 `zerodep()`，无需额外插件。组件内命名 css 声明自动追踪状态；安全动态值转换为元素 CSS 变量。UI 组件通过上层 Provider 的 useCss() 获取当前主题作者。业务作者可继承 Css/SystemKeywords，context 由 createCssContext() 提供，缺少上层提供者会报错。
 
 所有 API 从包根导入，公开清单只在 src/index.ts 维护，没有 /server 或 /internal 子入口。源码使用普通相对导入，Vite 按标准 browser 字段替换浏览器宿主；withCssHost 使用 Node 的 AsyncLocalStorage 隔离并发 SSR，不用于浏览器。SSR 的 style 和清单标签由应用输出，hydrateCss() 在接管前恢复已有样式。
 

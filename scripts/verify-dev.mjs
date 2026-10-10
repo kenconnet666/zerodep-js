@@ -4,7 +4,7 @@ import { createRequire } from 'node:module';
 import { dirname, resolve, relative, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { chromium, expect } from '@playwright/test';
-import { zerodep } from '../packages/compiler/dist/vite.js';
+import { zerodep } from '../packages/compiler/dist/index.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const example = resolve(root, 'apps/example');

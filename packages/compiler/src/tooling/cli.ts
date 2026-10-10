@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { resolve, extname } from 'node:path';
-import { diagnose, type Diagnostic } from './index.js';
-import { checkProject } from './checker.js';
+import { diagnose } from '../transform/compile.js';
+import type { Diagnostic } from '../transform/diagnostics.js';
+import { checkProject } from '../checking/project.js';
 
 const ignored = new Set([
   'node_modules',

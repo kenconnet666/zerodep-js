@@ -2,7 +2,7 @@ import { transformFromAstSync } from '@babel/core';
 import { parse } from '@babel/parser';
 import traverse from '@babel/traverse';
 import * as t from '@babel/types';
-import type { SourceMap } from './index.js';
+import type { SourceMap } from '../transform/compile.js';
 
 export interface CheckProjection {
   code: string;

@@ -17,7 +17,7 @@ import type {
 } from 'vscode-languageserver-types';
 import type { PublishDiagnosticsParams } from 'vscode-languageserver/node';
 import { expect, it } from 'vitest';
-import { positionAt, offsetAt } from '../src/namespaced-attributes.js';
+import { positionAt, offsetAt } from '../src/language/attributes.js';
 
 it('标准编辑器协议保留跨文件未保存内容、增量修改、绑定诊断与错误修复', async () => {
   const root = await mkdtemp(join(tmpdir(), 'zerodep-editor-'));

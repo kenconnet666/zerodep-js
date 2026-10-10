@@ -130,3 +130,5 @@ Vite 插件在现有转换入口报告带位置的源码错误，并自动注入
 `pnpm test:dev` 使用独立临时项目验证实际 Vite HMR：兼容数据保留、声明变化及手动重置、旧监听清理、编译/执行错误恢复、导出变化、检查面板与开发 SSR 接管。浏览器、服务和临时目录在结束时释放；CI 在完整浏览器用例前运行它。
 
 示例与开发夹具使用 `server.watch.awaitWriteFinish`，在文件稳定 100 毫秒后处理完整写入，每 20 毫秒检查一次。这个保存策略避免分段写入和短时间的错误/修复被底层文件监听合并，代价是少量开发更新延迟；未向断言添加固定 sleep，也不改变框架插件使用者的全局监听配置。宿主应用可以根据编辑器保存行为选择相应 Vite 设置。
+
+compiler 保留独立包，只有 `src/index.ts` 根导出；实现按 transform/checking/language/tooling 分组。CSS 转换集中在 transform/css.ts，未引入额外插件协议；Vite 插件从 `zerodep-js-compiler` 导入。命令行与语言服务器只由 bin 显式启动。

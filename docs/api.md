@@ -4,7 +4,7 @@
 
 本文对应当前源码；rc.8 之后移除 task/scope，2026-10-09 又删除整个 zerodep-use 包及路由、store、持久化和历史工具。尚未发布新候选，发布边界见 [环境配置](environment-setup.md)和[交接记录](api-hardening-handoff.md)。core 顶层函数直接使用单下划线名称；不保留旧入口转发或 deprecated。JSX 组件、类型/类和实例方法保持原名。
 
-公共运行时从 `zerodep-js` 导入，Vite 插件来自 `zerodep-js-compiler/vite`，独立编译来自 `zerodep-js-compiler`，SSR 也从 `zerodep-js` 根入口导入。下面记录当前实际契约；安装与声明消费见 [开始使用](getting-started.md)和[包产物](packages.md)。
+公共运行时从 `zerodep-js` 导入，Vite 插件来自 `zerodep-js-compiler`，独立编译来自 `zerodep-js-compiler`，SSR 也从 `zerodep-js` 根入口导入。下面记录当前实际契约；安装与声明消费见 [开始使用](getting-started.md)和[包产物](packages.md)。
 
 `bind:value` / `bind:checked` / `bind:valueAsNumber`、组件绑定、_snapshot 与 _lazy 的数据类型和 SSR 占位规则见 [编写指南](authoring.md)。分组与展开绑定见 [表单](forms.md)。
 

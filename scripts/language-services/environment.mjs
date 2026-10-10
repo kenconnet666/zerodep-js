@@ -2,7 +2,7 @@ import { createRequire } from 'node:module';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readFileSync, realpathSync } from 'node:fs';
-import { compilerPath } from '../../packages/compiler/dist/typescript.js';
+import { compilerPath } from '../../packages/compiler/dist/checking/sdk.js';
 
 export const directory = dirname(fileURLToPath(import.meta.url));
 export const root = realpathSync.native(resolve(process.argv[2] ?? resolve(directory, '../..')));

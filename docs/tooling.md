@@ -19,7 +19,7 @@
 
 ## JavaScript 目标
 
-工作区统一使用 target: ES2025 与 lib: ES2025；浏览器相关项目额外包含 DOM 和 DOM.Iterable。compiler/vite 的 zerodep() 默认设置 build.target 为 es2025，应用仍可显式覆盖。ES2025 是语法输出与类型库基线，不自动注入新内置 API 的 polyfill；实际运行环境仍须支持使用到的 API。TS7 版本保持固定，不因目标升级改为 ESNext。
+工作区统一使用 target: ES2025 与 lib: ES2025；浏览器相关项目额外包含 DOM 和 DOM.Iterable。`zerodep-js-compiler` 根入口的 `zerodep()` 默认设置 build.target 为 es2025，应用仍可显式覆盖。ES2025 是语法输出与类型库基线，不自动注入新内置 API 的 polyfill；实际运行环境仍须支持使用到的 API。TS7 版本保持固定，不因目标升级改为 ESNext。
 
 ## 构建和检查
 
@@ -69,19 +69,11 @@ LSP 探针会在主示例目录创建临时源码，不与同一工作区的应�
 
 2026-10-09 当前 WebStorm 使用内置 TypeScript 服务与内置 React 插件的通用 JSX/TSX 支持。用户启用 React 插件后确认 `bind:checked` 原语法的编辑能力可用，保留现有绑定 API。LSP4IJ 的额外框架服务器接入已撤销，其补全详情等待曾造成 IDE 界面线程卡死；不再将这条接入路线作为本机默认配置。
 
-以下保留标准 LSP 模板的历史接入步骤，供独立客户端验证参考，不表示当前 WebStorm 正在使用。LSP4IJ 的模板格式见其 [自定义服务器文档](https://github.com/redhat-developer/lsp4ij/blob/main/docs/UserDefinedLanguageServer.md)：
-
-1. 运行 `pnpm build:packages` 与 `pnpm lsp:setup`。
-2. 在 WebStorm 的“语言服务器”设置中点击“＋”，在模板菜单选择 Import from custom template。
-3. 选择项目 `.codex/lsp4ij` 文件夹，导入 Zerodep TS7.1。
-4. 模板中的 Node/服务器路径来自当前工作区，初始化选项限定项目根目录；其他项目初始化时不启用框架能力。生成文件仅供本机使用，不提交。
-5. 导入后用真实文件验证 bind: 补全、属性导航、错误/修复和未保存文本，再判断是否需关闭本项目内置 TS 诊断以消除重复提示。不要全局停用其他项目的 TypeScript。
+`lsp:setup` 现在只配置项目 MCP，不再生成或安装 LSP4IJ 模板。独立标准 LSP 命令保留，供协议客户端显式启动。
 
 标准协议测试覆盖跨文件未保存修改、Unicode 增量范围、绑定写回负例与修复、重命名、引用及自动导入。Windows URI 的盘符大小写和编码差异先归一化；同一绑定在投影中的读写引用合并为原文的一次编辑。补全 resolve 重开原投影并映射自动导入编辑，有限的菜单上下文在连接关闭时释放。
 
 不声明生成代码的格式化、语义 token 或未经验证的编辑能力。历史验证记录不代表当前 IDE 已启用该服务，当前接入以本节开头为准。
-
-WebStorm 自带补全与 LSP4IJ 可能同时展示同名普通候选。本机 TaskBoard 探针确认 LSP 在属性名和表达式位置各只返回一个 task，解析后的类型分别为 Task 和 NoInfer<Task>；候选列表中另一项来自 IDE 的补全合并。当前 LSP4IJ 用户配置不提供关闭 IDE 原生补全贡献者的开关。保留完整官方类型候选，不通过限制普通补全能力去掩盖界面重复；不能将没有行内详情直接解释为 any。
 
 ### WebStorm 的服务驱动类型引擎
 

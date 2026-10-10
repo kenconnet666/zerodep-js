@@ -1,5 +1,5 @@
 import { build } from 'vite';
-import { zerodep } from 'zerodep-js-compiler/vite';
+import { zerodep } from 'zerodep-js-compiler';
 
 // 组件库使用同一 Vite 插件；运行时保留为 peer，避免打入第二份响应式实例。
 await build({

@@ -11,8 +11,8 @@ import {
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { expect, it } from 'vitest';
-import { LanguageWorkspace } from '../src/language-workspace.js';
-import { checkProject } from '../src/checker.js';
+import { LanguageWorkspace } from '../src/language/workspace.js';
+import { checkProject } from '../src/checking/project.js';
 
 async function fixture() {
   const root = await mkdtemp(join(tmpdir(), 'zerodep-owned-test-'));
