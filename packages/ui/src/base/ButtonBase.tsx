@@ -43,8 +43,9 @@ export const ButtonBase = _component(
       s.backgroundColor.transparent,
       s.border.raw('0'),
       s.padding.raw(0),
-      s.cursor.raw(disabled ? 'default' : 'pointer'),
-      s.opacity.raw(disabled ? s.keywords.opacity._disabled : undefined),
+      s.cursor.pointer,
+      // :disabled 同时涵盖自身属性和 fieldset 继承，首个 legend 的原生例外仍有效。
+      s._selector('&:disabled', s.cursor.notAllowed, s.opacity._disabled),
       s._selector('&[hidden]', s.display.none),
       s._focusVisible(
         s.outlineStyle.solid,

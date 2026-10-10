@@ -43,6 +43,7 @@ it('ButtonBase 保留原生按钮语义、独立焦点样式及可关闭 Ripple'
   expect(result.css).toContain(':focus-visible');
   expect(result.css).toContain('outline-width:0.125em;');
   expect(result.css).toContain('outline-offset:0.125em;');
+  expect(result.css).toContain('&:disabled{cursor:not-allowed;opacity:');
   expect(render(ButtonBase, { type: 'submit', children: '提交' }).html).toContain('type="submit"');
   const forwarded = render(ButtonBase, { slotRipple: { color: '#123456', 'data-slot': 'ripple' } });
   expect(forwarded.html).toContain('data-slot="ripple"');

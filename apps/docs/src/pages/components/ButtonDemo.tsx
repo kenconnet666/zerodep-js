@@ -4,6 +4,7 @@ import {
   darkTheme,
   lightTheme,
   Button,
+  ButtonBase,
   IconButton,
   ToggleButton,
   LinkButton,
@@ -261,6 +262,15 @@ export const ButtonDemo = _component(() => {
               <Button data-action="reset" type="reset" disabled={disabled} loading={loading}>
                 重置表单
               </Button>
+              <ButtonBase
+                data-action="fieldset-base"
+                ripple={false}
+                onClick={() => {
+                  clicks++;
+                }}
+              >
+                基础按钮
+              </ButtonBase>
             </fieldset>
           </form>
           <ButtonGroup
@@ -279,12 +289,14 @@ export const ButtonDemo = _component(() => {
             </For>
           </ButtonGroup>
           <ButtonGroup data-button-group-mixed>
-            <Button variant="outline">混排文字</Button>
-            <IconButton variant="outline" icon={Search} aria-label="混排图标" />
-            <ToggleButton variant="outline" bind:pressed={pressed}>
+            <Button variant="outline" disabled={disabled}>
+              混排文字
+            </Button>
+            <IconButton variant="outline" icon={Search} aria-label="混排图标" disabled={disabled} />
+            <ToggleButton variant="outline" bind:pressed={pressed} disabled={disabled}>
               混排切换
             </ToggleButton>
-            <LinkButton variant="outline" href="#button-heading">
+            <LinkButton variant="outline" href="#button-heading" disabled={disabled}>
               混排链接
             </LinkButton>
           </ButtonGroup>

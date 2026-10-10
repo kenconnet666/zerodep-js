@@ -43,6 +43,8 @@ ToggleButton 激活时先检查禁用，再执行用户 onClick；未取消且�
 
 loading 由业务控制，不自动跟踪 Promise。button 的有效 disabled 为 disabled || loading；SSR 初始加载也会输出原生 disabled。动态禁用可能改变焦点，不承诺保留或自动恢复焦点。表单整体的重复提交校验仍由业务负责。
 
+disabled/loading 状态使用标准 cursor: not-allowed 禁止光标。ButtonBase 的禁用外观通过 :disabled 判断，同时覆盖原生 fieldset 继承并保留首个 legend 的例外；ButtonGroup 不给禁用子项应用 hover 层级。光标图案由浏览器/操作系统绘制，不使用自定义图片。
+
 加载时原标签和图标节点保留，opacity 隐藏视觉内容，Spinner 居中覆盖，根 aria-busy=true。按钮名称和布局占位保持；原内容 ref 不会因加载切换而卸载。Spinner 是装饰，不默认创建额外 live region。
 
 LinkButton 正常时保留 target/rel/download、修饰键点击、中键和右键菜单。Enter 激活，Space 滚动；不接管路由。disabled/loading 时实际移除 href，设 aria-disabled、role=link、tabIndex=-1，并拦截 click/auxclick 的业务处理。恢复时使用最新 href。它不会给 a 写无效 disabled 属性，也不靠 pointer-events:none 伪装禁用。

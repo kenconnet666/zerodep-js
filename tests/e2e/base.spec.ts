@@ -63,9 +63,11 @@ for (const mode of ['csr', 'ssr']) {
     await expect(page.locator('[data-base-clicks]')).toHaveText('2');
     await page.getByLabel('禁用底座', { exact: true }).check();
     await expect(button).toBeDisabled();
+    await expect(button).toHaveCSS('cursor', 'not-allowed');
     await button.dispatchEvent('click');
     await expect(page.locator('[data-base-clicks]')).toHaveText('2');
     await page.getByLabel('禁用底座', { exact: true }).uncheck();
+    await expect(button).toHaveCSS('cursor', 'pointer');
     await page.getByLabel('开启波纹', { exact: true }).uncheck();
     await expect(page.locator('[data-ripple]')).toHaveCount(0);
     await expect(page.locator('[data-base-refs]')).toHaveText('0');

@@ -122,6 +122,7 @@ it('Button 加载首屏即原生禁用，保留标签并隔离槽语义', () => 
   expect(html).toContain('data-loading="true"');
   expect(css).toContain('opacity:0;');
   expect(css).toContain('0.0625em');
+  expect(css).toContain('cursor:not-allowed;');
 });
 it('IconButton 保留名称、方形尺寸与根 ref 类型对应的原生节点', () => {
   const { html, css } = render(IconButton, { icon: Search, 'aria-label': '搜索', loading: true });

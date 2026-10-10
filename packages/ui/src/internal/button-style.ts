@@ -69,7 +69,7 @@ export function buttonStyle(s: Css<UiTheme>, options: ButtonStyleOptions): CssPr
     ),
     s.cursor.pointer,
     s._selector('&[hidden]', s.display.none),
-    s._selector('&:disabled, &[aria-disabled="true"]', s.cursor.default, s.opacity._disabled),
+    s._selector('&:disabled, &[aria-disabled="true"]', s.cursor.notAllowed, s.opacity._disabled),
     s._selector(
       '@media (hover: hover)',
       s._selector(

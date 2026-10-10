@@ -82,7 +82,11 @@ export const ButtonGroup = _component(
       direction === 'row'
         ? s._selector(beforeLast, s.borderStartEndRadius.raw(0), s.borderEndEndRadius.raw(0))
         : s._selector(beforeLast, s.borderEndStartRadius.raw(0), s.borderEndEndRadius.raw(0)),
-      s._selector(`& > ${item}:hover`, s.zIndex.raw(1)),
+      // 禁用过滤不增加优先级，继续由后面的 pressed/focus-visible 覆盖 hover。
+      s._selector(
+        `& > ${item}:where(:not(:disabled):not([aria-disabled="true"])):hover`,
+        s.zIndex.raw(1),
+      ),
       s._selector(`& > ${item}[aria-pressed="true"]`, s.zIndex.raw(2)),
       s._selector(`& > ${item}:focus-visible`, s.zIndex.raw(3)),
     );

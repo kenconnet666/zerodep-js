@@ -93,6 +93,9 @@ for (const mode of ['csr', 'ssr']) {
     await expect(demo.locator('[data-button-clicks]')).toHaveText('1');
     await demo.getByLabel('按钮加载', { exact: true }).check();
     await expect(save).toBeDisabled();
+    for (const action of ['save', 'icon', 'toggle', 'icon-toggle', 'link'])
+      await expect(demo.locator(`[data-action="${action}"]`)).toHaveCSS('cursor', 'not-allowed');
+    await expect(save.locator('[data-save-icon]')).toHaveCSS('cursor', 'not-allowed');
     await expect(save).toHaveAttribute('aria-busy', 'true');
     await expect(save).toHaveAccessibleName('保存按钮');
     await expect(save.locator('[data-ui-button-content]')).toHaveCSS('opacity', '0');
@@ -104,6 +107,7 @@ for (const mode of ['csr', 'ssr']) {
     await save.dispatchEvent('click');
     await expect(demo.locator('[data-button-clicks]')).toHaveText('1');
     await demo.getByLabel('按钮加载', { exact: true }).uncheck();
+    await expect(save).toHaveCSS('cursor', 'pointer');
     await expect(save.locator('[data-save-icon]')).toHaveAttribute('data-same-icon', 'yes');
     await expect(demo.locator('[data-button-refs]')).toHaveText('1');
     await demo.getByLabel('按钮放大', { exact: true }).check();
@@ -130,9 +134,22 @@ for (const mode of ['csr', 'ssr']) {
     await expect(demo.locator('[data-button-resets]')).toHaveText('1');
     await demo.getByLabel('禁用表单区域', { exact: true }).check();
     await expect(demo.locator('[data-action="submit"]')).toBeDisabled();
+    await expect(demo.locator('[data-action="submit"]')).toHaveCSS('cursor', 'not-allowed');
+    const base = demo.locator('[data-action="fieldset-base"]');
+    await expect(base).toBeDisabled();
+    await expect(base).not.toHaveAttribute('disabled');
+    await expect(base).toHaveCSS('cursor', 'not-allowed');
+    expect(await base.evaluate((node) => Number(getComputedStyle(node).opacity))).toBeLessThan(1);
+    await base.dispatchEvent('click');
+    await expect(demo.locator('[data-button-clicks]')).toHaveText('1');
     await expect(demo.locator('[data-action="legend"]')).toBeEnabled();
+    await expect(demo.locator('[data-action="legend"]')).toHaveCSS('cursor', 'pointer');
     await demo.locator('[data-action="legend"]').click();
     await expect(demo.locator('[data-button-clicks]')).toHaveText('2');
+    await demo.getByLabel('禁用表单区域', { exact: true }).uncheck();
+    await expect(base).toBeEnabled();
+    await expect(base).toHaveCSS('cursor', 'pointer');
+    await expect(base).toHaveCSS('opacity', '1');
     await demo.getByLabel('显示按钮示例', { exact: true }).uncheck();
     await expect(demo.locator('[data-button-refs]')).toHaveText('0');
     expect(errors).toEqual([]);
@@ -172,6 +189,8 @@ for (const mode of ['csr', 'ssr']) {
     await page.keyboard.press('Enter');
     await expect(demo.locator('[data-button-links]')).toHaveText('1');
     await demo.getByLabel('按钮禁用', { exact: true }).check();
+    for (const action of ['save', 'icon', 'toggle', 'icon-toggle', 'link'])
+      await expect(demo.locator(`[data-action="${action}"]`)).toHaveCSS('cursor', 'not-allowed');
     await expect(link).not.toHaveAttribute('href');
     await expect(link).toHaveAttribute('tabindex', '-1');
     await link.dispatchEvent('click');
@@ -179,6 +198,7 @@ for (const mode of ['csr', 'ssr']) {
     await expect(demo.locator('[data-button-links]')).toHaveText('1');
     await demo.getByLabel('按钮自定义色', { exact: true }).check();
     await demo.getByLabel('按钮禁用', { exact: true }).uncheck();
+    await expect(link).toHaveCSS('cursor', 'pointer');
     await expect(link).toHaveAttribute('href', '#button-heading');
     const popupEvent = page.waitForEvent('popup');
     await demo.locator('[data-action="native-link"]').click();
@@ -211,6 +231,8 @@ for (const mode of ['csr', 'ssr']) {
     await page.keyboard.press('Tab');
     await expect(middle).toBeFocused();
     await expect(middle).toHaveCSS('z-index', '3');
+    await middle.hover();
+    await expect(middle).toHaveCSS('z-index', '3');
     await expect(flex).toHaveCSS('overflow', 'visible');
     await demo.getByLabel('隐藏首项', { exact: true }).check();
     await expect(first).toBeHidden();
@@ -239,10 +261,22 @@ for (const mode of ['csr', 'ssr']) {
     await expect(mixed.nth(1)).toHaveCSS('border-radius', '0px');
     await expect(mixed.nth(2)).toHaveCSS('border-radius', '0px');
     const equal = demo.locator('[data-equal] > button');
+    const selected = mixed.nth(2);
+    await selected.click();
+    await expect(selected).toHaveAttribute('aria-pressed', 'true');
+    await selected.evaluate((node: HTMLElement) => node.blur());
+    await selected.hover();
+    await expect(selected).toHaveCSS('z-index', '2');
     expect((await equal.nth(0).boundingBox())!.width).toBeCloseTo(
       (await equal.nth(1).boundingBox())!.width,
       1,
     );
+    await demo.getByLabel('按钮禁用', { exact: true }).check();
+    for (let i = 0; i < 4; i++) await expect(mixed.nth(i)).toHaveCSS('cursor', 'not-allowed');
+    await mixed.first().hover();
+    await expect(mixed.first()).toHaveCSS('z-index', 'auto');
+    await mixed.last().hover();
+    await expect(mixed.last()).toHaveCSS('z-index', 'auto');
     expect(errors).toEqual([]);
   });
 }
