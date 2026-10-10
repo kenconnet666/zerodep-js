@@ -1,6 +1,6 @@
 # UI 按钮与 Flex 交接
 
-当前目录：C:\Users\lionheart\WebstormProjects\zerodep-js，分支 main。先读 AGENTS.md，再检查 git status、HEAD 和对应 CI；旧发行版和旧交接快照不能代表当前源码。
+分支 main；工作目录以当前 checkout 为准，不照抄其他机器路径。先读 AGENTS.md，再检查 git status、HEAD 和对应 CI；旧发行版和旧交接快照不能代表当前源码。2026-10-10 的 CI 修复和后续审计见 [审计记录](audit-2026-10-10.md)。
 
 ## 后续 Grid（2026-10-09）
 

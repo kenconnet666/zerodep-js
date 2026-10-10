@@ -6,9 +6,9 @@
 
 | 领域            | 当前范围与证据                                                                                                                                                             |
 | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| TypeScript      | 当前工作区固定 JetBrains `7.1.0-dev.jetbrains.20261006.2`，发行地址与校验见 [环境配置](environment-setup.md)。仅面向选定的新版本，不增加旧版或多版本兼容层。               |
+| TypeScript      | 当前工作区固定 微软官方 `7.1.0-dev.20261008.1`，发行地址与校验见 [环境配置](environment-setup.md)。仅面向选定的新版本，不增加旧版或多版本兼容层。                          |
 | Node            | Node 24，工程固定 24.18.0，包 engines 为 `>=24.11 <25`。不把未验证的大版本写入支持范围。                                                                                   |
-| 构建            | ESM、选定 JetBrains TS7.1 类型检查、Babel 框架转换、Vite 8 插件；固定版本由 catalog 管理，不提供 React runtime 或旧版 TS 兼容层。                                          |
+| 构建            | ESM、选定官方 TS7.1 类型检查、Babel 框架转换、Vite 8 插件；固定版本由 catalog 管理，不提供 React runtime 或旧版 TS 兼容层。                                                |
 | 浏览器          | 面向现代 DOM、Proxy、WeakRef/FinalizationRegistry 和 AbortController 环境。CI 使用固定 Playwright 版本的 Chromium、Firefox、WebKit；状态保留移动提供 moveBefore 兼容路径。 |
 | Windows / Linux | Windows 本地与独立包消费、Linux 完整 CI 均有证据。WebKit 自动化不等于实机 Safari 或所有平台输入法验证。                                                                    |
 | 输入法          | 三浏览器组合事件序列已验证；Chromium CDP 编辑管线已覆盖候选、提交、取消、外部更新及 Unicode 选区。协议输入不等于 OS 输入法实测。                                           |
@@ -43,4 +43,4 @@
 
 ## 发布边界
 
-历史交付与注册表验收保留在 CHANGELOG。当前源码固定 JetBrains TS7.1.0-dev.jetbrains.20261006.2、Babel 与 Vite；基础 API 最新提交、CI 与待发布边界见 [交接记录](api-hardening-handoff.md)，之前迁移和发布证据见 [执行记录](execution.md)。历史候选通过不代表当前提交通过，稳定 1.0.0 尚未发布。
+历史交付与注册表验收保留在 CHANGELOG。当前源码固定微软官方 TS7.1.0-dev.20261008.1、Babel 与 Vite；基础 API 最新提交、CI 与待发布边界见 [交接记录](api-hardening-handoff.md)，之前迁移和发布证据见 [执行记录](execution.md)。历史候选通过不代表当前提交通过，稳定 1.0.0 尚未发布。

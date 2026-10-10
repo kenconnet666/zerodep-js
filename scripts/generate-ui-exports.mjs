@@ -32,7 +32,8 @@ async function collect(directory) {
     entries.set(`${directory}/${item.name}`, null);
   }
 }
-for (const directory of ['base', 'utils', 'layout']) await collect(directory);
+for (const directory of ['base', 'utils', 'layout', 'input', 'display', 'feedback', 'navigation'])
+  await collect(directory);
 const seen = new Set();
 const lines = ['// 由 scripts/generate-ui-exports.mjs 生成；运行 pnpm ui:generate 更新。'];
 for (const [file, selected] of [...entries].sort(([a], [b]) => a.localeCompare(b, 'en'))) {

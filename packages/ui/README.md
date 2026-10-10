@@ -22,6 +22,8 @@
 
 从仓库根目录执行 `pnpm build:ui`。构建先检查框架语义，再由 Vite + zerodep 插件转换 TSX，最后由固定的 TypeScript 7.1 生成声明；不能用普通 tsc 擦除结果执行组件宏。
 
+组件开发运行 `pnpm dev:docs`：只先构建框架工具，文档的 Vite 开发模式直接转换 UI 源码并提供 HMR，无需每次手工重打 UI 包。正式文档构建仍读取 UI dist，继续验证真实包产物。
+
 运行时和 zerodep-js-css 由应用提供，组件库不打包第二份实例。组件示例和使用说明放在 `apps/docs/src/pages/components/`。
 
 ```tsx

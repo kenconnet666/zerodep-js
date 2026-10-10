@@ -10,7 +10,7 @@
   },
   "scripts": {
     "dev": "pnpm build:packages && pnpm -r --parallel --filter \"!@zerodep-js/docs\" dev",
-    "dev:docs": "pnpm build:ui && pnpm --filter @zerodep-js/docs dev",
+    "dev:docs": "pnpm build:packages && pnpm --filter @zerodep-js/docs dev",
     "dev:csr": "pnpm build:packages && pnpm --filter @zerodep-js/example dev --render-mode csr",
     "dev:ssr": "pnpm build:packages && pnpm --filter @zerodep-js/example dev --render-mode ssr",
     "build:packages": "tsc -b tsconfig.build.json",
