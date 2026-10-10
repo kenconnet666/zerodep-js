@@ -111,7 +111,7 @@ import { ButtonGroup } from 'zerodep-js-ui';
 - focus-visible 子项位于相邻项之上，pressed 和 hover 使用较低层级；ButtonGroup 不裁剪焦点轮廓，层级隔离在自身范围内。
 - 条件移除、列表重排和原生 hidden 自动更新首尾；disabled/loading 项仍参与几何。任意外部 display:none 无法仅靠 CSS 首尾选择器识别，使用 hidden 或条件渲染。
 - 长标签可在按钮内换行；相连容器本身不换行，交叉轴拉伸。默认方形 IconButton 在这种拉伸组合中也会服从行高。
-- 只处理直接兼容控件，不穿透 wrapper 或嵌套组。启用时对不兼容直接内容发出提示，不安装 DOM 观察器持续检查动态非法内容。
+- 只处理直接兼容控件，不穿透 wrapper 或嵌套组；调用方保证子项结构，不扫描 DOM 或为不兼容内容发出运行时警告。
 - 自定义字号、边框厚度或 inline/important 圆角覆盖可能使接缝不齐或覆盖内侧零圆角；此时不承诺默认连接几何。优先统一 ButtonGroup.size、变体和边框。
 
 自定义控件可选择实现同一 CSS 协议：根添加 data-ui-action，使用 --zj-action-border 指定实际边框厚度（标准值 0.0625em），根具备 position:relative、明确边框及圆角。连接选择器只命中该标记的直接可见子项，且仅排除原生 hidden；不得借此把不兼容结构自动当成按钮。

@@ -37,7 +37,6 @@ it('单独消费 Button 只包含使用图标与 Spinner，不带入其他成品
     })
     .filter((output) => output.type === 'chunk');
   const code = chunks.map((chunk) => chunk.code).join('\n');
-  expect(code).not.toContain('ButtonGroup 只支持');
   expect(code).not.toContain('onPressedChange');
   expect(code).not.toContain('onAuxClick');
   const icons = chunks

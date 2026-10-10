@@ -1,4 +1,4 @@
-import { _component, _effect, _state, type JSX } from 'zerodep-js';
+import { _component, type JSX } from 'zerodep-js';
 import { css, _mergeClasses, type CssValue } from 'zerodep-js-css';
 import { useCss } from '../provider/context.js';
 import type { UiTheme } from '../provider/theme/theme.js';
@@ -29,27 +29,6 @@ export const ButtonGroup = _component(
     ...rest
   }: ButtonGroupProps) => {
     const s = useCss();
-    let container = _state<HTMLDivElement | undefined>(undefined);
-    _effect(() => {
-      const node = container;
-      if (!node) return;
-      let active = true;
-      node.ownerDocument.defaultView!.queueMicrotask(() => {
-        if (!active) return;
-        if (
-          Array.from(node.childNodes).some((child) => {
-            if (child.nodeType === 3) return Boolean(child.textContent?.trim());
-            if (child.nodeType !== 1) return false;
-            const element = child as Element;
-            return !element.hasAttribute('data-ui-action') && !element.hasAttribute('hidden');
-          })
-        )
-          console.warn('ButtonGroup 只支持带 data-ui-action 标记的直接按钮，不穿透 wrapper。');
-      });
-      return () => {
-        active = false;
-      };
-    });
     const style = css(
       s.display.raw(inline ? 'inline-flex' : 'flex'),
       s.flexDirection.raw(direction),
@@ -91,7 +70,7 @@ export const ButtonGroup = _component(
       s._selector(`& > ${item}:focus-visible`, s.zIndex.raw(3)),
     );
     return (
-      <div {...rest} role={role} bind:this={container} class={_mergeClasses(style, className)}>
+      <div {...rest} role={role} class={_mergeClasses(style, className)}>
         {children}
       </div>
     );
