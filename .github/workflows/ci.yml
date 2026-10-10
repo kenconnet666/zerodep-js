@@ -43,7 +43,6 @@ jobs:
       - run: node -e "if(process.platform+'-'+process.arch !== process.env.EXPECTED_PLATFORM) throw Error('Runner architecture mismatch')"
         env:
           EXPECTED_PLATFORM: ${{ matrix.platform }}
-      - run: pnpm build:packages
       - run: pnpm test:compiler
 
   verify:
@@ -66,7 +65,8 @@ jobs:
       - run: pnpm check
       # 示例也检查原始 TSX，避免框架投影通过而官方 IDE 仍报告类型错误。
       - run: pnpm exec tsc -p apps/example/tsconfig.json --noEmit
-      - run: pnpm test
+      # check 已完成包与 UI 构建，这里直接运行相同的测试，避免再次构建 UI。
+      - run: pnpm exec vitest run
       - run: pnpm test:css
       - run: pnpm test:stability
       - run: pnpm lsp:setup

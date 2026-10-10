@@ -1,7 +1,7 @@
 import { _component, _derived, _provideContext, _useContext, type JSX } from 'zerodep-js';
 import { css, Css, _mergeClasses, type CssValue } from 'zerodep-js-css';
 import { lightTheme } from './theme/light.js';
-import { type UiTheme } from './theme/theme.js';
+import type { UiTheme } from './theme/theme.js';
 import { zhCN } from './lang/zh-CN.js';
 import type { UiLanguage } from './lang/types.js';
 import { createLocale } from './locale.js';

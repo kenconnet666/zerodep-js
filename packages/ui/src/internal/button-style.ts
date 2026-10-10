@@ -1,5 +1,5 @@
 import { css, type Css, type CssValue } from 'zerodep-js-css';
-import { type UiTheme } from '../provider/theme/theme.js';
+import type { UiTheme } from '../provider/theme/theme.js';
 import type { ButtonVariant } from '../base/Button.js';
 
 export interface ButtonStyleOptions {

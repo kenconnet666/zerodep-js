@@ -104,11 +104,7 @@ export function prepareCss(ast: t.File, program: NodePath<t.Program>, source: st
   const identifiers = new WeakSet<t.Node>();
   let count = 0;
   let used = false;
-  // 客户端/SSR 即使在不同机器构建，也必须生成相同的元素变量名。
-  const file = createHash('sha256')
-    .update(source.replace(/\r\n?/g, '\n'))
-    .digest('hex')
-    .slice(0, 12);
+  let file: string | undefined;
   traverse(ast, {
     CallExpression(path) {
       if (!isCssCall(path)) return;
@@ -130,6 +126,11 @@ export function prepareCss(ast: t.File, program: NodePath<t.Program>, source: st
         targets.some((target) => !target)
       )
         return;
+      // 只有存在可接管的 CSS 调用才计算；客户端/SSR 仍按相同源码生成变量名。
+      file ??= createHash('sha256')
+        .update(source.replace(/\r\n?/g, '\n'))
+        .digest('hex')
+        .slice(0, 12);
       let slot = 0;
       const site = count++;
       const parts = path.node.arguments.map((argument) => {
