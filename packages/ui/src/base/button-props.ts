@@ -2,11 +2,11 @@ import type { UiTheme } from '../provider/theme/theme.js';
 import type { CssValue } from 'zerodep-js-css';
 import type { LucideIconData } from '@lucide/icons';
 import type { Renderable } from 'zerodep-js';
-import type { IconProps } from '../base/Icon.js';
-import type { TextProps } from '../base/Text.js';
-import type { RippleProps } from '../base/Ripple.js';
+import type { IconProps } from './Icon.js';
+import type { TextProps } from './Text.js';
+import type { RippleProps } from './Ripple.js';
 import type { SlotProps } from '../utils/slot-props.js';
-import type { ButtonVariant } from '../base/Button.js';
+import type { ButtonVariant } from './Button.js';
 
 type Decoration = 'aria-hidden' | 'aria-label' | 'aria-labelledby' | 'role';
 export type DecorationProps = Omit<IconProps, 'icon' | 'children' | Decoration> & {

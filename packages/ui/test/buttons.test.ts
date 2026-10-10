@@ -10,6 +10,10 @@ import {
   ToggleButton,
   LinkButton,
   ButtonGroup,
+  ButtonBase,
+  ButtonContent,
+  _buttonStyle,
+  useCss,
 } from '../dist/index.js';
 import { build } from 'vite';
 import { resolve } from 'node:path';
@@ -55,6 +59,24 @@ function render(
   const App = defineComponent(() => element(Provider, { children: element(component, props) }));
   return { html: withCssHost(host, () => renderToString(App)), css: host.cssText() };
 }
+
+it('从包根复用按钮内容与样式，不依赖私有路径', () => {
+  const Custom = defineComponent(() => {
+    const appearance = _buttonStyle(useCss(), { variant: 'outline', color: '#123456' });
+    return element(ButtonBase, {
+      class: appearance.class,
+      style: appearance.style,
+      disabled: true,
+      children: element(ButtonContent, { loading: true, children: '自定义按钮' }),
+    });
+  });
+  const { html, css } = render(Custom, {});
+  expect(html).toContain('自定义按钮');
+  expect(html).toContain('disabled');
+  expect(html).toContain('--zj-button-color:#123456');
+  expect(html).toContain('data-ui-button-content');
+  expect(css).toContain('color:var(--zj-button-color)');
+});
 
 it.each([Button, IconButton, ToggleButton, LinkButton])(
   '按钮连续颜色不增加规则，特殊 CSS 与外部 style 保持原意',

@@ -3,9 +3,9 @@ import { _mergeClasses } from 'zerodep-js-css';
 import type { LucideIconData } from '@lucide/icons';
 import type { ButtonState } from './Button.js';
 import { ButtonBase } from './ButtonBase.js';
-import { ButtonContent } from '../internal/ButtonContent.js';
-import { buttonStyle } from '../internal/button-style.js';
-import type { AccessibleName, ActionProps, DecorationProps } from '../internal/button-props.js';
+import { ButtonContent } from './ButtonContent.js';
+import { _buttonStyle } from './button-style.js';
+import type { AccessibleName, ActionProps, DecorationProps } from './button-props.js';
 import { _resolveSlotProps, type SlotProps } from '../utils/slot-props.js';
 import { useCss } from '../provider/context.js';
 
@@ -44,7 +44,7 @@ export const IconButton = _component(
       Object.freeze({ variant, disabled, loading, unavailable: disabled || loading }),
     );
     const style = _derived(
-      buttonStyle(s, { variant, color, backgroundColor, borderColor, iconOnly: true }),
+      _buttonStyle(s, { variant, color, backgroundColor, borderColor, iconOnly: true }),
     );
     return (
       <ButtonBase

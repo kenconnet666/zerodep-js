@@ -1,9 +1,9 @@
 import { _component, _derived, styleText, type JSX } from 'zerodep-js';
 import { _mergeClasses } from 'zerodep-js-css';
 import { ButtonBase } from './ButtonBase.js';
-import { ButtonContent } from '../internal/ButtonContent.js';
-import { buttonStyle } from '../internal/button-style.js';
-import type { ActionProps, LabelProps } from '../internal/button-props.js';
+import { ButtonContent } from './ButtonContent.js';
+import { _buttonStyle } from './button-style.js';
+import type { ActionProps, LabelProps } from './button-props.js';
 import { _resolveSlotProps } from '../utils/slot-props.js';
 import { useCss } from '../provider/context.js';
 
@@ -49,7 +49,7 @@ export const Button = _component(
     const state = _derived(
       Object.freeze({ variant, disabled, loading, unavailable: disabled || loading }),
     );
-    const style = _derived(buttonStyle(s, { variant, color, backgroundColor, borderColor }));
+    const style = _derived(_buttonStyle(s, { variant, color, backgroundColor, borderColor }));
     return (
       <ButtonBase
         {...rest}

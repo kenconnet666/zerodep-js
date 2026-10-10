@@ -1,14 +1,14 @@
 import { _component, type Renderable } from 'zerodep-js';
 import { css } from 'zerodep-js-css';
 import type { LucideIconData } from '@lucide/icons';
-import { Icon } from '../base/Icon.js';
-import { Text, type TextProps } from '../base/Text.js';
-import { Spinner } from '../base/Spinner.js';
+import { Icon } from './Icon.js';
+import { Text, type TextProps } from './Text.js';
+import { Spinner } from './Spinner.js';
 import { useCss } from '../provider/context.js';
 
 import type { DecorationProps } from './button-props.js';
 
-interface ContentProps {
+export interface ButtonContentProps {
   loading: boolean;
   icon?: LucideIconData | undefined;
   startIcon?: LucideIconData | undefined;
@@ -34,7 +34,7 @@ export const ButtonContent = _component(
     endProps,
     textProps,
     spinnerProps,
-  }: ContentProps) => {
+  }: ButtonContentProps) => {
     const s = useCss();
     const content = css(
       s.display.inlineFlex,

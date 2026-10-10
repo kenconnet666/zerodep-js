@@ -7,7 +7,8 @@
 - `src/utils/`：slot 属性解析、测量和按压资源工具；不设置子目录 index.ts。
 - `src/base/Icon.tsx`：静态 Lucide 图标，颜色/尺寸复用 CSS 主题类型。
 - `src/base/`：原生按钮底座、四类成品按钮、ButtonGroup 一维相连及文字/加载/波纹。
-- `src/layout/Flex.tsx`：普通一维布局；`src/internal/` 保存私有复用实现，不公开导出。
+- `src/base/ButtonContent.tsx`、`button-style.ts`、`button-props.ts`：可复用的按钮内容、样式与类型，统一从根入口导出。
+- `src/layout/Flex.tsx`：普通一维布局。
 - `src/layout/Grid.tsx`：普通二维轨道、自动填充与跨格布局。
 - 通用主题位于 `packages/ui/src/provider/theme/`，从 `zerodep-js-ui` 导入。
 - `src/provider/lang/`：内置语言包和自定义语言包契约。

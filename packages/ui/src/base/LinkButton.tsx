@@ -3,9 +3,9 @@ import { _component, _derived, styleText, type NativeProps, element } from 'zero
 import { css, _mergeClasses } from 'zerodep-js-css';
 import type { ButtonState } from './Button.js';
 import { Ripple } from './Ripple.js';
-import { ButtonContent } from '../internal/ButtonContent.js';
-import { buttonStyle } from '../internal/button-style.js';
-import type { ActionProps, LabelProps } from '../internal/button-props.js';
+import { ButtonContent } from './ButtonContent.js';
+import { _buttonStyle } from './button-style.js';
+import type { ActionProps, LabelProps } from './button-props.js';
 import { _resolveSlotProps } from '../utils/slot-props.js';
 import { useCss } from '../provider/context.js';
 
@@ -55,7 +55,7 @@ export const LinkButton = _component(
     const state = _derived(
       Object.freeze({ variant, disabled, loading, unavailable: disabled || loading }),
     );
-    const appearance = _derived(buttonStyle(s, { variant, color, backgroundColor, borderColor }));
+    const appearance = _derived(_buttonStyle(s, { variant, color, backgroundColor, borderColor }));
     const font = css(s.fontSize.raw(size));
     return (
       <HtmlAnchor

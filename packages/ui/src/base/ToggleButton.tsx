@@ -3,14 +3,9 @@ import { _mergeClasses } from 'zerodep-js-css';
 import type { LucideIconData } from '@lucide/icons';
 import type { ButtonState } from './Button.js';
 import { ButtonBase } from './ButtonBase.js';
-import { ButtonContent } from '../internal/ButtonContent.js';
-import { buttonStyle } from '../internal/button-style.js';
-import type {
-  AccessibleName,
-  ActionProps,
-  DecorationProps,
-  LabelProps,
-} from '../internal/button-props.js';
+import { ButtonContent } from './ButtonContent.js';
+import { _buttonStyle } from './button-style.js';
+import type { AccessibleName, ActionProps, DecorationProps, LabelProps } from './button-props.js';
 import { _resolveSlotProps, type SlotProps } from '../utils/slot-props.js';
 import { useCss } from '../provider/context.js';
 
@@ -72,7 +67,7 @@ export const ToggleButton = _component(
       Object.freeze({ variant, disabled, loading, unavailable: disabled || loading, pressed }),
     );
     const style = _derived(
-      buttonStyle(s, {
+      _buttonStyle(s, {
         variant,
         pressed,
         color,

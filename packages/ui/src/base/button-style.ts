@@ -1,6 +1,6 @@
 import { css, Css, cssBinding, cssResult, type CssProps, type CssValue } from 'zerodep-js-css';
 import type { UiTheme } from '../provider/theme/theme.js';
-import type { ButtonVariant } from '../base/Button.js';
+import type { ButtonVariant } from './Button.js';
 
 export interface ButtonStyleOptions {
   variant: ButtonVariant;
@@ -31,7 +31,7 @@ function colorBinding(
 }
 
 /** 四类控件共用几何与相连协议；颜色变化只更新安全的元素变量。 */
-export function buttonStyle(s: Css<UiTheme>, options: ButtonStyleOptions): CssProps {
+export function _buttonStyle(s: Css<UiTheme>, options: ButtonStyleOptions): CssProps {
   const { variant, iconOnly, pressed, color, backgroundColor, borderColor } = options;
   const filled = variant === 'solid' || pressed;
   return cssResult(css, [

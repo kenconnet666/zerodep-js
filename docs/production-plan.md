@@ -145,9 +145,9 @@
 
 - Flex 负责横纵布局、间距、换行与等分；ButtonGroup 承担一维接缝、首尾圆角、RTL、动态隐藏/重排与焦点层级，不接管选择状态和键盘导航。
 - 四类控件复用已有 ButtonBase/Icon/Text/Spinner/Ripple 与槽工具；LinkButton 使用原生 a，ToggleButton 复用 pressed/onPressedChange 的组件绑定。新增组件仍使用独立 slotXxx 属性。
-- size 继续是 CSS 字号，组件专用几何值用 em，通用 token 在 UI Provider，按钮外观复用代码在 UI 私有实现中。core 暂无新增 API；不为本次按钮引入定位库或通用焦点管理器。
+- size 继续是 CSS 字号，组件专用几何值用 em，通用 token 在 UI Provider，按钮外观复用代码位于 UI base 并从根入口导出。core 暂无新增 API；不为本次按钮引入定位库或通用焦点管理器。
 - 加载采用原生 disabled || loading；不承诺保留焦点，不自动恢复焦点。LinkButton 不可用时移除 href。ToggleButton 使用受控 pressed/onPressedChange 与 bind:pressed。
-- core 修复绑定类型映射丢失 ARIA 必填成员的问题，没有新增运行时 API。UI 私有样式/内容不进入根入口，自动入口增加 layout 扫描。
+- core 修复绑定类型映射丢失 ARIA 必填成员的问题，没有新增运行时 API。UI 自动入口收集 base/layout，包括可复用的按钮内容与样式函数。
 - 本地相关检查与中文提交按阶段完成；完整矩阵由同一提交 CI 验证，UI 仍 private，不进行 npm 发布。
 
 ## 13. Grid 二维布局

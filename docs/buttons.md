@@ -122,6 +122,6 @@ ButtonGroup 不提供互斥选择语义，不会让多个 ToggleButton 互斥。
 
 交互示例：apps/docs/src/pages/components/ButtonDemo.tsx。组件及消费测试在 packages/ui/test/buttons.test.ts、flex.test.ts；真实 TSX 类型反例在 buttons-types.tsx；浏览器用例在 tests/e2e/buttons.spec.ts。补全使用 pnpm lsp:completions --case 按钮属性。
 
-公共组件在 base/layout，私有样式和内容组合在 internal；根入口由 pnpm ui:generate 维护，pnpm ui:check 校验，不创建子目录 index.ts。普通按钮/Flex 不读取像素尺寸；几何观察另见 [字号与测量](../packages/ui/README.md#字号等比尺寸与测量)。
+按钮组件、内容和样式组合放在 base，布局放在 layout，不维护 internal 目录。ButtonContent/ButtonContentProps、_buttonStyle/ButtonStyleOptions、DecorationProps、AccessibleName、ActionProps 和 LabelProps 均从 zerodep-js-ui 根入口导出，可用于自定义按钮组合。_buttonStyle 返回 class/style，两者应同时传给根元素，以保留动态颜色变量。根入口由 pnpm ui:generate 维护，pnpm ui:check 校验，不创建子目录 index.ts。普通按钮/Flex 不读取像素尺寸；几何观察另见 [字号与测量](../packages/ui/README.md#字号等比尺寸与测量)。
 
 研究依据：[WAI-ARIA Button](https://www.w3.org/WAI/ARIA/apg/patterns/button/)、[Link](https://www.w3.org/WAI/ARIA/apg/patterns/link/)、[Toolbar](https://www.w3.org/WAI/ARIA/apg/patterns/toolbar/)、[Radix Flex](https://www.radix-ui.com/themes/docs/components/flex)、[Mantine Group](https://mantine.dev/core/group/)、[MUI Button 加载](https://mui.com/material-ui/api/button/)。本库使用自身运行时和原生元素，不引入上述组件库。
