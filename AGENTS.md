@@ -31,6 +31,7 @@
 - TypeScript target/lib 与 compiler/vite 默认构建目标统一 ES2025；不要退回旧基线或改为随版本变化的 ESNext。新 API 的类型声明不代替运行时支持，不默认注入 polyfill。
 - 共享版本放在 pnpm catalog，包间依赖使用 workspace:*。使用 Node 24 和 package.json 固定的 pnpm，不添加其他包管理器锁文件。
 - 优先使用成熟依赖；ESLint 的 TS 支持满足选定版本时再评估替换现有 lint，不引入 TS6 或自造通用 linter。项目不引入 Zod，MCP 使用 JSON Schema、vscode-jsonrpc 与标准 stdio JSON-RPC。
+- CSS 生成属性直接继承共享泛型基类，保留各属性 Property.* 参数约束和基类中文说明；不要用 class/interface 合并重述方法，这会使当前 WebStorm 丢失普通方法的参数列表展示。
 - 生成数据应有明确维护入口与检查命令。中文注释解释语义、原因、资源责任，不机械复述代码。
 
 ## 验证与交付

@@ -1,7 +1,14 @@
 // 由 scripts/generate-css-author.mjs 从 csstype@3.2.3 生成；请勿手改。
 // 来源许可见 packages/css/THIRD_PARTY_NOTICES.md。
 import type { Property } from 'csstype';
-import { CssProperty, LengthCssProperty, type CssString } from './base.js';
+import {
+  CssProperty,
+  ColorLengthCssProperty,
+  ColorCssProperty,
+  LengthCssProperty,
+  MathCssProperty,
+  type CssString,
+} from './base.js';
 import { initializeKeywordDeclarations } from '../util/keywords.js';
 import type { KeywordDeclarations, KeywordValuesOf } from '../util/keywords.js';
 // 关键字是实例上的声明字符串；系统实例按属性链惰性创建并共享。
@@ -28,7 +35,7 @@ export const BackdropFilterKeywords = class BackdropFilterKeywords {
 /**
  * backdrop-filter 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BackdropFilterCssRuntime extends CssProperty {
+class BackdropFilterCssRuntime extends CssProperty<Property.BackdropFilter> {
   /**
    * 创建 backdrop-filter 属性作者；普通使用通过 s.backdropFilter 取得共享实例。
    * @example
@@ -37,18 +44,6 @@ class BackdropFilterCssRuntime extends CssProperty {
   constructor() {
     super('backdrop-filter');
     initializeKeywordDeclarations(this, 'backdrop-filter', noneKeywords);
-  }
-  /**
-   * 原样生成 backdrop-filter 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 backdrop-filter:value;，undefined 返回空字符串。
-   * @example
-   * s.backdropFilter.raw('inherit') // backdrop-filter:inherit;
-   */
-  raw(value: Property.BackdropFilter | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -86,7 +81,7 @@ export const BackfaceVisibilityKeywords = class BackfaceVisibilityKeywords {
 /**
  * backface-visibility 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BackfaceVisibilityCssRuntime extends CssProperty {
+class BackfaceVisibilityCssRuntime extends CssProperty<Property.BackfaceVisibility> {
   /**
    * 创建 backface-visibility 属性作者；普通使用通过 s.backfaceVisibility 取得共享实例。
    * @example
@@ -95,18 +90,6 @@ class BackfaceVisibilityCssRuntime extends CssProperty {
   constructor() {
     super('backface-visibility');
     initializeKeywordDeclarations(this, 'backface-visibility', backfaceVisibilityKeywords);
-  }
-  /**
-   * 原样生成 backface-visibility 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 backface-visibility:value;，undefined 返回空字符串。
-   * @example
-   * s.backfaceVisibility.raw('inherit') // backface-visibility:inherit;
-   */
-  raw(value: Property.BackfaceVisibility | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -145,7 +128,7 @@ export const BackgroundKeywords = class BackgroundKeywords {
 /**
  * background 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BackgroundCssRuntime extends LengthCssProperty {
+class BackgroundCssRuntime extends ColorLengthCssProperty<Property.Background> {
   /**
    * 创建 background 属性作者；普通使用通过 s.background 取得共享实例。
    * @example
@@ -154,152 +137,6 @@ class BackgroundCssRuntime extends LengthCssProperty {
   constructor() {
     super('background');
     initializeKeywordDeclarations(this, 'background', backgroundKeywords);
-  }
-  /**
-   * 原样生成 background 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 background:value;，undefined 返回空字符串。
-   * @example
-   * s.background.raw('inherit') // background:inherit;
-   */
-  raw(value: Property.Background | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.background.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.background.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.background.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.background.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.background.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.background.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.Background | CssString,
-    ...others: (Property.Background | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.background.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.Background | CssString,
-    ...others: (Property.Background | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.background.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.Background | CssString,
-    preferred: Property.Background | CssString,
-    maximum: Property.Background | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -334,7 +171,7 @@ export const BackgroundAttachmentKeywords = class BackgroundAttachmentKeywords {
 /**
  * background-attachment 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BackgroundAttachmentCssRuntime extends CssProperty {
+class BackgroundAttachmentCssRuntime extends CssProperty<Property.BackgroundAttachment> {
   /**
    * 创建 background-attachment 属性作者；普通使用通过 s.backgroundAttachment 取得共享实例。
    * @example
@@ -343,18 +180,6 @@ class BackgroundAttachmentCssRuntime extends CssProperty {
   constructor() {
     super('background-attachment');
     initializeKeywordDeclarations(this, 'background-attachment', backgroundAttachmentKeywords);
-  }
-  /**
-   * 原样生成 background-attachment 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 background-attachment:value;，undefined 返回空字符串。
-   * @example
-   * s.backgroundAttachment.raw('inherit') // background-attachment:inherit;
-   */
-  raw(value: Property.BackgroundAttachment | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -393,7 +218,7 @@ export const BackgroundBlendModeKeywords = class BackgroundBlendModeKeywords {
 /**
  * background-blend-mode 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BackgroundBlendModeCssRuntime extends CssProperty {
+class BackgroundBlendModeCssRuntime extends CssProperty<Property.BackgroundBlendMode> {
   /**
    * 创建 background-blend-mode 属性作者；普通使用通过 s.backgroundBlendMode 取得共享实例。
    * @example
@@ -402,18 +227,6 @@ class BackgroundBlendModeCssRuntime extends CssProperty {
   constructor() {
     super('background-blend-mode');
     initializeKeywordDeclarations(this, 'background-blend-mode', backgroundBlendModeKeywords);
-  }
-  /**
-   * 原样生成 background-blend-mode 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 background-blend-mode:value;，undefined 返回空字符串。
-   * @example
-   * s.backgroundBlendMode.raw('inherit') // background-blend-mode:inherit;
-   */
-  raw(value: Property.BackgroundBlendMode | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -452,7 +265,7 @@ export const BackgroundClipKeywords = class BackgroundClipKeywords {
 /**
  * background-clip 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BackgroundClipCssRuntime extends CssProperty {
+class BackgroundClipCssRuntime extends CssProperty<Property.BackgroundClip> {
   /**
    * 创建 background-clip 属性作者；普通使用通过 s.backgroundClip 取得共享实例。
    * @example
@@ -461,18 +274,6 @@ class BackgroundClipCssRuntime extends CssProperty {
   constructor() {
     super('background-clip');
     initializeKeywordDeclarations(this, 'background-clip', backgroundClipKeywords);
-  }
-  /**
-   * 原样生成 background-clip 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 background-clip:value;，undefined 返回空字符串。
-   * @example
-   * s.backgroundClip.raw('inherit') // background-clip:inherit;
-   */
-  raw(value: Property.BackgroundClip | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -510,7 +311,7 @@ export const BackgroundColorKeywords = class BackgroundColorKeywords {
 /**
  * background-color 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BackgroundColorCssRuntime extends CssProperty {
+class BackgroundColorCssRuntime extends ColorCssProperty<Property.BackgroundColor> {
   /**
    * 创建 background-color 属性作者；普通使用通过 s.backgroundColor 取得共享实例。
    * @example
@@ -519,96 +320,6 @@ class BackgroundColorCssRuntime extends CssProperty {
   constructor() {
     super('background-color');
     initializeKeywordDeclarations(this, 'background-color', colorKeywords);
-  }
-  /**
-   * 原样生成 background-color 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 background-color:value;，undefined 返回空字符串。
-   * @example
-   * s.backgroundColor.raw('inherit') // background-color:inherit;
-   */
-  raw(value: Property.BackgroundColor | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.backgroundColor.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.backgroundColor.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.backgroundColor.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.backgroundColor.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
   }
 }
 /**
@@ -645,7 +356,7 @@ export const BackgroundImageKeywords = class BackgroundImageKeywords {
 /**
  * background-image 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BackgroundImageCssRuntime extends CssProperty {
+class BackgroundImageCssRuntime extends CssProperty<Property.BackgroundImage> {
   /**
    * 创建 background-image 属性作者；普通使用通过 s.backgroundImage 取得共享实例。
    * @example
@@ -654,18 +365,6 @@ class BackgroundImageCssRuntime extends CssProperty {
   constructor() {
     super('background-image');
     initializeKeywordDeclarations(this, 'background-image', noneKeywords);
-  }
-  /**
-   * 原样生成 background-image 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 background-image:value;，undefined 返回空字符串。
-   * @example
-   * s.backgroundImage.raw('inherit') // background-image:inherit;
-   */
-  raw(value: Property.BackgroundImage | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -703,7 +402,7 @@ export const BackgroundOriginKeywords = class BackgroundOriginKeywords {
 /**
  * background-origin 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BackgroundOriginCssRuntime extends CssProperty {
+class BackgroundOriginCssRuntime extends CssProperty<Property.BackgroundOrigin> {
   /**
    * 创建 background-origin 属性作者；普通使用通过 s.backgroundOrigin 取得共享实例。
    * @example
@@ -712,18 +411,6 @@ class BackgroundOriginCssRuntime extends CssProperty {
   constructor() {
     super('background-origin');
     initializeKeywordDeclarations(this, 'background-origin', backgroundOriginKeywords);
-  }
-  /**
-   * 原样生成 background-origin 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 background-origin:value;，undefined 返回空字符串。
-   * @example
-   * s.backgroundOrigin.raw('inherit') // background-origin:inherit;
-   */
-  raw(value: Property.BackgroundOrigin | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -761,7 +448,7 @@ export const BackgroundPositionKeywords = class BackgroundPositionKeywords {
 /**
  * background-position 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BackgroundPositionCssRuntime extends LengthCssProperty {
+class BackgroundPositionCssRuntime extends LengthCssProperty<Property.BackgroundPosition> {
   /**
    * 创建 background-position 属性作者；普通使用通过 s.backgroundPosition 取得共享实例。
    * @example
@@ -770,18 +457,6 @@ class BackgroundPositionCssRuntime extends LengthCssProperty {
   constructor() {
     super('background-position');
     initializeKeywordDeclarations(this, 'background-position', backgroundPositionKeywords);
-  }
-  /**
-   * 原样生成 background-position 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 background-position:value;，undefined 返回空字符串。
-   * @example
-   * s.backgroundPosition.raw('inherit') // background-position:inherit;
-   */
-  raw(value: Property.BackgroundPosition | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 px 单位生成完整属性声明。CSS 像素，不等同于设备物理像素。
@@ -1983,62 +1658,6 @@ class BackgroundPositionCssRuntime extends LengthCssProperty {
   percent(...values: number[]): string {
     return this.declaration(values.map((value) => `${value}%`).join(' '));
   }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.backgroundPosition.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.backgroundPosition.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BackgroundPosition | CssString,
-    ...others: (Property.BackgroundPosition | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.backgroundPosition.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BackgroundPosition | CssString,
-    ...others: (Property.BackgroundPosition | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.backgroundPosition.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BackgroundPosition | CssString,
-    preferred: Property.BackgroundPosition | CssString,
-    maximum: Property.BackgroundPosition | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
-  }
 }
 /**
  * background-position 属性作者；关键字读取为完整声明字符串，保留中文说明。
@@ -2076,7 +1695,7 @@ export const BackgroundPositionXKeywords = class BackgroundPositionXKeywords {
 /**
  * background-position-x 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BackgroundPositionXCssRuntime extends LengthCssProperty {
+class BackgroundPositionXCssRuntime extends LengthCssProperty<Property.BackgroundPositionX> {
   /**
    * 创建 background-position-x 属性作者；普通使用通过 s.backgroundPositionX 取得共享实例。
    * @example
@@ -2085,18 +1704,6 @@ class BackgroundPositionXCssRuntime extends LengthCssProperty {
   constructor() {
     super('background-position-x');
     initializeKeywordDeclarations(this, 'background-position-x', backgroundPositionXKeywords);
-  }
-  /**
-   * 原样生成 background-position-x 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 background-position-x:value;，undefined 返回空字符串。
-   * @example
-   * s.backgroundPositionX.raw('inherit') // background-position-x:inherit;
-   */
-  raw(value: Property.BackgroundPositionX | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 % 单位生成完整属性声明。百分比，100 表示 100%；参照对象由具体属性决定。
@@ -2109,62 +1716,6 @@ class BackgroundPositionXCssRuntime extends LengthCssProperty {
    */
   percent(value: number): string {
     return this.declaration(`${value}%`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.backgroundPositionX.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.backgroundPositionX.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BackgroundPositionX | CssString,
-    ...others: (Property.BackgroundPositionX | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.backgroundPositionX.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BackgroundPositionX | CssString,
-    ...others: (Property.BackgroundPositionX | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.backgroundPositionX.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BackgroundPositionX | CssString,
-    preferred: Property.BackgroundPositionX | CssString,
-    maximum: Property.BackgroundPositionX | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -2203,7 +1754,7 @@ export const BackgroundPositionYKeywords = class BackgroundPositionYKeywords {
 /**
  * background-position-y 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BackgroundPositionYCssRuntime extends LengthCssProperty {
+class BackgroundPositionYCssRuntime extends LengthCssProperty<Property.BackgroundPositionY> {
   /**
    * 创建 background-position-y 属性作者；普通使用通过 s.backgroundPositionY 取得共享实例。
    * @example
@@ -2212,18 +1763,6 @@ class BackgroundPositionYCssRuntime extends LengthCssProperty {
   constructor() {
     super('background-position-y');
     initializeKeywordDeclarations(this, 'background-position-y', backgroundPositionYKeywords);
-  }
-  /**
-   * 原样生成 background-position-y 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 background-position-y:value;，undefined 返回空字符串。
-   * @example
-   * s.backgroundPositionY.raw('inherit') // background-position-y:inherit;
-   */
-  raw(value: Property.BackgroundPositionY | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 % 单位生成完整属性声明。百分比，100 表示 100%；参照对象由具体属性决定。
@@ -2236,62 +1775,6 @@ class BackgroundPositionYCssRuntime extends LengthCssProperty {
    */
   percent(value: number): string {
     return this.declaration(`${value}%`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.backgroundPositionY.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.backgroundPositionY.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BackgroundPositionY | CssString,
-    ...others: (Property.BackgroundPositionY | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.backgroundPositionY.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BackgroundPositionY | CssString,
-    ...others: (Property.BackgroundPositionY | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.backgroundPositionY.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BackgroundPositionY | CssString,
-    preferred: Property.BackgroundPositionY | CssString,
-    maximum: Property.BackgroundPositionY | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -2330,7 +1813,7 @@ export const BackgroundRepeatKeywords = class BackgroundRepeatKeywords {
 /**
  * background-repeat 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BackgroundRepeatCssRuntime extends CssProperty {
+class BackgroundRepeatCssRuntime extends CssProperty<Property.BackgroundRepeat> {
   /**
    * 创建 background-repeat 属性作者；普通使用通过 s.backgroundRepeat 取得共享实例。
    * @example
@@ -2339,18 +1822,6 @@ class BackgroundRepeatCssRuntime extends CssProperty {
   constructor() {
     super('background-repeat');
     initializeKeywordDeclarations(this, 'background-repeat', backgroundRepeatKeywords);
-  }
-  /**
-   * 原样生成 background-repeat 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 background-repeat:value;，undefined 返回空字符串。
-   * @example
-   * s.backgroundRepeat.raw('inherit') // background-repeat:inherit;
-   */
-  raw(value: Property.BackgroundRepeat | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -2388,7 +1859,7 @@ export const BackgroundSizeKeywords = class BackgroundSizeKeywords {
 /**
  * background-size 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BackgroundSizeCssRuntime extends LengthCssProperty {
+class BackgroundSizeCssRuntime extends LengthCssProperty<Property.BackgroundSize> {
   /**
    * 创建 background-size 属性作者；普通使用通过 s.backgroundSize 取得共享实例。
    * @example
@@ -2397,18 +1868,6 @@ class BackgroundSizeCssRuntime extends LengthCssProperty {
   constructor() {
     super('background-size');
     initializeKeywordDeclarations(this, 'background-size', backgroundSizeKeywords);
-  }
-  /**
-   * 原样生成 background-size 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 background-size:value;，undefined 返回空字符串。
-   * @example
-   * s.backgroundSize.raw('inherit') // background-size:inherit;
-   */
-  raw(value: Property.BackgroundSize | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 px 单位生成完整属性声明。CSS 像素，不等同于设备物理像素。
@@ -3610,62 +3069,6 @@ class BackgroundSizeCssRuntime extends LengthCssProperty {
   percent(...values: number[]): string {
     return this.declaration(values.map((value) => `${value}%`).join(' '));
   }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.backgroundSize.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.backgroundSize.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BackgroundSize | CssString,
-    ...others: (Property.BackgroundSize | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.backgroundSize.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BackgroundSize | CssString,
-    ...others: (Property.BackgroundSize | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.backgroundSize.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BackgroundSize | CssString,
-    preferred: Property.BackgroundSize | CssString,
-    maximum: Property.BackgroundSize | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
-  }
 }
 /**
  * background-size 属性作者；关键字读取为完整声明字符串，保留中文说明。
@@ -3713,7 +3116,7 @@ export const BaselineShiftKeywords = class BaselineShiftKeywords {
 /**
  * baseline-shift 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BaselineShiftCssRuntime extends LengthCssProperty {
+class BaselineShiftCssRuntime extends LengthCssProperty<Property.BaselineShift> {
   /**
    * 创建 baseline-shift 属性作者；普通使用通过 s.baselineShift 取得共享实例。
    * @example
@@ -3722,18 +3125,6 @@ class BaselineShiftCssRuntime extends LengthCssProperty {
   constructor() {
     super('baseline-shift');
     initializeKeywordDeclarations(this, 'baseline-shift', baselineShiftKeywords);
-  }
-  /**
-   * 原样生成 baseline-shift 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 baseline-shift:value;，undefined 返回空字符串。
-   * @example
-   * s.baselineShift.raw('inherit') // baseline-shift:inherit;
-   */
-  raw(value: Property.BaselineShift | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 % 单位生成完整属性声明。百分比，100 表示 100%；参照对象由具体属性决定。
@@ -3746,62 +3137,6 @@ class BaselineShiftCssRuntime extends LengthCssProperty {
    */
   percent(value: number): string {
     return this.declaration(`${value}%`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.baselineShift.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.baselineShift.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BaselineShift | CssString,
-    ...others: (Property.BaselineShift | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.baselineShift.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BaselineShift | CssString,
-    ...others: (Property.BaselineShift | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.baselineShift.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BaselineShift | CssString,
-    preferred: Property.BaselineShift | CssString,
-    maximum: Property.BaselineShift | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -3838,7 +3173,7 @@ export const BlockSizeKeywords = class BlockSizeKeywords {
 /**
  * block-size 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BlockSizeCssRuntime extends LengthCssProperty {
+class BlockSizeCssRuntime extends LengthCssProperty<Property.BlockSize> {
   /**
    * 创建 block-size 属性作者；普通使用通过 s.blockSize 取得共享实例。
    * @example
@@ -3847,74 +3182,6 @@ class BlockSizeCssRuntime extends LengthCssProperty {
   constructor() {
     super('block-size');
     initializeKeywordDeclarations(this, 'block-size', heightKeywords);
-  }
-  /**
-   * 原样生成 block-size 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 block-size:value;，undefined 返回空字符串。
-   * @example
-   * s.blockSize.raw('inherit') // block-size:inherit;
-   */
-  raw(value: Property.BlockSize | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.blockSize.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.blockSize.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BlockSize | CssString,
-    ...others: (Property.BlockSize | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.blockSize.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BlockSize | CssString,
-    ...others: (Property.BlockSize | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.blockSize.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BlockSize | CssString,
-    preferred: Property.BlockSize | CssString,
-    maximum: Property.BlockSize | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -3954,7 +3221,7 @@ export const BorderKeywords = class BorderKeywords {
 /**
  * border 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderCssRuntime extends LengthCssProperty {
+class BorderCssRuntime extends ColorLengthCssProperty<Property.Border> {
   /**
    * 创建 border 属性作者；普通使用通过 s.border 取得共享实例。
    * @example
@@ -3963,146 +3230,6 @@ class BorderCssRuntime extends LengthCssProperty {
   constructor() {
     super('border');
     initializeKeywordDeclarations(this, 'border', borderKeywords);
-  }
-  /**
-   * 原样生成 border 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border:value;，undefined 返回空字符串。
-   * @example
-   * s.border.raw('inherit') // border:inherit;
-   */
-  raw(value: Property.Border | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.border.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.border.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.border.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.border.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.border.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.border.min('var(--first)', 'var(--second)')
-   */
-  min(value: Property.Border | CssString, ...others: (Property.Border | CssString)[]): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.border.max('var(--first)', 'var(--second)')
-   */
-  max(value: Property.Border | CssString, ...others: (Property.Border | CssString)[]): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.border.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.Border | CssString,
-    preferred: Property.Border | CssString,
-    maximum: Property.Border | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -4136,7 +3263,7 @@ export const BorderBlockKeywords = class BorderBlockKeywords {
 /**
  * border-block 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderBlockCssRuntime extends LengthCssProperty {
+class BorderBlockCssRuntime extends ColorLengthCssProperty<Property.BorderBlock> {
   /**
    * 创建 border-block 属性作者；普通使用通过 s.borderBlock 取得共享实例。
    * @example
@@ -4145,152 +3272,6 @@ class BorderBlockCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-block');
     initializeKeywordDeclarations(this, 'border-block', borderKeywords);
-  }
-  /**
-   * 原样生成 border-block 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-block:value;，undefined 返回空字符串。
-   * @example
-   * s.borderBlock.raw('inherit') // border-block:inherit;
-   */
-  raw(value: Property.BorderBlock | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.borderBlock.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.borderBlock.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.borderBlock.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.borderBlock.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderBlock.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderBlock.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderBlock | CssString,
-    ...others: (Property.BorderBlock | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderBlock.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderBlock | CssString,
-    ...others: (Property.BorderBlock | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderBlock.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderBlock | CssString,
-    preferred: Property.BorderBlock | CssString,
-    maximum: Property.BorderBlock | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -4324,7 +3305,7 @@ export const BorderBlockColorKeywords = class BorderBlockColorKeywords {
 /**
  * border-block-color 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderBlockColorCssRuntime extends CssProperty {
+class BorderBlockColorCssRuntime extends ColorCssProperty<Property.BorderBlockColor> {
   /**
    * 创建 border-block-color 属性作者；普通使用通过 s.borderBlockColor 取得共享实例。
    * @example
@@ -4333,96 +3314,6 @@ class BorderBlockColorCssRuntime extends CssProperty {
   constructor() {
     super('border-block-color');
     initializeKeywordDeclarations(this, 'border-block-color', colorKeywords);
-  }
-  /**
-   * 原样生成 border-block-color 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-block-color:value;，undefined 返回空字符串。
-   * @example
-   * s.borderBlockColor.raw('inherit') // border-block-color:inherit;
-   */
-  raw(value: Property.BorderBlockColor | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.borderBlockColor.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.borderBlockColor.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.borderBlockColor.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.borderBlockColor.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
   }
 }
 /**
@@ -4459,7 +3350,7 @@ export const BorderBlockEndKeywords = class BorderBlockEndKeywords {
 /**
  * border-block-end 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderBlockEndCssRuntime extends LengthCssProperty {
+class BorderBlockEndCssRuntime extends ColorLengthCssProperty<Property.BorderBlockEnd> {
   /**
    * 创建 border-block-end 属性作者；普通使用通过 s.borderBlockEnd 取得共享实例。
    * @example
@@ -4468,152 +3359,6 @@ class BorderBlockEndCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-block-end');
     initializeKeywordDeclarations(this, 'border-block-end', borderKeywords);
-  }
-  /**
-   * 原样生成 border-block-end 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-block-end:value;，undefined 返回空字符串。
-   * @example
-   * s.borderBlockEnd.raw('inherit') // border-block-end:inherit;
-   */
-  raw(value: Property.BorderBlockEnd | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.borderBlockEnd.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.borderBlockEnd.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.borderBlockEnd.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.borderBlockEnd.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderBlockEnd.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderBlockEnd.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderBlockEnd | CssString,
-    ...others: (Property.BorderBlockEnd | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderBlockEnd.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderBlockEnd | CssString,
-    ...others: (Property.BorderBlockEnd | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderBlockEnd.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderBlockEnd | CssString,
-    preferred: Property.BorderBlockEnd | CssString,
-    maximum: Property.BorderBlockEnd | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -4648,7 +3393,7 @@ export const BorderBlockEndColorKeywords = class BorderBlockEndColorKeywords {
 /**
  * border-block-end-color 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderBlockEndColorCssRuntime extends CssProperty {
+class BorderBlockEndColorCssRuntime extends ColorCssProperty<Property.BorderBlockEndColor> {
   /**
    * 创建 border-block-end-color 属性作者；普通使用通过 s.borderBlockEndColor 取得共享实例。
    * @example
@@ -4657,96 +3402,6 @@ class BorderBlockEndColorCssRuntime extends CssProperty {
   constructor() {
     super('border-block-end-color');
     initializeKeywordDeclarations(this, 'border-block-end-color', colorKeywords);
-  }
-  /**
-   * 原样生成 border-block-end-color 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-block-end-color:value;，undefined 返回空字符串。
-   * @example
-   * s.borderBlockEndColor.raw('inherit') // border-block-end-color:inherit;
-   */
-  raw(value: Property.BorderBlockEndColor | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.borderBlockEndColor.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.borderBlockEndColor.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.borderBlockEndColor.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.borderBlockEndColor.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
   }
 }
 /**
@@ -4785,7 +3440,7 @@ export const BorderBlockEndStyleKeywords = class BorderBlockEndStyleKeywords {
 /**
  * border-block-end-style 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderBlockEndStyleCssRuntime extends CssProperty {
+class BorderBlockEndStyleCssRuntime extends CssProperty<Property.BorderBlockEndStyle> {
   /**
    * 创建 border-block-end-style 属性作者；普通使用通过 s.borderBlockEndStyle 取得共享实例。
    * @example
@@ -4794,18 +3449,6 @@ class BorderBlockEndStyleCssRuntime extends CssProperty {
   constructor() {
     super('border-block-end-style');
     initializeKeywordDeclarations(this, 'border-block-end-style', borderBlockEndStyleKeywords);
-  }
-  /**
-   * 原样生成 border-block-end-style 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-block-end-style:value;，undefined 返回空字符串。
-   * @example
-   * s.borderBlockEndStyle.raw('inherit') // border-block-end-style:inherit;
-   */
-  raw(value: Property.BorderBlockEndStyle | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -4844,7 +3487,7 @@ export const BorderBlockEndWidthKeywords = class BorderBlockEndWidthKeywords {
 /**
  * border-block-end-width 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderBlockEndWidthCssRuntime extends LengthCssProperty {
+class BorderBlockEndWidthCssRuntime extends LengthCssProperty<Property.BorderBlockEndWidth> {
   /**
    * 创建 border-block-end-width 属性作者；普通使用通过 s.borderBlockEndWidth 取得共享实例。
    * @example
@@ -4853,74 +3496,6 @@ class BorderBlockEndWidthCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-block-end-width');
     initializeKeywordDeclarations(this, 'border-block-end-width', borderWidthKeywords);
-  }
-  /**
-   * 原样生成 border-block-end-width 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-block-end-width:value;，undefined 返回空字符串。
-   * @example
-   * s.borderBlockEndWidth.raw('inherit') // border-block-end-width:inherit;
-   */
-  raw(value: Property.BorderBlockEndWidth | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderBlockEndWidth.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderBlockEndWidth.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderBlockEndWidth | CssString,
-    ...others: (Property.BorderBlockEndWidth | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderBlockEndWidth.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderBlockEndWidth | CssString,
-    ...others: (Property.BorderBlockEndWidth | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderBlockEndWidth.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderBlockEndWidth | CssString,
-    preferred: Property.BorderBlockEndWidth | CssString,
-    maximum: Property.BorderBlockEndWidth | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -4958,7 +3533,7 @@ export const BorderBlockStartKeywords = class BorderBlockStartKeywords {
 /**
  * border-block-start 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderBlockStartCssRuntime extends LengthCssProperty {
+class BorderBlockStartCssRuntime extends ColorLengthCssProperty<Property.BorderBlockStart> {
   /**
    * 创建 border-block-start 属性作者；普通使用通过 s.borderBlockStart 取得共享实例。
    * @example
@@ -4967,152 +3542,6 @@ class BorderBlockStartCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-block-start');
     initializeKeywordDeclarations(this, 'border-block-start', borderKeywords);
-  }
-  /**
-   * 原样生成 border-block-start 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-block-start:value;，undefined 返回空字符串。
-   * @example
-   * s.borderBlockStart.raw('inherit') // border-block-start:inherit;
-   */
-  raw(value: Property.BorderBlockStart | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.borderBlockStart.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.borderBlockStart.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.borderBlockStart.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.borderBlockStart.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderBlockStart.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderBlockStart.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderBlockStart | CssString,
-    ...others: (Property.BorderBlockStart | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderBlockStart.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderBlockStart | CssString,
-    ...others: (Property.BorderBlockStart | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderBlockStart.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderBlockStart | CssString,
-    preferred: Property.BorderBlockStart | CssString,
-    maximum: Property.BorderBlockStart | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -5147,7 +3576,7 @@ export const BorderBlockStartColorKeywords = class BorderBlockStartColorKeywords
 /**
  * border-block-start-color 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderBlockStartColorCssRuntime extends CssProperty {
+class BorderBlockStartColorCssRuntime extends ColorCssProperty<Property.BorderBlockStartColor> {
   /**
    * 创建 border-block-start-color 属性作者；普通使用通过 s.borderBlockStartColor 取得共享实例。
    * @example
@@ -5156,96 +3585,6 @@ class BorderBlockStartColorCssRuntime extends CssProperty {
   constructor() {
     super('border-block-start-color');
     initializeKeywordDeclarations(this, 'border-block-start-color', colorKeywords);
-  }
-  /**
-   * 原样生成 border-block-start-color 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-block-start-color:value;，undefined 返回空字符串。
-   * @example
-   * s.borderBlockStartColor.raw('inherit') // border-block-start-color:inherit;
-   */
-  raw(value: Property.BorderBlockStartColor | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.borderBlockStartColor.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.borderBlockStartColor.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.borderBlockStartColor.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.borderBlockStartColor.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
   }
 }
 /**
@@ -5283,7 +3622,7 @@ export const BorderBlockStartStyleKeywords = class BorderBlockStartStyleKeywords
 /**
  * border-block-start-style 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderBlockStartStyleCssRuntime extends CssProperty {
+class BorderBlockStartStyleCssRuntime extends CssProperty<Property.BorderBlockStartStyle> {
   /**
    * 创建 border-block-start-style 属性作者；普通使用通过 s.borderBlockStartStyle 取得共享实例。
    * @example
@@ -5292,18 +3631,6 @@ class BorderBlockStartStyleCssRuntime extends CssProperty {
   constructor() {
     super('border-block-start-style');
     initializeKeywordDeclarations(this, 'border-block-start-style', borderBlockEndStyleKeywords);
-  }
-  /**
-   * 原样生成 border-block-start-style 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-block-start-style:value;，undefined 返回空字符串。
-   * @example
-   * s.borderBlockStartStyle.raw('inherit') // border-block-start-style:inherit;
-   */
-  raw(value: Property.BorderBlockStartStyle | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -5341,7 +3668,7 @@ export const BorderBlockStartWidthKeywords = class BorderBlockStartWidthKeywords
 /**
  * border-block-start-width 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderBlockStartWidthCssRuntime extends LengthCssProperty {
+class BorderBlockStartWidthCssRuntime extends LengthCssProperty<Property.BorderBlockStartWidth> {
   /**
    * 创建 border-block-start-width 属性作者；普通使用通过 s.borderBlockStartWidth 取得共享实例。
    * @example
@@ -5350,74 +3677,6 @@ class BorderBlockStartWidthCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-block-start-width');
     initializeKeywordDeclarations(this, 'border-block-start-width', borderWidthKeywords);
-  }
-  /**
-   * 原样生成 border-block-start-width 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-block-start-width:value;，undefined 返回空字符串。
-   * @example
-   * s.borderBlockStartWidth.raw('inherit') // border-block-start-width:inherit;
-   */
-  raw(value: Property.BorderBlockStartWidth | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderBlockStartWidth.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderBlockStartWidth.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderBlockStartWidth | CssString,
-    ...others: (Property.BorderBlockStartWidth | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderBlockStartWidth.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderBlockStartWidth | CssString,
-    ...others: (Property.BorderBlockStartWidth | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderBlockStartWidth.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderBlockStartWidth | CssString,
-    preferred: Property.BorderBlockStartWidth | CssString,
-    maximum: Property.BorderBlockStartWidth | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -5455,7 +3714,7 @@ export const BorderBlockStyleKeywords = class BorderBlockStyleKeywords {
 /**
  * border-block-style 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderBlockStyleCssRuntime extends CssProperty {
+class BorderBlockStyleCssRuntime extends CssProperty<Property.BorderBlockStyle> {
   /**
    * 创建 border-block-style 属性作者；普通使用通过 s.borderBlockStyle 取得共享实例。
    * @example
@@ -5464,18 +3723,6 @@ class BorderBlockStyleCssRuntime extends CssProperty {
   constructor() {
     super('border-block-style');
     initializeKeywordDeclarations(this, 'border-block-style', borderBlockEndStyleKeywords);
-  }
-  /**
-   * 原样生成 border-block-style 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-block-style:value;，undefined 返回空字符串。
-   * @example
-   * s.borderBlockStyle.raw('inherit') // border-block-style:inherit;
-   */
-  raw(value: Property.BorderBlockStyle | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -5512,7 +3759,7 @@ export const BorderBlockWidthKeywords = class BorderBlockWidthKeywords {
 /**
  * border-block-width 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderBlockWidthCssRuntime extends LengthCssProperty {
+class BorderBlockWidthCssRuntime extends LengthCssProperty<Property.BorderBlockWidth> {
   /**
    * 创建 border-block-width 属性作者；普通使用通过 s.borderBlockWidth 取得共享实例。
    * @example
@@ -5521,18 +3768,6 @@ class BorderBlockWidthCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-block-width');
     initializeKeywordDeclarations(this, 'border-block-width', borderWidthKeywords);
-  }
-  /**
-   * 原样生成 border-block-width 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-block-width:value;，undefined 返回空字符串。
-   * @example
-   * s.borderBlockWidth.raw('inherit') // border-block-width:inherit;
-   */
-  raw(value: Property.BorderBlockWidth | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 px 单位生成完整属性声明。CSS 像素，不等同于设备物理像素。
@@ -6710,62 +4945,6 @@ class BorderBlockWidthCssRuntime extends LengthCssProperty {
   override cqmax(...values: number[]): string {
     return this.declaration(values.map((value) => `${value}cqmax`).join(' '));
   }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderBlockWidth.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderBlockWidth.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderBlockWidth | CssString,
-    ...others: (Property.BorderBlockWidth | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderBlockWidth.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderBlockWidth | CssString,
-    ...others: (Property.BorderBlockWidth | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderBlockWidth.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderBlockWidth | CssString,
-    preferred: Property.BorderBlockWidth | CssString,
-    maximum: Property.BorderBlockWidth | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
-  }
 }
 /**
  * border-block-width 属性作者；关键字读取为完整声明字符串，保留中文说明。
@@ -6801,7 +4980,7 @@ export const BorderBottomKeywords = class BorderBottomKeywords {
 /**
  * border-bottom 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderBottomCssRuntime extends LengthCssProperty {
+class BorderBottomCssRuntime extends ColorLengthCssProperty<Property.BorderBottom> {
   /**
    * 创建 border-bottom 属性作者；普通使用通过 s.borderBottom 取得共享实例。
    * @example
@@ -6810,152 +4989,6 @@ class BorderBottomCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-bottom');
     initializeKeywordDeclarations(this, 'border-bottom', borderKeywords);
-  }
-  /**
-   * 原样生成 border-bottom 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-bottom:value;，undefined 返回空字符串。
-   * @example
-   * s.borderBottom.raw('inherit') // border-bottom:inherit;
-   */
-  raw(value: Property.BorderBottom | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.borderBottom.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.borderBottom.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.borderBottom.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.borderBottom.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderBottom.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderBottom.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderBottom | CssString,
-    ...others: (Property.BorderBottom | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderBottom.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderBottom | CssString,
-    ...others: (Property.BorderBottom | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderBottom.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderBottom | CssString,
-    preferred: Property.BorderBottom | CssString,
-    maximum: Property.BorderBottom | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -6989,7 +5022,7 @@ export const BorderBottomColorKeywords = class BorderBottomColorKeywords {
 /**
  * border-bottom-color 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderBottomColorCssRuntime extends CssProperty {
+class BorderBottomColorCssRuntime extends ColorCssProperty<Property.BorderBottomColor> {
   /**
    * 创建 border-bottom-color 属性作者；普通使用通过 s.borderBottomColor 取得共享实例。
    * @example
@@ -6998,96 +5031,6 @@ class BorderBottomColorCssRuntime extends CssProperty {
   constructor() {
     super('border-bottom-color');
     initializeKeywordDeclarations(this, 'border-bottom-color', colorKeywords);
-  }
-  /**
-   * 原样生成 border-bottom-color 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-bottom-color:value;，undefined 返回空字符串。
-   * @example
-   * s.borderBottomColor.raw('inherit') // border-bottom-color:inherit;
-   */
-  raw(value: Property.BorderBottomColor | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.borderBottomColor.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.borderBottomColor.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.borderBottomColor.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.borderBottomColor.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
   }
 }
 /**
@@ -7125,7 +5068,7 @@ export const BorderBottomLeftRadiusKeywords = class BorderBottomLeftRadiusKeywor
 /**
  * border-bottom-left-radius 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderBottomLeftRadiusCssRuntime extends LengthCssProperty {
+class BorderBottomLeftRadiusCssRuntime extends LengthCssProperty<Property.BorderBottomLeftRadius> {
   /**
    * 创建 border-bottom-left-radius 属性作者；普通使用通过 s.borderBottomLeftRadius 取得共享实例。
    * @example
@@ -7134,18 +5077,6 @@ class BorderBottomLeftRadiusCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-bottom-left-radius');
     initializeKeywordDeclarations(this, 'border-bottom-left-radius', globalKeywords);
-  }
-  /**
-   * 原样生成 border-bottom-left-radius 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-bottom-left-radius:value;，undefined 返回空字符串。
-   * @example
-   * s.borderBottomLeftRadius.raw('inherit') // border-bottom-left-radius:inherit;
-   */
-  raw(value: Property.BorderBottomLeftRadius | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 px 单位生成完整属性声明。CSS 像素，不等同于设备物理像素。
@@ -8347,62 +6278,6 @@ class BorderBottomLeftRadiusCssRuntime extends LengthCssProperty {
   percent(...values: number[]): string {
     return this.declaration(values.map((value) => `${value}%`).join(' '));
   }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderBottomLeftRadius.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderBottomLeftRadius.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderBottomLeftRadius | CssString,
-    ...others: (Property.BorderBottomLeftRadius | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderBottomLeftRadius.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderBottomLeftRadius | CssString,
-    ...others: (Property.BorderBottomLeftRadius | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderBottomLeftRadius.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderBottomLeftRadius | CssString,
-    preferred: Property.BorderBottomLeftRadius | CssString,
-    maximum: Property.BorderBottomLeftRadius | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
-  }
 }
 /**
  * border-bottom-left-radius 属性作者；关键字读取为完整声明字符串，保留中文说明。
@@ -8439,7 +6314,7 @@ export const BorderBottomRightRadiusKeywords = class BorderBottomRightRadiusKeyw
 /**
  * border-bottom-right-radius 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderBottomRightRadiusCssRuntime extends LengthCssProperty {
+class BorderBottomRightRadiusCssRuntime extends LengthCssProperty<Property.BorderBottomRightRadius> {
   /**
    * 创建 border-bottom-right-radius 属性作者；普通使用通过 s.borderBottomRightRadius 取得共享实例。
    * @example
@@ -8448,18 +6323,6 @@ class BorderBottomRightRadiusCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-bottom-right-radius');
     initializeKeywordDeclarations(this, 'border-bottom-right-radius', globalKeywords);
-  }
-  /**
-   * 原样生成 border-bottom-right-radius 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-bottom-right-radius:value;，undefined 返回空字符串。
-   * @example
-   * s.borderBottomRightRadius.raw('inherit') // border-bottom-right-radius:inherit;
-   */
-  raw(value: Property.BorderBottomRightRadius | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 px 单位生成完整属性声明。CSS 像素，不等同于设备物理像素。
@@ -9661,62 +7524,6 @@ class BorderBottomRightRadiusCssRuntime extends LengthCssProperty {
   percent(...values: number[]): string {
     return this.declaration(values.map((value) => `${value}%`).join(' '));
   }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderBottomRightRadius.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderBottomRightRadius.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderBottomRightRadius | CssString,
-    ...others: (Property.BorderBottomRightRadius | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderBottomRightRadius.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderBottomRightRadius | CssString,
-    ...others: (Property.BorderBottomRightRadius | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderBottomRightRadius.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderBottomRightRadius | CssString,
-    preferred: Property.BorderBottomRightRadius | CssString,
-    maximum: Property.BorderBottomRightRadius | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
-  }
 }
 /**
  * border-bottom-right-radius 属性作者；关键字读取为完整声明字符串，保留中文说明。
@@ -9753,7 +7560,7 @@ export const BorderBottomStyleKeywords = class BorderBottomStyleKeywords {
 /**
  * border-bottom-style 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderBottomStyleCssRuntime extends CssProperty {
+class BorderBottomStyleCssRuntime extends CssProperty<Property.BorderBottomStyle> {
   /**
    * 创建 border-bottom-style 属性作者；普通使用通过 s.borderBottomStyle 取得共享实例。
    * @example
@@ -9762,18 +7569,6 @@ class BorderBottomStyleCssRuntime extends CssProperty {
   constructor() {
     super('border-bottom-style');
     initializeKeywordDeclarations(this, 'border-bottom-style', borderBlockEndStyleKeywords);
-  }
-  /**
-   * 原样生成 border-bottom-style 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-bottom-style:value;，undefined 返回空字符串。
-   * @example
-   * s.borderBottomStyle.raw('inherit') // border-bottom-style:inherit;
-   */
-  raw(value: Property.BorderBottomStyle | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -9810,7 +7605,7 @@ export const BorderBottomWidthKeywords = class BorderBottomWidthKeywords {
 /**
  * border-bottom-width 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderBottomWidthCssRuntime extends LengthCssProperty {
+class BorderBottomWidthCssRuntime extends LengthCssProperty<Property.BorderBottomWidth> {
   /**
    * 创建 border-bottom-width 属性作者；普通使用通过 s.borderBottomWidth 取得共享实例。
    * @example
@@ -9819,74 +7614,6 @@ class BorderBottomWidthCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-bottom-width');
     initializeKeywordDeclarations(this, 'border-bottom-width', borderWidthKeywords);
-  }
-  /**
-   * 原样生成 border-bottom-width 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-bottom-width:value;，undefined 返回空字符串。
-   * @example
-   * s.borderBottomWidth.raw('inherit') // border-bottom-width:inherit;
-   */
-  raw(value: Property.BorderBottomWidth | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderBottomWidth.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderBottomWidth.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderBottomWidth | CssString,
-    ...others: (Property.BorderBottomWidth | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderBottomWidth.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderBottomWidth | CssString,
-    ...others: (Property.BorderBottomWidth | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderBottomWidth.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderBottomWidth | CssString,
-    preferred: Property.BorderBottomWidth | CssString,
-    maximum: Property.BorderBottomWidth | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -9924,7 +7651,7 @@ export const BorderCollapseKeywords = class BorderCollapseKeywords {
 /**
  * border-collapse 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderCollapseCssRuntime extends CssProperty {
+class BorderCollapseCssRuntime extends CssProperty<Property.BorderCollapse> {
   /**
    * 创建 border-collapse 属性作者；普通使用通过 s.borderCollapse 取得共享实例。
    * @example
@@ -9933,18 +7660,6 @@ class BorderCollapseCssRuntime extends CssProperty {
   constructor() {
     super('border-collapse');
     initializeKeywordDeclarations(this, 'border-collapse', borderCollapseKeywords);
-  }
-  /**
-   * 原样生成 border-collapse 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-collapse:value;，undefined 返回空字符串。
-   * @example
-   * s.borderCollapse.raw('inherit') // border-collapse:inherit;
-   */
-  raw(value: Property.BorderCollapse | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -9981,7 +7696,7 @@ export const BorderColorKeywords = class BorderColorKeywords {
 /**
  * border-color 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderColorCssRuntime extends CssProperty {
+class BorderColorCssRuntime extends ColorCssProperty<Property.BorderColor> {
   /**
    * 创建 border-color 属性作者；普通使用通过 s.borderColor 取得共享实例。
    * @example
@@ -9990,96 +7705,6 @@ class BorderColorCssRuntime extends CssProperty {
   constructor() {
     super('border-color');
     initializeKeywordDeclarations(this, 'border-color', colorKeywords);
-  }
-  /**
-   * 原样生成 border-color 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-color:value;，undefined 返回空字符串。
-   * @example
-   * s.borderColor.raw('inherit') // border-color:inherit;
-   */
-  raw(value: Property.BorderColor | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.borderColor.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.borderColor.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.borderColor.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.borderColor.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
   }
 }
 /**
@@ -10113,7 +7738,7 @@ export const BorderEndEndRadiusKeywords = class BorderEndEndRadiusKeywords {
 /**
  * border-end-end-radius 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderEndEndRadiusCssRuntime extends LengthCssProperty {
+class BorderEndEndRadiusCssRuntime extends LengthCssProperty<Property.BorderEndEndRadius> {
   /**
    * 创建 border-end-end-radius 属性作者；普通使用通过 s.borderEndEndRadius 取得共享实例。
    * @example
@@ -10122,74 +7747,6 @@ class BorderEndEndRadiusCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-end-end-radius');
     initializeKeywordDeclarations(this, 'border-end-end-radius', globalKeywords);
-  }
-  /**
-   * 原样生成 border-end-end-radius 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-end-end-radius:value;，undefined 返回空字符串。
-   * @example
-   * s.borderEndEndRadius.raw('inherit') // border-end-end-radius:inherit;
-   */
-  raw(value: Property.BorderEndEndRadius | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderEndEndRadius.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderEndEndRadius.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderEndEndRadius | CssString,
-    ...others: (Property.BorderEndEndRadius | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderEndEndRadius.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderEndEndRadius | CssString,
-    ...others: (Property.BorderEndEndRadius | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderEndEndRadius.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderEndEndRadius | CssString,
-    preferred: Property.BorderEndEndRadius | CssString,
-    maximum: Property.BorderEndEndRadius | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -10227,7 +7784,7 @@ export const BorderEndStartRadiusKeywords = class BorderEndStartRadiusKeywords {
 /**
  * border-end-start-radius 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderEndStartRadiusCssRuntime extends LengthCssProperty {
+class BorderEndStartRadiusCssRuntime extends LengthCssProperty<Property.BorderEndStartRadius> {
   /**
    * 创建 border-end-start-radius 属性作者；普通使用通过 s.borderEndStartRadius 取得共享实例。
    * @example
@@ -10236,74 +7793,6 @@ class BorderEndStartRadiusCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-end-start-radius');
     initializeKeywordDeclarations(this, 'border-end-start-radius', globalKeywords);
-  }
-  /**
-   * 原样生成 border-end-start-radius 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-end-start-radius:value;，undefined 返回空字符串。
-   * @example
-   * s.borderEndStartRadius.raw('inherit') // border-end-start-radius:inherit;
-   */
-  raw(value: Property.BorderEndStartRadius | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderEndStartRadius.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderEndStartRadius.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderEndStartRadius | CssString,
-    ...others: (Property.BorderEndStartRadius | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderEndStartRadius.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderEndStartRadius | CssString,
-    ...others: (Property.BorderEndStartRadius | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderEndStartRadius.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderEndStartRadius | CssString,
-    preferred: Property.BorderEndStartRadius | CssString,
-    maximum: Property.BorderEndStartRadius | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -10342,7 +7831,7 @@ export const BorderImageKeywords = class BorderImageKeywords {
 /**
  * border-image 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderImageCssRuntime extends CssProperty {
+class BorderImageCssRuntime extends MathCssProperty<Property.BorderImage> {
   /**
    * 创建 border-image 属性作者；普通使用通过 s.borderImage 取得共享实例。
    * @example
@@ -10351,74 +7840,6 @@ class BorderImageCssRuntime extends CssProperty {
   constructor() {
     super('border-image');
     initializeKeywordDeclarations(this, 'border-image', borderImageKeywords);
-  }
-  /**
-   * 原样生成 border-image 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-image:value;，undefined 返回空字符串。
-   * @example
-   * s.borderImage.raw('inherit') // border-image:inherit;
-   */
-  raw(value: Property.BorderImage | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderImage.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderImage.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderImage | CssString,
-    ...others: (Property.BorderImage | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderImage.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderImage | CssString,
-    ...others: (Property.BorderImage | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderImage.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderImage | CssString,
-    preferred: Property.BorderImage | CssString,
-    maximum: Property.BorderImage | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -10452,7 +7873,7 @@ export const BorderImageOutsetKeywords = class BorderImageOutsetKeywords {
 /**
  * border-image-outset 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderImageOutsetCssRuntime extends LengthCssProperty {
+class BorderImageOutsetCssRuntime extends LengthCssProperty<Property.BorderImageOutset> {
   /**
    * 创建 border-image-outset 属性作者；普通使用通过 s.borderImageOutset 取得共享实例。
    * @example
@@ -10461,18 +7882,6 @@ class BorderImageOutsetCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-image-outset');
     initializeKeywordDeclarations(this, 'border-image-outset', globalKeywords);
-  }
-  /**
-   * 原样生成 border-image-outset 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-image-outset:value;，undefined 返回空字符串。
-   * @example
-   * s.borderImageOutset.raw('inherit') // border-image-outset:inherit;
-   */
-  raw(value: Property.BorderImageOutset | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 px 单位生成完整属性声明。CSS 像素，不等同于设备物理像素。
@@ -12875,62 +10284,6 @@ class BorderImageOutsetCssRuntime extends LengthCssProperty {
   override cqmax(...values: number[]): string {
     return this.declaration(values.map((value) => `${value}cqmax`).join(' '));
   }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderImageOutset.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderImageOutset.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderImageOutset | CssString,
-    ...others: (Property.BorderImageOutset | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderImageOutset.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderImageOutset | CssString,
-    ...others: (Property.BorderImageOutset | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderImageOutset.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderImageOutset | CssString,
-    preferred: Property.BorderImageOutset | CssString,
-    maximum: Property.BorderImageOutset | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
-  }
 }
 /**
  * border-image-outset 属性作者；关键字读取为完整声明字符串，保留中文说明。
@@ -12967,7 +10320,7 @@ export const BorderImageRepeatKeywords = class BorderImageRepeatKeywords {
 /**
  * border-image-repeat 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderImageRepeatCssRuntime extends CssProperty {
+class BorderImageRepeatCssRuntime extends CssProperty<Property.BorderImageRepeat> {
   /**
    * 创建 border-image-repeat 属性作者；普通使用通过 s.borderImageRepeat 取得共享实例。
    * @example
@@ -12976,18 +10329,6 @@ class BorderImageRepeatCssRuntime extends CssProperty {
   constructor() {
     super('border-image-repeat');
     initializeKeywordDeclarations(this, 'border-image-repeat', borderImageRepeatKeywords);
-  }
-  /**
-   * 原样生成 border-image-repeat 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-image-repeat:value;，undefined 返回空字符串。
-   * @example
-   * s.borderImageRepeat.raw('inherit') // border-image-repeat:inherit;
-   */
-  raw(value: Property.BorderImageRepeat | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -13024,7 +10365,7 @@ export const BorderImageSliceKeywords = class BorderImageSliceKeywords {
 /**
  * border-image-slice 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderImageSliceCssRuntime extends CssProperty {
+class BorderImageSliceCssRuntime extends MathCssProperty<Property.BorderImageSlice> {
   /**
    * 创建 border-image-slice 属性作者；普通使用通过 s.borderImageSlice 取得共享实例。
    * @example
@@ -13033,18 +10374,6 @@ class BorderImageSliceCssRuntime extends CssProperty {
   constructor() {
     super('border-image-slice');
     initializeKeywordDeclarations(this, 'border-image-slice', globalKeywords);
-  }
-  /**
-   * 原样生成 border-image-slice 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-image-slice:value;，undefined 返回空字符串。
-   * @example
-   * s.borderImageSlice.raw('inherit') // border-image-slice:inherit;
-   */
-  raw(value: Property.BorderImageSlice | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 % 单位生成完整属性声明。百分比，100 表示 100%；参照对象由具体属性决定。
@@ -13095,62 +10424,6 @@ class BorderImageSliceCssRuntime extends CssProperty {
   percent(...values: number[]): string {
     return this.declaration(values.map((value) => `${value}%`).join(' '));
   }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderImageSlice.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderImageSlice.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderImageSlice | CssString,
-    ...others: (Property.BorderImageSlice | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderImageSlice.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderImageSlice | CssString,
-    ...others: (Property.BorderImageSlice | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderImageSlice.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderImageSlice | CssString,
-    preferred: Property.BorderImageSlice | CssString,
-    maximum: Property.BorderImageSlice | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
-  }
 }
 /**
  * border-image-slice 属性作者；关键字读取为完整声明字符串，保留中文说明。
@@ -13186,7 +10459,7 @@ export const BorderImageSourceKeywords = class BorderImageSourceKeywords {
 /**
  * border-image-source 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderImageSourceCssRuntime extends CssProperty {
+class BorderImageSourceCssRuntime extends CssProperty<Property.BorderImageSource> {
   /**
    * 创建 border-image-source 属性作者；普通使用通过 s.borderImageSource 取得共享实例。
    * @example
@@ -13195,18 +10468,6 @@ class BorderImageSourceCssRuntime extends CssProperty {
   constructor() {
     super('border-image-source');
     initializeKeywordDeclarations(this, 'border-image-source', noneKeywords);
-  }
-  /**
-   * 原样生成 border-image-source 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-image-source:value;，undefined 返回空字符串。
-   * @example
-   * s.borderImageSource.raw('inherit') // border-image-source:inherit;
-   */
-  raw(value: Property.BorderImageSource | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -13244,7 +10505,7 @@ export const BorderImageWidthKeywords = class BorderImageWidthKeywords {
 /**
  * border-image-width 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderImageWidthCssRuntime extends LengthCssProperty {
+class BorderImageWidthCssRuntime extends LengthCssProperty<Property.BorderImageWidth> {
   /**
    * 创建 border-image-width 属性作者；普通使用通过 s.borderImageWidth 取得共享实例。
    * @example
@@ -13253,18 +10514,6 @@ class BorderImageWidthCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-image-width');
     initializeKeywordDeclarations(this, 'border-image-width', autoKeywords);
-  }
-  /**
-   * 原样生成 border-image-width 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-image-width:value;，undefined 返回空字符串。
-   * @example
-   * s.borderImageWidth.raw('inherit') // border-image-width:inherit;
-   */
-  raw(value: Property.BorderImageWidth | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 px 单位生成完整属性声明。CSS 像素，不等同于设备物理像素。
@@ -15716,62 +12965,6 @@ class BorderImageWidthCssRuntime extends LengthCssProperty {
   percent(...values: number[]): string {
     return this.declaration(values.map((value) => `${value}%`).join(' '));
   }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderImageWidth.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderImageWidth.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderImageWidth | CssString,
-    ...others: (Property.BorderImageWidth | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderImageWidth.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderImageWidth | CssString,
-    ...others: (Property.BorderImageWidth | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderImageWidth.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderImageWidth | CssString,
-    preferred: Property.BorderImageWidth | CssString,
-    maximum: Property.BorderImageWidth | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
-  }
 }
 /**
  * border-image-width 属性作者；关键字读取为完整声明字符串，保留中文说明。
@@ -15807,7 +13000,7 @@ export const BorderInlineKeywords = class BorderInlineKeywords {
 /**
  * border-inline 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderInlineCssRuntime extends LengthCssProperty {
+class BorderInlineCssRuntime extends ColorLengthCssProperty<Property.BorderInline> {
   /**
    * 创建 border-inline 属性作者；普通使用通过 s.borderInline 取得共享实例。
    * @example
@@ -15816,152 +13009,6 @@ class BorderInlineCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-inline');
     initializeKeywordDeclarations(this, 'border-inline', borderKeywords);
-  }
-  /**
-   * 原样生成 border-inline 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-inline:value;，undefined 返回空字符串。
-   * @example
-   * s.borderInline.raw('inherit') // border-inline:inherit;
-   */
-  raw(value: Property.BorderInline | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.borderInline.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.borderInline.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.borderInline.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.borderInline.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderInline.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderInline.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderInline | CssString,
-    ...others: (Property.BorderInline | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderInline.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderInline | CssString,
-    ...others: (Property.BorderInline | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderInline.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderInline | CssString,
-    preferred: Property.BorderInline | CssString,
-    maximum: Property.BorderInline | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -15995,7 +13042,7 @@ export const BorderInlineColorKeywords = class BorderInlineColorKeywords {
 /**
  * border-inline-color 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderInlineColorCssRuntime extends CssProperty {
+class BorderInlineColorCssRuntime extends ColorCssProperty<Property.BorderInlineColor> {
   /**
    * 创建 border-inline-color 属性作者；普通使用通过 s.borderInlineColor 取得共享实例。
    * @example
@@ -16004,96 +13051,6 @@ class BorderInlineColorCssRuntime extends CssProperty {
   constructor() {
     super('border-inline-color');
     initializeKeywordDeclarations(this, 'border-inline-color', colorKeywords);
-  }
-  /**
-   * 原样生成 border-inline-color 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-inline-color:value;，undefined 返回空字符串。
-   * @example
-   * s.borderInlineColor.raw('inherit') // border-inline-color:inherit;
-   */
-  raw(value: Property.BorderInlineColor | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.borderInlineColor.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.borderInlineColor.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.borderInlineColor.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.borderInlineColor.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
   }
 }
 /**
@@ -16130,7 +13087,7 @@ export const BorderInlineEndKeywords = class BorderInlineEndKeywords {
 /**
  * border-inline-end 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderInlineEndCssRuntime extends LengthCssProperty {
+class BorderInlineEndCssRuntime extends ColorLengthCssProperty<Property.BorderInlineEnd> {
   /**
    * 创建 border-inline-end 属性作者；普通使用通过 s.borderInlineEnd 取得共享实例。
    * @example
@@ -16139,152 +13096,6 @@ class BorderInlineEndCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-inline-end');
     initializeKeywordDeclarations(this, 'border-inline-end', borderKeywords);
-  }
-  /**
-   * 原样生成 border-inline-end 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-inline-end:value;，undefined 返回空字符串。
-   * @example
-   * s.borderInlineEnd.raw('inherit') // border-inline-end:inherit;
-   */
-  raw(value: Property.BorderInlineEnd | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.borderInlineEnd.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.borderInlineEnd.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.borderInlineEnd.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.borderInlineEnd.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderInlineEnd.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderInlineEnd.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderInlineEnd | CssString,
-    ...others: (Property.BorderInlineEnd | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderInlineEnd.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderInlineEnd | CssString,
-    ...others: (Property.BorderInlineEnd | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderInlineEnd.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderInlineEnd | CssString,
-    preferred: Property.BorderInlineEnd | CssString,
-    maximum: Property.BorderInlineEnd | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -16319,7 +13130,7 @@ export const BorderInlineEndColorKeywords = class BorderInlineEndColorKeywords {
 /**
  * border-inline-end-color 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderInlineEndColorCssRuntime extends CssProperty {
+class BorderInlineEndColorCssRuntime extends ColorCssProperty<Property.BorderInlineEndColor> {
   /**
    * 创建 border-inline-end-color 属性作者；普通使用通过 s.borderInlineEndColor 取得共享实例。
    * @example
@@ -16328,96 +13139,6 @@ class BorderInlineEndColorCssRuntime extends CssProperty {
   constructor() {
     super('border-inline-end-color');
     initializeKeywordDeclarations(this, 'border-inline-end-color', colorKeywords);
-  }
-  /**
-   * 原样生成 border-inline-end-color 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-inline-end-color:value;，undefined 返回空字符串。
-   * @example
-   * s.borderInlineEndColor.raw('inherit') // border-inline-end-color:inherit;
-   */
-  raw(value: Property.BorderInlineEndColor | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.borderInlineEndColor.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.borderInlineEndColor.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.borderInlineEndColor.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.borderInlineEndColor.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
   }
 }
 /**
@@ -16455,7 +13176,7 @@ export const BorderInlineEndStyleKeywords = class BorderInlineEndStyleKeywords {
 /**
  * border-inline-end-style 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderInlineEndStyleCssRuntime extends CssProperty {
+class BorderInlineEndStyleCssRuntime extends CssProperty<Property.BorderInlineEndStyle> {
   /**
    * 创建 border-inline-end-style 属性作者；普通使用通过 s.borderInlineEndStyle 取得共享实例。
    * @example
@@ -16464,18 +13185,6 @@ class BorderInlineEndStyleCssRuntime extends CssProperty {
   constructor() {
     super('border-inline-end-style');
     initializeKeywordDeclarations(this, 'border-inline-end-style', borderBlockEndStyleKeywords);
-  }
-  /**
-   * 原样生成 border-inline-end-style 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-inline-end-style:value;，undefined 返回空字符串。
-   * @example
-   * s.borderInlineEndStyle.raw('inherit') // border-inline-end-style:inherit;
-   */
-  raw(value: Property.BorderInlineEndStyle | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -16513,7 +13222,7 @@ export const BorderInlineEndWidthKeywords = class BorderInlineEndWidthKeywords {
 /**
  * border-inline-end-width 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderInlineEndWidthCssRuntime extends LengthCssProperty {
+class BorderInlineEndWidthCssRuntime extends LengthCssProperty<Property.BorderInlineEndWidth> {
   /**
    * 创建 border-inline-end-width 属性作者；普通使用通过 s.borderInlineEndWidth 取得共享实例。
    * @example
@@ -16522,74 +13231,6 @@ class BorderInlineEndWidthCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-inline-end-width');
     initializeKeywordDeclarations(this, 'border-inline-end-width', borderWidthKeywords);
-  }
-  /**
-   * 原样生成 border-inline-end-width 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-inline-end-width:value;，undefined 返回空字符串。
-   * @example
-   * s.borderInlineEndWidth.raw('inherit') // border-inline-end-width:inherit;
-   */
-  raw(value: Property.BorderInlineEndWidth | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderInlineEndWidth.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderInlineEndWidth.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderInlineEndWidth | CssString,
-    ...others: (Property.BorderInlineEndWidth | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderInlineEndWidth.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderInlineEndWidth | CssString,
-    ...others: (Property.BorderInlineEndWidth | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderInlineEndWidth.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderInlineEndWidth | CssString,
-    preferred: Property.BorderInlineEndWidth | CssString,
-    maximum: Property.BorderInlineEndWidth | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -16627,7 +13268,7 @@ export const BorderInlineStartKeywords = class BorderInlineStartKeywords {
 /**
  * border-inline-start 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderInlineStartCssRuntime extends LengthCssProperty {
+class BorderInlineStartCssRuntime extends ColorLengthCssProperty<Property.BorderInlineStart> {
   /**
    * 创建 border-inline-start 属性作者；普通使用通过 s.borderInlineStart 取得共享实例。
    * @example
@@ -16636,152 +13277,6 @@ class BorderInlineStartCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-inline-start');
     initializeKeywordDeclarations(this, 'border-inline-start', borderKeywords);
-  }
-  /**
-   * 原样生成 border-inline-start 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-inline-start:value;，undefined 返回空字符串。
-   * @example
-   * s.borderInlineStart.raw('inherit') // border-inline-start:inherit;
-   */
-  raw(value: Property.BorderInlineStart | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.borderInlineStart.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.borderInlineStart.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.borderInlineStart.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.borderInlineStart.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderInlineStart.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderInlineStart.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderInlineStart | CssString,
-    ...others: (Property.BorderInlineStart | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderInlineStart.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderInlineStart | CssString,
-    ...others: (Property.BorderInlineStart | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderInlineStart.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderInlineStart | CssString,
-    preferred: Property.BorderInlineStart | CssString,
-    maximum: Property.BorderInlineStart | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -16816,7 +13311,7 @@ export const BorderInlineStartColorKeywords = class BorderInlineStartColorKeywor
 /**
  * border-inline-start-color 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderInlineStartColorCssRuntime extends CssProperty {
+class BorderInlineStartColorCssRuntime extends ColorCssProperty<Property.BorderInlineStartColor> {
   /**
    * 创建 border-inline-start-color 属性作者；普通使用通过 s.borderInlineStartColor 取得共享实例。
    * @example
@@ -16825,96 +13320,6 @@ class BorderInlineStartColorCssRuntime extends CssProperty {
   constructor() {
     super('border-inline-start-color');
     initializeKeywordDeclarations(this, 'border-inline-start-color', colorKeywords);
-  }
-  /**
-   * 原样生成 border-inline-start-color 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-inline-start-color:value;，undefined 返回空字符串。
-   * @example
-   * s.borderInlineStartColor.raw('inherit') // border-inline-start-color:inherit;
-   */
-  raw(value: Property.BorderInlineStartColor | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.borderInlineStartColor.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.borderInlineStartColor.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.borderInlineStartColor.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.borderInlineStartColor.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
   }
 }
 /**
@@ -16952,7 +13357,7 @@ export const BorderInlineStartStyleKeywords = class BorderInlineStartStyleKeywor
 /**
  * border-inline-start-style 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderInlineStartStyleCssRuntime extends CssProperty {
+class BorderInlineStartStyleCssRuntime extends CssProperty<Property.BorderInlineStartStyle> {
   /**
    * 创建 border-inline-start-style 属性作者；普通使用通过 s.borderInlineStartStyle 取得共享实例。
    * @example
@@ -16961,18 +13366,6 @@ class BorderInlineStartStyleCssRuntime extends CssProperty {
   constructor() {
     super('border-inline-start-style');
     initializeKeywordDeclarations(this, 'border-inline-start-style', borderBlockEndStyleKeywords);
-  }
-  /**
-   * 原样生成 border-inline-start-style 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-inline-start-style:value;，undefined 返回空字符串。
-   * @example
-   * s.borderInlineStartStyle.raw('inherit') // border-inline-start-style:inherit;
-   */
-  raw(value: Property.BorderInlineStartStyle | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -17010,7 +13403,7 @@ export const BorderInlineStartWidthKeywords = class BorderInlineStartWidthKeywor
 /**
  * border-inline-start-width 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderInlineStartWidthCssRuntime extends LengthCssProperty {
+class BorderInlineStartWidthCssRuntime extends LengthCssProperty<Property.BorderInlineStartWidth> {
   /**
    * 创建 border-inline-start-width 属性作者；普通使用通过 s.borderInlineStartWidth 取得共享实例。
    * @example
@@ -17019,74 +13412,6 @@ class BorderInlineStartWidthCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-inline-start-width');
     initializeKeywordDeclarations(this, 'border-inline-start-width', borderWidthKeywords);
-  }
-  /**
-   * 原样生成 border-inline-start-width 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-inline-start-width:value;，undefined 返回空字符串。
-   * @example
-   * s.borderInlineStartWidth.raw('inherit') // border-inline-start-width:inherit;
-   */
-  raw(value: Property.BorderInlineStartWidth | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderInlineStartWidth.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderInlineStartWidth.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderInlineStartWidth | CssString,
-    ...others: (Property.BorderInlineStartWidth | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderInlineStartWidth.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderInlineStartWidth | CssString,
-    ...others: (Property.BorderInlineStartWidth | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderInlineStartWidth.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderInlineStartWidth | CssString,
-    preferred: Property.BorderInlineStartWidth | CssString,
-    maximum: Property.BorderInlineStartWidth | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -17124,7 +13449,7 @@ export const BorderInlineStyleKeywords = class BorderInlineStyleKeywords {
 /**
  * border-inline-style 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderInlineStyleCssRuntime extends CssProperty {
+class BorderInlineStyleCssRuntime extends CssProperty<Property.BorderInlineStyle> {
   /**
    * 创建 border-inline-style 属性作者；普通使用通过 s.borderInlineStyle 取得共享实例。
    * @example
@@ -17133,18 +13458,6 @@ class BorderInlineStyleCssRuntime extends CssProperty {
   constructor() {
     super('border-inline-style');
     initializeKeywordDeclarations(this, 'border-inline-style', borderBlockEndStyleKeywords);
-  }
-  /**
-   * 原样生成 border-inline-style 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-inline-style:value;，undefined 返回空字符串。
-   * @example
-   * s.borderInlineStyle.raw('inherit') // border-inline-style:inherit;
-   */
-  raw(value: Property.BorderInlineStyle | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -17181,7 +13494,7 @@ export const BorderInlineWidthKeywords = class BorderInlineWidthKeywords {
 /**
  * border-inline-width 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderInlineWidthCssRuntime extends LengthCssProperty {
+class BorderInlineWidthCssRuntime extends LengthCssProperty<Property.BorderInlineWidth> {
   /**
    * 创建 border-inline-width 属性作者；普通使用通过 s.borderInlineWidth 取得共享实例。
    * @example
@@ -17190,18 +13503,6 @@ class BorderInlineWidthCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-inline-width');
     initializeKeywordDeclarations(this, 'border-inline-width', borderWidthKeywords);
-  }
-  /**
-   * 原样生成 border-inline-width 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-inline-width:value;，undefined 返回空字符串。
-   * @example
-   * s.borderInlineWidth.raw('inherit') // border-inline-width:inherit;
-   */
-  raw(value: Property.BorderInlineWidth | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 px 单位生成完整属性声明。CSS 像素，不等同于设备物理像素。
@@ -18379,62 +14680,6 @@ class BorderInlineWidthCssRuntime extends LengthCssProperty {
   override cqmax(...values: number[]): string {
     return this.declaration(values.map((value) => `${value}cqmax`).join(' '));
   }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderInlineWidth.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderInlineWidth.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderInlineWidth | CssString,
-    ...others: (Property.BorderInlineWidth | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderInlineWidth.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderInlineWidth | CssString,
-    ...others: (Property.BorderInlineWidth | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderInlineWidth.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderInlineWidth | CssString,
-    preferred: Property.BorderInlineWidth | CssString,
-    maximum: Property.BorderInlineWidth | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
-  }
 }
 /**
  * border-inline-width 属性作者；关键字读取为完整声明字符串，保留中文说明。
@@ -18470,7 +14715,7 @@ export const BorderLeftKeywords = class BorderLeftKeywords {
 /**
  * border-left 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderLeftCssRuntime extends LengthCssProperty {
+class BorderLeftCssRuntime extends ColorLengthCssProperty<Property.BorderLeft> {
   /**
    * 创建 border-left 属性作者；普通使用通过 s.borderLeft 取得共享实例。
    * @example
@@ -18479,152 +14724,6 @@ class BorderLeftCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-left');
     initializeKeywordDeclarations(this, 'border-left', borderKeywords);
-  }
-  /**
-   * 原样生成 border-left 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-left:value;，undefined 返回空字符串。
-   * @example
-   * s.borderLeft.raw('inherit') // border-left:inherit;
-   */
-  raw(value: Property.BorderLeft | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.borderLeft.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.borderLeft.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.borderLeft.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.borderLeft.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderLeft.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderLeft.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderLeft | CssString,
-    ...others: (Property.BorderLeft | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderLeft.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderLeft | CssString,
-    ...others: (Property.BorderLeft | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderLeft.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderLeft | CssString,
-    preferred: Property.BorderLeft | CssString,
-    maximum: Property.BorderLeft | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -18658,7 +14757,7 @@ export const BorderLeftColorKeywords = class BorderLeftColorKeywords {
 /**
  * border-left-color 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderLeftColorCssRuntime extends CssProperty {
+class BorderLeftColorCssRuntime extends ColorCssProperty<Property.BorderLeftColor> {
   /**
    * 创建 border-left-color 属性作者；普通使用通过 s.borderLeftColor 取得共享实例。
    * @example
@@ -18667,96 +14766,6 @@ class BorderLeftColorCssRuntime extends CssProperty {
   constructor() {
     super('border-left-color');
     initializeKeywordDeclarations(this, 'border-left-color', colorKeywords);
-  }
-  /**
-   * 原样生成 border-left-color 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-left-color:value;，undefined 返回空字符串。
-   * @example
-   * s.borderLeftColor.raw('inherit') // border-left-color:inherit;
-   */
-  raw(value: Property.BorderLeftColor | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.borderLeftColor.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.borderLeftColor.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.borderLeftColor.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.borderLeftColor.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
   }
 }
 /**
@@ -18793,7 +14802,7 @@ export const BorderLeftStyleKeywords = class BorderLeftStyleKeywords {
 /**
  * border-left-style 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderLeftStyleCssRuntime extends CssProperty {
+class BorderLeftStyleCssRuntime extends CssProperty<Property.BorderLeftStyle> {
   /**
    * 创建 border-left-style 属性作者；普通使用通过 s.borderLeftStyle 取得共享实例。
    * @example
@@ -18802,18 +14811,6 @@ class BorderLeftStyleCssRuntime extends CssProperty {
   constructor() {
     super('border-left-style');
     initializeKeywordDeclarations(this, 'border-left-style', borderBlockEndStyleKeywords);
-  }
-  /**
-   * 原样生成 border-left-style 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-left-style:value;，undefined 返回空字符串。
-   * @example
-   * s.borderLeftStyle.raw('inherit') // border-left-style:inherit;
-   */
-  raw(value: Property.BorderLeftStyle | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -18850,7 +14847,7 @@ export const BorderLeftWidthKeywords = class BorderLeftWidthKeywords {
 /**
  * border-left-width 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderLeftWidthCssRuntime extends LengthCssProperty {
+class BorderLeftWidthCssRuntime extends LengthCssProperty<Property.BorderLeftWidth> {
   /**
    * 创建 border-left-width 属性作者；普通使用通过 s.borderLeftWidth 取得共享实例。
    * @example
@@ -18859,74 +14856,6 @@ class BorderLeftWidthCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-left-width');
     initializeKeywordDeclarations(this, 'border-left-width', borderWidthKeywords);
-  }
-  /**
-   * 原样生成 border-left-width 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-left-width:value;，undefined 返回空字符串。
-   * @example
-   * s.borderLeftWidth.raw('inherit') // border-left-width:inherit;
-   */
-  raw(value: Property.BorderLeftWidth | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderLeftWidth.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderLeftWidth.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderLeftWidth | CssString,
-    ...others: (Property.BorderLeftWidth | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderLeftWidth.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderLeftWidth | CssString,
-    ...others: (Property.BorderLeftWidth | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderLeftWidth.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderLeftWidth | CssString,
-    preferred: Property.BorderLeftWidth | CssString,
-    maximum: Property.BorderLeftWidth | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -18963,7 +14892,7 @@ export const BorderRadiusKeywords = class BorderRadiusKeywords {
 /**
  * border-radius 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderRadiusCssRuntime extends LengthCssProperty {
+class BorderRadiusCssRuntime extends LengthCssProperty<Property.BorderRadius> {
   /**
    * 创建 border-radius 属性作者；普通使用通过 s.borderRadius 取得共享实例。
    * @example
@@ -18972,18 +14901,6 @@ class BorderRadiusCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-radius');
     initializeKeywordDeclarations(this, 'border-radius', globalKeywords);
-  }
-  /**
-   * 原样生成 border-radius 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-radius:value;，undefined 返回空字符串。
-   * @example
-   * s.borderRadius.raw('inherit') // border-radius:inherit;
-   */
-  raw(value: Property.BorderRadius | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 px 单位生成完整属性声明。CSS 像素，不等同于设备物理像素。
@@ -21435,62 +17352,6 @@ class BorderRadiusCssRuntime extends LengthCssProperty {
   percent(...values: number[]): string {
     return this.declaration(values.map((value) => `${value}%`).join(' '));
   }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderRadius.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderRadius.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderRadius | CssString,
-    ...others: (Property.BorderRadius | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderRadius.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderRadius | CssString,
-    ...others: (Property.BorderRadius | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderRadius.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderRadius | CssString,
-    preferred: Property.BorderRadius | CssString,
-    maximum: Property.BorderRadius | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
-  }
 }
 /**
  * border-radius 属性作者；关键字读取为完整声明字符串，保留中文说明。
@@ -21529,7 +17390,7 @@ export const BorderRightKeywords = class BorderRightKeywords {
 /**
  * border-right 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderRightCssRuntime extends LengthCssProperty {
+class BorderRightCssRuntime extends ColorLengthCssProperty<Property.BorderRight> {
   /**
    * 创建 border-right 属性作者；普通使用通过 s.borderRight 取得共享实例。
    * @example
@@ -21538,152 +17399,6 @@ class BorderRightCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-right');
     initializeKeywordDeclarations(this, 'border-right', borderKeywords);
-  }
-  /**
-   * 原样生成 border-right 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-right:value;，undefined 返回空字符串。
-   * @example
-   * s.borderRight.raw('inherit') // border-right:inherit;
-   */
-  raw(value: Property.BorderRight | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.borderRight.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.borderRight.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.borderRight.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.borderRight.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderRight.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderRight.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderRight | CssString,
-    ...others: (Property.BorderRight | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderRight.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderRight | CssString,
-    ...others: (Property.BorderRight | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderRight.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderRight | CssString,
-    preferred: Property.BorderRight | CssString,
-    maximum: Property.BorderRight | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -21717,7 +17432,7 @@ export const BorderRightColorKeywords = class BorderRightColorKeywords {
 /**
  * border-right-color 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderRightColorCssRuntime extends CssProperty {
+class BorderRightColorCssRuntime extends ColorCssProperty<Property.BorderRightColor> {
   /**
    * 创建 border-right-color 属性作者；普通使用通过 s.borderRightColor 取得共享实例。
    * @example
@@ -21726,96 +17441,6 @@ class BorderRightColorCssRuntime extends CssProperty {
   constructor() {
     super('border-right-color');
     initializeKeywordDeclarations(this, 'border-right-color', colorKeywords);
-  }
-  /**
-   * 原样生成 border-right-color 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-right-color:value;，undefined 返回空字符串。
-   * @example
-   * s.borderRightColor.raw('inherit') // border-right-color:inherit;
-   */
-  raw(value: Property.BorderRightColor | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.borderRightColor.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.borderRightColor.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.borderRightColor.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.borderRightColor.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
   }
 }
 /**
@@ -21852,7 +17477,7 @@ export const BorderRightStyleKeywords = class BorderRightStyleKeywords {
 /**
  * border-right-style 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderRightStyleCssRuntime extends CssProperty {
+class BorderRightStyleCssRuntime extends CssProperty<Property.BorderRightStyle> {
   /**
    * 创建 border-right-style 属性作者；普通使用通过 s.borderRightStyle 取得共享实例。
    * @example
@@ -21861,18 +17486,6 @@ class BorderRightStyleCssRuntime extends CssProperty {
   constructor() {
     super('border-right-style');
     initializeKeywordDeclarations(this, 'border-right-style', borderBlockEndStyleKeywords);
-  }
-  /**
-   * 原样生成 border-right-style 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-right-style:value;，undefined 返回空字符串。
-   * @example
-   * s.borderRightStyle.raw('inherit') // border-right-style:inherit;
-   */
-  raw(value: Property.BorderRightStyle | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -21909,7 +17522,7 @@ export const BorderRightWidthKeywords = class BorderRightWidthKeywords {
 /**
  * border-right-width 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderRightWidthCssRuntime extends LengthCssProperty {
+class BorderRightWidthCssRuntime extends LengthCssProperty<Property.BorderRightWidth> {
   /**
    * 创建 border-right-width 属性作者；普通使用通过 s.borderRightWidth 取得共享实例。
    * @example
@@ -21918,74 +17531,6 @@ class BorderRightWidthCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-right-width');
     initializeKeywordDeclarations(this, 'border-right-width', borderWidthKeywords);
-  }
-  /**
-   * 原样生成 border-right-width 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-right-width:value;，undefined 返回空字符串。
-   * @example
-   * s.borderRightWidth.raw('inherit') // border-right-width:inherit;
-   */
-  raw(value: Property.BorderRightWidth | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderRightWidth.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderRightWidth.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderRightWidth | CssString,
-    ...others: (Property.BorderRightWidth | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderRightWidth.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderRightWidth | CssString,
-    ...others: (Property.BorderRightWidth | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderRightWidth.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderRightWidth | CssString,
-    preferred: Property.BorderRightWidth | CssString,
-    maximum: Property.BorderRightWidth | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -22022,7 +17567,7 @@ export const BorderSpacingKeywords = class BorderSpacingKeywords {
 /**
  * border-spacing 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderSpacingCssRuntime extends LengthCssProperty {
+class BorderSpacingCssRuntime extends LengthCssProperty<Property.BorderSpacing> {
   /**
    * 创建 border-spacing 属性作者；普通使用通过 s.borderSpacing 取得共享实例。
    * @example
@@ -22031,18 +17576,6 @@ class BorderSpacingCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-spacing');
     initializeKeywordDeclarations(this, 'border-spacing', globalKeywords);
-  }
-  /**
-   * 原样生成 border-spacing 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-spacing:value;，undefined 返回空字符串。
-   * @example
-   * s.borderSpacing.raw('inherit') // border-spacing:inherit;
-   */
-  raw(value: Property.BorderSpacing | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 px 单位生成完整属性声明。CSS 像素，不等同于设备物理像素。
@@ -23220,62 +18753,6 @@ class BorderSpacingCssRuntime extends LengthCssProperty {
   override cqmax(...values: number[]): string {
     return this.declaration(values.map((value) => `${value}cqmax`).join(' '));
   }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderSpacing.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderSpacing.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderSpacing | CssString,
-    ...others: (Property.BorderSpacing | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderSpacing.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderSpacing | CssString,
-    ...others: (Property.BorderSpacing | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderSpacing.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderSpacing | CssString,
-    preferred: Property.BorderSpacing | CssString,
-    maximum: Property.BorderSpacing | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
-  }
 }
 /**
  * border-spacing 属性作者；关键字读取为完整声明字符串，保留中文说明。
@@ -23310,7 +18787,7 @@ export const BorderStartEndRadiusKeywords = class BorderStartEndRadiusKeywords {
 /**
  * border-start-end-radius 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderStartEndRadiusCssRuntime extends LengthCssProperty {
+class BorderStartEndRadiusCssRuntime extends LengthCssProperty<Property.BorderStartEndRadius> {
   /**
    * 创建 border-start-end-radius 属性作者；普通使用通过 s.borderStartEndRadius 取得共享实例。
    * @example
@@ -23319,74 +18796,6 @@ class BorderStartEndRadiusCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-start-end-radius');
     initializeKeywordDeclarations(this, 'border-start-end-radius', globalKeywords);
-  }
-  /**
-   * 原样生成 border-start-end-radius 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-start-end-radius:value;，undefined 返回空字符串。
-   * @example
-   * s.borderStartEndRadius.raw('inherit') // border-start-end-radius:inherit;
-   */
-  raw(value: Property.BorderStartEndRadius | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderStartEndRadius.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderStartEndRadius.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderStartEndRadius | CssString,
-    ...others: (Property.BorderStartEndRadius | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderStartEndRadius.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderStartEndRadius | CssString,
-    ...others: (Property.BorderStartEndRadius | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderStartEndRadius.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderStartEndRadius | CssString,
-    preferred: Property.BorderStartEndRadius | CssString,
-    maximum: Property.BorderStartEndRadius | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -23424,7 +18833,7 @@ export const BorderStartStartRadiusKeywords = class BorderStartStartRadiusKeywor
 /**
  * border-start-start-radius 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderStartStartRadiusCssRuntime extends LengthCssProperty {
+class BorderStartStartRadiusCssRuntime extends LengthCssProperty<Property.BorderStartStartRadius> {
   /**
    * 创建 border-start-start-radius 属性作者；普通使用通过 s.borderStartStartRadius 取得共享实例。
    * @example
@@ -23433,74 +18842,6 @@ class BorderStartStartRadiusCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-start-start-radius');
     initializeKeywordDeclarations(this, 'border-start-start-radius', globalKeywords);
-  }
-  /**
-   * 原样生成 border-start-start-radius 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-start-start-radius:value;，undefined 返回空字符串。
-   * @example
-   * s.borderStartStartRadius.raw('inherit') // border-start-start-radius:inherit;
-   */
-  raw(value: Property.BorderStartStartRadius | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderStartStartRadius.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderStartStartRadius.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderStartStartRadius | CssString,
-    ...others: (Property.BorderStartStartRadius | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderStartStartRadius.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderStartStartRadius | CssString,
-    ...others: (Property.BorderStartStartRadius | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderStartStartRadius.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderStartStartRadius | CssString,
-    preferred: Property.BorderStartStartRadius | CssString,
-    maximum: Property.BorderStartStartRadius | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -23539,7 +18880,7 @@ export const BorderStyleKeywords = class BorderStyleKeywords {
 /**
  * border-style 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderStyleCssRuntime extends CssProperty {
+class BorderStyleCssRuntime extends CssProperty<Property.BorderStyle> {
   /**
    * 创建 border-style 属性作者；普通使用通过 s.borderStyle 取得共享实例。
    * @example
@@ -23548,18 +18889,6 @@ class BorderStyleCssRuntime extends CssProperty {
   constructor() {
     super('border-style');
     initializeKeywordDeclarations(this, 'border-style', borderStyleKeywords);
-  }
-  /**
-   * 原样生成 border-style 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-style:value;，undefined 返回空字符串。
-   * @example
-   * s.borderStyle.raw('inherit') // border-style:inherit;
-   */
-  raw(value: Property.BorderStyle | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -23593,7 +18922,7 @@ export const BorderTopKeywords = class BorderTopKeywords {
 /**
  * border-top 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderTopCssRuntime extends LengthCssProperty {
+class BorderTopCssRuntime extends ColorLengthCssProperty<Property.BorderTop> {
   /**
    * 创建 border-top 属性作者；普通使用通过 s.borderTop 取得共享实例。
    * @example
@@ -23602,152 +18931,6 @@ class BorderTopCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-top');
     initializeKeywordDeclarations(this, 'border-top', borderKeywords);
-  }
-  /**
-   * 原样生成 border-top 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-top:value;，undefined 返回空字符串。
-   * @example
-   * s.borderTop.raw('inherit') // border-top:inherit;
-   */
-  raw(value: Property.BorderTop | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.borderTop.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.borderTop.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.borderTop.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.borderTop.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderTop.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderTop.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderTop | CssString,
-    ...others: (Property.BorderTop | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderTop.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderTop | CssString,
-    ...others: (Property.BorderTop | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderTop.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderTop | CssString,
-    preferred: Property.BorderTop | CssString,
-    maximum: Property.BorderTop | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -23781,7 +18964,7 @@ export const BorderTopColorKeywords = class BorderTopColorKeywords {
 /**
  * border-top-color 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderTopColorCssRuntime extends CssProperty {
+class BorderTopColorCssRuntime extends ColorCssProperty<Property.BorderTopColor> {
   /**
    * 创建 border-top-color 属性作者；普通使用通过 s.borderTopColor 取得共享实例。
    * @example
@@ -23790,96 +18973,6 @@ class BorderTopColorCssRuntime extends CssProperty {
   constructor() {
     super('border-top-color');
     initializeKeywordDeclarations(this, 'border-top-color', colorKeywords);
-  }
-  /**
-   * 原样生成 border-top-color 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-top-color:value;，undefined 返回空字符串。
-   * @example
-   * s.borderTopColor.raw('inherit') // border-top-color:inherit;
-   */
-  raw(value: Property.BorderTopColor | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.borderTopColor.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.borderTopColor.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.borderTopColor.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.borderTopColor.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
   }
 }
 /**
@@ -23916,7 +19009,7 @@ export const BorderTopLeftRadiusKeywords = class BorderTopLeftRadiusKeywords {
 /**
  * border-top-left-radius 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderTopLeftRadiusCssRuntime extends LengthCssProperty {
+class BorderTopLeftRadiusCssRuntime extends LengthCssProperty<Property.BorderTopLeftRadius> {
   /**
    * 创建 border-top-left-radius 属性作者；普通使用通过 s.borderTopLeftRadius 取得共享实例。
    * @example
@@ -23925,18 +19018,6 @@ class BorderTopLeftRadiusCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-top-left-radius');
     initializeKeywordDeclarations(this, 'border-top-left-radius', globalKeywords);
-  }
-  /**
-   * 原样生成 border-top-left-radius 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-top-left-radius:value;，undefined 返回空字符串。
-   * @example
-   * s.borderTopLeftRadius.raw('inherit') // border-top-left-radius:inherit;
-   */
-  raw(value: Property.BorderTopLeftRadius | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 px 单位生成完整属性声明。CSS 像素，不等同于设备物理像素。
@@ -25138,62 +20219,6 @@ class BorderTopLeftRadiusCssRuntime extends LengthCssProperty {
   percent(...values: number[]): string {
     return this.declaration(values.map((value) => `${value}%`).join(' '));
   }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderTopLeftRadius.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderTopLeftRadius.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderTopLeftRadius | CssString,
-    ...others: (Property.BorderTopLeftRadius | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderTopLeftRadius.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderTopLeftRadius | CssString,
-    ...others: (Property.BorderTopLeftRadius | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderTopLeftRadius.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderTopLeftRadius | CssString,
-    preferred: Property.BorderTopLeftRadius | CssString,
-    maximum: Property.BorderTopLeftRadius | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
-  }
 }
 /**
  * border-top-left-radius 属性作者；关键字读取为完整声明字符串，保留中文说明。
@@ -25230,7 +20255,7 @@ export const BorderTopRightRadiusKeywords = class BorderTopRightRadiusKeywords {
 /**
  * border-top-right-radius 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderTopRightRadiusCssRuntime extends LengthCssProperty {
+class BorderTopRightRadiusCssRuntime extends LengthCssProperty<Property.BorderTopRightRadius> {
   /**
    * 创建 border-top-right-radius 属性作者；普通使用通过 s.borderTopRightRadius 取得共享实例。
    * @example
@@ -25239,18 +20264,6 @@ class BorderTopRightRadiusCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-top-right-radius');
     initializeKeywordDeclarations(this, 'border-top-right-radius', globalKeywords);
-  }
-  /**
-   * 原样生成 border-top-right-radius 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-top-right-radius:value;，undefined 返回空字符串。
-   * @example
-   * s.borderTopRightRadius.raw('inherit') // border-top-right-radius:inherit;
-   */
-  raw(value: Property.BorderTopRightRadius | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 px 单位生成完整属性声明。CSS 像素，不等同于设备物理像素。
@@ -26452,62 +21465,6 @@ class BorderTopRightRadiusCssRuntime extends LengthCssProperty {
   percent(...values: number[]): string {
     return this.declaration(values.map((value) => `${value}%`).join(' '));
   }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderTopRightRadius.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderTopRightRadius.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderTopRightRadius | CssString,
-    ...others: (Property.BorderTopRightRadius | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderTopRightRadius.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderTopRightRadius | CssString,
-    ...others: (Property.BorderTopRightRadius | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderTopRightRadius.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderTopRightRadius | CssString,
-    preferred: Property.BorderTopRightRadius | CssString,
-    maximum: Property.BorderTopRightRadius | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
-  }
 }
 /**
  * border-top-right-radius 属性作者；关键字读取为完整声明字符串，保留中文说明。
@@ -26544,7 +21501,7 @@ export const BorderTopStyleKeywords = class BorderTopStyleKeywords {
 /**
  * border-top-style 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderTopStyleCssRuntime extends CssProperty {
+class BorderTopStyleCssRuntime extends CssProperty<Property.BorderTopStyle> {
   /**
    * 创建 border-top-style 属性作者；普通使用通过 s.borderTopStyle 取得共享实例。
    * @example
@@ -26553,18 +21510,6 @@ class BorderTopStyleCssRuntime extends CssProperty {
   constructor() {
     super('border-top-style');
     initializeKeywordDeclarations(this, 'border-top-style', borderBlockEndStyleKeywords);
-  }
-  /**
-   * 原样生成 border-top-style 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-top-style:value;，undefined 返回空字符串。
-   * @example
-   * s.borderTopStyle.raw('inherit') // border-top-style:inherit;
-   */
-  raw(value: Property.BorderTopStyle | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -26601,7 +21546,7 @@ export const BorderTopWidthKeywords = class BorderTopWidthKeywords {
 /**
  * border-top-width 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderTopWidthCssRuntime extends LengthCssProperty {
+class BorderTopWidthCssRuntime extends LengthCssProperty<Property.BorderTopWidth> {
   /**
    * 创建 border-top-width 属性作者；普通使用通过 s.borderTopWidth 取得共享实例。
    * @example
@@ -26610,74 +21555,6 @@ class BorderTopWidthCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-top-width');
     initializeKeywordDeclarations(this, 'border-top-width', borderWidthKeywords);
-  }
-  /**
-   * 原样生成 border-top-width 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-top-width:value;，undefined 返回空字符串。
-   * @example
-   * s.borderTopWidth.raw('inherit') // border-top-width:inherit;
-   */
-  raw(value: Property.BorderTopWidth | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderTopWidth.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderTopWidth.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderTopWidth | CssString,
-    ...others: (Property.BorderTopWidth | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderTopWidth.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderTopWidth | CssString,
-    ...others: (Property.BorderTopWidth | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderTopWidth.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderTopWidth | CssString,
-    preferred: Property.BorderTopWidth | CssString,
-    maximum: Property.BorderTopWidth | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -26714,7 +21591,7 @@ export const BorderWidthKeywords = class BorderWidthKeywords {
 /**
  * border-width 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BorderWidthCssRuntime extends LengthCssProperty {
+class BorderWidthCssRuntime extends LengthCssProperty<Property.BorderWidth> {
   /**
    * 创建 border-width 属性作者；普通使用通过 s.borderWidth 取得共享实例。
    * @example
@@ -26723,18 +21600,6 @@ class BorderWidthCssRuntime extends LengthCssProperty {
   constructor() {
     super('border-width');
     initializeKeywordDeclarations(this, 'border-width', borderWidthKeywords);
-  }
-  /**
-   * 原样生成 border-width 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 border-width:value;，undefined 返回空字符串。
-   * @example
-   * s.borderWidth.raw('inherit') // border-width:inherit;
-   */
-  raw(value: Property.BorderWidth | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 px 单位生成完整属性声明。CSS 像素，不等同于设备物理像素。
@@ -29137,62 +24002,6 @@ class BorderWidthCssRuntime extends LengthCssProperty {
   override cqmax(...values: number[]): string {
     return this.declaration(values.map((value) => `${value}cqmax`).join(' '));
   }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.borderWidth.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.borderWidth.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.BorderWidth | CssString,
-    ...others: (Property.BorderWidth | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.borderWidth.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.BorderWidth | CssString,
-    ...others: (Property.BorderWidth | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.borderWidth.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.BorderWidth | CssString,
-    preferred: Property.BorderWidth | CssString,
-    maximum: Property.BorderWidth | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
-  }
 }
 /**
  * border-width 属性作者；关键字读取为完整声明字符串，保留中文说明。
@@ -29222,7 +24031,7 @@ export const BottomKeywords = class BottomKeywords {
 /**
  * bottom 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BottomCssRuntime extends LengthCssProperty {
+class BottomCssRuntime extends LengthCssProperty<Property.Bottom> {
   /**
    * 创建 bottom 属性作者；普通使用通过 s.bottom 取得共享实例。
    * @example
@@ -29231,18 +24040,6 @@ class BottomCssRuntime extends LengthCssProperty {
   constructor() {
     super('bottom');
     initializeKeywordDeclarations(this, 'bottom', autoKeywords);
-  }
-  /**
-   * 原样生成 bottom 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 bottom:value;，undefined 返回空字符串。
-   * @example
-   * s.bottom.raw('inherit') // bottom:inherit;
-   */
-  raw(value: Property.Bottom | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 % 单位生成完整属性声明。百分比，100 表示 100%；参照对象由具体属性决定。
@@ -29255,56 +24052,6 @@ class BottomCssRuntime extends LengthCssProperty {
    */
   percent(value: number): string {
     return this.declaration(`${value}%`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.bottom.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.bottom.min('var(--first)', 'var(--second)')
-   */
-  min(value: Property.Bottom | CssString, ...others: (Property.Bottom | CssString)[]): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.bottom.max('var(--first)', 'var(--second)')
-   */
-  max(value: Property.Bottom | CssString, ...others: (Property.Bottom | CssString)[]): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.bottom.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.Bottom | CssString,
-    preferred: Property.Bottom | CssString,
-    maximum: Property.Bottom | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -29341,7 +24088,7 @@ export const BoxDecorationBreakKeywords = class BoxDecorationBreakKeywords {
 /**
  * box-decoration-break 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BoxDecorationBreakCssRuntime extends CssProperty {
+class BoxDecorationBreakCssRuntime extends CssProperty<Property.BoxDecorationBreak> {
   /**
    * 创建 box-decoration-break 属性作者；普通使用通过 s.boxDecorationBreak 取得共享实例。
    * @example
@@ -29350,18 +24097,6 @@ class BoxDecorationBreakCssRuntime extends CssProperty {
   constructor() {
     super('box-decoration-break');
     initializeKeywordDeclarations(this, 'box-decoration-break', boxDecorationBreakKeywords);
-  }
-  /**
-   * 原样生成 box-decoration-break 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 box-decoration-break:value;，undefined 返回空字符串。
-   * @example
-   * s.boxDecorationBreak.raw('inherit') // box-decoration-break:inherit;
-   */
-  raw(value: Property.BoxDecorationBreak | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -29399,7 +24134,7 @@ export const BoxShadowKeywords = class BoxShadowKeywords {
 /**
  * box-shadow 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BoxShadowCssRuntime extends CssProperty {
+class BoxShadowCssRuntime extends CssProperty<Property.BoxShadow> {
   /**
    * 创建 box-shadow 属性作者；普通使用通过 s.boxShadow 取得共享实例。
    * @example
@@ -29408,18 +24143,6 @@ class BoxShadowCssRuntime extends CssProperty {
   constructor() {
     super('box-shadow');
     initializeKeywordDeclarations(this, 'box-shadow', noneKeywords);
-  }
-  /**
-   * 原样生成 box-shadow 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 box-shadow:value;，undefined 返回空字符串。
-   * @example
-   * s.boxShadow.raw('inherit') // box-shadow:inherit;
-   */
-  raw(value: Property.BoxShadow | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -29462,7 +24185,7 @@ export const BoxSizingKeywords = class BoxSizingKeywords {
 /**
  * box-sizing 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BoxSizingCssRuntime extends CssProperty {
+class BoxSizingCssRuntime extends CssProperty<Property.BoxSizing> {
   /**
    * 创建 box-sizing 属性作者；普通使用通过 s.boxSizing 取得共享实例。
    * @example
@@ -29471,18 +24194,6 @@ class BoxSizingCssRuntime extends CssProperty {
   constructor() {
     super('box-sizing');
     initializeKeywordDeclarations(this, 'box-sizing', boxSizingKeywords);
-  }
-  /**
-   * 原样生成 box-sizing 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 box-sizing:value;，undefined 返回空字符串。
-   * @example
-   * s.boxSizing.raw('inherit') // box-sizing:inherit;
-   */
-  raw(value: Property.BoxSizing | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -29527,7 +24238,7 @@ export const BreakAfterKeywords = class BreakAfterKeywords {
 /**
  * break-after 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BreakAfterCssRuntime extends CssProperty {
+class BreakAfterCssRuntime extends CssProperty<Property.BreakAfter> {
   /**
    * 创建 break-after 属性作者；普通使用通过 s.breakAfter 取得共享实例。
    * @example
@@ -29536,18 +24247,6 @@ class BreakAfterCssRuntime extends CssProperty {
   constructor() {
     super('break-after');
     initializeKeywordDeclarations(this, 'break-after', breakAfterKeywords);
-  }
-  /**
-   * 原样生成 break-after 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 break-after:value;，undefined 返回空字符串。
-   * @example
-   * s.breakAfter.raw('inherit') // break-after:inherit;
-   */
-  raw(value: Property.BreakAfter | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -29583,7 +24282,7 @@ export const BreakBeforeKeywords = class BreakBeforeKeywords {
 /**
  * break-before 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BreakBeforeCssRuntime extends CssProperty {
+class BreakBeforeCssRuntime extends CssProperty<Property.BreakBefore> {
   /**
    * 创建 break-before 属性作者；普通使用通过 s.breakBefore 取得共享实例。
    * @example
@@ -29592,18 +24291,6 @@ class BreakBeforeCssRuntime extends CssProperty {
   constructor() {
     super('break-before');
     initializeKeywordDeclarations(this, 'break-before', breakAfterKeywords);
-  }
-  /**
-   * 原样生成 break-before 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 break-before:value;，undefined 返回空字符串。
-   * @example
-   * s.breakBefore.raw('inherit') // break-before:inherit;
-   */
-  raw(value: Property.BreakBefore | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -29640,7 +24327,7 @@ export const BreakInsideKeywords = class BreakInsideKeywords {
 /**
  * break-inside 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class BreakInsideCssRuntime extends CssProperty {
+class BreakInsideCssRuntime extends CssProperty<Property.BreakInside> {
   /**
    * 创建 break-inside 属性作者；普通使用通过 s.breakInside 取得共享实例。
    * @example
@@ -29649,18 +24336,6 @@ class BreakInsideCssRuntime extends CssProperty {
   constructor() {
     super('break-inside');
     initializeKeywordDeclarations(this, 'break-inside', breakInsideKeywords);
-  }
-  /**
-   * 原样生成 break-inside 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 break-inside:value;，undefined 返回空字符串。
-   * @example
-   * s.breakInside.raw('inherit') // break-inside:inherit;
-   */
-  raw(value: Property.BreakInside | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**

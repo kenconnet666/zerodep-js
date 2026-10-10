@@ -5,7 +5,7 @@
 export type CssString = string & {};
 
 /** CSS 声明构造基类；供属性子类复用，不验证输入或登记样式。 */
-export class CssProperty {
+export class CssProperty<V extends string | number = string | number> {
   /** 写入声明的 CSS 属性原名。 */
   protected readonly name: string;
   /**
@@ -25,9 +25,153 @@ export class CssProperty {
   protected declaration(value: string | number | undefined): string {
     return value === undefined ? '' : `${this.name}:${value};`;
   }
+  /**
+   * 原样生成当前属性声明，保留关键字补全并接受自定义 CSS 值。
+   *
+   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
+   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
+   * @returns 完整声明字符串，形如 name:value;，undefined 返回空字符串。
+   * @example
+   * s.width.raw('inherit') // width:inherit;
+   */
+  raw(value: V | CssString | undefined): string {
+    return this.declaration(value);
+  }
 }
-/** 共享长度单位方法；值的参照和限制仍由具体 CSS 属性决定。 */
-export class LengthCssProperty extends CssProperty {
+/** 共享数学方法；泛型保留属性对裸值的具体约束。 */
+export class MathCssProperty<V extends string | number = string | number> extends CssProperty<V> {
+  /**
+   * 将数学表达式放入 CSS calc()，由浏览器计算。
+   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
+   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
+   * @example
+   * s.width.calc('100% - 2rem')
+   */
+  calc(expression: string): string {
+    return this.raw(`calc(${expression})`);
+  }
+  /**
+   * 生成 CSS min()，从同维度的候选值中选择最小值。
+   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
+   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
+   * @returns 包含 min(...) 的完整属性声明。
+   * @example
+   * s.width.min('100%', '40rem')
+   */
+  min(value: V | CssString, ...others: (V | CssString)[]): string {
+    return this.raw(`min(${[value, ...others].join(', ')})`);
+  }
+  /**
+   * 生成 CSS max()，从同维度的候选值中选择最大值。
+   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
+   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
+   * @returns 包含 max(...) 的完整属性声明。
+   * @example
+   * s.width.max('100%', '40rem')
+   */
+  max(value: V | CssString, ...others: (V | CssString)[]): string {
+    return this.raw(`max(${[value, ...others].join(', ')})`);
+  }
+  /**
+   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
+   *
+   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
+   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
+   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
+   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
+   * @returns 包含 clamp(...) 的完整属性声明。
+   * @example
+   * s.width.clamp('12rem', '50vw', '40rem')
+   */
+  clamp(minimum: V | CssString, preferred: V | CssString, maximum: V | CssString): string {
+    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
+  }
+}
+/** 共享颜色方法；格式化后仍调用可覆写的 raw。 */
+export class ColorCssProperty<V extends string | number = string | number> extends CssProperty<V> {
+  /**
+   * 用现代空格分隔语法生成 RGB 颜色声明。
+   *
+   * 字符串原样输出；库不截断通道或校验 CSS。
+   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
+   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
+   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
+   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
+   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
+   * @example
+   * s.color.rgb(255, 0, 0, 0.5)
+   */
+  rgb(
+    red: number | CssString,
+    green: number | CssString,
+    blue: number | CssString,
+    alpha?: number | CssString,
+  ): string {
+    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
+  }
+  /**
+   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
+   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
+   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
+   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
+   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
+   * @returns 当前属性的完整声明；数值不做截断。
+   * @example
+   * s.color.hsl(210, 50, 40, 0.8)
+   */
+  hsl(
+    hue: number | CssString,
+    saturation: number | CssString,
+    lightness: number | CssString,
+    alpha?: number | CssString,
+  ): string {
+    return this.raw(
+      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
+    );
+  }
+  /**
+   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
+   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
+   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
+   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
+   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
+   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
+   * @example
+   * s.color.oklch(0.7, 0.15, 250)
+   */
+  oklch(
+    lightness: number | CssString,
+    chroma: number | CssString,
+    hue: number | CssString,
+    alpha?: number | CssString,
+  ): string {
+    return this.raw(
+      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
+    );
+  }
+  /**
+   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
+   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
+   * @param a 绿到红的色轴，负值偏绿、正值偏红。
+   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
+   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
+   * @returns 当前属性的完整声明；不截断通道数值。
+   * @example
+   * s.color.oklab(0.7, 0.1, -0.1)
+   */
+  oklab(
+    lightness: number | CssString,
+    a: number | CssString,
+    b: number | CssString,
+    alpha?: number | CssString,
+  ): string {
+    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
+  }
+}
+/** 共享长度和数学方法；值的参照和限制仍由具体 CSS 属性决定。 */
+export class LengthCssProperty<
+  V extends string | number = string | number,
+> extends MathCssProperty<V> {
   /**
    * 使用 px 单位生成完整属性声明。CSS 像素，不等同于设备物理像素。
    *
@@ -615,6 +759,89 @@ export class LengthCssProperty extends CssProperty {
    */
   cqmax(value: number): string {
     return this.declaration(`${value}cqmax`);
+  }
+}
+/** 同时支持长度与颜色的属性复用此基类，不向其他长度属性开放颜色方法。 */
+export class ColorLengthCssProperty<
+  V extends string | number = string | number,
+> extends LengthCssProperty<V> {
+  /**
+   * 用现代空格分隔语法生成 RGB 颜色声明。
+   *
+   * 字符串原样输出；库不截断通道或校验 CSS。
+   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
+   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
+   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
+   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
+   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
+   * @example
+   * s.color.rgb(255, 0, 0, 0.5)
+   */
+  rgb(
+    red: number | CssString,
+    green: number | CssString,
+    blue: number | CssString,
+    alpha?: number | CssString,
+  ): string {
+    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
+  }
+  /**
+   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
+   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
+   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
+   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
+   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
+   * @returns 当前属性的完整声明；数值不做截断。
+   * @example
+   * s.color.hsl(210, 50, 40, 0.8)
+   */
+  hsl(
+    hue: number | CssString,
+    saturation: number | CssString,
+    lightness: number | CssString,
+    alpha?: number | CssString,
+  ): string {
+    return this.raw(
+      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
+    );
+  }
+  /**
+   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
+   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
+   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
+   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
+   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
+   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
+   * @example
+   * s.color.oklch(0.7, 0.15, 250)
+   */
+  oklch(
+    lightness: number | CssString,
+    chroma: number | CssString,
+    hue: number | CssString,
+    alpha?: number | CssString,
+  ): string {
+    return this.raw(
+      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
+    );
+  }
+  /**
+   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
+   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
+   * @param a 绿到红的色轴，负值偏绿、正值偏红。
+   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
+   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
+   * @returns 当前属性的完整声明；不截断通道数值。
+   * @example
+   * s.color.oklab(0.7, 0.1, -0.1)
+   */
+  oklab(
+    lightness: number | CssString,
+    a: number | CssString,
+    b: number | CssString,
+    alpha?: number | CssString,
+  ): string {
+    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
   }
 }
 /** 作者单位方法到原生 CSS 后缀的映射，例如 percent 对应 %。 */

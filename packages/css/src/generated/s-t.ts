@@ -1,7 +1,14 @@
 // 由 scripts/generate-css-author.mjs 从 csstype@3.2.3 生成；请勿手改。
 // 来源许可见 packages/css/THIRD_PARTY_NOTICES.md。
 import type { Property } from 'csstype';
-import { CssProperty, LengthCssProperty, type CssString } from './base.js';
+import {
+  MathCssProperty,
+  CssProperty,
+  LengthCssProperty,
+  ColorCssProperty,
+  ColorLengthCssProperty,
+  type CssString,
+} from './base.js';
 import { initializeKeywordDeclarations } from '../util/keywords.js';
 import type { KeywordDeclarations, KeywordValuesOf } from '../util/keywords.js';
 // 关键字是实例上的声明字符串；系统实例按属性链惰性创建并共享。
@@ -25,7 +32,7 @@ export const ScaleKeywords = class ScaleKeywords {
 /**
  * scale 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScaleCssRuntime extends CssProperty {
+class ScaleCssRuntime extends MathCssProperty<Property.Scale> {
   /**
    * 创建 scale 属性作者；普通使用通过 s.scale 取得共享实例。
    * @example
@@ -34,18 +41,6 @@ class ScaleCssRuntime extends CssProperty {
   constructor() {
     super('scale');
     initializeKeywordDeclarations(this, 'scale', noneKeywords);
-  }
-  /**
-   * 原样生成 scale 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scale:value;，undefined 返回空字符串。
-   * @example
-   * s.scale.raw('inherit') // scale:inherit;
-   */
-  raw(value: Property.Scale | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 % 单位生成完整属性声明。百分比，100 表示 100%；参照对象由具体属性决定。
@@ -83,56 +78,6 @@ class ScaleCssRuntime extends CssProperty {
   percent(...values: number[]): string {
     return this.declaration(values.map((value) => `${value}%`).join(' '));
   }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.scale.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.scale.min('var(--first)', 'var(--second)')
-   */
-  min(value: Property.Scale | CssString, ...others: (Property.Scale | CssString)[]): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.scale.max('var(--first)', 'var(--second)')
-   */
-  max(value: Property.Scale | CssString, ...others: (Property.Scale | CssString)[]): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.scale.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.Scale | CssString,
-    preferred: Property.Scale | CssString,
-    maximum: Property.Scale | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
-  }
 }
 /**
  * scale 属性作者；关键字读取为完整声明字符串，保留中文说明。
@@ -168,7 +113,7 @@ export const ScrollBehaviorKeywords = class ScrollBehaviorKeywords {
 /**
  * scroll-behavior 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollBehaviorCssRuntime extends CssProperty {
+class ScrollBehaviorCssRuntime extends CssProperty<Property.ScrollBehavior> {
   /**
    * 创建 scroll-behavior 属性作者；普通使用通过 s.scrollBehavior 取得共享实例。
    * @example
@@ -177,18 +122,6 @@ class ScrollBehaviorCssRuntime extends CssProperty {
   constructor() {
     super('scroll-behavior');
     initializeKeywordDeclarations(this, 'scroll-behavior', scrollBehaviorKeywords);
-  }
-  /**
-   * 原样生成 scroll-behavior 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-behavior:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollBehavior.raw('inherit') // scroll-behavior:inherit;
-   */
-  raw(value: Property.ScrollBehavior | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -232,7 +165,7 @@ export const ScrollInitialTargetKeywords = class ScrollInitialTargetKeywords {
 /**
  * scroll-initial-target 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollInitialTargetCssRuntime extends CssProperty {
+class ScrollInitialTargetCssRuntime extends CssProperty<Property.ScrollInitialTarget> {
   /**
    * 创建 scroll-initial-target 属性作者；普通使用通过 s.scrollInitialTarget 取得共享实例。
    * @example
@@ -241,18 +174,6 @@ class ScrollInitialTargetCssRuntime extends CssProperty {
   constructor() {
     super('scroll-initial-target');
     initializeKeywordDeclarations(this, 'scroll-initial-target', scrollInitialTargetKeywords);
-  }
-  /**
-   * 原样生成 scroll-initial-target 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-initial-target:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollInitialTarget.raw('inherit') // scroll-initial-target:inherit;
-   */
-  raw(value: Property.ScrollInitialTarget | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -291,7 +212,7 @@ export const ScrollMarginKeywords = class ScrollMarginKeywords {
 /**
  * scroll-margin 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollMarginCssRuntime extends LengthCssProperty {
+class ScrollMarginCssRuntime extends LengthCssProperty<Property.ScrollMargin> {
   /**
    * 创建 scroll-margin 属性作者；普通使用通过 s.scrollMargin 取得共享实例。
    * @example
@@ -300,18 +221,6 @@ class ScrollMarginCssRuntime extends LengthCssProperty {
   constructor() {
     super('scroll-margin');
     initializeKeywordDeclarations(this, 'scroll-margin', globalKeywords);
-  }
-  /**
-   * 原样生成 scroll-margin 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-margin:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollMargin.raw('inherit') // scroll-margin:inherit;
-   */
-  raw(value: Property.ScrollMargin | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 px 单位生成完整属性声明。CSS 像素，不等同于设备物理像素。
@@ -2714,62 +2623,6 @@ class ScrollMarginCssRuntime extends LengthCssProperty {
   override cqmax(...values: number[]): string {
     return this.declaration(values.map((value) => `${value}cqmax`).join(' '));
   }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.scrollMargin.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.scrollMargin.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ScrollMargin | CssString,
-    ...others: (Property.ScrollMargin | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.scrollMargin.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ScrollMargin | CssString,
-    ...others: (Property.ScrollMargin | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.scrollMargin.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ScrollMargin | CssString,
-    preferred: Property.ScrollMargin | CssString,
-    maximum: Property.ScrollMargin | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
-  }
 }
 /**
  * scroll-margin 属性作者；关键字读取为完整声明字符串，保留中文说明。
@@ -2802,7 +2655,7 @@ export const ScrollMarginBlockKeywords = class ScrollMarginBlockKeywords {
 /**
  * scroll-margin-block 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollMarginBlockCssRuntime extends LengthCssProperty {
+class ScrollMarginBlockCssRuntime extends LengthCssProperty<Property.ScrollMarginBlock> {
   /**
    * 创建 scroll-margin-block 属性作者；普通使用通过 s.scrollMarginBlock 取得共享实例。
    * @example
@@ -2811,18 +2664,6 @@ class ScrollMarginBlockCssRuntime extends LengthCssProperty {
   constructor() {
     super('scroll-margin-block');
     initializeKeywordDeclarations(this, 'scroll-margin-block', globalKeywords);
-  }
-  /**
-   * 原样生成 scroll-margin-block 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-margin-block:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollMarginBlock.raw('inherit') // scroll-margin-block:inherit;
-   */
-  raw(value: Property.ScrollMarginBlock | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 px 单位生成完整属性声明。CSS 像素，不等同于设备物理像素。
@@ -4000,62 +3841,6 @@ class ScrollMarginBlockCssRuntime extends LengthCssProperty {
   override cqmax(...values: number[]): string {
     return this.declaration(values.map((value) => `${value}cqmax`).join(' '));
   }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.scrollMarginBlock.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginBlock.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ScrollMarginBlock | CssString,
-    ...others: (Property.ScrollMarginBlock | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginBlock.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ScrollMarginBlock | CssString,
-    ...others: (Property.ScrollMarginBlock | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginBlock.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ScrollMarginBlock | CssString,
-    preferred: Property.ScrollMarginBlock | CssString,
-    maximum: Property.ScrollMarginBlock | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
-  }
 }
 /**
  * scroll-margin-block 属性作者；关键字读取为完整声明字符串，保留中文说明。
@@ -4089,7 +3874,7 @@ export const ScrollMarginBlockEndKeywords = class ScrollMarginBlockEndKeywords {
 /**
  * scroll-margin-block-end 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollMarginBlockEndCssRuntime extends LengthCssProperty {
+class ScrollMarginBlockEndCssRuntime extends LengthCssProperty<Property.ScrollMarginBlockEnd> {
   /**
    * 创建 scroll-margin-block-end 属性作者；普通使用通过 s.scrollMarginBlockEnd 取得共享实例。
    * @example
@@ -4098,74 +3883,6 @@ class ScrollMarginBlockEndCssRuntime extends LengthCssProperty {
   constructor() {
     super('scroll-margin-block-end');
     initializeKeywordDeclarations(this, 'scroll-margin-block-end', globalKeywords);
-  }
-  /**
-   * 原样生成 scroll-margin-block-end 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-margin-block-end:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollMarginBlockEnd.raw('inherit') // scroll-margin-block-end:inherit;
-   */
-  raw(value: Property.ScrollMarginBlockEnd | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.scrollMarginBlockEnd.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginBlockEnd.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ScrollMarginBlockEnd | CssString,
-    ...others: (Property.ScrollMarginBlockEnd | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginBlockEnd.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ScrollMarginBlockEnd | CssString,
-    ...others: (Property.ScrollMarginBlockEnd | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginBlockEnd.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ScrollMarginBlockEnd | CssString,
-    preferred: Property.ScrollMarginBlockEnd | CssString,
-    maximum: Property.ScrollMarginBlockEnd | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -4203,7 +3920,7 @@ export const ScrollMarginBlockStartKeywords = class ScrollMarginBlockStartKeywor
 /**
  * scroll-margin-block-start 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollMarginBlockStartCssRuntime extends LengthCssProperty {
+class ScrollMarginBlockStartCssRuntime extends LengthCssProperty<Property.ScrollMarginBlockStart> {
   /**
    * 创建 scroll-margin-block-start 属性作者；普通使用通过 s.scrollMarginBlockStart 取得共享实例。
    * @example
@@ -4212,74 +3929,6 @@ class ScrollMarginBlockStartCssRuntime extends LengthCssProperty {
   constructor() {
     super('scroll-margin-block-start');
     initializeKeywordDeclarations(this, 'scroll-margin-block-start', globalKeywords);
-  }
-  /**
-   * 原样生成 scroll-margin-block-start 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-margin-block-start:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollMarginBlockStart.raw('inherit') // scroll-margin-block-start:inherit;
-   */
-  raw(value: Property.ScrollMarginBlockStart | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.scrollMarginBlockStart.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginBlockStart.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ScrollMarginBlockStart | CssString,
-    ...others: (Property.ScrollMarginBlockStart | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginBlockStart.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ScrollMarginBlockStart | CssString,
-    ...others: (Property.ScrollMarginBlockStart | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginBlockStart.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ScrollMarginBlockStart | CssString,
-    preferred: Property.ScrollMarginBlockStart | CssString,
-    maximum: Property.ScrollMarginBlockStart | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -4317,7 +3966,7 @@ export const ScrollMarginBottomKeywords = class ScrollMarginBottomKeywords {
 /**
  * scroll-margin-bottom 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollMarginBottomCssRuntime extends LengthCssProperty {
+class ScrollMarginBottomCssRuntime extends LengthCssProperty<Property.ScrollMarginBottom> {
   /**
    * 创建 scroll-margin-bottom 属性作者；普通使用通过 s.scrollMarginBottom 取得共享实例。
    * @example
@@ -4326,74 +3975,6 @@ class ScrollMarginBottomCssRuntime extends LengthCssProperty {
   constructor() {
     super('scroll-margin-bottom');
     initializeKeywordDeclarations(this, 'scroll-margin-bottom', globalKeywords);
-  }
-  /**
-   * 原样生成 scroll-margin-bottom 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-margin-bottom:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollMarginBottom.raw('inherit') // scroll-margin-bottom:inherit;
-   */
-  raw(value: Property.ScrollMarginBottom | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.scrollMarginBottom.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginBottom.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ScrollMarginBottom | CssString,
-    ...others: (Property.ScrollMarginBottom | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginBottom.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ScrollMarginBottom | CssString,
-    ...others: (Property.ScrollMarginBottom | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginBottom.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ScrollMarginBottom | CssString,
-    preferred: Property.ScrollMarginBottom | CssString,
-    maximum: Property.ScrollMarginBottom | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -4431,7 +4012,7 @@ export const ScrollMarginInlineKeywords = class ScrollMarginInlineKeywords {
 /**
  * scroll-margin-inline 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollMarginInlineCssRuntime extends LengthCssProperty {
+class ScrollMarginInlineCssRuntime extends LengthCssProperty<Property.ScrollMarginInline> {
   /**
    * 创建 scroll-margin-inline 属性作者；普通使用通过 s.scrollMarginInline 取得共享实例。
    * @example
@@ -4440,18 +4021,6 @@ class ScrollMarginInlineCssRuntime extends LengthCssProperty {
   constructor() {
     super('scroll-margin-inline');
     initializeKeywordDeclarations(this, 'scroll-margin-inline', globalKeywords);
-  }
-  /**
-   * 原样生成 scroll-margin-inline 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-margin-inline:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollMarginInline.raw('inherit') // scroll-margin-inline:inherit;
-   */
-  raw(value: Property.ScrollMarginInline | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 px 单位生成完整属性声明。CSS 像素，不等同于设备物理像素。
@@ -5629,62 +5198,6 @@ class ScrollMarginInlineCssRuntime extends LengthCssProperty {
   override cqmax(...values: number[]): string {
     return this.declaration(values.map((value) => `${value}cqmax`).join(' '));
   }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.scrollMarginInline.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginInline.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ScrollMarginInline | CssString,
-    ...others: (Property.ScrollMarginInline | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginInline.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ScrollMarginInline | CssString,
-    ...others: (Property.ScrollMarginInline | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginInline.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ScrollMarginInline | CssString,
-    preferred: Property.ScrollMarginInline | CssString,
-    maximum: Property.ScrollMarginInline | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
-  }
 }
 /**
  * scroll-margin-inline 属性作者；关键字读取为完整声明字符串，保留中文说明。
@@ -5719,7 +5232,7 @@ export const ScrollMarginInlineEndKeywords = class ScrollMarginInlineEndKeywords
 /**
  * scroll-margin-inline-end 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollMarginInlineEndCssRuntime extends LengthCssProperty {
+class ScrollMarginInlineEndCssRuntime extends LengthCssProperty<Property.ScrollMarginInlineEnd> {
   /**
    * 创建 scroll-margin-inline-end 属性作者；普通使用通过 s.scrollMarginInlineEnd 取得共享实例。
    * @example
@@ -5728,74 +5241,6 @@ class ScrollMarginInlineEndCssRuntime extends LengthCssProperty {
   constructor() {
     super('scroll-margin-inline-end');
     initializeKeywordDeclarations(this, 'scroll-margin-inline-end', globalKeywords);
-  }
-  /**
-   * 原样生成 scroll-margin-inline-end 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-margin-inline-end:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollMarginInlineEnd.raw('inherit') // scroll-margin-inline-end:inherit;
-   */
-  raw(value: Property.ScrollMarginInlineEnd | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.scrollMarginInlineEnd.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginInlineEnd.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ScrollMarginInlineEnd | CssString,
-    ...others: (Property.ScrollMarginInlineEnd | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginInlineEnd.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ScrollMarginInlineEnd | CssString,
-    ...others: (Property.ScrollMarginInlineEnd | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginInlineEnd.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ScrollMarginInlineEnd | CssString,
-    preferred: Property.ScrollMarginInlineEnd | CssString,
-    maximum: Property.ScrollMarginInlineEnd | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -5833,7 +5278,7 @@ export const ScrollMarginInlineStartKeywords = class ScrollMarginInlineStartKeyw
 /**
  * scroll-margin-inline-start 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollMarginInlineStartCssRuntime extends LengthCssProperty {
+class ScrollMarginInlineStartCssRuntime extends LengthCssProperty<Property.ScrollMarginInlineStart> {
   /**
    * 创建 scroll-margin-inline-start 属性作者；普通使用通过 s.scrollMarginInlineStart 取得共享实例。
    * @example
@@ -5842,74 +5287,6 @@ class ScrollMarginInlineStartCssRuntime extends LengthCssProperty {
   constructor() {
     super('scroll-margin-inline-start');
     initializeKeywordDeclarations(this, 'scroll-margin-inline-start', globalKeywords);
-  }
-  /**
-   * 原样生成 scroll-margin-inline-start 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-margin-inline-start:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollMarginInlineStart.raw('inherit') // scroll-margin-inline-start:inherit;
-   */
-  raw(value: Property.ScrollMarginInlineStart | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.scrollMarginInlineStart.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginInlineStart.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ScrollMarginInlineStart | CssString,
-    ...others: (Property.ScrollMarginInlineStart | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginInlineStart.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ScrollMarginInlineStart | CssString,
-    ...others: (Property.ScrollMarginInlineStart | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginInlineStart.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ScrollMarginInlineStart | CssString,
-    preferred: Property.ScrollMarginInlineStart | CssString,
-    maximum: Property.ScrollMarginInlineStart | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -5947,7 +5324,7 @@ export const ScrollMarginLeftKeywords = class ScrollMarginLeftKeywords {
 /**
  * scroll-margin-left 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollMarginLeftCssRuntime extends LengthCssProperty {
+class ScrollMarginLeftCssRuntime extends LengthCssProperty<Property.ScrollMarginLeft> {
   /**
    * 创建 scroll-margin-left 属性作者；普通使用通过 s.scrollMarginLeft 取得共享实例。
    * @example
@@ -5956,74 +5333,6 @@ class ScrollMarginLeftCssRuntime extends LengthCssProperty {
   constructor() {
     super('scroll-margin-left');
     initializeKeywordDeclarations(this, 'scroll-margin-left', globalKeywords);
-  }
-  /**
-   * 原样生成 scroll-margin-left 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-margin-left:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollMarginLeft.raw('inherit') // scroll-margin-left:inherit;
-   */
-  raw(value: Property.ScrollMarginLeft | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.scrollMarginLeft.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginLeft.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ScrollMarginLeft | CssString,
-    ...others: (Property.ScrollMarginLeft | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginLeft.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ScrollMarginLeft | CssString,
-    ...others: (Property.ScrollMarginLeft | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginLeft.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ScrollMarginLeft | CssString,
-    preferred: Property.ScrollMarginLeft | CssString,
-    maximum: Property.ScrollMarginLeft | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -6060,7 +5369,7 @@ export const ScrollMarginRightKeywords = class ScrollMarginRightKeywords {
 /**
  * scroll-margin-right 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollMarginRightCssRuntime extends LengthCssProperty {
+class ScrollMarginRightCssRuntime extends LengthCssProperty<Property.ScrollMarginRight> {
   /**
    * 创建 scroll-margin-right 属性作者；普通使用通过 s.scrollMarginRight 取得共享实例。
    * @example
@@ -6069,74 +5378,6 @@ class ScrollMarginRightCssRuntime extends LengthCssProperty {
   constructor() {
     super('scroll-margin-right');
     initializeKeywordDeclarations(this, 'scroll-margin-right', globalKeywords);
-  }
-  /**
-   * 原样生成 scroll-margin-right 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-margin-right:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollMarginRight.raw('inherit') // scroll-margin-right:inherit;
-   */
-  raw(value: Property.ScrollMarginRight | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.scrollMarginRight.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginRight.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ScrollMarginRight | CssString,
-    ...others: (Property.ScrollMarginRight | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginRight.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ScrollMarginRight | CssString,
-    ...others: (Property.ScrollMarginRight | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginRight.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ScrollMarginRight | CssString,
-    preferred: Property.ScrollMarginRight | CssString,
-    maximum: Property.ScrollMarginRight | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -6173,7 +5414,7 @@ export const ScrollMarginTopKeywords = class ScrollMarginTopKeywords {
 /**
  * scroll-margin-top 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollMarginTopCssRuntime extends LengthCssProperty {
+class ScrollMarginTopCssRuntime extends LengthCssProperty<Property.ScrollMarginTop> {
   /**
    * 创建 scroll-margin-top 属性作者；普通使用通过 s.scrollMarginTop 取得共享实例。
    * @example
@@ -6182,74 +5423,6 @@ class ScrollMarginTopCssRuntime extends LengthCssProperty {
   constructor() {
     super('scroll-margin-top');
     initializeKeywordDeclarations(this, 'scroll-margin-top', globalKeywords);
-  }
-  /**
-   * 原样生成 scroll-margin-top 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-margin-top:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollMarginTop.raw('inherit') // scroll-margin-top:inherit;
-   */
-  raw(value: Property.ScrollMarginTop | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.scrollMarginTop.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginTop.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ScrollMarginTop | CssString,
-    ...others: (Property.ScrollMarginTop | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginTop.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ScrollMarginTop | CssString,
-    ...others: (Property.ScrollMarginTop | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.scrollMarginTop.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ScrollMarginTop | CssString,
-    preferred: Property.ScrollMarginTop | CssString,
-    maximum: Property.ScrollMarginTop | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -6287,7 +5460,7 @@ export const ScrollPaddingKeywords = class ScrollPaddingKeywords {
 /**
  * scroll-padding 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollPaddingCssRuntime extends LengthCssProperty {
+class ScrollPaddingCssRuntime extends LengthCssProperty<Property.ScrollPadding> {
   /**
    * 创建 scroll-padding 属性作者；普通使用通过 s.scrollPadding 取得共享实例。
    * @example
@@ -6296,18 +5469,6 @@ class ScrollPaddingCssRuntime extends LengthCssProperty {
   constructor() {
     super('scroll-padding');
     initializeKeywordDeclarations(this, 'scroll-padding', autoKeywords);
-  }
-  /**
-   * 原样生成 scroll-padding 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-padding:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollPadding.raw('inherit') // scroll-padding:inherit;
-   */
-  raw(value: Property.ScrollPadding | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 px 单位生成完整属性声明。CSS 像素，不等同于设备物理像素。
@@ -8759,62 +7920,6 @@ class ScrollPaddingCssRuntime extends LengthCssProperty {
   percent(...values: number[]): string {
     return this.declaration(values.map((value) => `${value}%`).join(' '));
   }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.scrollPadding.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.scrollPadding.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ScrollPadding | CssString,
-    ...others: (Property.ScrollPadding | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.scrollPadding.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ScrollPadding | CssString,
-    ...others: (Property.ScrollPadding | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.scrollPadding.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ScrollPadding | CssString,
-    preferred: Property.ScrollPadding | CssString,
-    maximum: Property.ScrollPadding | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
-  }
 }
 /**
  * scroll-padding 属性作者；关键字读取为完整声明字符串，保留中文说明。
@@ -8847,7 +7952,7 @@ export const ScrollPaddingBlockKeywords = class ScrollPaddingBlockKeywords {
 /**
  * scroll-padding-block 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollPaddingBlockCssRuntime extends LengthCssProperty {
+class ScrollPaddingBlockCssRuntime extends LengthCssProperty<Property.ScrollPaddingBlock> {
   /**
    * 创建 scroll-padding-block 属性作者；普通使用通过 s.scrollPaddingBlock 取得共享实例。
    * @example
@@ -8856,18 +7961,6 @@ class ScrollPaddingBlockCssRuntime extends LengthCssProperty {
   constructor() {
     super('scroll-padding-block');
     initializeKeywordDeclarations(this, 'scroll-padding-block', autoKeywords);
-  }
-  /**
-   * 原样生成 scroll-padding-block 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-padding-block:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollPaddingBlock.raw('inherit') // scroll-padding-block:inherit;
-   */
-  raw(value: Property.ScrollPaddingBlock | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 px 单位生成完整属性声明。CSS 像素，不等同于设备物理像素。
@@ -10069,62 +9162,6 @@ class ScrollPaddingBlockCssRuntime extends LengthCssProperty {
   percent(...values: number[]): string {
     return this.declaration(values.map((value) => `${value}%`).join(' '));
   }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.scrollPaddingBlock.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingBlock.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ScrollPaddingBlock | CssString,
-    ...others: (Property.ScrollPaddingBlock | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingBlock.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ScrollPaddingBlock | CssString,
-    ...others: (Property.ScrollPaddingBlock | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingBlock.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ScrollPaddingBlock | CssString,
-    preferred: Property.ScrollPaddingBlock | CssString,
-    maximum: Property.ScrollPaddingBlock | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
-  }
 }
 /**
  * scroll-padding-block 属性作者；关键字读取为完整声明字符串，保留中文说明。
@@ -10159,7 +9196,7 @@ export const ScrollPaddingBlockEndKeywords = class ScrollPaddingBlockEndKeywords
 /**
  * scroll-padding-block-end 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollPaddingBlockEndCssRuntime extends LengthCssProperty {
+class ScrollPaddingBlockEndCssRuntime extends LengthCssProperty<Property.ScrollPaddingBlockEnd> {
   /**
    * 创建 scroll-padding-block-end 属性作者；普通使用通过 s.scrollPaddingBlockEnd 取得共享实例。
    * @example
@@ -10168,18 +9205,6 @@ class ScrollPaddingBlockEndCssRuntime extends LengthCssProperty {
   constructor() {
     super('scroll-padding-block-end');
     initializeKeywordDeclarations(this, 'scroll-padding-block-end', autoKeywords);
-  }
-  /**
-   * 原样生成 scroll-padding-block-end 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-padding-block-end:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollPaddingBlockEnd.raw('inherit') // scroll-padding-block-end:inherit;
-   */
-  raw(value: Property.ScrollPaddingBlockEnd | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 % 单位生成完整属性声明。百分比，100 表示 100%；参照对象由具体属性决定。
@@ -10192,62 +9217,6 @@ class ScrollPaddingBlockEndCssRuntime extends LengthCssProperty {
    */
   percent(value: number): string {
     return this.declaration(`${value}%`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.scrollPaddingBlockEnd.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingBlockEnd.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ScrollPaddingBlockEnd | CssString,
-    ...others: (Property.ScrollPaddingBlockEnd | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingBlockEnd.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ScrollPaddingBlockEnd | CssString,
-    ...others: (Property.ScrollPaddingBlockEnd | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingBlockEnd.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ScrollPaddingBlockEnd | CssString,
-    preferred: Property.ScrollPaddingBlockEnd | CssString,
-    maximum: Property.ScrollPaddingBlockEnd | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -10285,7 +9254,7 @@ export const ScrollPaddingBlockStartKeywords = class ScrollPaddingBlockStartKeyw
 /**
  * scroll-padding-block-start 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollPaddingBlockStartCssRuntime extends LengthCssProperty {
+class ScrollPaddingBlockStartCssRuntime extends LengthCssProperty<Property.ScrollPaddingBlockStart> {
   /**
    * 创建 scroll-padding-block-start 属性作者；普通使用通过 s.scrollPaddingBlockStart 取得共享实例。
    * @example
@@ -10294,18 +9263,6 @@ class ScrollPaddingBlockStartCssRuntime extends LengthCssProperty {
   constructor() {
     super('scroll-padding-block-start');
     initializeKeywordDeclarations(this, 'scroll-padding-block-start', autoKeywords);
-  }
-  /**
-   * 原样生成 scroll-padding-block-start 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-padding-block-start:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollPaddingBlockStart.raw('inherit') // scroll-padding-block-start:inherit;
-   */
-  raw(value: Property.ScrollPaddingBlockStart | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 % 单位生成完整属性声明。百分比，100 表示 100%；参照对象由具体属性决定。
@@ -10318,62 +9275,6 @@ class ScrollPaddingBlockStartCssRuntime extends LengthCssProperty {
    */
   percent(value: number): string {
     return this.declaration(`${value}%`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.scrollPaddingBlockStart.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingBlockStart.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ScrollPaddingBlockStart | CssString,
-    ...others: (Property.ScrollPaddingBlockStart | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingBlockStart.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ScrollPaddingBlockStart | CssString,
-    ...others: (Property.ScrollPaddingBlockStart | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingBlockStart.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ScrollPaddingBlockStart | CssString,
-    preferred: Property.ScrollPaddingBlockStart | CssString,
-    maximum: Property.ScrollPaddingBlockStart | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -10411,7 +9312,7 @@ export const ScrollPaddingBottomKeywords = class ScrollPaddingBottomKeywords {
 /**
  * scroll-padding-bottom 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollPaddingBottomCssRuntime extends LengthCssProperty {
+class ScrollPaddingBottomCssRuntime extends LengthCssProperty<Property.ScrollPaddingBottom> {
   /**
    * 创建 scroll-padding-bottom 属性作者；普通使用通过 s.scrollPaddingBottom 取得共享实例。
    * @example
@@ -10420,18 +9321,6 @@ class ScrollPaddingBottomCssRuntime extends LengthCssProperty {
   constructor() {
     super('scroll-padding-bottom');
     initializeKeywordDeclarations(this, 'scroll-padding-bottom', autoKeywords);
-  }
-  /**
-   * 原样生成 scroll-padding-bottom 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-padding-bottom:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollPaddingBottom.raw('inherit') // scroll-padding-bottom:inherit;
-   */
-  raw(value: Property.ScrollPaddingBottom | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 % 单位生成完整属性声明。百分比，100 表示 100%；参照对象由具体属性决定。
@@ -10444,62 +9333,6 @@ class ScrollPaddingBottomCssRuntime extends LengthCssProperty {
    */
   percent(value: number): string {
     return this.declaration(`${value}%`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.scrollPaddingBottom.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingBottom.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ScrollPaddingBottom | CssString,
-    ...others: (Property.ScrollPaddingBottom | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingBottom.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ScrollPaddingBottom | CssString,
-    ...others: (Property.ScrollPaddingBottom | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingBottom.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ScrollPaddingBottom | CssString,
-    preferred: Property.ScrollPaddingBottom | CssString,
-    maximum: Property.ScrollPaddingBottom | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -10537,7 +9370,7 @@ export const ScrollPaddingInlineKeywords = class ScrollPaddingInlineKeywords {
 /**
  * scroll-padding-inline 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollPaddingInlineCssRuntime extends LengthCssProperty {
+class ScrollPaddingInlineCssRuntime extends LengthCssProperty<Property.ScrollPaddingInline> {
   /**
    * 创建 scroll-padding-inline 属性作者；普通使用通过 s.scrollPaddingInline 取得共享实例。
    * @example
@@ -10546,18 +9379,6 @@ class ScrollPaddingInlineCssRuntime extends LengthCssProperty {
   constructor() {
     super('scroll-padding-inline');
     initializeKeywordDeclarations(this, 'scroll-padding-inline', autoKeywords);
-  }
-  /**
-   * 原样生成 scroll-padding-inline 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-padding-inline:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollPaddingInline.raw('inherit') // scroll-padding-inline:inherit;
-   */
-  raw(value: Property.ScrollPaddingInline | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 px 单位生成完整属性声明。CSS 像素，不等同于设备物理像素。
@@ -11759,62 +10580,6 @@ class ScrollPaddingInlineCssRuntime extends LengthCssProperty {
   percent(...values: number[]): string {
     return this.declaration(values.map((value) => `${value}%`).join(' '));
   }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.scrollPaddingInline.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingInline.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ScrollPaddingInline | CssString,
-    ...others: (Property.ScrollPaddingInline | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingInline.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ScrollPaddingInline | CssString,
-    ...others: (Property.ScrollPaddingInline | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingInline.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ScrollPaddingInline | CssString,
-    preferred: Property.ScrollPaddingInline | CssString,
-    maximum: Property.ScrollPaddingInline | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
-  }
 }
 /**
  * scroll-padding-inline 属性作者；关键字读取为完整声明字符串，保留中文说明。
@@ -11849,7 +10614,7 @@ export const ScrollPaddingInlineEndKeywords = class ScrollPaddingInlineEndKeywor
 /**
  * scroll-padding-inline-end 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollPaddingInlineEndCssRuntime extends LengthCssProperty {
+class ScrollPaddingInlineEndCssRuntime extends LengthCssProperty<Property.ScrollPaddingInlineEnd> {
   /**
    * 创建 scroll-padding-inline-end 属性作者；普通使用通过 s.scrollPaddingInlineEnd 取得共享实例。
    * @example
@@ -11858,18 +10623,6 @@ class ScrollPaddingInlineEndCssRuntime extends LengthCssProperty {
   constructor() {
     super('scroll-padding-inline-end');
     initializeKeywordDeclarations(this, 'scroll-padding-inline-end', autoKeywords);
-  }
-  /**
-   * 原样生成 scroll-padding-inline-end 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-padding-inline-end:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollPaddingInlineEnd.raw('inherit') // scroll-padding-inline-end:inherit;
-   */
-  raw(value: Property.ScrollPaddingInlineEnd | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 % 单位生成完整属性声明。百分比，100 表示 100%；参照对象由具体属性决定。
@@ -11882,62 +10635,6 @@ class ScrollPaddingInlineEndCssRuntime extends LengthCssProperty {
    */
   percent(value: number): string {
     return this.declaration(`${value}%`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.scrollPaddingInlineEnd.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingInlineEnd.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ScrollPaddingInlineEnd | CssString,
-    ...others: (Property.ScrollPaddingInlineEnd | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingInlineEnd.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ScrollPaddingInlineEnd | CssString,
-    ...others: (Property.ScrollPaddingInlineEnd | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingInlineEnd.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ScrollPaddingInlineEnd | CssString,
-    preferred: Property.ScrollPaddingInlineEnd | CssString,
-    maximum: Property.ScrollPaddingInlineEnd | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -11975,7 +10672,7 @@ export const ScrollPaddingInlineStartKeywords = class ScrollPaddingInlineStartKe
 /**
  * scroll-padding-inline-start 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollPaddingInlineStartCssRuntime extends LengthCssProperty {
+class ScrollPaddingInlineStartCssRuntime extends LengthCssProperty<Property.ScrollPaddingInlineStart> {
   /**
    * 创建 scroll-padding-inline-start 属性作者；普通使用通过 s.scrollPaddingInlineStart 取得共享实例。
    * @example
@@ -11984,18 +10681,6 @@ class ScrollPaddingInlineStartCssRuntime extends LengthCssProperty {
   constructor() {
     super('scroll-padding-inline-start');
     initializeKeywordDeclarations(this, 'scroll-padding-inline-start', autoKeywords);
-  }
-  /**
-   * 原样生成 scroll-padding-inline-start 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-padding-inline-start:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollPaddingInlineStart.raw('inherit') // scroll-padding-inline-start:inherit;
-   */
-  raw(value: Property.ScrollPaddingInlineStart | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 % 单位生成完整属性声明。百分比，100 表示 100%；参照对象由具体属性决定。
@@ -12008,62 +10693,6 @@ class ScrollPaddingInlineStartCssRuntime extends LengthCssProperty {
    */
   percent(value: number): string {
     return this.declaration(`${value}%`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.scrollPaddingInlineStart.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingInlineStart.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ScrollPaddingInlineStart | CssString,
-    ...others: (Property.ScrollPaddingInlineStart | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingInlineStart.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ScrollPaddingInlineStart | CssString,
-    ...others: (Property.ScrollPaddingInlineStart | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingInlineStart.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ScrollPaddingInlineStart | CssString,
-    preferred: Property.ScrollPaddingInlineStart | CssString,
-    maximum: Property.ScrollPaddingInlineStart | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -12101,7 +10730,7 @@ export const ScrollPaddingLeftKeywords = class ScrollPaddingLeftKeywords {
 /**
  * scroll-padding-left 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollPaddingLeftCssRuntime extends LengthCssProperty {
+class ScrollPaddingLeftCssRuntime extends LengthCssProperty<Property.ScrollPaddingLeft> {
   /**
    * 创建 scroll-padding-left 属性作者；普通使用通过 s.scrollPaddingLeft 取得共享实例。
    * @example
@@ -12110,18 +10739,6 @@ class ScrollPaddingLeftCssRuntime extends LengthCssProperty {
   constructor() {
     super('scroll-padding-left');
     initializeKeywordDeclarations(this, 'scroll-padding-left', autoKeywords);
-  }
-  /**
-   * 原样生成 scroll-padding-left 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-padding-left:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollPaddingLeft.raw('inherit') // scroll-padding-left:inherit;
-   */
-  raw(value: Property.ScrollPaddingLeft | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 % 单位生成完整属性声明。百分比，100 表示 100%；参照对象由具体属性决定。
@@ -12134,62 +10751,6 @@ class ScrollPaddingLeftCssRuntime extends LengthCssProperty {
    */
   percent(value: number): string {
     return this.declaration(`${value}%`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.scrollPaddingLeft.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingLeft.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ScrollPaddingLeft | CssString,
-    ...others: (Property.ScrollPaddingLeft | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingLeft.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ScrollPaddingLeft | CssString,
-    ...others: (Property.ScrollPaddingLeft | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingLeft.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ScrollPaddingLeft | CssString,
-    preferred: Property.ScrollPaddingLeft | CssString,
-    maximum: Property.ScrollPaddingLeft | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -12226,7 +10787,7 @@ export const ScrollPaddingRightKeywords = class ScrollPaddingRightKeywords {
 /**
  * scroll-padding-right 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollPaddingRightCssRuntime extends LengthCssProperty {
+class ScrollPaddingRightCssRuntime extends LengthCssProperty<Property.ScrollPaddingRight> {
   /**
    * 创建 scroll-padding-right 属性作者；普通使用通过 s.scrollPaddingRight 取得共享实例。
    * @example
@@ -12235,18 +10796,6 @@ class ScrollPaddingRightCssRuntime extends LengthCssProperty {
   constructor() {
     super('scroll-padding-right');
     initializeKeywordDeclarations(this, 'scroll-padding-right', autoKeywords);
-  }
-  /**
-   * 原样生成 scroll-padding-right 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-padding-right:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollPaddingRight.raw('inherit') // scroll-padding-right:inherit;
-   */
-  raw(value: Property.ScrollPaddingRight | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 % 单位生成完整属性声明。百分比，100 表示 100%；参照对象由具体属性决定。
@@ -12259,62 +10808,6 @@ class ScrollPaddingRightCssRuntime extends LengthCssProperty {
    */
   percent(value: number): string {
     return this.declaration(`${value}%`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.scrollPaddingRight.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingRight.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ScrollPaddingRight | CssString,
-    ...others: (Property.ScrollPaddingRight | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingRight.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ScrollPaddingRight | CssString,
-    ...others: (Property.ScrollPaddingRight | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingRight.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ScrollPaddingRight | CssString,
-    preferred: Property.ScrollPaddingRight | CssString,
-    maximum: Property.ScrollPaddingRight | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -12352,7 +10845,7 @@ export const ScrollPaddingTopKeywords = class ScrollPaddingTopKeywords {
 /**
  * scroll-padding-top 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollPaddingTopCssRuntime extends LengthCssProperty {
+class ScrollPaddingTopCssRuntime extends LengthCssProperty<Property.ScrollPaddingTop> {
   /**
    * 创建 scroll-padding-top 属性作者；普通使用通过 s.scrollPaddingTop 取得共享实例。
    * @example
@@ -12361,18 +10854,6 @@ class ScrollPaddingTopCssRuntime extends LengthCssProperty {
   constructor() {
     super('scroll-padding-top');
     initializeKeywordDeclarations(this, 'scroll-padding-top', autoKeywords);
-  }
-  /**
-   * 原样生成 scroll-padding-top 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-padding-top:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollPaddingTop.raw('inherit') // scroll-padding-top:inherit;
-   */
-  raw(value: Property.ScrollPaddingTop | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 % 单位生成完整属性声明。百分比，100 表示 100%；参照对象由具体属性决定。
@@ -12385,62 +10866,6 @@ class ScrollPaddingTopCssRuntime extends LengthCssProperty {
    */
   percent(value: number): string {
     return this.declaration(`${value}%`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.scrollPaddingTop.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingTop.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ScrollPaddingTop | CssString,
-    ...others: (Property.ScrollPaddingTop | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingTop.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ScrollPaddingTop | CssString,
-    ...others: (Property.ScrollPaddingTop | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.scrollPaddingTop.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ScrollPaddingTop | CssString,
-    preferred: Property.ScrollPaddingTop | CssString,
-    maximum: Property.ScrollPaddingTop | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -12478,7 +10903,7 @@ export const ScrollSnapAlignKeywords = class ScrollSnapAlignKeywords {
 /**
  * scroll-snap-align 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollSnapAlignCssRuntime extends CssProperty {
+class ScrollSnapAlignCssRuntime extends CssProperty<Property.ScrollSnapAlign> {
   /**
    * 创建 scroll-snap-align 属性作者；普通使用通过 s.scrollSnapAlign 取得共享实例。
    * @example
@@ -12487,18 +10912,6 @@ class ScrollSnapAlignCssRuntime extends CssProperty {
   constructor() {
     super('scroll-snap-align');
     initializeKeywordDeclarations(this, 'scroll-snap-align', scrollSnapAlignKeywords);
-  }
-  /**
-   * 原样生成 scroll-snap-align 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-snap-align:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollSnapAlign.raw('inherit') // scroll-snap-align:inherit;
-   */
-  raw(value: Property.ScrollSnapAlign | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -12535,7 +10948,7 @@ export const ScrollSnapMarginKeywords = class ScrollSnapMarginKeywords {
 /**
  * scroll-snap-margin 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollSnapMarginCssRuntime extends LengthCssProperty {
+class ScrollSnapMarginCssRuntime extends LengthCssProperty<Property.ScrollMargin> {
   /**
    * 创建 scroll-snap-margin 属性作者；普通使用通过 s.scrollSnapMargin 取得共享实例。
    * @example
@@ -12544,18 +10957,6 @@ class ScrollSnapMarginCssRuntime extends LengthCssProperty {
   constructor() {
     super('scroll-snap-margin');
     initializeKeywordDeclarations(this, 'scroll-snap-margin', globalKeywords);
-  }
-  /**
-   * 原样生成 scroll-snap-margin 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-snap-margin:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollSnapMargin.raw('inherit') // scroll-snap-margin:inherit;
-   */
-  raw(value: Property.ScrollMargin | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 px 单位生成完整属性声明。CSS 像素，不等同于设备物理像素。
@@ -14958,62 +13359,6 @@ class ScrollSnapMarginCssRuntime extends LengthCssProperty {
   override cqmax(...values: number[]): string {
     return this.declaration(values.map((value) => `${value}cqmax`).join(' '));
   }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.scrollSnapMargin.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.scrollSnapMargin.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ScrollMargin | CssString,
-    ...others: (Property.ScrollMargin | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.scrollSnapMargin.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ScrollMargin | CssString,
-    ...others: (Property.ScrollMargin | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.scrollSnapMargin.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ScrollMargin | CssString,
-    preferred: Property.ScrollMargin | CssString,
-    maximum: Property.ScrollMargin | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
-  }
 }
 /**
  * scroll-snap-margin 属性作者；关键字读取为完整声明字符串，保留中文说明。
@@ -15047,7 +13392,7 @@ export const ScrollSnapMarginBottomKeywords = class ScrollSnapMarginBottomKeywor
 /**
  * scroll-snap-margin-bottom 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollSnapMarginBottomCssRuntime extends LengthCssProperty {
+class ScrollSnapMarginBottomCssRuntime extends LengthCssProperty<Property.ScrollMarginBottom> {
   /**
    * 创建 scroll-snap-margin-bottom 属性作者；普通使用通过 s.scrollSnapMarginBottom 取得共享实例。
    * @example
@@ -15056,74 +13401,6 @@ class ScrollSnapMarginBottomCssRuntime extends LengthCssProperty {
   constructor() {
     super('scroll-snap-margin-bottom');
     initializeKeywordDeclarations(this, 'scroll-snap-margin-bottom', globalKeywords);
-  }
-  /**
-   * 原样生成 scroll-snap-margin-bottom 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-snap-margin-bottom:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollSnapMarginBottom.raw('inherit') // scroll-snap-margin-bottom:inherit;
-   */
-  raw(value: Property.ScrollMarginBottom | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.scrollSnapMarginBottom.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.scrollSnapMarginBottom.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ScrollMarginBottom | CssString,
-    ...others: (Property.ScrollMarginBottom | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.scrollSnapMarginBottom.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ScrollMarginBottom | CssString,
-    ...others: (Property.ScrollMarginBottom | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.scrollSnapMarginBottom.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ScrollMarginBottom | CssString,
-    preferred: Property.ScrollMarginBottom | CssString,
-    maximum: Property.ScrollMarginBottom | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -15161,7 +13438,7 @@ export const ScrollSnapMarginLeftKeywords = class ScrollSnapMarginLeftKeywords {
 /**
  * scroll-snap-margin-left 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollSnapMarginLeftCssRuntime extends LengthCssProperty {
+class ScrollSnapMarginLeftCssRuntime extends LengthCssProperty<Property.ScrollMarginLeft> {
   /**
    * 创建 scroll-snap-margin-left 属性作者；普通使用通过 s.scrollSnapMarginLeft 取得共享实例。
    * @example
@@ -15170,74 +13447,6 @@ class ScrollSnapMarginLeftCssRuntime extends LengthCssProperty {
   constructor() {
     super('scroll-snap-margin-left');
     initializeKeywordDeclarations(this, 'scroll-snap-margin-left', globalKeywords);
-  }
-  /**
-   * 原样生成 scroll-snap-margin-left 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-snap-margin-left:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollSnapMarginLeft.raw('inherit') // scroll-snap-margin-left:inherit;
-   */
-  raw(value: Property.ScrollMarginLeft | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.scrollSnapMarginLeft.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.scrollSnapMarginLeft.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ScrollMarginLeft | CssString,
-    ...others: (Property.ScrollMarginLeft | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.scrollSnapMarginLeft.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ScrollMarginLeft | CssString,
-    ...others: (Property.ScrollMarginLeft | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.scrollSnapMarginLeft.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ScrollMarginLeft | CssString,
-    preferred: Property.ScrollMarginLeft | CssString,
-    maximum: Property.ScrollMarginLeft | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -15275,7 +13484,7 @@ export const ScrollSnapMarginRightKeywords = class ScrollSnapMarginRightKeywords
 /**
  * scroll-snap-margin-right 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollSnapMarginRightCssRuntime extends LengthCssProperty {
+class ScrollSnapMarginRightCssRuntime extends LengthCssProperty<Property.ScrollMarginRight> {
   /**
    * 创建 scroll-snap-margin-right 属性作者；普通使用通过 s.scrollSnapMarginRight 取得共享实例。
    * @example
@@ -15284,74 +13493,6 @@ class ScrollSnapMarginRightCssRuntime extends LengthCssProperty {
   constructor() {
     super('scroll-snap-margin-right');
     initializeKeywordDeclarations(this, 'scroll-snap-margin-right', globalKeywords);
-  }
-  /**
-   * 原样生成 scroll-snap-margin-right 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-snap-margin-right:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollSnapMarginRight.raw('inherit') // scroll-snap-margin-right:inherit;
-   */
-  raw(value: Property.ScrollMarginRight | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.scrollSnapMarginRight.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.scrollSnapMarginRight.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ScrollMarginRight | CssString,
-    ...others: (Property.ScrollMarginRight | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.scrollSnapMarginRight.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ScrollMarginRight | CssString,
-    ...others: (Property.ScrollMarginRight | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.scrollSnapMarginRight.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ScrollMarginRight | CssString,
-    preferred: Property.ScrollMarginRight | CssString,
-    maximum: Property.ScrollMarginRight | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -15389,7 +13530,7 @@ export const ScrollSnapMarginTopKeywords = class ScrollSnapMarginTopKeywords {
 /**
  * scroll-snap-margin-top 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollSnapMarginTopCssRuntime extends LengthCssProperty {
+class ScrollSnapMarginTopCssRuntime extends LengthCssProperty<Property.ScrollMarginTop> {
   /**
    * 创建 scroll-snap-margin-top 属性作者；普通使用通过 s.scrollSnapMarginTop 取得共享实例。
    * @example
@@ -15398,74 +13539,6 @@ class ScrollSnapMarginTopCssRuntime extends LengthCssProperty {
   constructor() {
     super('scroll-snap-margin-top');
     initializeKeywordDeclarations(this, 'scroll-snap-margin-top', globalKeywords);
-  }
-  /**
-   * 原样生成 scroll-snap-margin-top 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-snap-margin-top:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollSnapMarginTop.raw('inherit') // scroll-snap-margin-top:inherit;
-   */
-  raw(value: Property.ScrollMarginTop | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.scrollSnapMarginTop.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.scrollSnapMarginTop.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ScrollMarginTop | CssString,
-    ...others: (Property.ScrollMarginTop | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.scrollSnapMarginTop.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ScrollMarginTop | CssString,
-    ...others: (Property.ScrollMarginTop | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.scrollSnapMarginTop.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ScrollMarginTop | CssString,
-    preferred: Property.ScrollMarginTop | CssString,
-    maximum: Property.ScrollMarginTop | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -15504,7 +13577,7 @@ export const ScrollSnapStopKeywords = class ScrollSnapStopKeywords {
 /**
  * scroll-snap-stop 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollSnapStopCssRuntime extends CssProperty {
+class ScrollSnapStopCssRuntime extends CssProperty<Property.ScrollSnapStop> {
   /**
    * 创建 scroll-snap-stop 属性作者；普通使用通过 s.scrollSnapStop 取得共享实例。
    * @example
@@ -15513,18 +13586,6 @@ class ScrollSnapStopCssRuntime extends CssProperty {
   constructor() {
     super('scroll-snap-stop');
     initializeKeywordDeclarations(this, 'scroll-snap-stop', scrollSnapStopKeywords);
-  }
-  /**
-   * 原样生成 scroll-snap-stop 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-snap-stop:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollSnapStop.raw('inherit') // scroll-snap-stop:inherit;
-   */
-  raw(value: Property.ScrollSnapStop | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -15562,7 +13623,7 @@ export const ScrollSnapTypeKeywords = class ScrollSnapTypeKeywords {
 /**
  * scroll-snap-type 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollSnapTypeCssRuntime extends CssProperty {
+class ScrollSnapTypeCssRuntime extends CssProperty<Property.ScrollSnapType> {
   /**
    * 创建 scroll-snap-type 属性作者；普通使用通过 s.scrollSnapType 取得共享实例。
    * @example
@@ -15571,18 +13632,6 @@ class ScrollSnapTypeCssRuntime extends CssProperty {
   constructor() {
     super('scroll-snap-type');
     initializeKeywordDeclarations(this, 'scroll-snap-type', scrollSnapTypeKeywords);
-  }
-  /**
-   * 原样生成 scroll-snap-type 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-snap-type:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollSnapType.raw('inherit') // scroll-snap-type:inherit;
-   */
-  raw(value: Property.ScrollSnapType | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -15623,7 +13672,7 @@ export const ScrollTimelineKeywords = class ScrollTimelineKeywords {
 /**
  * scroll-timeline 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollTimelineCssRuntime extends CssProperty {
+class ScrollTimelineCssRuntime extends CssProperty<Property.ScrollTimeline> {
   /**
    * 创建 scroll-timeline 属性作者；普通使用通过 s.scrollTimeline 取得共享实例。
    * @example
@@ -15632,18 +13681,6 @@ class ScrollTimelineCssRuntime extends CssProperty {
   constructor() {
     super('scroll-timeline');
     initializeKeywordDeclarations(this, 'scroll-timeline', noneKeywords);
-  }
-  /**
-   * 原样生成 scroll-timeline 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-timeline:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollTimeline.raw('inherit') // scroll-timeline:inherit;
-   */
-  raw(value: Property.ScrollTimeline | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -15679,7 +13716,7 @@ export const ScrollTimelineAxisKeywords = class ScrollTimelineAxisKeywords {
 /**
  * scroll-timeline-axis 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollTimelineAxisCssRuntime extends CssProperty {
+class ScrollTimelineAxisCssRuntime extends CssProperty<Property.ScrollTimelineAxis> {
   /**
    * 创建 scroll-timeline-axis 属性作者；普通使用通过 s.scrollTimelineAxis 取得共享实例。
    * @example
@@ -15688,18 +13725,6 @@ class ScrollTimelineAxisCssRuntime extends CssProperty {
   constructor() {
     super('scroll-timeline-axis');
     initializeKeywordDeclarations(this, 'scroll-timeline-axis', scrollTimelineAxisKeywords);
-  }
-  /**
-   * 原样生成 scroll-timeline-axis 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-timeline-axis:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollTimelineAxis.raw('inherit') // scroll-timeline-axis:inherit;
-   */
-  raw(value: Property.ScrollTimelineAxis | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -15737,7 +13762,7 @@ export const ScrollTimelineNameKeywords = class ScrollTimelineNameKeywords {
 /**
  * scroll-timeline-name 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollTimelineNameCssRuntime extends CssProperty {
+class ScrollTimelineNameCssRuntime extends CssProperty<Property.ScrollTimelineName> {
   /**
    * 创建 scroll-timeline-name 属性作者；普通使用通过 s.scrollTimelineName 取得共享实例。
    * @example
@@ -15746,18 +13771,6 @@ class ScrollTimelineNameCssRuntime extends CssProperty {
   constructor() {
     super('scroll-timeline-name');
     initializeKeywordDeclarations(this, 'scroll-timeline-name', noneKeywords);
-  }
-  /**
-   * 原样生成 scroll-timeline-name 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scroll-timeline-name:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollTimelineName.raw('inherit') // scroll-timeline-name:inherit;
-   */
-  raw(value: Property.ScrollTimelineName | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -15795,7 +13808,7 @@ export const ScrollbarColorKeywords = class ScrollbarColorKeywords {
 /**
  * scrollbar-color 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollbarColorCssRuntime extends CssProperty {
+class ScrollbarColorCssRuntime extends CssProperty<Property.ScrollbarColor> {
   /**
    * 创建 scrollbar-color 属性作者；普通使用通过 s.scrollbarColor 取得共享实例。
    * @example
@@ -15804,18 +13817,6 @@ class ScrollbarColorCssRuntime extends CssProperty {
   constructor() {
     super('scrollbar-color');
     initializeKeywordDeclarations(this, 'scrollbar-color', autoKeywords);
-  }
-  /**
-   * 原样生成 scrollbar-color 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scrollbar-color:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollbarColor.raw('inherit') // scrollbar-color:inherit;
-   */
-  raw(value: Property.ScrollbarColor | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -15853,7 +13854,7 @@ export const ScrollbarGutterKeywords = class ScrollbarGutterKeywords {
 /**
  * scrollbar-gutter 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollbarGutterCssRuntime extends CssProperty {
+class ScrollbarGutterCssRuntime extends CssProperty<Property.ScrollbarGutter> {
   /**
    * 创建 scrollbar-gutter 属性作者；普通使用通过 s.scrollbarGutter 取得共享实例。
    * @example
@@ -15862,18 +13863,6 @@ class ScrollbarGutterCssRuntime extends CssProperty {
   constructor() {
     super('scrollbar-gutter');
     initializeKeywordDeclarations(this, 'scrollbar-gutter', scrollbarGutterKeywords);
-  }
-  /**
-   * 原样生成 scrollbar-gutter 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scrollbar-gutter:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollbarGutter.raw('inherit') // scrollbar-gutter:inherit;
-   */
-  raw(value: Property.ScrollbarGutter | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -15911,7 +13900,7 @@ export const ScrollbarWidthKeywords = class ScrollbarWidthKeywords {
 /**
  * scrollbar-width 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ScrollbarWidthCssRuntime extends CssProperty {
+class ScrollbarWidthCssRuntime extends CssProperty<Property.ScrollbarWidth> {
   /**
    * 创建 scrollbar-width 属性作者；普通使用通过 s.scrollbarWidth 取得共享实例。
    * @example
@@ -15920,18 +13909,6 @@ class ScrollbarWidthCssRuntime extends CssProperty {
   constructor() {
     super('scrollbar-width');
     initializeKeywordDeclarations(this, 'scrollbar-width', scrollbarWidthKeywords);
-  }
-  /**
-   * 原样生成 scrollbar-width 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 scrollbar-width:value;，undefined 返回空字符串。
-   * @example
-   * s.scrollbarWidth.raw('inherit') // scrollbar-width:inherit;
-   */
-  raw(value: Property.ScrollbarWidth | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -15968,7 +13945,7 @@ export const ShapeImageThresholdKeywords = class ShapeImageThresholdKeywords {
 /**
  * shape-image-threshold 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ShapeImageThresholdCssRuntime extends CssProperty {
+class ShapeImageThresholdCssRuntime extends MathCssProperty<Property.ShapeImageThreshold> {
   /**
    * 创建 shape-image-threshold 属性作者；普通使用通过 s.shapeImageThreshold 取得共享实例。
    * @example
@@ -15977,18 +13954,6 @@ class ShapeImageThresholdCssRuntime extends CssProperty {
   constructor() {
     super('shape-image-threshold');
     initializeKeywordDeclarations(this, 'shape-image-threshold', globalKeywords);
-  }
-  /**
-   * 原样生成 shape-image-threshold 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 shape-image-threshold:value;，undefined 返回空字符串。
-   * @example
-   * s.shapeImageThreshold.raw('inherit') // shape-image-threshold:inherit;
-   */
-  raw(value: Property.ShapeImageThreshold | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 % 单位生成完整属性声明。百分比，100 表示 100%；参照对象由具体属性决定。
@@ -16001,62 +13966,6 @@ class ShapeImageThresholdCssRuntime extends CssProperty {
    */
   percent(value: number): string {
     return this.declaration(`${value}%`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.shapeImageThreshold.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.shapeImageThreshold.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ShapeImageThreshold | CssString,
-    ...others: (Property.ShapeImageThreshold | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.shapeImageThreshold.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ShapeImageThreshold | CssString,
-    ...others: (Property.ShapeImageThreshold | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.shapeImageThreshold.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ShapeImageThreshold | CssString,
-    preferred: Property.ShapeImageThreshold | CssString,
-    maximum: Property.ShapeImageThreshold | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -16094,7 +14003,7 @@ export const ShapeMarginKeywords = class ShapeMarginKeywords {
 /**
  * shape-margin 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ShapeMarginCssRuntime extends LengthCssProperty {
+class ShapeMarginCssRuntime extends LengthCssProperty<Property.ShapeMargin> {
   /**
    * 创建 shape-margin 属性作者；普通使用通过 s.shapeMargin 取得共享实例。
    * @example
@@ -16103,18 +14012,6 @@ class ShapeMarginCssRuntime extends LengthCssProperty {
   constructor() {
     super('shape-margin');
     initializeKeywordDeclarations(this, 'shape-margin', globalKeywords);
-  }
-  /**
-   * 原样生成 shape-margin 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 shape-margin:value;，undefined 返回空字符串。
-   * @example
-   * s.shapeMargin.raw('inherit') // shape-margin:inherit;
-   */
-  raw(value: Property.ShapeMargin | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 % 单位生成完整属性声明。百分比，100 表示 100%；参照对象由具体属性决定。
@@ -16127,62 +14024,6 @@ class ShapeMarginCssRuntime extends LengthCssProperty {
    */
   percent(value: number): string {
     return this.declaration(`${value}%`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.shapeMargin.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.shapeMargin.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ShapeMargin | CssString,
-    ...others: (Property.ShapeMargin | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.shapeMargin.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ShapeMargin | CssString,
-    ...others: (Property.ShapeMargin | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.shapeMargin.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ShapeMargin | CssString,
-    preferred: Property.ShapeMargin | CssString,
-    maximum: Property.ShapeMargin | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -16219,7 +14060,7 @@ export const ShapeOutsideKeywords = class ShapeOutsideKeywords {
 /**
  * shape-outside 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ShapeOutsideCssRuntime extends CssProperty {
+class ShapeOutsideCssRuntime extends CssProperty<Property.ShapeOutside> {
   /**
    * 创建 shape-outside 属性作者；普通使用通过 s.shapeOutside 取得共享实例。
    * @example
@@ -16228,18 +14069,6 @@ class ShapeOutsideCssRuntime extends CssProperty {
   constructor() {
     super('shape-outside');
     initializeKeywordDeclarations(this, 'shape-outside', shapeOutsideKeywords);
-  }
-  /**
-   * 原样生成 shape-outside 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 shape-outside:value;，undefined 返回空字符串。
-   * @example
-   * s.shapeOutside.raw('inherit') // shape-outside:inherit;
-   */
-  raw(value: Property.ShapeOutside | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -16276,7 +14105,7 @@ export const ShapeRenderingKeywords = class ShapeRenderingKeywords {
 /**
  * shape-rendering 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ShapeRenderingCssRuntime extends CssProperty {
+class ShapeRenderingCssRuntime extends CssProperty<Property.ShapeRendering> {
   /**
    * 创建 shape-rendering 属性作者；普通使用通过 s.shapeRendering 取得共享实例。
    * @example
@@ -16285,18 +14114,6 @@ class ShapeRenderingCssRuntime extends CssProperty {
   constructor() {
     super('shape-rendering');
     initializeKeywordDeclarations(this, 'shape-rendering', shapeRenderingKeywords);
-  }
-  /**
-   * 原样生成 shape-rendering 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 shape-rendering:value;，undefined 返回空字符串。
-   * @example
-   * s.shapeRendering.raw('inherit') // shape-rendering:inherit;
-   */
-  raw(value: Property.ShapeRendering | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -16331,7 +14148,7 @@ export const SpeakAsKeywords = class SpeakAsKeywords {
 /**
  * speak-as 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class SpeakAsCssRuntime extends CssProperty {
+class SpeakAsCssRuntime extends CssProperty<Property.SpeakAs> {
   /**
    * 创建 speak-as 属性作者；普通使用通过 s.speakAs 取得共享实例。
    * @example
@@ -16340,18 +14157,6 @@ class SpeakAsCssRuntime extends CssProperty {
   constructor() {
     super('speak-as');
     initializeKeywordDeclarations(this, 'speak-as', speakAsKeywords);
-  }
-  /**
-   * 原样生成 speak-as 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 speak-as:value;，undefined 返回空字符串。
-   * @example
-   * s.speakAs.raw('inherit') // speak-as:inherit;
-   */
-  raw(value: Property.SpeakAs | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -16388,7 +14193,7 @@ export const StopColorKeywords = class StopColorKeywords {
 /**
  * stop-color 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class StopColorCssRuntime extends CssProperty {
+class StopColorCssRuntime extends ColorCssProperty<Property.StopColor> {
   /**
    * 创建 stop-color 属性作者；普通使用通过 s.stopColor 取得共享实例。
    * @example
@@ -16397,96 +14202,6 @@ class StopColorCssRuntime extends CssProperty {
   constructor() {
     super('stop-color');
     initializeKeywordDeclarations(this, 'stop-color', colorKeywords);
-  }
-  /**
-   * 原样生成 stop-color 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 stop-color:value;，undefined 返回空字符串。
-   * @example
-   * s.stopColor.raw('inherit') // stop-color:inherit;
-   */
-  raw(value: Property.StopColor | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.stopColor.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.stopColor.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.stopColor.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.stopColor.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
   }
 }
 /**
@@ -16522,7 +14237,7 @@ export const StopOpacityKeywords = class StopOpacityKeywords {
 /**
  * stop-opacity 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class StopOpacityCssRuntime extends CssProperty {
+class StopOpacityCssRuntime extends MathCssProperty<Property.StopOpacity> {
   /**
    * 创建 stop-opacity 属性作者；普通使用通过 s.stopOpacity 取得共享实例。
    * @example
@@ -16531,74 +14246,6 @@ class StopOpacityCssRuntime extends CssProperty {
   constructor() {
     super('stop-opacity');
     initializeKeywordDeclarations(this, 'stop-opacity', globalKeywords);
-  }
-  /**
-   * 原样生成 stop-opacity 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 stop-opacity:value;，undefined 返回空字符串。
-   * @example
-   * s.stopOpacity.raw('inherit') // stop-opacity:inherit;
-   */
-  raw(value: Property.StopOpacity | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.stopOpacity.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.stopOpacity.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.StopOpacity | CssString,
-    ...others: (Property.StopOpacity | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.stopOpacity.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.StopOpacity | CssString,
-    ...others: (Property.StopOpacity | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.stopOpacity.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.StopOpacity | CssString,
-    preferred: Property.StopOpacity | CssString,
-    maximum: Property.StopOpacity | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -16632,7 +14279,7 @@ export const StrokeKeywords = class StrokeKeywords {
 /**
  * stroke 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class StrokeCssRuntime extends CssProperty {
+class StrokeCssRuntime extends ColorCssProperty<Property.Stroke> {
   /**
    * 创建 stroke 属性作者；普通使用通过 s.stroke 取得共享实例。
    * @example
@@ -16641,96 +14288,6 @@ class StrokeCssRuntime extends CssProperty {
   constructor() {
     super('stroke');
     initializeKeywordDeclarations(this, 'stroke', fillKeywords);
-  }
-  /**
-   * 原样生成 stroke 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 stroke:value;，undefined 返回空字符串。
-   * @example
-   * s.stroke.raw('inherit') // stroke:inherit;
-   */
-  raw(value: Property.Stroke | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.stroke.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.stroke.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.stroke.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.stroke.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
   }
 }
 /**
@@ -16764,7 +14321,7 @@ export const StrokeColorKeywords = class StrokeColorKeywords {
 /**
  * stroke-color 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class StrokeColorCssRuntime extends CssProperty {
+class StrokeColorCssRuntime extends ColorCssProperty<Property.StrokeColor> {
   /**
    * 创建 stroke-color 属性作者；普通使用通过 s.strokeColor 取得共享实例。
    * @example
@@ -16773,96 +14330,6 @@ class StrokeColorCssRuntime extends CssProperty {
   constructor() {
     super('stroke-color');
     initializeKeywordDeclarations(this, 'stroke-color', colorKeywords);
-  }
-  /**
-   * 原样生成 stroke-color 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 stroke-color:value;，undefined 返回空字符串。
-   * @example
-   * s.strokeColor.raw('inherit') // stroke-color:inherit;
-   */
-  raw(value: Property.StrokeColor | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.strokeColor.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.strokeColor.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.strokeColor.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.strokeColor.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
   }
 }
 /**
@@ -16898,7 +14365,7 @@ export const StrokeDasharrayKeywords = class StrokeDasharrayKeywords {
 /**
  * stroke-dasharray 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class StrokeDasharrayCssRuntime extends LengthCssProperty {
+class StrokeDasharrayCssRuntime extends LengthCssProperty<Property.StrokeDasharray> {
   /**
    * 创建 stroke-dasharray 属性作者；普通使用通过 s.strokeDasharray 取得共享实例。
    * @example
@@ -16907,74 +14374,6 @@ class StrokeDasharrayCssRuntime extends LengthCssProperty {
   constructor() {
     super('stroke-dasharray');
     initializeKeywordDeclarations(this, 'stroke-dasharray', noneKeywords);
-  }
-  /**
-   * 原样生成 stroke-dasharray 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 stroke-dasharray:value;，undefined 返回空字符串。
-   * @example
-   * s.strokeDasharray.raw('inherit') // stroke-dasharray:inherit;
-   */
-  raw(value: Property.StrokeDasharray | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.strokeDasharray.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.strokeDasharray.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.StrokeDasharray | CssString,
-    ...others: (Property.StrokeDasharray | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.strokeDasharray.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.StrokeDasharray | CssString,
-    ...others: (Property.StrokeDasharray | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.strokeDasharray.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.StrokeDasharray | CssString,
-    preferred: Property.StrokeDasharray | CssString,
-    maximum: Property.StrokeDasharray | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -17011,7 +14410,7 @@ export const StrokeDashoffsetKeywords = class StrokeDashoffsetKeywords {
 /**
  * stroke-dashoffset 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class StrokeDashoffsetCssRuntime extends LengthCssProperty {
+class StrokeDashoffsetCssRuntime extends LengthCssProperty<Property.StrokeDashoffset> {
   /**
    * 创建 stroke-dashoffset 属性作者；普通使用通过 s.strokeDashoffset 取得共享实例。
    * @example
@@ -17020,18 +14419,6 @@ class StrokeDashoffsetCssRuntime extends LengthCssProperty {
   constructor() {
     super('stroke-dashoffset');
     initializeKeywordDeclarations(this, 'stroke-dashoffset', globalKeywords);
-  }
-  /**
-   * 原样生成 stroke-dashoffset 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 stroke-dashoffset:value;，undefined 返回空字符串。
-   * @example
-   * s.strokeDashoffset.raw('inherit') // stroke-dashoffset:inherit;
-   */
-  raw(value: Property.StrokeDashoffset | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 % 单位生成完整属性声明。百分比，100 表示 100%；参照对象由具体属性决定。
@@ -17044,62 +14431,6 @@ class StrokeDashoffsetCssRuntime extends LengthCssProperty {
    */
   percent(value: number): string {
     return this.declaration(`${value}%`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.strokeDashoffset.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.strokeDashoffset.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.StrokeDashoffset | CssString,
-    ...others: (Property.StrokeDashoffset | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.strokeDashoffset.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.StrokeDashoffset | CssString,
-    ...others: (Property.StrokeDashoffset | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.strokeDashoffset.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.StrokeDashoffset | CssString,
-    preferred: Property.StrokeDashoffset | CssString,
-    maximum: Property.StrokeDashoffset | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -17137,7 +14468,7 @@ export const StrokeLinecapKeywords = class StrokeLinecapKeywords {
 /**
  * stroke-linecap 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class StrokeLinecapCssRuntime extends CssProperty {
+class StrokeLinecapCssRuntime extends CssProperty<Property.StrokeLinecap> {
   /**
    * 创建 stroke-linecap 属性作者；普通使用通过 s.strokeLinecap 取得共享实例。
    * @example
@@ -17146,18 +14477,6 @@ class StrokeLinecapCssRuntime extends CssProperty {
   constructor() {
     super('stroke-linecap');
     initializeKeywordDeclarations(this, 'stroke-linecap', strokeLinecapKeywords);
-  }
-  /**
-   * 原样生成 stroke-linecap 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 stroke-linecap:value;，undefined 返回空字符串。
-   * @example
-   * s.strokeLinecap.raw('inherit') // stroke-linecap:inherit;
-   */
-  raw(value: Property.StrokeLinecap | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -17194,7 +14513,7 @@ export const StrokeLinejoinKeywords = class StrokeLinejoinKeywords {
 /**
  * stroke-linejoin 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class StrokeLinejoinCssRuntime extends CssProperty {
+class StrokeLinejoinCssRuntime extends CssProperty<Property.StrokeLinejoin> {
   /**
    * 创建 stroke-linejoin 属性作者；普通使用通过 s.strokeLinejoin 取得共享实例。
    * @example
@@ -17203,18 +14522,6 @@ class StrokeLinejoinCssRuntime extends CssProperty {
   constructor() {
     super('stroke-linejoin');
     initializeKeywordDeclarations(this, 'stroke-linejoin', strokeLinejoinKeywords);
-  }
-  /**
-   * 原样生成 stroke-linejoin 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 stroke-linejoin:value;，undefined 返回空字符串。
-   * @example
-   * s.strokeLinejoin.raw('inherit') // stroke-linejoin:inherit;
-   */
-  raw(value: Property.StrokeLinejoin | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -17251,7 +14558,7 @@ export const StrokeMiterlimitKeywords = class StrokeMiterlimitKeywords {
 /**
  * stroke-miterlimit 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class StrokeMiterlimitCssRuntime extends CssProperty {
+class StrokeMiterlimitCssRuntime extends MathCssProperty<Property.StrokeMiterlimit> {
   /**
    * 创建 stroke-miterlimit 属性作者；普通使用通过 s.strokeMiterlimit 取得共享实例。
    * @example
@@ -17260,74 +14567,6 @@ class StrokeMiterlimitCssRuntime extends CssProperty {
   constructor() {
     super('stroke-miterlimit');
     initializeKeywordDeclarations(this, 'stroke-miterlimit', globalKeywords);
-  }
-  /**
-   * 原样生成 stroke-miterlimit 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 stroke-miterlimit:value;，undefined 返回空字符串。
-   * @example
-   * s.strokeMiterlimit.raw('inherit') // stroke-miterlimit:inherit;
-   */
-  raw(value: Property.StrokeMiterlimit | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.strokeMiterlimit.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.strokeMiterlimit.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.StrokeMiterlimit | CssString,
-    ...others: (Property.StrokeMiterlimit | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.strokeMiterlimit.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.StrokeMiterlimit | CssString,
-    ...others: (Property.StrokeMiterlimit | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.strokeMiterlimit.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.StrokeMiterlimit | CssString,
-    preferred: Property.StrokeMiterlimit | CssString,
-    maximum: Property.StrokeMiterlimit | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -17364,7 +14603,7 @@ export const StrokeOpacityKeywords = class StrokeOpacityKeywords {
 /**
  * stroke-opacity 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class StrokeOpacityCssRuntime extends CssProperty {
+class StrokeOpacityCssRuntime extends MathCssProperty<Property.StrokeOpacity> {
   /**
    * 创建 stroke-opacity 属性作者；普通使用通过 s.strokeOpacity 取得共享实例。
    * @example
@@ -17373,74 +14612,6 @@ class StrokeOpacityCssRuntime extends CssProperty {
   constructor() {
     super('stroke-opacity');
     initializeKeywordDeclarations(this, 'stroke-opacity', globalKeywords);
-  }
-  /**
-   * 原样生成 stroke-opacity 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 stroke-opacity:value;，undefined 返回空字符串。
-   * @example
-   * s.strokeOpacity.raw('inherit') // stroke-opacity:inherit;
-   */
-  raw(value: Property.StrokeOpacity | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.strokeOpacity.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.strokeOpacity.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.StrokeOpacity | CssString,
-    ...others: (Property.StrokeOpacity | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.strokeOpacity.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.StrokeOpacity | CssString,
-    ...others: (Property.StrokeOpacity | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.strokeOpacity.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.StrokeOpacity | CssString,
-    preferred: Property.StrokeOpacity | CssString,
-    maximum: Property.StrokeOpacity | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -17476,7 +14647,7 @@ export const StrokeWidthKeywords = class StrokeWidthKeywords {
 /**
  * stroke-width 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class StrokeWidthCssRuntime extends LengthCssProperty {
+class StrokeWidthCssRuntime extends LengthCssProperty<Property.StrokeWidth> {
   /**
    * 创建 stroke-width 属性作者；普通使用通过 s.strokeWidth 取得共享实例。
    * @example
@@ -17485,18 +14656,6 @@ class StrokeWidthCssRuntime extends LengthCssProperty {
   constructor() {
     super('stroke-width');
     initializeKeywordDeclarations(this, 'stroke-width', globalKeywords);
-  }
-  /**
-   * 原样生成 stroke-width 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 stroke-width:value;，undefined 返回空字符串。
-   * @example
-   * s.strokeWidth.raw('inherit') // stroke-width:inherit;
-   */
-  raw(value: Property.StrokeWidth | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 % 单位生成完整属性声明。百分比，100 表示 100%；参照对象由具体属性决定。
@@ -17509,62 +14668,6 @@ class StrokeWidthCssRuntime extends LengthCssProperty {
    */
   percent(value: number): string {
     return this.declaration(`${value}%`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.strokeWidth.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.strokeWidth.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.StrokeWidth | CssString,
-    ...others: (Property.StrokeWidth | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.strokeWidth.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.StrokeWidth | CssString,
-    ...others: (Property.StrokeWidth | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.strokeWidth.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.StrokeWidth | CssString,
-    preferred: Property.StrokeWidth | CssString,
-    maximum: Property.StrokeWidth | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -17597,7 +14700,7 @@ export const TabSizeKeywords = class TabSizeKeywords {
 /**
  * tab-size 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TabSizeCssRuntime extends LengthCssProperty {
+class TabSizeCssRuntime extends LengthCssProperty<Property.TabSize> {
   /**
    * 创建 tab-size 属性作者；普通使用通过 s.tabSize 取得共享实例。
    * @example
@@ -17606,68 +14709,6 @@ class TabSizeCssRuntime extends LengthCssProperty {
   constructor() {
     super('tab-size');
     initializeKeywordDeclarations(this, 'tab-size', globalKeywords);
-  }
-  /**
-   * 原样生成 tab-size 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 tab-size:value;，undefined 返回空字符串。
-   * @example
-   * s.tabSize.raw('inherit') // tab-size:inherit;
-   */
-  raw(value: Property.TabSize | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.tabSize.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.tabSize.min('var(--first)', 'var(--second)')
-   */
-  min(value: Property.TabSize | CssString, ...others: (Property.TabSize | CssString)[]): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.tabSize.max('var(--first)', 'var(--second)')
-   */
-  max(value: Property.TabSize | CssString, ...others: (Property.TabSize | CssString)[]): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.tabSize.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.TabSize | CssString,
-    preferred: Property.TabSize | CssString,
-    maximum: Property.TabSize | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -17704,7 +14745,7 @@ export const TableLayoutKeywords = class TableLayoutKeywords {
 /**
  * table-layout 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TableLayoutCssRuntime extends CssProperty {
+class TableLayoutCssRuntime extends CssProperty<Property.TableLayout> {
   /**
    * 创建 table-layout 属性作者；普通使用通过 s.tableLayout 取得共享实例。
    * @example
@@ -17713,18 +14754,6 @@ class TableLayoutCssRuntime extends CssProperty {
   constructor() {
     super('table-layout');
     initializeKeywordDeclarations(this, 'table-layout', tableLayoutKeywords);
-  }
-  /**
-   * 原样生成 table-layout 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 table-layout:value;，undefined 返回空字符串。
-   * @example
-   * s.tableLayout.raw('inherit') // table-layout:inherit;
-   */
-  raw(value: Property.TableLayout | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -17761,7 +14790,7 @@ export const TextAlignKeywords = class TextAlignKeywords {
 /**
  * text-align 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextAlignCssRuntime extends CssProperty {
+class TextAlignCssRuntime extends CssProperty<Property.TextAlign> {
   /**
    * 创建 text-align 属性作者；普通使用通过 s.textAlign 取得共享实例。
    * @example
@@ -17770,18 +14799,6 @@ class TextAlignCssRuntime extends CssProperty {
   constructor() {
     super('text-align');
     initializeKeywordDeclarations(this, 'text-align', textAlignKeywords);
-  }
-  /**
-   * 原样生成 text-align 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-align:value;，undefined 返回空字符串。
-   * @example
-   * s.textAlign.raw('inherit') // text-align:inherit;
-   */
-  raw(value: Property.TextAlign | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -17830,7 +14847,7 @@ export const TextAlignLastKeywords = class TextAlignLastKeywords {
 /**
  * text-align-last 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextAlignLastCssRuntime extends CssProperty {
+class TextAlignLastCssRuntime extends CssProperty<Property.TextAlignLast> {
   /**
    * 创建 text-align-last 属性作者；普通使用通过 s.textAlignLast 取得共享实例。
    * @example
@@ -17839,18 +14856,6 @@ class TextAlignLastCssRuntime extends CssProperty {
   constructor() {
     super('text-align-last');
     initializeKeywordDeclarations(this, 'text-align-last', textAlignLastKeywords);
-  }
-  /**
-   * 原样生成 text-align-last 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-align-last:value;，undefined 返回空字符串。
-   * @example
-   * s.textAlignLast.raw('inherit') // text-align-last:inherit;
-   */
-  raw(value: Property.TextAlignLast | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -17887,7 +14892,7 @@ export const TextAnchorKeywords = class TextAnchorKeywords {
 /**
  * text-anchor 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextAnchorCssRuntime extends CssProperty {
+class TextAnchorCssRuntime extends CssProperty<Property.TextAnchor> {
   /**
    * 创建 text-anchor 属性作者；普通使用通过 s.textAnchor 取得共享实例。
    * @example
@@ -17896,18 +14901,6 @@ class TextAnchorCssRuntime extends CssProperty {
   constructor() {
     super('text-anchor');
     initializeKeywordDeclarations(this, 'text-anchor', textAnchorKeywords);
-  }
-  /**
-   * 原样生成 text-anchor 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-anchor:value;，undefined 返回空字符串。
-   * @example
-   * s.textAnchor.raw('inherit') // text-anchor:inherit;
-   */
-  raw(value: Property.TextAnchor | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -17944,7 +14937,7 @@ export const TextAutospaceKeywords = class TextAutospaceKeywords {
 /**
  * text-autospace 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextAutospaceCssRuntime extends CssProperty {
+class TextAutospaceCssRuntime extends CssProperty<Property.TextAutospace> {
   /**
    * 创建 text-autospace 属性作者；普通使用通过 s.textAutospace 取得共享实例。
    * @example
@@ -17953,18 +14946,6 @@ class TextAutospaceCssRuntime extends CssProperty {
   constructor() {
     super('text-autospace');
     initializeKeywordDeclarations(this, 'text-autospace', textAutospaceKeywords);
-  }
-  /**
-   * 原样生成 text-autospace 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-autospace:value;，undefined 返回空字符串。
-   * @example
-   * s.textAutospace.raw('inherit') // text-autospace:inherit;
-   */
-  raw(value: Property.TextAutospace | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -17998,7 +14979,7 @@ export const TextBoxKeywords = class TextBoxKeywords {
 /**
  * text-box 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextBoxCssRuntime extends CssProperty {
+class TextBoxCssRuntime extends CssProperty<Property.TextBox> {
   /**
    * 创建 text-box 属性作者；普通使用通过 s.textBox 取得共享实例。
    * @example
@@ -18007,18 +14988,6 @@ class TextBoxCssRuntime extends CssProperty {
   constructor() {
     super('text-box');
     initializeKeywordDeclarations(this, 'text-box', textBoxKeywords);
-  }
-  /**
-   * 原样生成 text-box 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-box:value;，undefined 返回空字符串。
-   * @example
-   * s.textBox.raw('inherit') // text-box:inherit;
-   */
-  raw(value: Property.TextBox | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -18055,7 +15024,7 @@ export const TextBoxEdgeKeywords = class TextBoxEdgeKeywords {
 /**
  * text-box-edge 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextBoxEdgeCssRuntime extends CssProperty {
+class TextBoxEdgeCssRuntime extends CssProperty<Property.TextBoxEdge> {
   /**
    * 创建 text-box-edge 属性作者；普通使用通过 s.textBoxEdge 取得共享实例。
    * @example
@@ -18064,18 +15033,6 @@ class TextBoxEdgeCssRuntime extends CssProperty {
   constructor() {
     super('text-box-edge');
     initializeKeywordDeclarations(this, 'text-box-edge', textBoxEdgeKeywords);
-  }
-  /**
-   * 原样生成 text-box-edge 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-box-edge:value;，undefined 返回空字符串。
-   * @example
-   * s.textBoxEdge.raw('inherit') // text-box-edge:inherit;
-   */
-  raw(value: Property.TextBoxEdge | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -18112,7 +15069,7 @@ export const TextBoxTrimKeywords = class TextBoxTrimKeywords {
 /**
  * text-box-trim 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextBoxTrimCssRuntime extends CssProperty {
+class TextBoxTrimCssRuntime extends CssProperty<Property.TextBoxTrim> {
   /**
    * 创建 text-box-trim 属性作者；普通使用通过 s.textBoxTrim 取得共享实例。
    * @example
@@ -18121,18 +15078,6 @@ class TextBoxTrimCssRuntime extends CssProperty {
   constructor() {
     super('text-box-trim');
     initializeKeywordDeclarations(this, 'text-box-trim', textBoxTrimKeywords);
-  }
-  /**
-   * 原样生成 text-box-trim 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-box-trim:value;，undefined 返回空字符串。
-   * @example
-   * s.textBoxTrim.raw('inherit') // text-box-trim:inherit;
-   */
-  raw(value: Property.TextBoxTrim | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -18169,7 +15114,7 @@ export const TextCombineUprightKeywords = class TextCombineUprightKeywords {
 /**
  * text-combine-upright 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextCombineUprightCssRuntime extends CssProperty {
+class TextCombineUprightCssRuntime extends CssProperty<Property.TextCombineUpright> {
   /**
    * 创建 text-combine-upright 属性作者；普通使用通过 s.textCombineUpright 取得共享实例。
    * @example
@@ -18178,18 +15123,6 @@ class TextCombineUprightCssRuntime extends CssProperty {
   constructor() {
     super('text-combine-upright');
     initializeKeywordDeclarations(this, 'text-combine-upright', textCombineUprightKeywords);
-  }
-  /**
-   * 原样生成 text-combine-upright 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-combine-upright:value;，undefined 返回空字符串。
-   * @example
-   * s.textCombineUpright.raw('inherit') // text-combine-upright:inherit;
-   */
-  raw(value: Property.TextCombineUpright | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -18228,7 +15161,7 @@ export const TextDecorationKeywords = class TextDecorationKeywords {
 /**
  * text-decoration 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextDecorationCssRuntime extends LengthCssProperty {
+class TextDecorationCssRuntime extends ColorLengthCssProperty<Property.TextDecoration> {
   /**
    * 创建 text-decoration 属性作者；普通使用通过 s.textDecoration 取得共享实例。
    * @example
@@ -18237,152 +15170,6 @@ class TextDecorationCssRuntime extends LengthCssProperty {
   constructor() {
     super('text-decoration');
     initializeKeywordDeclarations(this, 'text-decoration', textDecorationKeywords);
-  }
-  /**
-   * 原样生成 text-decoration 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-decoration:value;，undefined 返回空字符串。
-   * @example
-   * s.textDecoration.raw('inherit') // text-decoration:inherit;
-   */
-  raw(value: Property.TextDecoration | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.textDecoration.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.textDecoration.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.textDecoration.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.textDecoration.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.textDecoration.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.textDecoration.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.TextDecoration | CssString,
-    ...others: (Property.TextDecoration | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.textDecoration.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.TextDecoration | CssString,
-    ...others: (Property.TextDecoration | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.textDecoration.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.TextDecoration | CssString,
-    preferred: Property.TextDecoration | CssString,
-    maximum: Property.TextDecoration | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -18417,7 +15204,7 @@ export const TextDecorationColorKeywords = class TextDecorationColorKeywords {
 /**
  * text-decoration-color 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextDecorationColorCssRuntime extends CssProperty {
+class TextDecorationColorCssRuntime extends ColorCssProperty<Property.TextDecorationColor> {
   /**
    * 创建 text-decoration-color 属性作者；普通使用通过 s.textDecorationColor 取得共享实例。
    * @example
@@ -18426,96 +15213,6 @@ class TextDecorationColorCssRuntime extends CssProperty {
   constructor() {
     super('text-decoration-color');
     initializeKeywordDeclarations(this, 'text-decoration-color', colorKeywords);
-  }
-  /**
-   * 原样生成 text-decoration-color 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-decoration-color:value;，undefined 返回空字符串。
-   * @example
-   * s.textDecorationColor.raw('inherit') // text-decoration-color:inherit;
-   */
-  raw(value: Property.TextDecorationColor | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.textDecorationColor.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.textDecorationColor.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.textDecorationColor.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.textDecorationColor.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
   }
 }
 /**
@@ -18554,7 +15251,7 @@ export const TextDecorationLineKeywords = class TextDecorationLineKeywords {
 /**
  * text-decoration-line 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextDecorationLineCssRuntime extends CssProperty {
+class TextDecorationLineCssRuntime extends CssProperty<Property.TextDecorationLine> {
   /**
    * 创建 text-decoration-line 属性作者；普通使用通过 s.textDecorationLine 取得共享实例。
    * @example
@@ -18563,18 +15260,6 @@ class TextDecorationLineCssRuntime extends CssProperty {
   constructor() {
     super('text-decoration-line');
     initializeKeywordDeclarations(this, 'text-decoration-line', textDecorationLineKeywords);
-  }
-  /**
-   * 原样生成 text-decoration-line 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-decoration-line:value;，undefined 返回空字符串。
-   * @example
-   * s.textDecorationLine.raw('inherit') // text-decoration-line:inherit;
-   */
-  raw(value: Property.TextDecorationLine | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -18613,7 +15298,7 @@ export const TextDecorationSkipKeywords = class TextDecorationSkipKeywords {
 /**
  * text-decoration-skip 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextDecorationSkipCssRuntime extends CssProperty {
+class TextDecorationSkipCssRuntime extends CssProperty<Property.TextDecorationSkip> {
   /**
    * 创建 text-decoration-skip 属性作者；普通使用通过 s.textDecorationSkip 取得共享实例。
    * @example
@@ -18622,18 +15307,6 @@ class TextDecorationSkipCssRuntime extends CssProperty {
   constructor() {
     super('text-decoration-skip');
     initializeKeywordDeclarations(this, 'text-decoration-skip', textDecorationSkipKeywords);
-  }
-  /**
-   * 原样生成 text-decoration-skip 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-decoration-skip:value;，undefined 返回空字符串。
-   * @example
-   * s.textDecorationSkip.raw('inherit') // text-decoration-skip:inherit;
-   */
-  raw(value: Property.TextDecorationSkip | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -18672,7 +15345,7 @@ export const TextDecorationSkipInkKeywords = class TextDecorationSkipInkKeywords
 /**
  * text-decoration-skip-ink 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextDecorationSkipInkCssRuntime extends CssProperty {
+class TextDecorationSkipInkCssRuntime extends CssProperty<Property.TextDecorationSkipInk> {
   /**
    * 创建 text-decoration-skip-ink 属性作者；普通使用通过 s.textDecorationSkipInk 取得共享实例。
    * @example
@@ -18681,18 +15354,6 @@ class TextDecorationSkipInkCssRuntime extends CssProperty {
   constructor() {
     super('text-decoration-skip-ink');
     initializeKeywordDeclarations(this, 'text-decoration-skip-ink', textDecorationSkipInkKeywords);
-  }
-  /**
-   * 原样生成 text-decoration-skip-ink 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-decoration-skip-ink:value;，undefined 返回空字符串。
-   * @example
-   * s.textDecorationSkipInk.raw('inherit') // text-decoration-skip-ink:inherit;
-   */
-  raw(value: Property.TextDecorationSkipInk | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -18731,7 +15392,7 @@ export const TextDecorationStyleKeywords = class TextDecorationStyleKeywords {
 /**
  * text-decoration-style 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextDecorationStyleCssRuntime extends CssProperty {
+class TextDecorationStyleCssRuntime extends CssProperty<Property.TextDecorationStyle> {
   /**
    * 创建 text-decoration-style 属性作者；普通使用通过 s.textDecorationStyle 取得共享实例。
    * @example
@@ -18740,18 +15401,6 @@ class TextDecorationStyleCssRuntime extends CssProperty {
   constructor() {
     super('text-decoration-style');
     initializeKeywordDeclarations(this, 'text-decoration-style', textDecorationStyleKeywords);
-  }
-  /**
-   * 原样生成 text-decoration-style 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-decoration-style:value;，undefined 返回空字符串。
-   * @example
-   * s.textDecorationStyle.raw('inherit') // text-decoration-style:inherit;
-   */
-  raw(value: Property.TextDecorationStyle | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -18790,7 +15439,7 @@ export const TextDecorationThicknessKeywords = class TextDecorationThicknessKeyw
 /**
  * text-decoration-thickness 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextDecorationThicknessCssRuntime extends LengthCssProperty {
+class TextDecorationThicknessCssRuntime extends LengthCssProperty<Property.TextDecorationThickness> {
   /**
    * 创建 text-decoration-thickness 属性作者；普通使用通过 s.textDecorationThickness 取得共享实例。
    * @example
@@ -18805,18 +15454,6 @@ class TextDecorationThicknessCssRuntime extends LengthCssProperty {
     );
   }
   /**
-   * 原样生成 text-decoration-thickness 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-decoration-thickness:value;，undefined 返回空字符串。
-   * @example
-   * s.textDecorationThickness.raw('inherit') // text-decoration-thickness:inherit;
-   */
-  raw(value: Property.TextDecorationThickness | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
    * 使用 % 单位生成完整属性声明。百分比，100 表示 100%；参照对象由具体属性决定。
    *
    * 不做数值范围或 CSS 语法校验；负值、百分比及维度是否合法由具体属性和浏览器决定。
@@ -18827,62 +15464,6 @@ class TextDecorationThicknessCssRuntime extends LengthCssProperty {
    */
   percent(value: number): string {
     return this.declaration(`${value}%`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.textDecorationThickness.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.textDecorationThickness.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.TextDecorationThickness | CssString,
-    ...others: (Property.TextDecorationThickness | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.textDecorationThickness.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.TextDecorationThickness | CssString,
-    ...others: (Property.TextDecorationThickness | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.textDecorationThickness.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.TextDecorationThickness | CssString,
-    preferred: Property.TextDecorationThickness | CssString,
-    maximum: Property.TextDecorationThickness | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -18921,7 +15502,7 @@ export const TextEmphasisKeywords = class TextEmphasisKeywords {
 /**
  * text-emphasis 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextEmphasisCssRuntime extends CssProperty {
+class TextEmphasisCssRuntime extends ColorCssProperty<Property.TextEmphasis> {
   /**
    * 创建 text-emphasis 属性作者；普通使用通过 s.textEmphasis 取得共享实例。
    * @example
@@ -18930,96 +15511,6 @@ class TextEmphasisCssRuntime extends CssProperty {
   constructor() {
     super('text-emphasis');
     initializeKeywordDeclarations(this, 'text-emphasis', textEmphasisKeywords);
-  }
-  /**
-   * 原样生成 text-emphasis 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-emphasis:value;，undefined 返回空字符串。
-   * @example
-   * s.textEmphasis.raw('inherit') // text-emphasis:inherit;
-   */
-  raw(value: Property.TextEmphasis | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.textEmphasis.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.textEmphasis.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.textEmphasis.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.textEmphasis.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
   }
 }
 /**
@@ -19053,7 +15544,7 @@ export const TextEmphasisColorKeywords = class TextEmphasisColorKeywords {
 /**
  * text-emphasis-color 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextEmphasisColorCssRuntime extends CssProperty {
+class TextEmphasisColorCssRuntime extends ColorCssProperty<Property.TextEmphasisColor> {
   /**
    * 创建 text-emphasis-color 属性作者；普通使用通过 s.textEmphasisColor 取得共享实例。
    * @example
@@ -19062,96 +15553,6 @@ class TextEmphasisColorCssRuntime extends CssProperty {
   constructor() {
     super('text-emphasis-color');
     initializeKeywordDeclarations(this, 'text-emphasis-color', colorKeywords);
-  }
-  /**
-   * 原样生成 text-emphasis-color 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-emphasis-color:value;，undefined 返回空字符串。
-   * @example
-   * s.textEmphasisColor.raw('inherit') // text-emphasis-color:inherit;
-   */
-  raw(value: Property.TextEmphasisColor | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.textEmphasisColor.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.textEmphasisColor.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.textEmphasisColor.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.textEmphasisColor.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
   }
 }
 /**
@@ -19189,7 +15590,7 @@ export const TextEmphasisPositionKeywords = class TextEmphasisPositionKeywords {
 /**
  * text-emphasis-position 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextEmphasisPositionCssRuntime extends CssProperty {
+class TextEmphasisPositionCssRuntime extends CssProperty<Property.TextEmphasisPosition> {
   /**
    * 创建 text-emphasis-position 属性作者；普通使用通过 s.textEmphasisPosition 取得共享实例。
    * @example
@@ -19198,18 +15599,6 @@ class TextEmphasisPositionCssRuntime extends CssProperty {
   constructor() {
     super('text-emphasis-position');
     initializeKeywordDeclarations(this, 'text-emphasis-position', textEmphasisPositionKeywords);
-  }
-  /**
-   * 原样生成 text-emphasis-position 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-emphasis-position:value;，undefined 返回空字符串。
-   * @example
-   * s.textEmphasisPosition.raw('inherit') // text-emphasis-position:inherit;
-   */
-  raw(value: Property.TextEmphasisPosition | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -19248,7 +15637,7 @@ export const TextEmphasisStyleKeywords = class TextEmphasisStyleKeywords {
 /**
  * text-emphasis-style 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextEmphasisStyleCssRuntime extends CssProperty {
+class TextEmphasisStyleCssRuntime extends CssProperty<Property.TextEmphasisStyle> {
   /**
    * 创建 text-emphasis-style 属性作者；普通使用通过 s.textEmphasisStyle 取得共享实例。
    * @example
@@ -19257,18 +15646,6 @@ class TextEmphasisStyleCssRuntime extends CssProperty {
   constructor() {
     super('text-emphasis-style');
     initializeKeywordDeclarations(this, 'text-emphasis-style', textEmphasisStyleKeywords);
-  }
-  /**
-   * 原样生成 text-emphasis-style 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-emphasis-style:value;，undefined 返回空字符串。
-   * @example
-   * s.textEmphasisStyle.raw('inherit') // text-emphasis-style:inherit;
-   */
-  raw(value: Property.TextEmphasisStyle | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -19305,7 +15682,7 @@ export const TextIndentKeywords = class TextIndentKeywords {
 /**
  * text-indent 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextIndentCssRuntime extends LengthCssProperty {
+class TextIndentCssRuntime extends LengthCssProperty<Property.TextIndent> {
   /**
    * 创建 text-indent 属性作者；普通使用通过 s.textIndent 取得共享实例。
    * @example
@@ -19314,18 +15691,6 @@ class TextIndentCssRuntime extends LengthCssProperty {
   constructor() {
     super('text-indent');
     initializeKeywordDeclarations(this, 'text-indent', globalKeywords);
-  }
-  /**
-   * 原样生成 text-indent 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-indent:value;，undefined 返回空字符串。
-   * @example
-   * s.textIndent.raw('inherit') // text-indent:inherit;
-   */
-  raw(value: Property.TextIndent | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 % 单位生成完整属性声明。百分比，100 表示 100%；参照对象由具体属性决定。
@@ -19338,62 +15703,6 @@ class TextIndentCssRuntime extends LengthCssProperty {
    */
   percent(value: number): string {
     return this.declaration(`${value}%`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.textIndent.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.textIndent.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.TextIndent | CssString,
-    ...others: (Property.TextIndent | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.textIndent.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.TextIndent | CssString,
-    ...others: (Property.TextIndent | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.textIndent.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.TextIndent | CssString,
-    preferred: Property.TextIndent | CssString,
-    maximum: Property.TextIndent | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -19430,7 +15739,7 @@ export const TextJustifyKeywords = class TextJustifyKeywords {
 /**
  * text-justify 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextJustifyCssRuntime extends CssProperty {
+class TextJustifyCssRuntime extends CssProperty<Property.TextJustify> {
   /**
    * 创建 text-justify 属性作者；普通使用通过 s.textJustify 取得共享实例。
    * @example
@@ -19439,18 +15748,6 @@ class TextJustifyCssRuntime extends CssProperty {
   constructor() {
     super('text-justify');
     initializeKeywordDeclarations(this, 'text-justify', textJustifyKeywords);
-  }
-  /**
-   * 原样生成 text-justify 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-justify:value;，undefined 返回空字符串。
-   * @example
-   * s.textJustify.raw('inherit') // text-justify:inherit;
-   */
-  raw(value: Property.TextJustify | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -19487,7 +15784,7 @@ export const TextOrientationKeywords = class TextOrientationKeywords {
 /**
  * text-orientation 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextOrientationCssRuntime extends CssProperty {
+class TextOrientationCssRuntime extends CssProperty<Property.TextOrientation> {
   /**
    * 创建 text-orientation 属性作者；普通使用通过 s.textOrientation 取得共享实例。
    * @example
@@ -19496,18 +15793,6 @@ class TextOrientationCssRuntime extends CssProperty {
   constructor() {
     super('text-orientation');
     initializeKeywordDeclarations(this, 'text-orientation', textOrientationKeywords);
-  }
-  /**
-   * 原样生成 text-orientation 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-orientation:value;，undefined 返回空字符串。
-   * @example
-   * s.textOrientation.raw('inherit') // text-orientation:inherit;
-   */
-  raw(value: Property.TextOrientation | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -19545,7 +15830,7 @@ export const TextOverflowKeywords = class TextOverflowKeywords {
 /**
  * text-overflow 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextOverflowCssRuntime extends CssProperty {
+class TextOverflowCssRuntime extends CssProperty<Property.TextOverflow> {
   /**
    * 创建 text-overflow 属性作者；普通使用通过 s.textOverflow 取得共享实例。
    * @example
@@ -19554,18 +15839,6 @@ class TextOverflowCssRuntime extends CssProperty {
   constructor() {
     super('text-overflow');
     initializeKeywordDeclarations(this, 'text-overflow', textOverflowKeywords);
-  }
-  /**
-   * 原样生成 text-overflow 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-overflow:value;，undefined 返回空字符串。
-   * @example
-   * s.textOverflow.raw('inherit') // text-overflow:inherit;
-   */
-  raw(value: Property.TextOverflow | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -19612,7 +15885,7 @@ export const TextRenderingKeywords = class TextRenderingKeywords {
 /**
  * text-rendering 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextRenderingCssRuntime extends CssProperty {
+class TextRenderingCssRuntime extends CssProperty<Property.TextRendering> {
   /**
    * 创建 text-rendering 属性作者；普通使用通过 s.textRendering 取得共享实例。
    * @example
@@ -19621,18 +15894,6 @@ class TextRenderingCssRuntime extends CssProperty {
   constructor() {
     super('text-rendering');
     initializeKeywordDeclarations(this, 'text-rendering', textRenderingKeywords);
-  }
-  /**
-   * 原样生成 text-rendering 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-rendering:value;，undefined 返回空字符串。
-   * @example
-   * s.textRendering.raw('inherit') // text-rendering:inherit;
-   */
-  raw(value: Property.TextRendering | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -19668,7 +15929,7 @@ export const TextShadowKeywords = class TextShadowKeywords {
 /**
  * text-shadow 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextShadowCssRuntime extends CssProperty {
+class TextShadowCssRuntime extends CssProperty<Property.TextShadow> {
   /**
    * 创建 text-shadow 属性作者；普通使用通过 s.textShadow 取得共享实例。
    * @example
@@ -19677,18 +15938,6 @@ class TextShadowCssRuntime extends CssProperty {
   constructor() {
     super('text-shadow');
     initializeKeywordDeclarations(this, 'text-shadow', noneKeywords);
-  }
-  /**
-   * 原样生成 text-shadow 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-shadow:value;，undefined 返回空字符串。
-   * @example
-   * s.textShadow.raw('inherit') // text-shadow:inherit;
-   */
-  raw(value: Property.TextShadow | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -19725,7 +15974,7 @@ export const TextSizeAdjustKeywords = class TextSizeAdjustKeywords {
 /**
  * text-size-adjust 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextSizeAdjustCssRuntime extends CssProperty {
+class TextSizeAdjustCssRuntime extends MathCssProperty<Property.TextSizeAdjust> {
   /**
    * 创建 text-size-adjust 属性作者；普通使用通过 s.textSizeAdjust 取得共享实例。
    * @example
@@ -19734,18 +15983,6 @@ class TextSizeAdjustCssRuntime extends CssProperty {
   constructor() {
     super('text-size-adjust');
     initializeKeywordDeclarations(this, 'text-size-adjust', autoNoneKeywords);
-  }
-  /**
-   * 原样生成 text-size-adjust 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-size-adjust:value;，undefined 返回空字符串。
-   * @example
-   * s.textSizeAdjust.raw('inherit') // text-size-adjust:inherit;
-   */
-  raw(value: Property.TextSizeAdjust | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 % 单位生成完整属性声明。百分比，100 表示 100%；参照对象由具体属性决定。
@@ -19758,62 +15995,6 @@ class TextSizeAdjustCssRuntime extends CssProperty {
    */
   percent(value: number): string {
     return this.declaration(`${value}%`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.textSizeAdjust.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.textSizeAdjust.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.TextSizeAdjust | CssString,
-    ...others: (Property.TextSizeAdjust | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.textSizeAdjust.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.TextSizeAdjust | CssString,
-    ...others: (Property.TextSizeAdjust | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.textSizeAdjust.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.TextSizeAdjust | CssString,
-    preferred: Property.TextSizeAdjust | CssString,
-    maximum: Property.TextSizeAdjust | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -19851,7 +16032,7 @@ export const TextSpacingTrimKeywords = class TextSpacingTrimKeywords {
 /**
  * text-spacing-trim 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextSpacingTrimCssRuntime extends CssProperty {
+class TextSpacingTrimCssRuntime extends CssProperty<Property.TextSpacingTrim> {
   /**
    * 创建 text-spacing-trim 属性作者；普通使用通过 s.textSpacingTrim 取得共享实例。
    * @example
@@ -19860,18 +16041,6 @@ class TextSpacingTrimCssRuntime extends CssProperty {
   constructor() {
     super('text-spacing-trim');
     initializeKeywordDeclarations(this, 'text-spacing-trim', textSpacingTrimKeywords);
-  }
-  /**
-   * 原样生成 text-spacing-trim 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-spacing-trim:value;，undefined 返回空字符串。
-   * @example
-   * s.textSpacingTrim.raw('inherit') // text-spacing-trim:inherit;
-   */
-  raw(value: Property.TextSpacingTrim | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -19909,7 +16078,7 @@ export const TextTransformKeywords = class TextTransformKeywords {
 /**
  * text-transform 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextTransformCssRuntime extends CssProperty {
+class TextTransformCssRuntime extends CssProperty<Property.TextTransform> {
   /**
    * 创建 text-transform 属性作者；普通使用通过 s.textTransform 取得共享实例。
    * @example
@@ -19918,18 +16087,6 @@ class TextTransformCssRuntime extends CssProperty {
   constructor() {
     super('text-transform');
     initializeKeywordDeclarations(this, 'text-transform', textTransformKeywords);
-  }
-  /**
-   * 原样生成 text-transform 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-transform:value;，undefined 返回空字符串。
-   * @example
-   * s.textTransform.raw('inherit') // text-transform:inherit;
-   */
-  raw(value: Property.TextTransform | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -19965,7 +16122,7 @@ export const TextUnderlineOffsetKeywords = class TextUnderlineOffsetKeywords {
 /**
  * text-underline-offset 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextUnderlineOffsetCssRuntime extends LengthCssProperty {
+class TextUnderlineOffsetCssRuntime extends LengthCssProperty<Property.TextUnderlineOffset> {
   /**
    * 创建 text-underline-offset 属性作者；普通使用通过 s.textUnderlineOffset 取得共享实例。
    * @example
@@ -19974,18 +16131,6 @@ class TextUnderlineOffsetCssRuntime extends LengthCssProperty {
   constructor() {
     super('text-underline-offset');
     initializeKeywordDeclarations(this, 'text-underline-offset', autoKeywords);
-  }
-  /**
-   * 原样生成 text-underline-offset 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-underline-offset:value;，undefined 返回空字符串。
-   * @example
-   * s.textUnderlineOffset.raw('inherit') // text-underline-offset:inherit;
-   */
-  raw(value: Property.TextUnderlineOffset | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 % 单位生成完整属性声明。百分比，100 表示 100%；参照对象由具体属性决定。
@@ -19998,62 +16143,6 @@ class TextUnderlineOffsetCssRuntime extends LengthCssProperty {
    */
   percent(value: number): string {
     return this.declaration(`${value}%`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.textUnderlineOffset.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.textUnderlineOffset.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.TextUnderlineOffset | CssString,
-    ...others: (Property.TextUnderlineOffset | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.textUnderlineOffset.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.TextUnderlineOffset | CssString,
-    ...others: (Property.TextUnderlineOffset | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.textUnderlineOffset.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.TextUnderlineOffset | CssString,
-    preferred: Property.TextUnderlineOffset | CssString,
-    maximum: Property.TextUnderlineOffset | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -20092,7 +16181,7 @@ export const TextUnderlinePositionKeywords = class TextUnderlinePositionKeywords
 /**
  * text-underline-position 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextUnderlinePositionCssRuntime extends CssProperty {
+class TextUnderlinePositionCssRuntime extends CssProperty<Property.TextUnderlinePosition> {
   /**
    * 创建 text-underline-position 属性作者；普通使用通过 s.textUnderlinePosition 取得共享实例。
    * @example
@@ -20101,18 +16190,6 @@ class TextUnderlinePositionCssRuntime extends CssProperty {
   constructor() {
     super('text-underline-position');
     initializeKeywordDeclarations(this, 'text-underline-position', textUnderlinePositionKeywords);
-  }
-  /**
-   * 原样生成 text-underline-position 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-underline-position:value;，undefined 返回空字符串。
-   * @example
-   * s.textUnderlinePosition.raw('inherit') // text-underline-position:inherit;
-   */
-  raw(value: Property.TextUnderlinePosition | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -20151,7 +16228,7 @@ export const TextWrapKeywords = class TextWrapKeywords {
 /**
  * text-wrap 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextWrapCssRuntime extends CssProperty {
+class TextWrapCssRuntime extends CssProperty<Property.TextWrap> {
   /**
    * 创建 text-wrap 属性作者；普通使用通过 s.textWrap 取得共享实例。
    * @example
@@ -20160,18 +16237,6 @@ class TextWrapCssRuntime extends CssProperty {
   constructor() {
     super('text-wrap');
     initializeKeywordDeclarations(this, 'text-wrap', textWrapKeywords);
-  }
-  /**
-   * 原样生成 text-wrap 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-wrap:value;，undefined 返回空字符串。
-   * @example
-   * s.textWrap.raw('inherit') // text-wrap:inherit;
-   */
-  raw(value: Property.TextWrap | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -20208,7 +16273,7 @@ export const TextWrapModeKeywords = class TextWrapModeKeywords {
 /**
  * text-wrap-mode 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextWrapModeCssRuntime extends CssProperty {
+class TextWrapModeCssRuntime extends CssProperty<Property.TextWrapMode> {
   /**
    * 创建 text-wrap-mode 属性作者；普通使用通过 s.textWrapMode 取得共享实例。
    * @example
@@ -20217,18 +16282,6 @@ class TextWrapModeCssRuntime extends CssProperty {
   constructor() {
     super('text-wrap-mode');
     initializeKeywordDeclarations(this, 'text-wrap-mode', textWrapModeKeywords);
-  }
-  /**
-   * 原样生成 text-wrap-mode 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-wrap-mode:value;，undefined 返回空字符串。
-   * @example
-   * s.textWrapMode.raw('inherit') // text-wrap-mode:inherit;
-   */
-  raw(value: Property.TextWrapMode | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -20265,7 +16318,7 @@ export const TextWrapStyleKeywords = class TextWrapStyleKeywords {
 /**
  * text-wrap-style 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TextWrapStyleCssRuntime extends CssProperty {
+class TextWrapStyleCssRuntime extends CssProperty<Property.TextWrapStyle> {
   /**
    * 创建 text-wrap-style 属性作者；普通使用通过 s.textWrapStyle 取得共享实例。
    * @example
@@ -20274,18 +16327,6 @@ class TextWrapStyleCssRuntime extends CssProperty {
   constructor() {
     super('text-wrap-style');
     initializeKeywordDeclarations(this, 'text-wrap-style', textWrapStyleKeywords);
-  }
-  /**
-   * 原样生成 text-wrap-style 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 text-wrap-style:value;，undefined 返回空字符串。
-   * @example
-   * s.textWrapStyle.raw('inherit') // text-wrap-style:inherit;
-   */
-  raw(value: Property.TextWrapStyle | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -20321,7 +16362,7 @@ export const TimelineScopeKeywords = class TimelineScopeKeywords {
 /**
  * timeline-scope 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TimelineScopeCssRuntime extends CssProperty {
+class TimelineScopeCssRuntime extends CssProperty<Property.TimelineScope> {
   /**
    * 创建 timeline-scope 属性作者；普通使用通过 s.timelineScope 取得共享实例。
    * @example
@@ -20330,18 +16371,6 @@ class TimelineScopeCssRuntime extends CssProperty {
   constructor() {
     super('timeline-scope');
     initializeKeywordDeclarations(this, 'timeline-scope', noneKeywords);
-  }
-  /**
-   * 原样生成 timeline-scope 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 timeline-scope:value;，undefined 返回空字符串。
-   * @example
-   * s.timelineScope.raw('inherit') // timeline-scope:inherit;
-   */
-  raw(value: Property.TimelineScope | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -20374,7 +16403,7 @@ export const TopKeywords = class TopKeywords {
 /**
  * top 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TopCssRuntime extends LengthCssProperty {
+class TopCssRuntime extends LengthCssProperty<Property.Top> {
   /**
    * 创建 top 属性作者；普通使用通过 s.top 取得共享实例。
    * @example
@@ -20383,18 +16412,6 @@ class TopCssRuntime extends LengthCssProperty {
   constructor() {
     super('top');
     initializeKeywordDeclarations(this, 'top', autoKeywords);
-  }
-  /**
-   * 原样生成 top 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 top:value;，undefined 返回空字符串。
-   * @example
-   * s.top.raw('inherit') // top:inherit;
-   */
-  raw(value: Property.Top | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 % 单位生成完整属性声明。百分比，100 表示 100%；参照对象由具体属性决定。
@@ -20407,56 +16424,6 @@ class TopCssRuntime extends LengthCssProperty {
    */
   percent(value: number): string {
     return this.declaration(`${value}%`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.top.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.top.min('var(--first)', 'var(--second)')
-   */
-  min(value: Property.Top | CssString, ...others: (Property.Top | CssString)[]): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.top.max('var(--first)', 'var(--second)')
-   */
-  max(value: Property.Top | CssString, ...others: (Property.Top | CssString)[]): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.top.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.Top | CssString,
-    preferred: Property.Top | CssString,
-    maximum: Property.Top | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -20493,7 +16460,7 @@ export const TouchActionKeywords = class TouchActionKeywords {
 /**
  * touch-action 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TouchActionCssRuntime extends CssProperty {
+class TouchActionCssRuntime extends CssProperty<Property.TouchAction> {
   /**
    * 创建 touch-action 属性作者；普通使用通过 s.touchAction 取得共享实例。
    * @example
@@ -20502,18 +16469,6 @@ class TouchActionCssRuntime extends CssProperty {
   constructor() {
     super('touch-action');
     initializeKeywordDeclarations(this, 'touch-action', touchActionKeywords);
-  }
-  /**
-   * 原样生成 touch-action 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 touch-action:value;，undefined 返回空字符串。
-   * @example
-   * s.touchAction.raw('inherit') // touch-action:inherit;
-   */
-  raw(value: Property.TouchAction | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -20561,7 +16516,7 @@ export const TransformKeywords = class TransformKeywords {
 /**
  * transform 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TransformCssRuntime extends CssProperty {
+class TransformCssRuntime extends CssProperty<Property.Transform> {
   /**
    * 创建 transform 属性作者；普通使用通过 s.transform 取得共享实例。
    * @example
@@ -20570,18 +16525,6 @@ class TransformCssRuntime extends CssProperty {
   constructor() {
     super('transform');
     initializeKeywordDeclarations(this, 'transform', noneKeywords);
-  }
-  /**
-   * 原样生成 transform 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 transform:value;，undefined 返回空字符串。
-   * @example
-   * s.transform.raw('inherit') // transform:inherit;
-   */
-  raw(value: Property.Transform | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -20624,7 +16567,7 @@ export const TransformBoxKeywords = class TransformBoxKeywords {
 /**
  * transform-box 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TransformBoxCssRuntime extends CssProperty {
+class TransformBoxCssRuntime extends CssProperty<Property.TransformBox> {
   /**
    * 创建 transform-box 属性作者；普通使用通过 s.transformBox 取得共享实例。
    * @example
@@ -20633,18 +16576,6 @@ class TransformBoxCssRuntime extends CssProperty {
   constructor() {
     super('transform-box');
     initializeKeywordDeclarations(this, 'transform-box', transformBoxKeywords);
-  }
-  /**
-   * 原样生成 transform-box 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 transform-box:value;，undefined 返回空字符串。
-   * @example
-   * s.transformBox.raw('inherit') // transform-box:inherit;
-   */
-  raw(value: Property.TransformBox | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -20681,7 +16612,7 @@ export const TransformOriginKeywords = class TransformOriginKeywords {
 /**
  * transform-origin 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TransformOriginCssRuntime extends LengthCssProperty {
+class TransformOriginCssRuntime extends LengthCssProperty<Property.TransformOrigin> {
   /**
    * 创建 transform-origin 属性作者；普通使用通过 s.transformOrigin 取得共享实例。
    * @example
@@ -20690,18 +16621,6 @@ class TransformOriginCssRuntime extends LengthCssProperty {
   constructor() {
     super('transform-origin');
     initializeKeywordDeclarations(this, 'transform-origin', backgroundPositionKeywords);
-  }
-  /**
-   * 原样生成 transform-origin 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 transform-origin:value;，undefined 返回空字符串。
-   * @example
-   * s.transformOrigin.raw('inherit') // transform-origin:inherit;
-   */
-  raw(value: Property.TransformOrigin | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 % 单位生成完整属性声明。百分比，100 表示 100%；参照对象由具体属性决定。
@@ -20714,62 +16633,6 @@ class TransformOriginCssRuntime extends LengthCssProperty {
    */
   percent(value: number): string {
     return this.declaration(`${value}%`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.transformOrigin.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.transformOrigin.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.TransformOrigin | CssString,
-    ...others: (Property.TransformOrigin | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.transformOrigin.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.TransformOrigin | CssString,
-    ...others: (Property.TransformOrigin | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.transformOrigin.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.TransformOrigin | CssString,
-    preferred: Property.TransformOrigin | CssString,
-    maximum: Property.TransformOrigin | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -20807,7 +16670,7 @@ export const TransformStyleKeywords = class TransformStyleKeywords {
 /**
  * transform-style 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TransformStyleCssRuntime extends CssProperty {
+class TransformStyleCssRuntime extends CssProperty<Property.TransformStyle> {
   /**
    * 创建 transform-style 属性作者；普通使用通过 s.transformStyle 取得共享实例。
    * @example
@@ -20816,18 +16679,6 @@ class TransformStyleCssRuntime extends CssProperty {
   constructor() {
     super('transform-style');
     initializeKeywordDeclarations(this, 'transform-style', transformStyleKeywords);
-  }
-  /**
-   * 原样生成 transform-style 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 transform-style:value;，undefined 返回空字符串。
-   * @example
-   * s.transformStyle.raw('inherit') // transform-style:inherit;
-   */
-  raw(value: Property.TransformStyle | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -20865,7 +16716,7 @@ export const TransitionKeywords = class TransitionKeywords {
 /**
  * transition 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TransitionCssRuntime extends CssProperty {
+class TransitionCssRuntime extends MathCssProperty<Property.Transition> {
   /**
    * 创建 transition 属性作者；普通使用通过 s.transition 取得共享实例。
    * @example
@@ -20874,18 +16725,6 @@ class TransitionCssRuntime extends CssProperty {
   constructor() {
     super('transition');
     initializeKeywordDeclarations(this, 'transition', transitionKeywords);
-  }
-  /**
-   * 原样生成 transition 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 transition:value;，undefined 返回空字符串。
-   * @example
-   * s.transition.raw('inherit') // transition:inherit;
-   */
-  raw(value: Property.Transition | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 ms 单位生成完整属性声明。毫秒，1000ms 等于 1s。
@@ -20910,62 +16749,6 @@ class TransitionCssRuntime extends CssProperty {
    */
   s(value: number): string {
     return this.declaration(`${value}s`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.transition.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.transition.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.Transition | CssString,
-    ...others: (Property.Transition | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.transition.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.Transition | CssString,
-    ...others: (Property.Transition | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.transition.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.Transition | CssString,
-    preferred: Property.Transition | CssString,
-    maximum: Property.Transition | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -21006,7 +16789,7 @@ export const TransitionBehaviorKeywords = class TransitionBehaviorKeywords {
 /**
  * transition-behavior 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TransitionBehaviorCssRuntime extends CssProperty {
+class TransitionBehaviorCssRuntime extends CssProperty<Property.TransitionBehavior> {
   /**
    * 创建 transition-behavior 属性作者；普通使用通过 s.transitionBehavior 取得共享实例。
    * @example
@@ -21015,18 +16798,6 @@ class TransitionBehaviorCssRuntime extends CssProperty {
   constructor() {
     super('transition-behavior');
     initializeKeywordDeclarations(this, 'transition-behavior', transitionBehaviorKeywords);
-  }
-  /**
-   * 原样生成 transition-behavior 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 transition-behavior:value;，undefined 返回空字符串。
-   * @example
-   * s.transitionBehavior.raw('inherit') // transition-behavior:inherit;
-   */
-  raw(value: Property.TransitionBehavior | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -21064,7 +16835,7 @@ export const TransitionDelayKeywords = class TransitionDelayKeywords {
 /**
  * transition-delay 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TransitionDelayCssRuntime extends CssProperty {
+class TransitionDelayCssRuntime extends MathCssProperty<Property.TransitionDelay> {
   /**
    * 创建 transition-delay 属性作者；普通使用通过 s.transitionDelay 取得共享实例。
    * @example
@@ -21073,18 +16844,6 @@ class TransitionDelayCssRuntime extends CssProperty {
   constructor() {
     super('transition-delay');
     initializeKeywordDeclarations(this, 'transition-delay', globalKeywords);
-  }
-  /**
-   * 原样生成 transition-delay 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 transition-delay:value;，undefined 返回空字符串。
-   * @example
-   * s.transitionDelay.raw('inherit') // transition-delay:inherit;
-   */
-  raw(value: Property.TransitionDelay | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 ms 单位生成完整属性声明。毫秒，1000ms 等于 1s。
@@ -21109,62 +16868,6 @@ class TransitionDelayCssRuntime extends CssProperty {
    */
   s(value: number): string {
     return this.declaration(`${value}s`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.transitionDelay.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.transitionDelay.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.TransitionDelay | CssString,
-    ...others: (Property.TransitionDelay | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.transitionDelay.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.TransitionDelay | CssString,
-    ...others: (Property.TransitionDelay | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.transitionDelay.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.TransitionDelay | CssString,
-    preferred: Property.TransitionDelay | CssString,
-    maximum: Property.TransitionDelay | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -21201,7 +16904,7 @@ export const TransitionDurationKeywords = class TransitionDurationKeywords {
 /**
  * transition-duration 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TransitionDurationCssRuntime extends CssProperty {
+class TransitionDurationCssRuntime extends MathCssProperty<Property.TransitionDuration> {
   /**
    * 创建 transition-duration 属性作者；普通使用通过 s.transitionDuration 取得共享实例。
    * @example
@@ -21210,18 +16913,6 @@ class TransitionDurationCssRuntime extends CssProperty {
   constructor() {
     super('transition-duration');
     initializeKeywordDeclarations(this, 'transition-duration', globalKeywords);
-  }
-  /**
-   * 原样生成 transition-duration 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 transition-duration:value;，undefined 返回空字符串。
-   * @example
-   * s.transitionDuration.raw('inherit') // transition-duration:inherit;
-   */
-  raw(value: Property.TransitionDuration | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 ms 单位生成完整属性声明。毫秒，1000ms 等于 1s。
@@ -21246,62 +16937,6 @@ class TransitionDurationCssRuntime extends CssProperty {
    */
   s(value: number): string {
     return this.declaration(`${value}s`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.transitionDuration.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.transitionDuration.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.TransitionDuration | CssString,
-    ...others: (Property.TransitionDuration | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.transitionDuration.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.TransitionDuration | CssString,
-    ...others: (Property.TransitionDuration | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.transitionDuration.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.TransitionDuration | CssString,
-    preferred: Property.TransitionDuration | CssString,
-    maximum: Property.TransitionDuration | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -21340,7 +16975,7 @@ export const TransitionPropertyKeywords = class TransitionPropertyKeywords {
 /**
  * transition-property 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TransitionPropertyCssRuntime extends CssProperty {
+class TransitionPropertyCssRuntime extends CssProperty<Property.TransitionProperty> {
   /**
    * 创建 transition-property 属性作者；普通使用通过 s.transitionProperty 取得共享实例。
    * @example
@@ -21349,18 +16984,6 @@ class TransitionPropertyCssRuntime extends CssProperty {
   constructor() {
     super('transition-property');
     initializeKeywordDeclarations(this, 'transition-property', anchorScopeKeywords);
-  }
-  /**
-   * 原样生成 transition-property 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 transition-property:value;，undefined 返回空字符串。
-   * @example
-   * s.transitionProperty.raw('inherit') // transition-property:inherit;
-   */
-  raw(value: Property.TransitionProperty | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -21397,7 +17020,7 @@ export const TransitionTimingFunctionKeywords = class TransitionTimingFunctionKe
 /**
  * transition-timing-function 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TransitionTimingFunctionCssRuntime extends CssProperty {
+class TransitionTimingFunctionCssRuntime extends CssProperty<Property.TransitionTimingFunction> {
   /**
    * 创建 transition-timing-function 属性作者；普通使用通过 s.transitionTimingFunction 取得共享实例。
    * @example
@@ -21410,18 +17033,6 @@ class TransitionTimingFunctionCssRuntime extends CssProperty {
       'transition-timing-function',
       animationTimingFunctionKeywords,
     );
-  }
-  /**
-   * 原样生成 transition-timing-function 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 transition-timing-function:value;，undefined 返回空字符串。
-   * @example
-   * s.transitionTimingFunction.raw('inherit') // transition-timing-function:inherit;
-   */
-  raw(value: Property.TransitionTimingFunction | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -21459,7 +17070,7 @@ export const TranslateKeywords = class TranslateKeywords {
 /**
  * translate 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class TranslateCssRuntime extends LengthCssProperty {
+class TranslateCssRuntime extends LengthCssProperty<Property.Translate> {
   /**
    * 创建 translate 属性作者；普通使用通过 s.translate 取得共享实例。
    * @example
@@ -21468,18 +17079,6 @@ class TranslateCssRuntime extends LengthCssProperty {
   constructor() {
     super('translate');
     initializeKeywordDeclarations(this, 'translate', noneKeywords);
-  }
-  /**
-   * 原样生成 translate 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 translate:value;，undefined 返回空字符串。
-   * @example
-   * s.translate.raw('inherit') // translate:inherit;
-   */
-  raw(value: Property.Translate | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 % 单位生成完整属性声明。百分比，100 表示 100%；参照对象由具体属性决定。
@@ -21492,62 +17091,6 @@ class TranslateCssRuntime extends LengthCssProperty {
    */
   percent(value: number): string {
     return this.declaration(`${value}%`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.translate.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.translate.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.Translate | CssString,
-    ...others: (Property.Translate | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.translate.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.Translate | CssString,
-    ...others: (Property.Translate | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.translate.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.Translate | CssString,
-    preferred: Property.Translate | CssString,
-    maximum: Property.Translate | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**

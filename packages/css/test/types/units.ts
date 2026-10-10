@@ -27,6 +27,14 @@ s.width.rem(1, 2);
 s.padding.rem(1, 2, 3, 4, 5);
 // @ts-expect-error width 数学表达式的非零裸数字缺少单位
 s.width.clamp(10, 20, 30);
+// @ts-expect-error 共享 raw 仍保留颜色值约束。
+s.color.raw(123);
+// @ts-expect-error 共享 raw 不向宽度开放任意裸数字。
+s.width.raw(123);
+// @ts-expect-error 普通 display 属性没有数学方法。
+s.display.clamp('a', 'b', 'c');
+// @ts-expect-error 宽度没有颜色方法。
+s.width.rgb(1, 2, 3);
 
 s.color.rgb('var(--red)', 0, 0, 'var(--alpha)');
 s.color.hsl('1turn', 'var(--saturation)', '50%');

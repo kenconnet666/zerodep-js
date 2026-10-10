@@ -20,6 +20,20 @@ const rows = [{ id: 1, title: 'row' }];
 `;
 const control = `const Field = _component((props: { value: string; onValueChange: (value: string) => void; label?: string }) => <span>{props.value}</span>);\n`;
 const cases = [
+  ...[
+    ['width', 'raw', 'base.ts', '原样生成当前属性声明'],
+    ['width', 'clamp', 'base.ts', '将首选值约束在下限和上限之间'],
+    ['opacity', 'clamp', 'base.ts', '将首选值约束在下限和上限之间'],
+    ['color', 'rgb', 'base.ts', '现代空格分隔语法'],
+  ].map(([property, member, file, documentation]) => ({
+    name: `CSS共享方法-${property}.${member}`,
+    source: `import { Css } from 'zerodep-js-css'; const s = new Css(); s.${property}.${member.slice(0, -1)}¦;`,
+    expected: member,
+    word: member.slice(0, -1),
+    details: true,
+    documentation,
+    definition: 'packages/css/src/generated/' + file,
+  })),
   {
     name: 'CSS根入口-自动导入',
     source:

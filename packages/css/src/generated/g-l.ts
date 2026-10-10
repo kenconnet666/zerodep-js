@@ -1,7 +1,13 @@
 // 由 scripts/generate-css-author.mjs 从 csstype@3.2.3 生成；请勿手改。
 // 来源许可见 packages/css/THIRD_PARTY_NOTICES.md。
 import type { Property } from 'csstype';
-import { CssProperty, LengthCssProperty, type CssString } from './base.js';
+import {
+  LengthCssProperty,
+  MathCssProperty,
+  CssProperty,
+  ColorCssProperty,
+  type CssString,
+} from './base.js';
 import { initializeKeywordDeclarations } from '../util/keywords.js';
 import type { KeywordDeclarations, KeywordValuesOf } from '../util/keywords.js';
 // 关键字是实例上的声明字符串；系统实例按属性链惰性创建并共享。
@@ -25,7 +31,7 @@ export const GapKeywords = class GapKeywords {
 /**
  * gap 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class GapCssRuntime extends LengthCssProperty {
+class GapCssRuntime extends LengthCssProperty<Property.Gap> {
   /**
    * 创建 gap 属性作者；普通使用通过 s.gap 取得共享实例。
    * @example
@@ -34,18 +40,6 @@ class GapCssRuntime extends LengthCssProperty {
   constructor() {
     super('gap');
     initializeKeywordDeclarations(this, 'gap', normalKeywords);
-  }
-  /**
-   * 原样生成 gap 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 gap:value;，undefined 返回空字符串。
-   * @example
-   * s.gap.raw('inherit') // gap:inherit;
-   */
-  raw(value: Property.Gap | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 px 单位生成完整属性声明。CSS 像素，不等同于设备物理像素。
@@ -1247,56 +1241,6 @@ class GapCssRuntime extends LengthCssProperty {
   percent(...values: number[]): string {
     return this.declaration(values.map((value) => `${value}%`).join(' '));
   }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.gap.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.gap.min('var(--first)', 'var(--second)')
-   */
-  min(value: Property.Gap | CssString, ...others: (Property.Gap | CssString)[]): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.gap.max('var(--first)', 'var(--second)')
-   */
-  max(value: Property.Gap | CssString, ...others: (Property.Gap | CssString)[]): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.gap.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.Gap | CssString,
-    preferred: Property.Gap | CssString,
-    maximum: Property.Gap | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
-  }
 }
 /**
  * gap 属性作者；关键字读取为完整声明字符串，保留中文说明。
@@ -1336,7 +1280,7 @@ export const GlyphOrientationVerticalKeywords = class GlyphOrientationVerticalKe
 /**
  * glyph-orientation-vertical 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class GlyphOrientationVerticalCssRuntime extends CssProperty {
+class GlyphOrientationVerticalCssRuntime extends MathCssProperty<Property.GlyphOrientationVertical> {
   /**
    * 创建 glyph-orientation-vertical 属性作者；普通使用通过 s.glyphOrientationVertical 取得共享实例。
    * @example
@@ -1345,74 +1289,6 @@ class GlyphOrientationVerticalCssRuntime extends CssProperty {
   constructor() {
     super('glyph-orientation-vertical');
     initializeKeywordDeclarations(this, 'glyph-orientation-vertical', autoKeywords);
-  }
-  /**
-   * 原样生成 glyph-orientation-vertical 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 glyph-orientation-vertical:value;，undefined 返回空字符串。
-   * @example
-   * s.glyphOrientationVertical.raw('inherit') // glyph-orientation-vertical:inherit;
-   */
-  raw(value: Property.GlyphOrientationVertical | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.glyphOrientationVertical.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.glyphOrientationVertical.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.GlyphOrientationVertical | CssString,
-    ...others: (Property.GlyphOrientationVertical | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.glyphOrientationVertical.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.GlyphOrientationVertical | CssString,
-    ...others: (Property.GlyphOrientationVertical | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.glyphOrientationVertical.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.GlyphOrientationVertical | CssString,
-    preferred: Property.GlyphOrientationVertical | CssString,
-    maximum: Property.GlyphOrientationVertical | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -1446,7 +1322,7 @@ export const GridKeywords = class GridKeywords {
 /**
  * grid 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class GridCssRuntime extends CssProperty {
+class GridCssRuntime extends CssProperty<Property.Grid> {
   /**
    * 创建 grid 属性作者；普通使用通过 s.grid 取得共享实例。
    * @example
@@ -1455,18 +1331,6 @@ class GridCssRuntime extends CssProperty {
   constructor() {
     super('grid');
     initializeKeywordDeclarations(this, 'grid', noneKeywords);
-  }
-  /**
-   * 原样生成 grid 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid:value;，undefined 返回空字符串。
-   * @example
-   * s.grid.raw('inherit') // grid:inherit;
-   */
-  raw(value: Property.Grid | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -1497,7 +1361,7 @@ export const GridAreaKeywords = class GridAreaKeywords {
 /**
  * grid-area 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class GridAreaCssRuntime extends CssProperty {
+class GridAreaCssRuntime extends MathCssProperty<Property.GridArea> {
   /**
    * 创建 grid-area 属性作者；普通使用通过 s.gridArea 取得共享实例。
    * @example
@@ -1506,68 +1370,6 @@ class GridAreaCssRuntime extends CssProperty {
   constructor() {
     super('grid-area');
     initializeKeywordDeclarations(this, 'grid-area', autoKeywords);
-  }
-  /**
-   * 原样生成 grid-area 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid-area:value;，undefined 返回空字符串。
-   * @example
-   * s.gridArea.raw('inherit') // grid-area:inherit;
-   */
-  raw(value: Property.GridArea | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.gridArea.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.gridArea.min('var(--first)', 'var(--second)')
-   */
-  min(value: Property.GridArea | CssString, ...others: (Property.GridArea | CssString)[]): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.gridArea.max('var(--first)', 'var(--second)')
-   */
-  max(value: Property.GridArea | CssString, ...others: (Property.GridArea | CssString)[]): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.gridArea.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.GridArea | CssString,
-    preferred: Property.GridArea | CssString,
-    maximum: Property.GridArea | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -1602,7 +1404,7 @@ export const GridAutoColumnsKeywords = class GridAutoColumnsKeywords {
 /**
  * grid-auto-columns 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class GridAutoColumnsCssRuntime extends LengthCssProperty {
+class GridAutoColumnsCssRuntime extends LengthCssProperty<Property.GridAutoColumns> {
   /**
    * 创建 grid-auto-columns 属性作者；普通使用通过 s.gridAutoColumns 取得共享实例。
    * @example
@@ -1611,74 +1413,6 @@ class GridAutoColumnsCssRuntime extends LengthCssProperty {
   constructor() {
     super('grid-auto-columns');
     initializeKeywordDeclarations(this, 'grid-auto-columns', gridAutoColumnsKeywords);
-  }
-  /**
-   * 原样生成 grid-auto-columns 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid-auto-columns:value;，undefined 返回空字符串。
-   * @example
-   * s.gridAutoColumns.raw('inherit') // grid-auto-columns:inherit;
-   */
-  raw(value: Property.GridAutoColumns | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.gridAutoColumns.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.gridAutoColumns.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.GridAutoColumns | CssString,
-    ...others: (Property.GridAutoColumns | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.gridAutoColumns.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.GridAutoColumns | CssString,
-    ...others: (Property.GridAutoColumns | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.gridAutoColumns.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.GridAutoColumns | CssString,
-    preferred: Property.GridAutoColumns | CssString,
-    maximum: Property.GridAutoColumns | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
   /**
    * 以最小和最大尺寸限定一条网格轨道。
@@ -1742,7 +1476,7 @@ export const GridAutoFlowKeywords = class GridAutoFlowKeywords {
 /**
  * grid-auto-flow 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class GridAutoFlowCssRuntime extends CssProperty {
+class GridAutoFlowCssRuntime extends CssProperty<Property.GridAutoFlow> {
   /**
    * 创建 grid-auto-flow 属性作者；普通使用通过 s.gridAutoFlow 取得共享实例。
    * @example
@@ -1751,18 +1485,6 @@ class GridAutoFlowCssRuntime extends CssProperty {
   constructor() {
     super('grid-auto-flow');
     initializeKeywordDeclarations(this, 'grid-auto-flow', gridAutoFlowKeywords);
-  }
-  /**
-   * 原样生成 grid-auto-flow 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid-auto-flow:value;，undefined 返回空字符串。
-   * @example
-   * s.gridAutoFlow.raw('inherit') // grid-auto-flow:inherit;
-   */
-  raw(value: Property.GridAutoFlow | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -1809,7 +1531,7 @@ export const GridAutoRowsKeywords = class GridAutoRowsKeywords {
 /**
  * grid-auto-rows 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class GridAutoRowsCssRuntime extends LengthCssProperty {
+class GridAutoRowsCssRuntime extends LengthCssProperty<Property.GridAutoRows> {
   /**
    * 创建 grid-auto-rows 属性作者；普通使用通过 s.gridAutoRows 取得共享实例。
    * @example
@@ -1818,74 +1540,6 @@ class GridAutoRowsCssRuntime extends LengthCssProperty {
   constructor() {
     super('grid-auto-rows');
     initializeKeywordDeclarations(this, 'grid-auto-rows', gridAutoColumnsKeywords);
-  }
-  /**
-   * 原样生成 grid-auto-rows 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid-auto-rows:value;，undefined 返回空字符串。
-   * @example
-   * s.gridAutoRows.raw('inherit') // grid-auto-rows:inherit;
-   */
-  raw(value: Property.GridAutoRows | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.gridAutoRows.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.gridAutoRows.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.GridAutoRows | CssString,
-    ...others: (Property.GridAutoRows | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.gridAutoRows.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.GridAutoRows | CssString,
-    ...others: (Property.GridAutoRows | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.gridAutoRows.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.GridAutoRows | CssString,
-    preferred: Property.GridAutoRows | CssString,
-    maximum: Property.GridAutoRows | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
   /**
    * 以最小和最大尺寸限定一条网格轨道。
@@ -1947,7 +1601,7 @@ export const GridColumnKeywords = class GridColumnKeywords {
 /**
  * grid-column 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class GridColumnCssRuntime extends CssProperty {
+class GridColumnCssRuntime extends MathCssProperty<Property.GridColumn> {
   /**
    * 创建 grid-column 属性作者；普通使用通过 s.gridColumn 取得共享实例。
    * @example
@@ -1956,74 +1610,6 @@ class GridColumnCssRuntime extends CssProperty {
   constructor() {
     super('grid-column');
     initializeKeywordDeclarations(this, 'grid-column', autoKeywords);
-  }
-  /**
-   * 原样生成 grid-column 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid-column:value;，undefined 返回空字符串。
-   * @example
-   * s.gridColumn.raw('inherit') // grid-column:inherit;
-   */
-  raw(value: Property.GridColumn | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.gridColumn.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.gridColumn.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.GridColumn | CssString,
-    ...others: (Property.GridColumn | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.gridColumn.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.GridColumn | CssString,
-    ...others: (Property.GridColumn | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.gridColumn.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.GridColumn | CssString,
-    preferred: Property.GridColumn | CssString,
-    maximum: Property.GridColumn | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -2057,7 +1643,7 @@ export const GridColumnEndKeywords = class GridColumnEndKeywords {
 /**
  * grid-column-end 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class GridColumnEndCssRuntime extends CssProperty {
+class GridColumnEndCssRuntime extends MathCssProperty<Property.GridColumnEnd> {
   /**
    * 创建 grid-column-end 属性作者；普通使用通过 s.gridColumnEnd 取得共享实例。
    * @example
@@ -2066,74 +1652,6 @@ class GridColumnEndCssRuntime extends CssProperty {
   constructor() {
     super('grid-column-end');
     initializeKeywordDeclarations(this, 'grid-column-end', autoKeywords);
-  }
-  /**
-   * 原样生成 grid-column-end 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid-column-end:value;，undefined 返回空字符串。
-   * @example
-   * s.gridColumnEnd.raw('inherit') // grid-column-end:inherit;
-   */
-  raw(value: Property.GridColumnEnd | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.gridColumnEnd.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.gridColumnEnd.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.GridColumnEnd | CssString,
-    ...others: (Property.GridColumnEnd | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.gridColumnEnd.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.GridColumnEnd | CssString,
-    ...others: (Property.GridColumnEnd | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.gridColumnEnd.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.GridColumnEnd | CssString,
-    preferred: Property.GridColumnEnd | CssString,
-    maximum: Property.GridColumnEnd | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -2169,7 +1687,7 @@ export const GridColumnStartKeywords = class GridColumnStartKeywords {
 /**
  * grid-column-start 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class GridColumnStartCssRuntime extends CssProperty {
+class GridColumnStartCssRuntime extends MathCssProperty<Property.GridColumnStart> {
   /**
    * 创建 grid-column-start 属性作者；普通使用通过 s.gridColumnStart 取得共享实例。
    * @example
@@ -2178,74 +1696,6 @@ class GridColumnStartCssRuntime extends CssProperty {
   constructor() {
     super('grid-column-start');
     initializeKeywordDeclarations(this, 'grid-column-start', autoKeywords);
-  }
-  /**
-   * 原样生成 grid-column-start 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid-column-start:value;，undefined 返回空字符串。
-   * @example
-   * s.gridColumnStart.raw('inherit') // grid-column-start:inherit;
-   */
-  raw(value: Property.GridColumnStart | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.gridColumnStart.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.gridColumnStart.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.GridColumnStart | CssString,
-    ...others: (Property.GridColumnStart | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.gridColumnStart.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.GridColumnStart | CssString,
-    ...others: (Property.GridColumnStart | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.gridColumnStart.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.GridColumnStart | CssString,
-    preferred: Property.GridColumnStart | CssString,
-    maximum: Property.GridColumnStart | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -2279,7 +1729,7 @@ export const GridRowKeywords = class GridRowKeywords {
 /**
  * grid-row 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class GridRowCssRuntime extends CssProperty {
+class GridRowCssRuntime extends MathCssProperty<Property.GridRow> {
   /**
    * 创建 grid-row 属性作者；普通使用通过 s.gridRow 取得共享实例。
    * @example
@@ -2288,68 +1738,6 @@ class GridRowCssRuntime extends CssProperty {
   constructor() {
     super('grid-row');
     initializeKeywordDeclarations(this, 'grid-row', autoKeywords);
-  }
-  /**
-   * 原样生成 grid-row 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid-row:value;，undefined 返回空字符串。
-   * @example
-   * s.gridRow.raw('inherit') // grid-row:inherit;
-   */
-  raw(value: Property.GridRow | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.gridRow.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.gridRow.min('var(--first)', 'var(--second)')
-   */
-  min(value: Property.GridRow | CssString, ...others: (Property.GridRow | CssString)[]): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.gridRow.max('var(--first)', 'var(--second)')
-   */
-  max(value: Property.GridRow | CssString, ...others: (Property.GridRow | CssString)[]): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.gridRow.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.GridRow | CssString,
-    preferred: Property.GridRow | CssString,
-    maximum: Property.GridRow | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -2383,7 +1771,7 @@ export const GridRowEndKeywords = class GridRowEndKeywords {
 /**
  * grid-row-end 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class GridRowEndCssRuntime extends CssProperty {
+class GridRowEndCssRuntime extends MathCssProperty<Property.GridRowEnd> {
   /**
    * 创建 grid-row-end 属性作者；普通使用通过 s.gridRowEnd 取得共享实例。
    * @example
@@ -2392,74 +1780,6 @@ class GridRowEndCssRuntime extends CssProperty {
   constructor() {
     super('grid-row-end');
     initializeKeywordDeclarations(this, 'grid-row-end', autoKeywords);
-  }
-  /**
-   * 原样生成 grid-row-end 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid-row-end:value;，undefined 返回空字符串。
-   * @example
-   * s.gridRowEnd.raw('inherit') // grid-row-end:inherit;
-   */
-  raw(value: Property.GridRowEnd | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.gridRowEnd.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.gridRowEnd.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.GridRowEnd | CssString,
-    ...others: (Property.GridRowEnd | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.gridRowEnd.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.GridRowEnd | CssString,
-    ...others: (Property.GridRowEnd | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.gridRowEnd.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.GridRowEnd | CssString,
-    preferred: Property.GridRowEnd | CssString,
-    maximum: Property.GridRowEnd | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -2495,7 +1815,7 @@ export const GridRowStartKeywords = class GridRowStartKeywords {
 /**
  * grid-row-start 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class GridRowStartCssRuntime extends CssProperty {
+class GridRowStartCssRuntime extends MathCssProperty<Property.GridRowStart> {
   /**
    * 创建 grid-row-start 属性作者；普通使用通过 s.gridRowStart 取得共享实例。
    * @example
@@ -2504,74 +1824,6 @@ class GridRowStartCssRuntime extends CssProperty {
   constructor() {
     super('grid-row-start');
     initializeKeywordDeclarations(this, 'grid-row-start', autoKeywords);
-  }
-  /**
-   * 原样生成 grid-row-start 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid-row-start:value;，undefined 返回空字符串。
-   * @example
-   * s.gridRowStart.raw('inherit') // grid-row-start:inherit;
-   */
-  raw(value: Property.GridRowStart | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.gridRowStart.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.gridRowStart.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.GridRowStart | CssString,
-    ...others: (Property.GridRowStart | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.gridRowStart.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.GridRowStart | CssString,
-    ...others: (Property.GridRowStart | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.gridRowStart.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.GridRowStart | CssString,
-    preferred: Property.GridRowStart | CssString,
-    maximum: Property.GridRowStart | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -2607,7 +1859,7 @@ export const GridTemplateKeywords = class GridTemplateKeywords {
 /**
  * grid-template 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class GridTemplateCssRuntime extends CssProperty {
+class GridTemplateCssRuntime extends CssProperty<Property.GridTemplate> {
   /**
    * 创建 grid-template 属性作者；普通使用通过 s.gridTemplate 取得共享实例。
    * @example
@@ -2616,18 +1868,6 @@ class GridTemplateCssRuntime extends CssProperty {
   constructor() {
     super('grid-template');
     initializeKeywordDeclarations(this, 'grid-template', noneKeywords);
-  }
-  /**
-   * 原样生成 grid-template 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid-template:value;，undefined 返回空字符串。
-   * @example
-   * s.gridTemplate.raw('inherit') // grid-template:inherit;
-   */
-  raw(value: Property.GridTemplate | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -2661,7 +1901,7 @@ export const GridTemplateAreasKeywords = class GridTemplateAreasKeywords {
 /**
  * grid-template-areas 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class GridTemplateAreasCssRuntime extends CssProperty {
+class GridTemplateAreasCssRuntime extends CssProperty<Property.GridTemplateAreas> {
   /**
    * 创建 grid-template-areas 属性作者；普通使用通过 s.gridTemplateAreas 取得共享实例。
    * @example
@@ -2670,18 +1910,6 @@ class GridTemplateAreasCssRuntime extends CssProperty {
   constructor() {
     super('grid-template-areas');
     initializeKeywordDeclarations(this, 'grid-template-areas', noneKeywords);
-  }
-  /**
-   * 原样生成 grid-template-areas 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid-template-areas:value;，undefined 返回空字符串。
-   * @example
-   * s.gridTemplateAreas.raw('inherit') // grid-template-areas:inherit;
-   */
-  raw(value: Property.GridTemplateAreas | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -2719,7 +1947,7 @@ export const GridTemplateColumnsKeywords = class GridTemplateColumnsKeywords {
 /**
  * grid-template-columns 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class GridTemplateColumnsCssRuntime extends LengthCssProperty {
+class GridTemplateColumnsCssRuntime extends LengthCssProperty<Property.GridTemplateColumns> {
   /**
    * 创建 grid-template-columns 属性作者；普通使用通过 s.gridTemplateColumns 取得共享实例。
    * @example
@@ -2728,74 +1956,6 @@ class GridTemplateColumnsCssRuntime extends LengthCssProperty {
   constructor() {
     super('grid-template-columns');
     initializeKeywordDeclarations(this, 'grid-template-columns', gridTemplateColumnsKeywords);
-  }
-  /**
-   * 原样生成 grid-template-columns 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid-template-columns:value;，undefined 返回空字符串。
-   * @example
-   * s.gridTemplateColumns.raw('inherit') // grid-template-columns:inherit;
-   */
-  raw(value: Property.GridTemplateColumns | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.gridTemplateColumns.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.gridTemplateColumns.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.GridTemplateColumns | CssString,
-    ...others: (Property.GridTemplateColumns | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.gridTemplateColumns.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.GridTemplateColumns | CssString,
-    ...others: (Property.GridTemplateColumns | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.gridTemplateColumns.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.GridTemplateColumns | CssString,
-    preferred: Property.GridTemplateColumns | CssString,
-    maximum: Property.GridTemplateColumns | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
   /**
    * 重复一组网格轨道，生成当前轨道属性的完整声明。
@@ -2883,7 +2043,7 @@ export const GridTemplateRowsKeywords = class GridTemplateRowsKeywords {
 /**
  * grid-template-rows 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class GridTemplateRowsCssRuntime extends LengthCssProperty {
+class GridTemplateRowsCssRuntime extends LengthCssProperty<Property.GridTemplateRows> {
   /**
    * 创建 grid-template-rows 属性作者；普通使用通过 s.gridTemplateRows 取得共享实例。
    * @example
@@ -2892,74 +2052,6 @@ class GridTemplateRowsCssRuntime extends LengthCssProperty {
   constructor() {
     super('grid-template-rows');
     initializeKeywordDeclarations(this, 'grid-template-rows', gridTemplateColumnsKeywords);
-  }
-  /**
-   * 原样生成 grid-template-rows 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 grid-template-rows:value;，undefined 返回空字符串。
-   * @example
-   * s.gridTemplateRows.raw('inherit') // grid-template-rows:inherit;
-   */
-  raw(value: Property.GridTemplateRows | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.gridTemplateRows.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.gridTemplateRows.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.GridTemplateRows | CssString,
-    ...others: (Property.GridTemplateRows | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.gridTemplateRows.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.GridTemplateRows | CssString,
-    ...others: (Property.GridTemplateRows | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.gridTemplateRows.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.GridTemplateRows | CssString,
-    preferred: Property.GridTemplateRows | CssString,
-    maximum: Property.GridTemplateRows | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
   /**
    * 重复一组网格轨道，生成当前轨道属性的完整声明。
@@ -3047,7 +2139,7 @@ export const HangingPunctuationKeywords = class HangingPunctuationKeywords {
 /**
  * hanging-punctuation 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class HangingPunctuationCssRuntime extends CssProperty {
+class HangingPunctuationCssRuntime extends CssProperty<Property.HangingPunctuation> {
   /**
    * 创建 hanging-punctuation 属性作者；普通使用通过 s.hangingPunctuation 取得共享实例。
    * @example
@@ -3056,18 +2148,6 @@ class HangingPunctuationCssRuntime extends CssProperty {
   constructor() {
     super('hanging-punctuation');
     initializeKeywordDeclarations(this, 'hanging-punctuation', hangingPunctuationKeywords);
-  }
-  /**
-   * 原样生成 hanging-punctuation 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 hanging-punctuation:value;，undefined 返回空字符串。
-   * @example
-   * s.hangingPunctuation.raw('inherit') // hanging-punctuation:inherit;
-   */
-  raw(value: Property.HangingPunctuation | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -3103,7 +2183,7 @@ export const HeightKeywords = class HeightKeywords {
 /**
  * height 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class HeightCssRuntime extends LengthCssProperty {
+class HeightCssRuntime extends LengthCssProperty<Property.Height> {
   /**
    * 创建 height 属性作者；普通使用通过 s.height 取得共享实例。
    * @example
@@ -3112,18 +2192,6 @@ class HeightCssRuntime extends LengthCssProperty {
   constructor() {
     super('height');
     initializeKeywordDeclarations(this, 'height', heightKeywords);
-  }
-  /**
-   * 原样生成 height 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 height:value;，undefined 返回空字符串。
-   * @example
-   * s.height.raw('inherit') // height:inherit;
-   */
-  raw(value: Property.Height | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 % 单位生成完整属性声明。百分比，100 表示 100%；参照对象由具体属性决定。
@@ -3136,56 +2204,6 @@ class HeightCssRuntime extends LengthCssProperty {
    */
   percent(value: number): string {
     return this.declaration(`${value}%`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.height.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.height.min('var(--first)', 'var(--second)')
-   */
-  min(value: Property.Height | CssString, ...others: (Property.Height | CssString)[]): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.height.max('var(--first)', 'var(--second)')
-   */
-  max(value: Property.Height | CssString, ...others: (Property.Height | CssString)[]): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.height.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.Height | CssString,
-    preferred: Property.Height | CssString,
-    maximum: Property.Height | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -3227,7 +2245,7 @@ export const HyphenateCharacterKeywords = class HyphenateCharacterKeywords {
 /**
  * hyphenate-character 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class HyphenateCharacterCssRuntime extends CssProperty {
+class HyphenateCharacterCssRuntime extends CssProperty<Property.HyphenateCharacter> {
   /**
    * 创建 hyphenate-character 属性作者；普通使用通过 s.hyphenateCharacter 取得共享实例。
    * @example
@@ -3236,18 +2254,6 @@ class HyphenateCharacterCssRuntime extends CssProperty {
   constructor() {
     super('hyphenate-character');
     initializeKeywordDeclarations(this, 'hyphenate-character', autoKeywords);
-  }
-  /**
-   * 原样生成 hyphenate-character 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 hyphenate-character:value;，undefined 返回空字符串。
-   * @example
-   * s.hyphenateCharacter.raw('inherit') // hyphenate-character:inherit;
-   */
-  raw(value: Property.HyphenateCharacter | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -3285,7 +2291,7 @@ export const HyphenateLimitCharsKeywords = class HyphenateLimitCharsKeywords {
 /**
  * hyphenate-limit-chars 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class HyphenateLimitCharsCssRuntime extends CssProperty {
+class HyphenateLimitCharsCssRuntime extends MathCssProperty<Property.HyphenateLimitChars> {
   /**
    * 创建 hyphenate-limit-chars 属性作者；普通使用通过 s.hyphenateLimitChars 取得共享实例。
    * @example
@@ -3294,74 +2300,6 @@ class HyphenateLimitCharsCssRuntime extends CssProperty {
   constructor() {
     super('hyphenate-limit-chars');
     initializeKeywordDeclarations(this, 'hyphenate-limit-chars', autoKeywords);
-  }
-  /**
-   * 原样生成 hyphenate-limit-chars 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 hyphenate-limit-chars:value;，undefined 返回空字符串。
-   * @example
-   * s.hyphenateLimitChars.raw('inherit') // hyphenate-limit-chars:inherit;
-   */
-  raw(value: Property.HyphenateLimitChars | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.hyphenateLimitChars.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.hyphenateLimitChars.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.HyphenateLimitChars | CssString,
-    ...others: (Property.HyphenateLimitChars | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.hyphenateLimitChars.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.HyphenateLimitChars | CssString,
-    ...others: (Property.HyphenateLimitChars | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.hyphenateLimitChars.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.HyphenateLimitChars | CssString,
-    preferred: Property.HyphenateLimitChars | CssString,
-    maximum: Property.HyphenateLimitChars | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -3397,7 +2335,7 @@ export const HyphensKeywords = class HyphensKeywords {
 /**
  * hyphens 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class HyphensCssRuntime extends CssProperty {
+class HyphensCssRuntime extends CssProperty<Property.Hyphens> {
   /**
    * 创建 hyphens 属性作者；普通使用通过 s.hyphens 取得共享实例。
    * @example
@@ -3406,18 +2344,6 @@ class HyphensCssRuntime extends CssProperty {
   constructor() {
     super('hyphens');
     initializeKeywordDeclarations(this, 'hyphens', hyphensKeywords);
-  }
-  /**
-   * 原样生成 hyphens 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 hyphens:value;，undefined 返回空字符串。
-   * @example
-   * s.hyphens.raw('inherit') // hyphens:inherit;
-   */
-  raw(value: Property.Hyphens | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -3454,7 +2380,7 @@ export const ImageOrientationKeywords = class ImageOrientationKeywords {
 /**
  * image-orientation 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ImageOrientationCssRuntime extends CssProperty {
+class ImageOrientationCssRuntime extends MathCssProperty<Property.ImageOrientation> {
   /**
    * 创建 image-orientation 属性作者；普通使用通过 s.imageOrientation 取得共享实例。
    * @example
@@ -3463,18 +2389,6 @@ class ImageOrientationCssRuntime extends CssProperty {
   constructor() {
     super('image-orientation');
     initializeKeywordDeclarations(this, 'image-orientation', imageOrientationKeywords);
-  }
-  /**
-   * 原样生成 image-orientation 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 image-orientation:value;，undefined 返回空字符串。
-   * @example
-   * s.imageOrientation.raw('inherit') // image-orientation:inherit;
-   */
-  raw(value: Property.ImageOrientation | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 deg 单位生成完整属性声明。角度，360deg 为一周。
@@ -3524,62 +2438,6 @@ class ImageOrientationCssRuntime extends CssProperty {
   turn(value: number): string {
     return this.declaration(`${value}turn`);
   }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.imageOrientation.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.imageOrientation.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.ImageOrientation | CssString,
-    ...others: (Property.ImageOrientation | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.imageOrientation.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.ImageOrientation | CssString,
-    ...others: (Property.ImageOrientation | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.imageOrientation.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.ImageOrientation | CssString,
-    preferred: Property.ImageOrientation | CssString,
-    maximum: Property.ImageOrientation | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
-  }
 }
 /**
  * image-orientation 属性作者；关键字读取为完整声明字符串，保留中文说明。
@@ -3616,7 +2474,7 @@ export const ImageRenderingKeywords = class ImageRenderingKeywords {
 /**
  * image-rendering 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ImageRenderingCssRuntime extends CssProperty {
+class ImageRenderingCssRuntime extends CssProperty<Property.ImageRendering> {
   /**
    * 创建 image-rendering 属性作者；普通使用通过 s.imageRendering 取得共享实例。
    * @example
@@ -3625,18 +2483,6 @@ class ImageRenderingCssRuntime extends CssProperty {
   constructor() {
     super('image-rendering');
     initializeKeywordDeclarations(this, 'image-rendering', imageRenderingKeywords);
-  }
-  /**
-   * 原样生成 image-rendering 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 image-rendering:value;，undefined 返回空字符串。
-   * @example
-   * s.imageRendering.raw('inherit') // image-rendering:inherit;
-   */
-  raw(value: Property.ImageRendering | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -3674,7 +2520,7 @@ export const ImageResolutionKeywords = class ImageResolutionKeywords {
 /**
  * image-resolution 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ImageResolutionCssRuntime extends CssProperty {
+class ImageResolutionCssRuntime extends CssProperty<Property.ImageResolution> {
   /**
    * 创建 image-resolution 属性作者；普通使用通过 s.imageResolution 取得共享实例。
    * @example
@@ -3683,18 +2529,6 @@ class ImageResolutionCssRuntime extends CssProperty {
   constructor() {
     super('image-resolution');
     initializeKeywordDeclarations(this, 'image-resolution', imageResolutionKeywords);
-  }
-  /**
-   * 原样生成 image-resolution 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 image-resolution:value;，undefined 返回空字符串。
-   * @example
-   * s.imageResolution.raw('inherit') // image-resolution:inherit;
-   */
-  raw(value: Property.ImageResolution | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -3731,7 +2565,7 @@ export const InitialLetterKeywords = class InitialLetterKeywords {
 /**
  * initial-letter 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class InitialLetterCssRuntime extends CssProperty {
+class InitialLetterCssRuntime extends MathCssProperty<Property.InitialLetter> {
   /**
    * 创建 initial-letter 属性作者；普通使用通过 s.initialLetter 取得共享实例。
    * @example
@@ -3740,74 +2574,6 @@ class InitialLetterCssRuntime extends CssProperty {
   constructor() {
     super('initial-letter');
     initializeKeywordDeclarations(this, 'initial-letter', normalKeywords);
-  }
-  /**
-   * 原样生成 initial-letter 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 initial-letter:value;，undefined 返回空字符串。
-   * @example
-   * s.initialLetter.raw('inherit') // initial-letter:inherit;
-   */
-  raw(value: Property.InitialLetter | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.initialLetter.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.initialLetter.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.InitialLetter | CssString,
-    ...others: (Property.InitialLetter | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.initialLetter.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.InitialLetter | CssString,
-    ...others: (Property.InitialLetter | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.initialLetter.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.InitialLetter | CssString,
-    preferred: Property.InitialLetter | CssString,
-    maximum: Property.InitialLetter | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -3844,7 +2610,7 @@ export const InitialLetterAlignKeywords = class InitialLetterAlignKeywords {
 /**
  * initial-letter-align 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class InitialLetterAlignCssRuntime extends CssProperty {
+class InitialLetterAlignCssRuntime extends CssProperty<Property.InitialLetterAlign> {
   /**
    * 创建 initial-letter-align 属性作者；普通使用通过 s.initialLetterAlign 取得共享实例。
    * @example
@@ -3853,18 +2619,6 @@ class InitialLetterAlignCssRuntime extends CssProperty {
   constructor() {
     super('initial-letter-align');
     initializeKeywordDeclarations(this, 'initial-letter-align', initialLetterAlignKeywords);
-  }
-  /**
-   * 原样生成 initial-letter-align 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 initial-letter-align:value;，undefined 返回空字符串。
-   * @example
-   * s.initialLetterAlign.raw('inherit') // initial-letter-align:inherit;
-   */
-  raw(value: Property.InitialLetterAlign | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -3902,7 +2656,7 @@ export const InlineSizeKeywords = class InlineSizeKeywords {
 /**
  * inline-size 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class InlineSizeCssRuntime extends LengthCssProperty {
+class InlineSizeCssRuntime extends LengthCssProperty<Property.InlineSize> {
   /**
    * 创建 inline-size 属性作者；普通使用通过 s.inlineSize 取得共享实例。
    * @example
@@ -3911,74 +2665,6 @@ class InlineSizeCssRuntime extends LengthCssProperty {
   constructor() {
     super('inline-size');
     initializeKeywordDeclarations(this, 'inline-size', heightKeywords);
-  }
-  /**
-   * 原样生成 inline-size 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 inline-size:value;，undefined 返回空字符串。
-   * @example
-   * s.inlineSize.raw('inherit') // inline-size:inherit;
-   */
-  raw(value: Property.InlineSize | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.inlineSize.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.inlineSize.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.InlineSize | CssString,
-    ...others: (Property.InlineSize | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.inlineSize.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.InlineSize | CssString,
-    ...others: (Property.InlineSize | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.inlineSize.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.InlineSize | CssString,
-    preferred: Property.InlineSize | CssString,
-    maximum: Property.InlineSize | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -4017,7 +2703,7 @@ export const InsetKeywords = class InsetKeywords {
 /**
  * inset 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class InsetCssRuntime extends LengthCssProperty {
+class InsetCssRuntime extends LengthCssProperty<Property.Inset> {
   /**
    * 创建 inset 属性作者；普通使用通过 s.inset 取得共享实例。
    * @example
@@ -4026,18 +2712,6 @@ class InsetCssRuntime extends LengthCssProperty {
   constructor() {
     super('inset');
     initializeKeywordDeclarations(this, 'inset', autoKeywords);
-  }
-  /**
-   * 原样生成 inset 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 inset:value;，undefined 返回空字符串。
-   * @example
-   * s.inset.raw('inherit') // inset:inherit;
-   */
-  raw(value: Property.Inset | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 px 单位生成完整属性声明。CSS 像素，不等同于设备物理像素。
@@ -6440,56 +5114,6 @@ class InsetCssRuntime extends LengthCssProperty {
   override cqmax(...values: number[]): string {
     return this.declaration(values.map((value) => `${value}cqmax`).join(' '));
   }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.inset.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.inset.min('var(--first)', 'var(--second)')
-   */
-  min(value: Property.Inset | CssString, ...others: (Property.Inset | CssString)[]): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.inset.max('var(--first)', 'var(--second)')
-   */
-  max(value: Property.Inset | CssString, ...others: (Property.Inset | CssString)[]): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.inset.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.Inset | CssString,
-    preferred: Property.Inset | CssString,
-    maximum: Property.Inset | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
-  }
 }
 /**
  * inset 属性作者；关键字读取为完整声明字符串，保留中文说明。
@@ -6522,7 +5146,7 @@ export const InsetBlockKeywords = class InsetBlockKeywords {
 /**
  * inset-block 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class InsetBlockCssRuntime extends LengthCssProperty {
+class InsetBlockCssRuntime extends LengthCssProperty<Property.InsetBlock> {
   /**
    * 创建 inset-block 属性作者；普通使用通过 s.insetBlock 取得共享实例。
    * @example
@@ -6531,18 +5155,6 @@ class InsetBlockCssRuntime extends LengthCssProperty {
   constructor() {
     super('inset-block');
     initializeKeywordDeclarations(this, 'inset-block', autoKeywords);
-  }
-  /**
-   * 原样生成 inset-block 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 inset-block:value;，undefined 返回空字符串。
-   * @example
-   * s.insetBlock.raw('inherit') // inset-block:inherit;
-   */
-  raw(value: Property.InsetBlock | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 px 单位生成完整属性声明。CSS 像素，不等同于设备物理像素。
@@ -7720,62 +6332,6 @@ class InsetBlockCssRuntime extends LengthCssProperty {
   override cqmax(...values: number[]): string {
     return this.declaration(values.map((value) => `${value}cqmax`).join(' '));
   }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.insetBlock.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.insetBlock.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.InsetBlock | CssString,
-    ...others: (Property.InsetBlock | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.insetBlock.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.InsetBlock | CssString,
-    ...others: (Property.InsetBlock | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.insetBlock.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.InsetBlock | CssString,
-    preferred: Property.InsetBlock | CssString,
-    maximum: Property.InsetBlock | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
-  }
 }
 /**
  * inset-block 属性作者；关键字读取为完整声明字符串，保留中文说明。
@@ -7808,7 +6364,7 @@ export const InsetBlockEndKeywords = class InsetBlockEndKeywords {
 /**
  * inset-block-end 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class InsetBlockEndCssRuntime extends LengthCssProperty {
+class InsetBlockEndCssRuntime extends LengthCssProperty<Property.InsetBlockEnd> {
   /**
    * 创建 inset-block-end 属性作者；普通使用通过 s.insetBlockEnd 取得共享实例。
    * @example
@@ -7817,74 +6373,6 @@ class InsetBlockEndCssRuntime extends LengthCssProperty {
   constructor() {
     super('inset-block-end');
     initializeKeywordDeclarations(this, 'inset-block-end', autoKeywords);
-  }
-  /**
-   * 原样生成 inset-block-end 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 inset-block-end:value;，undefined 返回空字符串。
-   * @example
-   * s.insetBlockEnd.raw('inherit') // inset-block-end:inherit;
-   */
-  raw(value: Property.InsetBlockEnd | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.insetBlockEnd.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.insetBlockEnd.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.InsetBlockEnd | CssString,
-    ...others: (Property.InsetBlockEnd | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.insetBlockEnd.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.InsetBlockEnd | CssString,
-    ...others: (Property.InsetBlockEnd | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.insetBlockEnd.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.InsetBlockEnd | CssString,
-    preferred: Property.InsetBlockEnd | CssString,
-    maximum: Property.InsetBlockEnd | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -7920,7 +6408,7 @@ export const InsetBlockStartKeywords = class InsetBlockStartKeywords {
 /**
  * inset-block-start 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class InsetBlockStartCssRuntime extends LengthCssProperty {
+class InsetBlockStartCssRuntime extends LengthCssProperty<Property.InsetBlockStart> {
   /**
    * 创建 inset-block-start 属性作者；普通使用通过 s.insetBlockStart 取得共享实例。
    * @example
@@ -7929,74 +6417,6 @@ class InsetBlockStartCssRuntime extends LengthCssProperty {
   constructor() {
     super('inset-block-start');
     initializeKeywordDeclarations(this, 'inset-block-start', autoKeywords);
-  }
-  /**
-   * 原样生成 inset-block-start 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 inset-block-start:value;，undefined 返回空字符串。
-   * @example
-   * s.insetBlockStart.raw('inherit') // inset-block-start:inherit;
-   */
-  raw(value: Property.InsetBlockStart | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.insetBlockStart.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.insetBlockStart.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.InsetBlockStart | CssString,
-    ...others: (Property.InsetBlockStart | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.insetBlockStart.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.InsetBlockStart | CssString,
-    ...others: (Property.InsetBlockStart | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.insetBlockStart.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.InsetBlockStart | CssString,
-    preferred: Property.InsetBlockStart | CssString,
-    maximum: Property.InsetBlockStart | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -8033,7 +6453,7 @@ export const InsetInlineKeywords = class InsetInlineKeywords {
 /**
  * inset-inline 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class InsetInlineCssRuntime extends LengthCssProperty {
+class InsetInlineCssRuntime extends LengthCssProperty<Property.InsetInline> {
   /**
    * 创建 inset-inline 属性作者；普通使用通过 s.insetInline 取得共享实例。
    * @example
@@ -8042,18 +6462,6 @@ class InsetInlineCssRuntime extends LengthCssProperty {
   constructor() {
     super('inset-inline');
     initializeKeywordDeclarations(this, 'inset-inline', autoKeywords);
-  }
-  /**
-   * 原样生成 inset-inline 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 inset-inline:value;，undefined 返回空字符串。
-   * @example
-   * s.insetInline.raw('inherit') // inset-inline:inherit;
-   */
-  raw(value: Property.InsetInline | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 px 单位生成完整属性声明。CSS 像素，不等同于设备物理像素。
@@ -9231,62 +7639,6 @@ class InsetInlineCssRuntime extends LengthCssProperty {
   override cqmax(...values: number[]): string {
     return this.declaration(values.map((value) => `${value}cqmax`).join(' '));
   }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.insetInline.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.insetInline.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.InsetInline | CssString,
-    ...others: (Property.InsetInline | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.insetInline.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.InsetInline | CssString,
-    ...others: (Property.InsetInline | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.insetInline.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.InsetInline | CssString,
-    preferred: Property.InsetInline | CssString,
-    maximum: Property.InsetInline | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
-  }
 }
 /**
  * inset-inline 属性作者；关键字读取为完整声明字符串，保留中文说明。
@@ -9319,7 +7671,7 @@ export const InsetInlineEndKeywords = class InsetInlineEndKeywords {
 /**
  * inset-inline-end 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class InsetInlineEndCssRuntime extends LengthCssProperty {
+class InsetInlineEndCssRuntime extends LengthCssProperty<Property.InsetInlineEnd> {
   /**
    * 创建 inset-inline-end 属性作者；普通使用通过 s.insetInlineEnd 取得共享实例。
    * @example
@@ -9328,74 +7680,6 @@ class InsetInlineEndCssRuntime extends LengthCssProperty {
   constructor() {
     super('inset-inline-end');
     initializeKeywordDeclarations(this, 'inset-inline-end', autoKeywords);
-  }
-  /**
-   * 原样生成 inset-inline-end 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 inset-inline-end:value;，undefined 返回空字符串。
-   * @example
-   * s.insetInlineEnd.raw('inherit') // inset-inline-end:inherit;
-   */
-  raw(value: Property.InsetInlineEnd | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.insetInlineEnd.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.insetInlineEnd.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.InsetInlineEnd | CssString,
-    ...others: (Property.InsetInlineEnd | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.insetInlineEnd.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.InsetInlineEnd | CssString,
-    ...others: (Property.InsetInlineEnd | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.insetInlineEnd.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.InsetInlineEnd | CssString,
-    preferred: Property.InsetInlineEnd | CssString,
-    maximum: Property.InsetInlineEnd | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -9432,7 +7716,7 @@ export const InsetInlineStartKeywords = class InsetInlineStartKeywords {
 /**
  * inset-inline-start 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class InsetInlineStartCssRuntime extends LengthCssProperty {
+class InsetInlineStartCssRuntime extends LengthCssProperty<Property.InsetInlineStart> {
   /**
    * 创建 inset-inline-start 属性作者；普通使用通过 s.insetInlineStart 取得共享实例。
    * @example
@@ -9441,74 +7725,6 @@ class InsetInlineStartCssRuntime extends LengthCssProperty {
   constructor() {
     super('inset-inline-start');
     initializeKeywordDeclarations(this, 'inset-inline-start', autoKeywords);
-  }
-  /**
-   * 原样生成 inset-inline-start 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 inset-inline-start:value;，undefined 返回空字符串。
-   * @example
-   * s.insetInlineStart.raw('inherit') // inset-inline-start:inherit;
-   */
-  raw(value: Property.InsetInlineStart | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.insetInlineStart.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.insetInlineStart.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.InsetInlineStart | CssString,
-    ...others: (Property.InsetInlineStart | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.insetInlineStart.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.InsetInlineStart | CssString,
-    ...others: (Property.InsetInlineStart | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.insetInlineStart.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.InsetInlineStart | CssString,
-    preferred: Property.InsetInlineStart | CssString,
-    maximum: Property.InsetInlineStart | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -9546,7 +7762,7 @@ export const InterpolateSizeKeywords = class InterpolateSizeKeywords {
 /**
  * interpolate-size 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class InterpolateSizeCssRuntime extends CssProperty {
+class InterpolateSizeCssRuntime extends CssProperty<Property.InterpolateSize> {
   /**
    * 创建 interpolate-size 属性作者；普通使用通过 s.interpolateSize 取得共享实例。
    * @example
@@ -9555,18 +7771,6 @@ class InterpolateSizeCssRuntime extends CssProperty {
   constructor() {
     super('interpolate-size');
     initializeKeywordDeclarations(this, 'interpolate-size', interpolateSizeKeywords);
-  }
-  /**
-   * 原样生成 interpolate-size 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 interpolate-size:value;，undefined 返回空字符串。
-   * @example
-   * s.interpolateSize.raw('inherit') // interpolate-size:inherit;
-   */
-  raw(value: Property.InterpolateSize | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -9604,7 +7808,7 @@ export const IsolationKeywords = class IsolationKeywords {
 /**
  * isolation 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class IsolationCssRuntime extends CssProperty {
+class IsolationCssRuntime extends CssProperty<Property.Isolation> {
   /**
    * 创建 isolation 属性作者；普通使用通过 s.isolation 取得共享实例。
    * @example
@@ -9613,18 +7817,6 @@ class IsolationCssRuntime extends CssProperty {
   constructor() {
     super('isolation');
     initializeKeywordDeclarations(this, 'isolation', isolationKeywords);
-  }
-  /**
-   * 原样生成 isolation 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 isolation:value;，undefined 返回空字符串。
-   * @example
-   * s.isolation.raw('inherit') // isolation:inherit;
-   */
-  raw(value: Property.Isolation | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -9669,7 +7861,7 @@ export const JustifyContentKeywords = class JustifyContentKeywords {
 /**
  * justify-content 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class JustifyContentCssRuntime extends CssProperty {
+class JustifyContentCssRuntime extends CssProperty<Property.JustifyContent> {
   /**
    * 创建 justify-content 属性作者；普通使用通过 s.justifyContent 取得共享实例。
    * @example
@@ -9678,18 +7870,6 @@ class JustifyContentCssRuntime extends CssProperty {
   constructor() {
     super('justify-content');
     initializeKeywordDeclarations(this, 'justify-content', justifyContentKeywords);
-  }
-  /**
-   * 原样生成 justify-content 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 justify-content:value;，undefined 返回空字符串。
-   * @example
-   * s.justifyContent.raw('inherit') // justify-content:inherit;
-   */
-  raw(value: Property.JustifyContent | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -9737,7 +7917,7 @@ export const JustifyItemsKeywords = class JustifyItemsKeywords {
 /**
  * justify-items 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class JustifyItemsCssRuntime extends CssProperty {
+class JustifyItemsCssRuntime extends CssProperty<Property.JustifyItems> {
   /**
    * 创建 justify-items 属性作者；普通使用通过 s.justifyItems 取得共享实例。
    * @example
@@ -9746,18 +7926,6 @@ class JustifyItemsCssRuntime extends CssProperty {
   constructor() {
     super('justify-items');
     initializeKeywordDeclarations(this, 'justify-items', justifyItemsKeywords);
-  }
-  /**
-   * 原样生成 justify-items 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 justify-items:value;，undefined 返回空字符串。
-   * @example
-   * s.justifyItems.raw('inherit') // justify-items:inherit;
-   */
-  raw(value: Property.JustifyItems | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -9794,7 +7962,7 @@ export const JustifySelfKeywords = class JustifySelfKeywords {
 /**
  * justify-self 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class JustifySelfCssRuntime extends CssProperty {
+class JustifySelfCssRuntime extends CssProperty<Property.JustifySelf> {
   /**
    * 创建 justify-self 属性作者；普通使用通过 s.justifySelf 取得共享实例。
    * @example
@@ -9803,18 +7971,6 @@ class JustifySelfCssRuntime extends CssProperty {
   constructor() {
     super('justify-self');
     initializeKeywordDeclarations(this, 'justify-self', justifySelfKeywords);
-  }
-  /**
-   * 原样生成 justify-self 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 justify-self:value;，undefined 返回空字符串。
-   * @example
-   * s.justifySelf.raw('inherit') // justify-self:inherit;
-   */
-  raw(value: Property.JustifySelf | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -9851,7 +8007,7 @@ export const JustifyTracksKeywords = class JustifyTracksKeywords {
 /**
  * justify-tracks 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class JustifyTracksCssRuntime extends CssProperty {
+class JustifyTracksCssRuntime extends CssProperty<Property.JustifyTracks> {
   /**
    * 创建 justify-tracks 属性作者；普通使用通过 s.justifyTracks 取得共享实例。
    * @example
@@ -9860,18 +8016,6 @@ class JustifyTracksCssRuntime extends CssProperty {
   constructor() {
     super('justify-tracks');
     initializeKeywordDeclarations(this, 'justify-tracks', justifyTracksKeywords);
-  }
-  /**
-   * 原样生成 justify-tracks 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 justify-tracks:value;，undefined 返回空字符串。
-   * @example
-   * s.justifyTracks.raw('inherit') // justify-tracks:inherit;
-   */
-  raw(value: Property.JustifyTracks | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -9904,7 +8048,7 @@ export const LeftKeywords = class LeftKeywords {
 /**
  * left 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class LeftCssRuntime extends LengthCssProperty {
+class LeftCssRuntime extends LengthCssProperty<Property.Left> {
   /**
    * 创建 left 属性作者；普通使用通过 s.left 取得共享实例。
    * @example
@@ -9913,18 +8057,6 @@ class LeftCssRuntime extends LengthCssProperty {
   constructor() {
     super('left');
     initializeKeywordDeclarations(this, 'left', autoKeywords);
-  }
-  /**
-   * 原样生成 left 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 left:value;，undefined 返回空字符串。
-   * @example
-   * s.left.raw('inherit') // left:inherit;
-   */
-  raw(value: Property.Left | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 % 单位生成完整属性声明。百分比，100 表示 100%；参照对象由具体属性决定。
@@ -9937,56 +8069,6 @@ class LeftCssRuntime extends LengthCssProperty {
    */
   percent(value: number): string {
     return this.declaration(`${value}%`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.left.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.left.min('var(--first)', 'var(--second)')
-   */
-  min(value: Property.Left | CssString, ...others: (Property.Left | CssString)[]): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.left.max('var(--first)', 'var(--second)')
-   */
-  max(value: Property.Left | CssString, ...others: (Property.Left | CssString)[]): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.left.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.Left | CssString,
-    preferred: Property.Left | CssString,
-    maximum: Property.Left | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -10022,7 +8104,7 @@ export const LetterSpacingKeywords = class LetterSpacingKeywords {
 /**
  * letter-spacing 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class LetterSpacingCssRuntime extends LengthCssProperty {
+class LetterSpacingCssRuntime extends LengthCssProperty<Property.LetterSpacing> {
   /**
    * 创建 letter-spacing 属性作者；普通使用通过 s.letterSpacing 取得共享实例。
    * @example
@@ -10031,74 +8113,6 @@ class LetterSpacingCssRuntime extends LengthCssProperty {
   constructor() {
     super('letter-spacing');
     initializeKeywordDeclarations(this, 'letter-spacing', normalKeywords);
-  }
-  /**
-   * 原样生成 letter-spacing 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 letter-spacing:value;，undefined 返回空字符串。
-   * @example
-   * s.letterSpacing.raw('inherit') // letter-spacing:inherit;
-   */
-  raw(value: Property.LetterSpacing | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.letterSpacing.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.letterSpacing.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.LetterSpacing | CssString,
-    ...others: (Property.LetterSpacing | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.letterSpacing.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.LetterSpacing | CssString,
-    ...others: (Property.LetterSpacing | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.letterSpacing.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.LetterSpacing | CssString,
-    preferred: Property.LetterSpacing | CssString,
-    maximum: Property.LetterSpacing | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -10135,7 +8149,7 @@ export const LightingColorKeywords = class LightingColorKeywords {
 /**
  * lighting-color 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class LightingColorCssRuntime extends CssProperty {
+class LightingColorCssRuntime extends ColorCssProperty<Property.LightingColor> {
   /**
    * 创建 lighting-color 属性作者；普通使用通过 s.lightingColor 取得共享实例。
    * @example
@@ -10144,96 +8158,6 @@ class LightingColorCssRuntime extends CssProperty {
   constructor() {
     super('lighting-color');
     initializeKeywordDeclarations(this, 'lighting-color', colorKeywords);
-  }
-  /**
-   * 原样生成 lighting-color 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 lighting-color:value;，undefined 返回空字符串。
-   * @example
-   * s.lightingColor.raw('inherit') // lighting-color:inherit;
-   */
-  raw(value: Property.LightingColor | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 用现代空格分隔语法生成 RGB 颜色声明。
-   *
-   * 字符串原样输出；库不截断通道或校验 CSS。
-   * @param red 红通道，数值通常为 0–255，或带百分比/变量的 CSS 字符串。
-   * @param green 绿通道，数值通常为 0–255，或 CSS 字符串。
-   * @param blue 蓝通道，数值通常为 0–255，或 CSS 字符串。
-   * @param alpha 可选透明度，数值通常为 0–1，或百分比/变量字符串；0 不会被省略。
-   * @returns 当前属性的完整声明，不是可嵌套的颜色值。
-   * @example
-   * s.lightingColor.rgb(255, 0, 0, 0.5)
-   */
-  rgb(
-    red: number | CssString,
-    green: number | CssString,
-    blue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);
-  }
-  /**
-   * 生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。
-   * @param hue 色相；无单位数值按度解释，也可传带角度单位的字符串。
-   * @param saturation 饱和度，数值 100 表示 100%；字符串保留原单位。
-   * @param lightness 明度，数值 50 表示 50%；字符串保留原单位。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；数值不做截断。
-   * @example
-   * s.lightingColor.hsl(210, 50, 40, 0.8)
-   */
-  hsl(
-    hue: number | CssString,
-    saturation: number | CssString,
-    lightness: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLCH 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param chroma 色度，0 表示无彩色；可呈现范围随明度、色相和设备变化。
-   * @param hue 色相，数值按度解释，也可传角度或变量字符串。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不自动添加百分号或裁切色域。
-   * @example
-   * s.lightingColor.oklch(0.7, 0.15, 250)
-   */
-  oklch(
-    lightness: number | CssString,
-    chroma: number | CssString,
-    hue: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(
-      `oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`,
-    );
-  }
-  /**
-   * 生成 OKLab 颜色声明，通道按原生 CSS 语法输出。
-   * @param lightness 感知明度，数值通常为 0–1；也可传百分比字符串。
-   * @param a 绿到红的色轴，负值偏绿、正值偏红。
-   * @param b 蓝到黄的色轴，负值偏蓝、正值偏黄。
-   * @param alpha 可选透明度，通常为 0–1 或 CSS 百分比/变量字符串。
-   * @returns 当前属性的完整声明；不截断通道数值。
-   * @example
-   * s.lightingColor.oklab(0.7, 0.1, -0.1)
-   */
-  oklab(
-    lightness: number | CssString,
-    a: number | CssString,
-    b: number | CssString,
-    alpha?: number | CssString,
-  ): string {
-    return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);
   }
 }
 /**
@@ -10270,7 +8194,7 @@ export const LineBreakKeywords = class LineBreakKeywords {
 /**
  * line-break 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class LineBreakCssRuntime extends CssProperty {
+class LineBreakCssRuntime extends CssProperty<Property.LineBreak> {
   /**
    * 创建 line-break 属性作者；普通使用通过 s.lineBreak 取得共享实例。
    * @example
@@ -10279,18 +8203,6 @@ class LineBreakCssRuntime extends CssProperty {
   constructor() {
     super('line-break');
     initializeKeywordDeclarations(this, 'line-break', lineBreakKeywords);
-  }
-  /**
-   * 原样生成 line-break 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 line-break:value;，undefined 返回空字符串。
-   * @example
-   * s.lineBreak.raw('inherit') // line-break:inherit;
-   */
-  raw(value: Property.LineBreak | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -10326,7 +8238,7 @@ export const LineClampKeywords = class LineClampKeywords {
 /**
  * line-clamp 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class LineClampCssRuntime extends CssProperty {
+class LineClampCssRuntime extends MathCssProperty<Property.LineClamp> {
   /**
    * 创建 line-clamp 属性作者；普通使用通过 s.lineClamp 取得共享实例。
    * @example
@@ -10335,74 +8247,6 @@ class LineClampCssRuntime extends CssProperty {
   constructor() {
     super('line-clamp');
     initializeKeywordDeclarations(this, 'line-clamp', noneKeywords);
-  }
-  /**
-   * 原样生成 line-clamp 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 line-clamp:value;，undefined 返回空字符串。
-   * @example
-   * s.lineClamp.raw('inherit') // line-clamp:inherit;
-   */
-  raw(value: Property.LineClamp | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.lineClamp.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.lineClamp.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.LineClamp | CssString,
-    ...others: (Property.LineClamp | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.lineClamp.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.LineClamp | CssString,
-    ...others: (Property.LineClamp | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.lineClamp.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.LineClamp | CssString,
-    preferred: Property.LineClamp | CssString,
-    maximum: Property.LineClamp | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -10439,7 +8283,7 @@ export const LineHeightKeywords = class LineHeightKeywords {
 /**
  * line-height 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class LineHeightCssRuntime extends LengthCssProperty {
+class LineHeightCssRuntime extends LengthCssProperty<Property.LineHeight> {
   /**
    * 创建 line-height 属性作者；普通使用通过 s.lineHeight 取得共享实例。
    * @example
@@ -10448,18 +8292,6 @@ class LineHeightCssRuntime extends LengthCssProperty {
   constructor() {
     super('line-height');
     initializeKeywordDeclarations(this, 'line-height', lineHeightKeywords);
-  }
-  /**
-   * 原样生成 line-height 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 line-height:value;，undefined 返回空字符串。
-   * @example
-   * s.lineHeight.raw('inherit') // line-height:inherit;
-   */
-  raw(value: Property.LineHeight | CssString | undefined): string {
-    return this.declaration(value);
   }
   /**
    * 使用 % 单位生成完整属性声明。百分比，100 表示 100%；参照对象由具体属性决定。
@@ -10472,62 +8304,6 @@ class LineHeightCssRuntime extends LengthCssProperty {
    */
   percent(value: number): string {
     return this.declaration(`${value}%`);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.lineHeight.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.lineHeight.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.LineHeight | CssString,
-    ...others: (Property.LineHeight | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.lineHeight.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.LineHeight | CssString,
-    ...others: (Property.LineHeight | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.lineHeight.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.LineHeight | CssString,
-    preferred: Property.LineHeight | CssString,
-    maximum: Property.LineHeight | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -10570,7 +8346,7 @@ export const LineHeightStepKeywords = class LineHeightStepKeywords {
 /**
  * line-height-step 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class LineHeightStepCssRuntime extends LengthCssProperty {
+class LineHeightStepCssRuntime extends LengthCssProperty<Property.LineHeightStep> {
   /**
    * 创建 line-height-step 属性作者；普通使用通过 s.lineHeightStep 取得共享实例。
    * @example
@@ -10579,74 +8355,6 @@ class LineHeightStepCssRuntime extends LengthCssProperty {
   constructor() {
     super('line-height-step');
     initializeKeywordDeclarations(this, 'line-height-step', globalKeywords);
-  }
-  /**
-   * 原样生成 line-height-step 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 line-height-step:value;，undefined 返回空字符串。
-   * @example
-   * s.lineHeightStep.raw('inherit') // line-height-step:inherit;
-   */
-  raw(value: Property.LineHeightStep | CssString | undefined): string {
-    return this.declaration(value);
-  }
-  /**
-   * 将数学表达式放入 CSS calc()，由浏览器计算。
-   * @param expression 不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。
-   * @returns 包含 calc(...) 的完整属性声明，不会在 JavaScript 中求值。
-   * @example
-   * s.lineHeightStep.calc('var(--value) * 2')
-   */
-  calc(expression: string): string {
-    return this.raw(`calc(${expression})`);
-  }
-  /**
-   * 生成 CSS min()，从同维度的候选值中选择最小值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 min(...) 的完整属性声明。
-   * @example
-   * s.lineHeightStep.min('var(--first)', 'var(--second)')
-   */
-  min(
-    value: Property.LineHeightStep | CssString,
-    ...others: (Property.LineHeightStep | CssString)[]
-  ): string {
-    return this.raw(`min(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS max()，从同维度的候选值中选择最大值。
-   * @param value 第一个 CSS 值；长度应带单位，不能传完整属性声明。
-   * @param others 其余同维度的 CSS 值；变量必须解析为当前属性允许的值。
-   * @returns 包含 max(...) 的完整属性声明。
-   * @example
-   * s.lineHeightStep.max('var(--first)', 'var(--second)')
-   */
-  max(
-    value: Property.LineHeightStep | CssString,
-    ...others: (Property.LineHeightStep | CssString)[]
-  ): string {
-    return this.raw(`max(${[value, ...others].join(', ')})`);
-  }
-  /**
-   * 生成 CSS clamp()，将首选值约束在下限和上限之间。
-   *
-   * 参数是裸 CSS 值，不是 s.width.px(...) 等方法返回的完整声明。变量的值和维度由浏览器验证。
-   * @param minimum 下限 CSS 值；下限大于上限时以下限为准。
-   * @param preferred 首选 CSS 值，常用响应式长度或表达式。
-   * @param maximum 上限 CSS 值，须与其他参数维度兼容。
-   * @returns 包含 clamp(...) 的完整属性声明。
-   * @example
-   * s.lineHeightStep.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')
-   */
-  clamp(
-    minimum: Property.LineHeightStep | CssString,
-    preferred: Property.LineHeightStep | CssString,
-    maximum: Property.LineHeightStep | CssString,
-  ): string {
-    return this.raw(`clamp(${[minimum, preferred, maximum].join(', ')})`);
   }
 }
 /**
@@ -10684,7 +8392,7 @@ export const ListStyleKeywords = class ListStyleKeywords {
 /**
  * list-style 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ListStyleCssRuntime extends CssProperty {
+class ListStyleCssRuntime extends CssProperty<Property.ListStyle> {
   /**
    * 创建 list-style 属性作者；普通使用通过 s.listStyle 取得共享实例。
    * @example
@@ -10693,18 +8401,6 @@ class ListStyleCssRuntime extends CssProperty {
   constructor() {
     super('list-style');
     initializeKeywordDeclarations(this, 'list-style', listStyleKeywords);
-  }
-  /**
-   * 原样生成 list-style 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 list-style:value;，undefined 返回空字符串。
-   * @example
-   * s.listStyle.raw('inherit') // list-style:inherit;
-   */
-  raw(value: Property.ListStyle | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -10738,7 +8434,7 @@ export const ListStyleImageKeywords = class ListStyleImageKeywords {
 /**
  * list-style-image 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ListStyleImageCssRuntime extends CssProperty {
+class ListStyleImageCssRuntime extends CssProperty<Property.ListStyleImage> {
   /**
    * 创建 list-style-image 属性作者；普通使用通过 s.listStyleImage 取得共享实例。
    * @example
@@ -10747,18 +8443,6 @@ class ListStyleImageCssRuntime extends CssProperty {
   constructor() {
     super('list-style-image');
     initializeKeywordDeclarations(this, 'list-style-image', noneKeywords);
-  }
-  /**
-   * 原样生成 list-style-image 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 list-style-image:value;，undefined 返回空字符串。
-   * @example
-   * s.listStyleImage.raw('inherit') // list-style-image:inherit;
-   */
-  raw(value: Property.ListStyleImage | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -10796,7 +8480,7 @@ export const ListStylePositionKeywords = class ListStylePositionKeywords {
 /**
  * list-style-position 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ListStylePositionCssRuntime extends CssProperty {
+class ListStylePositionCssRuntime extends CssProperty<Property.ListStylePosition> {
   /**
    * 创建 list-style-position 属性作者；普通使用通过 s.listStylePosition 取得共享实例。
    * @example
@@ -10805,18 +8489,6 @@ class ListStylePositionCssRuntime extends CssProperty {
   constructor() {
     super('list-style-position');
     initializeKeywordDeclarations(this, 'list-style-position', listStylePositionKeywords);
-  }
-  /**
-   * 原样生成 list-style-position 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 list-style-position:value;，undefined 返回空字符串。
-   * @example
-   * s.listStylePosition.raw('inherit') // list-style-position:inherit;
-   */
-  raw(value: Property.ListStylePosition | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**
@@ -10853,7 +8525,7 @@ export const ListStyleTypeKeywords = class ListStyleTypeKeywords {
 /**
  * list-style-type 作者的运行时方法；公共成员类型由原始关键字定义映射。
  */
-class ListStyleTypeCssRuntime extends CssProperty {
+class ListStyleTypeCssRuntime extends CssProperty<Property.ListStyleType> {
   /**
    * 创建 list-style-type 属性作者；普通使用通过 s.listStyleType 取得共享实例。
    * @example
@@ -10862,18 +8534,6 @@ class ListStyleTypeCssRuntime extends CssProperty {
   constructor() {
     super('list-style-type');
     initializeKeywordDeclarations(this, 'list-style-type', noneKeywords);
-  }
-  /**
-   * 原样生成 list-style-type 声明，保留关键字补全并接受自定义 CSS 值。
-   *
-   * 不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。
-   * @param value 裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。
-   * @returns 完整声明字符串，形如 list-style-type:value;，undefined 返回空字符串。
-   * @example
-   * s.listStyleType.raw('inherit') // list-style-type:inherit;
-   */
-  raw(value: Property.ListStyleType | CssString | undefined): string {
-    return this.declaration(value);
   }
 }
 /**

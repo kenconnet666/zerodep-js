@@ -207,3 +207,5 @@ node scripts/language-services/webstorm-patch.mjs $webstormInstall restore
 CSS 已迁入 packages/css，与框架共用工作区依赖、TS7、构建和 LSP。换机只需当前仓库，无需相邻 CSS 仓库或 TS6。见 [原生 CSS](css.md)。
 
 CSS 包入口整理（2026-10-10）：所有 API 从 `zerodep-js-css` 根入口导入，`/server`、`/internal` 已删除。CSS 使用标准 `dist/index.d.ts`、声明映射和随包源码，不需要消费项目的源码 alias/paths 或新的 SDK 补丁。源码为普通相对导入；Vite 按包的 browser 字段替换宿主，Node SSR 仍隔离异步请求。UI 具体主题从 `zerodep-js-ui` 导入；UI 自身仍保留上面说明的源码 types 入口。两包的类型入口结论不能混用。
+
+CSS 属性方法共享（2026-10-10）：当前采用普通类继承，width.clamp 等仍显示属性的精确参数类型；中文说明来自共享基类，Ctrl+B 定位 generated/base.ts 的真实方法。不要为保持每属性定义位置而额外合并接口方法声明：本机 EAP 对这种形式仅显示简化补全项。实际验证了 clamp 参数列表、补全括号、raw/clamp 实现跳转和 rgb 中文说明，无需修改 IDE 设置。验收中曾出现一次内部 signatureHelp 的 200 ms 超时，后续功能恢复；没有将该 EAP 异常当作代码类型检查失败或悄悄调整全局超时。

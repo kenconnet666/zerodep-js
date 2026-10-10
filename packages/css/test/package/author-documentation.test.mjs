@@ -17,6 +17,13 @@ const declarations = readdirSync(directory)
 const docs = (node) => (node.leadingComments ?? []).map((comment) => comment.value).join('\n');
 
 await test('全部属性、关键字与公共方法保留中文说明、参数及示例', () => {
+  assert(
+    !declarations.some((entry) => {
+      const node = entry.type === 'ExportNamedDeclaration' ? entry.declaration : entry;
+      return node?.type === 'TSInterfaceDeclaration' && node.id.name.endsWith('CssRuntime');
+    }),
+    '属性方法直接继承真实实现；接口补声明会使 WebStorm 丢失普通方法的参数补全展示',
+  );
   let properties = 0;
   let signatures = 0;
   for (const entry of declarations) {

@@ -3,7 +3,14 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import prettier from 'prettier';
 import { parse } from '@babel/parser';
-import { units, extraUnits, unitMethod, valueMethods, gridMethods } from './css-author-methods.mjs';
+import {
+  units,
+  extraUnits,
+  unitMethod,
+  rawMethod,
+  valueMethods,
+  gridMethods,
+} from './css-author-methods.mjs';
 import {
   jsdoc,
   propertyDocumentation,
@@ -165,7 +172,7 @@ const base = [
   'export type CssString = string & {};',
   '',
   '/** CSS 声明构造基类；供属性子类复用，不验证输入或登记样式。 */',
-  'export class CssProperty {',
+  'export class CssProperty<V extends string | number = string | number> {',
   '/** 写入声明的 CSS 属性原名。 */',
   '  protected readonly name: string;',
   jsdoc('构造指定 CSS 属性的声明作者。', {
@@ -178,22 +185,35 @@ const base = [
     returns: '形如 name:value; 的完整声明字符串，undefined 返回空字符串。',
   }),
   '  protected declaration(value: string | number | undefined): string { return value === undefined ? "" : `${this.name}:${value};`; }',
+  ...rawMethod('V'),
   '}',
-  '/** 共享长度单位方法；值的参照和限制仍由具体 CSS 属性决定。 */',
-  'export class LengthCssProperty extends CssProperty {',
+  '/** 共享数学方法；泛型保留属性对裸值的具体约束。 */',
+  'export class MathCssProperty<V extends string | number = string | number> extends CssProperty<V> {',
+  ...valueMethods('V', false, true, 'width'),
+  '}',
+  '/** 共享颜色方法；格式化后仍调用可覆写的 raw。 */',
+  'export class ColorCssProperty<V extends string | number = string | number> extends CssProperty<V> {',
+  ...valueMethods('V', true, false, 'color'),
+  '}',
+  '/** 共享长度和数学方法；值的参照和限制仍由具体 CSS 属性决定。 */',
+  'export class LengthCssProperty<V extends string | number = string | number> extends MathCssProperty<V> {',
   ...Object.entries(units).flatMap(([name, suffix]) => unitMethod(name, suffix)),
+  '}',
+  '/** 同时支持长度与颜色的属性复用此基类，不向其他长度属性开放颜色方法。 */',
+  'export class ColorLengthCssProperty<V extends string | number = string | number> extends LengthCssProperty<V> {',
+  ...valueMethods('V', true, false, 'color'),
   '}',
   '/** 作者单位方法到原生 CSS 后缀的映射，例如 percent 对应 %。 */',
   `export const unitSuffix: Readonly<Record<string, string>> = ${JSON.stringify({ ...units, ...extraUnits })};`,
 ];
 const groups = ['a', 'b', 'c-f', 'g-l', 'm-o', 'p-r', 's-t', 'u-z'];
+const baseImports = new Map(groups.map((group) => [group, new Set()]));
 const groupLines = new Map(
   groups.map((group) => [
     group,
     [
       ...header,
       "import type { Property } from 'csstype';",
-      "import { CssProperty, LengthCssProperty, type CssString } from './base.js';",
       "import { initializeKeywordDeclarations } from '../util/keywords.js';",
       "import type { KeywordDeclarations, KeywordValuesOf } from '../util/keywords.js';",
       '// 关键字是实例上的声明字符串；系统实例按属性链惰性创建并共享。',
@@ -317,6 +337,18 @@ for (const name of names) {
   const hasAngle = /<angle(?:\s[^>]*)?>/.test(syntax);
   const hasColor = keywords.some(([name]) => name === 'red');
   const hasNumber = valuesOf(member.type).some((value) => typeof value === 'number');
+  const hasMath = hasLength || hasPercent || hasTime || hasAngle || hasNumber;
+  const baseClass = hasColor
+    ? hasLength
+      ? 'ColorLengthCssProperty'
+      : 'ColorCssProperty'
+    : hasLength
+      ? 'LengthCssProperty'
+      : hasMath
+        ? 'MathCssProperty'
+        : 'CssProperty';
+  // 当前颜色+数学组合均属于长度属性；新增组合时明确扩展基类，不能静默漏方法。
+  if (hasColor && hasMath && !hasLength) throw new Error(`Unsupported CSS method group: ${name}.`);
   const grid = gridMethods(name);
   const methodNames = [
     ...Object.keys(grid),
@@ -337,6 +369,7 @@ for (const name of names) {
   const group = groupFor(name);
   if (!group) throw new Error(`No generated group for ${name}.`);
   const lines = groupLines.get(group);
+  baseImports.get(group).add(baseClass);
   const alias = `group${groups.indexOf(group)}`;
   const keywordClass = className.replace(/Css$/, 'Keywords');
   // 值相同但 auto/normal 等说明不同的属性不能共用文档；不重复附加属性专属声明示例。
@@ -370,24 +403,13 @@ for (const name of names) {
   lines.push(
     '',
     jsdoc(`${cssName} 作者的运行时方法；公共成员类型由原始关键字定义映射。`),
-    `class ${className}Runtime extends ${hasLength ? 'LengthCssProperty' : 'CssProperty'} {`,
+    `class ${className}Runtime extends ${baseClass}<Property.${type}> {`,
   );
   lines.push(
     jsdoc(`创建 ${cssName} 属性作者；普通使用通过 s.${name} 取得共享实例。`, {
       examples: [`class Custom${className} extends ${className} {}`],
     }),
     `  constructor() { super(${JSON.stringify(cssName)}); initializeKeywordDeclarations(this, ${JSON.stringify(cssName)}, ${dataName}); }`,
-  );
-  lines.push(
-    jsdoc(`原样生成 ${cssName} 声明，保留关键字补全并接受自定义 CSS 值。`, {
-      params: {
-        value: '裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。',
-      },
-      remarks: '不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。',
-      returns: `完整声明字符串，形如 ${cssName}:value;，undefined 返回空字符串。`,
-      examples: [`s.${name}.raw('inherit') // ${cssName}:inherit;`],
-    }),
-    `raw(value: Property.${type} | CssString | undefined): string { return this.declaration(value); }`,
   );
   if (hasLength && maxArgs > 1)
     for (const [unit, suffix] of Object.entries(units))
@@ -398,16 +420,7 @@ for (const name of names) {
   if (hasAngle)
     for (const unit of ['deg', 'grad', 'rad', 'turn'])
       lines.push(...unitMethod(unit, unit, 1, 1, false, name));
-  lines.push(
-    ...valueMethods(
-      type,
-      hasColor,
-      hasLength || hasPercent || hasTime || hasAngle || hasNumber,
-      name,
-    ),
-    ...Object.values(grid).flat(),
-  );
-  lines.push('}');
+  lines.push(...Object.values(grid).flat(), '}');
   lines.push(
     jsdoc(`${cssName} 属性作者；关键字读取为完整声明字符串，保留中文说明。`),
     `export type ${className} = ${className}Runtime & KeywordDeclarations<${keywordClass}>;`,
@@ -420,6 +433,13 @@ for (const name of names) {
   );
   systemCreators.push(
     `defineSystemProperty(${JSON.stringify(setting.name)}, () => new ${alias}.${className}());`,
+  );
+}
+for (const [group, lines] of groupLines) {
+  lines.splice(
+    header.length + 1,
+    0,
+    `import { ${[...baseImports.get(group), 'type CssString'].join(', ')} } from './base.js';`,
   );
 }
 for (const name of ['_selector', ...Object.keys(selectorShortcuts)]) {
@@ -545,13 +565,14 @@ for (const [name, lines] of files) {
     ...(await prettier.resolveConfig(output)),
     filepath: output,
   });
+  const existing = await readFile(output, 'utf8').catch((error) => {
+    if (error.code === 'ENOENT') return '';
+    throw error;
+  });
   if (mode === '--check') {
-    const existing = await readFile(output, 'utf8').catch((error) => {
-      if (error.code === 'ENOENT') return '';
-      throw error;
-    });
     if (existing !== result) throw new Error(`CSS author output ${name}.ts is stale.`);
-  } else {
+  } else if (existing !== result) {
+    // 不重写未改变的大文件，避免开发期间无意义的 IDE 重索引和文件争用。
     await mkdir(dirname(output), { recursive: true });
     await writeFile(output, result);
   }

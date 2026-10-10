@@ -86,6 +86,28 @@ export function unitMethod(name, suffix, min = 1, max = 1, override = false, pro
   ];
 }
 
+// 各组基类从同一份签名、文档和实现生成，属性类只负责继承。
+function method(signature, body) {
+  return `${signature} { ${body} }`;
+}
+
+export function rawMethod(type) {
+  return [
+    jsdoc('原样生成当前属性声明，保留关键字补全并接受自定义 CSS 值。', {
+      params: {
+        value: '裸 CSS 属性值；undefined 省略声明。不包含属性名或末尾分号，数字不自动添加单位。',
+      },
+      remarks: '不做 CSS 语法校验或转义。多个值、函数或变量可写在同一个字符串中。',
+      returns: '完整声明字符串，形如 name:value;，undefined 返回空字符串。',
+      examples: ["s.width.raw('inherit') // width:inherit;"],
+    }),
+    method(
+      `raw(value: ${type} | CssString | undefined): string`,
+      'return this.declaration(value);',
+    ),
+  ];
+}
+
 export function valueMethods(type, color, math, property) {
   const lines = [];
   if (color)
@@ -101,7 +123,10 @@ export function valueMethods(type, color, math, property) {
         returns: '当前属性的完整声明，不是可嵌套的颜色值。',
         examples: [`s.${property}.rgb(255, 0, 0, 0.5)`],
       }),
-      "rgb(red: number | CssString, green: number | CssString, blue: number | CssString, alpha?: number | CssString): string { return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`); }",
+      method(
+        'rgb(red: number | CssString, green: number | CssString, blue: number | CssString, alpha?: number | CssString): string',
+        "return this.raw(`rgb(${red} ${green} ${blue}${alpha === undefined ? '' : ` / ${alpha}`})`);",
+      ),
       jsdoc('生成 HSL 颜色声明，数值饱和度和明度自动添加百分号。', {
         params: {
           hue: '色相；无单位数值按度解释，也可传带角度单位的字符串。',
@@ -112,7 +137,10 @@ export function valueMethods(type, color, math, property) {
         returns: '当前属性的完整声明；数值不做截断。',
         examples: [`s.${property}.hsl(210, 50, 40, 0.8)`],
       }),
-      "hsl(hue: number | CssString, saturation: number | CssString, lightness: number | CssString, alpha?: number | CssString): string { return this.raw(`hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`); }",
+      method(
+        'hsl(hue: number | CssString, saturation: number | CssString, lightness: number | CssString, alpha?: number | CssString): string',
+        "return this.raw(`hsl(${hue} ${typeof saturation === 'number' ? saturation + '%' : saturation} ${typeof lightness === 'number' ? lightness + '%' : lightness}${alpha === undefined ? '' : ` / ${alpha}`})`);",
+      ),
     );
   if (color)
     lines.push(
@@ -126,7 +154,10 @@ export function valueMethods(type, color, math, property) {
         returns: '当前属性的完整声明；不自动添加百分号或裁切色域。',
         examples: [`s.${property}.oklch(0.7, 0.15, 250)`],
       }),
-      "oklch(lightness: number | CssString, chroma: number | CssString, hue: number | CssString, alpha?: number | CssString): string { return this.raw(`oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`); }",
+      method(
+        'oklch(lightness: number | CssString, chroma: number | CssString, hue: number | CssString, alpha?: number | CssString): string',
+        "return this.raw(`oklch(${lightness} ${chroma} ${hue}${alpha === undefined ? '' : ` / ${alpha}`})`);",
+      ),
       jsdoc('生成 OKLab 颜色声明，通道按原生 CSS 语法输出。', {
         params: {
           lightness: '感知明度，数值通常为 0–1；也可传百分比字符串。',
@@ -137,11 +168,14 @@ export function valueMethods(type, color, math, property) {
         returns: '当前属性的完整声明；不截断通道数值。',
         examples: [`s.${property}.oklab(0.7, 0.1, -0.1)`],
       }),
-      "oklab(lightness: number | CssString, a: number | CssString, b: number | CssString, alpha?: number | CssString): string { return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`); }",
+      method(
+        'oklab(lightness: number | CssString, a: number | CssString, b: number | CssString, alpha?: number | CssString): string',
+        "return this.raw(`oklab(${lightness} ${a} ${b}${alpha === undefined ? '' : ` / ${alpha}`})`);",
+      ),
     );
   if (math) {
     // CSS 属性值只含字符串与数值；开放字符串已覆盖关键字，无需再用 Extract。
-    const value = `Property.${type} | CssString`;
+    const value = `${type} | CssString`;
     lines.push(
       jsdoc('将数学表达式放入 CSS calc()，由浏览器计算。', {
         params: { expression: '不含外层 calc() 的表达式；非零长度须带单位，加减号两侧保留空格。' },
@@ -152,7 +186,7 @@ export function valueMethods(type, color, math, property) {
             : `s.${property}.calc('var(--value) * 2')`,
         ],
       }),
-      'calc(expression: string): string { return this.raw(`calc(${expression})`); }',
+      method('calc(expression: string): string', 'return this.raw(`calc(${expression})`);'),
     );
     for (const name of ['min', 'max'])
       lines.push(
@@ -168,7 +202,10 @@ export function valueMethods(type, color, math, property) {
               : `s.${property}.${name}('var(--first)', 'var(--second)')`,
           ],
         }),
-        `${name}(value: ${value}, ...others: (${value})[]): string { return this.raw(\`${name}(\${[value, ...others].join(', ')})\`); }`,
+        method(
+          `${name}(value: ${value}, ...others: (${value})[]): string`,
+          `return this.raw(\`${name}(\${[value, ...others].join(', ')})\`);`,
+        ),
       );
     // join 避免 TypeScript 为三个大型关键字联合展开模板字面量的笛卡尔积。
     lines.push(
@@ -187,7 +224,10 @@ export function valueMethods(type, color, math, property) {
             : `s.${property}.clamp('var(--minimum)', 'var(--preferred)', 'var(--maximum)')`,
         ],
       }),
-      `clamp(minimum: ${value}, preferred: ${value}, maximum: ${value}): string { return this.raw(\`clamp(\${[minimum, preferred, maximum].join(', ')})\`); }`,
+      method(
+        `clamp(minimum: ${value}, preferred: ${value}, maximum: ${value}): string`,
+        `return this.raw(\`clamp(\${[minimum, preferred, maximum].join(', ')})\`);`,
+      ),
     );
   }
   return lines;

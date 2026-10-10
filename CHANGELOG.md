@@ -2,6 +2,8 @@
 
 ## 未发布 — 单仓库 CSS 与构建工具精简
 
+- CSS 的 raw、数学和颜色方法按五组泛型基类共享，1,582 份重复实现归并为 13 份；属性类型及继承覆写保持。根据真实 WebStorm 验收采用直接继承，保留完整参数补全、中文说明和实现跳转，不保留干扰 IDE 展示的接口补声明。生成器只重写变化文件。
+
 - CSS 手写代码由 17 个文件收拢为 8 个，根目录只留 index.ts，统一 runtime/generated/util。主题缓存改为属性访问时创建；系统关键字查询表复用，动态绑定删除第三次重复作者核对，保留求值及安全回退语义。
 
 - CSS 只公开包根，移除 /server、/internal；SSR API 与编译器绑定统一从 zerodep-js-css 导入。源码按 author/theme/runtime 分组，导出清单只维护 src/index.ts；标准 browser 字段选择浏览器宿主。
