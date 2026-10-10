@@ -1,8 +1,15 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { Css, SystemKeywords, systemKeywords, ColorCss } from '../../dist/index.js';
-import { authorInputs } from '../../dist/author-guards.js';
-import { createServerCssHost, withCssHost, css } from '../../dist/server.js';
+import {
+  Css,
+  SystemKeywords,
+  systemKeywords,
+  ColorCss,
+  createServerCssHost,
+  withCssHost,
+  css,
+} from '../../dist/index.js';
+import { authorInputs } from '../../dist/author/author-guards.js';
 
 class Light extends SystemKeywords {
   color = { ...systemKeywords.color, _primary: '#1d4ed8' };

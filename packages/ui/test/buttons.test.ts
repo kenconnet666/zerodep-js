@@ -2,7 +2,7 @@ import { expect, it } from 'vitest';
 import { Search } from '@lucide/icons';
 import { defineComponent, element } from 'zerodep-js/internal';
 import { renderToString } from 'zerodep-js-ssr';
-import { createServerCssHost, withCssHost } from 'zerodep-js-css/server';
+import { createServerCssHost, withCssHost } from 'zerodep-js-css';
 import { Provider, Button, IconButton, ToggleButton, LinkButton, Flex } from '../dist/index.js';
 import { build } from 'vite';
 import { resolve } from 'node:path';

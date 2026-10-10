@@ -17,20 +17,8 @@
   ],
   "exports": {
     ".": {
-      "node": {
-        "types": "./dist/server.d.ts",
-        "default": "./dist/server.js"
-      },
       "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    },
-    "./server": {
-      "types": "./dist/server.d.ts",
-      "node": "./dist/server.js"
-    },
-    "./internal": {
-      "types": "./dist/internal.d.ts",
-      "import": "./dist/internal.js"
+      "import": "./dist/index.js"
     }
   },
   "scripts": {
@@ -64,5 +52,8 @@
   "description": "zerodep-js 原生 CSS 作者、隐式变量与浏览器/SSR 样式管理",
   "peerDependencies": {
     "zerodep-js": "workspace:*"
+  },
+  "browser": {
+    "./dist/runtime/server.js": "./dist/runtime/browser.js"
   }
 }

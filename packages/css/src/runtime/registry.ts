@@ -1,6 +1,6 @@
 import { hash } from './names.js';
-import { joinFragments, type CssInput } from './fragments.js';
-export type { CssInput } from './fragments.js';
+import { joinFragments, type CssInput } from '../author/fragments.js';
+export type { CssInput } from '../author/fragments.js';
 
 export interface CssRule {
   className: string;

@@ -1,9 +1,16 @@
-import type { TextProps, ButtonBaseProps, RippleProps, SlotProps } from '../src/index.js';
+import type {
+  TextProps,
+  ButtonBaseProps,
+  RippleProps,
+  SlotProps,
+  ProviderProps,
+  ElementSize,
+  UiTheme,
+} from '../src/index.js';
 import type { CssValue } from 'zerodep-js-css';
-import type { ProviderProps, ElementSize } from '../src/index.js';
 
 const text: TextProps = { as: 'h2', color: '_primary', weight: 500, size: '1.25rem' };
-const color: CssValue<'color'> = '_primary';
+const color: CssValue<'color', UiTheme> = '_primary';
 const button: ButtonBaseProps = {
   size: '_md',
   slotRipple: (state) => ({ color: state.disabled ? '_disabled' : '_primary' }),
@@ -18,7 +25,7 @@ const invalidSlot: ButtonBaseProps = { slotRipple: { disabled: false } };
 // @ts-expect-error 不再提供统一的 slotProps 入口。
 const legacySlot: ButtonBaseProps = { slotProps: { ripple: { color: '_primary' } } };
 // @ts-expect-error 颜色不接受裸数字。
-const invalidColor: CssValue<'color'> = 5;
+const invalidColor: CssValue<'color', UiTheme> = 5;
 // @ts-expect-error size 是 CSS 字号，不把裸数字隐式转换为像素。
 const invalidSize: ButtonBaseProps = { size: 16 };
 const fluid: ProviderProps = { size: 'clamp(1rem, 2vw, 2rem)' };

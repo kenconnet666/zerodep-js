@@ -212,7 +212,7 @@ export function prepareCss(ast: t.File, program: NodePath<t.Program>, source: st
       'body',
       t.importDeclaration(
         [t.importNamespaceSpecifier(namespace)],
-        t.stringLiteral('zerodep-js-css/internal'),
+        t.stringLiteral('zerodep-js-css'),
       ),
     );
   return { elements, records, identifiers, call };

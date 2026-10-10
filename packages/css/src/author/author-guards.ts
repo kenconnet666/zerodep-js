@@ -1,5 +1,5 @@
-import { Css } from './generated/author.js';
-import { hasKeywordSource } from './keyword-source.js';
+import { Css } from '../generated/author.js';
+import { hasKeywordSource } from '../theme/keyword-source.js';
 
 let system: Css | undefined;
 

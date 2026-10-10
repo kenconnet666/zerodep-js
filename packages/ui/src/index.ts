@@ -20,7 +20,10 @@ export { type UiLanguage } from './provider/lang/types.js';
 export { zhCN } from './provider/lang/zh-CN.js';
 export { type UiLocale } from './provider/locale.js';
 export { type ProviderProps, Provider } from './provider/Provider.js';
-export { _composeEventHandlers } from './utils/events.js';
+export { DarkTheme, darkTheme } from './provider/theme/dark.js';
+export { LightTheme, lightTheme } from './provider/theme/light.js';
+export { UiTheme } from './provider/theme/theme.js';
+export { type UiColors } from './provider/theme/tokens.js';
 export {
   type ElementSize,
   _readFontSizePx,
@@ -28,4 +31,4 @@ export {
   _observeFontSize,
 } from './utils/measure.js';
 export { type PressPoint, type PressOptions, _press } from './utils/press.js';
-export { type SlotProps, _resolveSlotProps, _mergeSlotProps } from './utils/slot-props.js';
+export { type SlotProps, _resolveSlotProps } from './utils/slot-props.js';

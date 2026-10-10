@@ -1,5 +1,5 @@
-import { systemKeywords } from 'zerodep-js-css';
-import type { UiTheme, UiColors } from 'zerodep-js-css';
+import { systemKeywords, Css } from 'zerodep-js-css';
+import type { UiTheme, UiColors } from '../src/index.js';
 
 // 定义导航不能以收窄为默认字面量或放宽成 any 为代价。
 const border: UiTheme['borderWidth'] = {
@@ -24,7 +24,7 @@ border._unknown satisfies string;
 const invalid: UiColors['_primary'] = () => 'red';
 void invalid;
 
-import { Css, lightTheme } from 'zerodep-js-css';
+import { lightTheme } from '../src/index.js';
 const themed = new Css(lightTheme);
 themed.color.raw(undefined) satisfies string;
 themed.fontSize.raw(undefined) satisfies string;

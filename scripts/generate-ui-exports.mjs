@@ -19,6 +19,10 @@ const entries = new Map([
   ['provider/lang/zh-CN.ts', ['zhCN']],
   ['provider/lang/types.ts', ['UiLanguage']],
   ['provider/locale.ts', ['UiLocale']],
+  ['provider/theme/theme.ts', ['UiTheme']],
+  ['provider/theme/tokens.ts', ['UiColors']],
+  ['provider/theme/light.ts', ['LightTheme', 'lightTheme']],
+  ['provider/theme/dark.ts', ['DarkTheme', 'darkTheme']],
 ]);
 async function collect(directory) {
   for (const item of await readdir(resolve(source, directory), { withFileTypes: true })) {

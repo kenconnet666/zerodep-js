@@ -1,3 +1,4 @@
+import type { UiTheme } from '../provider/theme/theme.js';
 import { _component, _effect, _state, type JSX } from 'zerodep-js';
 import { _mergeClasses, css, type CssValue } from 'zerodep-js-css';
 import { useCss } from '../provider/context.js';
@@ -6,7 +7,7 @@ import { _press } from '../utils/press.js';
 export type RippleProps = Omit<JSX.IntrinsicElements['span'], 'children' | 'color'> & {
   disabled?: boolean | undefined;
   centered?: boolean | undefined;
-  color?: CssValue<'color'>;
+  color?: CssValue<'color', UiTheme>;
   children?: never;
 };
 

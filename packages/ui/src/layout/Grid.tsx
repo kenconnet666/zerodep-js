@@ -1,29 +1,30 @@
+import type { UiTheme } from '../provider/theme/theme.js';
 import { _component, _derived, _effect, _state, type JSX } from 'zerodep-js';
 import { css, _mergeClasses, type CssValue } from 'zerodep-js-css';
 import { useCss } from '../provider/context.js';
 
 interface GridCommon extends Omit<JSX.IntrinsicElements['div'], 'size'> {
   inline?: boolean | undefined;
-  size?: CssValue<'fontSize'>;
-  rows?: CssValue<'gridTemplateRows'>;
-  autoRows?: CssValue<'gridAutoRows'>;
-  autoColumns?: CssValue<'gridAutoColumns'>;
+  size?: CssValue<'fontSize', UiTheme>;
+  rows?: CssValue<'gridTemplateRows', UiTheme>;
+  autoRows?: CssValue<'gridAutoRows', UiTheme>;
+  autoColumns?: CssValue<'gridAutoColumns', UiTheme>;
 }
 export type GridProps = GridCommon &
   (
     | {
         attached?: false | undefined;
         /** 正整数为等宽列，字符串直接采用 CSS 轨道定义。默认 1 列。 */
-        columns?: number | Exclude<CssValue<'gridTemplateColumns'>, number>;
-        areas?: CssValue<'gridTemplateAreas'>;
-        autoFlow?: CssValue<'gridAutoFlow'>;
-        gap?: CssValue<'gap'>;
-        rowGap?: CssValue<'rowGap'>;
-        columnGap?: CssValue<'columnGap'>;
-        alignItems?: CssValue<'alignItems'>;
-        justifyItems?: CssValue<'justifyItems'>;
-        alignContent?: CssValue<'alignContent'>;
-        justifyContent?: CssValue<'justifyContent'>;
+        columns?: number | Exclude<CssValue<'gridTemplateColumns', UiTheme>, number>;
+        areas?: CssValue<'gridTemplateAreas', UiTheme>;
+        autoFlow?: CssValue<'gridAutoFlow', UiTheme>;
+        gap?: CssValue<'gap', UiTheme>;
+        rowGap?: CssValue<'rowGap', UiTheme>;
+        columnGap?: CssValue<'columnGap', UiTheme>;
+        alignItems?: CssValue<'alignItems', UiTheme>;
+        justifyItems?: CssValue<'justifyItems', UiTheme>;
+        alignContent?: CssValue<'alignContent', UiTheme>;
+        justifyContent?: CssValue<'justifyContent', UiTheme>;
       }
     | {
         /** 零间距、按行填充的单格相连控件；不支持跨格、CSS order 或自动列数。 */

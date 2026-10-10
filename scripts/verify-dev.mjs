@@ -117,10 +117,7 @@ export function verifyReferences() {
     `
 import { _mount } from 'zerodep-js';
 import { _inspect } from 'zerodep-js/devtools';
-import { Css } from 'zerodep-js-css';
-import { css } from 'zerodep-js-css';
-import 'zerodep-js-css/internal';
-import { hydrateCss } from 'zerodep-js-css';
+import { Css, css, hydrateCss } from 'zerodep-js-css';
 import { App } from './App.tsx';
 // 预先声明夹具随后使用的依赖，避免新增依赖触发 Vite 的整页重新优化。
 void Css; void css;
@@ -141,7 +138,7 @@ if (import.meta.hot) {
   await writeFile(
     resolve(fixture, 'server.ts'),
     `import { renderToString } from 'zerodep-js-ssr';
-import { createServerCssHost, withCssHost, serializeCssRules } from 'zerodep-js-css/server';
+import { createServerCssHost, withCssHost, serializeCssRules } from 'zerodep-js-css';
 import { App } from './App.tsx';
 export const render = () => {
   const host = createServerCssHost();

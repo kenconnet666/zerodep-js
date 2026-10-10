@@ -1,4 +1,4 @@
-import type { KeywordValues, SystemKeywords } from './generated/keywords.js';
+import type { KeywordValues, SystemKeywords } from '../generated/keywords.js';
 
 /** 主题提供原始 CSS 值；读取函数用于框架响应式主题替换。 */
 export type KeywordSource<T> = T | (() => T);

@@ -1,3 +1,4 @@
+import type { UiTheme } from '../provider/theme/theme.js';
 import { _component, _derived, _effect, _state, type JSX } from 'zerodep-js';
 import { css, _mergeClasses, type CssValue } from 'zerodep-js-css';
 import { useCss } from '../provider/context.js';
@@ -5,8 +6,8 @@ import { useCss } from '../provider/context.js';
 interface FlexCommon extends Omit<JSX.IntrinsicElements['div'], 'size'> {
   direction?: 'row' | 'column' | undefined;
   inline?: boolean | undefined;
-  justifyContent?: CssValue<'justifyContent'>;
-  size?: CssValue<'fontSize'>;
+  justifyContent?: CssValue<'justifyContent', UiTheme>;
+  size?: CssValue<'fontSize', UiTheme>;
   /** 直接元素子项沿主轴等分；纵向需要可分配的容器高度。 */
   equal?: boolean | undefined;
 }
@@ -15,10 +16,10 @@ export type FlexProps = FlexCommon &
     | {
         attached?: false | undefined;
         wrap?: 'nowrap' | 'wrap' | 'wrap-reverse' | undefined;
-        gap?: CssValue<'gap'>;
-        rowGap?: CssValue<'rowGap'>;
-        columnGap?: CssValue<'columnGap'>;
-        alignItems?: CssValue<'alignItems'>;
+        gap?: CssValue<'gap', UiTheme>;
+        rowGap?: CssValue<'rowGap', UiTheme>;
+        columnGap?: CssValue<'columnGap', UiTheme>;
+        alignItems?: CssValue<'alignItems', UiTheme>;
       }
     | {
         /** 相连模式只影响直接兼容控件，保留外侧圆角，接触侧无圆角且边框重叠。 */

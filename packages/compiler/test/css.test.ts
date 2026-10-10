@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { Css, SystemKeywords, systemKeywords } from 'zerodep-js-css';
-import { createServerCssHost, withCssHost } from 'zerodep-js-css/server';
+import { createServerCssHost, withCssHost } from 'zerodep-js-css';
 import { execute } from './execute.js';
 import { compile } from '../src/index.js';
-import { cssBinding } from 'zerodep-js-css/internal';
+import { cssBinding } from 'zerodep-js-css';
 import { TraceMap, originalPositionFor } from '@jridgewell/trace-mapping';
 
 function run(source: string) {

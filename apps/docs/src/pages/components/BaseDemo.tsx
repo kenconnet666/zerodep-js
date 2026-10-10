@@ -1,7 +1,6 @@
 import { _component, _state } from 'zerodep-js';
-import { darkTheme, lightTheme } from 'zerodep-js-css';
+import { darkTheme, lightTheme, ButtonBase, Icon, Provider, Spinner, Text } from 'zerodep-js-ui';
 import { Search } from '@lucide/icons';
-import { ButtonBase, Icon, Provider, Spinner, Text } from 'zerodep-js-ui';
 
 export const BaseDemo = _component(() => {
   let disabled = _state(false);

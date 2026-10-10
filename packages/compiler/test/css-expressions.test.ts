@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest';
 import { Css } from 'zerodep-js-css';
-import { createServerCssHost, withCssHost } from 'zerodep-js-css/server';
+import { createServerCssHost, withCssHost } from 'zerodep-js-css';
 import { compile } from '../src/index.js';
 import { execute } from './execute.js';
 

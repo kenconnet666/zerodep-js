@@ -12,7 +12,7 @@ import {
   validateKeywordDocs,
   selectorDescriptions,
 } from './css-author-docs.mjs';
-import { selectorShortcuts } from '../packages/css/src/selector-shortcuts.ts';
+import { selectorShortcuts } from '../packages/css/src/author/selector-shortcuts.ts';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const input = resolve(root, 'packages/css/node_modules/csstype/index.d.ts');
@@ -194,8 +194,8 @@ const groupLines = new Map(
       ...header,
       "import type { Property } from 'csstype';",
       "import { CssProperty, LengthCssProperty, type CssString } from './base.js';",
-      "import { initializeKeywordDeclarations } from '../keyword-data.js';",
-      "import type { KeywordDeclarations, KeywordValuesOf } from '../keyword-source.js';",
+      "import { initializeKeywordDeclarations } from '../theme/keyword-data.js';",
+      "import type { KeywordDeclarations, KeywordValuesOf } from '../theme/keyword-source.js';",
       '// 关键字是实例上的声明字符串；系统实例按属性链惰性创建并共享。',
     ],
   ]),
@@ -426,11 +426,11 @@ for (const name of ['_selector', ...Object.keys(selectorShortcuts)]) {
   if (properties.has(name)) throw new Error(`CSS selector method conflicts with property: ${name}`);
 }
 author.push(
-  "import { selectorRule, type CssSelector } from '../selectors.js';",
-  "import type { CssInput } from '../registry.js';",
+  "import { selectorRule, type CssSelector } from '../author/selectors.js';",
+  "import type { CssInput } from '../runtime/registry.js';",
   "import { SystemKeywords, systemKeywords } from './keywords.js';",
   "export * from './keywords.js';",
-  "import { getKeywordSource, setKeywordSource, bindKeywords, type KeywordSource, type KeywordAuthor, type CheckedKeywords } from '../keyword-source.js';",
+  "import { getKeywordSource, setKeywordSource, bindKeywords, type KeywordSource, type KeywordAuthor, type CheckedKeywords } from '../theme/keyword-source.js';",
   '',
   '// 仅在首次构造作者实例时注册，避免未使用的属性链阻止按需打包。',
   'let systemPropertiesReady = false;',
@@ -538,7 +538,7 @@ const files = new Map([
   ['keywords', keywordRoot],
   ['keyword-sets', sharedKeywordLines],
 ]);
-// 可选预设单独导出，不能从纯系统作者入口反向导入主题。
+// 这里只生成系统作者与关键字；具体 UI 主题由 UI 包维护。
 for (const [name, lines] of files) {
   const output = resolve(outputDir, `${name}.ts`);
   const result = await prettier.format(lines.join('\n') + '\n', {

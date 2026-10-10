@@ -1,3 +1,4 @@
+import type { ServerCssHost } from './collector.js';
 import { createRuleRegistry, ruleText, type CssRule, type CssInput } from './registry.js';
 import { serializeStyleRules } from './serialization.js';
 
@@ -175,4 +176,9 @@ export function hydrateCss(rules?: readonly CssRule[], target: Document = docume
     throw error;
   }
   manifest?.remove();
+}
+
+/** 请求异步隔离只支持 Node SSR；浏览器直接使用文档宿主。 */
+export function withCssHost<T>(_host: ServerCssHost, _render: () => T): T {
+  throw new Error('withCssHost requires the Node SSR environment.');
 }

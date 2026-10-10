@@ -103,7 +103,7 @@
 
 2026-10-09 用户已授权实施，Icon 位于 packages/ui/src/base/Icon.tsx。图标来源使用静态导入的 @lucide/icons；UI 保持 private。组件用法见 packages/ui/README.md 和 apps/docs 的 Icon 示例。
 
-- UiTheme、UiColors、亮暗主题及通用颜色、字号、间距、圆角、动效等 token 归 packages/css/src/theme，统一从 zerodep-js-css 导出；UI 不保留主题兼容转发。手写主题继承 SystemKeywords，不修改生成数据。Provider 继续负责作用域注入。
+- UiTheme、UiColors、亮暗主题及通用颜色、字号、间距、圆角、动效等 token 归 packages/ui/src/provider/theme，统一从 zerodep-js-ui 导出；CSS 包不包含具体 UI 主题。手写主题继承 SystemKeywords，不修改生成数据。Provider 继续负责作用域注入。
 - Icon 的 color/size 分别复用 color/fontSize 作者的 raw 参数类型，接受 _primary、_lg 等主题关键字及 CSS 原值。省略时继承周围文字的颜色和字号。默认宽高为 1em，数字不隐式转换为 px。
 - 后续用户授权 CSS 属性作者统一接受 raw(undefined)，返回空声明字符串，css(...) 中自然省略该项。响应式值撤销时清理旧声明与私有变量，恢复原有继承/层叠；保留合法 0 值。Icon 直接调用 raw(color)/raw(size)，不再逐项判断 undefined。
 - 单个 icon 属性接收 LucideIconData，不接收名称字符串或 children。调用方静态导入图标，自定义数据沿用 Lucide 契约。使用官方 @lucide/icons/build 节点 builder，再转换为框架模板，不扫描 DOM、不下载图标、不注入 SVG 字符串。
@@ -117,7 +117,7 @@
 ## 10. 按钮基础设施（2026-10-09 已授权）
 
 - core 导出 DomRef/_composeRefs：按顺序初始化、逆序清理，失败回滚与同步契约复用现有作用域。DOM bind:this 与 ref 可共存，先写引用，再初始化行为；行为清理后清空引用。仍只支持 DOM 和简单可写变量，SSR 不执行，接管成功后执行。
-- CSS 提供 CssValue 属性输入类型；UI 的 src/utils 提供 slotProps 解析/合并、事件组合与按压反馈工具，复用 core 的生命周期和取消机制。普通属性显式 undefined 可覆盖，class 保留双方类名，style 使用现有规范化后按声明顺序组合，DOM 事件仅显式选定项组合，ref 使用 core 组合；不深度合并任意对象。
+- CSS 提供通用 CssValue 属性输入类型，UI 显式传入 UiTheme。UI 的 src/utils 保留 _resolveSlotProps 状态回调解析及按压反馈工具；2026-10-10 按用户决定删除 _mergeSlotProps、_composeEventHandlers，不保留兼容导出。组件独立 slotXxx 转发不变。
 - CSS 的 _mergeClasses 合并同宿主生成类的声明并保留外部类名，外部样式仍按正常层叠。组件声明标记为可移除的纯包装，按需消费 Icon 不会带入未使用的 Spinner 图标。
 - src/base 实施 Text（有限原生文字标签、CSS 排版输入）、Ripple（直接父 button 上的视觉按压层）、Spinner（Lucide 图形与局部旋转）、ButtonBase（原生 button 底座、默认 type=button、disabled、独立 focus-visible 和 slotRipple）。按钮的语义默认值由底座拥有，转发参数采用独立 slotXxx 属性，当前为 slotRipple；后续分别增加 slotIcon、slotText 等，不提供统一 slotProps 对象。
 - Ripple 使用真实 pointer/keyboard 事件，只负责视觉，不模拟业务 click；处理取消、移出、滚动、失焦、禁用和卸载。动画只在挂载后创建并在清理时取消，减少动态效果时省略扩散。Spinner 用 CSS 媒体查询尊重减少动态效果。
@@ -132,7 +132,7 @@
 - UI utils 增加 _readFontSizePx、_observeFontSize、_observeSize：只在客户端按需使用，返回清理，读实际字号与布局 border-box。字号观察使用隐藏的 1em 探针，应放在可容纳子元素的 HTML 容器中；不对每个普通组件安装观察器，不手工解析 CSS 单位。
 - 字号/尺寸通知不等同于位置观察，不覆盖 transform 的视觉变化。浮层与虚拟列表的库接入仍留待对应组件；本轮用 Portal 继承桥接和固定尺寸容器验证工具。
 
-- 基础组件的 size 统一表示字号输入，使用 CssValue<'fontSize'>，省略时继承；ButtonBase 增加同一入口。Icon/Spinner 保持宽高 1em，局部比例只通过其自身字号表达一次。
+- 基础组件的 size 统一表示字号输入，使用 CssValue<'fontSize', UiTheme>，省略时继承；ButtonBase 增加同一入口。Icon/Spinner 保持宽高 1em，局部比例只通过其自身字号表达一次。
 - ButtonBase 保持原生语义与无预设间距的底座，不在此阶段创建成品 Button 或密度枚举。按钮内边距、图文间距和圆角的 em 比例在文档组合样例中试点；字体与组件密度分开。
 - 采用讨论中的比例样例：line-height 1.25、padding-block 0.625em、padding-inline 1em、gap 0.5em、图标字号 1.125em。边框 0.0625em、焦点轮廓/偏移 0.125em；样例最小区域使用 2.5em，应用可显式选择额外下限。尺寸样例值归组合示例，不扩充全局 token。
 - 用 14/16/20px 基准验证纯文字、图文、仅图标、加载和长文字；同时覆盖主题字号、继承、动态撤销 size、局部字号覆盖和 SSR/接管。成品按钮与 Flex 的当前契约见第 12 节，不引入密度枚举。

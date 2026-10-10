@@ -1,7 +1,6 @@
 import { _component, _state } from 'zerodep-js';
-import { lightTheme, darkTheme } from 'zerodep-js-css';
+import { lightTheme, darkTheme, Icon, Provider, type IconProps } from 'zerodep-js-ui';
 import { Check, Search } from '@lucide/icons';
-import { Icon, Provider, type IconProps } from 'zerodep-js-ui';
 
 export const IconDemo = _component(() => {
   let dark = _state(false);
@@ -74,8 +73,8 @@ export const IconDemo = _component(() => {
         </Provider>
       )}
       <pre>
-        <code>{`import { Search } from '@lucide/icons';
-import { Icon } from 'zerodep-js-ui';
+        <code>{`
+
 
 <Icon icon={Search} color="_primary" size="_lg" />
 <Icon icon={Search} color="var(--brand-color)" size="20px" />`}</code>

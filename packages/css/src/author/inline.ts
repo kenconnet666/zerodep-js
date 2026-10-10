@@ -1,7 +1,7 @@
 import { authorInputs, isSystemKeyword } from './author-guards.js';
-import { getKeywordBinding } from './keyword-source.js';
-import { unitSuffix } from './generated/base.js';
-import { systemKeywords } from './generated/keywords.js';
+import { getKeywordBinding } from '../theme/keyword-source.js';
+import { unitSuffix } from '../generated/base.js';
+import { systemKeywords } from '../generated/keywords.js';
 
 export interface InlineDeclaration {
   declaration: string;

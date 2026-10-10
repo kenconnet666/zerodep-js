@@ -2,8 +2,8 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { runInNewContext } from 'node:vm';
 import { Css, WidthCss, ColorCss } from '../../dist/index.js';
-import { authorInputs } from '../../dist/author-guards.js';
-import { inlineDeclaration, inlineKeyword } from '../../dist/inline.js';
+import { authorInputs } from '../../dist/author/author-guards.js';
+import { inlineDeclaration, inlineKeyword } from '../../dist/author/inline.js';
 
 await test('跨 realm 和无原型的关键字对象不混入 Object.prototype 成员', () => {
   for (const color of [

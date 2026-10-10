@@ -9,7 +9,7 @@
 - `src/base/`：原生按钮底座、四类成品按钮及文字/加载/波纹。
 - `src/layout/Flex.tsx`：普通布局与相连控件；`src/internal/` 保存私有复用实现，不公开导出。
 - `src/layout/Grid.tsx`：二维轨道布局、自动填充与明确列数的相连控件。
-- 通用主题位于 `packages/css/src/theme/`，从 `zerodep-js-css` 导入。
+- 通用主题位于 `packages/ui/src/provider/theme/`，从 `zerodep-js-ui` 导入。
 - `src/provider/lang/`：内置语言包和自定义语言包契约。
 - `src/provider/locale.ts`：基于 Intl、date-fns、@date-fns/tz 的格式化与日期转换。
 - `dist/`：构建后的 ESM、类型声明和 source map。
@@ -28,7 +28,7 @@
 
 ```tsx
 import { Provider, zhCN, useCss, useLang, useLocale } from 'zerodep-js-ui';
-import { lightTheme } from 'zerodep-js-css';
+import { lightTheme } from 'zerodep-js-ui';
 
 <Provider theme={lightTheme} lang={zhCN} locale="zh-CN" timeZone="Asia/Shanghai">
   <App />
@@ -100,7 +100,7 @@ Ripple 直接放在 position:relative 的 button 或 a 内，自己的 span 负�
 
 ButtonBase 是后续按钮的原生底座，默认 type=button；支持原生按钮属性、disabled 和 ripple 开关。关闭 Ripple 后保留 focus-visible 轮廓。slotRipple 可为对象或接收 {disabled} 的纯函数；disabled 由底座拥有，槽不能覆盖。
 
-ButtonBase 的 size 与 Icon/Text/Spinner 一致，表示根字号（CssValue<'fontSize'>），不是固定高度或密度档位；可写 `_md`、`20px`、`1.25rem`，省略/undefined 时继承，裸数字不自动补 px。底座本身仍不预设内边距。
+ButtonBase 的 size 与 Icon/Text/Spinner 一致，表示根字号（CssValue<'fontSize', UiTheme>），不是固定高度或密度档位；可写 `_md`、`20px`、`1.25rem`，省略/undefined 时继承，裸数字不自动补 px。底座本身仍不预设内边距。
 
 ```tsx
 <ButtonBase
@@ -115,8 +115,6 @@ ButtonBase 的 size 与 Icon/Text/Spinner 一致，表示根字号（CssValue<'f
 工具从 UI 根入口导入：
 
 - _resolveSlotProps(source, state)：解析对象或纯函数，在 JSX/派生计算中调用以跟踪状态。
-- _mergeSlotProps(defaults, override, events?)：浅合并普通属性，显式 undefined 可撤销；class 合并本库样式并保留外部类名，style 规范化后按顺序组合，ref 使用 core 的 _composeRefs；只有 events 指定的键组合事件，其他函数覆盖。
-- _composeEventHandlers(user, internal, options?)：用户先执行，默认保证内部收尾；checkDefaultPrevented=true 时，内部行为可由用户取消。两侧错误同时存在时保留 AggregateError。
 - _press(element, options)：客户端 DOM 按压反馈，返回必须调用的清理函数；配合已有挂载/effect 生命周期，SSR 不调用。不模拟业务 click。
 
 CssValue<K, Theme> 和 _mergeClasses 在 zerodep-js-css 中；DomRef<T> 与 _composeRefs 在 zerodep-js 中。外部类名遵循正常 CSS 层叠，不承诺按类名字符串顺序覆盖。
@@ -125,7 +123,7 @@ CssValue<K, Theme> 和 _mergeClasses 在 zerodep-js-css 中；DomRef<T> 与 _com
 
 运行 pnpm ui:generate 更新 src/index.ts；pnpm ui:check 检查过期与重复导出，已进入 CI 的 pnpm check。生成器用 Babel AST 读取 base/utils/layout 下的具名声明，递归收集并区分 type 导出；拒绝链接、子目录 index.ts 和重复名称。internal 不扫描，Provider 通过明确入口清单限制。
 
-组件转发使用独立 slotXxx 属性：slotRipple、slotIcon、slotStartIcon、slotEndIcon、slotText、slotSpinner。无统一 slotProps 对象。SlotProps<P, S> 与 _resolveSlotProps/_mergeSlotProps 是单槽通用工具。
+组件转发使用独立 slotXxx 属性：slotRipple、slotIcon、slotStartIcon、slotEndIcon、slotText、slotSpinner。无统一 slotProps 对象。SlotProps<P, S> 与 _resolveSlotProps 是单槽通用工具。
 
 ## 字号、等比尺寸与测量
 

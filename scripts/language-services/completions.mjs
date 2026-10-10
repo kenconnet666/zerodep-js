@@ -20,6 +20,26 @@ const rows = [{ id: 1, title: 'row' }];
 `;
 const control = `const Field = _component((props: { value: string; onValueChange: (value: string) => void; label?: string }) => <span>{props.value}</span>);\n`;
 const cases = [
+  {
+    name: 'CSS根入口-自动导入',
+    source:
+      "import { Css } from 'zerodep-js-css'; void Css; export const host = createServerCssH¦;",
+    expected: 'createServerCssHost',
+    word: 'createServerCssH',
+    autoImport: true,
+    importFrom: 'zerodep-js-css',
+  },
+  ...[
+    ['createServerCssHost', 'collector.ts'],
+    ['withCssHost', 'server.ts'],
+    ['css', 'server.ts'],
+  ].map(([name, file]) => ({
+    name: 'CSS根入口-' + name,
+    source: `import { ${name} } from 'zerodep-js-css'; export const probe = ${name.slice(0, -1)}¦;`,
+    expected: name,
+    word: name.slice(0, -1),
+    definition: 'packages/css/src/runtime/' + file,
+  })),
   ...[
     ['columns', 'subgrid'],
     ['autoFlow', 'row'],
@@ -146,7 +166,7 @@ const cases = [
     word: member.slice(0, -1),
     details: true,
     documentation,
-    definition: 'packages/css/src/theme/tokens.ts',
+    definition: 'packages/ui/src/provider/theme/tokens.ts',
   })),
   {
     name: 'CSS说明-display.inlineFlex',

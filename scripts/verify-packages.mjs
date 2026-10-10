@@ -111,6 +111,15 @@ try {
       assert(!sourceManifest.exports['./router'] && !sourceManifest.exports['./storage']);
       assert(!sourceManifest.dependencies['zerodep-use'], 'core 不能反向依赖应用工具。');
     }
+    if (name === 'css') {
+      assert.deepEqual(Object.keys(sourceManifest.exports), ['.'], 'CSS 只公开包根。');
+      assert.equal(sourceManifest.exports['.'].types, './dist/index.d.ts');
+      assert(
+        !files.has('dist/server.js') && !files.has('dist/internal.js'),
+        'CSS 不能打包旧子入口产物。',
+      );
+      assert(!files.has('dist/theme/theme.js'), '具体 UI 主题不属于 CSS 包。');
+    }
     assert(
       [...files].every((file) => !/tsbuildinfo|(^|\/)(test|node_modules|\.codex)(\/|$)/.test(file)),
       `${name} 混入构建缓存或测试。`,
@@ -184,7 +193,7 @@ try {
       '--eval',
       `
     import assert from 'node:assert/strict';
-    for (const specifier of ['zerodep-js/adapter', 'zerodep-js/router', 'zerodep-js/storage', 'zerodep-js/css', 'zerodep-js/css/internal']) {
+    for (const specifier of ['zerodep-js/adapter', 'zerodep-js/router', 'zerodep-js/storage', 'zerodep-js/css', 'zerodep-js/css/internal', 'zerodep-js-css/server', 'zerodep-js-css/internal']) {
       await assert.rejects(import(specifier), { code: 'ERR_PACKAGE_PATH_NOT_EXPORTED' });
     }
     for (const specifier of ['zerodep-use', 'zerodep-use/router', 'zerodep-use/store', 'zerodep-use/history']) {
@@ -192,6 +201,9 @@ try {
     }
     assert.equal('_createPage' in await import('zerodep-js'), false, '旧页面宿主 API 必须移除');
     assert.equal('_createScope' in await import('zerodep-js'), false, '旧 scope API 必须移除');
+    const css = await import('zerodep-js-css');
+    for (const name of ['UiTheme', 'LightTheme', 'DarkTheme', 'lightTheme', 'darkTheme']) assert.equal(name in css, false);
+    for (const name of ['css', 'createServerCssHost', 'withCssHost', 'hydrateCss', 'cssBinding', 'cssKeyword', 'cssResult', 'cssProps']) assert.equal(typeof css[name], 'function');
   `,
     ],
     { cwd: consumer, env, windowsHide: true, encoding: 'utf8' },
@@ -239,13 +251,21 @@ try {
     '构建或服务端代码进入客户端。',
   );
   assert(
+    !clientModules.some((id) =>
+      /node:async_hooks|\/zerodep-js-css\/dist\/runtime\/server\.js$/.test(id),
+    ),
+    'Node CSS 请求隔离实现不能进入浏览器。',
+  );
+  assert(
     clientModules.some((id) => id.includes('/@csstools/css-tokenizer/')),
     '样式依赖未进入实际消费构建。',
   );
   const cssModules = report.cssTree.flatMap((chunk) => chunk.modules);
   assert(
     !cssModules.some((id) =>
-      /\/zerodep-js\/|\/dist\/(browser|server|context|internal|generated\/author)\.js$/.test(id),
+      /\/zerodep-js\/|\/dist\/(runtime\/(browser|server|collector)|theme\/context|bindings|generated\/author)\.js$/.test(
+        id,
+      ),
     ),
     '单属性作者不应带入完整作者、框架运行时或样式宿主。',
   );

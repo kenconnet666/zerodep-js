@@ -16,8 +16,8 @@ export * from './m-o.js';
 export * from './p-r.js';
 export * from './s-t.js';
 export * from './u-z.js';
-import { selectorRule, type CssSelector } from '../selectors.js';
-import type { CssInput } from '../registry.js';
+import { selectorRule, type CssSelector } from '../author/selectors.js';
+import type { CssInput } from '../runtime/registry.js';
 import { SystemKeywords, systemKeywords } from './keywords.js';
 export * from './keywords.js';
 import {
@@ -27,7 +27,7 @@ import {
   type KeywordSource,
   type KeywordAuthor,
   type CheckedKeywords,
-} from '../keyword-source.js';
+} from '../theme/keyword-source.js';
 
 // 仅在首次构造作者实例时注册，避免未使用的属性链阻止按需打包。
 let systemPropertiesReady = false;

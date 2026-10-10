@@ -1,3 +1,4 @@
+import type { UiTheme } from '../provider/theme/theme.js';
 import { _component, _derived, type JSX, type Template } from 'zerodep-js';
 import { element } from 'zerodep-js/internal';
 import { css, _mergeClasses, type CssValue } from 'zerodep-js-css';
@@ -9,9 +10,9 @@ export type IconProps = Omit<JSX.IntrinsicElements['svg'], 'children' | 'color'>
   /** 静态导入的 Lucide 图标数据；不在运行时按名称下载图标。 */
   icon: LucideIconData;
   /** 当前主题颜色关键字或原始 CSS 颜色；省略时继承文字颜色。 */
-  color?: CssValue<'color'>;
+  color?: CssValue<'color', UiTheme>;
   /** 对应 font-size，图标宽高为 1em；省略时继承周围字号，数字不自动补 px。 */
-  size?: CssValue<'fontSize'>;
+  size?: CssValue<'fontSize', UiTheme>;
   children?: never;
 };
 

@@ -1,4 +1,4 @@
-import type { Css } from './generated/author.js';
+import type { Css } from '../generated/author.js';
 import { _createContext, _provideContext, _useContext } from 'zerodep-js';
 
 /** 模块只共享键；作者实例属于提供它的组件/请求。 */

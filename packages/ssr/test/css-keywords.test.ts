@@ -1,9 +1,9 @@
 import { expect, it } from 'vitest';
 import * as runtime from 'zerodep-js/internal';
 import * as publicRuntime from 'zerodep-js';
-import * as cssRuntime from 'zerodep-js-css/internal';
+import * as cssRuntime from 'zerodep-js-css';
 import { Css, SystemKeywords, systemKeywords } from 'zerodep-js-css';
-import { createServerCssHost, withCssHost } from 'zerodep-js-css/server';
+import { createServerCssHost, withCssHost } from 'zerodep-js-css';
 import { execute } from '../../compiler/test/execute.js';
 import { renderToString } from '../src/render.js';
 

@@ -1,3 +1,4 @@
+import type { UiTheme } from '../provider/theme/theme.js';
 import { _component, _derived, type JSX } from 'zerodep-js';
 import { css, _mergeClasses, type CssValue } from 'zerodep-js-css';
 import { useCss } from '../provider/context.js';
@@ -9,7 +10,7 @@ export interface ButtonBaseState {
 }
 export type ButtonBaseProps = Omit<JSX.IntrinsicElements['button'], 'size'> & {
   /** 组件根字号基准；内部 em 尺寸随之变化，省略时继承，不设置固定高度。 */
-  size?: CssValue<'fontSize'>;
+  size?: CssValue<'fontSize', UiTheme>;
   ripple?: boolean | undefined;
   /** 转发给 Ripple 的属性或状态回调；disabled 仍由按钮拥有。 */
   slotRipple?: SlotProps<Omit<RippleProps, 'disabled' | 'children'>, ButtonBaseState> | undefined;

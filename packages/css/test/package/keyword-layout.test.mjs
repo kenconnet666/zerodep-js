@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { Css, ColorCss, ColorKeywords, WidthCss, SystemKeywords } from '../../dist/index.js';
-import { authorInputs } from '../../dist/author-guards.js';
-import { inlineKeyword } from '../../dist/inline.js';
+import { authorInputs } from '../../dist/author/author-guards.js';
+import { inlineKeyword } from '../../dist/author/inline.js';
 
 await test('公开构造器、实例身份和可覆盖的自有字段保持不变', () => {
   // 发布 JS 原本就会压缩 Function.name；验证导出和实例身份，不为调试名引入顶层副作用。

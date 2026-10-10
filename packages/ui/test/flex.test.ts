@@ -1,7 +1,7 @@
 import { expect, it } from 'vitest';
 import { defineComponent, element } from 'zerodep-js/internal';
 import { renderToString } from 'zerodep-js-ssr';
-import { createServerCssHost, withCssHost } from 'zerodep-js-css/server';
+import { createServerCssHost, withCssHost } from 'zerodep-js-css';
 import { Provider, Flex } from '../dist/index.js';
 
 it('Flex SSR 保留原生子项、字号继承与显式布局，不创建隐式分组语义', () => {

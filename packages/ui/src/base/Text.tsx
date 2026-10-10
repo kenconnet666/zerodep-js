@@ -1,3 +1,4 @@
+import type { UiTheme } from '../provider/theme/theme.js';
 import { _component, _derived, type JSX, type DomRef } from 'zerodep-js';
 import { css, _mergeClasses, type CssValue } from 'zerodep-js-css';
 import { useCss } from '../provider/context.js';
@@ -7,11 +8,11 @@ export type TextTag =
 export type TextProps = Omit<JSX.IntrinsicElements['span'], 'color' | 'ref' | 'bind:this'> & {
   /** 标签只决定语义；省略的排版值继承父级。 */
   as?: TextTag | undefined;
-  color?: CssValue<'color'>;
-  size?: CssValue<'fontSize'>;
-  weight?: CssValue<'fontWeight'>;
-  lineHeight?: CssValue<'lineHeight'>;
-  align?: CssValue<'textAlign'>;
+  color?: CssValue<'color', UiTheme>;
+  size?: CssValue<'fontSize', UiTheme>;
+  weight?: CssValue<'fontWeight', UiTheme>;
+  lineHeight?: CssValue<'lineHeight', UiTheme>;
+  align?: CssValue<'textAlign', UiTheme>;
   ref?: DomRef<HTMLElement> | undefined;
 };
 

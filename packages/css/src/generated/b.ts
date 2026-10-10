@@ -2,8 +2,8 @@
 // 来源许可见 packages/css/THIRD_PARTY_NOTICES.md。
 import type { Property } from 'csstype';
 import { CssProperty, LengthCssProperty, type CssString } from './base.js';
-import { initializeKeywordDeclarations } from '../keyword-data.js';
-import type { KeywordDeclarations, KeywordValuesOf } from '../keyword-source.js';
+import { initializeKeywordDeclarations } from '../theme/keyword-data.js';
+import type { KeywordDeclarations, KeywordValuesOf } from '../theme/keyword-source.js';
 // 关键字是实例上的声明字符串；系统实例按属性链惰性创建并共享。
 import { noneKeywords } from './keyword-sets.js';
 

@@ -1,5 +1,7 @@
 import { _component, _derived, _provideContext, _useContext, type JSX } from 'zerodep-js';
-import { css, Css, lightTheme, _mergeClasses, type UiTheme, type CssValue } from 'zerodep-js-css';
+import { css, Css, _mergeClasses, type CssValue } from 'zerodep-js-css';
+import { lightTheme } from './theme/light.js';
+import { type UiTheme } from './theme/theme.js';
 import { zhCN } from './lang/zh-CN.js';
 import type { UiLanguage } from './lang/types.js';
 import { createLocale } from './locale.js';
@@ -13,7 +15,7 @@ import {
 
 export type ProviderProps = Omit<JSX.IntrinsicElements['div'], 'lang' | 'dir' | 'size'> & {
   /** 字号基准；根默认 _md，嵌套未指定时继承 DOM 父级，Portal 需显式桥接。 */
-  size?: CssValue<'fontSize'>;
+  size?: CssValue<'fontSize', UiTheme>;
   dir?: 'ltr' | 'rtl' | 'auto' | undefined;
   theme?: UiTheme | undefined;
   lang?: UiLanguage | undefined;

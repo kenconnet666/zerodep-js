@@ -7,7 +7,7 @@ import { zerodep } from 'zerodep-js-compiler/vite';
 export default { plugins: [zerodep()] };
 ```
 
-工作区 SSR 联调需要让框架及 CSS 包同属一个模块加载环境，例如 `ssr.noExternal: ['zerodep-js', 'zerodep-js-ssr', 'zerodep-js-css']`。预编译组件库将框架与 CSS 包都设为 external，保留 Node/浏览器条件导出。普通 npm 独立消费则可全部 external；不要混合两份框架运行时。
+工作区 SSR 联调需要让框架及 CSS 包同属一个模块加载环境，例如 `ssr.noExternal: ['zerodep-js', 'zerodep-js-ssr', 'zerodep-js-css']`。预编译组件库将框架与 CSS 包都设为 external，保留包内 Node/浏览器宿主选择。普通 npm 独立消费则可全部 external；不要混合两份框架运行时。
 
 ```tsx
 import { _component, _state } from 'zerodep-js';
@@ -87,7 +87,7 @@ let accent = _state('#245fc5');
 每请求新建 CSS 库自身宿主，完成组件渲染后收集并安全序列化：
 
 ```ts
-import { createServerCssHost, withCssHost, serializeCssRules } from 'zerodep-js-css/server';
+import { createServerCssHost, withCssHost, serializeCssRules } from 'zerodep-js-css';
 
 const host = createServerCssHost();
 const html = withCssHost(host, () => renderToString(App));
@@ -104,11 +104,15 @@ const styles =
 
 ## 类型和维护
 
-CSS 0.3.3 已实现关键字压缩，当前项目从 npm 精确安装此版本。沿用原有写法：原始值只保存一份，按值和语义说明一致分组，公开作者/关键字构造器仍可继承。公开类型保持 ColorCss、ColorKeywords、FontSizeCss 等语义名称，公共集合使用 globalKeywords、colorKeywords、fontSizeKeywords；中文说明在 hover 和补全详情中均保留，不要求重复输出每个属性的完整声明示例。默认系统声明仍是自有字符串字段，主题读取和元素变量的安全回退不变。
+所有 API（包括 SSR 收集器和编译器调用的 cssBinding/cssKeyword/cssResult/cssProps）统一从 zerodep-js-css 根入口导入，不再提供子入口。类型统一指向 dist/index.d.ts，并发布声明映射与源码；Vite 按标准 browser 字段将 Node 宿主替换为浏览器实现，源码不使用包内导入别名。
+
+CSS 提供 SystemKeywords 和继承机制，不提供 UiTheme 或亮暗配色。UI 的主题从 zerodep-js-ui 导入；自定义作者也可直接继承 SystemKeywords。CssValue 的第二个参数指定主题类型，默认不包含 UI 自定义关键字。
+
+当前工作区 CSS 已沿用关键字压缩实现。沿用原有写法：原始值只保存一份，按值和语义说明一致分组，公开作者/关键字构造器仍可继承。公开类型保持 ColorCss、ColorKeywords、FontSizeCss 等语义名称，公共集合使用 globalKeywords、colorKeywords、fontSizeKeywords；中文说明在 hover 和补全详情中均保留，不要求重复输出每个属性的完整声明示例。默认系统声明仍是自有字符串字段，主题读取和元素变量的安全回退不变。
 
 CSS 与框架使用同仓库 workspace 依赖及同一套 微软官方 TS7.1。生成器通过 Babel 解析 csstype 声明；pnpm css:generate 更新，pnpm css:check 检查生成结果。没有外部 CSS 仓库或 TS6 依赖。
 
-跨仓库联调可先执行 `pnpm test:packages --css-tarball <候选.tgz>`。正常安装按精确版本和锁文件恢复，不要求相邻 CSS 仓库存在，也不提交临时绝对路径依赖。
+运行 `pnpm test:packages` 可验证工作区外的 tgz 独立安装、类型检查、CSR 与 SSR。不要求相邻 CSS 仓库存在，也不提交临时绝对路径依赖。
 
 当前新包布局尚未发布到 npm；本地依赖由 pnpm workspace 连接，不使用临时 tgz 或本机绝对路径覆盖。
 
@@ -120,7 +124,7 @@ CSS 与框架使用同仓库 workspace 依赖及同一套 微软官方 TS7.1。�
 const { provideCss, useCss } = createCssContext<AppCss>();
 
 // 提供者的初始化代码；AppCss 为项目自己的作者类。
-let theme = _state.raw(lightTheme);
+let theme = _state.raw(initialTheme); // initialTheme 由项目自己的主题定义提供。
 provideCss(new AppCss(() => theme));
 
 // 后代组件初始化时读取，类型保持 AppCss，不必非空断言。

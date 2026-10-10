@@ -205,3 +205,5 @@ node scripts/language-services/webstorm-patch.mjs $webstormInstall restore
 ## 原生 CSS 依赖
 
 CSS 已迁入 packages/css，与框架共用工作区依赖、TS7、构建和 LSP。换机只需当前仓库，无需相邻 CSS 仓库或 TS6。见 [原生 CSS](css.md)。
+
+CSS 包入口整理（2026-10-10）：所有 API 从 `zerodep-js-css` 根入口导入，`/server`、`/internal` 已删除。CSS 使用标准 `dist/index.d.ts`、声明映射和随包源码，不需要消费项目的源码 alias/paths 或新的 SDK 补丁。源码为普通相对导入；Vite 按包的 browser 字段替换宿主，Node SSR 仍隔离异步请求。UI 具体主题从 `zerodep-js-ui` 导入；UI 自身仍保留上面说明的源码 types 入口。两包的类型入口结论不能混用。

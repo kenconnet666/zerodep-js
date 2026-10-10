@@ -1,3 +1,4 @@
+import type { UiTheme } from '../provider/theme/theme.js';
 import type { CssValue } from 'zerodep-js-css';
 import type { LucideIconData } from '@lucide/icons';
 import type { Renderable } from 'zerodep-js';
@@ -19,11 +20,11 @@ export interface ActionProps<S> {
   /** 外观变体，不改变原生元素语义或字号。 */
   variant?: ButtonVariant | undefined;
   /** CSS 字号，省略时继承；内部几何尺寸按 em 缩放。 */
-  size?: CssValue<'fontSize'>;
+  size?: CssValue<'fontSize', UiTheme>;
   /** 前景色；与 backgroundColor 分开，不自动推算对比文字色。 */
-  color?: CssValue<'color'>;
-  backgroundColor?: CssValue<'backgroundColor'>;
-  borderColor?: CssValue<'borderColor'>;
+  color?: CssValue<'color', UiTheme>;
+  backgroundColor?: CssValue<'backgroundColor', UiTheme>;
+  borderColor?: CssValue<'borderColor', UiTheme>;
   disabled?: boolean | undefined;
   /** 外部拥有加载状态；加载时禁用激活并保持内容占位。 */
   loading?: boolean | undefined;

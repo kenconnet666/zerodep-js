@@ -12,7 +12,8 @@ registerHooks({
     return nextResolve(specifier, context);
   },
 });
-export const { createRuleRegistry, ruleText } = await import('../../src/registry.ts');
-export const { className, hash } = await import('../../src/names.ts');
-export const { serializeCssRules } = await import('../../src/serialization.ts');
-export const { createServerCssHost, withCssHost, css } = await import('../../src/server.ts');
+export const { createRuleRegistry, ruleText } = await import('../../src/runtime/registry.ts');
+export const { className, hash } = await import('../../src/runtime/names.ts');
+export const { serializeCssRules } = await import('../../src/runtime/serialization.ts');
+export const { createServerCssHost } = await import('../../src/runtime/collector.ts');
+export const { withCssHost, css } = await import('../../src/runtime/server.ts');

@@ -1,7 +1,15 @@
 import { _component, _state, For } from 'zerodep-js';
 import { Save, Search, Bold } from '@lucide/icons';
-import { darkTheme, lightTheme } from 'zerodep-js-css';
-import { Button, IconButton, ToggleButton, LinkButton, Flex, Provider } from 'zerodep-js-ui';
+import {
+  darkTheme,
+  lightTheme,
+  Button,
+  IconButton,
+  ToggleButton,
+  LinkButton,
+  Flex,
+  Provider,
+} from 'zerodep-js-ui';
 
 export const ButtonDemo = _component(() => {
   let loading = _state(false),

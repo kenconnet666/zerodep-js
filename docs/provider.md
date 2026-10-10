@@ -4,7 +4,7 @@
 
 主题继承 zerodep-js-css 的 SystemKeywords，亮暗共享关键字结构，整套替换；CSS 通过现有 createCssContext 和 Css(() => 当前主题) 注入。不会改写全局 html/body 或代替应用输出 SSR CSS 标签。Provider 设置本区域 lang、dir、color-scheme、字体、文字与背景；外部 class 最后组合。Portal 内组件读取相同逻辑上下文，但 DOM 继承属性仍取决于真实挂载位置，弹层可再包一层 Provider 应用逻辑主题/语言；字号不会跨 Portal 自动继承，默认跟随触发区时应同步其实际字号。
 
-主题关键字类型在 packages/css/src/theme/tokens.ts 中逐项声明并附中文说明，属性值沿用对应 CSS 类型。不要用 Record<字符串联合, 值类型> 替代这些成员：它会使类型服务丢失定义位置和文档来源。声明映射使 useCss().borderWidth._thin 等读取可跳回这里；真实默认值在同目录的 theme.ts、light.ts 和 dark.ts 中维护，UiTheme、UiColors、LightTheme/lightTheme、DarkTheme/darkTheme 统一从 zerodep-js-css 导出。
+主题关键字类型在 packages/ui/src/provider/theme/tokens.ts 中逐项声明并附中文说明，属性值沿用对应 CSS 类型。不要用 Record<字符串联合, 值类型> 替代这些成员：它会使类型服务丢失定义位置和文档来源。声明映射使 useCss().borderWidth._thin 等读取可跳回这里；真实默认值在同目录的 theme.ts、light.ts 和 dark.ts 中维护，UiTheme、UiColors、LightTheme/lightTheme、DarkTheme/darkTheme 统一从 zerodep-js-ui 导出。
 
 消费入口沿用 useCss，并提供 useLang、useLocale。它们在组件初始化调用，返回稳定对象，后续渲染或事件中读取字段；原始主题从 useCss().keywords 读取，避免额外维护一套主题代理。Provider 自身可省略参数，但组件消费必须有上层 Provider，不提供全局单例。
 
@@ -14,4 +14,4 @@ useLocale 提供当前 locale/timeZone、formatDate、formatNumber，以及 date
 
 SSR 与客户端首次接管使用相同 props，默认值不依赖服务器/浏览器环境。验证覆盖主题切换、独立继承/撤销、语言替换、时区换算与夏令时、无 Provider 报错、SSR 隔离、真实浏览器接管及 Portal。
 
-Provider.size 使用 CssValue<'fontSize'>，允许 vw/rem/%/clamp()/var() 等 CSS 字号。根未指定时使用主题 _md（默认 1rem），嵌套未指定时使用 inherit，不再重置外层局部字号。显式 size 优先，class/style 仍按既有覆盖规则处理。实际 CSS 像素由浏览器决定，不硬编码 16px。
+Provider.size 使用 CssValue<'fontSize', UiTheme>，允许 vw/rem/%/clamp()/var() 等 CSS 字号。根未指定时使用主题 _md（默认 1rem），嵌套未指定时使用 inherit，不再重置外层局部字号。显式 size 优先，class/style 仍按既有覆盖规则处理。实际 CSS 像素由浏览器决定，不硬编码 16px。

@@ -2,6 +2,10 @@
 
 ## 未发布 — 单仓库 CSS 与构建工具精简
 
+- CSS 只公开包根，移除 /server、/internal；SSR API 与编译器绑定统一从 zerodep-js-css 导入。源码按 author/theme/runtime 分组，导出清单只维护 src/index.ts；标准 browser 字段选择浏览器宿主。
+- 具体 UiTheme/token/亮暗主题移回 UI provider/theme；CSS 只保留系统关键字与继承机制，CssValue 默认不再依赖 UI 类型。
+- 删除 UI 的 _mergeSlotProps、_composeEventHandlers 及专属用例，保留 _resolveSlotProps 和现有组件 slotXxx 转发。
+
 - TypeScript target/lib、消费夹具及 Vite 插件默认输出统一升级到 ES2025，Vite 仍允许应用显式覆盖目标；未自动注入 polyfill。
 - 使用官方新 SDK 重新生成 DOM/JSX 声明，修复 SDK 升级后生成结果过期导致的 CI 失败。
 
@@ -13,7 +17,7 @@
 
 - 新增 zerodep-js-css 工作区包，迁入 CSS 作者、生成数据、关键字、隐式变量与浏览器/SSR 样式收集；移除跨框架适配和 bx，亮暗主题只在 UI 维护。
 - Vite 插件并入 zerodep-js-compiler/vite，删除独立 vite 包；CSS 转换内置，删除 CompileExtension、extensions 配置和公开 adapter 入口。
-- CSS 生成器复用 Babel，统一固定 JetBrains TS7，不引入 TS6。应用、UI、SSR、独立消费与语言测试统一使用本地工作区包。
+- CSS 生成器复用 Babel，统一固定微软官方 TS7，不引入 TS6。应用、UI、SSR、独立消费与语言测试统一使用本地工作区包。
 - 修复 props/rest 多层转发重复枚举导致的 Provider 切换卡顿，保留可枚举性、覆盖顺序和响应式更新语义。
 
 以下为此前同批未发布的 API 精简：

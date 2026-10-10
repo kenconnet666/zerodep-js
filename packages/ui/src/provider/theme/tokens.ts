@@ -1,4 +1,4 @@
-import type { KeywordValues } from '../generated/keywords.js';
+import type { KeywordValues } from 'zerodep-js-css';
 
 // 显式成员让 TypeScript 保留定义位置和文档；Record<字符串联合, V> 会丢失这些来源。
 // 属性值沿用 CSS 原始值类型，不能收窄为亮色主题的默认字面量。

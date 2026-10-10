@@ -1,5 +1,5 @@
 /* oxlint-disable typescript/no-misused-spread -- SystemKeywords 属性组是只读的原始值字段；按 CSS 库的公开契约展开，不复制作者方法。 */
-import { SystemKeywords, systemKeywords, type KeywordValues } from '../generated/keywords.js';
+import { SystemKeywords, systemKeywords, type KeywordValues } from 'zerodep-js-css';
 
 import type {
   UiColors,
@@ -16,7 +16,6 @@ import type {
   TimingFunctionTokens,
   BoxShadowTokens,
 } from './tokens.js';
-export type { UiColors } from './tokens.js';
 
 const space = Object.freeze({
   _xs: '0.25rem',

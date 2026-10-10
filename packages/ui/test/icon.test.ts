@@ -2,9 +2,9 @@ import { describe, expect, it } from 'vitest';
 import { Search, Check, type LucideIconData } from '@lucide/icons';
 import { defineComponent, element } from 'zerodep-js/internal';
 import { renderToString } from 'zerodep-js-ssr';
-import { darkTheme } from 'zerodep-js-css';
-import { createServerCssHost, withCssHost } from 'zerodep-js-css/server';
-import { Icon, Provider, type IconProps } from '../dist/index.js';
+import { darkTheme, Icon, Provider, type IconProps } from '../dist/index.js';
+import { createServerCssHost, withCssHost } from 'zerodep-js-css';
+
 import { build } from 'vite';
 import { resolve } from 'node:path';
 

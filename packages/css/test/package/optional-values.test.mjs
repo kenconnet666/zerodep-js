@@ -1,8 +1,14 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { Css, systemKeywords, lightTheme } from '../../dist/index.js';
-import { inlineDeclaration } from '../../dist/inline.js';
-import { createServerCssHost, withCssHost, css } from '../../dist/server.js';
+import {
+  Css,
+  systemKeywords,
+  SystemKeywords,
+  createServerCssHost,
+  withCssHost,
+  css,
+} from '../../dist/index.js';
+import { inlineDeclaration } from '../../dist/author/inline.js';
 
 await test('所有生成属性的 raw(undefined) 省略声明，合法零值保留', () => {
   const s = new Css();
@@ -15,12 +21,16 @@ await test('所有生成属性的 raw(undefined) 省略声明，合法零值保�
 });
 
 await test('注入主题的可选值仍省略，已有关键字解析与 SSR 组合不变', () => {
-  const s = new Css(lightTheme);
+  class Theme extends SystemKeywords {
+    color = { ...systemKeywords.color, _primary: '#123456' };
+  }
+  const theme = new Theme();
+  const s = new Css(theme);
   const host = createServerCssHost();
   withCssHost(host, () => css(s.color.raw(undefined), s.fontSize.raw(undefined), s.display.flex));
   assert.equal(host.cssText().includes('undefined'), false);
   assert.equal(host.rules()[0].body, 'display:flex;');
-  assert.equal(s.color.raw('_primary'), `color:${lightTheme.color._primary};`);
+  assert.equal(s.color.raw('_primary'), `color:${theme.color._primary};`);
 });
 
 await test('内联值撤销后不再提供声明或私有变量值', () => {

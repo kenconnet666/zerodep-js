@@ -1,6 +1,6 @@
 import { _render, renderDocument, type RenderMode } from 'zerodep-js-ssr';
 import { App } from './App.js';
-import { createServerCssHost, withCssHost, serializeCssRules } from 'zerodep-js-css/server';
+import { createServerCssHost, withCssHost, serializeCssRules } from 'zerodep-js-css';
 
 export function render(title: string) {
   const host = createServerCssHost();

@@ -1,13 +1,14 @@
-import { css, type Css, type CssValue, type UiTheme } from 'zerodep-js-css';
+import { css, type Css, type CssValue } from 'zerodep-js-css';
+import { type UiTheme } from '../provider/theme/theme.js';
 import type { ButtonVariant } from '../base/Button.js';
 
 export interface ButtonStyleOptions {
   variant: ButtonVariant;
   iconOnly?: boolean | undefined;
   pressed?: boolean | undefined;
-  color?: CssValue<'color'>;
-  backgroundColor?: CssValue<'backgroundColor'>;
-  borderColor?: CssValue<'borderColor'>;
+  color?: CssValue<'color', UiTheme>;
+  backgroundColor?: CssValue<'backgroundColor', UiTheme>;
+  borderColor?: CssValue<'borderColor', UiTheme>;
 }
 
 /** 四类控件共用几何与相连协议；不在主题中加入按钮专用 token。 */
