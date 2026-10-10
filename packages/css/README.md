@@ -18,11 +18,15 @@ const card = css(s.padding.rem(1), s.display.flex);
 
 组件属性可复用 `CssValue<'color'>`、`CssValue<'fontSize'>` 等输入类型，默认只有系统关键字；第二个类型参数指定自定义主题，例如 UI 使用 `CssValue<'color', UiTheme>`。`_mergeClasses(...values)` 合并本宿主生成类的声明并保留外部类名，适合组件 class 与 slotXxx 转发；普通外部类名仍按 CSS 层叠规则生效。
 
-源码按职责分组：
+源码只分三个目录，src 根目录只有 index.ts：
 
-- `generated/`：由生成器维护的系统属性、关键字和作者。
-- `author/`：声明片段、选择器和隐式变量的安全判断。
-- `theme/`：通用关键字继承、绑定和作者上下文，不包含亮暗配色。
-- `runtime/`：规则登记、序列化、浏览器宿主与 Node 请求隔离。
-- `bindings.ts`：编译器调用的响应式样式绑定。
-- `index.ts`：唯一公开导出清单，类型使用生成的 `dist/index.d.ts` 与声明映射。
+- `generated/`：系统属性、关键字和作者，由生成器维护。
+- `util/author.ts`：声明片段、选择器和 CSS 输入类型；不访问 DOM 或组件状态。
+- `util/keywords.ts`：通用关键字继承、原始值读取与成员声明。
+- `runtime/bindings.ts`：作者核对、动态值安全分类、元素变量与响应式属性绑定。
+- `runtime/context.ts`：CSS 作者的组件上下文。
+- `runtime/rules.ts`：命名、规则登记、请求收集器与序列化。
+- `runtime/browser.ts` / `runtime/server.ts`：浏览器样式表与 Node 异步请求隔离。
+- `index.ts`：唯一公开导出清单；类型使用 dist/index.d.ts 与声明映射。
+
+系统作者不预建每个属性的主题缓存；真正访问主题属性时才创建相应 WeakMap，多个作者的视图仍独立。安全分类仅缓存固定系统关键字的查询集合，不保存用户的历史输入。动态参数前后各核对一次作者，后续绑定复用捕获的方法与核对结果，保留参数求值次数、自定义方法和错误行为。

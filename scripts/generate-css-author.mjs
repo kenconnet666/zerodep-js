@@ -12,7 +12,7 @@ import {
   validateKeywordDocs,
   selectorDescriptions,
 } from './css-author-docs.mjs';
-import { selectorShortcuts } from '../packages/css/src/author/selector-shortcuts.ts';
+import { selectorShortcuts } from '../packages/css/src/util/author.ts';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const input = resolve(root, 'packages/css/node_modules/csstype/index.d.ts');
@@ -194,8 +194,8 @@ const groupLines = new Map(
       ...header,
       "import type { Property } from 'csstype';",
       "import { CssProperty, LengthCssProperty, type CssString } from './base.js';",
-      "import { initializeKeywordDeclarations } from '../theme/keyword-data.js';",
-      "import type { KeywordDeclarations, KeywordValuesOf } from '../theme/keyword-source.js';",
+      "import { initializeKeywordDeclarations } from '../util/keywords.js';",
+      "import type { KeywordDeclarations, KeywordValuesOf } from '../util/keywords.js';",
       '// 关键字是实例上的声明字符串；系统实例按属性链惰性创建并共享。',
     ],
   ]),
@@ -426,11 +426,11 @@ for (const name of ['_selector', ...Object.keys(selectorShortcuts)]) {
   if (properties.has(name)) throw new Error(`CSS selector method conflicts with property: ${name}`);
 }
 author.push(
-  "import { selectorRule, type CssSelector } from '../author/selectors.js';",
-  "import type { CssInput } from '../runtime/registry.js';",
+  "import { selectorRule, type CssSelector } from '../util/author.js';",
+  "import type { CssInput } from '../util/author.js';",
   "import { SystemKeywords, systemKeywords } from './keywords.js';",
   "export * from './keywords.js';",
-  "import { getKeywordSource, setKeywordSource, bindKeywords, type KeywordSource, type KeywordAuthor, type CheckedKeywords } from '../theme/keyword-source.js';",
+  "import { getKeywordSource, setKeywordSource, bindKeywords, type KeywordSource, type KeywordAuthor, type CheckedKeywords } from '../util/keywords.js';",
   '',
   '// 仅在首次构造作者实例时注册，避免未使用的属性链阻止按需打包。',
   'let systemPropertiesReady = false;',
@@ -478,16 +478,16 @@ author.push(...systemFields, '}');
 author.push(
   'function defineSystemProperty(name: string, create: () => object): void {',
   '  let shared: object | undefined;',
-  '  const scoped = new WeakMap<object, object>();',
+  '  let scoped: WeakMap<object, object> | undefined;',
   '  Object.defineProperty(Css.prototype, name, {',
   '    configurable: true,',
   '    get() {',
   '      const source = getKeywordSource(this);',
   '      if (!source) return shared ??= Object.freeze(create());',
-  '      let value = scoped.get(this);',
+  '      let value = scoped?.get(this);',
   '      if (!value) {',
   '        value = bindKeywords(create() as { raw(value: never): string }, name, () => Reflect.get(source(), name));',
-  '        scoped.set(this, value);',
+  '        (scoped ??= new WeakMap<object, object>()).set(this, value);',
   '      }',
   '      return value;',
   '    },',

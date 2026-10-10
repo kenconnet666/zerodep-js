@@ -12,8 +12,12 @@ registerHooks({
     return nextResolve(specifier, context);
   },
 });
-export const { createRuleRegistry, ruleText } = await import('../../src/runtime/registry.ts');
-export const { className, hash } = await import('../../src/runtime/names.ts');
-export const { serializeCssRules } = await import('../../src/runtime/serialization.ts');
-export const { createServerCssHost } = await import('../../src/runtime/collector.ts');
+export const {
+  createRuleRegistry,
+  ruleText,
+  className,
+  hash,
+  serializeCssRules,
+  createServerCssHost,
+} = await import('../../src/runtime/rules.ts');
 export const { withCssHost, css } = await import('../../src/runtime/server.ts');

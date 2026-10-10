@@ -114,6 +114,20 @@ try {
     if (name === 'css') {
       assert.deepEqual(Object.keys(sourceManifest.exports), ['.'], 'CSS 只公开包根。');
       assert.equal(sourceManifest.exports['.'].types, './dist/index.d.ts');
+      const sourceEntries = new Set(
+        [...files]
+          .filter((file) => file.startsWith('src/'))
+          .map((file) => file.slice(4).replace(/\/.*$/, '')),
+      );
+      assert.deepEqual(
+        [...sourceEntries].sort((left, right) => left.localeCompare(right, 'en')),
+        ['generated', 'index.ts', 'runtime', 'util'],
+        'CSS 源码只能包含根入口和三个职责目录。',
+      );
+      assert(
+        ![...files].some((file) => /^dist\/(author\/|theme\/|bindings\.)/.test(file)),
+        'CSS 不能包含旧目录的构建残留。',
+      );
       assert(
         !files.has('dist/server.js') && !files.has('dist/internal.js'),
         'CSS 不能打包旧子入口产物。',
@@ -263,7 +277,7 @@ try {
   const cssModules = report.cssTree.flatMap((chunk) => chunk.modules);
   assert(
     !cssModules.some((id) =>
-      /\/zerodep-js\/|\/dist\/(runtime\/(browser|server|collector)|theme\/context|bindings|generated\/author)\.js$/.test(
+      /\/zerodep-js\/|\/dist\/(runtime\/(browser|server|context|bindings)|generated\/author)\.js$/.test(
         id,
       ),
     ),

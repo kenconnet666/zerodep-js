@@ -2,6 +2,8 @@
 
 ## 未发布 — 单仓库 CSS 与构建工具精简
 
+- CSS 手写代码由 17 个文件收拢为 8 个，根目录只留 index.ts，统一 runtime/generated/util。主题缓存改为属性访问时创建；系统关键字查询表复用，动态绑定删除第三次重复作者核对，保留求值及安全回退语义。
+
 - CSS 只公开包根，移除 /server、/internal；SSR API 与编译器绑定统一从 zerodep-js-css 导入。源码按 author/theme/runtime 分组，导出清单只维护 src/index.ts；标准 browser 字段选择浏览器宿主。
 - 具体 UiTheme/token/亮暗主题移回 UI provider/theme；CSS 只保留系统关键字与继承机制，CssValue 默认不再依赖 UI 类型。
 - 删除 UI 的 _mergeSlotProps、_composeEventHandlers 及专属用例，保留 _resolveSlotProps 和现有组件 slotXxx 转发。

@@ -9,7 +9,7 @@ import {
   withCssHost,
   css,
 } from '../../dist/index.js';
-import { authorInputs } from '../../dist/author/author-guards.js';
+import { authorInputs } from '../../dist/runtime/bindings.js';
 
 class Light extends SystemKeywords {
   color = { ...systemKeywords.color, _primary: '#1d4ed8' };

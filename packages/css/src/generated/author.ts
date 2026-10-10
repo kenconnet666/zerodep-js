@@ -16,8 +16,8 @@ export * from './m-o.js';
 export * from './p-r.js';
 export * from './s-t.js';
 export * from './u-z.js';
-import { selectorRule, type CssSelector } from '../author/selectors.js';
-import type { CssInput } from '../runtime/registry.js';
+import { selectorRule, type CssSelector } from '../util/author.js';
+import type { CssInput } from '../util/author.js';
 import { SystemKeywords, systemKeywords } from './keywords.js';
 export * from './keywords.js';
 import {
@@ -27,7 +27,7 @@ import {
   type KeywordSource,
   type KeywordAuthor,
   type CheckedKeywords,
-} from '../theme/keyword-source.js';
+} from '../util/keywords.js';
 
 // 仅在首次构造作者实例时注册，避免未使用的属性链阻止按需打包。
 let systemPropertiesReady = false;
@@ -4564,18 +4564,18 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
 }
 function defineSystemProperty(name: string, create: () => object): void {
   let shared: object | undefined;
-  const scoped = new WeakMap<object, object>();
+  let scoped: WeakMap<object, object> | undefined;
   Object.defineProperty(Css.prototype, name, {
     configurable: true,
     get() {
       const source = getKeywordSource(this);
       if (!source) return (shared ??= Object.freeze(create()));
-      let value = scoped.get(this);
+      let value = scoped?.get(this);
       if (!value) {
         value = bindKeywords(create() as { raw(value: never): string }, name, () =>
           Reflect.get(source(), name),
         );
-        scoped.set(this, value);
+        (scoped ??= new WeakMap<object, object>()).set(this, value);
       }
       return value;
     },

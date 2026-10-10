@@ -8,7 +8,7 @@ import {
   withCssHost,
   css,
 } from '../../dist/index.js';
-import { inlineDeclaration } from '../../dist/author/inline.js';
+import { bindValue } from './bindings.mjs';
 
 await test('所有生成属性的 raw(undefined) 省略声明，合法零值保留', () => {
   const s = new Css();
@@ -35,14 +35,14 @@ await test('注入主题的可选值仍省略，已有关键字解析与 SSR 组
 
 await test('内联值撤销后不再提供声明或私有变量值', () => {
   const s = new Css();
-  assert.deepEqual(inlineDeclaration(s, 'color', 'raw', '#123456', '--zj-optional'), {
+  assert.deepEqual(bindValue(s, 'color', 'raw', '#123456', '--zj-optional'), {
     declaration: 'color:var(--zj-optional);',
     value: '#123456',
   });
-  assert.deepEqual(inlineDeclaration(s, 'color', 'raw', undefined, '--zj-optional'), {
+  assert.deepEqual(bindValue(s, 'color', 'raw', undefined, '--zj-optional'), {
     declaration: '',
   });
-  assert.deepEqual(inlineDeclaration(s, 'opacity', 'raw', 0, '--zj-optional'), {
+  assert.deepEqual(bindValue(s, 'opacity', 'raw', 0, '--zj-optional'), {
     declaration: 'opacity:var(--zj-optional);',
     value: '0',
   });

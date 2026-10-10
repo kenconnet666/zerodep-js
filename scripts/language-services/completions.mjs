@@ -30,7 +30,7 @@ const cases = [
     importFrom: 'zerodep-js-css',
   },
   ...[
-    ['createServerCssHost', 'collector.ts'],
+    ['createServerCssHost', 'rules.ts'],
     ['withCssHost', 'server.ts'],
     ['css', 'server.ts'],
   ].map(([name, file]) => ({

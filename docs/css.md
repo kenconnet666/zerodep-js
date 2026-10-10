@@ -104,6 +104,8 @@ const styles =
 
 ## 类型和维护
 
+源码布局固定为 runtime/generated/util 三个目录，src 根目录仅 index.ts。小型声明工具和关键字机制在 util，宿主、规则表、组件上下文及动态绑定在 runtime。系统作者按需建立主题属性缓存，关键字查询只复用固定系统表，不记录用户历史值。
+
 所有 API（包括 SSR 收集器和编译器调用的 cssBinding/cssKeyword/cssResult/cssProps）统一从 zerodep-js-css 根入口导入，不再提供子入口。类型统一指向 dist/index.d.ts，并发布声明映射与源码；Vite 按标准 browser 字段将 Node 宿主替换为浏览器实现，源码不使用包内导入别名。
 
 CSS 提供 SystemKeywords 和继承机制，不提供 UiTheme 或亮暗配色。UI 的主题从 zerodep-js-ui 导入；自定义作者也可直接继承 SystemKeywords。CssValue 的第二个参数指定主题类型，默认不包含 UI 自定义关键字。

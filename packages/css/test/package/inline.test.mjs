@@ -2,8 +2,9 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { runInNewContext } from 'node:vm';
 import { Css, WidthCss, ColorCss } from '../../dist/index.js';
-import { authorInputs } from '../../dist/author/author-guards.js';
-import { inlineDeclaration, inlineKeyword } from '../../dist/author/inline.js';
+import { authorInputs } from '../../dist/runtime/bindings.js';
+import { inlineKeyword } from '../../dist/runtime/bindings.js';
+import { bindValue } from './bindings.mjs';
 
 await test('跨 realm 和无原型的关键字对象不混入 Object.prototype 成员', () => {
   for (const color of [
@@ -128,7 +129,7 @@ await test('继承系统方法但改写底层属性名时，不按原属性假�
   }
   const author = new Custom();
   assert.equal(authorInputs(author, 'width', 'raw'), undefined);
-  assert.deepEqual(inlineDeclaration(author, 'width', 'raw', 'auto', '--zj-test'), {
+  assert.deepEqual(bindValue(author, 'width', 'raw', 'auto', '--zj-test'), {
     declaration: 'opacity:auto;',
   });
 });
@@ -148,7 +149,7 @@ await test('属性名 getter 不参与优化判定，原声明只求值一次', 
   const author = new Custom();
   assert.equal(authorInputs(author, 'width', 'px'), undefined);
   assert.equal(reads, 0);
-  assert.deepEqual(inlineDeclaration(author, 'width', 'px', 20, '--zj-test'), {
+  assert.deepEqual(bindValue(author, 'width', 'px', 20, '--zj-test'), {
     declaration: 'width:20px;',
   });
   assert.equal(reads, 1);
@@ -156,15 +157,15 @@ await test('属性名 getter 不参与优化判定，原声明只求值一次', 
 
 await test('系统直接值绑定完整单位，保留特殊值原始层叠', () => {
   const s = new Css();
-  assert.deepEqual(inlineDeclaration(s, 'width', 'px', 24, '--zj-test'), {
+  assert.deepEqual(bindValue(s, 'width', 'px', 24, '--zj-test'), {
     declaration: 'width:var(--zj-test);',
     value: '24px',
   });
-  assert.deepEqual(inlineDeclaration(s, 'color', 'raw', 'red', '--zj-test'), {
+  assert.deepEqual(bindValue(s, 'color', 'raw', 'red', '--zj-test'), {
     declaration: 'color:var(--zj-test);',
     value: 'red',
   });
-  assert.equal(inlineDeclaration(s, 'color', 'raw', '#abcdef', '--zj-test').value, '#abcdef');
+  assert.equal(bindValue(s, 'color', 'raw', '#abcdef', '--zj-test').value, '#abcdef');
   for (const value of [
     'initial',
     'inherit',
@@ -175,11 +176,11 @@ await test('系统直接值绑定完整单位，保留特殊值原始层叠', ()
     'nonsense',
     'var(--external)',
   ]) {
-    assert.deepEqual(inlineDeclaration(s, 'color', 'raw', value, '--zj-test'), {
+    assert.deepEqual(bindValue(s, 'color', 'raw', value, '--zj-test'), {
       declaration: s.color.raw(value),
     });
   }
-  assert.deepEqual(inlineDeclaration(s, 'width', 'px', -1, '--zj-test'), {
+  assert.deepEqual(bindValue(s, 'width', 'px', -1, '--zj-test'), {
     declaration: 'width:-1px;',
   });
 });
@@ -191,7 +192,7 @@ await test('只扩展关键字而保留属性身份的作者仍可绑定系统�
   class Custom extends Css {
     width = new Width();
   }
-  assert.deepEqual(inlineDeclaration(new Custom(), 'width', 'px', 20, '--zj-test'), {
+  assert.deepEqual(bindValue(new Custom(), 'width', 'px', 20, '--zj-test'), {
     declaration: 'width:var(--zj-test);',
     value: '20px',
   });
@@ -208,13 +209,13 @@ await test('覆写和主题作者保持方法调用及读取，不猜测实现',
   class Custom extends Css {
     width = new Width();
   }
-  assert.deepEqual(inlineDeclaration(new Custom(), 'width', 'px', 10, '--zj-test'), {
+  assert.deepEqual(bindValue(new Custom(), 'width', 'px', 10, '--zj-test'), {
     declaration: 'width:20px;',
   });
   assert.equal(calls, 1);
   const original = new Css();
   const themed = new Css(() => ({ color: { red: 'blue' } }));
-  assert.deepEqual(inlineDeclaration(themed, 'color', 'raw', 'red', '--zj-test'), {
+  assert.deepEqual(bindValue(themed, 'color', 'raw', 'red', '--zj-test'), {
     declaration: original.color.raw('red'),
   });
 });

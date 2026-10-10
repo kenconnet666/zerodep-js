@@ -1,6 +1,11 @@
-import type { ServerCssHost } from './collector.js';
-import { createRuleRegistry, ruleText, type CssRule, type CssInput } from './registry.js';
-import { serializeStyleRules } from './serialization.js';
+import {
+  createRuleRegistry,
+  ruleText,
+  serializeStyleRules,
+  type CssRule,
+  type ServerCssHost,
+} from './rules.js';
+import type { CssInput } from '../util/author.js';
 
 export interface BrowserCssOptions {
   nonce?: string;

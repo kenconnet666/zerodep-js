@@ -1,6 +1,6 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
-import type { CssInput } from './registry.js';
-import type { ServerCssHost } from './collector.js';
+import type { CssInput } from '../util/author.js';
+import type { ServerCssHost } from './rules.js';
 
 const current = new AsyncLocalStorage<ServerCssHost>();
 
