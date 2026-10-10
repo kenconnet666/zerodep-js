@@ -16,6 +16,8 @@ export interface UiLocale {
 
 /** 每次调用读取当前 Provider，不缓存初始地区，不修改 date-fns 或 Intl 全局状态。 */
 export function createLocale(readLocale: () => string, readTimeZone: () => string): UiLocale {
+  let dateFormat: { locale: string; zone: string; formatter: Intl.DateTimeFormat } | undefined;
+  let numberFormat: { locale: string; formatter: Intl.NumberFormat } | undefined;
   return Object.freeze({
     get locale() {
       return readLocale();
@@ -28,17 +30,33 @@ export function createLocale(readLocale: () => string, readTimeZone: () => strin
     },
     formatDate(
       value: Date | number,
-      options: Omit<Intl.DateTimeFormatOptions, 'timeZone'> = {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-      },
+      options?: Omit<Intl.DateTimeFormatOptions, 'timeZone'>,
     ): string {
-      return new Intl.DateTimeFormat(readLocale(), { ...options, timeZone: readTimeZone() }).format(
-        value,
-      );
+      const locale = readLocale();
+      // 自定义选项可能变化或包含 getter，保持逐次读取；只复用无选项的常用格式。
+      if (options !== undefined)
+        return new Intl.DateTimeFormat(locale, { ...options, timeZone: readTimeZone() }).format(
+          value,
+        );
+      const zone = readTimeZone();
+      if (!dateFormat || dateFormat.locale !== locale || dateFormat.zone !== zone)
+        dateFormat = {
+          locale,
+          zone,
+          formatter: new Intl.DateTimeFormat(locale, {
+            dateStyle: 'medium',
+            timeStyle: 'short',
+            timeZone: zone,
+          }),
+        };
+      return dateFormat.formatter.format(value);
     },
     formatNumber(value: number | bigint, options?: Intl.NumberFormatOptions): string {
-      return new Intl.NumberFormat(readLocale(), options).format(value);
+      const locale = readLocale();
+      if (options !== undefined) return new Intl.NumberFormat(locale, options).format(value);
+      if (!numberFormat || numberFormat.locale !== locale)
+        numberFormat = { locale, formatter: new Intl.NumberFormat(locale) };
+      return numberFormat.formatter.format(value);
     },
   });
 }

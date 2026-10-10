@@ -2,6 +2,7 @@ import type { UiTheme } from '../provider/theme/theme.js';
 import { _component, _derived, _effect, _state, type JSX } from 'zerodep-js';
 import { css, _mergeClasses, type CssValue } from 'zerodep-js-css';
 import { useCss } from '../provider/context.js';
+import { warnAttachedChildren } from '../internal/attached.js';
 
 interface GridCommon extends Omit<JSX.IntrinsicElements['div'], 'size'> {
   inline?: boolean | undefined;
@@ -71,24 +72,10 @@ export const Grid = _component(
     _effect(() => {
       const node = container;
       if (!node || !attached) return;
-      let active = true;
-      node.ownerDocument.defaultView!.queueMicrotask(() => {
-        if (!active) return;
-        if (
-          Array.from(node.children).some(
-            (child) => !child.hasAttribute('data-ui-action') && !child.hasAttribute('hidden'),
-          ) ||
-          Array.from(node.childNodes).some(
-            (child) => child.nodeType === 3 && child.textContent?.trim(),
-          )
-        )
-          console.warn(
-            'Grid attached 只支持带 data-ui-action 标记的直接单格控件；不支持 wrapper、跨格或手工定位。',
-          );
-      });
-      return () => {
-        active = false;
-      };
+      return warnAttachedChildren(
+        node,
+        'Grid attached 只支持带 data-ui-action 标记的直接单格控件；不支持 wrapper、跨格或手工定位。',
+      );
     });
     const layout = _derived.by(() => {
       if (typeof columns === 'number' && (!Number.isSafeInteger(columns) || columns < 1))

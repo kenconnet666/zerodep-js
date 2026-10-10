@@ -1,4 +1,4 @@
-import { _component, _derived, type NativeProps, element } from 'zerodep-js';
+import { _component, _derived, styleText, type NativeProps, element } from 'zerodep-js';
 
 import { css, _mergeClasses } from 'zerodep-js-css';
 import type { ButtonState } from './Button.js';
@@ -47,6 +47,7 @@ export const LinkButton = _component(
     tabIndex,
     role,
     class: className,
+    style: customStyle,
     children,
     ...rest
   }: LinkButtonProps) => {
@@ -65,7 +66,8 @@ export const LinkButton = _component(
         aria-disabled={state.unavailable || undefined}
         aria-busy={loading || undefined}
         data-ui-action=""
-        class={_mergeClasses(appearance, font, className)}
+        style={[appearance.style, styleText(customStyle)].filter(Boolean).join(';')}
+        class={_mergeClasses(appearance.class, font, className)}
         onClick={(event) => {
           if (state.unavailable) {
             event.preventDefault();

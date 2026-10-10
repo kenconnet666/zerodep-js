@@ -1,4 +1,4 @@
-import { _component, _derived, type JSX } from 'zerodep-js';
+import { _component, _derived, styleText, type JSX } from 'zerodep-js';
 import { _mergeClasses } from 'zerodep-js-css';
 import type { LucideIconData } from '@lucide/icons';
 import type { ButtonState } from './Button.js';
@@ -35,6 +35,7 @@ export const IconButton = _component(
     slotSpinner,
     slotRipple,
     class: className,
+    style: customStyle,
     children: _children,
     ...rest
   }: IconButtonProps) => {
@@ -53,7 +54,8 @@ export const IconButton = _component(
         ripple={ripple}
         aria-busy={loading || undefined}
         data-ui-action=""
-        class={_mergeClasses(style, className)}
+        style={[style.style, styleText(customStyle)].filter(Boolean).join(';')}
+        class={_mergeClasses(style.class, className)}
         slotRipple={_resolveSlotProps(slotRipple, state)}
       >
         <ButtonContent

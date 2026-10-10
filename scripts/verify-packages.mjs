@@ -241,6 +241,8 @@ try {
     }
     assert.equal('_createPage' in await import('zerodep-js'), false, '旧页面宿主 API 必须移除');
     assert.equal('_createScope' in await import('zerodep-js'), false, '旧 scope API 必须移除');
+    const core = await import('zerodep-js');
+    for (const name of ['headData', 'renderedHead', 'hasOpenBinding', 'OPEN_STATE_ATTRIBUTE', 'HTML', 'SVG', 'MATH', 'namespaceFor', 'voidTags', 'textTags', 'rawTextTags', 'elementName', 'textValue', 'textContent', 'elementText', 'nativeAttributes', 'attributeValue', 'selectionValues']) assert.equal(name in core, false, '内部 HTML/SSR 工具不再公开');
     const compiler = await import('zerodep-js-compiler');
     for (const name of ['compile', 'diagnose', 'zerodep']) assert.equal(typeof compiler[name], 'function');
     const css = await import('zerodep-js-css');

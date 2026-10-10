@@ -31,3 +31,5 @@ pnpm test:packages 使用本次固定 tgz 在工作区外安装，检查：
 注册表验收使用 release:verify-registry，比对同一提交、tgz 摘要、版本和 next 标签。上传成功不能替代实际安装，旧版本的消费通过也不覆盖当前候选。
 
 core 的 `src` 根目录只有 `index.ts`。实现分别位于 runtime、dom、native、ssr、dev；所有应用导入均使用 `zerodep-js`，没有 internal/head/devtools/jsx-runtime 子入口。SSR 不依赖 Node 专用模块；浏览器打包通过 sideEffects: false 与具名导出移除未使用的服务端和开发代码。
+
+SSR 合并后，headData/renderedHead、HTML/SVG/MathML 常量、原生属性序列化及开放绑定检查等仅供 core 内部使用，不再从包根导出。应用的 _head/_render、编译器协议、CSS 所需的 styleText 等保留。

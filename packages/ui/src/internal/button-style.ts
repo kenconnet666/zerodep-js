@@ -1,4 +1,4 @@
-import { css, type Css, type CssValue } from 'zerodep-js-css';
+import { css, Css, cssBinding, cssResult, type CssProps, type CssValue } from 'zerodep-js-css';
 import type { UiTheme } from '../provider/theme/theme.js';
 import type { ButtonVariant } from '../base/Button.js';
 
@@ -11,11 +11,30 @@ export interface ButtonStyleOptions {
   borderColor?: CssValue<'borderColor', UiTheme>;
 }
 
-/** 四类控件共用几何与相连协议；不在主题中加入按钮专用 token。 */
-export function buttonStyle(s: Css<UiTheme>, options: ButtonStyleOptions): string {
+const literalColors = new Css();
+
+/** 先由主题作者解析关键字，再复用 CSS 的保守转换；特殊值仍返回完整声明。 */
+function colorBinding(
+  property: 'color' | 'background-color' | 'border-color',
+  declaration: string,
+) {
+  const prefix = property + ':';
+  if (!declaration.startsWith(prefix) || !declaration.endsWith(';')) return declaration;
+  const value = declaration.slice(prefix.length, -1);
+  const member =
+    property === 'background-color'
+      ? 'backgroundColor'
+      : property === 'border-color'
+        ? 'borderColor'
+        : 'color';
+  return cssBinding(literalColors, member, 'raw', () => value, `--zj-button-${property}`);
+}
+
+/** 四类控件共用几何与相连协议；颜色变化只更新安全的元素变量。 */
+export function buttonStyle(s: Css<UiTheme>, options: ButtonStyleOptions): CssProps {
   const { variant, iconOnly, pressed, color, backgroundColor, borderColor } = options;
   const filled = variant === 'solid' || pressed;
-  return css(
+  return cssResult(css, [
     '--zj-action-border:0.0625em;',
     s.boxSizing.borderBox,
     s.position.relative,
@@ -39,9 +58,15 @@ export function buttonStyle(s: Css<UiTheme>, options: ButtonStyleOptions): strin
     s.borderStyle.solid,
     s.borderWidth.raw('var(--zj-action-border)'),
     s.borderRadius.em(0.5),
-    s.color.raw(color ?? (filled ? '_onPrimary' : '_primary')),
-    s.backgroundColor.raw(backgroundColor ?? (filled ? '_primary' : 'transparent')),
-    s.borderColor.raw(borderColor ?? (variant === 'outline' ? '_primary' : 'transparent')),
+    colorBinding('color', s.color.raw(color ?? (filled ? '_onPrimary' : '_primary'))),
+    colorBinding(
+      'background-color',
+      s.backgroundColor.raw(backgroundColor ?? (filled ? '_primary' : 'transparent')),
+    ),
+    colorBinding(
+      'border-color',
+      s.borderColor.raw(borderColor ?? (variant === 'outline' ? '_primary' : 'transparent')),
+    ),
     s.cursor.pointer,
     s._selector('&[hidden]', s.display.none),
     s._selector('&:disabled, &[aria-disabled="true"]', s.cursor.default, s.opacity._disabled),
@@ -74,5 +99,5 @@ export function buttonStyle(s: Css<UiTheme>, options: ButtonStyleOptions): strin
       ),
       s._selector('&:disabled, &[aria-disabled="true"]', s.color.raw('GrayText'), s.opacity.raw(1)),
     ),
-  );
+  ]);
 }

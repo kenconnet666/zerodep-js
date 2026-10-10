@@ -10,6 +10,8 @@
 
 useLocale 提供当前 locale/timeZone、formatDate、formatNumber，以及 date(Date | 毫秒时间戳)。date 返回携带当前时区的 TZDate，可直接传给 date-fns 的 addDays 等函数；Intl 负责地区格式。采用 date-fns 4.4.0 与官方 @date-fns/tz 1.5.0。不默默解析无时区日期字符串，不修改原始时间点，不设置全局默认语言或时区。
 
+默认日期/数字格式器按每个 Provider 当前配置复用，地区或时区变化时替换，不保存历史配置。传入自定义 options 时仍逐次构造，保留选项对象修改及 getter 的行为；不同 Provider 不共享格式器。
+
 语言包包含 code、direction、messages；先提供 zhCN、enUS，code 接受其他有效语言标签，业务可补充完整语言包。地区不从语言推断，时区不从地区推断，dir 未显式指定时使用本层有效语言包方向。
 
 SSR 与客户端首次接管使用相同 props，默认值不依赖服务器/浏览器环境。验证覆盖主题切换、独立继承/撤销、语言替换、时区换算与夏令时、无 Provider 报错、SSR 隔离、真实浏览器接管及 Portal。

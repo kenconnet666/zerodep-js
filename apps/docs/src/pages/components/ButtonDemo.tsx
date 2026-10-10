@@ -33,6 +33,7 @@ export const ButtonDemo = _component(() => {
     resets = _state(0),
     refs = _state(0);
   let items = _state(['第一项', '中间项', '最后项']);
+  let liveColor = _state('#245fc5');
   const observe = (_node: SVGSVGElement) => {
     refs++;
     return () => {
@@ -113,6 +114,40 @@ export const ButtonDemo = _component(() => {
       </button>
       {visible && (
         <Provider theme={dark ? darkTheme : lightTheme} size={large ? '32px' : '16px'}>
+          <div data-button-color-demo>
+            <label>
+              按钮连续颜色 <input type="color" bind:value={liveColor} />
+            </label>
+            <Flex>
+              <Button variant="outline" color={liveColor} borderColor={liveColor} ripple={false}>
+                颜色预览
+              </Button>
+              <IconButton
+                icon={Search}
+                aria-label="颜色图标"
+                color={liveColor}
+                borderColor={liveColor}
+                ripple={false}
+              />
+              <ToggleButton
+                pressed={false}
+                onPressedChange={() => {}}
+                color={liveColor}
+                borderColor={liveColor}
+                ripple={false}
+              >
+                颜色切换
+              </ToggleButton>
+              <LinkButton
+                href="#button-heading"
+                color={liveColor}
+                borderColor={liveColor}
+                ripple={false}
+              >
+                颜色链接
+              </LinkButton>
+            </Flex>
+          </div>
           <Flex data-button-row>
             <Button
               data-action="save"

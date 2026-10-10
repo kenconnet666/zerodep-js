@@ -1,4 +1,4 @@
-import { _component, _derived, type JSX } from 'zerodep-js';
+import { _component, _derived, styleText, type JSX } from 'zerodep-js';
 import { _mergeClasses } from 'zerodep-js-css';
 import { ButtonBase } from './ButtonBase.js';
 import { ButtonContent } from '../internal/ButtonContent.js';
@@ -41,6 +41,7 @@ export const Button = _component(
     slotSpinner,
     slotRipple,
     class: className,
+    style: customStyle,
     children,
     ...rest
   }: ButtonProps) => {
@@ -57,7 +58,8 @@ export const Button = _component(
         ripple={ripple}
         aria-busy={loading || undefined}
         data-ui-action=""
-        class={_mergeClasses(style, className)}
+        style={[style.style, styleText(customStyle)].filter(Boolean).join(';')}
+        class={_mergeClasses(style.class, className)}
         slotRipple={_resolveSlotProps(slotRipple, state)}
       >
         <ButtonContent

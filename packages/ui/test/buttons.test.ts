@@ -49,6 +49,50 @@ function render(
   return { html: withCssHost(host, () => renderToString(App)), css: host.cssText() };
 }
 
+it.each([Button, IconButton, ToggleButton, LinkButton])(
+  '按钮连续颜色不增加规则，特殊 CSS 与外部 style 保持原意',
+  (component) => {
+    const host = createServerCssHost();
+    const fixed =
+      component === IconButton
+        ? { icon: Search, 'aria-label': '测试', ripple: false }
+        : component === ToggleButton
+          ? { children: '测试', pressed: false, onPressedChange() {}, ripple: false }
+          : component === LinkButton
+            ? { children: '测试', href: '/docs', ripple: false }
+            : { children: '测试', ripple: false };
+    const App = defineComponent((props: Record<string, unknown>) =>
+      element(Provider, {
+        children: element(component, { ...fixed, ...props }),
+      }),
+    );
+    withCssHost(host, () => {
+      renderToString(App, {
+        props: { color: '#000000', backgroundColor: '#ffffff', borderColor: '#000000' },
+      });
+      const count = host.rules().length;
+      for (let i = 1; i <= 50; i++) {
+        const color = '#' + i.toString(16).padStart(6, '0');
+        const html = renderToString(App, {
+          props: { color, backgroundColor: color, borderColor: color },
+        });
+        expect(html).toContain(`--zj-button-color:${color}`);
+        expect(html).toContain(`--zj-button-background-color:${color}`);
+        expect(html).toContain(`--zj-button-border-color:${color}`);
+      }
+      expect(host.rules()).toHaveLength(count);
+      for (const color of ['inherit', 'revert', 'red!important', 'var(--custom-color)']) {
+        const html = renderToString(App, {
+          props: { color, style: { color: 'blue', '--user': 'kept' } },
+        });
+        expect(html).not.toContain('--zj-button-color:');
+        expect(html).toContain('color:blue;--user:kept');
+        expect(host.cssText()).toContain(`color:${color};`);
+      }
+    });
+  },
+);
+
 it('Button 加载首屏即原生禁用，保留标签并隔离槽语义', () => {
   const { html, css } = render(Button, {
     loading: true,

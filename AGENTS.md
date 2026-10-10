@@ -35,6 +35,7 @@
 - 优先使用成熟依赖；ESLint 的 TS 支持满足选定版本时再评估替换现有 lint，不引入 TS6 或自造通用 linter。项目不引入 Zod，MCP 使用 JSON Schema、vscode-jsonrpc 与标准 stdio JSON-RPC。
 - CSS 生成属性直接继承共享泛型基类，保留各属性 Property.* 参数约束和基类中文说明；不要用 class/interface 合并重述方法，这会使当前 WebStorm 丢失普通方法的参数列表展示。
 - 生成数据应有明确维护入口与检查命令。中文注释解释语义、原因、资源责任，不机械复述代码。
+- 2026-10-10 审查优化：按钮颜色先由主题作者解析，再复用 CSS 安全变量转换；特殊值保留原声明，用户 style 仍最后覆盖。Provider 仅复用当前配置的默认 Intl 格式器，自定义选项逐次读取，不累计历史配置。core 不再公开仅供内部使用的 HTML/SSR 工具。Flex/Grid 共享私有子项检查；语言服务只忽略仓库根 .idea/.release/reports，继续监听 dist 与源码同名目录。
 
 ## 验证与交付
 

@@ -1,5 +1,6 @@
 import {
   mkdtemp,
+  mkdir,
   readFile,
   readdir,
   rmdir,
@@ -13,6 +14,43 @@ import { join } from 'node:path';
 import { expect, it } from 'vitest';
 import { LanguageWorkspace } from '../src/language/workspace.js';
 import { checkProject } from '../src/checking/project.js';
+import { TypeScriptService } from '../src/language/service.js';
+
+it('监听排除根目录工具产物，保留 dist 和源码中的 reports 目录', async () => {
+  const root = await fixture();
+  const folders = ['.idea', '.release', 'reports', 'dist', 'src/reports'];
+  for (const folder of folders) {
+    await mkdir(join(root, folder), { recursive: true });
+    await writeFile(join(root, folder, 'value.ts'), 'export const value = 1;');
+  }
+  const service = new TypeScriptService(root);
+  const changed = new Set<string>();
+  try {
+    await service.ready;
+    service.onChanges = (changes) => {
+      for (const file of changes.keys()) changed.add(file);
+    };
+    for (const folder of folders)
+      await writeFile(join(root, folder, 'value.ts'), 'export const value = 2;');
+    await expect
+      .poll(async () => {
+        await service.flush();
+        return (
+          changed.has(join(root, 'dist/value.ts')) &&
+          changed.has(join(root, 'src/reports/value.ts'))
+        );
+      })
+      .toBe(true);
+    for (const folder of ['.idea', '.release', 'reports'])
+      expect(changed.has(join(root, folder, 'value.ts'))).toBe(false);
+  } finally {
+    await service.close();
+    for (const folder of folders) await unlink(join(root, folder, 'value.ts'));
+    for (const folder of [...folders].reverse()) await rmdir(join(root, folder));
+    await rmdir(join(root, 'src'));
+    await cleanup(root);
+  }
+});
 
 async function fixture() {
   const root = await mkdtemp(join(tmpdir(), 'zerodep-owned-test-'));

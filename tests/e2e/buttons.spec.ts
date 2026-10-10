@@ -34,6 +34,42 @@ async function open(page: Page, mode: string) {
 }
 
 for (const mode of ['csr', 'ssr']) {
+  test(`${mode} 连续颜色更新复用类名和规则，保留主题切换`, async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    await open(page, mode);
+    const demo = page.locator('[data-button-color-demo]');
+    const controls = demo.locator('[data-ui-action]');
+    await expect(controls).toHaveCount(4);
+    const before = await controls.evaluateAll((nodes) =>
+      nodes.map((node) => node.getAttribute('class')!),
+    );
+    const ruleCount = () =>
+      page.evaluate(() =>
+        Array.from(document.querySelectorAll<HTMLStyleElement>('style[data-zerodep-css]')).reduce(
+          (count, tag) => count + (tag.sheet?.cssRules.length ?? 0),
+          0,
+        ),
+      );
+    const count = await ruleCount();
+    await demo.locator('input').evaluate(async (input: HTMLInputElement) => {
+      for (let i = 1; i <= 200; i++) {
+        input.value = '#' + i.toString(16).padStart(6, '0');
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        await new Promise<void>((resolve) => queueMicrotask(resolve));
+      }
+    });
+    for (let i = 0; i < 4; i++) {
+      await expect(controls.nth(i)).toHaveCSS('color', 'rgb(0, 0, 200)');
+      await expect(controls.nth(i)).toHaveCSS('border-top-color', 'rgb(0, 0, 200)');
+      await expect(controls.nth(i)).toHaveAttribute('class', before[i]!);
+    }
+    expect(await ruleCount()).toBe(count);
+    await page.getByLabel('按钮暗色', { exact: true }).check();
+    await expect(controls.first()).toHaveCSS('color', 'rgb(0, 0, 200)');
+    expect(errors).toEqual([]);
+  });
+
   test(`${mode} 成品按钮加载、类型化槽、表单与原生禁用`, async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (error) => errors.push(error.message));

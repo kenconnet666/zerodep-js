@@ -11,7 +11,7 @@ import {
   type ProviderProps,
   type UiLanguage,
 } from '../dist/index.js';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { _createRoot, defineComponent, element, renderToString } from 'zerodep-js';
 
 import {
@@ -136,6 +136,77 @@ describe('Provider 真实构建产物', () => {
 });
 
 describe('地区与 date-fns 时区计算', () => {
+  it('默认格式器复用当前配置，切换后替换；自定义选项仍逐次读取', () => {
+    let region = 'zh-CN',
+      zone = 'Asia/Shanghai';
+    const locale = createLocale(
+      () => region,
+      () => zone,
+    );
+    const dateSpy = vi.spyOn(Intl, 'DateTimeFormat');
+    const numberSpy = vi.spyOn(Intl, 'NumberFormat');
+    try {
+      const time = Date.UTC(2026, 0, 1);
+      const first = locale.formatDate(time);
+      for (let i = 0; i < 10; i++) {
+        expect(locale.formatDate(time)).toBe(first);
+        expect(locale.formatNumber(i)).toBe(String(i));
+      }
+      expect(dateSpy).toHaveBeenCalledTimes(1);
+      expect(numberSpy).toHaveBeenCalledTimes(1);
+      zone = 'America/New_York';
+      expect(locale.formatDate(time)).not.toBe(first);
+      locale.formatNumber(1);
+      expect(dateSpy).toHaveBeenCalledTimes(2);
+      expect(numberSpy).toHaveBeenCalledTimes(1);
+      region = 'de-DE';
+      expect(locale.formatNumber(1234.5)).toBe('1.234,5');
+      locale.formatDate(time);
+      expect(dateSpy).toHaveBeenCalledTimes(3);
+      expect(numberSpy).toHaveBeenCalledTimes(2);
+      region = 'zh-CN';
+      zone = 'Asia/Shanghai';
+      expect(locale.formatDate(time)).toBe(first);
+      locale.formatNumber(1);
+      expect(dateSpy).toHaveBeenCalledTimes(4);
+      expect(numberSpy).toHaveBeenCalledTimes(3);
+      const options = { maximumFractionDigits: 0 };
+      expect(locale.formatNumber(1.25, options)).toBe('1');
+      options.maximumFractionDigits = 2;
+      expect(locale.formatNumber(1.25, options)).toBe('1.25');
+      const other = createLocale(
+        () => 'de-DE',
+        () => 'Europe/Berlin',
+      );
+      expect(other.formatNumber(1.25)).toBe('1,25');
+      expect(locale.formatNumber(1.25)).toBe('1.25');
+      zone = 'Mars/Olympus';
+      expect(() => locale.formatDate(time)).toThrow(RangeError);
+      zone = 'Asia/Shanghai';
+      expect(locale.formatDate(time)).toBe(first);
+    } finally {
+      dateSpy.mockRestore();
+      numberSpy.mockRestore();
+    }
+  });
+
+  it('自定义日期选项的 getter 先求值，再读取时区', () => {
+    let zone = 'Asia/Shanghai';
+    const locale = createLocale(
+      () => 'en-US',
+      () => zone,
+    );
+    expect(
+      locale.formatDate(Date.UTC(2026, 0, 1), {
+        get hour() {
+          zone = 'America/New_York';
+          return '2-digit' as const;
+        },
+        hourCycle: 'h23',
+      }),
+    ).toBe('19');
+  });
+
   it('同一时刻保持时间戳，跨夏令时加一天保持当地钟点', () => {
     const locale = createLocale(
       () => 'en-US',

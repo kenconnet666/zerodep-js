@@ -2,6 +2,7 @@ import type { UiTheme } from '../provider/theme/theme.js';
 import { _component, _derived, _effect, _state, type JSX } from 'zerodep-js';
 import { css, _mergeClasses, type CssValue } from 'zerodep-js-css';
 import { useCss } from '../provider/context.js';
+import { warnAttachedChildren } from '../internal/attached.js';
 
 interface FlexCommon extends Omit<JSX.IntrinsicElements['div'], 'size'> {
   direction?: 'row' | 'column' | undefined;
@@ -59,25 +60,10 @@ export const Flex = _component(
     _effect(() => {
       const node = container;
       if (!node || !attached) return;
-      let active = true;
-      // 启用时给出组合错误提示；不安装 DOM 观察器追踪每个布局子项。
-      node.ownerDocument.defaultView!.queueMicrotask(() => {
-        if (!active) return;
-        const incompatible =
-          Array.from(node.children).some(
-            (child) => !child.hasAttribute('data-ui-action') && !child.hasAttribute('hidden'),
-          ) ||
-          Array.from(node.childNodes).some(
-            (child) => child.nodeType === 3 && child.textContent?.trim(),
-          );
-        if (incompatible)
-          console.warn(
-            'Flex attached 只支持带 data-ui-action 标记的直接控件；不会穿透 wrapper 或修改普通内容。',
-          );
-      });
-      return () => {
-        active = false;
-      };
+      return warnAttachedChildren(
+        node,
+        'Flex attached 只支持带 data-ui-action 标记的直接控件；不会穿透 wrapper 或修改普通内容。',
+      );
     });
     const layout = _derived.by(() => {
       // JS 消费与动态参数也遵循同一契约，不静默覆盖相互矛盾的意图。

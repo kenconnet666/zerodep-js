@@ -130,7 +130,7 @@ export class TypeScriptService {
           this.watched.delete(folder);
           return;
         }
-        if (this.ignored(String(name))) return;
+        if (this.ignored(String(name), folder)) return;
         if (event === 'rename' && !this.scanPending.has(file)) {
           this.scanPending.add(file);
           this.scanning = this.scanning.then(async () => {
@@ -165,22 +165,26 @@ export class TypeScriptService {
     }
     for (const entry of await readdir(folder, { withFileTypes: true }).catch(() => [])) {
       const path = resolve(folder, entry.name);
-      if (entry.isSymbolicLink() || this.ignored(entry.name)) continue;
+      if (entry.isSymbolicLink() || this.ignored(entry.name, folder)) continue;
       if (entry.isDirectory()) await this.trackDirectory(path, created);
       else if (created && /\.(?:[cm]?[jt]sx?|json|yaml)$/.test(path))
         this.changes.set(path, 'create');
     }
   }
-  private ignored(name: string): boolean {
-    return [
-      'node_modules',
-      '.git',
-      '.codex',
-      '.data',
-      'coverage',
-      'test-results',
-      'playwright-report',
-    ].includes(name);
+  private ignored(name: string, folder: string): boolean {
+    // 只排除仓库根的工具产物；保留源码中同名目录和工作区包的 dist 声明更新。
+    return (
+      (folder === this.root && ['.idea', '.release', 'reports'].includes(name)) ||
+      [
+        'node_modules',
+        '.git',
+        '.codex',
+        '.data',
+        'coverage',
+        'test-results',
+        'playwright-report',
+      ].includes(name)
+    );
   }
 
   async flush(): Promise<void> {

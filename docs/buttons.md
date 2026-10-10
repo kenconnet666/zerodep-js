@@ -1,5 +1,7 @@
 # 按钮与 Flex
 
+按钮的 color/backgroundColor/borderColor 先通过当前主题作者解析；安全颜色复用 CSS 包现有转换，写入每个元素的私有 CSS 变量，连续改变十六进制颜色不会不断登记新类。inherit/revert/!important、自定义 var() 等值沿用原始声明，不为优化改变层叠语义。用户 class 仍最后组合，style 在内部变量之后合并。Flex/Grid 的 attached 子项提示共享私有实现，布局算法保持独立。
+
 从 zerodep-js-ui 根入口导入，在 Provider 内使用。UI 保持 private。所有 size 属性都是 CSS 字号，省略时继承；组件内部尺寸使用 em。通用 token 在 zerodep-js-css，按钮专用比例在 UI 内部。
 
 ```tsx
