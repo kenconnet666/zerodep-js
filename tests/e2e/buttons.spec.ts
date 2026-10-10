@@ -188,12 +188,14 @@ for (const mode of ['csr', 'ssr']) {
     expect(errors).toEqual([]);
   });
 
-  test(`${mode} Flex 相连圆角、接缝、隐藏、重排与逻辑方向`, async ({ page }) => {
+  test(`${mode} ButtonGroup 相连圆角、接缝、隐藏、重排与逻辑方向`, async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (error) => errors.push(error.message));
     await open(page, mode);
     const demo = page.locator('#button-demo');
-    const flex = demo.locator('[data-attached-list]');
+    const flex = demo.locator('[data-button-group]');
+    await expect(flex).toHaveAttribute('role', 'group');
+    await expect(flex).toHaveAccessibleName('相连操作');
     const first = flex.locator('[data-item="第一项"]');
     const middle = flex.locator('[data-item="中间项"]');
     const last = flex.locator('[data-item="最后项"]');
@@ -232,7 +234,7 @@ for (const mode of ['csr', 'ssr']) {
     await expect(flex.locator('[data-ui-action]')).toHaveCount(1);
     await expect(flex.locator('[data-ui-action]')).toHaveCSS('border-radius', '8px');
     await expect(flex.locator('[data-ui-action]')).toHaveCSS('margin-block-start', '0px');
-    const mixed = demo.locator('[data-attached-mixed] > [data-ui-action]');
+    const mixed = demo.locator('[data-button-group-mixed] > [data-ui-action]');
     await expect(mixed).toHaveCount(4);
     await expect(mixed.nth(1)).toHaveCSS('border-radius', '0px');
     await expect(mixed.nth(2)).toHaveCSS('border-radius', '0px');

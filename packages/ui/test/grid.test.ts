@@ -2,7 +2,7 @@ import { expect, it } from 'vitest';
 import { defineComponent, element, renderToString } from 'zerodep-js';
 
 import { createServerCssHost, withCssHost } from 'zerodep-js-css';
-import { Provider, Grid, Button } from '../dist/index.js';
+import { Provider, Grid } from '../dist/index.js';
 
 function render(props: Record<string, unknown>) {
   const host = createServerCssHost();
@@ -38,29 +38,12 @@ it('Grid 支持原始轨道/命名区域/自动放置，不解释 CSS 字符串'
   expect(result.css).toContain('grid-auto-flow:row dense;');
   expect(result.css).toContain('grid-template-areas:"header header" "aside main";');
 });
-it('相连样式 SSR 即存在，包含二维接缝并保留原始按钮节点', () => {
-  const result = render({
-    attached: true,
-    columns: 3,
-    children: element(Button, { children: '一' }),
-  });
-  expect(result.css).toContain('margin-inline-start:calc(');
-  expect(result.css).toContain('margin-block-start:calc(');
-  expect(result.css).toContain(':nth-last-child(-n+3 of [data-ui-action]:not([hidden]))');
-  expect(result.html).toContain('data-ui-grid-attached="true"');
-  expect(result.html).toContain('<button');
-});
-it('数字列数与相连模式拒绝不确定或冲突的布局', () => {
+it('Grid 拒绝非法数字列数，普通轨道不附加按钮接缝', () => {
   for (const columns of [0, -1, 1.5, NaN, Infinity])
     expect(() => render({ columns })).toThrow('正安全整数');
-  for (const props of [
-    {},
-    { columns: 'repeat(2, 1fr)' },
-    { columns: 2, gap: '1em' },
-    { columns: 2, autoFlow: 'dense' },
-    { columns: 2, areas: '"a b"' },
-    { columns: 2, alignItems: 'start' },
-    { columns: 2, alignContent: 'space-between' },
-  ])
-    expect(() => render({ ...props, attached: true })).toThrow('Grid attached');
+  const result = render({ columns: 2, gap: '1em', alignContent: 'space-between' });
+  expect(result.css).toContain('gap:1em;');
+  expect(result.css).toContain('align-content:space-between;');
+  expect(result.css).not.toContain('data-ui-action');
+  expect(result.css).not.toContain('margin-inline-start');
 });

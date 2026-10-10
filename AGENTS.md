@@ -20,8 +20,8 @@
 - 2026-10-09：core 提供 DomRef/_composeRefs 并允许 DOM bind:this 与 ref 共存；UI src/utils 承担组件组合与按压工具，src/base 提供 Icon/Text/Ripple/Spinner/ButtonBase。仅维护 UI src/index.ts 根入口，由 pnpm ui:generate 自动生成，pnpm ui:check 校验；不创建子目录 index.ts。
 - 组件使用独立 slotXxx 属性转发底层参数，例如 slotRipple；多个部件分别提供各自属性，不使用统一 slotProps 对象。对象/状态回调只复用 _resolveSlotProps 解析；已删除 _mergeSlotProps 和 _composeEventHandlers。
 - 基础组件 size 表示 CSS 字号基准；Icon/Spinner 宽高 1em，ButtonBase 默认继承字号且不预设间距。组件内部视觉尺寸（含边框/焦点）默认用 em；不隐式叠加 rem 点击区域下限，应用可显式约束。根 Provider 默认 _md，嵌套默认继承，size 支持任意合法 CSS 字号。测量使用实际 CSS px，观察工具按需启用并清理。
-- 2026-10-09 用户授权完整执行的 Button/IconButton/ToggleButton/LinkButton/Flex 已进入源码。Flex attached 处理相连内侧圆角、边框和焦点，不管理选择状态；不保留 Group 别名或专用 Group。加载采用原生 disabled，MenuButton 暂不做。稳定契约见 docs/buttons.md，当前交接见 docs/handoff-ui-buttons-2026-10-09.md；完整验收以对应提交 CI 为准。
-- 2026-10-09 新增 Grid，位于 UI layout 并由根入口自动导出。普通模式支持原生 CSS 二维轨道；attached 限定数字列数、row 单格排列与零间距，纯 CSS 处理二维接缝/外轮廓。契约见 docs/grid.md，不把跨格或 auto-fit 当作已支持相连。
+- 2026-10-09 用户授权完整执行的 Button/IconButton/ToggleButton/LinkButton/Flex 已进入源码。后续相连职责已迁至 ButtonGroup，Flex 仅做普通布局；不保留旧 Group 别名。加载采用原生 disabled，MenuButton 暂不做。稳定契约见 docs/buttons.md，当前交接见 docs/handoff-ui-buttons-2026-10-09.md；完整验收以对应提交 CI 为准。
+- 2026-10-09 新增 Grid，位于 UI layout 并由根入口自动导出。支持原生 CSS 二维轨道；后续已取消 attached 二维相连。当前契约见 docs/grid.md。
 
 - CSS 只公开包根 src/index.ts，不提供 /server 或 /internal 子入口；主题继承机制归 CSS，具体 UI 主题归 UI。Vite 通过标准 browser 字段替换浏览器宿主，源码采用普通相对导入。
 - CSS src 根目录只保留 index.ts，其他源码只放 runtime/generated/util；相关小文件按职责合并，不重新创建 author/theme 子目录。生成器同步维护此布局，主题缓存按实际访问创建。
@@ -35,7 +35,8 @@
 - 优先使用成熟依赖；ESLint 的 TS 支持满足选定版本时再评估替换现有 lint，不引入 TS6 或自造通用 linter。项目不引入 Zod，MCP 使用 JSON Schema、vscode-jsonrpc 与标准 stdio JSON-RPC。
 - CSS 生成属性直接继承共享泛型基类，保留各属性 Property.* 参数约束和基类中文说明；不要用 class/interface 合并重述方法，这会使当前 WebStorm 丢失普通方法的参数列表展示。
 - 生成数据应有明确维护入口与检查命令。中文注释解释语义、原因、资源责任，不机械复述代码。
-- 2026-10-10 审查优化：按钮颜色先由主题作者解析，再复用 CSS 安全变量转换；特殊值保留原声明，用户 style 仍最后覆盖。Provider 仅复用当前配置的默认 Intl 格式器，自定义选项逐次读取，不累计历史配置。core 不再公开仅供内部使用的 HTML/SSR 工具。Flex/Grid 共享私有子项检查；语言服务只忽略仓库根 .idea/.release/reports，继续监听 dist 与源码同名目录。
+- 2026-10-10 布局职责调整：Flex/Grid 仅提供普通布局，删除 attached、按钮子项检查和专用接缝样式。base/ButtonGroup 承担横向/纵向的一维相连，默认 role=group；不做二维，不提供 columns、换行或间距属性，不管理选择状态与方向键导航。此决定取代旧 Flex/Grid attached 契约，不保留兼容别名。
+- 2026-10-10 审查优化：按钮颜色先由主题作者解析，再复用 CSS 安全变量转换；特殊值保留原声明，用户 style 仍最后覆盖。Provider 仅复用当前配置的默认 Intl 格式器，自定义选项逐次读取，不累计历史配置。core 不再公开仅供内部使用的 HTML/SSR 工具。ButtonGroup 独占一维按钮子项检查；语言服务只忽略仓库根 .idea/.release/reports，继续监听 dist 与源码同名目录。
 
 ## 验证与交付
 

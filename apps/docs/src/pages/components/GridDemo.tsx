@@ -1,6 +1,5 @@
 import { _component, _state, For } from 'zerodep-js';
-import { Search } from '@lucide/icons';
-import { Button, Grid, IconButton, Provider } from 'zerodep-js-ui';
+import { Button, Grid, Provider } from 'zerodep-js-ui';
 
 export const GridDemo = _component(() => {
   let columns = _state(3),
@@ -14,7 +13,7 @@ export const GridDemo = _component(() => {
   return (
     <section id="grid-demo" aria-labelledby="grid-heading">
       <h3 id="grid-heading">Grid 二维布局</h3>
-      <p>普通网格支持 CSS 自动填充和跨格；相连网格按明确列数处理四周圆角与横纵接缝。</p>
+      <p>支持原生轨道、自动填充和跨格；布局不改变子项圆角和边框。</p>
       <label>
         网格列数
         <input
@@ -65,10 +64,9 @@ export const GridDemo = _component(() => {
       </label>
       <Provider size={large ? '32px' : '16px'}>
         <Grid
-          attached
           columns={columns}
           dir={rtl ? 'rtl' : 'ltr'}
-          data-grid-attached
+          data-grid-layout
           style={{
             inlineSize: '24em',
             maxInlineSize: '100%',
@@ -88,21 +86,6 @@ export const GridDemo = _component(() => {
               </Button>
             )}
           </For>
-        </Grid>
-        <Grid
-          attached
-          columns={2}
-          data-grid-mixed
-          style="inline-size:20em;max-inline-size:100%;margin-block:1em"
-        >
-          <Button variant="outline">文字</Button>
-          <IconButton icon={Search} variant="outline" aria-label="网格搜索" />
-          <Button variant="outline" disabled>
-            禁用
-          </Button>
-          <Button variant="outline" loading>
-            加载
-          </Button>
         </Grid>
         <Grid
           columns="repeat(auto-fit, minmax(min(100%, 6em), 1fr))"

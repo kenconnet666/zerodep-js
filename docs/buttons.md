@@ -1,8 +1,8 @@
-# 按钮与 Flex
+# 按钮、ButtonGroup 与布局
 
-按钮的 color/backgroundColor/borderColor 先通过当前主题作者解析；安全颜色复用 CSS 包现有转换，写入每个元素的私有 CSS 变量，连续改变十六进制颜色不会不断登记新类。inherit/revert/!important、自定义 var() 等值沿用原始声明，不为优化改变层叠语义。用户 class 仍最后组合，style 在内部变量之后合并。Flex/Grid 的 attached 子项提示共享私有实现，布局算法保持独立。
+按钮的 color/backgroundColor/borderColor 先通过当前主题作者解析；安全颜色复用 CSS 包现有转换，写入每个元素的私有 CSS 变量，连续改变十六进制颜色不会不断登记新类。inherit/revert/!important、自定义 var() 等值沿用原始声明，不为优化改变层叠语义。用户 class 仍最后组合，style 在内部变量之后合并。ButtonGroup 负责一维相连；Flex/Grid 只做普通布局。
 
-从 zerodep-js-ui 根入口导入，在 Provider 内使用。UI 保持 private。所有 size 属性都是 CSS 字号，省略时继承；组件内部尺寸使用 em。通用 token 在 zerodep-js-css，按钮专用比例在 UI 内部。
+从 zerodep-js-ui 根入口导入，在 Provider 内使用。UI 保持 private。所有 size 属性都是 CSS 字号，省略时继承；组件内部尺寸使用 em。通用 token 位于 UI Provider，按钮专用比例在 UI 内部。
 
 ```tsx
 import { _component, _state } from 'zerodep-js';
@@ -74,45 +74,47 @@ LinkButton 正常时保留 target/rel/download、修饰键点击、中键和右�
 
 Flex 渲染一个 div，不包裹或克隆子项。默认 direction=row、wrap=wrap、alignItems=center、gap=0.5em。
 
-| 属性                       | 契约                                      |
-| -------------------------- | ----------------------------------------- |
-| direction                  | row / column，保持 DOM 与阅读顺序         |
-| inline                     | 切换 flex / inline-flex                   |
-| gap、rowGap、columnGap     | 对应 CSS 输入；轴向 gap 覆盖 gap 的对应轴 |
-| wrap                       | nowrap / wrap / wrap-reverse              |
-| alignItems、justifyContent | 对应 CSS 输入                             |
-| size                       | 字号基准，子项未显式设置时继承            |
-| equal                      | 直接元素子项按主轴等分，不进行 JS 测量    |
-| attached                   | 相连控件模式，默认 false                  |
+| 属性                       | 契约                                                            |
+| -------------------------- | --------------------------------------------------------------- |
+| direction                  | row / column / row-reverse / column-reverse；反向只改变视觉排列 |
+| inline                     | 切换 flex / inline-flex                                         |
+| gap、rowGap、columnGap     | 对应 CSS 输入；轴向 gap 覆盖 gap 的对应轴                       |
+| wrap                       | nowrap / wrap / wrap-reverse                                    |
+| alignItems、justifyContent | 对应 CSS 输入                                                   |
+| size                       | 字号基准，子项未显式设置时继承                                  |
+| equal                      | 直接元素子项按主轴等分，不进行 JS 测量                          |
 
 equal 沿主轴分配空间；纵向等高需要容器有明确可分配高度，换行时每行独立等分。裸文字用 Text 或原生元素承载。用户显式子项 style 按正常层叠生效。
 
 Flex 不共享或改写子项的 variant/disabled/loading/pressed，不自动加 toolbar 角色，也不实现方向键导航。可显式提供 role=group 和名称，Tab 仍逐个访问原生控件。
 
-需要同时对齐行列或二维相连时使用 [Grid](grid.md)。Flex 的换行仍属于一维主轴布局，不跨行推算相连圆角。
+需要同时对齐行列时使用 [Grid](grid.md)。按钮相连使用 ButtonGroup，不提供二维相连。
 
-## Flex 相连布局
+## ButtonGroup 一维相连
 
 ```tsx
-<Flex attached direction="row" size="1rem" role="group" aria-label="文件操作">
+import { ButtonGroup } from 'zerodep-js-ui';
+
+<ButtonGroup direction="row" size="1rem" role="group" aria-label="文件操作">
   <Button variant="outline">保存</Button>
   <Button variant="outline">另存为</Button>
   <IconButton variant="outline" icon={Search} aria-label="查找" />
-</Flex>
+</ButtonGroup>;
 ```
 
-- attached 只允许 gap/rowGap/columnGap 为 0 或省略，wrap 为 nowrap 或省略，alignItems 为 stretch 或省略。类型与运行时都拒绝冲突输入。
+- direction 为 row（默认）或 column；inline 切换 inline-flex，size 控制继承字号，equal 让直接按钮按主轴等分。默认 role=group，可提供 aria-label/aria-labelledby。
+- 固定零间距、不换行、交叉轴拉伸，不提供 columns、gap、wrap、自动排列或选择状态。
 - 首尾保留各自外侧圆角，接触侧为零；单项保留全部圆角。横向使用 inline 方向，纵向使用 block 方向，适配 RTL 与 writing-mode。
 - 标准控件重叠一条边框厚度，避免双线；不删除边框使内容位移。所有变体保留同样的边框占位。
-- focus-visible 子项位于相邻项之上，pressed 和 hover 使用较低层级；Flex 不裁剪焦点轮廓，层级隔离在自身范围内。
+- focus-visible 子项位于相邻项之上，pressed 和 hover 使用较低层级；ButtonGroup 不裁剪焦点轮廓，层级隔离在自身范围内。
 - 条件移除、列表重排和原生 hidden 自动更新首尾；disabled/loading 项仍参与几何。任意外部 display:none 无法仅靠 CSS 首尾选择器识别，使用 hidden 或条件渲染。
 - 长标签可在按钮内换行；相连容器本身不换行，交叉轴拉伸。默认方形 IconButton 在这种拉伸组合中也会服从行高。
-- 只处理直接兼容控件，不穿透 wrapper 或嵌套 Flex。启用时对不兼容直接内容发出提示，不安装 DOM 观察器持续检查动态非法内容。
-- 自定义字号、边框厚度或 inline/important 圆角覆盖可能使接缝不齐或覆盖内侧零圆角；此时不承诺默认连接几何。优先统一 Flex.size、变体和边框。
+- 只处理直接兼容控件，不穿透 wrapper 或嵌套组。启用时对不兼容直接内容发出提示，不安装 DOM 观察器持续检查动态非法内容。
+- 自定义字号、边框厚度或 inline/important 圆角覆盖可能使接缝不齐或覆盖内侧零圆角；此时不承诺默认连接几何。优先统一 ButtonGroup.size、变体和边框。
 
 自定义控件可选择实现同一 CSS 协议：根添加 data-ui-action，使用 --zj-action-border 指定实际边框厚度（标准值 0.0625em），根具备 position:relative、明确边框及圆角。连接选择器只命中该标记的直接可见子项，且仅排除原生 hidden；不得借此把不兼容结构自动当成按钮。
 
-相连效果不代表选择组语义，不会让多个 ToggleButton 互斥。MenuButton、Toolbar、单选组和菜单焦点工具不属于本次范围。
+ButtonGroup 不提供互斥选择语义，不会让多个 ToggleButton 互斥。MenuButton、Toolbar、单选组和菜单焦点工具不属于本次范围。
 
 ## 验证与维护
 

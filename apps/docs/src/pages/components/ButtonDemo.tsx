@@ -8,6 +8,7 @@ import {
   ToggleButton,
   LinkButton,
   Flex,
+  ButtonGroup,
   Provider,
 } from 'zerodep-js-ui';
 
@@ -42,8 +43,8 @@ export const ButtonDemo = _component(() => {
   };
   return (
     <section id="button-demo" aria-labelledby="button-heading">
-      <h3 id="button-heading">按钮与 Flex</h3>
-      <p>字号控制等比尺寸，Flex attached 管理相连圆角和边框，业务状态仍由每个控件拥有。</p>
+      <h3 id="button-heading">按钮、ButtonGroup 与 Flex</h3>
+      <p>字号控制等比尺寸，ButtonGroup 管理横纵相连圆角和边框，业务状态仍由每个控件拥有。</p>
       <label>
         <input type="checkbox" bind:checked={loading} />
         按钮加载
@@ -262,11 +263,11 @@ export const ButtonDemo = _component(() => {
               </Button>
             </fieldset>
           </form>
-          <Flex
-            attached
+          <ButtonGroup
             direction={column ? 'column' : 'row'}
             dir={rtl ? 'rtl' : 'ltr'}
-            data-attached-list
+            data-button-group
+            aria-label="相连操作"
             style={{ writingMode: vertical ? 'vertical-rl' : 'horizontal-tb', marginBlock: '1em' }}
           >
             <For each={items} keyBy={(item) => item}>
@@ -276,8 +277,8 @@ export const ButtonDemo = _component(() => {
                 </Button>
               )}
             </For>
-          </Flex>
-          <Flex attached data-attached-mixed>
+          </ButtonGroup>
+          <ButtonGroup data-button-group-mixed>
             <Button variant="outline">混排文字</Button>
             <IconButton variant="outline" icon={Search} aria-label="混排图标" />
             <ToggleButton variant="outline" bind:pressed={pressed}>
@@ -286,7 +287,7 @@ export const ButtonDemo = _component(() => {
             <LinkButton variant="outline" href="#button-heading">
               混排链接
             </LinkButton>
-          </Flex>
+          </ButtonGroup>
           <Flex equal data-equal style="inline-size:24em">
             <Button>短</Button>
             <Button>这一项标签更长</Button>

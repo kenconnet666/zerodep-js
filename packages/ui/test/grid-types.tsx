@@ -1,5 +1,5 @@
 import { _component, _state } from 'zerodep-js';
-import { Grid } from '../src/index.js';
+import { Grid, Flex, ButtonGroup } from '../src/index.js';
 
 export const GridTypes = _component(() => {
   let columns = _state(3);
@@ -7,13 +7,15 @@ export const GridTypes = _component(() => {
     <>
       <Grid columns="repeat(auto-fit, minmax(10em, 1fr))" gap="_sm" autoFlow="row dense" />
       <Grid
-        attached
         columns={columns}
-        gap={0}
+        gap="1em"
+        alignContent="space-between"
         ref={(node) => {
           node.title = '布局';
         }}
       />
+      <Flex direction="row-reverse" wrap="wrap" gap="1em" />
+      <ButtonGroup direction="column" equal aria-label="操作" />
       <button
         onClick={() => {
           columns = 2;
@@ -24,16 +26,16 @@ export const GridTypes = _component(() => {
     </>
   );
 });
-// @ts-expect-error 相连模式需要明确数字列数。
-const missing = <Grid attached />;
-// @ts-expect-error auto-fit 无法提供相连样式所需的确定列数。
-const automatic = <Grid attached columns="repeat(auto-fit, minmax(10em, 1fr))" />;
-// @ts-expect-error 相连模式不能有间距。
-const gap = <Grid attached columns={2} rowGap="1em" />;
-// @ts-expect-error 相连模式不能改变自动放置流向。
-const flow = <Grid attached columns={2} autoFlow="column" />;
-// @ts-expect-error 相连模式不能引入轨道间额外空间。
-const alignment = <Grid attached columns={2} alignContent="space-between" />;
+// @ts-expect-error Grid 不再提供按钮相连模式。
+const attachedGrid = <Grid attached />;
+// @ts-expect-error Flex 不再提供按钮相连模式。
+const attachedFlex = <Flex attached />;
+// @ts-expect-error ButtonGroup 不支持二维列数。
+const columns = <ButtonGroup columns={2} />;
+// @ts-expect-error ButtonGroup 不支持网格流向。
+const flow = <ButtonGroup autoFlow="row" />;
+// @ts-expect-error 反向视觉顺序不属于相连按钮组契约。
+const reversed = <ButtonGroup direction="row-reverse" />;
 // @ts-expect-error size 仍是字号，不把裸数字当像素。
 const size = <Grid size={16} />;
-void [missing, automatic, gap, flow, alignment, size];
+void [attachedGrid, attachedFlex, columns, flow, reversed, size];

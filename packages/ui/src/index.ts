@@ -1,6 +1,7 @@
 // 由 scripts/generate-ui-exports.mjs 生成；运行 pnpm ui:generate 更新。
 export { type ButtonVariant, type ButtonState, type ButtonProps, Button } from './base/Button.js';
 export { type ButtonBaseState, type ButtonBaseProps, ButtonBase } from './base/ButtonBase.js';
+export { type ButtonGroupProps, ButtonGroup } from './base/ButtonGroup.js';
 export { type IconProps, Icon } from './base/Icon.js';
 export { type IconButtonProps, IconButton } from './base/IconButton.js';
 export { type LinkButtonProps, LinkButton } from './base/LinkButton.js';

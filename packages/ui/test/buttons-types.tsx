@@ -1,12 +1,12 @@
 import { Search } from '@lucide/icons';
 import { _component, _state } from 'zerodep-js';
-import { Button, IconButton, ToggleButton, LinkButton, Flex } from '../src/index.js';
+import { Button, IconButton, ToggleButton, LinkButton, ButtonGroup } from '../src/index.js';
 import type { LinkButtonProps } from '../src/index.js';
 
 export const ButtonTypes = _component(() => {
   let pressed = _state(false);
   return (
-    <Flex attached>
+    <ButtonGroup>
       <Button
         size="2vw"
         color="_primary"
@@ -23,7 +23,7 @@ export const ButtonTypes = _component(() => {
           node.href = '/docs';
         }}
       />
-    </Flex>
+    </ButtonGroup>
   );
 });
 // @ts-expect-error 图标按钮必须有名称。
@@ -31,9 +31,9 @@ const unnamed = <IconButton icon={Search} />;
 // @ts-expect-error 图标 Toggle 同样必须有名称。
 const unnamedToggle = <ToggleButton icon={Search} pressed={false} onPressedChange={() => {}} />;
 // @ts-expect-error 相连布局不能换行。
-const wrapped = <Flex attached wrap="wrap" />;
+const wrapped = <ButtonGroup wrap="wrap" />;
 // @ts-expect-error 相连布局不能留有间距。
-const spaced = <Flex attached gap="1em" />;
+const spaced = <ButtonGroup gap="1em" />;
 // @ts-expect-error Toggle 不参与表单提交。
 const submitToggle = <ToggleButton type="submit" pressed={false} onPressedChange={() => {}} />;
 // @ts-expect-error 受控 Toggle 必须提供写回回调。

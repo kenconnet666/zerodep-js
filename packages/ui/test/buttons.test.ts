@@ -3,7 +3,14 @@ import { Search } from '@lucide/icons';
 import { defineComponent, element, renderToString } from 'zerodep-js';
 
 import { createServerCssHost, withCssHost } from 'zerodep-js-css';
-import { Provider, Button, IconButton, ToggleButton, LinkButton, Flex } from '../dist/index.js';
+import {
+  Provider,
+  Button,
+  IconButton,
+  ToggleButton,
+  LinkButton,
+  ButtonGroup,
+} from '../dist/index.js';
 import { build } from 'vite';
 import { resolve } from 'node:path';
 
@@ -26,7 +33,7 @@ it('单独消费 Button 只包含使用图标与 Spinner，不带入其他成品
     })
     .filter((output) => output.type === 'chunk');
   const code = chunks.map((chunk) => chunk.code).join('\n');
-  expect(code).not.toContain('Flex attached');
+  expect(code).not.toContain('ButtonGroup 只支持');
   expect(code).not.toContain('onPressedChange');
   expect(code).not.toContain('onAuxClick');
   const icons = chunks
@@ -152,16 +159,18 @@ it('LinkButton 保留原生导航属性，不可用首屏移除 href', () => {
   expect(blocked.html).toContain('aria-disabled="true"');
   expect(blocked.html).toContain('tabindex="-1"');
 });
-it('Flex attached 首屏拥有逻辑连接样式并拒绝冲突输入', () => {
-  const { css } = render(Flex, {
-    attached: true,
+it('ButtonGroup 首屏拥有一维连接样式和分组语义', () => {
+  const { html, css } = render(ButtonGroup, {
     direction: 'column',
+    'aria-label': '操作',
     children: element(Button, { children: '操作' }),
   });
+  expect(html).toContain('role="group"');
+  expect(html).toContain('aria-label="操作"');
   expect(css).toContain('flex-wrap:nowrap;');
+  expect(css).toContain('gap:0;');
   expect(css).toContain('border-start-start-radius:0;');
   expect(css).toContain('margin-block-start:calc(');
   expect(css).toContain(':nth-child(1 of [data-ui-action]:not([hidden]))');
-  expect(() => render(Flex, { attached: true, gap: '1em' })).toThrow('Flex attached');
-  expect(() => render(Flex, { attached: true, wrap: 'wrap' })).toThrow('Flex attached');
+  expect(css).not.toContain('grid-template-columns');
 });

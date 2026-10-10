@@ -1,14 +1,14 @@
 # zerodep-js-ui
 
-组件库提供 Provider、Icon、Text、Ripple、Spinner、ButtonBase、Button/IconButton/ToggleButton/LinkButton、Flex/Grid，以及语言/地区工具。亮暗主题与通用 token 由 zerodep-js-css 提供。包保持 private，不加入框架四包发布流程。
+组件库提供 Provider、Icon、Text、Ripple、Spinner、ButtonBase、Button/IconButton/ToggleButton/LinkButton、ButtonGroup、Flex/Grid，以及语言/地区工具。亮暗主题与通用 token 位于本包 provider/theme。包保持 private，不加入框架三包发布流程。
 
 - `src/provider/`：Provider 组件、上下文与相关基础配置。
 - `src/index.ts`：公开导出入口。
-- `src/utils/`：slotProps、事件组合和按压资源工具；不设置子目录 index.ts。
+- `src/utils/`：slot 属性解析、测量和按压资源工具；不设置子目录 index.ts。
 - `src/base/Icon.tsx`：静态 Lucide 图标，颜色/尺寸复用 CSS 主题类型。
-- `src/base/`：原生按钮底座、四类成品按钮及文字/加载/波纹。
-- `src/layout/Flex.tsx`：普通布局与相连控件；`src/internal/` 保存私有复用实现，不公开导出。
-- `src/layout/Grid.tsx`：二维轨道布局、自动填充与明确列数的相连控件。
+- `src/base/`：原生按钮底座、四类成品按钮、ButtonGroup 一维相连及文字/加载/波纹。
+- `src/layout/Flex.tsx`：普通一维布局；`src/internal/` 保存私有复用实现，不公开导出。
+- `src/layout/Grid.tsx`：普通二维轨道、自动填充与跨格布局。
 - 通用主题位于 `packages/ui/src/provider/theme/`，从 `zerodep-js-ui` 导入。
 - `src/provider/lang/`：内置语言包和自定义语言包契约。
 - `src/provider/locale.ts`：基于 Intl、date-fns、@date-fns/tz 的格式化与日期转换。
@@ -18,7 +18,7 @@
 
 成品组件契约与示例见 [按钮与 Flex](../../docs/buttons.md)，当前工程状态见 [UI 交接](../../docs/handoff-ui-buttons-2026-10-09.md)。
 
-二维布局与相连规则见 [Grid](../../docs/grid.md)。普通 Grid 支持原生轨道和跨格；attached 使用数字列数与单格布局，保留实际外轮廓圆角。
+二维布局见 [Grid](../../docs/grid.md)。Grid 不修改子项外观；ButtonGroup 不支持二维。
 
 从仓库根目录执行 `pnpm build:ui`。构建先检查框架语义，再由 Vite + zerodep 插件转换 TSX，最后由固定的 TypeScript 7.1 生成声明；不能用普通 tsc 擦除结果执行组件宏。
 

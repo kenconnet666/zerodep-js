@@ -94,6 +94,7 @@ const cases = [
     ['IconButton', 'size', '_lg'],
     ['LinkButton', 'backgroundColor', '_surface'],
     ['Flex', 'alignItems', 'center'],
+    ['ButtonGroup', 'direction', 'column'],
   ].map(([component, property, member]) => ({
     name: `按钮属性-${component}.${property}`,
     directory: 'apps/docs/src',

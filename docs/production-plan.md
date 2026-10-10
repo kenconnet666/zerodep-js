@@ -139,13 +139,13 @@
 
 ## 12. Button 系列与 Flex（源码已实现）
 
-2026-10-09 用户最新范围为 Button、IconButton、ToggleButton、LinkButton、Flex 及必要基础能力。Group 改名 Flex，不保留 Group 别名或独立 ButtonGroup/ToggleButtonGroup；MenuButton 暂不做。
+2026-10-09 用户最新范围为 Button、IconButton、ToggleButton、LinkButton、Flex 及必要基础能力。2026-10-10 后续决定：Flex 只做普通布局，新增一维 ButtonGroup，不提供 ToggleButtonGroup 或二维按钮组；MenuButton 暂不做。
 
 用户随后授权完整执行。公共契约和使用边界见 [按钮与 Flex](buttons.md)，实现与验证记录见 [UI 交接](handoff-ui-buttons-2026-10-09.md)。原候选规划已由这两个入口替代。
 
-- Flex 负责横纵布局、间距、换行、等分和可选 attached 外观；attached 处理首尾圆角、中间无圆角、相邻边框、RTL、隐藏/动态子项和焦点层级，不接管选择状态或键盘导航。
+- Flex 负责横纵布局、间距、换行与等分；ButtonGroup 承担一维接缝、首尾圆角、RTL、动态隐藏/重排与焦点层级，不接管选择状态和键盘导航。
 - 四类控件复用已有 ButtonBase/Icon/Text/Spinner/Ripple 与槽工具；LinkButton 使用原生 a，ToggleButton 复用 pressed/onPressedChange 的组件绑定。新增组件仍使用独立 slotXxx 属性。
-- size 继续是 CSS 字号，组件专用几何值用 em，通用 token 在 CSS，按钮外观复用代码在 UI 私有实现中。core 暂无新增 API；不为本次按钮引入定位库或通用焦点管理器。
+- size 继续是 CSS 字号，组件专用几何值用 em，通用 token 在 UI Provider，按钮外观复用代码在 UI 私有实现中。core 暂无新增 API；不为本次按钮引入定位库或通用焦点管理器。
 - 加载采用原生 disabled || loading；不承诺保留焦点，不自动恢复焦点。LinkButton 不可用时移除 href。ToggleButton 使用受控 pressed/onPressedChange 与 bind:pressed。
 - core 修复绑定类型映射丢失 ARIA 必填成员的问题，没有新增运行时 API。UI 私有样式/内容不进入根入口，自动入口增加 layout 扫描。
 - 本地相关检查与中文提交按阶段完成；完整矩阵由同一提交 CI 验证，UI 仍 private，不进行 npm 发布。
@@ -154,4 +154,4 @@
 
 2026-10-09 用户授权新增 Grid。复用现有 CSS 作者，数字 columns 表示等宽列，普通模式可直接传原生轨道、自动填充、命名区域和自动放置；子项跨格使用原生 CSS。详细契约见 [Grid](grid.md)。
 
-attached 使用明确的正整数列数、零间距与按行单格布局，CSS 选择器按可见兼容子项计算二维接缝和外侧凸角，末行不足时保留阶梯外轮廓，不插入占位。不新增测量观察器或断点 DSL，不将相连保证扩展到 auto-fit、dense、跨格或 CSS order；DOM 列表重排正常支持。
+2026-10-10 已取消二维相连；Grid 只保留普通轨道布局。移除对应接缝算法、参数组合约束和二维相连验收用例，保留普通 Grid 的 CSR/SSR、类型、自动填充和跨格验证。
