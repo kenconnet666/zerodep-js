@@ -1,6 +1,5 @@
 import { expect, it } from 'vitest';
-import { bindProps, defineComponent, element, dynamic } from 'zerodep-js/internal';
-import { renderToString } from '../src/render.js';
+import { bindProps, defineComponent, element, dynamic, renderToString } from 'zerodep-js';
 
 it('output 的 SSR 文本没有结构标记，保持表单原生 reset 可往返', () => {
   const App = defineComponent(() => element('output', { children: ['<', dynamic(() => 2), '>'] }));

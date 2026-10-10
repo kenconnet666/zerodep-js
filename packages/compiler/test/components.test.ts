@@ -1,8 +1,8 @@
 import { execute } from './execute.js';
 import { describe, expect, it } from 'vitest';
-import * as runtime from '../../core/src/internal.js';
-import { _createRoot } from '../../core/src/runtime/reactivity.js';
-import { reactive } from '../../core/src/runtime/state.js';
+import * as runtime from '../../core/dist/index.js';
+import { _createRoot } from '../../core/dist/runtime/reactivity.js';
+import { reactive } from '../../core/dist/runtime/state.js';
 import { compile } from '../src/index.js';
 
 describe('组件参数转换', () => {

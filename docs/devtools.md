@@ -4,7 +4,7 @@
 
 ```ts
 if (import.meta.env.DEV) {
-  void import('zerodep-js/devtools').then(({ _inspect }) => _inspect());
+  void import('zerodep-js').then(({ _inspect }) => _inspect());
 }
 ```
 
@@ -19,7 +19,7 @@ if (import.meta.env.DEV) {
 
 登记范围是经当前开发编译器处理的模块顶层组件，包含匿名默认导出。组件内部辅助函数中的状态、模块状态和预编译依赖内部状态不登记为组件本地状态。普通 props 可能有 getter，也不自动展开执行；需要时直接在源码处调试。
 
-供自动化检查的只读快照位于开发页面的 `window.__ZERODEP_DEVTOOLS__.snapshot()`。`reset(id)` 可手动重置实例，`clearEvents()` 清空事件。该桥和 `zerodep-js/devtools` 都属于开发协议，不是应用应依赖的生产数据接口。事件仅保留编号和有限长度文字；卸载时移除活跃实例与作用域引用，面板不保存历史对象图。
+供自动化检查的只读快照位于开发页面的 `window.__ZERODEP_DEVTOOLS__.snapshot()`。`reset(id)` 可手动重置实例，`clearEvents()` 清空事件。该桥和 `zerodep-js` 都属于开发协议，不是应用应依赖的生产数据接口。事件仅保留编号和有限长度文字；卸载时移除活跃实例与作用域引用，面板不保存历史对象图。
 
 ## 热更新会保留哪些数据
 

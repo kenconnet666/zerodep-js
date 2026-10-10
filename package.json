@@ -49,7 +49,7 @@
     "lsp:verify": "node scripts/language-services/verify.mjs",
     "lsp:completions": "node scripts/language-services/completions.mjs .",
     "lsp:inspect": "node scripts/language-services/inspect.mjs .",
-    "test:compiler": "pnpm --filter zerodep-js-compiler build && vitest run --config vitest.compiler.config.ts",
+    "test:compiler": "pnpm build:packages && vitest run --config vitest.compiler.config.ts",
     "css:generate": "node scripts/generate-css-author.mjs --write",
     "css:check": "node scripts/generate-css-author.mjs --check",
     "ui:generate": "node scripts/generate-ui-exports.mjs --write",

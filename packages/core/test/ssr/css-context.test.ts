@@ -1,8 +1,7 @@
 import { expect, it } from 'vitest';
 import { Css } from 'zerodep-js-css';
 import { createCssContext } from 'zerodep-js-css';
-import { defineComponent, element } from 'zerodep-js/internal';
-import { renderToString } from '../src/render.js';
+import { defineComponent, element, renderToString } from 'zerodep-js';
 
 it('模块级 CSS context 只共享键，作者数据按 SSR 请求隔离', () => {
   class NamedCss extends Css {

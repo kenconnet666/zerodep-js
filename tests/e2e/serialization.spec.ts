@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
-import { defineComponent, element, dynamic } from '../../packages/core/dist/internal.js';
-import { renderToString, serializeData } from '../../packages/ssr/dist/index.js';
+import { defineComponent, element, dynamic } from '../../packages/core/dist/index.js';
+import { renderToString, serializeData } from '../../packages/core/dist/index.js';
 
 test('浏览器解析 raw-text、安全 JSON 和规范化 SVG 后保留后续节点', async ({ page }) => {
   const tags = ['script', 'style', 'iframe', 'xmp', 'noembed', 'noframes'];

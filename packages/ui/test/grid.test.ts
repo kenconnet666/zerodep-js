@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest';
-import { defineComponent, element } from 'zerodep-js/internal';
-import { renderToString } from 'zerodep-js-ssr';
+import { defineComponent, element, renderToString } from 'zerodep-js';
+
 import { createServerCssHost, withCssHost } from 'zerodep-js-css';
 import { Provider, Grid, Button } from '../dist/index.js';
 

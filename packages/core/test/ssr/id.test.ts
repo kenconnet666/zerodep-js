@@ -1,7 +1,14 @@
 import { expect, it } from 'vitest';
-import { _id, _createRoot, _effect, _flushSync, ErrorBoundary } from 'zerodep-js';
-import { defineComponent, element } from 'zerodep-js/internal';
-import { renderToString } from '../src/render.js';
+import {
+  _id,
+  _createRoot,
+  _effect,
+  _flushSync,
+  ErrorBoundary,
+  defineComponent,
+  element,
+  renderToString,
+} from 'zerodep-js';
 
 const Field = defineComponent(() => {
   const id = _id();

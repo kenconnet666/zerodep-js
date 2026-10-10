@@ -103,6 +103,18 @@ try {
       `${name} 的许可证与项目根不一致。`,
     );
     if (name === 'core') {
+      assert.deepEqual(Object.keys(sourceManifest.exports), ['.'], 'core 只公开包根。');
+      assert.deepEqual(
+        [...files].filter((file) => /^src\/[^/]+$/.test(file)),
+        ['src/index.ts'],
+        'core 的 src 根目录只保留 index.ts。',
+      );
+      assert(
+        ![...files].some((file) =>
+          /^dist\/(internal|head|devtools|jsx-runtime|jsx-elements)\./.test(file),
+        ),
+        'core 不得包含旧入口产物。',
+      );
       assert(files.has('THIRD_PARTY_NOTICES.md'), 'core 缺少生成数据的第三方许可。');
       assert(
         ![...files].some((file) => /^(src|dist)\/(router|storage)(\/|\.)/.test(file)),
@@ -149,7 +161,7 @@ try {
     const dependency = values.registry
       ? values.version
       : 'file:' + relative(consumer, file).replaceAll('\\', '/');
-    (['core', 'ssr', 'css'].includes(name) ? manifest.dependencies : manifest.devDependencies)[
+    (['core', 'css'].includes(name) ? manifest.dependencies : manifest.devDependencies)[
       packed.name
     ] = dependency;
     manifest.pnpm.overrides[packed.name] = dependency;
@@ -207,10 +219,10 @@ try {
       '--eval',
       `
     import assert from 'node:assert/strict';
-    for (const specifier of ['zerodep-js/adapter', 'zerodep-js/router', 'zerodep-js/storage', 'zerodep-js/css', 'zerodep-js/css/internal', 'zerodep-js-css/server', 'zerodep-js-css/internal']) {
+    for (const specifier of ['zerodep-js/internal', 'zerodep-js/head', 'zerodep-js/devtools', 'zerodep-js/jsx-runtime', 'zerodep-js/adapter', 'zerodep-js/router', 'zerodep-js/storage', 'zerodep-js/css', 'zerodep-js/css/internal', 'zerodep-js-css/server', 'zerodep-js-css/internal']) {
       await assert.rejects(import(specifier), { code: 'ERR_PACKAGE_PATH_NOT_EXPORTED' });
     }
-    for (const specifier of ['zerodep-use', 'zerodep-use/router', 'zerodep-use/store', 'zerodep-use/history']) {
+    for (const specifier of ['zerodep-js-ssr', 'zerodep-js-ssr/data', 'zerodep-use', 'zerodep-use/router', 'zerodep-use/store', 'zerodep-use/history']) {
       await assert.rejects(import(specifier), { code: 'ERR_MODULE_NOT_FOUND' });
     }
     assert.equal('_createPage' in await import('zerodep-js'), false, '旧页面宿主 API 必须移除');
@@ -260,7 +272,9 @@ try {
   );
   assert(
     !clientModules.some((id) =>
-      /\/@babel\/|\/typescript\/|\/zerodep-js-(compiler|native|vite|ssr)\//.test(id),
+      /\/@babel\/|\/typescript\/|\/zerodep-js-(compiler|native|vite|ssr)\/|\/zerodep-js\/dist\/ssr\/(render|document)\.js$/.test(
+        id,
+      ),
     ),
     '构建或服务端代码进入客户端。',
   );
@@ -293,7 +307,9 @@ try {
     !treeModules.some(
       (id) =>
         /\/dist\/(dom|router|storage)\//.test(id) ||
-        /\/dist\/(runtime\/(state|template)|native\/style|router|storage)\.js$/.test(id) ||
+        /\/dist\/(runtime\/(state|template)|native\/style|ssr\/(render|document)|router|storage)\.js$/.test(
+          id,
+        ) ||
         id.includes('/@csstools/css-tokenizer/'),
     ),
     '按需导入仍包含无关渲染器。',

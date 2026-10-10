@@ -33,14 +33,13 @@ async function check(source: string) {
           strict: true,
           exactOptionalPropertyTypes: true,
           jsx: 'preserve',
-          jsxImportSource: 'zerodep-js',
+
           target: 'es2025',
           module: 'preserve',
           moduleResolution: 'bundler',
           types: [],
           paths: {
             'zerodep-js': [resolve(root, 'packages/core/src/index.ts')],
-            'zerodep-js/*': [resolve(root, 'packages/core/src/*')],
           },
         },
         files: [filename],

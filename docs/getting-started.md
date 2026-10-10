@@ -43,13 +43,13 @@ TypeScript 配置保留 JSX，让框架编译器处理它，并使用框架自�
 ```json
 {
   "compilerOptions": {
-    "target": "ES2023",
+    "target": "ES2025",
     "module": "Preserve",
     "moduleResolution": "Bundler",
     "jsx": "preserve",
-    "jsxImportSource": "zerodep-js",
-    "lib": ["ES2023", "DOM", "DOM.Iterable"],
-    "types": ["vite/client"],
+
+    "lib": ["ES2025", "DOM", "DOM.Iterable"],
+    "types": ["zerodep-js", "vite/client"],
     "strict": true,
     "exactOptionalPropertyTypes": true,
     "noUncheckedIndexedAccess": true,
@@ -59,7 +59,7 @@ TypeScript 配置保留 JSX，让框架编译器处理它，并使用框架自�
 }
 ```
 
-不配置 React JSX runtime。未经过编译的宏会明确报错，不能把原始 TSX 直接当成普通运行时函数执行。
+不配置 jsxImportSource 或 React JSX runtime。未经过编译的宏会明确报错，不能把原始 TSX 直接当成普通运行时函数执行。
 
 ## 第一个组件
 
@@ -145,7 +145,7 @@ export const TodoList = _component(() => {
 
 ## SSR 与实际应用
 
-SSR 项目额外安装 `zerodep-js-ssr`。先加载请求数据，再用 `renderToString(App, { props })` 生成 HTML；客户端以相同初值调用 `_hydrate`。初始化 JSON 通过 `zerodep-js-ssr/data` 的 serializeData 编码。完整文档模板和错误处理见 [SSR 指南](ssr-and-hydration.md)。
+SSR 直接复用 `zerodep-js`，无需额外安装 SSR 包。先加载请求数据，再用 `renderToString(App, { props })` 生成 HTML；客户端以相同初值调用 `_hydrate`。初始化 JSON 通过 `zerodep-js` 的 serializeData 编码。完整文档模板和错误处理见 [SSR 指南](ssr-and-hydration.md)。
 
 仓库的 `apps/example` 同时提供框架用例和 `/tasks` 持久化任务页面，可以观察 props、表单、异步请求、取消、并发冲突、SSR/CSR 和开发更新在一起时的实际写法。运行方式见 [任务试点](tooling.md)。
 

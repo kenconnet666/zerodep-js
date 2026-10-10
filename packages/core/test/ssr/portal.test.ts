@@ -1,7 +1,5 @@
 import { expect, it } from 'vitest';
-import { Portal } from 'zerodep-js';
-import { defineComponent, element } from 'zerodep-js/internal';
-import { renderToString } from '../src/render.js';
+import { Portal, defineComponent, element, renderToString } from 'zerodep-js';
 
 it('SSR 只输出 Portal 空标记，不读取浏览器目标或执行子组件', () => {
   const App = defineComponent(() =>

@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest';
-import * as runtime from '../../core/src/internal.js';
+import * as runtime from '../../core/dist/index.js';
 import { execute } from './execute.js';
 import { compile } from '../src/index.js';
 

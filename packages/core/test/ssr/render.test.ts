@@ -7,17 +7,17 @@ import {
   _onCleanup,
   _provideContext,
   _useContext,
-} from 'zerodep-js';
-import {
   defineComponent,
   element,
   props,
   dynamic,
   liveRender,
   type Renderable,
-} from 'zerodep-js/internal';
-import { For, ErrorBoundary } from 'zerodep-js';
-import { renderToString, serializeData } from '../src/index.js';
+  For,
+  ErrorBoundary,
+  renderToString,
+  serializeData,
+} from 'zerodep-js';
 
 describe('真实组件 SSR', () => {
   it.each([() => 'function source', Symbol('private')])(

@@ -28,14 +28,13 @@ it('标准编辑器协议保留跨文件未保存内容、增量修改、绑定�
       compilerOptions: {
         strict: true,
         jsx: 'preserve',
-        jsxImportSource: 'zerodep-js',
+
         target: 'es2025',
         module: 'preserve',
         moduleResolution: 'bundler',
         types: [],
         paths: {
           'zerodep-js': [resolve('packages/core/src/index.ts')],
-          'zerodep-js/*': [resolve('packages/core/src/*')],
         },
       },
       include: ['*.ts', '*.tsx'],

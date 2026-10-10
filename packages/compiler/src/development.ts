@@ -230,7 +230,7 @@ export class Development {
     this.program.node.body.unshift(
       t.importDeclaration(
         [t.importSpecifier(t.cloneNode(this.runtime), t.identifier('begin'))],
-        t.stringLiteral('zerodep-js/devtools'),
+        t.stringLiteral('zerodep-js'),
       ),
       t.variableDeclaration('const', [
         t.variableDeclarator(

@@ -14,7 +14,6 @@
     "date-fns": "catalog:",
     "zerodep-js-css": "workspace:*",
     "zerodep-js": "workspace:*",
-    "zerodep-js-ssr": "workspace:*",
     "zerodep-js-ui": "workspace:*"
   },
   "devDependencies": {

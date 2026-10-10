@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { execute } from './execute.js';
 import { compile } from '../src/index.js';
-import { _createRoot, Source } from '../../core/src/runtime/reactivity.js';
-import { setupComponent } from '../../core/src/runtime/component.js';
-import type { DynamicTemplate, ElementTemplate } from '../../core/src/runtime/template.js';
-import type { ListTemplate } from '../../core/src/runtime/flow.js';
+import { _createRoot, Source } from '../../core/dist/runtime/reactivity.js';
+import { setupComponent } from '../../core/dist/runtime/component.js';
+import type { DynamicTemplate, ElementTemplate } from '../../core/dist/runtime/template.js';
+import type { ListTemplate } from '../../core/dist/runtime/flow.js';
 
 describe('For 的实时参数', () => {
   it('嵌套 For 保持各自参数的词法作用域', () => {

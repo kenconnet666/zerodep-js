@@ -1,4 +1,4 @@
-import { renderToString } from 'zerodep-js-ssr';
+import { renderToString } from 'zerodep-js';
 import { createServerCssHost, serializeCssRules, withCssHost } from 'zerodep-js-css';
 import { App } from './App.js';
 

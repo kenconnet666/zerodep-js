@@ -1,7 +1,7 @@
 import { expect, it } from 'vitest';
 import { Search } from '@lucide/icons';
-import { defineComponent, element } from 'zerodep-js/internal';
-import { renderToString } from 'zerodep-js-ssr';
+import { defineComponent, element, renderToString } from 'zerodep-js';
+
 import { createServerCssHost, withCssHost } from 'zerodep-js-css';
 import { Provider, Button, IconButton, ToggleButton, LinkButton, Flex } from '../dist/index.js';
 import { build } from 'vite';

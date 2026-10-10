@@ -4,12 +4,7 @@
   "options": { "typeAware": true },
   "overrides": [
     {
-      "files": [
-        "packages/core/src/**",
-        "packages/css/src/**",
-        "packages/ssr/src/**",
-        "apps/example/src/**"
-      ],
+      "files": ["packages/core/src/**", "packages/css/src/**", "apps/example/src/**"],
       "rules": {
         "typescript/no-floating-promises": "error",
         "typescript/no-misused-promises": "error",

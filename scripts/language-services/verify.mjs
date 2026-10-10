@@ -61,10 +61,8 @@ function fixture(file, valid) {
   ];
 
   if (file.endsWith('.tsx')) {
-    lines.push(
-      'declare global { namespace JSX { interface Element {} interface IntrinsicElements { span: { children?: string }; } interface ElementChildrenAttribute { children: {}; } } }',
-      'export const view = <span>{output}</span>;',
-    );
+    // 工作区已从 core 根入口加载真实 JSX 类型，不再另造测试声明。
+    lines.push('export const view = <span>{output}</span>;');
   }
   return lines.join('\n') + '\n';
 }
@@ -200,7 +198,7 @@ export const BindingProbe = _component(() => {
     navigationChecks++;
   }
   const authoring = 'apps/example/src/examples/AuthoringExample.tsx';
-  const jsxTypes = 'packages/core/src/jsx-elements.ts';
+  const jsxTypes = 'packages/core/src/native/elements.ts';
   const reference = 'apps/example/src/examples/ReferenceExample.tsx';
   for (const offset of [1, 6]) {
     // input 的声明继承 Common1，导航必须命中这一份真实声明，而不是任意同名属性。

@@ -1,13 +1,22 @@
 import { compile, type CompileResult } from 'zerodep-js-compiler';
 import { Counter, Label } from '@zerodep-consumer/counter';
-import { _component, _mount, type ComponentProps } from 'zerodep-js';
-import { _getAbortSignal, _snapshot } from 'zerodep-js';
-import { _lazy } from 'zerodep-js';
-import { _createRoot, _id } from 'zerodep-js';
+import {
+  _component,
+  _mount,
+  type ComponentProps,
+  _getAbortSignal,
+  _snapshot,
+  _lazy,
+  _createRoot,
+  _id,
+  _head,
+  type HeadData,
+  _render,
+  type RenderResult,
+} from 'zerodep-js';
+
 import { Css } from 'zerodep-js-css';
 import { css, createCssContext } from 'zerodep-js-css';
-import { _head, type HeadData } from 'zerodep-js/head';
-import { _render, type RenderResult } from 'zerodep-js-ssr';
 
 const cssAuthor = new Css();
 const styleClass: string = css(cssAuthor.width.px(12));

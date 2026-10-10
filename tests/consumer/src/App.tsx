@@ -8,11 +8,11 @@ import {
   _lazy,
   _id,
   Portal,
+  _head,
 } from 'zerodep-js';
 import { Counter, Label } from '@zerodep-consumer/counter';
 import { Css, WidthCss, SystemKeywords, systemKeywords } from 'zerodep-js-css';
 import { css } from 'zerodep-js-css';
-import { _head } from 'zerodep-js/head';
 
 const s = new Css();
 class OpacityWidth extends WidthCss {

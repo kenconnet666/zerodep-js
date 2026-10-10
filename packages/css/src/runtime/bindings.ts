@@ -1,4 +1,4 @@
-import { derived, props, styleText, type Props } from 'zerodep-js/internal';
+import { derived, props, styleText, type Props } from 'zerodep-js';
 import type { CssInput } from '../util/author.js';
 import { Css } from '../generated/author.js';
 import { hasKeywordSource, getKeywordBinding } from '../util/keywords.js';

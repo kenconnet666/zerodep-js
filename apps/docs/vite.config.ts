@@ -19,7 +19,7 @@ export default defineConfig(({ command }) => ({
         : [],
   },
   optimizeDeps: { exclude: ['zerodep-js-ui'] },
-  ssr: { noExternal: ['zerodep-js', 'zerodep-js-ssr', 'zerodep-js-css'] },
+  ssr: { noExternal: ['zerodep-js', 'zerodep-js-css'] },
   server: { port: 5174, strictPort: true },
   preview: { port: 4174, strictPort: true },
 }));

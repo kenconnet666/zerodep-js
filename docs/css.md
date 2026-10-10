@@ -7,7 +7,7 @@ import { zerodep } from 'zerodep-js-compiler/vite';
 export default { plugins: [zerodep()] };
 ```
 
-工作区 SSR 联调需要让框架及 CSS 包同属一个模块加载环境，例如 `ssr.noExternal: ['zerodep-js', 'zerodep-js-ssr', 'zerodep-js-css']`。预编译组件库将框架与 CSS 包都设为 external，保留包内 Node/浏览器宿主选择。普通 npm 独立消费则可全部 external；不要混合两份框架运行时。
+工作区 SSR 联调需要让框架及 CSS 包同属一个模块加载环境，例如 `ssr.noExternal: ['zerodep-js', 'zerodep-js-css']`。预编译组件库将框架与 CSS 包都设为 external，保留包内 Node/浏览器宿主选择。普通 npm 独立消费则可全部 external；不要混合两份框架运行时。
 
 ```tsx
 import { _component, _state } from 'zerodep-js';

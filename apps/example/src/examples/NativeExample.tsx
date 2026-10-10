@@ -1,5 +1,4 @@
-import { _component, _state } from 'zerodep-js';
-import { serializeData } from 'zerodep-js-ssr/data';
+import { _component, _state, serializeData } from 'zerodep-js';
 
 const payload = { text: '</script><img data-xss-probe src=x>' };
 export const NativeExample = _component(() => {

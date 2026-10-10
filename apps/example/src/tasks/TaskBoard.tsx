@@ -1,5 +1,13 @@
-import { _component, _state, _derived, _effect, _getAbortSignal, For } from 'zerodep-js';
-import type { RenderMode } from 'zerodep-js-ssr';
+import {
+  _component,
+  _state,
+  _derived,
+  _effect,
+  _getAbortSignal,
+  For,
+  type RenderMode,
+} from 'zerodep-js';
+
 import { ApiFailure, listTasks, createTask, updateTask, deleteTask } from './api.js';
 import {
   titleSchema,

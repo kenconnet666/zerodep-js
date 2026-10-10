@@ -1,6 +1,6 @@
+import { Scope, _untrack } from '../runtime/reactivity.js';
+import { TEMPLATE, element, dynamic, type Renderable } from '../runtime/template.js';
 import {
-  Scope,
-  TEMPLATE,
   HTML,
   namespaceFor,
   voidTags,
@@ -10,24 +10,17 @@ import {
   textValue,
   elementText,
   nativeAttributes,
-  renderedHead,
-  synchronous,
-  type HeadData,
-  hasOpenBinding,
-  OPEN_STATE_ATTRIBUTE,
   selectionValues,
+} from '../native/attributes.js';
+import { renderedHead, type HeadData } from '../runtime/head.js';
+import { synchronous } from '../runtime/synchronous.js';
+import { hasOpenBinding, OPEN_STATE_ATTRIBUTE } from '../native/bindings.js';
+import {
   setupComponent,
   createId,
-  element,
-  dynamic,
-  _untrack,
-  assertRuntime,
   type AnyComponent,
   type ComponentProps,
-  type Renderable,
-} from 'zerodep-js/internal';
-
-assertRuntime(2);
+} from '../runtime/component.js';
 
 export type RenderOptions<C extends AnyComponent> =
   {} extends ComponentProps<C> ? { props?: ComponentProps<C> } : { props: ComponentProps<C> };

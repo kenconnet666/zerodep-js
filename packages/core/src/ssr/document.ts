@@ -1,9 +1,6 @@
 export type RenderMode = 'csr' | 'ssr';
-import { headData } from 'zerodep-js/internal';
+import { headData } from '../runtime/head.js';
 import type { RenderResult } from './render.js';
-export { renderToString, _render } from './render.js';
-export { serializeData } from './data.js';
-export type { RenderOptions, RenderResult } from './render.js';
 
 export interface DocumentOptions {
   template: string;

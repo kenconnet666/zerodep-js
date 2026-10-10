@@ -14,13 +14,13 @@ function fingerprint(source: string): string {
 
 it('开发转换保留宏和 JSX 语义，生产不注入调试协议', () => {
   const development = compile(code, '/app/App.tsx', { development: true }).code;
-  expect(development).toContain('zerodep-js/devtools');
+  expect(development).toMatch(/import \{ begin as \w+ \} from "zerodep-js"/);
   expect(development).toContain('import.meta.hot.accept(');
   expect(development).toMatch(/\.state\("App", "count",/);
   expect(development).toContain('.update(count, true, false)');
   expect(development).not.toContain('_state(');
   const production = compile(code, '/app/App.tsx').code;
-  expect(production).not.toMatch(/devtools|import\.meta\.hot|\.finish\(/);
+  expect(production).not.toMatch(/\bbegin as\b|import\.meta\.hot|\.finish\(/);
 });
 
 it('文案、格式和注释不重置状态，改变声明名称/类型/初值则重置', () => {
@@ -52,6 +52,6 @@ it('混合运行时导出交由导入方处理，default 可接收，类型导�
   }).code;
   expect(typed).not.toMatch(/"Props": Props/);
   expect(compile('export const answer = 1;', 'plain.ts', { development: true }).code).not.toContain(
-    'devtools',
+    'begin as',
   );
 });

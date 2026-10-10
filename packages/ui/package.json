@@ -26,9 +26,8 @@
   "devDependencies": {
     "typescript": "catalog:",
     "vite": "catalog:",
-    "zerodep-js-ssr": "workspace:*",
-    "zerodep-js-css": "workspace:*",
     "zerodep-js": "workspace:*",
+    "zerodep-js-css": "workspace:*",
     "zerodep-js-compiler": "workspace:*"
   }
 }

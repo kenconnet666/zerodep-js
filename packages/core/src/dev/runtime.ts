@@ -304,7 +304,7 @@ export class Session {
   }
 }
 
-export function createSession(file: string): Session {
+export function begin(file: string): Session {
   const browser = typeof window !== 'undefined';
   let module = browser ? modules.get(file) : undefined;
   if (!module) {

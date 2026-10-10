@@ -1,5 +1,4 @@
-import type { JSX } from '../src/jsx-runtime.js';
-import type { Component, Renderable } from '../src/index.js';
+import { type JSX, type Component, type Renderable } from 'zerodep-js';
 
 type NamedProps = {
   value: boolean;

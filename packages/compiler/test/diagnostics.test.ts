@@ -10,7 +10,7 @@ it('大型声明只做框架诊断，不触发代码生成提示，框架错误�
   const module = pathToFileURL(resolve('packages/compiler/dist/index.js')).href;
   const program = `import { diagnose } from ${JSON.stringify(module)};
 import { readFileSync } from 'node:fs';
-const filename = 'packages/core/src/jsx-elements.ts';
+const filename = 'packages/core/src/native/elements.ts';
 const large = diagnose(readFileSync(filename, 'utf8'), filename);
 const invalid = diagnose("import { _state } from 'zerodep-js'; const n = _state(0); n++;", 'invalid.ts');
 console.log(JSON.stringify({ large, codes: invalid.map(item => item.code) }));`;

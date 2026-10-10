@@ -1,19 +1,21 @@
 # 开发、类型检查与框架诊断
 
-固定的 JetBrains TS7.1 SDK 负责类型检查与语言服务，Babel 负责框架转换与语义诊断，Vite 负责开发和打包。工具职责、检查投影和编辑器边界见 [工具链](tooling.md)，换机按 [环境配置](environment-setup.md) 操作。
+固定的微软官方 TS7.1 SDK 负责类型检查与语言服务，Babel 负责框架转换与语义诊断，Vite 负责开发和打包。工具职责、检查投影和编辑器边界见 [工具链](tooling.md)，换机按 [环境配置](environment-setup.md) 操作。
 
 ## 运行时与应用工具源码职责
 
-| 目录/入口                               | 职责                                                                                  |
-| --------------------------------------- | ------------------------------------------------------------------------------------- |
-| runtime/                                | 响应式图、状态、调度队列、组件、props、模板描述、上下文、生命周期和快照，不操作 DOM   |
-| dom/                                    | 节点挂载、hydration、列表/错误区域、属性/property、表单与原生事件清理                 |
-| native/                                 | 客户端与 SSR 共用的名称、文本、样式、序列化和 property 所有权规则，以及生成的属性数据 |
-| index.ts / internal.ts / jsx-runtime.ts | 公共运行时、编译 ABI 与 JSX 类型入口                                                  |
+| 目录/入口 | 职责                                                                                  |
+| --------- | ------------------------------------------------------------------------------------- |
+| runtime/  | 响应式图、状态、调度队列、组件、props、模板描述、上下文、生命周期和快照，不操作 DOM   |
+| dom/      | 节点挂载、hydration、列表/错误区域、属性/property、表单与原生事件清理                 |
+| native/   | 客户端与 SSR 共用的名称、文本、样式、序列化和 property 所有权规则，以及生成的属性数据 |
+| ssr/      | 请求隔离的 HTML 渲染、文档模板与安全数据编码                                          |
+| dev/      | 开发状态保留、HMR 与检查面板                                                          |
+| index.ts  | 唯一导出清单：应用 API、JSX 类型与编译协议                                            |
 
 上表均位于 packages/core/src。packages/use 已删除，不再维护路由、store、持久化及撤销重做工具。UI Provider 直接复用 core 的上下文与 CSS 注入，未迁入这些工具的实现。
 
-UI 和 SSR 均通过同版本 core 的公开 API 与必要的 internal 协议共享组件身份、调度和所有权，不能跨包导入 core/src 或复制状态内核；core 不反向依赖 UI。不要在 runtime/native 中增加 window/document 访问。生成数据维护入口仍为 scripts/generate-native.mjs，产物在 native/data.ts。改目录时同步检查声明映射、生成脚本、资源验证与独立消费，移除已经失效的旧构建文件。
+UI 通过 core 根入口共享组件身份、调度和所有权；SSR 已合并至 core，不能跨包导入 core/src 或复制状态内核；core 不反向依赖 UI。不要在 runtime/native 中增加 window/document 访问。生成数据维护入口仍为 scripts/generate-native.mjs，产物在 native/data.ts 与 native/elements.ts。改目录时同步检查声明映射、生成脚本、资源验证与独立消费，移除已经失效的旧构建文件。
 
 ## 检查入口
 

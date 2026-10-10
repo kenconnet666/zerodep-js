@@ -370,7 +370,7 @@ function transformFramework(
     program.node.body = [
       t.importDeclaration(
         [t.importNamespaceSpecifier(runtime)],
-        t.stringLiteral(options.runtimeModule ?? 'zerodep-js/internal'),
+        t.stringLiteral(options.runtimeModule ?? 'zerodep-js'),
       ),
       ...statements.filter((node) => t.isImportDeclaration(node)),
       t.expressionStatement(helper('assertRuntime', [t.numericLiteral(RUNTIME_ABI)])),

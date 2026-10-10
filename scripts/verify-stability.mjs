@@ -21,9 +21,9 @@ import {
   _provideContext,
   _useContext,
 } from '../packages/core/dist/runtime/context.js';
-import { defineComponent, element } from '../packages/core/dist/internal.js';
+import { defineComponent, element } from '../packages/core/dist/index.js';
 import { ErrorBoundary } from '../packages/core/dist/runtime/flow.js';
-import { renderToString } from '../packages/ssr/dist/index.js';
+import { renderToString } from '../packages/core/dist/index.js';
 
 const { values } = parseArgs({
   options: { iterations: { type: 'string', default: process.env.CI ? '5000' : '1000' } },

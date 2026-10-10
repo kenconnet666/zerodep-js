@@ -1,6 +1,6 @@
 # 候选发布与恢复
 
-发布清单唯一维护于 scripts/package-list.mjs：core、ssr、compiler、css。包使用同一个版本；当前 SDK 与平台二进制来自微软官方 npm 发行版，独立项目无需平台 overrides，见 [包边界](packages.md)。
+发布清单唯一维护于 scripts/package-list.mjs：core、compiler、css。包使用同一个版本；当前 SDK 与平台二进制来自微软官方 npm 发行版，独立项目无需平台 overrides，见 [包边界](packages.md)。
 
 ## 发布门槛
 

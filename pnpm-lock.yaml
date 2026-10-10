@@ -164,9 +164,6 @@ importers:
       zerodep-js-css:
         specifier: workspace:*
         version: link:../../packages/css
-      zerodep-js-ssr:
-        specifier: workspace:*
-        version: link:../../packages/ssr
       zerodep-js-ui:
         specifier: workspace:*
         version: link:../../packages/ui
@@ -192,9 +189,6 @@ importers:
       zerodep-js-css:
         specifier: workspace:*
         version: link:../../packages/css
-      zerodep-js-ssr:
-        specifier: workspace:*
-        version: link:../../packages/ssr
     devDependencies:
       typescript:
         specifier: 'catalog:'
@@ -287,21 +281,6 @@ importers:
         specifier: workspace:*
         version: link:../core
 
-  packages/ssr:
-    devDependencies:
-      '@types/node':
-        specifier: 'catalog:'
-        version: 24.13.5
-      typescript:
-        specifier: 'catalog:'
-        version: 7.1.0-dev.20261008.1
-      zerodep-js:
-        specifier: workspace:*
-        version: link:../core
-      zerodep-js-css:
-        specifier: workspace:*
-        version: link:../css
-
   packages/ui:
     dependencies:
       '@date-fns/tz':
@@ -329,9 +308,6 @@ importers:
       zerodep-js-css:
         specifier: workspace:*
         version: link:../css
-      zerodep-js-ssr:
-        specifier: workspace:*
-        version: link:../ssr
 
 packages:
 

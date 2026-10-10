@@ -1,7 +1,7 @@
 import { execute } from './execute.js';
 import { TraceMap, originalPositionFor } from '@jridgewell/trace-mapping';
 import { describe, expect, it } from 'vitest';
-import { _derived, _state } from '../../core/src/runtime/macros.js';
+import { _derived, _state } from '../../core/dist/runtime/macros.js';
 import { CompileError, compile } from '../src/index.js';
 
 describe('变量宏的绑定转换', () => {
@@ -30,7 +30,7 @@ const result = [count, calculate(10), ordinary((x) => x * 2)];`),
     ).toEqual([2, 11, 6]);
     expect(
       compile(`import { $state } from 'another-library'; let x = $state(1);`, 'other.ts').code,
-    ).not.toContain('zerodep-js/internal');
+    ).not.toContain('zerodep-js');
   });
 
   it('闭包在调用时读最新值，普通对象字面量与返回仍是快照', () => {

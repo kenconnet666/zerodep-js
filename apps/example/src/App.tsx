@@ -1,5 +1,14 @@
-import { _component, _state, _derived, _onCleanup, _effect, type JSX } from 'zerodep-js';
-import type { RenderMode } from 'zerodep-js-ssr';
+import {
+  _component,
+  _state,
+  _derived,
+  _onCleanup,
+  _effect,
+  type JSX,
+  type RenderMode,
+  _head,
+} from 'zerodep-js';
+
 import { ListExample } from './examples/ListExample.js';
 import { ContextExample } from './examples/ContextExample.js';
 import { BoundaryExample } from './examples/BoundaryExample.js';
@@ -18,7 +27,6 @@ import { CssExample } from './examples/CssExample.js';
 import { DisclosureExample } from './examples/DisclosureExample.js';
 import { GroupExample } from './examples/GroupExample.js';
 import { HeadExample } from './examples/HeadExample.js';
-import { _head } from 'zerodep-js/head';
 
 const Button = _component(
   ({ type = 'button', children, ...attrs }: JSX.IntrinsicElements['button']) => (

@@ -1,5 +1,12 @@
-import { _component, _state, _mount, _onCleanup, _flushSync, ErrorBoundary } from 'zerodep-js';
-import { _head } from 'zerodep-js/head';
+import {
+  _component,
+  _state,
+  _mount,
+  _onCleanup,
+  _flushSync,
+  ErrorBoundary,
+  _head,
+} from 'zerodep-js';
 
 const ChildHead = _component(({ fail }: { fail: boolean }) => {
   _head(() => {

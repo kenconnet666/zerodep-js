@@ -1,6 +1,6 @@
 import type { UiTheme } from '../provider/theme/theme.js';
-import { _component, _derived, type JSX, type Template } from 'zerodep-js';
-import { element } from 'zerodep-js/internal';
+import { _component, _derived, type JSX, type Template, element } from 'zerodep-js';
+
 import { css, _mergeClasses, type CssValue } from 'zerodep-js-css';
 import type { LucideIconData, LucideIconNode } from '@lucide/icons';
 import { buildLucideIconNode } from '@lucide/icons/build';

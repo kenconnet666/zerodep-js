@@ -1,5 +1,5 @@
-import { _component, _derived, type NativeProps } from 'zerodep-js';
-import { element } from 'zerodep-js/internal';
+import { _component, _derived, type NativeProps, element } from 'zerodep-js';
+
 import { css, _mergeClasses } from 'zerodep-js-css';
 import type { ButtonState } from './Button.js';
 import { Ripple } from './Ripple.js';

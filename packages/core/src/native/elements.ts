@@ -1,6 +1,6 @@
 // 由 pnpm native:generate 生成；规则维护于 native/jsx.ts，官方 TS7.1 API 负责展开。
 
-import type { NativeIndexProps } from './native/jsx.js';
+import type { NativeIndexProps } from './jsx.js';
 interface Common0<T extends Element> extends NativeIndexProps {
   about?: string | number | null | undefined;
   accent?: ('false' | 'true' | boolean) | null | undefined;
@@ -170,8 +170,8 @@ interface Common0<T extends Element> extends NativeIndexProps {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   class?: string | false | null | undefined;
@@ -381,335 +381,316 @@ interface Common0<T extends Element> extends NativeIndexProps {
   numOctaves?: string | number | null | undefined;
   observer?: string | number | null | undefined;
   offset?: string | number | null | undefined;
-  onabort?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onAbort?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onAbortCapture?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onanimationcancel?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onanimationend?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationEnd?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationEndCapture?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onanimationiteration?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationIteration?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onabort?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onAbort?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onAbortCapture?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onanimationcancel?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onanimationend?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationEnd?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationEndCapture?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onanimationiteration?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationIteration?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
   onAnimationIterationCapture?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onanimationstart?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationStart?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationStartCapture?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onauxclick?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onAuxClick?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onAuxClickCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onbeforeinput?: import('./native/jsx.js').EventHandler<T, InputEvent> | null | undefined;
-  onbeforematch?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onBeforeMatch?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onBeforeMatchCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onbeforetoggle?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onBeforeToggle?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onBeforeToggleCapture?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onblur?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onBlur?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onBlurCapture?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  oncancel?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCancel?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCancelCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncanplay?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCanPlay?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCanPlayCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncanplaythrough?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCanPlayThrough?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCanPlayThroughCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onchange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onclick?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onClick?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onClickCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onclose?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onClose?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCloseCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncommand?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncompositionend?: import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  onCompositionEnd?: import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  onCompositionEndCapture?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  oncompositionstart?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  onCompositionStart?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onanimationstart?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationStart?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationStartCapture?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onauxclick?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onAuxClick?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onAuxClickCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onbeforeinput?: import('./jsx.js').EventHandler<T, InputEvent> | null | undefined;
+  onbeforematch?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onBeforeMatch?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onBeforeMatchCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onbeforetoggle?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onBeforeToggle?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onBeforeToggleCapture?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onblur?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onBlur?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onBlurCapture?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  oncancel?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCancel?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCancelCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncanplay?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCanPlay?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCanPlayCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncanplaythrough?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCanPlayThrough?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCanPlayThroughCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onchange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onclick?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onClick?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onClickCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onclose?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onClose?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCloseCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncommand?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncompositionend?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  onCompositionEnd?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  onCompositionEndCapture?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  oncompositionstart?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  onCompositionStart?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
   onCompositionStartCapture?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  oncompositionupdate?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  onCompositionUpdate?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  oncompositionupdate?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  onCompositionUpdate?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
   onCompositionUpdateCapture?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  oncontextlost?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onContextLost?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onContextLostCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncontextmenu?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onContextMenu?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onContextMenuCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  oncontextrestored?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onContextRestored?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onContextRestoredCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncopy?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onCopy?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onCopyCapture?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  oncuechange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCueChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCueChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncut?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onCut?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onCutCapture?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  ondblclick?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onDblClick?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onDblClickCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  ondrag?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDrag?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragend?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragEnd?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragEndCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragenter?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragEnter?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragEnterCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragleave?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragLeave?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragLeaveCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragover?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragOver?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragOverCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragstart?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragStart?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragStartCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondrop?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDrop?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDropCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondurationchange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onDurationChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onDurationChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onemptied?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onEmptied?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onEmptiedCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onended?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onEnded?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onEndedCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onerror?: import('./native/jsx.js').EventHandler<T, ErrorEvent> | null | undefined;
-  onError?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onErrorCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onfocus?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocus?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusCapture?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onfocusin?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusIn?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusInCapture?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onfocusout?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusOut?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusOutCapture?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onformdata?: import('./native/jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
-  onFormData?: import('./native/jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
-  onFormDataCapture?: import('./native/jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
-  ongotpointercapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onGotPointerCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onGotPointerCaptureCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  oncontextlost?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onContextLost?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onContextLostCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncontextmenu?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onContextMenu?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onContextMenuCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  oncontextrestored?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onContextRestored?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onContextRestoredCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncopy?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onCopy?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onCopyCapture?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  oncuechange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCueChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCueChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncut?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onCut?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onCutCapture?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  ondblclick?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onDblClick?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onDblClickCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  ondrag?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDrag?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragend?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragEnd?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragEndCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragenter?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragEnter?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragEnterCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragleave?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragLeave?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragLeaveCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragover?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragOver?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragOverCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragstart?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragStart?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragStartCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondrop?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDrop?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDropCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondurationchange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onDurationChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onDurationChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onemptied?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onEmptied?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onEmptiedCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onended?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onEnded?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onEndedCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onerror?: import('./jsx.js').EventHandler<T, ErrorEvent> | null | undefined;
+  onError?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onErrorCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onfocus?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocus?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusCapture?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onfocusin?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusIn?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusInCapture?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onfocusout?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusOut?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusOutCapture?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onformdata?: import('./jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
+  onFormData?: import('./jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
+  onFormDataCapture?: import('./jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
+  ongotpointercapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onGotPointerCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onGotPointerCaptureCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
   oninput?:
-    | import('./native/jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
+    | import('./jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
     | null
     | undefined;
   onInput?:
-    | import('./native/jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
+    | import('./jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
     | null
     | undefined;
   onInputCapture?:
-    | import('./native/jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
+    | import('./jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
     | null
     | undefined;
-  oninvalid?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onInvalid?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onInvalidCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onkeydown?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyDown?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyDownCapture?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onkeypress?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyPress?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyPressCapture?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onkeyup?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyUp?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyUpCapture?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onload?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoad?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onloadeddata?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadedData?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadedDataCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onloadedmetadata?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadedMetadata?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadedMetadataCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onloadstart?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadStart?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadStartCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onlostpointercapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onLostPointerCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onLostPointerCaptureCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onmousedown?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseDown?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseDownCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseenter?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseEnter?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseEnterCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseleave?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseLeave?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseLeaveCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmousemove?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseMove?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseMoveCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseout?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseOut?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseOutCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseover?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseOver?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseOverCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseup?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseUp?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseUpCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onpaste?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onPaste?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onPasteCapture?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onpause?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPause?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPauseCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onplay?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPlay?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPlayCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onplaying?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPlaying?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPlayingCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onpointercancel?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerCancel?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerCancelCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerdown?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerDown?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerDownCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerenter?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerEnter?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerEnterCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerleave?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerLeave?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerLeaveCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointermove?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerMove?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerMoveCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerout?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerOut?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerOutCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerover?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerOver?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerOverCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerrawupdate?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onpointerup?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerUp?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerUpCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onprogress?:
-    import('./native/jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
-  onProgress?:
-    import('./native/jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
+  oninvalid?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onInvalid?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onInvalidCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onkeydown?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyDown?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyDownCapture?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onkeypress?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyPress?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyPressCapture?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onkeyup?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyUp?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyUpCapture?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onload?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoad?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onloadeddata?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadedData?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadedDataCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onloadedmetadata?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadedMetadata?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadedMetadataCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onloadstart?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadStart?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadStartCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onlostpointercapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onLostPointerCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onLostPointerCaptureCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onmousedown?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseDown?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseDownCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseenter?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseEnter?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseEnterCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseleave?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseLeave?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseLeaveCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmousemove?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseMove?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseMoveCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseout?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseOut?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseOutCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseover?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseOver?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseOverCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseup?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseUp?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseUpCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onpaste?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onPaste?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onPasteCapture?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onpause?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPause?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPauseCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onplay?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPlay?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPlayCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onplaying?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPlaying?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPlayingCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onpointercancel?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerCancel?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerCancelCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerdown?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerDown?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerDownCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerenter?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerEnter?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerEnterCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerleave?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerLeave?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerLeaveCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointermove?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerMove?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerMoveCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerout?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerOut?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerOutCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerover?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerOver?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerOverCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerrawupdate?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onpointerup?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerUp?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerUpCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onprogress?: import('./jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
+  onProgress?: import('./jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
   onProgressCapture?:
-    import('./native/jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
-  onratechange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onRateChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onRateChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onreset?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onReset?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onResetCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onresize?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onResize?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onResizeCapture?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onscroll?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onScroll?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onScrollCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onscrollend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onScrollEnd?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onScrollEndCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
+    import('./jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
+  onratechange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onRateChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onRateChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onreset?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onReset?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onResetCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onresize?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onResize?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onResizeCapture?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onscroll?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onScroll?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onScrollCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onscrollend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onScrollEnd?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onScrollEndCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
   onsecuritypolicyviolation?:
-    import('./native/jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
   onSecurityPolicyViolation?:
-    import('./native/jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
   onSecurityPolicyViolationCapture?:
-    import('./native/jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
-  onseeked?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSeeked?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSeekedCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onseeking?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSeeking?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSeekingCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onselect?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSelect?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSelectCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onselectionchange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onselectstart?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onslotchange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSlotChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSlotChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onstalled?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onStalled?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onStalledCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onsubmit?: import('./native/jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
-  onSubmit?: import('./native/jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
-  onSubmitCapture?: import('./native/jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
-  onsuspend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSuspend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSuspendCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  ontimeupdate?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onTimeUpdate?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onTimeUpdateCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  ontoggle?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onToggle?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onToggleCapture?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  ontouchcancel?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchCancel?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchCancelCapture?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  ontouchend?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchEnd?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchEndCapture?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  ontouchmove?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchMove?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchMoveCapture?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  ontouchstart?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchStart?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchStartCapture?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  ontransitioncancel?:
-    import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  ontransitionend?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onTransitionEnd?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onTransitionEndCapture?:
-    import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  ontransitionrun?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  ontransitionstart?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onTransitionStart?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onTransitionStartCapture?:
-    import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onvolumechange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onVolumeChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onVolumeChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwaiting?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onWaiting?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onWaitingCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwebkitanimationend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwebkitanimationiteration?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwebkitanimationstart?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwebkittransitionend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwheel?: import('./native/jsx.js').EventHandler<T, WheelEvent> | null | undefined;
-  onWheel?: import('./native/jsx.js').EventHandler<T, WheelEvent> | null | undefined;
-  onWheelCapture?: import('./native/jsx.js').EventHandler<T, WheelEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
+  onseeked?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSeeked?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSeekedCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onseeking?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSeeking?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSeekingCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onselect?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSelect?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSelectCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onselectionchange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onselectstart?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onslotchange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSlotChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSlotChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onstalled?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onStalled?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onStalledCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onsubmit?: import('./jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
+  onSubmit?: import('./jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
+  onSubmitCapture?: import('./jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
+  onsuspend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSuspend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSuspendCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  ontimeupdate?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onTimeUpdate?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onTimeUpdateCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  ontoggle?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onToggle?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onToggleCapture?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  ontouchcancel?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchCancel?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchCancelCapture?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  ontouchend?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchEnd?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchEndCapture?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  ontouchmove?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchMove?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchMoveCapture?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  ontouchstart?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchStart?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchStartCapture?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  ontransitioncancel?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  ontransitionend?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onTransitionEnd?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onTransitionEndCapture?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  ontransitionrun?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  ontransitionstart?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onTransitionStart?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onTransitionStartCapture?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onvolumechange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onVolumeChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onVolumeChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwaiting?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onWaiting?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onWaitingCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwebkitanimationend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwebkitanimationiteration?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwebkitanimationstart?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwebkittransitionend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwheel?: import('./jsx.js').EventHandler<T, WheelEvent> | null | undefined;
+  onWheel?: import('./jsx.js').EventHandler<T, WheelEvent> | null | undefined;
+  onWheelCapture?: import('./jsx.js').EventHandler<T, WheelEvent> | null | undefined;
   opacity?: string | number | null | undefined;
   operator?: string | number | null | undefined;
   order?: string | number | null | undefined;
@@ -1126,7 +1107,7 @@ interface Common0<T extends Element> extends NativeIndexProps {
   strokeMiterLimit?: string | number | null | undefined;
   strokeOpacity?: string | number | null | undefined;
   strokeWidth?: string | number | null | undefined;
-  style?: import('./native/style.js').Style | null | undefined;
+  style?: import('./style.js').Style | null | undefined;
   surfaceScale?: string | number | null | undefined;
   symmetric?: ('false' | 'true' | boolean) | null | undefined;
   syncBehavior?: string | number | null | undefined;
@@ -1406,335 +1387,316 @@ interface Common1<T extends Element> extends NativeIndexProps {
   key?: string | number | symbol;
   lang?: string | null | undefined;
   nonce?: string | null | undefined;
-  onabort?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onAbort?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onAbortCapture?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onanimationcancel?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onanimationend?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationEnd?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationEndCapture?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onanimationiteration?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationIteration?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onabort?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onAbort?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onAbortCapture?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onanimationcancel?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onanimationend?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationEnd?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationEndCapture?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onanimationiteration?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationIteration?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
   onAnimationIterationCapture?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onanimationstart?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationStart?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationStartCapture?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onauxclick?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onAuxClick?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onAuxClickCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onbeforeinput?: import('./native/jsx.js').EventHandler<T, InputEvent> | null | undefined;
-  onbeforematch?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onBeforeMatch?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onBeforeMatchCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onbeforetoggle?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onBeforeToggle?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onBeforeToggleCapture?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onblur?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onBlur?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onBlurCapture?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  oncancel?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCancel?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCancelCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncanplay?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCanPlay?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCanPlayCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncanplaythrough?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCanPlayThrough?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCanPlayThroughCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onchange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onclick?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onClick?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onClickCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onclose?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onClose?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCloseCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncommand?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncompositionend?: import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  onCompositionEnd?: import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  onCompositionEndCapture?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  oncompositionstart?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  onCompositionStart?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onanimationstart?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationStart?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationStartCapture?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onauxclick?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onAuxClick?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onAuxClickCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onbeforeinput?: import('./jsx.js').EventHandler<T, InputEvent> | null | undefined;
+  onbeforematch?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onBeforeMatch?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onBeforeMatchCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onbeforetoggle?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onBeforeToggle?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onBeforeToggleCapture?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onblur?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onBlur?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onBlurCapture?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  oncancel?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCancel?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCancelCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncanplay?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCanPlay?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCanPlayCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncanplaythrough?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCanPlayThrough?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCanPlayThroughCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onchange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onclick?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onClick?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onClickCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onclose?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onClose?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCloseCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncommand?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncompositionend?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  onCompositionEnd?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  onCompositionEndCapture?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  oncompositionstart?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  onCompositionStart?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
   onCompositionStartCapture?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  oncompositionupdate?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  onCompositionUpdate?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  oncompositionupdate?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  onCompositionUpdate?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
   onCompositionUpdateCapture?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  oncontextlost?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onContextLost?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onContextLostCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncontextmenu?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onContextMenu?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onContextMenuCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  oncontextrestored?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onContextRestored?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onContextRestoredCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncopy?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onCopy?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onCopyCapture?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  oncuechange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCueChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCueChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncut?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onCut?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onCutCapture?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  ondblclick?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onDblClick?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onDblClickCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  ondrag?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDrag?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragend?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragEnd?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragEndCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragenter?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragEnter?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragEnterCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragleave?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragLeave?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragLeaveCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragover?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragOver?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragOverCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragstart?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragStart?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragStartCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondrop?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDrop?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDropCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondurationchange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onDurationChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onDurationChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onemptied?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onEmptied?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onEmptiedCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onended?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onEnded?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onEndedCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onerror?: import('./native/jsx.js').EventHandler<T, ErrorEvent> | null | undefined;
-  onError?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onErrorCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onfocus?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocus?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusCapture?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onfocusin?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusIn?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusInCapture?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onfocusout?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusOut?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusOutCapture?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onformdata?: import('./native/jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
-  onFormData?: import('./native/jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
-  onFormDataCapture?: import('./native/jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
-  ongotpointercapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onGotPointerCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onGotPointerCaptureCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  oncontextlost?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onContextLost?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onContextLostCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncontextmenu?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onContextMenu?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onContextMenuCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  oncontextrestored?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onContextRestored?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onContextRestoredCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncopy?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onCopy?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onCopyCapture?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  oncuechange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCueChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCueChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncut?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onCut?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onCutCapture?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  ondblclick?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onDblClick?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onDblClickCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  ondrag?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDrag?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragend?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragEnd?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragEndCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragenter?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragEnter?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragEnterCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragleave?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragLeave?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragLeaveCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragover?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragOver?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragOverCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragstart?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragStart?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragStartCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondrop?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDrop?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDropCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondurationchange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onDurationChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onDurationChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onemptied?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onEmptied?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onEmptiedCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onended?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onEnded?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onEndedCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onerror?: import('./jsx.js').EventHandler<T, ErrorEvent> | null | undefined;
+  onError?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onErrorCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onfocus?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocus?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusCapture?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onfocusin?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusIn?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusInCapture?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onfocusout?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusOut?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusOutCapture?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onformdata?: import('./jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
+  onFormData?: import('./jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
+  onFormDataCapture?: import('./jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
+  ongotpointercapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onGotPointerCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onGotPointerCaptureCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
   oninput?:
-    | import('./native/jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
+    | import('./jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
     | null
     | undefined;
   onInput?:
-    | import('./native/jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
+    | import('./jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
     | null
     | undefined;
   onInputCapture?:
-    | import('./native/jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
+    | import('./jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
     | null
     | undefined;
-  oninvalid?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onInvalid?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onInvalidCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onkeydown?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyDown?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyDownCapture?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onkeypress?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyPress?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyPressCapture?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onkeyup?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyUp?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyUpCapture?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onload?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoad?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onloadeddata?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadedData?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadedDataCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onloadedmetadata?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadedMetadata?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadedMetadataCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onloadstart?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadStart?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadStartCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onlostpointercapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onLostPointerCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onLostPointerCaptureCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onmousedown?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseDown?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseDownCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseenter?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseEnter?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseEnterCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseleave?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseLeave?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseLeaveCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmousemove?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseMove?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseMoveCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseout?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseOut?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseOutCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseover?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseOver?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseOverCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseup?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseUp?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseUpCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onpaste?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onPaste?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onPasteCapture?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onpause?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPause?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPauseCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onplay?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPlay?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPlayCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onplaying?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPlaying?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPlayingCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onpointercancel?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerCancel?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerCancelCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerdown?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerDown?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerDownCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerenter?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerEnter?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerEnterCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerleave?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerLeave?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerLeaveCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointermove?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerMove?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerMoveCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerout?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerOut?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerOutCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerover?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerOver?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerOverCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerrawupdate?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onpointerup?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerUp?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerUpCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onprogress?:
-    import('./native/jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
-  onProgress?:
-    import('./native/jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
+  oninvalid?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onInvalid?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onInvalidCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onkeydown?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyDown?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyDownCapture?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onkeypress?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyPress?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyPressCapture?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onkeyup?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyUp?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyUpCapture?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onload?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoad?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onloadeddata?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadedData?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadedDataCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onloadedmetadata?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadedMetadata?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadedMetadataCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onloadstart?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadStart?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadStartCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onlostpointercapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onLostPointerCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onLostPointerCaptureCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onmousedown?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseDown?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseDownCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseenter?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseEnter?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseEnterCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseleave?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseLeave?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseLeaveCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmousemove?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseMove?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseMoveCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseout?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseOut?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseOutCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseover?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseOver?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseOverCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseup?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseUp?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseUpCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onpaste?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onPaste?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onPasteCapture?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onpause?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPause?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPauseCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onplay?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPlay?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPlayCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onplaying?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPlaying?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPlayingCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onpointercancel?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerCancel?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerCancelCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerdown?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerDown?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerDownCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerenter?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerEnter?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerEnterCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerleave?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerLeave?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerLeaveCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointermove?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerMove?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerMoveCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerout?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerOut?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerOutCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerover?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerOver?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerOverCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerrawupdate?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onpointerup?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerUp?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerUpCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onprogress?: import('./jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
+  onProgress?: import('./jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
   onProgressCapture?:
-    import('./native/jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
-  onratechange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onRateChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onRateChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onreset?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onReset?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onResetCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onresize?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onResize?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onResizeCapture?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onscroll?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onScroll?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onScrollCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onscrollend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onScrollEnd?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onScrollEndCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
+    import('./jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
+  onratechange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onRateChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onRateChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onreset?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onReset?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onResetCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onresize?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onResize?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onResizeCapture?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onscroll?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onScroll?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onScrollCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onscrollend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onScrollEnd?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onScrollEndCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
   onsecuritypolicyviolation?:
-    import('./native/jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
   onSecurityPolicyViolation?:
-    import('./native/jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
   onSecurityPolicyViolationCapture?:
-    import('./native/jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
-  onseeked?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSeeked?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSeekedCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onseeking?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSeeking?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSeekingCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onselect?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSelect?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSelectCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onselectionchange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onselectstart?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onslotchange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSlotChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSlotChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onstalled?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onStalled?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onStalledCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onsubmit?: import('./native/jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
-  onSubmit?: import('./native/jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
-  onSubmitCapture?: import('./native/jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
-  onsuspend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSuspend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSuspendCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  ontimeupdate?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onTimeUpdate?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onTimeUpdateCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  ontoggle?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onToggle?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onToggleCapture?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  ontouchcancel?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchCancel?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchCancelCapture?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  ontouchend?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchEnd?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchEndCapture?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  ontouchmove?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchMove?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchMoveCapture?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  ontouchstart?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchStart?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchStartCapture?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  ontransitioncancel?:
-    import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  ontransitionend?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onTransitionEnd?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onTransitionEndCapture?:
-    import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  ontransitionrun?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  ontransitionstart?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onTransitionStart?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onTransitionStartCapture?:
-    import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onvolumechange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onVolumeChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onVolumeChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwaiting?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onWaiting?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onWaitingCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwebkitanimationend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwebkitanimationiteration?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwebkitanimationstart?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwebkittransitionend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwheel?: import('./native/jsx.js').EventHandler<T, WheelEvent> | null | undefined;
-  onWheel?: import('./native/jsx.js').EventHandler<T, WheelEvent> | null | undefined;
-  onWheelCapture?: import('./native/jsx.js').EventHandler<T, WheelEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
+  onseeked?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSeeked?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSeekedCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onseeking?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSeeking?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSeekingCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onselect?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSelect?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSelectCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onselectionchange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onselectstart?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onslotchange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSlotChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSlotChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onstalled?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onStalled?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onStalledCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onsubmit?: import('./jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
+  onSubmit?: import('./jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
+  onSubmitCapture?: import('./jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
+  onsuspend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSuspend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSuspendCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  ontimeupdate?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onTimeUpdate?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onTimeUpdateCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  ontoggle?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onToggle?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onToggleCapture?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  ontouchcancel?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchCancel?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchCancelCapture?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  ontouchend?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchEnd?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchEndCapture?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  ontouchmove?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchMove?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchMoveCapture?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  ontouchstart?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchStart?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchStartCapture?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  ontransitioncancel?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  ontransitionend?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onTransitionEnd?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onTransitionEndCapture?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  ontransitionrun?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  ontransitionstart?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onTransitionStart?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onTransitionStartCapture?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onvolumechange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onVolumeChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onVolumeChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwaiting?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onWaiting?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onWaitingCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwebkitanimationend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwebkitanimationiteration?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwebkitanimationstart?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwebkittransitionend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwheel?: import('./jsx.js').EventHandler<T, WheelEvent> | null | undefined;
+  onWheel?: import('./jsx.js').EventHandler<T, WheelEvent> | null | undefined;
+  onWheelCapture?: import('./jsx.js').EventHandler<T, WheelEvent> | null | undefined;
   part?: string | null | undefined;
   popover?: string | null | undefined;
   'prop:accessKey'?: string | undefined;
@@ -2053,7 +2015,7 @@ interface Common1<T extends Element> extends NativeIndexProps {
   slot?: string | null | undefined;
   spellcheck?: 'false' | 'true' | boolean | null | undefined;
   spellCheck?: string | number | boolean | null | undefined;
-  style?: import('./native/style.js').Style | null | undefined;
+  style?: import('./style.js').Style | null | undefined;
   tabindex?: string | number | null | undefined;
   tabIndex?: number | null | undefined;
   title?: string | null | undefined;
@@ -2223,8 +2185,8 @@ interface Common2<T extends Element> extends NativeIndexProps {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   class?: string | false | null | undefined;
@@ -2410,335 +2372,316 @@ interface Common2<T extends Element> extends NativeIndexProps {
   numOctaves?: string | number | null | undefined;
   observer?: string | number | null | undefined;
   offset?: string | number | null | undefined;
-  onabort?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onAbort?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onAbortCapture?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onanimationcancel?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onanimationend?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationEnd?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationEndCapture?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onanimationiteration?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationIteration?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onabort?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onAbort?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onAbortCapture?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onanimationcancel?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onanimationend?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationEnd?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationEndCapture?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onanimationiteration?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationIteration?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
   onAnimationIterationCapture?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onanimationstart?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationStart?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationStartCapture?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onauxclick?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onAuxClick?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onAuxClickCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onbeforeinput?: import('./native/jsx.js').EventHandler<T, InputEvent> | null | undefined;
-  onbeforematch?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onBeforeMatch?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onBeforeMatchCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onbeforetoggle?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onBeforeToggle?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onBeforeToggleCapture?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onblur?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onBlur?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onBlurCapture?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  oncancel?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCancel?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCancelCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncanplay?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCanPlay?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCanPlayCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncanplaythrough?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCanPlayThrough?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCanPlayThroughCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onchange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onclick?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onClick?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onClickCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onclose?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onClose?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCloseCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncommand?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncompositionend?: import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  onCompositionEnd?: import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  onCompositionEndCapture?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  oncompositionstart?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  onCompositionStart?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onanimationstart?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationStart?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationStartCapture?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onauxclick?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onAuxClick?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onAuxClickCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onbeforeinput?: import('./jsx.js').EventHandler<T, InputEvent> | null | undefined;
+  onbeforematch?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onBeforeMatch?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onBeforeMatchCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onbeforetoggle?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onBeforeToggle?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onBeforeToggleCapture?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onblur?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onBlur?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onBlurCapture?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  oncancel?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCancel?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCancelCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncanplay?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCanPlay?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCanPlayCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncanplaythrough?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCanPlayThrough?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCanPlayThroughCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onchange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onclick?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onClick?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onClickCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onclose?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onClose?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCloseCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncommand?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncompositionend?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  onCompositionEnd?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  onCompositionEndCapture?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  oncompositionstart?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  onCompositionStart?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
   onCompositionStartCapture?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  oncompositionupdate?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  onCompositionUpdate?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  oncompositionupdate?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  onCompositionUpdate?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
   onCompositionUpdateCapture?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  oncontextlost?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onContextLost?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onContextLostCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncontextmenu?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onContextMenu?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onContextMenuCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  oncontextrestored?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onContextRestored?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onContextRestoredCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncopy?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onCopy?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onCopyCapture?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  oncuechange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCueChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCueChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncut?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onCut?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onCutCapture?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  ondblclick?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onDblClick?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onDblClickCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  ondrag?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDrag?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragend?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragEnd?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragEndCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragenter?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragEnter?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragEnterCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragleave?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragLeave?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragLeaveCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragover?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragOver?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragOverCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragstart?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragStart?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragStartCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondrop?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDrop?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDropCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondurationchange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onDurationChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onDurationChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onemptied?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onEmptied?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onEmptiedCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onended?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onEnded?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onEndedCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onerror?: import('./native/jsx.js').EventHandler<T, ErrorEvent> | null | undefined;
-  onError?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onErrorCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onfocus?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocus?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusCapture?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onfocusin?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusIn?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusInCapture?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onfocusout?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusOut?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusOutCapture?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onformdata?: import('./native/jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
-  onFormData?: import('./native/jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
-  onFormDataCapture?: import('./native/jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
-  ongotpointercapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onGotPointerCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onGotPointerCaptureCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  oncontextlost?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onContextLost?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onContextLostCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncontextmenu?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onContextMenu?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onContextMenuCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  oncontextrestored?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onContextRestored?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onContextRestoredCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncopy?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onCopy?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onCopyCapture?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  oncuechange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCueChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCueChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncut?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onCut?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onCutCapture?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  ondblclick?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onDblClick?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onDblClickCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  ondrag?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDrag?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragend?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragEnd?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragEndCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragenter?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragEnter?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragEnterCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragleave?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragLeave?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragLeaveCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragover?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragOver?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragOverCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragstart?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragStart?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragStartCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondrop?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDrop?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDropCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondurationchange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onDurationChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onDurationChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onemptied?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onEmptied?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onEmptiedCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onended?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onEnded?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onEndedCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onerror?: import('./jsx.js').EventHandler<T, ErrorEvent> | null | undefined;
+  onError?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onErrorCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onfocus?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocus?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusCapture?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onfocusin?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusIn?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusInCapture?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onfocusout?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusOut?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusOutCapture?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onformdata?: import('./jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
+  onFormData?: import('./jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
+  onFormDataCapture?: import('./jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
+  ongotpointercapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onGotPointerCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onGotPointerCaptureCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
   oninput?:
-    | import('./native/jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
+    | import('./jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
     | null
     | undefined;
   onInput?:
-    | import('./native/jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
+    | import('./jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
     | null
     | undefined;
   onInputCapture?:
-    | import('./native/jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
+    | import('./jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
     | null
     | undefined;
-  oninvalid?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onInvalid?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onInvalidCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onkeydown?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyDown?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyDownCapture?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onkeypress?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyPress?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyPressCapture?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onkeyup?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyUp?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyUpCapture?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onload?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoad?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onloadeddata?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadedData?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadedDataCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onloadedmetadata?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadedMetadata?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadedMetadataCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onloadstart?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadStart?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadStartCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onlostpointercapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onLostPointerCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onLostPointerCaptureCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onmousedown?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseDown?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseDownCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseenter?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseEnter?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseEnterCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseleave?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseLeave?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseLeaveCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmousemove?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseMove?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseMoveCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseout?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseOut?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseOutCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseover?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseOver?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseOverCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseup?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseUp?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseUpCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onpaste?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onPaste?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onPasteCapture?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onpause?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPause?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPauseCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onplay?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPlay?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPlayCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onplaying?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPlaying?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPlayingCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onpointercancel?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerCancel?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerCancelCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerdown?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerDown?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerDownCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerenter?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerEnter?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerEnterCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerleave?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerLeave?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerLeaveCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointermove?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerMove?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerMoveCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerout?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerOut?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerOutCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerover?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerOver?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerOverCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerrawupdate?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onpointerup?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerUp?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerUpCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onprogress?:
-    import('./native/jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
-  onProgress?:
-    import('./native/jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
+  oninvalid?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onInvalid?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onInvalidCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onkeydown?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyDown?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyDownCapture?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onkeypress?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyPress?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyPressCapture?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onkeyup?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyUp?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyUpCapture?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onload?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoad?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onloadeddata?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadedData?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadedDataCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onloadedmetadata?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadedMetadata?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadedMetadataCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onloadstart?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadStart?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadStartCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onlostpointercapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onLostPointerCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onLostPointerCaptureCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onmousedown?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseDown?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseDownCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseenter?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseEnter?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseEnterCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseleave?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseLeave?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseLeaveCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmousemove?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseMove?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseMoveCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseout?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseOut?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseOutCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseover?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseOver?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseOverCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseup?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseUp?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseUpCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onpaste?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onPaste?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onPasteCapture?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onpause?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPause?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPauseCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onplay?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPlay?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPlayCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onplaying?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPlaying?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPlayingCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onpointercancel?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerCancel?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerCancelCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerdown?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerDown?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerDownCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerenter?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerEnter?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerEnterCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerleave?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerLeave?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerLeaveCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointermove?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerMove?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerMoveCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerout?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerOut?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerOutCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerover?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerOver?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerOverCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerrawupdate?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onpointerup?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerUp?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerUpCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onprogress?: import('./jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
+  onProgress?: import('./jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
   onProgressCapture?:
-    import('./native/jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
-  onratechange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onRateChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onRateChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onreset?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onReset?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onResetCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onresize?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onResize?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onResizeCapture?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onscroll?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onScroll?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onScrollCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onscrollend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onScrollEnd?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onScrollEndCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
+    import('./jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
+  onratechange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onRateChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onRateChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onreset?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onReset?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onResetCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onresize?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onResize?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onResizeCapture?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onscroll?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onScroll?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onScrollCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onscrollend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onScrollEnd?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onScrollEndCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
   onsecuritypolicyviolation?:
-    import('./native/jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
   onSecurityPolicyViolation?:
-    import('./native/jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
   onSecurityPolicyViolationCapture?:
-    import('./native/jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
-  onseeked?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSeeked?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSeekedCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onseeking?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSeeking?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSeekingCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onselect?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSelect?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSelectCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onselectionchange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onselectstart?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onslotchange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSlotChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSlotChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onstalled?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onStalled?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onStalledCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onsubmit?: import('./native/jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
-  onSubmit?: import('./native/jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
-  onSubmitCapture?: import('./native/jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
-  onsuspend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSuspend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSuspendCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  ontimeupdate?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onTimeUpdate?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onTimeUpdateCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  ontoggle?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onToggle?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onToggleCapture?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  ontouchcancel?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchCancel?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchCancelCapture?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  ontouchend?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchEnd?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchEndCapture?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  ontouchmove?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchMove?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchMoveCapture?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  ontouchstart?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchStart?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchStartCapture?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  ontransitioncancel?:
-    import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  ontransitionend?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onTransitionEnd?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onTransitionEndCapture?:
-    import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  ontransitionrun?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  ontransitionstart?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onTransitionStart?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onTransitionStartCapture?:
-    import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onvolumechange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onVolumeChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onVolumeChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwaiting?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onWaiting?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onWaitingCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwebkitanimationend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwebkitanimationiteration?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwebkitanimationstart?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwebkittransitionend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwheel?: import('./native/jsx.js').EventHandler<T, WheelEvent> | null | undefined;
-  onWheel?: import('./native/jsx.js').EventHandler<T, WheelEvent> | null | undefined;
-  onWheelCapture?: import('./native/jsx.js').EventHandler<T, WheelEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
+  onseeked?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSeeked?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSeekedCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onseeking?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSeeking?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSeekingCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onselect?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSelect?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSelectCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onselectionchange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onselectstart?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onslotchange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSlotChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSlotChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onstalled?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onStalled?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onStalledCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onsubmit?: import('./jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
+  onSubmit?: import('./jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
+  onSubmitCapture?: import('./jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
+  onsuspend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSuspend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSuspendCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  ontimeupdate?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onTimeUpdate?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onTimeUpdateCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  ontoggle?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onToggle?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onToggleCapture?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  ontouchcancel?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchCancel?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchCancelCapture?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  ontouchend?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchEnd?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchEndCapture?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  ontouchmove?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchMove?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchMoveCapture?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  ontouchstart?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchStart?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchStartCapture?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  ontransitioncancel?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  ontransitionend?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onTransitionEnd?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onTransitionEndCapture?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  ontransitionrun?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  ontransitionstart?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onTransitionStart?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onTransitionStartCapture?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onvolumechange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onVolumeChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onVolumeChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwaiting?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onWaiting?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onWaitingCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwebkitanimationend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwebkitanimationiteration?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwebkitanimationstart?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwebkittransitionend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwheel?: import('./jsx.js').EventHandler<T, WheelEvent> | null | undefined;
+  onWheel?: import('./jsx.js').EventHandler<T, WheelEvent> | null | undefined;
+  onWheelCapture?: import('./jsx.js').EventHandler<T, WheelEvent> | null | undefined;
   opacity?: string | number | null | undefined;
   operator?: string | number | null | undefined;
   order?: string | number | null | undefined;
@@ -3152,7 +3095,7 @@ interface Common2<T extends Element> extends NativeIndexProps {
   strokeMiterLimit?: string | number | null | undefined;
   strokeOpacity?: string | number | null | undefined;
   strokeWidth?: string | number | null | undefined;
-  style?: import('./native/style.js').Style | null | undefined;
+  style?: import('./style.js').Style | null | undefined;
   surfaceScale?: string | number | null | undefined;
   syncBehavior?: string | number | null | undefined;
   syncBehaviorDefault?: string | number | null | undefined;
@@ -3370,8 +3313,8 @@ interface Common3<T extends Element> extends NativeIndexProps {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   class?: string | false | null | undefined;
@@ -3393,335 +3336,316 @@ interface Common3<T extends Element> extends NativeIndexProps {
   mathvariant?: string | null | undefined;
   movablelimits?: ('false' | 'true' | boolean) | null | undefined;
   nonce?: string | null | undefined;
-  onabort?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onAbort?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onAbortCapture?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onanimationcancel?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onanimationend?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationEnd?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationEndCapture?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onanimationiteration?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationIteration?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onabort?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onAbort?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onAbortCapture?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onanimationcancel?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onanimationend?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationEnd?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationEndCapture?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onanimationiteration?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationIteration?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
   onAnimationIterationCapture?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onanimationstart?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationStart?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationStartCapture?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onauxclick?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onAuxClick?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onAuxClickCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onbeforeinput?: import('./native/jsx.js').EventHandler<T, InputEvent> | null | undefined;
-  onbeforematch?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onBeforeMatch?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onBeforeMatchCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onbeforetoggle?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onBeforeToggle?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onBeforeToggleCapture?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onblur?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onBlur?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onBlurCapture?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  oncancel?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCancel?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCancelCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncanplay?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCanPlay?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCanPlayCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncanplaythrough?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCanPlayThrough?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCanPlayThroughCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onchange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onclick?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onClick?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onClickCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onclose?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onClose?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCloseCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncommand?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncompositionend?: import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  onCompositionEnd?: import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  onCompositionEndCapture?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  oncompositionstart?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  onCompositionStart?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onanimationstart?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationStart?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationStartCapture?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onauxclick?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onAuxClick?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onAuxClickCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onbeforeinput?: import('./jsx.js').EventHandler<T, InputEvent> | null | undefined;
+  onbeforematch?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onBeforeMatch?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onBeforeMatchCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onbeforetoggle?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onBeforeToggle?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onBeforeToggleCapture?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onblur?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onBlur?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onBlurCapture?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  oncancel?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCancel?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCancelCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncanplay?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCanPlay?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCanPlayCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncanplaythrough?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCanPlayThrough?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCanPlayThroughCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onchange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onclick?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onClick?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onClickCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onclose?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onClose?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCloseCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncommand?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncompositionend?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  onCompositionEnd?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  onCompositionEndCapture?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  oncompositionstart?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  onCompositionStart?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
   onCompositionStartCapture?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  oncompositionupdate?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  onCompositionUpdate?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  oncompositionupdate?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  onCompositionUpdate?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
   onCompositionUpdateCapture?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  oncontextlost?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onContextLost?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onContextLostCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncontextmenu?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onContextMenu?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onContextMenuCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  oncontextrestored?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onContextRestored?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onContextRestoredCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncopy?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onCopy?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onCopyCapture?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  oncuechange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCueChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCueChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncut?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onCut?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onCutCapture?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  ondblclick?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onDblClick?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onDblClickCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  ondrag?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDrag?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragend?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragEnd?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragEndCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragenter?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragEnter?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragEnterCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragleave?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragLeave?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragLeaveCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragover?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragOver?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragOverCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragstart?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragStart?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragStartCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondrop?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDrop?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDropCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondurationchange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onDurationChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onDurationChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onemptied?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onEmptied?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onEmptiedCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onended?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onEnded?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onEndedCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onerror?: import('./native/jsx.js').EventHandler<T, ErrorEvent> | null | undefined;
-  onError?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onErrorCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onfocus?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocus?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusCapture?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onfocusin?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusIn?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusInCapture?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onfocusout?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusOut?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusOutCapture?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onformdata?: import('./native/jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
-  onFormData?: import('./native/jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
-  onFormDataCapture?: import('./native/jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
-  ongotpointercapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onGotPointerCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onGotPointerCaptureCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  oncontextlost?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onContextLost?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onContextLostCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncontextmenu?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onContextMenu?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onContextMenuCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  oncontextrestored?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onContextRestored?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onContextRestoredCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncopy?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onCopy?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onCopyCapture?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  oncuechange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCueChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCueChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncut?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onCut?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onCutCapture?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  ondblclick?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onDblClick?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onDblClickCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  ondrag?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDrag?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragend?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragEnd?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragEndCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragenter?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragEnter?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragEnterCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragleave?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragLeave?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragLeaveCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragover?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragOver?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragOverCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragstart?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragStart?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragStartCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondrop?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDrop?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDropCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondurationchange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onDurationChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onDurationChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onemptied?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onEmptied?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onEmptiedCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onended?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onEnded?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onEndedCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onerror?: import('./jsx.js').EventHandler<T, ErrorEvent> | null | undefined;
+  onError?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onErrorCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onfocus?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocus?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusCapture?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onfocusin?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusIn?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusInCapture?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onfocusout?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusOut?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusOutCapture?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onformdata?: import('./jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
+  onFormData?: import('./jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
+  onFormDataCapture?: import('./jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
+  ongotpointercapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onGotPointerCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onGotPointerCaptureCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
   oninput?:
-    | import('./native/jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
+    | import('./jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
     | null
     | undefined;
   onInput?:
-    | import('./native/jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
+    | import('./jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
     | null
     | undefined;
   onInputCapture?:
-    | import('./native/jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
+    | import('./jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
     | null
     | undefined;
-  oninvalid?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onInvalid?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onInvalidCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onkeydown?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyDown?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyDownCapture?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onkeypress?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyPress?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyPressCapture?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onkeyup?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyUp?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyUpCapture?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onload?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoad?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onloadeddata?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadedData?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadedDataCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onloadedmetadata?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadedMetadata?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadedMetadataCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onloadstart?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadStart?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadStartCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onlostpointercapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onLostPointerCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onLostPointerCaptureCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onmousedown?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseDown?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseDownCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseenter?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseEnter?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseEnterCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseleave?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseLeave?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseLeaveCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmousemove?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseMove?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseMoveCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseout?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseOut?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseOutCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseover?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseOver?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseOverCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseup?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseUp?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseUpCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onpaste?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onPaste?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onPasteCapture?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onpause?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPause?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPauseCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onplay?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPlay?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPlayCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onplaying?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPlaying?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPlayingCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onpointercancel?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerCancel?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerCancelCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerdown?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerDown?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerDownCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerenter?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerEnter?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerEnterCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerleave?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerLeave?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerLeaveCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointermove?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerMove?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerMoveCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerout?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerOut?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerOutCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerover?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerOver?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerOverCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerrawupdate?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onpointerup?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerUp?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerUpCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onprogress?:
-    import('./native/jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
-  onProgress?:
-    import('./native/jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
+  oninvalid?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onInvalid?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onInvalidCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onkeydown?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyDown?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyDownCapture?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onkeypress?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyPress?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyPressCapture?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onkeyup?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyUp?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyUpCapture?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onload?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoad?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onloadeddata?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadedData?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadedDataCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onloadedmetadata?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadedMetadata?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadedMetadataCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onloadstart?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadStart?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadStartCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onlostpointercapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onLostPointerCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onLostPointerCaptureCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onmousedown?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseDown?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseDownCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseenter?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseEnter?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseEnterCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseleave?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseLeave?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseLeaveCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmousemove?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseMove?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseMoveCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseout?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseOut?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseOutCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseover?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseOver?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseOverCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseup?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseUp?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseUpCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onpaste?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onPaste?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onPasteCapture?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onpause?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPause?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPauseCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onplay?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPlay?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPlayCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onplaying?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPlaying?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPlayingCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onpointercancel?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerCancel?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerCancelCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerdown?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerDown?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerDownCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerenter?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerEnter?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerEnterCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerleave?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerLeave?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerLeaveCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointermove?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerMove?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerMoveCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerout?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerOut?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerOutCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerover?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerOver?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerOverCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerrawupdate?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onpointerup?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerUp?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerUpCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onprogress?: import('./jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
+  onProgress?: import('./jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
   onProgressCapture?:
-    import('./native/jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
-  onratechange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onRateChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onRateChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onreset?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onReset?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onResetCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onresize?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onResize?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onResizeCapture?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onscroll?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onScroll?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onScrollCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onscrollend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onScrollEnd?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onScrollEndCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
+    import('./jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
+  onratechange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onRateChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onRateChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onreset?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onReset?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onResetCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onresize?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onResize?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onResizeCapture?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onscroll?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onScroll?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onScrollCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onscrollend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onScrollEnd?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onScrollEndCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
   onsecuritypolicyviolation?:
-    import('./native/jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
   onSecurityPolicyViolation?:
-    import('./native/jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
   onSecurityPolicyViolationCapture?:
-    import('./native/jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
-  onseeked?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSeeked?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSeekedCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onseeking?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSeeking?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSeekingCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onselect?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSelect?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSelectCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onselectionchange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onselectstart?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onslotchange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSlotChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSlotChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onstalled?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onStalled?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onStalledCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onsubmit?: import('./native/jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
-  onSubmit?: import('./native/jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
-  onSubmitCapture?: import('./native/jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
-  onsuspend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSuspend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSuspendCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  ontimeupdate?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onTimeUpdate?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onTimeUpdateCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  ontoggle?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onToggle?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onToggleCapture?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  ontouchcancel?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchCancel?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchCancelCapture?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  ontouchend?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchEnd?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchEndCapture?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  ontouchmove?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchMove?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchMoveCapture?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  ontouchstart?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchStart?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchStartCapture?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  ontransitioncancel?:
-    import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  ontransitionend?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onTransitionEnd?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onTransitionEndCapture?:
-    import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  ontransitionrun?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  ontransitionstart?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onTransitionStart?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onTransitionStartCapture?:
-    import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onvolumechange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onVolumeChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onVolumeChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwaiting?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onWaiting?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onWaitingCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwebkitanimationend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwebkitanimationiteration?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwebkitanimationstart?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwebkittransitionend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwheel?: import('./native/jsx.js').EventHandler<T, WheelEvent> | null | undefined;
-  onWheel?: import('./native/jsx.js').EventHandler<T, WheelEvent> | null | undefined;
-  onWheelCapture?: import('./native/jsx.js').EventHandler<T, WheelEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
+  onseeked?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSeeked?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSeekedCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onseeking?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSeeking?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSeekingCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onselect?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSelect?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSelectCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onselectionchange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onselectstart?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onslotchange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSlotChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSlotChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onstalled?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onStalled?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onStalledCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onsubmit?: import('./jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
+  onSubmit?: import('./jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
+  onSubmitCapture?: import('./jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
+  onsuspend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSuspend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSuspendCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  ontimeupdate?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onTimeUpdate?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onTimeUpdateCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  ontoggle?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onToggle?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onToggleCapture?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  ontouchcancel?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchCancel?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchCancelCapture?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  ontouchend?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchEnd?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchEndCapture?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  ontouchmove?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchMove?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchMoveCapture?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  ontouchstart?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchStart?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchStartCapture?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  ontransitioncancel?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  ontransitionend?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onTransitionEnd?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onTransitionEndCapture?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  ontransitionrun?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  ontransitionstart?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onTransitionStart?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onTransitionStartCapture?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onvolumechange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onVolumeChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onVolumeChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwaiting?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onWaiting?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onWaitingCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwebkitanimationend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwebkitanimationiteration?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwebkitanimationstart?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwebkittransitionend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwheel?: import('./jsx.js').EventHandler<T, WheelEvent> | null | undefined;
+  onWheel?: import('./jsx.js').EventHandler<T, WheelEvent> | null | undefined;
+  onWheelCapture?: import('./jsx.js').EventHandler<T, WheelEvent> | null | undefined;
   'prop:animate'?:
     | ((
         keyframes: Keyframe[] | PropertyIndexedKeyframes | null,
@@ -4037,7 +3961,7 @@ interface Common3<T extends Element> extends NativeIndexProps {
   separator?: ('false' | 'true' | boolean) | null | undefined;
   slot?: string | null | undefined;
   stretchy?: ('false' | 'true' | boolean) | null | undefined;
-  style?: import('./native/style.js').Style | null | undefined;
+  style?: import('./style.js').Style | null | undefined;
   symmetric?: ('false' | 'true' | boolean) | null | undefined;
   tabIndex?: number | null | undefined;
   xmlLang?: string | null | undefined;
@@ -4212,8 +4136,8 @@ interface Common4<T extends Element> extends NativeIndexProps {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   class?: string | false | null | undefined;
@@ -4415,335 +4339,316 @@ interface Common4<T extends Element> extends NativeIndexProps {
   numOctaves?: string | number | null | undefined;
   observer?: string | number | null | undefined;
   offset?: string | number | null | undefined;
-  onabort?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onAbort?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onAbortCapture?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onanimationcancel?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onanimationend?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationEnd?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationEndCapture?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onanimationiteration?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationIteration?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onabort?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onAbort?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onAbortCapture?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onanimationcancel?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onanimationend?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationEnd?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationEndCapture?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onanimationiteration?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationIteration?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
   onAnimationIterationCapture?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onanimationstart?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationStart?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationStartCapture?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onauxclick?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onAuxClick?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onAuxClickCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onbeforeinput?: import('./native/jsx.js').EventHandler<T, InputEvent> | null | undefined;
-  onbeforematch?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onBeforeMatch?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onBeforeMatchCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onbeforetoggle?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onBeforeToggle?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onBeforeToggleCapture?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onblur?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onBlur?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onBlurCapture?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  oncancel?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCancel?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCancelCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncanplay?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCanPlay?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCanPlayCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncanplaythrough?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCanPlayThrough?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCanPlayThroughCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onchange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onclick?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onClick?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onClickCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onclose?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onClose?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCloseCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncommand?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncompositionend?: import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  onCompositionEnd?: import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  onCompositionEndCapture?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  oncompositionstart?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  onCompositionStart?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onanimationstart?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationStart?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationStartCapture?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onauxclick?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onAuxClick?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onAuxClickCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onbeforeinput?: import('./jsx.js').EventHandler<T, InputEvent> | null | undefined;
+  onbeforematch?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onBeforeMatch?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onBeforeMatchCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onbeforetoggle?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onBeforeToggle?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onBeforeToggleCapture?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onblur?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onBlur?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onBlurCapture?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  oncancel?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCancel?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCancelCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncanplay?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCanPlay?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCanPlayCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncanplaythrough?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCanPlayThrough?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCanPlayThroughCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onchange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onclick?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onClick?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onClickCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onclose?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onClose?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCloseCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncommand?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncompositionend?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  onCompositionEnd?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  onCompositionEndCapture?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  oncompositionstart?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  onCompositionStart?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
   onCompositionStartCapture?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  oncompositionupdate?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  onCompositionUpdate?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  oncompositionupdate?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  onCompositionUpdate?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
   onCompositionUpdateCapture?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  oncontextlost?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onContextLost?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onContextLostCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncontextmenu?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onContextMenu?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onContextMenuCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  oncontextrestored?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onContextRestored?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onContextRestoredCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncopy?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onCopy?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onCopyCapture?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  oncuechange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCueChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCueChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncut?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onCut?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onCutCapture?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  ondblclick?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onDblClick?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onDblClickCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  ondrag?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDrag?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragend?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragEnd?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragEndCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragenter?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragEnter?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragEnterCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragleave?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragLeave?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragLeaveCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragover?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragOver?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragOverCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragstart?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragStart?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragStartCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondrop?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDrop?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDropCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondurationchange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onDurationChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onDurationChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onemptied?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onEmptied?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onEmptiedCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onended?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onEnded?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onEndedCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onerror?: import('./native/jsx.js').EventHandler<T, ErrorEvent> | null | undefined;
-  onError?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onErrorCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onfocus?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocus?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusCapture?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onfocusin?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusIn?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusInCapture?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onfocusout?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusOut?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusOutCapture?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onformdata?: import('./native/jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
-  onFormData?: import('./native/jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
-  onFormDataCapture?: import('./native/jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
-  ongotpointercapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onGotPointerCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onGotPointerCaptureCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  oncontextlost?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onContextLost?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onContextLostCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncontextmenu?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onContextMenu?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onContextMenuCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  oncontextrestored?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onContextRestored?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onContextRestoredCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncopy?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onCopy?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onCopyCapture?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  oncuechange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCueChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCueChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncut?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onCut?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onCutCapture?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  ondblclick?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onDblClick?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onDblClickCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  ondrag?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDrag?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragend?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragEnd?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragEndCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragenter?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragEnter?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragEnterCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragleave?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragLeave?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragLeaveCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragover?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragOver?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragOverCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragstart?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragStart?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragStartCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondrop?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDrop?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDropCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondurationchange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onDurationChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onDurationChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onemptied?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onEmptied?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onEmptiedCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onended?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onEnded?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onEndedCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onerror?: import('./jsx.js').EventHandler<T, ErrorEvent> | null | undefined;
+  onError?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onErrorCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onfocus?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocus?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusCapture?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onfocusin?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusIn?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusInCapture?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onfocusout?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusOut?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusOutCapture?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onformdata?: import('./jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
+  onFormData?: import('./jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
+  onFormDataCapture?: import('./jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
+  ongotpointercapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onGotPointerCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onGotPointerCaptureCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
   oninput?:
-    | import('./native/jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
+    | import('./jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
     | null
     | undefined;
   onInput?:
-    | import('./native/jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
+    | import('./jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
     | null
     | undefined;
   onInputCapture?:
-    | import('./native/jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
+    | import('./jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
     | null
     | undefined;
-  oninvalid?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onInvalid?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onInvalidCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onkeydown?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyDown?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyDownCapture?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onkeypress?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyPress?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyPressCapture?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onkeyup?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyUp?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyUpCapture?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onload?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoad?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onloadeddata?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadedData?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadedDataCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onloadedmetadata?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadedMetadata?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadedMetadataCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onloadstart?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadStart?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadStartCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onlostpointercapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onLostPointerCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onLostPointerCaptureCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onmousedown?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseDown?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseDownCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseenter?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseEnter?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseEnterCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseleave?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseLeave?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseLeaveCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmousemove?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseMove?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseMoveCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseout?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseOut?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseOutCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseover?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseOver?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseOverCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseup?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseUp?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseUpCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onpaste?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onPaste?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onPasteCapture?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onpause?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPause?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPauseCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onplay?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPlay?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPlayCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onplaying?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPlaying?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPlayingCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onpointercancel?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerCancel?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerCancelCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerdown?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerDown?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerDownCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerenter?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerEnter?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerEnterCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerleave?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerLeave?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerLeaveCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointermove?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerMove?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerMoveCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerout?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerOut?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerOutCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerover?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerOver?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerOverCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerrawupdate?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onpointerup?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerUp?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerUpCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onprogress?:
-    import('./native/jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
-  onProgress?:
-    import('./native/jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
+  oninvalid?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onInvalid?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onInvalidCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onkeydown?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyDown?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyDownCapture?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onkeypress?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyPress?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyPressCapture?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onkeyup?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyUp?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyUpCapture?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onload?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoad?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onloadeddata?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadedData?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadedDataCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onloadedmetadata?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadedMetadata?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadedMetadataCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onloadstart?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadStart?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadStartCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onlostpointercapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onLostPointerCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onLostPointerCaptureCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onmousedown?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseDown?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseDownCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseenter?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseEnter?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseEnterCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseleave?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseLeave?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseLeaveCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmousemove?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseMove?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseMoveCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseout?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseOut?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseOutCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseover?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseOver?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseOverCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseup?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseUp?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseUpCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onpaste?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onPaste?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onPasteCapture?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onpause?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPause?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPauseCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onplay?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPlay?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPlayCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onplaying?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPlaying?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPlayingCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onpointercancel?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerCancel?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerCancelCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerdown?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerDown?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerDownCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerenter?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerEnter?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerEnterCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerleave?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerLeave?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerLeaveCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointermove?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerMove?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerMoveCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerout?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerOut?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerOutCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerover?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerOver?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerOverCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerrawupdate?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onpointerup?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerUp?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerUpCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onprogress?: import('./jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
+  onProgress?: import('./jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
   onProgressCapture?:
-    import('./native/jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
-  onratechange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onRateChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onRateChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onreset?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onReset?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onResetCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onresize?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onResize?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onResizeCapture?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onscroll?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onScroll?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onScrollCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onscrollend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onScrollEnd?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onScrollEndCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
+    import('./jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
+  onratechange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onRateChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onRateChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onreset?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onReset?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onResetCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onresize?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onResize?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onResizeCapture?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onscroll?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onScroll?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onScrollCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onscrollend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onScrollEnd?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onScrollEndCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
   onsecuritypolicyviolation?:
-    import('./native/jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
   onSecurityPolicyViolation?:
-    import('./native/jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
   onSecurityPolicyViolationCapture?:
-    import('./native/jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
-  onseeked?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSeeked?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSeekedCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onseeking?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSeeking?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSeekingCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onselect?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSelect?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSelectCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onselectionchange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onselectstart?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onslotchange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSlotChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSlotChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onstalled?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onStalled?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onStalledCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onsubmit?: import('./native/jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
-  onSubmit?: import('./native/jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
-  onSubmitCapture?: import('./native/jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
-  onsuspend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSuspend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSuspendCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  ontimeupdate?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onTimeUpdate?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onTimeUpdateCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  ontoggle?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onToggle?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onToggleCapture?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  ontouchcancel?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchCancel?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchCancelCapture?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  ontouchend?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchEnd?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchEndCapture?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  ontouchmove?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchMove?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchMoveCapture?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  ontouchstart?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchStart?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchStartCapture?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  ontransitioncancel?:
-    import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  ontransitionend?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onTransitionEnd?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onTransitionEndCapture?:
-    import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  ontransitionrun?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  ontransitionstart?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onTransitionStart?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onTransitionStartCapture?:
-    import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onvolumechange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onVolumeChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onVolumeChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwaiting?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onWaiting?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onWaitingCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwebkitanimationend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwebkitanimationiteration?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwebkitanimationstart?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwebkittransitionend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwheel?: import('./native/jsx.js').EventHandler<T, WheelEvent> | null | undefined;
-  onWheel?: import('./native/jsx.js').EventHandler<T, WheelEvent> | null | undefined;
-  onWheelCapture?: import('./native/jsx.js').EventHandler<T, WheelEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
+  onseeked?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSeeked?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSeekedCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onseeking?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSeeking?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSeekingCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onselect?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSelect?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSelectCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onselectionchange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onselectstart?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onslotchange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSlotChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSlotChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onstalled?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onStalled?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onStalledCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onsubmit?: import('./jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
+  onSubmit?: import('./jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
+  onSubmitCapture?: import('./jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
+  onsuspend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSuspend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSuspendCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  ontimeupdate?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onTimeUpdate?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onTimeUpdateCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  ontoggle?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onToggle?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onToggleCapture?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  ontouchcancel?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchCancel?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchCancelCapture?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  ontouchend?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchEnd?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchEndCapture?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  ontouchmove?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchMove?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchMoveCapture?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  ontouchstart?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchStart?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchStartCapture?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  ontransitioncancel?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  ontransitionend?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onTransitionEnd?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onTransitionEndCapture?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  ontransitionrun?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  ontransitionstart?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onTransitionStart?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onTransitionStartCapture?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onvolumechange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onVolumeChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onVolumeChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwaiting?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onWaiting?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onWaitingCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwebkitanimationend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwebkitanimationiteration?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwebkitanimationstart?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwebkittransitionend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwheel?: import('./jsx.js').EventHandler<T, WheelEvent> | null | undefined;
+  onWheel?: import('./jsx.js').EventHandler<T, WheelEvent> | null | undefined;
+  onWheelCapture?: import('./jsx.js').EventHandler<T, WheelEvent> | null | undefined;
   opacity?: string | number | null | undefined;
   operator?: string | number | null | undefined;
   order?: string | number | null | undefined;
@@ -5159,7 +5064,7 @@ interface Common4<T extends Element> extends NativeIndexProps {
   strokeMiterLimit?: string | number | null | undefined;
   strokeOpacity?: string | number | null | undefined;
   strokeWidth?: string | number | null | undefined;
-  style?: import('./native/style.js').Style | null | undefined;
+  style?: import('./style.js').Style | null | undefined;
   surfaceScale?: string | number | null | undefined;
   syncBehavior?: string | number | null | undefined;
   syncBehaviorDefault?: string | number | null | undefined;
@@ -5442,8 +5347,8 @@ interface Common5<T extends Element> extends NativeIndexProps {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   class?: string | false | null | undefined;
@@ -5645,335 +5550,316 @@ interface Common5<T extends Element> extends NativeIndexProps {
   numOctaves?: string | number | null | undefined;
   observer?: string | number | null | undefined;
   offset?: string | number | null | undefined;
-  onabort?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onAbort?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onAbortCapture?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onanimationcancel?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onanimationend?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationEnd?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationEndCapture?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onanimationiteration?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationIteration?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onabort?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onAbort?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onAbortCapture?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onanimationcancel?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onanimationend?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationEnd?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationEndCapture?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onanimationiteration?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationIteration?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
   onAnimationIterationCapture?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onanimationstart?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationStart?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationStartCapture?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onauxclick?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onAuxClick?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onAuxClickCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onbeforeinput?: import('./native/jsx.js').EventHandler<T, InputEvent> | null | undefined;
-  onbeforematch?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onBeforeMatch?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onBeforeMatchCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onbeforetoggle?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onBeforeToggle?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onBeforeToggleCapture?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onblur?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onBlur?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onBlurCapture?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  oncancel?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCancel?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCancelCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncanplay?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCanPlay?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCanPlayCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncanplaythrough?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCanPlayThrough?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCanPlayThroughCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onchange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onclick?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onClick?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onClickCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onclose?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onClose?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCloseCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncommand?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncompositionend?: import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  onCompositionEnd?: import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  onCompositionEndCapture?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  oncompositionstart?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  onCompositionStart?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onanimationstart?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationStart?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationStartCapture?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onauxclick?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onAuxClick?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onAuxClickCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onbeforeinput?: import('./jsx.js').EventHandler<T, InputEvent> | null | undefined;
+  onbeforematch?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onBeforeMatch?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onBeforeMatchCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onbeforetoggle?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onBeforeToggle?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onBeforeToggleCapture?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onblur?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onBlur?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onBlurCapture?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  oncancel?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCancel?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCancelCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncanplay?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCanPlay?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCanPlayCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncanplaythrough?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCanPlayThrough?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCanPlayThroughCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onchange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onclick?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onClick?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onClickCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onclose?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onClose?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCloseCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncommand?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncompositionend?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  onCompositionEnd?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  onCompositionEndCapture?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  oncompositionstart?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  onCompositionStart?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
   onCompositionStartCapture?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  oncompositionupdate?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  onCompositionUpdate?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  oncompositionupdate?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  onCompositionUpdate?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
   onCompositionUpdateCapture?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  oncontextlost?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onContextLost?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onContextLostCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncontextmenu?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onContextMenu?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onContextMenuCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  oncontextrestored?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onContextRestored?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onContextRestoredCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncopy?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onCopy?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onCopyCapture?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  oncuechange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCueChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCueChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncut?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onCut?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onCutCapture?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  ondblclick?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onDblClick?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onDblClickCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  ondrag?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDrag?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragend?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragEnd?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragEndCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragenter?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragEnter?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragEnterCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragleave?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragLeave?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragLeaveCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragover?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragOver?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragOverCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragstart?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragStart?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragStartCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondrop?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDrop?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDropCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondurationchange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onDurationChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onDurationChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onemptied?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onEmptied?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onEmptiedCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onended?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onEnded?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onEndedCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onerror?: import('./native/jsx.js').EventHandler<T, ErrorEvent> | null | undefined;
-  onError?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onErrorCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onfocus?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocus?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusCapture?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onfocusin?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusIn?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusInCapture?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onfocusout?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusOut?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusOutCapture?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onformdata?: import('./native/jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
-  onFormData?: import('./native/jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
-  onFormDataCapture?: import('./native/jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
-  ongotpointercapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onGotPointerCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onGotPointerCaptureCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  oncontextlost?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onContextLost?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onContextLostCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncontextmenu?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onContextMenu?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onContextMenuCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  oncontextrestored?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onContextRestored?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onContextRestoredCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncopy?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onCopy?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onCopyCapture?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  oncuechange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCueChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCueChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncut?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onCut?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onCutCapture?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  ondblclick?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onDblClick?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onDblClickCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  ondrag?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDrag?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragend?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragEnd?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragEndCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragenter?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragEnter?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragEnterCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragleave?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragLeave?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragLeaveCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragover?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragOver?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragOverCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragstart?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragStart?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragStartCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondrop?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDrop?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDropCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondurationchange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onDurationChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onDurationChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onemptied?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onEmptied?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onEmptiedCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onended?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onEnded?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onEndedCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onerror?: import('./jsx.js').EventHandler<T, ErrorEvent> | null | undefined;
+  onError?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onErrorCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onfocus?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocus?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusCapture?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onfocusin?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusIn?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusInCapture?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onfocusout?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusOut?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusOutCapture?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onformdata?: import('./jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
+  onFormData?: import('./jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
+  onFormDataCapture?: import('./jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
+  ongotpointercapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onGotPointerCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onGotPointerCaptureCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
   oninput?:
-    | import('./native/jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
+    | import('./jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
     | null
     | undefined;
   onInput?:
-    | import('./native/jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
+    | import('./jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
     | null
     | undefined;
   onInputCapture?:
-    | import('./native/jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
+    | import('./jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
     | null
     | undefined;
-  oninvalid?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onInvalid?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onInvalidCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onkeydown?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyDown?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyDownCapture?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onkeypress?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyPress?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyPressCapture?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onkeyup?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyUp?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyUpCapture?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onload?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoad?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onloadeddata?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadedData?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadedDataCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onloadedmetadata?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadedMetadata?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadedMetadataCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onloadstart?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadStart?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadStartCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onlostpointercapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onLostPointerCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onLostPointerCaptureCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onmousedown?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseDown?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseDownCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseenter?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseEnter?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseEnterCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseleave?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseLeave?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseLeaveCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmousemove?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseMove?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseMoveCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseout?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseOut?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseOutCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseover?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseOver?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseOverCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseup?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseUp?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseUpCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onpaste?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onPaste?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onPasteCapture?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onpause?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPause?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPauseCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onplay?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPlay?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPlayCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onplaying?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPlaying?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPlayingCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onpointercancel?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerCancel?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerCancelCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerdown?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerDown?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerDownCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerenter?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerEnter?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerEnterCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerleave?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerLeave?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerLeaveCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointermove?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerMove?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerMoveCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerout?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerOut?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerOutCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerover?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerOver?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerOverCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerrawupdate?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onpointerup?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerUp?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerUpCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onprogress?:
-    import('./native/jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
-  onProgress?:
-    import('./native/jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
+  oninvalid?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onInvalid?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onInvalidCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onkeydown?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyDown?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyDownCapture?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onkeypress?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyPress?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyPressCapture?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onkeyup?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyUp?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyUpCapture?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onload?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoad?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onloadeddata?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadedData?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadedDataCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onloadedmetadata?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadedMetadata?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadedMetadataCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onloadstart?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadStart?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadStartCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onlostpointercapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onLostPointerCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onLostPointerCaptureCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onmousedown?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseDown?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseDownCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseenter?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseEnter?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseEnterCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseleave?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseLeave?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseLeaveCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmousemove?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseMove?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseMoveCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseout?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseOut?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseOutCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseover?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseOver?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseOverCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseup?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseUp?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseUpCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onpaste?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onPaste?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onPasteCapture?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onpause?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPause?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPauseCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onplay?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPlay?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPlayCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onplaying?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPlaying?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPlayingCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onpointercancel?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerCancel?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerCancelCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerdown?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerDown?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerDownCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerenter?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerEnter?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerEnterCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerleave?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerLeave?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerLeaveCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointermove?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerMove?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerMoveCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerout?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerOut?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerOutCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerover?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerOver?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerOverCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerrawupdate?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onpointerup?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerUp?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerUpCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onprogress?: import('./jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
+  onProgress?: import('./jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
   onProgressCapture?:
-    import('./native/jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
-  onratechange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onRateChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onRateChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onreset?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onReset?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onResetCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onresize?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onResize?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onResizeCapture?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onscroll?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onScroll?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onScrollCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onscrollend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onScrollEnd?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onScrollEndCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
+    import('./jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
+  onratechange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onRateChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onRateChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onreset?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onReset?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onResetCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onresize?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onResize?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onResizeCapture?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onscroll?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onScroll?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onScrollCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onscrollend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onScrollEnd?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onScrollEndCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
   onsecuritypolicyviolation?:
-    import('./native/jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
   onSecurityPolicyViolation?:
-    import('./native/jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
   onSecurityPolicyViolationCapture?:
-    import('./native/jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
-  onseeked?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSeeked?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSeekedCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onseeking?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSeeking?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSeekingCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onselect?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSelect?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSelectCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onselectionchange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onselectstart?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onslotchange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSlotChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSlotChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onstalled?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onStalled?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onStalledCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onsubmit?: import('./native/jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
-  onSubmit?: import('./native/jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
-  onSubmitCapture?: import('./native/jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
-  onsuspend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSuspend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSuspendCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  ontimeupdate?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onTimeUpdate?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onTimeUpdateCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  ontoggle?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onToggle?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onToggleCapture?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  ontouchcancel?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchCancel?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchCancelCapture?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  ontouchend?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchEnd?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchEndCapture?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  ontouchmove?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchMove?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchMoveCapture?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  ontouchstart?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchStart?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchStartCapture?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  ontransitioncancel?:
-    import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  ontransitionend?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onTransitionEnd?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onTransitionEndCapture?:
-    import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  ontransitionrun?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  ontransitionstart?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onTransitionStart?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onTransitionStartCapture?:
-    import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onvolumechange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onVolumeChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onVolumeChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwaiting?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onWaiting?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onWaitingCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwebkitanimationend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwebkitanimationiteration?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwebkitanimationstart?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwebkittransitionend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwheel?: import('./native/jsx.js').EventHandler<T, WheelEvent> | null | undefined;
-  onWheel?: import('./native/jsx.js').EventHandler<T, WheelEvent> | null | undefined;
-  onWheelCapture?: import('./native/jsx.js').EventHandler<T, WheelEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
+  onseeked?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSeeked?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSeekedCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onseeking?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSeeking?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSeekingCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onselect?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSelect?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSelectCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onselectionchange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onselectstart?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onslotchange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSlotChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSlotChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onstalled?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onStalled?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onStalledCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onsubmit?: import('./jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
+  onSubmit?: import('./jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
+  onSubmitCapture?: import('./jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
+  onsuspend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSuspend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSuspendCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  ontimeupdate?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onTimeUpdate?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onTimeUpdateCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  ontoggle?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onToggle?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onToggleCapture?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  ontouchcancel?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchCancel?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchCancelCapture?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  ontouchend?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchEnd?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchEndCapture?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  ontouchmove?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchMove?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchMoveCapture?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  ontouchstart?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchStart?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchStartCapture?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  ontransitioncancel?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  ontransitionend?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onTransitionEnd?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onTransitionEndCapture?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  ontransitionrun?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  ontransitionstart?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onTransitionStart?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onTransitionStartCapture?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onvolumechange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onVolumeChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onVolumeChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwaiting?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onWaiting?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onWaitingCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwebkitanimationend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwebkitanimationiteration?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwebkitanimationstart?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwebkittransitionend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwheel?: import('./jsx.js').EventHandler<T, WheelEvent> | null | undefined;
+  onWheel?: import('./jsx.js').EventHandler<T, WheelEvent> | null | undefined;
+  onWheelCapture?: import('./jsx.js').EventHandler<T, WheelEvent> | null | undefined;
   opacity?: string | number | null | undefined;
   operator?: string | number | null | undefined;
   order?: string | number | null | undefined;
@@ -6393,7 +6279,7 @@ interface Common5<T extends Element> extends NativeIndexProps {
   strokeMiterLimit?: string | number | null | undefined;
   strokeOpacity?: string | number | null | undefined;
   strokeWidth?: string | number | null | undefined;
-  style?: import('./native/style.js').Style | null | undefined;
+  style?: import('./style.js').Style | null | undefined;
   surfaceScale?: string | number | null | undefined;
   syncBehavior?: string | number | null | undefined;
   syncBehaviorDefault?: string | number | null | undefined;
@@ -6676,8 +6562,8 @@ interface Common6<T extends Element> extends NativeIndexProps {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   class?: string | false | null | undefined;
@@ -6878,335 +6764,316 @@ interface Common6<T extends Element> extends NativeIndexProps {
   numOctaves?: string | number | null | undefined;
   observer?: string | number | null | undefined;
   offset?: string | number | null | undefined;
-  onabort?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onAbort?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onAbortCapture?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onanimationcancel?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onanimationend?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationEnd?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationEndCapture?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onanimationiteration?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationIteration?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onabort?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onAbort?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onAbortCapture?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onanimationcancel?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onanimationend?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationEnd?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationEndCapture?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onanimationiteration?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationIteration?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
   onAnimationIterationCapture?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onanimationstart?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationStart?: import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onAnimationStartCapture?:
-    import('./native/jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
-  onauxclick?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onAuxClick?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onAuxClickCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onbeforeinput?: import('./native/jsx.js').EventHandler<T, InputEvent> | null | undefined;
-  onbeforematch?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onBeforeMatch?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onBeforeMatchCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onbeforetoggle?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onBeforeToggle?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onBeforeToggleCapture?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onblur?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onBlur?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onBlurCapture?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  oncancel?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCancel?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCancelCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncanplay?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCanPlay?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCanPlayCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncanplaythrough?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCanPlayThrough?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCanPlayThroughCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onchange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onclick?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onClick?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onClickCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onclose?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onClose?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCloseCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncommand?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncompositionend?: import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  onCompositionEnd?: import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  onCompositionEndCapture?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  oncompositionstart?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  onCompositionStart?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onanimationstart?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationStart?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onAnimationStartCapture?: import('./jsx.js').EventHandler<T, AnimationEvent> | null | undefined;
+  onauxclick?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onAuxClick?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onAuxClickCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onbeforeinput?: import('./jsx.js').EventHandler<T, InputEvent> | null | undefined;
+  onbeforematch?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onBeforeMatch?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onBeforeMatchCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onbeforetoggle?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onBeforeToggle?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onBeforeToggleCapture?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onblur?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onBlur?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onBlurCapture?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  oncancel?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCancel?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCancelCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncanplay?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCanPlay?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCanPlayCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncanplaythrough?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCanPlayThrough?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCanPlayThroughCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onchange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onclick?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onClick?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onClickCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onclose?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onClose?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCloseCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncommand?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncompositionend?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  onCompositionEnd?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  onCompositionEndCapture?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  oncompositionstart?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  onCompositionStart?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
   onCompositionStartCapture?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  oncompositionupdate?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  onCompositionUpdate?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  oncompositionupdate?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  onCompositionUpdate?: import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
   onCompositionUpdateCapture?:
-    import('./native/jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
-  oncontextlost?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onContextLost?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onContextLostCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncontextmenu?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onContextMenu?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onContextMenuCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  oncontextrestored?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onContextRestored?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onContextRestoredCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncopy?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onCopy?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onCopyCapture?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  oncuechange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCueChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onCueChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  oncut?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onCut?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onCutCapture?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  ondblclick?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onDblClick?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onDblClickCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  ondrag?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDrag?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragend?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragEnd?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragEndCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragenter?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragEnter?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragEnterCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragleave?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragLeave?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragLeaveCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragover?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragOver?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragOverCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondragstart?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragStart?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDragStartCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondrop?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDrop?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  onDropCapture?: import('./native/jsx.js').EventHandler<T, DragEvent> | null | undefined;
-  ondurationchange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onDurationChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onDurationChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onemptied?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onEmptied?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onEmptiedCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onended?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onEnded?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onEndedCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onerror?: import('./native/jsx.js').EventHandler<T, ErrorEvent> | null | undefined;
-  onError?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onErrorCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onfocus?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocus?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusCapture?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onfocusin?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusIn?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusInCapture?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onfocusout?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusOut?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onFocusOutCapture?: import('./native/jsx.js').EventHandler<T, FocusEvent> | null | undefined;
-  onformdata?: import('./native/jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
-  onFormData?: import('./native/jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
-  onFormDataCapture?: import('./native/jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
-  ongotpointercapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onGotPointerCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onGotPointerCaptureCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, CompositionEvent> | null | undefined;
+  oncontextlost?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onContextLost?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onContextLostCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncontextmenu?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onContextMenu?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onContextMenuCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  oncontextrestored?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onContextRestored?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onContextRestoredCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncopy?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onCopy?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onCopyCapture?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  oncuechange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCueChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onCueChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  oncut?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onCut?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onCutCapture?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  ondblclick?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onDblClick?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onDblClickCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  ondrag?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDrag?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragend?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragEnd?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragEndCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragenter?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragEnter?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragEnterCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragleave?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragLeave?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragLeaveCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragover?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragOver?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragOverCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondragstart?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragStart?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDragStartCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondrop?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDrop?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  onDropCapture?: import('./jsx.js').EventHandler<T, DragEvent> | null | undefined;
+  ondurationchange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onDurationChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onDurationChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onemptied?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onEmptied?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onEmptiedCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onended?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onEnded?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onEndedCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onerror?: import('./jsx.js').EventHandler<T, ErrorEvent> | null | undefined;
+  onError?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onErrorCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onfocus?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocus?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusCapture?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onfocusin?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusIn?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusInCapture?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onfocusout?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusOut?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onFocusOutCapture?: import('./jsx.js').EventHandler<T, FocusEvent> | null | undefined;
+  onformdata?: import('./jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
+  onFormData?: import('./jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
+  onFormDataCapture?: import('./jsx.js').EventHandler<T, FormDataEvent> | null | undefined;
+  ongotpointercapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onGotPointerCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onGotPointerCaptureCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
   oninput?:
-    | import('./native/jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
+    | import('./jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
     | null
     | undefined;
   onInput?:
-    | import('./native/jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
+    | import('./jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
     | null
     | undefined;
   onInputCapture?:
-    | import('./native/jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
+    | import('./jsx.js').EventHandler<T, Event & Partial<Omit<InputEvent, keyof Event>>>
     | null
     | undefined;
-  oninvalid?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onInvalid?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onInvalidCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onkeydown?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyDown?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyDownCapture?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onkeypress?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyPress?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyPressCapture?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onkeyup?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyUp?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onKeyUpCapture?: import('./native/jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
-  onload?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoad?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onloadeddata?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadedData?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadedDataCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onloadedmetadata?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadedMetadata?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadedMetadataCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onloadstart?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadStart?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onLoadStartCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onlostpointercapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onLostPointerCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onLostPointerCaptureCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onmousedown?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseDown?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseDownCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseenter?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseEnter?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseEnterCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseleave?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseLeave?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseLeaveCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmousemove?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseMove?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseMoveCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseout?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseOut?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseOutCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseover?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseOver?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseOverCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onmouseup?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseUp?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onMouseUpCapture?: import('./native/jsx.js').EventHandler<T, MouseEvent> | null | undefined;
-  onpaste?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onPaste?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onPasteCapture?: import('./native/jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
-  onpause?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPause?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPauseCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onplay?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPlay?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPlayCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onplaying?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPlaying?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onPlayingCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onpointercancel?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerCancel?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerCancelCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerdown?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerDown?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerDownCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerenter?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerEnter?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerEnterCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerleave?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerLeave?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerLeaveCapture?:
-    import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointermove?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerMove?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerMoveCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerout?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerOut?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerOutCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerover?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerOver?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerOverCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onpointerrawupdate?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onpointerup?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerUp?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onPointerUpCapture?: import('./native/jsx.js').EventHandler<T, PointerEvent> | null | undefined;
-  onprogress?:
-    import('./native/jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
-  onProgress?:
-    import('./native/jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
+  oninvalid?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onInvalid?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onInvalidCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onkeydown?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyDown?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyDownCapture?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onkeypress?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyPress?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyPressCapture?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onkeyup?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyUp?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onKeyUpCapture?: import('./jsx.js').EventHandler<T, KeyboardEvent> | null | undefined;
+  onload?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoad?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onloadeddata?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadedData?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadedDataCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onloadedmetadata?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadedMetadata?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadedMetadataCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onloadstart?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadStart?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onLoadStartCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onlostpointercapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onLostPointerCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onLostPointerCaptureCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onmousedown?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseDown?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseDownCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseenter?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseEnter?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseEnterCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseleave?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseLeave?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseLeaveCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmousemove?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseMove?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseMoveCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseout?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseOut?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseOutCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseover?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseOver?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseOverCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onmouseup?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseUp?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onMouseUpCapture?: import('./jsx.js').EventHandler<T, MouseEvent> | null | undefined;
+  onpaste?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onPaste?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onPasteCapture?: import('./jsx.js').EventHandler<T, ClipboardEvent> | null | undefined;
+  onpause?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPause?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPauseCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onplay?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPlay?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPlayCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onplaying?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPlaying?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onPlayingCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onpointercancel?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerCancel?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerCancelCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerdown?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerDown?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerDownCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerenter?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerEnter?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerEnterCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerleave?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerLeave?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerLeaveCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointermove?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerMove?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerMoveCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerout?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerOut?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerOutCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerover?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerOver?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerOverCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onpointerrawupdate?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onpointerup?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerUp?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onPointerUpCapture?: import('./jsx.js').EventHandler<T, PointerEvent> | null | undefined;
+  onprogress?: import('./jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
+  onProgress?: import('./jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
   onProgressCapture?:
-    import('./native/jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
-  onratechange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onRateChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onRateChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onreset?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onReset?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onResetCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onresize?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onResize?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onResizeCapture?: import('./native/jsx.js').EventHandler<T, UIEvent> | null | undefined;
-  onscroll?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onScroll?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onScrollCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onscrollend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onScrollEnd?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onScrollEndCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
+    import('./jsx.js').EventHandler<T, ProgressEvent<EventTarget>> | null | undefined;
+  onratechange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onRateChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onRateChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onreset?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onReset?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onResetCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onresize?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onResize?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onResizeCapture?: import('./jsx.js').EventHandler<T, UIEvent> | null | undefined;
+  onscroll?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onScroll?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onScrollCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onscrollend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onScrollEnd?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onScrollEndCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
   onsecuritypolicyviolation?:
-    import('./native/jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
   onSecurityPolicyViolation?:
-    import('./native/jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
   onSecurityPolicyViolationCapture?:
-    import('./native/jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
-  onseeked?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSeeked?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSeekedCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onseeking?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSeeking?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSeekingCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onselect?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSelect?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSelectCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onselectionchange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onselectstart?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onslotchange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSlotChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSlotChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onstalled?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onStalled?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onStalledCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onsubmit?: import('./native/jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
-  onSubmit?: import('./native/jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
-  onSubmitCapture?: import('./native/jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
-  onsuspend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSuspend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onSuspendCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  ontimeupdate?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onTimeUpdate?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onTimeUpdateCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  ontoggle?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onToggle?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  onToggleCapture?: import('./native/jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
-  ontouchcancel?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchCancel?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchCancelCapture?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  ontouchend?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchEnd?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchEndCapture?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  ontouchmove?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchMove?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchMoveCapture?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  ontouchstart?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchStart?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  onTouchStartCapture?: import('./native/jsx.js').EventHandler<T, TouchEvent> | null | undefined;
-  ontransitioncancel?:
-    import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  ontransitionend?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onTransitionEnd?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onTransitionEndCapture?:
-    import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  ontransitionrun?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  ontransitionstart?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onTransitionStart?: import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onTransitionStartCapture?:
-    import('./native/jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
-  onvolumechange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onVolumeChange?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onVolumeChangeCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwaiting?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onWaiting?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onWaitingCapture?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwebkitanimationend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwebkitanimationiteration?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwebkitanimationstart?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwebkittransitionend?: import('./native/jsx.js').EventHandler<T, Event> | null | undefined;
-  onwheel?: import('./native/jsx.js').EventHandler<T, WheelEvent> | null | undefined;
-  onWheel?: import('./native/jsx.js').EventHandler<T, WheelEvent> | null | undefined;
-  onWheelCapture?: import('./native/jsx.js').EventHandler<T, WheelEvent> | null | undefined;
+    import('./jsx.js').EventHandler<T, SecurityPolicyViolationEvent> | null | undefined;
+  onseeked?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSeeked?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSeekedCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onseeking?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSeeking?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSeekingCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onselect?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSelect?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSelectCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onselectionchange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onselectstart?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onslotchange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSlotChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSlotChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onstalled?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onStalled?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onStalledCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onsubmit?: import('./jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
+  onSubmit?: import('./jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
+  onSubmitCapture?: import('./jsx.js').EventHandler<T, SubmitEvent> | null | undefined;
+  onsuspend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSuspend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onSuspendCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  ontimeupdate?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onTimeUpdate?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onTimeUpdateCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  ontoggle?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onToggle?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  onToggleCapture?: import('./jsx.js').EventHandler<T, ToggleEvent> | null | undefined;
+  ontouchcancel?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchCancel?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchCancelCapture?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  ontouchend?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchEnd?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchEndCapture?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  ontouchmove?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchMove?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchMoveCapture?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  ontouchstart?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchStart?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  onTouchStartCapture?: import('./jsx.js').EventHandler<T, TouchEvent> | null | undefined;
+  ontransitioncancel?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  ontransitionend?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onTransitionEnd?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onTransitionEndCapture?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  ontransitionrun?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  ontransitionstart?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onTransitionStart?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onTransitionStartCapture?: import('./jsx.js').EventHandler<T, TransitionEvent> | null | undefined;
+  onvolumechange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onVolumeChange?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onVolumeChangeCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwaiting?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onWaiting?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onWaitingCapture?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwebkitanimationend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwebkitanimationiteration?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwebkitanimationstart?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwebkittransitionend?: import('./jsx.js').EventHandler<T, Event> | null | undefined;
+  onwheel?: import('./jsx.js').EventHandler<T, WheelEvent> | null | undefined;
+  onWheel?: import('./jsx.js').EventHandler<T, WheelEvent> | null | undefined;
+  onWheelCapture?: import('./jsx.js').EventHandler<T, WheelEvent> | null | undefined;
   opacity?: string | number | null | undefined;
   operator?: string | number | null | undefined;
   order?: string | number | null | undefined;
@@ -7622,7 +7489,7 @@ interface Common6<T extends Element> extends NativeIndexProps {
   strokeMiterLimit?: string | number | null | undefined;
   strokeOpacity?: string | number | null | undefined;
   strokeWidth?: string | number | null | undefined;
-  style?: import('./native/style.js').Style | null | undefined;
+  style?: import('./style.js').Style | null | undefined;
   surfaceScale?: string | number | null | undefined;
   syncBehavior?: string | number | null | undefined;
   syncBehaviorDefault?: string | number | null | undefined;
@@ -8083,8 +7950,8 @@ interface AbbrProps extends Common1<HTMLElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   'prop:getElementsByTagNameNS'?:
@@ -8143,8 +8010,8 @@ interface AreaProps extends Common1<HTMLAreaElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   coords?: string | null | undefined;
@@ -8210,8 +8077,8 @@ interface AudioProps extends Common1<HTMLAudioElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   controls?: boolean | null | undefined;
@@ -8274,8 +8141,8 @@ interface BaseProps extends Common1<HTMLBaseElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   href?: string | null | undefined;
@@ -8306,8 +8173,8 @@ interface BlockquoteProps extends Common1<HTMLQuoteElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   cite?: string | null | undefined;
@@ -8341,8 +8208,8 @@ interface BodyProps extends Common1<HTMLBodyElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   link?: string | null | undefined;
@@ -8407,8 +8274,8 @@ interface BrProps extends Common1<HTMLBRElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   clear?: string | null | undefined;
@@ -8437,8 +8304,8 @@ interface ButtonProps extends Common1<HTMLButtonElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   command?: string | null | undefined;
@@ -8504,8 +8371,8 @@ interface CanvasProps extends Common1<HTMLCanvasElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   height?: number | null | undefined;
@@ -8557,8 +8424,8 @@ interface CaptionProps extends Common1<HTMLTableCaptionElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   'prop:align'?: string | undefined;
@@ -8604,8 +8471,8 @@ interface ColProps extends Common1<HTMLTableColElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   chOff?: string | null | undefined;
@@ -8643,8 +8510,8 @@ interface DataProps extends Common1<HTMLDataElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   'prop:getElementsByTagNameNS'?:
@@ -8673,8 +8540,8 @@ interface DatalistProps extends Common1<HTMLDataListElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   'prop:getElementsByTagNameNS'?:
@@ -8707,8 +8574,8 @@ interface DelProps extends Common1<HTMLModElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   cite?: string | null | undefined;
@@ -8745,8 +8612,8 @@ interface DetailsProps extends Common1<HTMLDetailsElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   name?: string | null | undefined;
@@ -8777,8 +8644,8 @@ interface DialogProps extends Common1<HTMLDialogElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   closedby?: string | null | undefined;
@@ -8816,8 +8683,8 @@ interface DivProps extends Common1<HTMLDivElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   'prop:align'?: string | undefined;
@@ -8845,8 +8712,8 @@ interface DlProps extends Common1<HTMLDListElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   compact?: boolean | null | undefined;
@@ -8886,8 +8753,8 @@ interface EmbedProps extends Common1<HTMLEmbedElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   height?: string | null | undefined;
@@ -9003,8 +8870,8 @@ interface FieldsetProps extends Common1<HTMLFieldSetElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   disabled?: boolean | null | undefined;
@@ -9054,8 +8921,8 @@ interface FormProps extends Common1<HTMLFormElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   encoding?: string | null | undefined;
@@ -9114,8 +8981,8 @@ interface H1Props extends Common1<HTMLHeadingElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   'prop:align'?: string | undefined;
@@ -9143,8 +9010,8 @@ interface HeadProps extends Common1<HTMLHeadElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   profile?: string | null | undefined;
@@ -9173,8 +9040,8 @@ interface HrProps extends Common1<HTMLHRElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   color?: string | null | undefined;
@@ -9211,8 +9078,8 @@ interface HtmlProps extends Common1<HTMLHtmlElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   manifest?: string | null | undefined;
@@ -9251,8 +9118,8 @@ interface IframeProps extends Common1<HTMLIFrameElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   frameborder?: string | null | undefined;
@@ -9325,8 +9192,8 @@ interface ImgProps extends Common1<HTMLImageElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   crossorigin?: string | null | undefined;
@@ -9416,8 +9283,8 @@ interface InputProps extends Common1<HTMLInputElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   colorspace?: string | null | undefined;
@@ -9545,8 +9412,8 @@ interface LabelProps extends Common1<HTMLLabelElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   for?: string | null | undefined;
@@ -9577,8 +9444,8 @@ interface LegendProps extends Common1<HTMLLegendElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   'prop:align'?: string | undefined;
@@ -9606,8 +9473,8 @@ interface LiProps extends Common1<HTMLLIElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   'prop:getElementsByTagNameNS'?:
@@ -9655,8 +9522,8 @@ interface LinkProps extends Common1<HTMLLinkElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   color?: string | null | undefined;
@@ -9725,8 +9592,8 @@ interface MapProps extends Common1<HTMLMapElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   name?: string | null | undefined;
@@ -9763,8 +9630,8 @@ interface MenuProps extends Common1<HTMLMenuElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   compact?: boolean | null | undefined;
@@ -9795,8 +9662,8 @@ interface MetaProps extends Common1<HTMLMetaElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   content?: string | null | undefined;
@@ -9837,8 +9704,8 @@ interface MeterProps extends Common1<HTMLMeterElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   high?: number | null | undefined;
@@ -9883,8 +9750,8 @@ interface ObjectProps extends Common1<HTMLObjectElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   classid?: string | null | undefined;
@@ -9954,8 +9821,8 @@ interface OlProps extends Common1<HTMLOListElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   compact?: boolean | null | undefined;
@@ -9990,8 +9857,8 @@ interface OptgroupProps extends Common1<HTMLOptGroupElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   disabled?: boolean | null | undefined;
@@ -10022,8 +9889,8 @@ interface OptionProps extends Common1<HTMLOptionElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   defaultSelected?: boolean | null | undefined;
@@ -10057,7 +9924,7 @@ interface OutputProps extends Common1<HTMLOutputElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').TextRenderable[]
+    | readonly import('../runtime/template.js').TextRenderable[]
     | null
     | undefined;
   for?: string | null | undefined;
@@ -10094,8 +9961,8 @@ interface PProps extends Common1<HTMLParagraphElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   'prop:align'?: string | undefined;
@@ -10136,8 +10003,8 @@ interface PictureProps extends Common1<HTMLPictureElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   'prop:getElementsByTagNameNS'?:
@@ -10184,8 +10051,8 @@ interface PreProps extends Common1<HTMLPreElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   'prop:getElementsByTagNameNS'?:
@@ -10214,8 +10081,8 @@ interface ProgressProps extends Common1<HTMLProgressElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   max?: number | null | undefined;
@@ -10403,8 +10270,8 @@ interface SelectProps extends Common1<HTMLSelectElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   defaultValue?: readonly (string | number)[] | (string | number | null | undefined);
@@ -10465,8 +10332,8 @@ interface SlotProps extends Common1<HTMLSlotElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   name?: string | null | undefined;
@@ -10498,8 +10365,8 @@ interface SourceProps extends Common1<HTMLSourceElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   height?: number | null | undefined;
@@ -10541,8 +10408,8 @@ interface SpanProps extends Common1<HTMLSpanElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   'prop:getElementsByTagNameNS'?:
@@ -10764,8 +10631,8 @@ interface TableProps extends Common1<HTMLTableElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   frame?: string | null | undefined;
@@ -10819,8 +10686,8 @@ interface TbodyProps extends Common1<HTMLTableSectionElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   chOff?: string | null | undefined;
@@ -10865,8 +10732,8 @@ interface TdProps extends Common1<HTMLTableCellElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   chOff?: string | null | undefined;
@@ -10920,8 +10787,8 @@ interface TemplateProps extends Common1<HTMLTemplateElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   'prop:getElementsByTagNameNS'?:
@@ -10967,8 +10834,8 @@ interface TextareaProps extends Common1<HTMLTextAreaElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   cols?: number | null | undefined;
@@ -11055,8 +10922,8 @@ interface TimeProps extends Common1<HTMLTimeElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   datetime?: string | null | undefined;
@@ -11181,8 +11048,8 @@ interface TrProps extends Common1<HTMLTableRowElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   chOff?: string | null | undefined;
@@ -11219,8 +11086,8 @@ interface TrackProps extends Common1<HTMLTrackElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   default?: boolean | null | undefined;
@@ -11273,8 +11140,8 @@ interface UlProps extends Common1<HTMLUListElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   compact?: boolean | null | undefined;
@@ -11313,8 +11180,8 @@ interface VideoProps extends Common1<HTMLVideoElement> {
     | number
     | bigint
     | boolean
-    | readonly import('./runtime/template.js').Renderable[]
-    | import('./runtime/template.js').Template
+    | readonly import('../runtime/template.js').Renderable[]
+    | import('../runtime/template.js').Template
     | null
     | undefined;
   controls?: boolean | null | undefined;

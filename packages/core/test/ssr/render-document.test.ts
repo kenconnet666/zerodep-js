@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { renderDocument } from '../src/index.js';
+import { renderDocument } from 'zerodep-js';
 
 const template = '<div id="app" data-render-mode="__RENDER_MODE__"><!--app-html--></div>';
 

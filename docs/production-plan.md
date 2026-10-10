@@ -64,12 +64,12 @@
 
 ## 5. 新增基础 API（源码已实现，持续验收）
 
-| API                        | 当前契约                                                                                                          | 入口与文档                                     |
-| -------------------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| 原生 bind:group            | radio 字符串、checkbox 字符串数组；静态 type/明确 value 在所有 spread 后；写回声明值；原生 name/form 分组保持一致 | compiler/core/类型投影；[表单](forms.md)       |
-| 原生 details 的 bind:open  | 用户 toggle 写回 boolean，模型控制展开；验证 SSR 原值后接纳接管前操作；没有 Dialog 模态协议                       | compiler/core/类型投影；[表单](forms.md)       |
-| createCssContext<AppCss>() | provideCss/useCss 薄封装，保留作者类型，缺失提供者报错；复用既有 context                                          | 可选 zerodep-js-css；[CSS](css.md)             |
-| _head(() => data)          | 只支持 title/description；同步纯读取、SSR 收集、客户端更新、按字段覆盖和卸载恢复，多文档隔离                      | 可选 zerodep-js/head 与 ssr；[元信息](head.md) |
+| API                        | 当前契约                                                                                                          | 入口与文档                               |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| 原生 bind:group            | radio 字符串、checkbox 字符串数组；静态 type/明确 value 在所有 spread 后；写回声明值；原生 name/form 分组保持一致 | compiler/core/类型投影；[表单](forms.md) |
+| 原生 details 的 bind:open  | 用户 toggle 写回 boolean，模型控制展开；验证 SSR 原值后接纳接管前操作；没有 Dialog 模态协议                       | compiler/core/类型投影；[表单](forms.md) |
+| createCssContext<AppCss>() | provideCss/useCss 薄封装，保留作者类型，缺失提供者报错；复用既有 context                                          | 可选 zerodep-js-css；[CSS](css.md)       |
+| _head(() => data)          | 只支持 title/description；同步纯读取、SSR 收集、客户端更新、按字段覆盖和卸载恢复，多文档隔离                      | zerodep-js 根入口；[元信息](head.md)     |
 
 这些是源码实现状态，不表示新 npm 版本已发布，也不替代同一提交完整 CI。当前重点转向组合与错误路径审计，阶段证据和待验收项集中在 [交接记录](api-hardening-handoff.md)。授权允许继续有价值的完善，不为清单数量扩充 API。
 
@@ -81,9 +81,9 @@
 | ------------------------ | ------------------------------------------------------------------------------------------------- |
 | packages/css             | 作者、关键字、单位、选择器、隐式变量辅助、浏览器/SSR 样式收集                                     |
 | zerodep-js compiler/core | Babel TSX 转换、响应式来源判断、JS 求值和覆盖顺序、DOM 属性/生命周期、类型投影、框架 context 接入 |
-| zerodep-js ssr/compiler  | 文档组合、SSR/接管接线、开发/HMR 与构建器集成                                                     |
+| zerodep-js / compiler    | 文档组合、SSR/接管接线、开发/HMR 与构建器集成                                                     |
 
-同仓库统一固定 TS7.1，CSS 转换复用框架 Babel AST。包间使用 workspace 依赖；发布清单为 core、css、compiler、ssr，UI 暂不发布。完整 CI 验证通过后再准备新版本，不继续旧 CSS 仓库的发布任务。
+同仓库统一固定 TS7.1，CSS 转换复用框架 Babel AST。包间使用 workspace 依赖；发布清单为 core、css、compiler，UI 暂不发布。完整 CI 验证通过后再准备新版本，不继续旧 CSS 仓库的发布任务。
 
 ## 7. 执行阶段与完成条件
 

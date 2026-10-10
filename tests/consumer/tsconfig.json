@@ -5,12 +5,11 @@
     "module": "Preserve",
     "moduleResolution": "Bundler",
     "jsx": "preserve",
-    "jsxImportSource": "zerodep-js",
     "strict": true,
     "exactOptionalPropertyTypes": true,
     "noUncheckedIndexedAccess": true,
     "verbatimModuleSyntax": true,
-    "types": ["vite/client"],
+    "types": ["vite/client", "zerodep-js"],
     "noEmit": true,
     "skipLibCheck": false
   },

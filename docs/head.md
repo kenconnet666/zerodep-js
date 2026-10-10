@@ -1,9 +1,9 @@
 # 页面标题与描述
 
-从 `zerodep-js/head` 导入 `_head`，在组件或有效根作用域中声明一次同步读取函数：
+从 `zerodep-js` 导入 `_head`，在组件或有效根作用域中声明一次同步读取函数：
 
 ```tsx
-import { _head } from 'zerodep-js/head';
+import { _head } from 'zerodep-js';
 
 _head(() => ({
   title: `${task.title} · 任务`,
@@ -28,7 +28,7 @@ _head(() => ({
 `renderToString()` 仍只返回正文字符串。需要元信息时，使用 SSR 包的 `_render()`，返回 `{ html, head }`：
 
 ```ts
-import { _render, renderDocument } from 'zerodep-js-ssr';
+import { _render, renderDocument } from 'zerodep-js';
 
 return renderDocument({
   template,

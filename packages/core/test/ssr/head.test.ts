@@ -1,8 +1,14 @@
 import { expect, it } from 'vitest';
-import { _head } from 'zerodep-js/head';
-import { ErrorBoundary, _onCleanup } from 'zerodep-js';
-import { defineComponent, element } from 'zerodep-js/internal';
-import { _render, renderToString, renderDocument } from '../src/index.js';
+import {
+  _head,
+  ErrorBoundary,
+  _onCleanup,
+  defineComponent,
+  element,
+  _render,
+  renderToString,
+  renderDocument,
+} from 'zerodep-js';
 
 const template =
   '<html><head><!--app-head--></head><body data-mode="__RENDER_MODE__"><!--app-html--></body></html>';

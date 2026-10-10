@@ -12,9 +12,8 @@ import {
   type UiLanguage,
 } from '../dist/index.js';
 import { describe, expect, it } from 'vitest';
-import { _createRoot } from 'zerodep-js';
-import { defineComponent, element } from 'zerodep-js/internal';
-import { renderToString } from 'zerodep-js-ssr';
+import { _createRoot, defineComponent, element, renderToString } from 'zerodep-js';
+
 import {
   Css,
   SystemKeywords,

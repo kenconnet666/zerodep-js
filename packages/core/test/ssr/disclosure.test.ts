@@ -1,6 +1,5 @@
 import { expect, it } from 'vitest';
-import { bindProps, defineComponent, element } from 'zerodep-js/internal';
-import { renderToString } from '../src/render.js';
+import { bindProps, defineComponent, element, renderToString } from 'zerodep-js';
 
 it.each([false, true])('details SSR 为 bind:open=%s 保存独立初值，不执行写回', (initial) => {
   const App = defineComponent(() =>

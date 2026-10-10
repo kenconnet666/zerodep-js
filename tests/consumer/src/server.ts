@@ -1,4 +1,4 @@
-import { _render, renderDocument, type RenderMode } from 'zerodep-js-ssr';
+import { _render, renderDocument, type RenderMode } from 'zerodep-js';
 import { App } from './App.js';
 import { createServerCssHost, withCssHost, serializeCssRules } from 'zerodep-js-css';
 

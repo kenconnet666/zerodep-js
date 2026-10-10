@@ -20,6 +20,28 @@ const rows = [{ id: 1, title: 'row' }];
 `;
 const control = `const Field = _component((props: { value: string; onValueChange: (value: string) => void; label?: string }) => <span>{props.value}</span>);\n`;
 const cases = [
+  {
+    name: 'core根入口-SSR自动导入',
+    source: 'export const render = renderToStr¦;',
+    expected: 'renderToString',
+    word: 'renderToStr',
+    autoImport: true,
+    importFrom: 'zerodep-js',
+  },
+  {
+    name: 'core根入口-SSR定义',
+    source: "import { renderToString } from 'zerodep-js'; export const render = renderToStrin¦;",
+    expected: 'renderToString',
+    word: 'renderToStrin',
+    definition: 'packages/core/src/ssr/render.ts',
+  },
+  {
+    name: 'core根入口-JSX无显式导入',
+    source: 'export {}; let checked = false; const view = <input bind:ch¦={checked} />;',
+    expected: 'bind:checked',
+    word: 'bind:ch',
+    edit: true,
+  },
   ...[
     ['width', 'raw', 'base.ts', '原样生成当前属性声明'],
     ['width', 'clamp', 'base.ts', '将首选值约束在下限和上限之间'],
@@ -267,7 +289,7 @@ const s = new Css(new Theme()); s.fontSize._m¦;`,
     name: '页面元信息字段',
     source:
       header +
-      `import { _head } from 'zerodep-js/head';
+      `import { _head } from 'zerodep-js';
 const App = _component(() => { _head(() => ({ tit¦: '标题' })); return null; });`,
     expected: 'title',
     word: 'tit',

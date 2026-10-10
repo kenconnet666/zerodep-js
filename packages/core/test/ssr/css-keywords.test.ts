@@ -1,11 +1,11 @@
 import { expect, it } from 'vitest';
-import * as runtime from 'zerodep-js/internal';
+import * as runtime from 'zerodep-js';
 import * as publicRuntime from 'zerodep-js';
 import * as cssRuntime from 'zerodep-js-css';
 import { Css, SystemKeywords, systemKeywords } from 'zerodep-js-css';
 import { createServerCssHost, withCssHost } from 'zerodep-js-css';
-import { execute } from '../../compiler/test/execute.js';
-import { renderToString } from '../src/render.js';
+import { execute } from '../../../compiler/test/execute.js';
+import { renderToString } from 'zerodep-js';
 
 it('真实编译后的主题绑定在 SSR 输出变量，特殊值不输出且请求互不污染', () => {
   class Theme extends SystemKeywords {

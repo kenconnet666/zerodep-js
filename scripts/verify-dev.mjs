@@ -84,7 +84,7 @@ export function createCounter() {
     resolve(fixture, 'ReferenceCheck.tsx'),
     `
 import {_component,_hydrate} from 'zerodep-js';
-import {renderToString} from 'zerodep-js-ssr';
+import {renderToString} from 'zerodep-js';
 const Probe = _component(({capture}:{capture?: (read: () => HTMLInputElement | undefined) => void}) => {
   let node: HTMLInputElement | undefined;
   capture?.(() => node);
@@ -116,7 +116,7 @@ export function verifyReferences() {
     resolve(fixture, 'entry.ts'),
     `
 import { _mount } from 'zerodep-js';
-import { _inspect } from 'zerodep-js/devtools';
+import { _inspect } from 'zerodep-js';
 import { Css, css, hydrateCss } from 'zerodep-js-css';
 import { App } from './App.tsx';
 // 预先声明夹具随后使用的依赖，避免新增依赖触发 Vite 的整页重新优化。
@@ -137,7 +137,7 @@ if (import.meta.hot) {
   );
   await writeFile(
     resolve(fixture, 'server.ts'),
-    `import { renderToString } from 'zerodep-js-ssr';
+    `import { renderToString } from 'zerodep-js';
 import { createServerCssHost, withCssHost, serializeCssRules } from 'zerodep-js-css';
 import { App } from './App.tsx';
 export const render = () => {
@@ -206,7 +206,7 @@ if(import.meta.hot)import.meta.hot.dispose(stop);
       // 与示例的完整写入策略一致，保证连续的错误与修复都经过真实文件监听。
       watch: { awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 20 } },
     },
-    ssr: { noExternal: ['zerodep-js', 'zerodep-js-ssr', 'zerodep-js-css'] },
+    ssr: { noExternal: ['zerodep-js', 'zerodep-js-css'] },
   });
   await server.listen();
   const address = server.httpServer.address();

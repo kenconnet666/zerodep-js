@@ -1,13 +1,12 @@
 # 包边界与独立消费
 
-框架发布清单保留 core、ssr、compiler、css 四包；UI 为私有组件库。2026-10-09 已删除 use 包，不再提供其路由、store、持久化与历史入口。当前源码使用微软官方 npm TypeScript 7.1.0-dev.20261008.1；主包由 catalog 固定，平台包由官方 optionalDependencies 选择，锁文件保存完整性校验。无需 JetBrains 分支下载或平台 overrides。
+框架发布清单保留 core、compiler、css 三包；UI 为私有组件库。2026-10-09 已删除 use 包，不再提供其路由、store、持久化与历史入口。当前源码使用微软官方 npm TypeScript 7.1.0-dev.20261008.1；主包由 catalog 固定，平台包由官方 optionalDependencies 选择，锁文件保存完整性校验。无需 JetBrains 分支下载或平台 overrides。
 
 独立项目安装相同固定版本的 typescript 即可；不再需要复制平台 URL 或覆盖配置。完整步骤见 [环境配置](environment-setup.md)。
 
 | 发布包              | 职责                                                                          |
 | ------------------- | ----------------------------------------------------------------------------- |
-| zerodep-js          | 浏览器与响应式运行时、类型声明、internal 编译协议、devtools 开发入口          |
-| zerodep-js-ssr      | 服务端渲染和序列化，peer 依赖 core                                            |
+| zerodep-js          | 响应式、DOM、SSR、JSX 类型和开发工具，共用唯一包根入口                        |
 | zerodep-js-compiler | Babel/CSS 转换、Vite 子入口、选定 微软官方 TS7.1 检查与语言适配，属于开发工具 |
 | zerodep-js-css      | CSS 作者、关键字、样式生成和浏览器/SSR 宿主，peer 依赖 core                   |
 
@@ -26,7 +25,9 @@ pnpm test:packages 使用本次固定 tgz 在工作区外安装，检查：
 - 包名、版本、许可证、导出、源码和映射完整。
 - 安装结果不链接回工作区，不残留 workspace/catalog/link/file 协议。
 - 选定 SDK 与 Babel 能独立编译预编译组件库，声明保留泛型和类型反例。
-- CSR/SSR、节点接管、绑定、路由、存储和卸载使用实际发布包。
+- CSR/SSR、节点接管、表单绑定、上下文和卸载使用实际发布包。
 - 生产浏览器不包含开发工具、其他框架或重复运行时。
 
 注册表验收使用 release:verify-registry，比对同一提交、tgz 摘要、版本和 next 标签。上传成功不能替代实际安装，旧版本的消费通过也不覆盖当前候选。
+
+core 的 `src` 根目录只有 `index.ts`。实现分别位于 runtime、dom、native、ssr、dev；所有应用导入均使用 `zerodep-js`，没有 internal/head/devtools/jsx-runtime 子入口。SSR 不依赖 Node 专用模块；浏览器打包通过 sideEffects: false 与具名导出移除未使用的服务端和开发代码。

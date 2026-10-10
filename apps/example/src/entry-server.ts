@@ -4,7 +4,7 @@ import {
   serializeData,
   type RenderMode,
   type DocumentOptions,
-} from 'zerodep-js-ssr';
+} from 'zerodep-js';
 import { App } from './App.js';
 import { TaskBoard } from './tasks/TaskBoard.js';
 import type { TaskPage } from './tasks/schema.js';

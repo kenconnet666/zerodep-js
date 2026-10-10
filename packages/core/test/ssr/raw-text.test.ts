@@ -1,6 +1,5 @@
 import { expect, it } from 'vitest';
-import { defineComponent, element, dynamic } from 'zerodep-js/internal';
-import { renderToString, serializeData } from '../src/index.js';
+import { defineComponent, element, dynamic, renderToString, serializeData } from 'zerodep-js';
 
 it('完整 raw-text 元素保留文本且不输出动态区域标记', () => {
   for (const tag of ['script', 'style', 'iframe', 'xmp', 'noembed', 'noframes']) {

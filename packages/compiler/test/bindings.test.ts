@@ -12,7 +12,7 @@ let text = _derived('只读');`,
   ).toThrow('ZJ1005');
 });
 import { compile } from '../src/index.js';
-import type { ElementTemplate } from '../../core/src/runtime/template.js';
+import type { ElementTemplate } from '../../core/dist/runtime/template.js';
 
 it('原生绑定生成读写关系，事件别名保留顺序，先更新状态再调用用户事件', () => {
   const result = execute(`

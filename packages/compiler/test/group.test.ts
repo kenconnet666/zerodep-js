@@ -1,7 +1,7 @@
 import { expect, it } from 'vitest';
 import { execute } from './execute.js';
 import { compile } from '../src/index.js';
-import type { ElementTemplate } from '../../core/src/runtime/template.js';
+import type { ElementTemplate } from '../../core/dist/runtime/template.js';
 
 function change(view: ElementTemplate, checked: boolean, value = 'tampered') {
   (view.props['on:change'] as (event: unknown) => void)({ currentTarget: { checked, value } });

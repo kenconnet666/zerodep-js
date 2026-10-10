@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { Css, SystemKeywords, ColorKeywords } from 'zerodep-js-css';
 import { createCssContext } from 'zerodep-js-css';
-import { source } from 'zerodep-js/internal';
-import { _createRoot, _effect, _flushSync } from 'zerodep-js';
+import { source, _createRoot, _effect, _flushSync } from 'zerodep-js';
 
 class AppCss extends Css {
   readonly name = 'app';

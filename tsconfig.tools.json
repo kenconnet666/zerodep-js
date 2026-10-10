@@ -2,8 +2,7 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "lib": ["ES2025", "DOM", "DOM.Iterable"],
-    "types": ["node"],
-    "jsxImportSource": "zerodep-js",
+    "types": ["node", "zerodep-js"],
     "allowJs": true,
     "allowImportingTsExtensions": true,
     "checkJs": false,

@@ -7,13 +7,16 @@ import { format, resolveConfig } from 'prettier';
 // 使用官方 TS7.1 API 生成清晰的平台声明，不依赖项目定制 SDK。
 export async function generateJSX(check = false) {
   const root = resolve(import.meta.dirname, '..');
-  const output = resolve(root, 'packages/core/src/jsx-elements.ts');
-  const file = resolve(root, 'packages/core/src/__native-generation.ts').replaceAll('\\', '/');
+  const output = resolve(root, 'packages/core/src/native/elements.ts');
+  const file = resolve(root, 'packages/core/src/native/__native-generation.ts').replaceAll(
+    '\\',
+    '/',
+  );
   const api = new API({ cwd: root });
   let snapshot;
   try {
-    const source = `import type { NativeProps, SvgAttributes, MathAttributes } from './native/jsx.js';
-import type { HtmlAttributeValues, HtmlAttributeNames } from './native/data.js';
+    const source = `import type { NativeProps, SvgAttributes, MathAttributes } from './jsx.js';
+import type { HtmlAttributeValues, HtmlAttributeNames } from './data.js';
 type TagName =
   keyof HTMLElementTagNameMap | keyof SVGElementTagNameMap | keyof MathMLElementTagNameMap;
 type HtmlElement<K> = K extends keyof HTMLElementTagNameMap ? HTMLElementTagNameMap[K] : never;
@@ -138,7 +141,7 @@ type Probe = { [K in keyof HTMLElementTagNameMap | keyof SVGElementTagNameMap | 
         })
         .join('\n');
     const text = `// 由 pnpm native:generate 生成；规则维护于 native/jsx.ts，官方 TS7.1 API 负责展开。\n
-import type { NativeIndexProps } from './native/jsx.js';
+import type { NativeIndexProps } from './jsx.js';
 ${[...groups.values()].map(({ name, properties }) => `interface ${name}<T extends Element> extends NativeIndexProps { ${fields(properties)} }`).join('\n')}
 ${records.map(({ name, dom, properties, group }) => `interface ${name} extends ${group.name}<${dom}> { ${fields(new Map([...properties].filter(([key]) => !group.properties.has(key)))).replaceAll(/\bT\b/g, dom)} }`).join('\n')}
 export interface NativeElements { ${tags.map(([tag, type]) => `${JSON.stringify(tag)}: ${tag.includes('-') ? `{ [K in keyof ${type}]: ${type}[K] }` : type};`).join('\n')} }

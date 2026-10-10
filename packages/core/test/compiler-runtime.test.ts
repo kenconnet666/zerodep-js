@@ -1,5 +1,7 @@
 import { expect, it } from 'vitest';
-import { derived, props, styleText } from '../src/internal.js';
+import { derived } from '../src/runtime/bindings.js';
+import { props } from '../src/runtime/props.js';
+import { styleText } from '../src/native/style.js';
 import { _createRoot, _flushSync, Source } from '../src/runtime/reactivity.js';
 
 it('内部派生共享一次读取，合并属性保持活值与覆盖顺序', () => {

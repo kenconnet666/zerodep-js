@@ -19,14 +19,13 @@ it('官方 LSP 与 API 共用未保存文档的类型，命名空间补全可应
         compilerOptions: {
           strict: true,
           jsx: 'preserve',
-          jsxImportSource: 'zerodep-js',
+
           module: 'preserve',
           moduleResolution: 'bundler',
           types: [],
           target: 'es2025',
           paths: {
             'zerodep-js': [resolve('packages/core/src/index.ts')],
-            'zerodep-js/*': [resolve('packages/core/src/*')],
           },
         },
         include: ['*.tsx'],
@@ -73,7 +72,7 @@ const view = <>🚀<input ${prefix}={text}/></>;`;
         'definition',
       )) as Location[];
       expect(locations.length).toBeGreaterThan(0);
-      expect(locations[0]!.uri).toContain('packages/core/src/jsx-elements.ts');
+      expect(locations[0]!.uri).toContain('packages/core/src/native/elements.ts');
     }
     const component = `import {_component} from 'zerodep-js';
 const Editor = _component(<T,>(props: { value: T; onValueChange: (next: T) => void }) => <span/>);

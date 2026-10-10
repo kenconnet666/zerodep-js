@@ -19,8 +19,8 @@ SSR 不自动序列化组件 props、服务端异常或资源。ErrorBoundary �
 
 ## 审查及回归证据
 
-- 普通文本/属性注入、JSON 的结束标签与特殊字符、请求隔离和错误清理：packages/ssr/test 下的用例及独立包消费验证。
-- 原始文本内容、非法名称、HTML/SVG 名称规范化：packages/core/test/native.test.ts 和 packages/ssr/test/raw-text.test.ts。
+- 普通文本/属性注入、JSON 的结束标签与特殊字符、请求隔离和错误清理：packages/core/test/ssr 下的用例及独立包消费验证。
+- 原始文本内容、非法名称、HTML/SVG 名称规范化：packages/core/test/native.test.ts 和 packages/core/test/ssr/raw-text.test.ts。
 - 实际 HTML 解析、后续节点不被 script 吞掉、JSON 内容不生成额外节点、CSR/SSR 文本更新与接管：tests/e2e/serialization.spec.ts、hydration.spec.ts、attributes.spec.ts；完整三浏览器矩阵由 CI 运行。
 - 生命周期、失败清理、缓存回收与多轮次请求/根替换：scripts/verify-stability.mjs 和浏览器稳定性用例；指标记录见 stability.md。
 - 示例服务的参数化 SQL、输入校验、写入冲突、来源与 Host、请求大小：apps/example/test 与任务业务浏览器用例。这是本机消费示例，不提供互联网部署所需的鉴权体系。

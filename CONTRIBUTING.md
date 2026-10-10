@@ -17,7 +17,7 @@
 - `packages/core`：状态、组件、DOM、生命周期及公共 JSX 类型。
 - `packages/native`：Go 绑定分析、宏/JSX 转换、语义诊断、CLI 与项目会话。
 - `packages/vite`：普通转换和依赖扫描的同一接入。
-- `packages/ssr`：请求内渲染、数据编码与文档组合。
+- `packages/core/src/ssr`：请求内渲染、数据编码与文档组合；与其他 core API 共用根入口。
 - `apps/example`：功能验证页和任务工作台，消费实际包产物。
 
 类型和别名的生成入口是 `pnpm native:generate`。改数据来源或语义修正时重新生成；不要直接编辑 native-data.ts 或第三方许可汇总。`pnpm native:check` 会检查漂移。

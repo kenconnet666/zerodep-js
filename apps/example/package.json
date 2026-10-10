@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "zerodep-js": "workspace:*",
-    "zerodep-js-ssr": "workspace:*",
     "sirv": "catalog:",
     "zerodep-js-css": "workspace:*"
   },

@@ -1,5 +1,4 @@
-import { _component } from 'zerodep-js';
-import { renderToString } from '../src/index.js';
+import { _component, renderToString } from 'zerodep-js';
 
 const Required = _component(({ label }: { label: string }) => label);
 const Optional = _component(({ label }: { label?: string }) => label ?? null);

@@ -25,7 +25,8 @@
 
 - CSS 只公开包根 src/index.ts，不提供 /server 或 /internal 子入口；主题继承机制归 CSS，具体 UI 主题归 UI。Vite 通过标准 browser 字段替换浏览器宿主，源码采用普通相对导入。
 - CSS src 根目录只保留 index.ts，其他源码只放 runtime/generated/util；相关小文件按职责合并，不重新创建 author/theme 子目录。生成器同步维护此布局，主题缓存按实际访问创建。
-- core 提供响应式与 DOM 运行时；css 提供原生 CSS；ssr 提供服务端渲染；compiler 提供 Babel/CSS 转换、compiler/vite 入口和 TS7/LSP；ui 提供 Provider 与组件。packages/use 和 packages/vite 已删除，不保留兼容包。
+- 2026-10-10：core 合并 SSR，只公开 zerodep-js 包根；删除 packages/ssr 和 core 的 internal/head/devtools/jsx-runtime 子入口，不保留兼容转发。src 根目录只保留 index.ts，SSR 放 ssr，JSX 类型和生成元素放 native，编译协议实现放 runtime。JSX 使用 preserve，根入口提供 JSX 类型；作者项目通过 types: ["zerodep-js"] 显式加载。编译协议也从根导出，手写代码仍使用变量宏。按需构建必须移除未使用的 SSR 与开发工具。
+- core 提供响应式、DOM、SSR 与开发工具；css 提供原生 CSS；compiler 提供 Babel/CSS 转换、compiler/vite 入口和 TS7/LSP；ui 提供 Provider 与组件。packages/use、packages/vite 和 packages/ssr 已删除，不保留兼容包。
 - 框架顶层公开函数使用单下划线，声明本身使用该名称，入口直接导出。UI Provider 的消费入口沿用已确认的 useCss 写法，同类入口为 useLang/useLocale。JSX 组件、类型、类和对象成员保持常规命名。删除旧入口，不保留 deprecated 别名或兼容转发。
 - 普通包由选定 SDK 的 tsc 构建，框架应用由 Vite 转换；不能把未经宏转换的 TS 擦除产物冒充可执行应用。
 - TypeScript target/lib 与 compiler/vite 默认构建目标统一 ES2025；不要退回旧基线或改为随版本变化的 ESNext。新 API 的类型声明不代替运行时支持，不默认注入 polyfill。
