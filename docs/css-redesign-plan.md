@@ -66,3 +66,4 @@ return <div class={[base, appearance, className]} />;
 
 - e545c30 的 CI：三浏览器、六平台工具链、Linux/Windows 独立消费通过；verify 发现 6 份旧 CSS 静态类型夹具漏迁移。本阶段已改为新方法/主题/bx/数组的正反类型用例，6 份独立 TS7 完整诊断为零，未恢复旧 API。
 - 自查补充：动态动画变量按目标选择器命名，插入无关样式不再改变动画名；新增回归通过。最终验收仍等待修复提交的完整 CI。
+- fb24310 的三浏览器、六平台及 Linux/Windows 独立消费再次通过，全部项目类型检查通过；verify 在两份新增测试的 15 处 no-floating-promises 上停止。按 Node 测试注册惯例显式 void，不改规则或用例断言；两文件 53 个测试及相关类型感知 lint 通过，继续等待修复提交 CI。

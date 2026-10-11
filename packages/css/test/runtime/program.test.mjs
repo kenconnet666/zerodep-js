@@ -15,7 +15,7 @@ function setup(source) {
   return { host, s, css, resolve };
 }
 
-test('收集范围隔离，异常和嵌套后恢复，属性调用必须属于同步范围', () => {
+void test('收集范围隔离，异常和嵌套后恢复，属性调用必须属于同步范围', () => {
   const { host, s, css, resolve } = setup();
   assert.throws(() => s.color('red'), /同步回调/);
   let inner;
@@ -42,7 +42,7 @@ test('收集范围隔离，异常和嵌套后恢复，属性调用必须属于�
   assert.throws(() => s.color('red'), /同步回调/);
 });
 
-test('同属性覆盖更新位置，选择器交错顺序不被移动', () => {
+void test('同属性覆盖更新位置，选择器交错顺序不被移动', () => {
   const { host, s, css, resolve } = setup();
   resolve([
     css(() => {
@@ -58,7 +58,7 @@ test('同属性覆盖更新位置，选择器交错顺序不被移动', () => {
   );
 });
 
-test('安全连续值复用类；undefined 忽略，特殊值及兄弟选择器回退', () => {
+void test('安全连续值复用类；undefined 忽略，特殊值及兄弟选择器回退', () => {
   const { host, s, css, resolve } = setup();
   const classes = new Set();
   for (let value = 1; value <= 100; value++) {
@@ -80,7 +80,7 @@ test('安全连续值复用类；undefined 忽略，特殊值及兄弟选择器�
   assert.throws(() => css(() => s.color('red;background:blue')), /一个声明值/);
 });
 
-test('数组先覆盖再登记，来源不变，class 别名覆盖不会消费旧结果', () => {
+void test('数组先覆盖再登记，来源不变，class 别名覆盖不会消费旧结果', () => {
   const { host, s, css } = setup();
   const base = css(() => s.width(bx('12px')).color('red'));
   const override = css(() => s.width('20px'));
@@ -103,7 +103,7 @@ test('数组先覆盖再登记，来源不变，class 别名覆盖不会消费�
   assert.equal(host.rules().length, count);
 });
 
-test('bx 主题 token 按属性解析，Provider 值变化不改变消费类，特殊主题值回退', () => {
+void test('bx 主题 token 按属性解析，Provider 值变化不改变消费类，特殊主题值回退', () => {
   const theme = new SystemKeywords();
   Object.defineProperty(theme, 'color', {
     value: { ...theme.color, _primary: '#123456' },
@@ -126,7 +126,7 @@ test('bx 主题 token 按属性解析，Provider 值变化不改变消费类，�
   assert.throws(() => css(() => s.gap(bx('_primary'))), /没有关键字/);
 });
 
-test('关键帧参数随样式结果传递，动态值不产生新动画名', () => {
+void test('关键帧参数随样式结果传递，动态值不产生新动画名', () => {
   const { host, s, css, resolve } = setup();
   const styles = [];
   for (const opacity of [0.2, 0.4, 0.8]) {
@@ -151,7 +151,7 @@ test('关键帧参数随样式结果传递，动态值不产生新动画名', ()
   assert.throws(() => css(() => s.select('@font-face', () => s.color('red'))), /局部条件/);
 });
 
-test('select 保留引号中的分隔符，拒绝块注入，标准条件可正常收集', () => {
+void test('select 保留引号中的分隔符，拒绝块注入，标准条件可正常收集', () => {
   const { host, s, css, resolve } = setup();
   resolve([
     css(() => {
@@ -168,7 +168,7 @@ test('select 保留引号中的分隔符，拒绝块注入，标准条件可正�
   assert.equal(nativeAttributes({ class: '' }, 'div').get('class'), '');
 });
 
-test('无关声明插入不改动画名，不同目标的动画参数仍隔离', () => {
+void test('无关声明插入不改动画名，不同目标的动画参数仍隔离', () => {
   const { host, s, css, resolve } = setup();
   const frames = (value) => collectKeyframes(() => s.select('to', () => s.opacity(bx(value))));
   const animation = frames(0.5);

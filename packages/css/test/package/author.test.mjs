@@ -26,7 +26,7 @@ function render(build, source) {
   return { host, attributes: result };
 }
 
-test('502 个真实属性方法共用原型，不再分配属性作者对象', () => {
+void test('502 个真实属性方法共用原型，不再分配属性作者对象', () => {
   const a = new Css(),
     b = new Css();
   const names = Object.keys(systemKeywords);
@@ -45,7 +45,7 @@ test('502 个真实属性方法共用原型，不再分配属性作者对象', (
   assert.equal(result.host.rules()[0].body, 'opacity:0;width:0;z-index:0;');
 });
 
-test('生成声明保留真实方法、属性类型、中文文档和链式返回', async () => {
+void test('生成声明保留真实方法、属性类型、中文文档和链式返回', async () => {
   const source = await readFile(
     new URL('../../dist/generated/author.d.ts', import.meta.url),
     'utf8',
@@ -106,7 +106,7 @@ for (const [property, value, safe] of [
     false,
   ]),
 ])
-  test(property + ' ' + value + ' 的绑定分类', () => {
+  void test(property + ' ' + value + ' 的绑定分类', () => {
     const { host, attributes } = render((s) => s[property](bx(value)));
     if (safe) {
       assert.match(host.cssText(), /:var\(--zj-/);
@@ -117,7 +117,7 @@ for (const [property, value, safe] of [
     }
   });
 
-test('主题更新、父子作者和安全/特殊 token 转换', () => {
+void test('主题更新、父子作者和安全/特殊 token 转换', () => {
   class Theme extends SystemKeywords {
     color = { _primary: '#123456' };
     gap = { _sm: '4px' };
@@ -148,7 +148,7 @@ test('主题更新、父子作者和安全/特殊 token 转换', () => {
   assert.throws(() => css(() => parent.width(bx('_primary'))), /没有关键字/);
 });
 
-test('真实 TS7 检查属性输入、主题约束、绑定类型及 class 数组', async () => {
+void test('真实 TS7 检查属性输入、主题约束、绑定类型及 class 数组', async () => {
   const file = resolve('packages/css/test/package/__types_' + randomUUID() + '.tsx');
   const source = `import{Css,SystemKeywords,css,bx,type CssValue}from'zerodep-js-css';import type{ClassValue}from'zerodep-js';
 class Theme extends SystemKeywords{override readonly color={_primary:'#123456'};override readonly gap={_sm:'4px'};}
@@ -200,7 +200,7 @@ s.width.px(12);
   }
 });
 
-test('并发 SSR 独占宿主，样式描述可以先创建后在请求内消费', async () => {
+void test('并发 SSR 独占宿主，样式描述可以先创建后在请求内消费', async () => {
   const a = createServerCssHost(),
     b = createServerCssHost(),
     s = new Css();
@@ -223,7 +223,7 @@ test('并发 SSR 独占宿主，样式描述可以先创建后在请求内消费
   assert.equal(b.rules().length, 1);
 });
 
-test('全局块显式更新与删除，无根选择器的声明拒绝', () => {
+void test('全局块显式更新与删除，无根选择器的声明拒绝', () => {
   const host = createServerCssHost(),
     s = new Css();
   withCssHost(host, () => {
