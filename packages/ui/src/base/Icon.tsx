@@ -43,7 +43,7 @@ export const Icon = _component(({ icon, color, size, class: className, ...rest }
   return (
     <svg
       {...svg.attributes}
-      focusable="false"
+      focusable={'false'}
       role={named ? 'img' : undefined}
       aria-hidden={named ? undefined : true}
       {...rest}

@@ -7,7 +7,7 @@ const Label = _component(({ name }: { name: string }) => {
 });
 const Nested = _component(() => {
   _provideContext(Theme, { color: '内层' });
-  return <Label name="inner" />;
+  return <Label name={'inner'} />;
 });
 const Provider = _component(() => {
   const theme = _state({ color: '蓝' });
@@ -15,7 +15,7 @@ const Provider = _component(() => {
   return (
     <div>
       <button
-        type="button"
+        type={'button'}
         data-change-theme
         onClick={() => {
           theme.color = '紫';
@@ -23,15 +23,15 @@ const Provider = _component(() => {
       >
         更新上下文
       </button>
-      <Label name="outer" />
+      <Label name={'outer'} />
       <Nested />
     </div>
   );
 });
 export const ContextExample = _component(() => (
-  <section aria-label="上下文">
+  <section aria-label={'上下文'}>
     <h2>上下文</h2>
-    <Label name="default" />
+    <Label name={'default'} />
     <Provider />
   </section>
 ));

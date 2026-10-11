@@ -99,7 +99,7 @@ export const Button = _component(
         }}
         aria-busy={loading || undefined}
         aria-pressed={ariaPressed}
-        data-ui-action=""
+        data-ui-action={''}
         class={[
           css(() => {
             const iconOnly = icon !== undefined;

@@ -60,7 +60,7 @@ const Counter = _component(
     }
     return (
       <section
-        aria-label="框架计数器"
+        aria-label={'框架计数器'}
         ref={(node) => {
           node.dataset.refAttached = 'true';
           return () => onRefDispose?.();
@@ -77,7 +77,7 @@ const Counter = _component(
         >
           按步长增加
         </Button>
-        <output data-count aria-live="polite">
+        <output data-count aria-live={'polite'}>
           {count}
         </output>
         <output data-double>{doubled}</output>
@@ -107,7 +107,7 @@ export const App = _component(({ mode = 'csr', onUnmount }: AppProps) => {
 
   return (
     <main style={{ '--step': step }}>
-      <p class="eyebrow">框架运行验证</p>
+      <p class={'eyebrow'}>框架运行验证</p>
       <CssExample />
       <LayeredFieldsExample />
       <DisclosureExample />
@@ -117,15 +117,15 @@ export const App = _component(({ mode = 'csr', onUnmount }: AppProps) => {
       <p>
         当前首屏模式：<strong data-mode>{mode.toUpperCase()}</strong>
       </p>
-      <nav aria-label="渲染模式">
-        <a href="/?render=ssr" aria-current={mode === 'ssr' ? 'page' : undefined}>
+      <nav aria-label={'渲染模式'}>
+        <a href={'/?render=ssr'} aria-current={mode === 'ssr' ? 'page' : undefined}>
           服务端渲染 SSR
         </a>
-        <a href="/?render=csr" aria-current={mode === 'csr' ? 'page' : undefined}>
+        <a href={'/?render=csr'} aria-current={mode === 'csr' ? 'page' : undefined}>
           客户端渲染 CSR
         </a>
       </nav>
-      <section aria-label="组件输入">
+      <section aria-label={'组件输入'}>
         <Button
           data-reset-key
           onClick={() => {
@@ -199,9 +199,9 @@ export const App = _component(({ mode = 'csr', onUnmount }: AppProps) => {
         ，已释放 ref：<output data-ref-disposed>{refDisposed}</output>
         ，最近回调：<output data-last-event>{lastEvent}</output>
       </p>
-      <svg viewBox="0 0 20 20" width="20" height="20" aria-label="状态图形">
+      <svg viewBox={'0 0 20 20'} width={'20'} height={'20'} aria-label={'状态图形'}>
         {visible ? (
-          <circle cx={10} cy={10} r={8} fill="none" stroke="currentColor" strokeWidth={2} />
+          <circle cx={10} cy={10} r={8} fill={'none'} stroke={'currentColor'} strokeWidth={2} />
         ) : (
           <rect x={2} y={2} width={16} height={16} />
         )}
@@ -231,8 +231,8 @@ export const App = _component(({ mode = 'csr', onUnmount }: AppProps) => {
       <IdExample />
       <PortalExample />
       <p data-client-status>{ready ? '客户端已接入' : '等待客户端接管'}</p>
-      <p class="note">同一 App 验证客户端渲染与服务端渲染接管。</p>
-      <button type="button" data-unmount onClick={() => onUnmount?.()}>
+      <p class={'note'}>同一 App 验证客户端渲染与服务端渲染接管。</p>
+      <button type={'button'} data-unmount onClick={() => onUnmount?.()}>
         卸载应用
       </button>
     </main>

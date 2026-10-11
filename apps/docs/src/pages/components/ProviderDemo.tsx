@@ -54,7 +54,7 @@ const Preview = _component(({ name }: { name: string }) => {
         相隔小时：
         <span data-hours>{(addDays(locale.date(instant), 1).getTime() - instant) / 3600000}</span>
       </p>
-      <button type="button" data-confirm>
+      <button type={'button'} data-confirm>
         {lang.messages.confirm}
       </button>
     </article>
@@ -69,65 +69,65 @@ export const ProviderDemo = _component(() => {
   let portal = _state(false);
   let visible = _state(true);
   return (
-    <div class="provider-demo">
+    <div class={'provider-demo'}>
       <h3>Provider：主题、语言与时区</h3>
       <p>独立切换外层设置；关闭内层覆盖后，它会重新继承外层。输入内容在切换时保留。</p>
-      <div class="provider-controls">
+      <div class={'provider-controls'}>
         <label>
-          <input type="checkbox" bind:checked={dark} />
+          <input type={'checkbox'} bind:checked={dark} />
           暗色
         </label>
         <label>
-          <input type="checkbox" bind:checked={english} />
+          <input type={'checkbox'} bind:checked={english} />
           英文文案
         </label>
         <label>
-          <input type="checkbox" bind:checked={usFormat} />
+          <input type={'checkbox'} bind:checked={usFormat} />
           美国格式
         </label>
         <label>
-          <input type="checkbox" bind:checked={newYork} />
+          <input type={'checkbox'} bind:checked={newYork} />
           纽约时区
         </label>
         <label>
-          <input type="checkbox" bind:checked={override} />
+          <input type={'checkbox'} bind:checked={override} />
           内层覆盖
         </label>
         <label>
-          <input type="checkbox" bind:checked={portal} />
+          <input type={'checkbox'} bind:checked={portal} />
           显示 Portal
         </label>
         <label>
-          <input type="checkbox" bind:checked={visible} />
+          <input type={'checkbox'} bind:checked={visible} />
           显示预览
         </label>
       </div>
       {visible && (
         <Provider
-          data-provider="outer"
-          data-ui="provider-region"
+          data-provider={'outer'}
+          data-ui={'provider-region'}
           theme={dark ? darkTheme : lightTheme}
           lang={english ? enUS : zhCN}
           locale={usFormat ? 'en-US' : 'zh-CN'}
           timeZone={newYork ? 'America/New_York' : 'Asia/Shanghai'}
         >
           <label>
-            保留输入 <input aria-label="保留输入" />
+            保留输入 <input aria-label={'保留输入'} />
           </label>
-          <div class="provider-grid">
-            <Preview name="outer" />
+          <div class={'provider-grid'}>
+            <Preview name={'outer'} />
             <Provider
-              data-provider="inner"
+              data-provider={'inner'}
               theme={override ? darkTheme : undefined}
               lang={override ? enUS : undefined}
               timeZone={override ? 'America/New_York' : undefined}
             >
-              <Preview name="inner" />
+              <Preview name={'inner'} />
               {portal && (
                 <Portal>
-                  <Preview name="portal-direct" />
-                  <Provider data-ui="provider-portal" data-provider="portal">
-                    <Preview name="portal" />
+                  <Preview name={'portal-direct'} />
+                  <Provider data-ui={'provider-portal'} data-provider={'portal'}>
+                    <Preview name={'portal'} />
                   </Provider>
                 </Portal>
               )}

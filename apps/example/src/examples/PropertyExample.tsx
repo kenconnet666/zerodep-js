@@ -24,7 +24,7 @@ export const PropertyExample = _component(() => {
     observed = active ? `${top}/${scroller?.scrollTop}` : '关闭';
   });
   return (
-    <section aria-label="客户端属性与自定义元素">
+    <section aria-label={'客户端属性与自定义元素'}>
       <h2>客户端属性与自定义元素</h2>
       <button data-property-toggle onClick={() => (active = !active)}>
         切换 property 绑定
@@ -104,7 +104,7 @@ export const PropertyExample = _component(() => {
         </span>
       </ErrorBoundary>
       <form
-        id="property-form"
+        id={'property-form'}
         onSubmit={(event) => {
           event.preventDefault();
           const value = new FormData(event.currentTarget).get('external');
@@ -112,15 +112,20 @@ export const PropertyExample = _component(() => {
         }}
       />
 
-      <label for="property-field">外部表单字段</label>
-      <input id="property-field" name="external" form="property-form" list="property-suggestions" />
-      <datalist id="property-suggestions">
-        <option value="选项" />
+      <label for={'property-field'}>外部表单字段</label>
+      <input
+        id={'property-field'}
+        name={'external'}
+        form={'property-form'}
+        list={'property-suggestions'}
+      />
+      <datalist id={'property-suggestions'}>
+        <option value={'选项'} />
       </datalist>
-      <button data-property-submit form="property-form" type="submit">
+      <button data-property-submit form={'property-form'} type={'submit'}>
         提交外部字段
       </button>
-      <output data-property-form for="property-field" form="property-form">
+      <output data-property-form for={'property-field'} form={'property-form'}>
         {submitted}
       </output>
     </section>

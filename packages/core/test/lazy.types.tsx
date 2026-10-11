@@ -5,7 +5,7 @@ const Generic = _component(<T,>({ value, render }: { value: T; render: (value: T
   <p>{render(value)}</p>
 ));
 const LazyGeneric = _lazy(async () => Generic);
-export const correct = <LazyCard title="加载" />;
+export const correct = <LazyCard title={'加载'} />;
 export const generic = <LazyGeneric value={{ name: '示例' }} render={(item) => item.name} />;
 // @ts-expect-error 必填属性在 lazy 后仍然必填。
 export const missing = <LazyCard />;

@@ -22,7 +22,7 @@ const Panel = _component(
     let count = _state(0);
     let draft = _state('草稿');
     return (
-      <div data-portal-panel role="dialog" aria-label="外层内容">
+      <div data-portal-panel role={'dialog'} aria-label={'外层内容'}>
         <span data-portal-context>{context}</span>
         <span data-portal-message>{broken ? fail() : message}</span>
         <label for={id}>外层草稿</label>
@@ -67,7 +67,7 @@ export const PortalExample = _component(() => {
   return (
     <section
       data-portal-origin
-      aria-label="Portal"
+      aria-label={'Portal'}
       onClick={() => {
         clicks++;
       }}

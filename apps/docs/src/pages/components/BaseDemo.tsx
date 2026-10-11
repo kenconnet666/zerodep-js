@@ -18,30 +18,30 @@ export const BaseDemo = _component(() => {
     };
   };
   return (
-    <section id="base-demo" aria-labelledby="base-heading">
-      <h3 id="base-heading">按钮基础组件</h3>
+    <section id={'base-demo'} aria-labelledby={'base-heading'}>
+      <h3 id={'base-heading'}>按钮基础组件</h3>
       <label>
-        <input type="checkbox" bind:checked={disabled} />
+        <input type={'checkbox'} bind:checked={disabled} />
         禁用基础按钮
       </label>
       <label>
-        <input type="checkbox" bind:checked={ripple} />
+        <input type={'checkbox'} bind:checked={ripple} />
         开启波纹
       </label>
       <label>
-        <input type="checkbox" bind:checked={dark} />
+        <input type={'checkbox'} bind:checked={dark} />
         基础暗色
       </label>
       <label>
-        <input type="checkbox" bind:checked={heading} />
+        <input type={'checkbox'} bind:checked={heading} />
         标题语义
       </label>
       <label>
-        <input type="checkbox" bind:checked={custom} />
+        <input type={'checkbox'} bind:checked={custom} />
         自定义文字
       </label>
       <label>
-        <input type="checkbox" bind:checked={visible} />
+        <input type={'checkbox'} bind:checked={visible} />
         显示基础预览
       </label>
       {visible && (
@@ -49,19 +49,19 @@ export const BaseDemo = _component(() => {
           <Text
             as={heading ? 'h2' : 'p'}
             size={custom ? '22px' : '_sm'}
-            weight="_semibold"
+            weight={'_semibold'}
             color={custom ? '#663399' : '_primary'}
             data-base-text
           >
             文字与图标共享主题
           </Text>
           <Button
-            variant="outline"
+            variant={'outline'}
             startIcon={<Icon icon={Search} />}
             disabled={disabled}
             ripple={ripple}
-            size="_md"
-            aria-label="基础搜索"
+            size={'_md'}
+            aria-label={'基础搜索'}
             onClick={() => {
               clicks++;
             }}
@@ -73,7 +73,7 @@ export const BaseDemo = _component(() => {
           >
             <Text>搜索</Text>
           </Button>
-          <Spinner size="24px" color="_primary" aria-label="正在加载" data-spinner />
+          <Spinner size={'24px'} color={'_primary'} aria-label={'正在加载'} data-spinner />
         </Provider>
       )}
       <output data-base-clicks>{clicks}</output>

@@ -50,13 +50,13 @@ export const BoundaryExample = _component(() => {
   let nested = _state(false);
   let cleanupReset = _state(false);
   return (
-    <section aria-label="错误恢复">
+    <section aria-label={'错误恢复'}>
       <h2>错误恢复</h2>
       <ErrorBoundary fallback={() => <p data-server-fallback>服务端降级内容</p>}>
         <ClientOnly />
       </ErrorBoundary>
       <button
-        type="button"
+        type={'button'}
         data-render-error
         onClick={() => {
           mode = 'render';
@@ -65,7 +65,7 @@ export const BoundaryExample = _component(() => {
         触发呈现错误
       </button>
       <button
-        type="button"
+        type={'button'}
         data-effect-error
         onClick={() => {
           mode = 'effect';
@@ -85,9 +85,9 @@ export const BoundaryExample = _component(() => {
             />
           ) : (
             <div data-boundary-error>
-              <p role="alert">{String(error)}</p>
+              <p role={'alert'}>{String(error)}</p>
               <button
-                type="button"
+                type={'button'}
                 data-recover
                 onClick={() => {
                   mode = 'ok';
@@ -112,7 +112,7 @@ export const BoundaryExample = _component(() => {
         验证清理期间重建
       </button>
       <button
-        type="button"
+        type={'button'}
         data-promise-error
         onClick={() => {
           mode = 'promise';
@@ -121,7 +121,7 @@ export const BoundaryExample = _component(() => {
         验证异步内容诊断
       </button>
       <button
-        type="button"
+        type={'button'}
         data-promise-text-error
         onClick={() => {
           mode = 'promise-text';
@@ -130,7 +130,7 @@ export const BoundaryExample = _component(() => {
         验证异步文本诊断
       </button>
       <button
-        type="button"
+        type={'button'}
         data-nested-error
         onClick={() => {
           nested = true;
@@ -141,9 +141,9 @@ export const BoundaryExample = _component(() => {
       <ErrorBoundary
         fallback={(error, reset) => (
           <div data-outer-error>
-            <p role="alert">{String(error)}</p>
+            <p role={'alert'}>{String(error)}</p>
             <button
-              type="button"
+              type={'button'}
               data-recover-outer
               onClick={() => {
                 nested = false;

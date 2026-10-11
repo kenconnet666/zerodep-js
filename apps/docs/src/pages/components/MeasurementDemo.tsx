@@ -41,7 +41,7 @@ export const MeasurementDemo = _component(() => {
     });
   });
   return (
-    <section id="measurement-demo">
+    <section id={'measurement-demo'}>
       <h3>任意字号单位与像素测量</h3>
       <p>
         容器保持 160 × 80 CSS px，内部组件按字号缩放。字号探针可检测固定容器中的字体变化；Portal
@@ -49,26 +49,26 @@ export const MeasurementDemo = _component(() => {
       </p>
       <label>
         测量字号{' '}
-        <select aria-label="测量字号" bind:value={choice}>
-          <option value="2vw">2vw</option>
+        <select aria-label={'测量字号'} bind:value={choice}>
+          <option value={'2vw'}>2vw</option>
           <option value={fluid}>clamp 流体字号</option>
-          <option value="1.25rem">1.25rem</option>
-          <option value="125%">125%</option>
-          <option value="5cqw">5cqw 容器字号</option>
-          <option value="var(--measured-font)">CSS 变量</option>
-          <option value="0px">0px</option>
+          <option value={'1.25rem'}>1.25rem</option>
+          <option value={'125%'}>125%</option>
+          <option value={'5cqw'}>5cqw 容器字号</option>
+          <option value={'var(--measured-font)'}>CSS 变量</option>
+          <option value={'0px'}>0px</option>
         </select>
       </label>
       <label>
-        <input type="checkbox" bind:checked={watching} />
+        <input type={'checkbox'} bind:checked={watching} />
         启用字号观察
       </label>
       <label>
-        <input type="checkbox" bind:checked={visible} />
+        <input type={'checkbox'} bind:checked={visible} />
         显示测量容器
       </label>
       <label>
-        <input type="checkbox" bind:checked={popup} />
+        <input type={'checkbox'} bind:checked={popup} />
         显示字号镜像浮层
       </label>
       <button
@@ -81,7 +81,9 @@ export const MeasurementDemo = _component(() => {
       <Provider>
         <div
           data-measure-container
-          style="font-size:20px;--measured-font:22px;container-type:inline-size;width:400px;max-width:100%;"
+          style={
+            'font-size:20px;--measured-font:22px;container-type:inline-size;width:400px;max-width:100%;'
+          }
         >
           {visible && (
             <div

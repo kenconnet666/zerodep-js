@@ -35,7 +35,7 @@ export const HeadExample = _component(() => {
     stopForeign?.();
   });
   return (
-    <section aria-label="页面元信息">
+    <section aria-label={'页面元信息'}>
       <button
         data-head-change
         onClick={() => {

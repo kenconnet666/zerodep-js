@@ -77,11 +77,11 @@ export const ReferenceExample = _component(() => {
     mounted = `${input?.isConnected}/${circle?.localName}`;
   });
   return (
-    <section aria-label="元素引用">
+    <section aria-label={'元素引用'}>
       <h2>元素引用</h2>
       {visible ? <input key={key} data-reference-input bind:this={input} ref={trackInput} /> : null}
       <output data-reference-active>{activeReferences}</output>
-      <svg width="20" height="20" aria-label="引用图形">
+      <svg width={'20'} height={'20'} aria-label={'引用图形'}>
         <circle bind:this={circle} cx={10} cy={10} r={8} />
       </svg>
       <button data-reference-focus onClick={() => input?.focus()}>

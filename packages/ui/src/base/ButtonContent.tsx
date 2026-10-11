@@ -38,7 +38,7 @@ const ButtonIcon = _component(
           // 图标相对按钮字号略放大，并保持独立占位，不被长标签压缩。
           s.fontSize('1.125em').flexShrink(0);
         })}
-        aria-hidden="true"
+        aria-hidden={'true'}
         data-ui-button-icon
       >
         <span
@@ -60,9 +60,9 @@ const ButtonIcon = _component(
             data-ui-button-spinner
           >
             <Spinner
-              size="1em"
+              size={'1em'}
               {...spinnerProps}
-              aria-hidden="true"
+              aria-hidden={'true'}
               aria-label={undefined}
               aria-labelledby={undefined}
               role={undefined}

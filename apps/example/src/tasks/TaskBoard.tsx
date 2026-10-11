@@ -166,16 +166,16 @@ export const TaskBoard = _component(({ initial, mode = 'csr', embedded = false }
   }
 
   return (
-    <section class="task-board" data-task-board>
-      <header class="task-header">
+    <section class={'task-board'} data-task-board>
+      <header class={'task-header'}>
         <div>
-          <p class="task-eyebrow">ZERODEP · DAILY TASKS</p>
+          <p class={'task-eyebrow'}>ZERODEP · DAILY TASKS</p>
           {embedded ? <h2>任务工作台</h2> : <h1>任务工作台</h1>}
-          <p class="task-description">把想法记下来，一件一件完成。</p>
+          <p class={'task-description'}>把想法记下来，一件一件完成。</p>
         </div>
         {!embedded && (
-          <nav class="task-nav" aria-label="任务页面导航">
-            <a href="/">框架用例</a>
+          <nav class={'task-nav'} aria-label={'任务页面导航'}>
+            <a href={'/'}>框架用例</a>
             <a href={modeUrl('ssr')} aria-current={mode === 'ssr' ? 'page' : undefined}>
               SSR
             </a>
@@ -186,39 +186,39 @@ export const TaskBoard = _component(({ initial, mode = 'csr', embedded = false }
         )}
       </header>
       <form
-        class="task-create"
+        class={'task-create'}
         onSubmit={(event) => {
           void add(event);
         }}
       >
-        <label class="sr-only" for={embedded ? 'embedded-new-task' : 'new-task'}>
+        <label class={'sr-only'} for={embedded ? 'embedded-new-task' : 'new-task'}>
           新任务
         </label>
         <input
           id={embedded ? 'embedded-new-task' : 'new-task'}
-          placeholder="接下来想完成什么？"
+          placeholder={'接下来想完成什么？'}
           value={draft.text}
           maxLength={160}
-          autoComplete="off"
+          autoComplete={'off'}
           onInput={(event) => (draft.text = event.currentTarget.value)}
         />
 
-        <button type="submit" disabled={!ready || creating}>
+        <button type={'submit'} disabled={!ready || creating}>
           {creating ? '添加中…' : '添加任务'}
         </button>
       </form>
       {createError && (
-        <p role="alert" class="task-error">
+        <p role={'alert'} class={'task-error'}>
           {createError}
         </p>
       )}
-      <div class="task-toolbar">
+      <div class={'task-toolbar'}>
         <label>
           搜索
           <input
-            type="search"
-            aria-label="搜索任务"
-            placeholder="搜索标题"
+            type={'search'}
+            aria-label={'搜索任务'}
+            placeholder={'搜索标题'}
             value={search}
             maxLength={120}
             onInput={(event) => (search = event.currentTarget.value)}
@@ -227,21 +227,21 @@ export const TaskBoard = _component(({ initial, mode = 'csr', embedded = false }
         <label>
           状态
           <select
-            aria-label="任务状态"
+            aria-label={'任务状态'}
             value={filter}
             onChange={(event) => {
               const value = event.currentTarget.value;
               if (value === 'all' || value === 'open' || value === 'done') filter = value;
             }}
           >
-            <option value="all">全部</option>
-            <option value="open">待处理</option>
-            <option value="done">已完成</option>
+            <option value={'all'}>全部</option>
+            <option value={'open'}>待处理</option>
+            <option value={'done'}>已完成</option>
           </select>
         </label>
         <button
-          type="button"
-          class="quiet"
+          type={'button'}
+          class={'quiet'}
           disabled={!ready || loading}
           onClick={() => {
             void load();
@@ -250,19 +250,19 @@ export const TaskBoard = _component(({ initial, mode = 'csr', embedded = false }
           刷新列表
         </button>
       </div>
-      <div class="task-summary">
+      <div class={'task-summary'}>
         <span>
           当前显示 <strong data-task-count>{tasks.length}</strong> 项 · 已完成 {completed} 项
         </span>
-        <span role="status" data-task-status>
+        <span role={'status'} data-task-status>
           {loading ? '正在同步…' : loadError ? '同步失败' : notice || '已同步'}
         </span>
       </div>
       {loadError && (
-        <div class="task-error" role="alert">
+        <div class={'task-error'} role={'alert'}>
           {loadError}
           <button
-            type="button"
+            type={'button'}
             onClick={() => {
               void load();
             }}
@@ -271,12 +271,12 @@ export const TaskBoard = _component(({ initial, mode = 'csr', embedded = false }
           </button>
         </div>
       )}
-      <ul class="task-list" aria-busy={loading}>
+      <ul class={'task-list'} aria-busy={loading}>
         <For
           each={tasks}
           keyBy={(task) => task.id}
           fallback={
-            <li class="task-empty">
+            <li class={'task-empty'}>
               {loading
                 ? '正在读取任务…'
                 : loadError
@@ -299,7 +299,7 @@ export const TaskBoard = _component(({ initial, mode = 'csr', embedded = false }
         </For>
       </ul>
       <noscript>
-        <p class="task-description">启用 JavaScript 后可以编辑任务；当前列表来自服务端。</p>
+        <p class={'task-description'}>启用 JavaScript 后可以编辑任务；当前列表来自服务端。</p>
       </noscript>
     </section>
   );

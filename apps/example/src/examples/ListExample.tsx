@@ -30,10 +30,10 @@ const EditableRow = _component(
           }}
         />
 
-        <button type="button" onClick={() => remove(row.id)}>
+        <button type={'button'} onClick={() => remove(row.id)}>
           删除 {row.id}
         </button>
-        <button type="button" data-pick-row onClick={() => pick(row.id, row.name)}>
+        <button type={'button'} data-pick-row onClick={() => pick(row.id, row.name)}>
           选择记录
         </button>
       </li>
@@ -55,7 +55,7 @@ export const ListExample = _component(() => {
     rows = rows.filter((row) => row.id !== id);
   };
   return (
-    <section aria-label="带状态列表">
+    <section aria-label={'带状态列表'}>
       <h2>带状态列表</h2>
       <button
         data-filter-rows
@@ -67,7 +67,7 @@ export const ListExample = _component(() => {
       </button>
       <output data-picked-row>{picked}</output>
       <button
-        type="button"
+        type={'button'}
         data-reverse
         onClick={() => {
           rows = rows.toReversed();
@@ -76,7 +76,7 @@ export const ListExample = _component(() => {
         反转排序
       </button>
       <button
-        type="button"
+        type={'button'}
         data-replace-rows
         onClick={() => {
           rows = rows.map((row) => ({ id: row.id, name: row.name + '更新' }));
@@ -85,7 +85,7 @@ export const ListExample = _component(() => {
         同 key 刷新数据
       </button>
       <button
-        type="button"
+        type={'button'}
         data-add-row
         onClick={() => {
           rows = [{ id: nextId++, name: '新增' }, ...rows];
@@ -94,7 +94,7 @@ export const ListExample = _component(() => {
         新增一行
       </button>
       <button
-        type="button"
+        type={'button'}
         data-clear-rows
         onClick={() => {
           rows = [];
@@ -103,7 +103,7 @@ export const ListExample = _component(() => {
         清空列表
       </button>
       <button
-        type="button"
+        type={'button'}
         data-duplicate-row
         onClick={() => {
           if (rows[0]) rows.push(rows[0]);
@@ -114,9 +114,9 @@ export const ListExample = _component(() => {
       <ErrorBoundary
         fallback={(error, reset) => (
           <div data-list-error>
-            <p role="alert">{String(error)}</p>
+            <p role={'alert'}>{String(error)}</p>
             <button
-              type="button"
+              type={'button'}
               data-repair-list
               onClick={() => {
                 const keys = new Set<number>();

@@ -120,8 +120,8 @@ const LocalThemeProbe = _component(({ lazy }: { lazy: boolean }) => {
   provideCss(new Css(new Keywords('purple')));
   return (
     <>
-      <ThemeProbe location="local" />
-      {lazy && <LazyThemeProbe location="lazy-local" />}
+      <ThemeProbe location={'local'} />
+      {lazy && <LazyThemeProbe location={'lazy-local'} />}
     </>
   );
 });
@@ -203,7 +203,7 @@ export const CssExample = _component(() => {
   let keywords = _state.raw(new Keywords('blue'));
   provideCss(new Css(() => keywords));
   return (
-    <section aria-label="原生 CSS 接入">
+    <section aria-label={'原生 CSS 接入'}>
       <h2>原生 CSS 接入</h2>
       <KeywordBindingProbe />
       <ValueBindingProbe />
@@ -215,7 +215,7 @@ export const CssExample = _component(() => {
       >
         切换主题
       </button>
-      <ThemeProbe location="outer" />
+      <ThemeProbe location={'outer'} />
       <LocalThemeProbe lazy={lazyVisible} />
       <button
         data-css-lazy-toggle
@@ -225,7 +225,7 @@ export const CssExample = _component(() => {
       >
         切换按需主题
       </button>
-      {lazyVisible && <LazyThemeProbe location="lazy" />}
+      {lazyVisible && <LazyThemeProbe location={'lazy'} />}
       <button
         data-css-visible
         onClick={() => {
@@ -236,8 +236,8 @@ export const CssExample = _component(() => {
       </button>
       {visible && (
         <>
-          <Card name="first" initial={120} />
-          <Card name="second" initial={180} />
+          <Card name={'first'} initial={120} />
+          <Card name={'second'} initial={180} />
         </>
       )}
       <Portal>
@@ -250,8 +250,8 @@ export const CssExample = _component(() => {
           })}
         >
           CSS Portal
-          <ThemeProbe location="portal" />
-          {lazyVisible && <LazyThemeProbe location="lazy-portal" />}
+          <ThemeProbe location={'portal'} />
+          {lazyVisible && <LazyThemeProbe location={'lazy-portal'} />}
         </div>
       </Portal>
     </section>

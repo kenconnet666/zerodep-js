@@ -24,7 +24,7 @@ export const StyleExample = _component(() => {
   let broken = _state(false);
   const live = _state<{ color: string; padding?: string }>({ color: 'black', padding: '2px' });
   return (
-    <section aria-label="内联样式">
+    <section aria-label={'内联样式'}>
       <h2>样式与声明顺序</h2>
       <button data-style-step onClick={() => (step = (step + 1) % styles.length)}>
         切换样式
@@ -64,8 +64,8 @@ export const StyleExample = _component(() => {
           单声明值
         </span>
       </ErrorBoundary>
-      <svg width="10" height="10">
-        <rect data-style-svg width="10" height="10" style={{ fill: 'red !important' }} />
+      <svg width={'10'} height={'10'}>
+        <rect data-style-svg width={'10'} height={'10'} style={{ fill: 'red !important' }} />
       </svg>
       <math data-style-math style={{ color: 'blue !important' }}>
         <mi>x</mi>

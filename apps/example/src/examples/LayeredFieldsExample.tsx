@@ -97,12 +97,12 @@ export const LayeredFieldsExample = _component(() => {
     callback = `B:${form.name ?? '空'}`;
   };
   return (
-    <section aria-label="多层字段组件">
+    <section aria-label={'多层字段组件'}>
       <h2>两层包装仍保持输入与类型</h2>
       {visible && (
         <FieldShell<string | undefined>
           {...attributes}
-          field="name"
+          field={'name'}
           label={revision === 'A' ? undefined : '新的姓名'}
           class={appearance}
           bind:value={form.name}
@@ -115,8 +115,8 @@ export const LayeredFieldsExample = _component(() => {
         />
       )}
       <FieldShell<number | undefined>
-        field="amount"
-        label="两层数字"
+        field={'amount'}
+        label={'两层数字'}
         bind:value={form.amount}
         format={(value) => (value === undefined ? '' : String(value))}
         parse={(text) => (text === '' ? undefined : Number(text))}

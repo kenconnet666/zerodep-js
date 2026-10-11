@@ -23,7 +23,7 @@ const Button = _component(({ type = 'button', ...attrs }: JSX.IntrinsicElements[
 
 export const valid = (
   <>
-    <Required label="确定" />
+    <Required label={'确定'} />
     <Generic item={{ id: 1 }}>{(item) => <span>{item.id}</span>}</Generic>
     <Button
       disabled
@@ -61,10 +61,10 @@ export const boundary = (
 );
 
 export const numericOption = <option value={1}>数字选项</option>;
-export const scalarAttributes = <div hidden="until-found" ariaHidden={false} translate={false} />;
+export const scalarAttributes = <div hidden={'until-found'} ariaHidden={false} translate={false} />;
 export const optionalAttribute = <button disabled={undefined} />;
 export const vector = (
-  <svg className="图形" viewBox="0 0 10 10" focusable={false}>
+  <svg className={'图形'} viewBox={'0 0 10 10'} focusable={false}>
     <path fillOpacity={0.5} strokeDasharray={undefined} />
   </svg>
 );
@@ -83,7 +83,7 @@ export const mathematics = (
     <mtext>
       <span>类型正确</span>
     </mtext>
-    <annotation-xml encoding="text/html">
+    <annotation-xml encoding={'text/html'}>
       <div />
     </annotation-xml>
   </math>
@@ -93,7 +93,7 @@ export const mathematics = (
 export const invalidPresentation = <path strokeDasharray={{ values: [1, 2] }} />;
 export const nativeInput = (
   <input
-    type="checkbox"
+    type={'checkbox'}
     onInput={(event) => {
       const optional: boolean | undefined = event.isComposing;
       void optional;

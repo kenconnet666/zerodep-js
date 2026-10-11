@@ -33,11 +33,11 @@ export const BindingTypes = _component(() => {
   let number = _state<number>();
   let selected = _state<string[]>([]);
   const input = <input bind:value={text} />;
-  const numeric = <input type="number" bind:valueAsNumber={number} />;
-  const boolean = <input type="checkbox" bind:checked={flag} />;
+  const numeric = <input type={'number'} bind:valueAsNumber={number} />;
+  const boolean = <input type={'checkbox'} bind:checked={flag} />;
   const select = <select multiple bind:value={selected} />;
-  const component = <Field label="字段" bind:value={text} bind:checked={flag} />;
-  const union = <UnionField kind="text" bind:value={text} />;
+  const component = <Field label={'字段'} bind:value={text} bind:checked={flag} />;
+  const union = <UnionField kind={'text'} bind:value={text} />;
   let optional = _state<string>();
   const optionalBinding = <OptionalField bind:value={optional} />;
   const optionalPlain = <OptionalField onValueChange={() => {}} />;
@@ -49,10 +49,10 @@ export const BindingTypes = _component(() => {
   // @ts-expect-error 泛型实参仍然约束绑定值。
   const wrongGenericBinding = <GenericField<number> bind:value={text} />;
   // @ts-expect-error 绑定不能破坏判别联合的 kind/value 对应关系。
-  const wrongUnion = <UnionField kind="number" bind:value={text} />;
+  const wrongUnion = <UnionField kind={'number'} bind:value={text} />;
   const mixed = (
     <Field
-      label="字段"
+      label={'字段'}
       bind:value={text}
       checked={flag}
       onCheckedChange={(next) => {
@@ -63,15 +63,15 @@ export const BindingTypes = _component(() => {
   // @ts-expect-error bind 不能替代无关的必填 label。
   const missingLabel = <Field bind:value={text} bind:checked={flag} />;
   // @ts-expect-error value 和 bind:value 不能同时拥有同一字段。
-  const duplicate = <Field label="字段" value="重复" bind:value={text} bind:checked={flag} />;
+  const duplicate = <Field label={'字段'} value={'重复'} bind:value={text} bind:checked={flag} />;
   // @ts-expect-error 必须提供普通 value/回调或对应 bind。
-  const missingValue = <Field label="字段" bind:checked={flag} />;
+  const missingValue = <Field label={'字段'} bind:checked={flag} />;
   // @ts-expect-error 组件的 value 是 string。
-  const wrong = <Field label="字段" bind:value={flag} bind:checked={flag} />;
+  const wrong = <Field label={'字段'} bind:value={flag} bind:checked={flag} />;
   // @ts-expect-error 文本绑定不能写回 number。
   const wrongNative = <input bind:value={number} />;
   // @ts-expect-error checked 是 boolean。
-  const wrongChecked = <input type="checkbox" bind:checked={text} />;
+  const wrongChecked = <input type={'checkbox'} bind:checked={text} />;
   // 类型层验证属性集合；实际 JSX 的 ZJ1403 由原生编译器测试验证。
   // @ts-expect-error 非表单元素不提供 value 绑定。
   const wrongElement: JSX.IntrinsicElements['div'] = { 'bind:value': text };

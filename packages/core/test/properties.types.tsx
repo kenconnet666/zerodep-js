@@ -30,10 +30,10 @@ export const properties = (
         event.currentTarget.data.label.toUpperCase();
       }}
     />
-    <input form="form-id" list="suggestions" />
-    <button form="form-id" />
-    <label for="field-id">标签</label>
-    <output for="field-id other-field" form="form-id">
+    <input form={'form-id'} list={'suggestions'} />
+    <button form={'form-id'} />
+    <label for={'field-id'}>标签</label>
+    <output for={'field-id other-field'} form={'form-id'}>
       结果
     </output>
   </>
@@ -45,24 +45,24 @@ export const readonlyProperty = <div prop:offsetWidth={40} />;
 // @ts-expect-error form 的动态索引不能把只读 property 放宽成 any。
 export const readonlyFormProperty = <form prop:offsetWidth={40} />;
 // @ts-expect-error select 的索引同样不能放宽标准属性类型。
-export const wrongSelectProperty = <select prop:scrollTop="错误类型" />;
+export const wrongSelectProperty = <select prop:scrollTop={'错误类型'} />;
 // @ts-expect-error 自定义只读成员也不可写。
 export const readonlyCustom = <zj-typed-widget prop:immutable={1} />;
 // @ts-expect-error property 数据不能退化为 any。
 export const wrongData = <zj-typed-widget prop:data={{ label: 1 }} />;
 // @ts-expect-error 已有模型语义继续使用普通 value。
-export const bypassModel = <input prop:value="错误入口" />;
+export const bypassModel = <input prop:value={'错误入口'} />;
 // @ts-expect-error output.value 会改写 JSX 子内容。
-export const contentOwnership = <output value="错误入口" />;
+export const contentOwnership = <output value={'错误入口'} />;
 const richOutput = <strong>内容</strong>;
 // @ts-expect-error output 由原生表单控制文本；富内容使用普通状态容器。
 export const outputElement = <output children={richOutput} />;
 export const outputText = <output>{['合计：', 1, null, false]}</output>;
 // @ts-expect-error 无法通过 property 绕过 DOM 内容所有权。
-export const rawHtml = <div prop:innerHTML="<b>原始内容</b>" />;
+export const rawHtml = <div prop:innerHTML={'<b>原始内容</b>'} />;
 // @ts-expect-error select.length 会重写受框架管理的选项。
 export const optionOwnership = <select prop:length={0} />;
 // @ts-expect-error table.caption 会替换受管理的 DOM 子树。
 export const tableOwnership = <table prop:caption={null} />;
 // @ts-expect-error label.form 是关联结果，不是可指定的内容属性。
-export const labelForm = <label form="并非内容属性" />;
+export const labelForm = <label form={'并非内容属性'} />;

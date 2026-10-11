@@ -24,7 +24,7 @@ export const FormExample = _component(() => {
   let handlerButton: HTMLButtonElement | undefined;
 
   return (
-    <section aria-label="表单契约">
+    <section aria-label={'表单契约'}>
       <h2>表单契约</h2>
       <label>
         即时归一化{' '}
@@ -67,12 +67,12 @@ export const FormExample = _component(() => {
         />
       </label>
       <output data-ime>{ime}</output>
-      <button type="button" data-ime-external onClick={() => (ime = '外部模型')}>
+      <button type={'button'} data-ime-external onClick={() => (ime = '外部模型')}>
         更新组合输入模型
       </button>
       <label>
         <input
-          type="checkbox"
+          type={'checkbox'}
           checked={accepted}
           onChange={(event) => {
             accepted = event.currentTarget.checked;
@@ -82,7 +82,7 @@ export const FormExample = _component(() => {
       </label>
       <label>
         <input
-          type="checkbox"
+          type={'checkbox'}
           checked={false}
           onChange={() => {
             rejectedEvents++;
@@ -95,9 +95,9 @@ export const FormExample = _component(() => {
       </output>
       <label>
         <input
-          type="radio"
-          name="controlled-choice"
-          value="a"
+          type={'radio'}
+          name={'controlled-choice'}
+          value={'a'}
           checked={radio === 'a'}
           onChange={() => {
             radio = 'a';
@@ -107,9 +107,9 @@ export const FormExample = _component(() => {
       </label>
       <label>
         <input
-          type="radio"
-          name="controlled-choice"
-          value="b"
+          type={'radio'}
+          name={'controlled-choice'}
+          value={'b'}
           checked={radio === 'b'}
           onChange={() => {
             radio = 'b';
@@ -118,11 +118,11 @@ export const FormExample = _component(() => {
         单选乙
       </label>
       <label>
-        <input type="radio" name="controlled-choice" value="blocked" checked={false} />
+        <input type={'radio'} name={'controlled-choice'} value={'blocked'} checked={false} />
         拒绝单选
       </label>
       <select
-        aria-label="动态选项"
+        aria-label={'动态选项'}
         value={choice}
         onChange={(event) => {
           choice = event.currentTarget.value;
@@ -133,7 +133,7 @@ export const FormExample = _component(() => {
         </For>
       </select>
       <button
-        type="button"
+        type={'button'}
         data-add-option
         onClick={() => {
           options.push({ id: 2, value: 'late', label: '后来' });
@@ -142,7 +142,7 @@ export const FormExample = _component(() => {
         添加所选项
       </button>
       <button
-        type="button"
+        type={'button'}
         data-replace-option
         onClick={() => {
           options = options.map((option) => ({
@@ -154,7 +154,7 @@ export const FormExample = _component(() => {
         修改选项值
       </button>
       <button
-        type="button"
+        type={'button'}
         data-choose-option
         onClick={() => {
           choice = 'changed';
@@ -164,14 +164,14 @@ export const FormExample = _component(() => {
       </button>
       <output data-option-state>{choice}</output>
       <select
-        aria-label="空值选择"
+        aria-label={'空值选择'}
         value={nullable}
         onChange={(event) => {
           nullable = event.currentTarget.value;
         }}
       >
-        <option value="">请选择</option>
-        <option value="x">有效值</option>
+        <option value={''}>请选择</option>
+        <option value={'x'}>有效值</option>
       </select>
       <form
         data-reset-form
@@ -182,7 +182,7 @@ export const FormExample = _component(() => {
         <label>
           受控重置{' '}
           <input
-            name="controlled"
+            name={'controlled'}
             value={resetValue}
             onInput={(event) => {
               resetValue = event.currentTarget.value;
@@ -190,12 +190,12 @@ export const FormExample = _component(() => {
           />
         </label>
         <label>
-          非受控重置 <input name="uncontrolled" defaultValue={defaultText} />
+          非受控重置 <input name={'uncontrolled'} defaultValue={defaultText} />
         </label>
         <label>
           <input
-            type="checkbox"
-            name="checked"
+            type={'checkbox'}
+            name={'checked'}
             checked={resetCheck}
             onChange={(event) => {
               resetCheck = event.currentTarget.checked;
@@ -203,13 +203,13 @@ export const FormExample = _component(() => {
           />
           重置勾选
         </label>
-        <select aria-label="默认选择" name="default-select" defaultValue="b">
-          <option value="a">甲</option>
-          <option value="b">乙</option>
+        <select aria-label={'默认选择'} name={'default-select'} defaultValue={'b'}>
+          <option value={'a'}>甲</option>
+          <option value={'b'}>乙</option>
         </select>
-        <button type="reset">原生重置</button>
+        <button type={'reset'}>原生重置</button>
         <button
-          type="button"
+          type={'button'}
           data-change-default
           onClick={() => {
             defaultText = '后续默认值';
@@ -218,7 +218,7 @@ export const FormExample = _component(() => {
           更改默认属性
         </button>
         <button
-          type="button"
+          type={'button'}
           data-block-reset
           onClick={() => {
             preventReset = true;
@@ -230,7 +230,7 @@ export const FormExample = _component(() => {
       <label>
         文件选择{' '}
         <input
-          type="file"
+          type={'file'}
           onChange={(event) => {
             file = event.currentTarget.files?.[0]?.name ?? '';
           }}
@@ -240,10 +240,10 @@ export const FormExample = _component(() => {
       <label>
         原生范围{' '}
         <input
-          type="range"
-          min="0"
-          max="10"
-          value=""
+          type={'range'}
+          min={'0'}
+          max={'10'}
+          value={''}
           onInput={() => {
             rangeEvents++;
           }}
@@ -251,7 +251,7 @@ export const FormExample = _component(() => {
       </label>
       <output data-range-events>{rangeEvents}</output>
       <button
-        type="button"
+        type={'button'}
         ref={(node) => {
           handlerButton = node;
         }}
@@ -260,7 +260,7 @@ export const FormExample = _component(() => {
         可替换回调
       </button>
       <button
-        type="button"
+        type={'button'}
         data-replace-handler
         onClick={() => {
           handler = () => {

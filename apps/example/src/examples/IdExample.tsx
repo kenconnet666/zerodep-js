@@ -16,7 +16,7 @@ export const IdExample = _component(() => {
   let rows = _state(['甲', '乙']);
   let shown = _state(true);
   return (
-    <section aria-label="稳定组件 ID">
+    <section aria-label={'稳定组件 ID'}>
       <h2>组件 ID 与无障碍关联</h2>
       <button
         data-id-reverse
@@ -37,7 +37,7 @@ export const IdExample = _component(() => {
       <For each={rows} keyBy={(name) => name}>
         {(name) => <Field name={name} />}
       </For>
-      {shown ? <Field name="可选" /> : null}
+      {shown ? <Field name={'可选'} /> : null}
       <div ref={(target) => _mount(Field, { target, props: { name: '独立根' } })} />
     </section>
   );

@@ -34,7 +34,7 @@ export const ToggleButton = _component(
       variant={variant}
       disabled={disabled}
       loading={loading}
-      type="button"
+      type={'button'}
       aria-pressed={pressed}
       slotRipple={(state) => _resolveSlotProps(slotRipple, { ...state, pressed }) ?? {}}
       slotSpinner={(state) => _resolveSlotProps(slotSpinner, { ...state, pressed }) ?? {}}

@@ -101,7 +101,7 @@ export const Ripple = _component(
       <span
         {...rest}
         bind:this={layer}
-        aria-hidden="true"
+        aria-hidden={'true'}
         class={[
           css(() => {
             // 覆盖层铺满定位父级，并按按钮圆角裁剪波纹，不参与文字和图标布局。

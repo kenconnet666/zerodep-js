@@ -28,7 +28,7 @@ export const LifecycleExample = _component(() => {
   const model = _state({ nested: { count: 1 } });
   let copied = _state(0);
   return (
-    <section aria-label="生命周期与快照">
+    <section aria-label={'生命周期与快照'}>
       <h2>生命周期与快照</h2>
       <button
         data-lifecycle-toggle

@@ -54,7 +54,7 @@ export const LinkButton = _component(
         tabIndex={state.unavailable ? -1 : tabIndex}
         aria-disabled={state.unavailable || undefined}
         aria-busy={loading || undefined}
-        data-ui-action=""
+        data-ui-action={''}
         class={[
           css(() => {
             // 布局：边框计入盒子尺寸；relative 为内部 Ripple 提供定位参照。

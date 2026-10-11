@@ -131,9 +131,9 @@ export const App = _component(({ title }: { title: string }) => {
       >
         更新继承作者值
       </button>
-      <Counter label="打包" onCount={(value) => (messages.message = String(value))} />
+      <Counter label={'打包'} onCount={(value) => (messages.message = String(value))} />
       <label for={inputId}>消息</label>
-      <input id={inputId} aria-label="消息" bind:value={messages.message} bind:this={input} />
+      <input id={inputId} aria-label={'消息'} bind:value={messages.message} bind:this={input} />
       <Portal>
         <span data-packed-portal>外层内容</span>
       </Portal>
@@ -148,7 +148,7 @@ export const App = _component(({ title }: { title: string }) => {
       >
         加载打包组件
       </button>
-      {lazyVisible && <LazyCounter label="按需打包" />}
+      {lazyVisible && <LazyCounter label={'按需打包'} />}
 
       <output>{messages.message}</output>
       <Label

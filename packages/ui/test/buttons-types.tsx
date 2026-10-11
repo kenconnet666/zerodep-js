@@ -8,13 +8,13 @@ export const ButtonTypes = _component(() => {
   return (
     <ButtonGroup>
       <Button
-        size="2vw"
-        color="_primary"
+        size={'2vw'}
+        color={'_primary'}
         slotSpinner={(state) => ({ color: state.loading ? '_muted' : 'currentColor' })}
       >
         保存
       </Button>
-      <Button variant="text" icon={<Icon icon={Search} />} aria-label="搜索" />
+      <Button variant={'text'} icon={<Icon icon={Search} />} aria-label={'搜索'} />
       <ToggleButton
         bind:pressed={pressed}
         slotSpinner={(state) => ({ color: state.pressed ? '_error' : '_primary' })}
@@ -23,11 +23,11 @@ export const ButtonTypes = _component(() => {
       </ToggleButton>
       <ToggleButton
         icon={<Icon icon={Search} />}
-        aria-labelledby="search-label"
+        aria-labelledby={'search-label'}
         bind:pressed={pressed}
       />
       <LinkButton
-        href="/docs"
+        href={'/docs'}
         ref={(node) => {
           node.href = '/docs';
         }}
@@ -36,17 +36,17 @@ export const ButtonTypes = _component(() => {
   );
 });
 // @ts-expect-error 图标按钮必须有名称。
-const unnamed = <Button variant="text" icon={<Icon icon={Search} />} />;
+const unnamed = <Button variant={'text'} icon={<Icon icon={Search} />} />;
 const unnamedToggle = (
   // @ts-expect-error 图标 Toggle 同样必须有名称。
   <ToggleButton icon={<Icon icon={Search} />} pressed={false} onPressedChange={() => {}} />
 );
 // @ts-expect-error 相连布局不能换行。
-const wrapped = <ButtonGroup wrap="wrap" />;
+const wrapped = <ButtonGroup wrap={'wrap'} />;
 // @ts-expect-error 相连布局不能留有间距。
-const spaced = <ButtonGroup gap="1em" />;
+const spaced = <ButtonGroup gap={'1em'} />;
 // @ts-expect-error Toggle 不参与表单提交。
-const submitToggle = <ToggleButton type="submit" pressed={false} onPressedChange={() => {}} />;
+const submitToggle = <ToggleButton type={'submit'} pressed={false} onPressedChange={() => {}} />;
 // @ts-expect-error 受控 Toggle 必须提供写回回调。
 const readonlyToggle = <ToggleButton pressed={false} />;
 // @ts-expect-error 文本直接通过 children 组合，不保留 slotText。
@@ -65,14 +65,14 @@ const linkRef: LinkButtonProps = {
 // @ts-expect-error 内部图标不能通过槽成为另一可访问对象。
 const namedDecoration = <Button slotSpinner={{ 'aria-label': '覆盖' }} />;
 // @ts-expect-error 图标槽接收节点，不接收 Lucide 原始数据。
-const rawIcon = <Button variant="text" icon={Search} aria-label="搜索" />;
+const rawIcon = <Button variant={'text'} icon={Search} aria-label={'搜索'} />;
 const customIcon = (
   <Button
-    variant="text"
-    aria-label="自定义图标"
+    variant={'text'}
+    aria-label={'自定义图标'}
     icon={
-      <svg viewBox="0 0 24 24">
-        <path d="M0 0h1" />
+      <svg viewBox={'0 0 24 24'}>
+        <path d={'M0 0h1'} />
       </svg>
     }
   />

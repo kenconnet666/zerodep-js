@@ -8,7 +8,7 @@ export const DisclosureExample = _component(() => {
   let left = _state(false);
   let right = _state(false);
   return (
-    <section aria-label="原生展开绑定">
+    <section aria-label={'原生展开绑定'}>
       <button
         data-details-toggle
         onClick={() => {
@@ -18,7 +18,7 @@ export const DisclosureExample = _component(() => {
         切换展开状态
       </button>
       <label>
-        <input type="checkbox" data-details-reject bind:checked={reject} />
+        <input type={'checkbox'} data-details-reject bind:checked={reject} />
         拒绝展开
       </label>
       <details
@@ -34,10 +34,10 @@ export const DisclosureExample = _component(() => {
       </details>
       <output data-details-model>{String(open)}</output>
       <output data-details-last>{last}</output>
-      <details name="details-pair" data-details-left bind:open={left}>
+      <details name={'details-pair'} data-details-left bind:open={left}>
         <summary>左侧</summary>
       </details>
-      <details name="details-pair" data-details-right bind:open={right}>
+      <details name={'details-pair'} data-details-right bind:open={right}>
         <summary>右侧</summary>
       </details>
       <output data-details-pair>{`${left}:${right}`}</output>

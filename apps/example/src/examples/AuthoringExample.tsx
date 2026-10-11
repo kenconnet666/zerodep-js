@@ -25,7 +25,7 @@ const ProfileField = _component(
     return (
       <div {...attrs} data-live-profile class={appearance}>
         <input
-          aria-label="实时表单姓名"
+          aria-label={'实时表单姓名'}
           title={caption}
           bind:value={form.name}
           onInput={() => {
@@ -41,7 +41,7 @@ const ProfileField = _component(
 const NameField = _component(
   ({ value, onValueChange }: { value: string; onValueChange: (value: string) => void }) => (
     <input
-      aria-label="组件双向输入"
+      aria-label={'组件双向输入'}
       value={value}
       onInput={(event) => onValueChange(event.currentTarget.value)}
     />
@@ -57,7 +57,7 @@ const Details = _lazy(
   {
     fallback: <p data-lazy-pending>正在下载组件…</p>,
     error: (error, retry) => (
-      <div role="alert">
+      <div role={'alert'}>
         <p>{String(error)}</p>
         <button onClick={retry}>重试下载组件</button>
       </div>
@@ -95,7 +95,7 @@ export const AuthoringExample = _component(() => {
   let show = _state(false);
   const initial = _snapshot(form);
   return (
-    <section aria-label="绑定、快照和按需加载">
+    <section aria-label={'绑定、快照和按需加载'}>
       <h2>少写重复的输入代码</h2>
       <label>
         双向文本
@@ -110,29 +110,29 @@ export const AuthoringExample = _component(() => {
       <output data-bind-after>{afterInput}</output>
       <label>
         双向勾选
-        <input type="checkbox" bind:checked={checked} />
+        <input type={'checkbox'} bind:checked={checked} />
       </label>
       <output data-bind-checked>{String(checked)}</output>
       <label>
         双向数字
-        <input type="number" bind:valueAsNumber={amount} />
+        <input type={'number'} bind:valueAsNumber={amount} />
       </label>
       <output data-bind-number>{amount === undefined ? '空' : amount}</output>
       <label>
         双向多选
         <select multiple={true} bind:value={selected}>
-          <option value="a">甲</option>
-          <option value="b">乙</option>
-          <option value="c">丙</option>
+          <option value={'a'}>甲</option>
+          <option value={'b'}>乙</option>
+          <option value={'c'}>丙</option>
         </select>
       </label>
       <output data-bind-selected>{selected.join(',')}</output>
       <label>
         可切换单多选
         <select {...selectOptions} bind:value={selection}>
-          <option value="a">甲</option>
-          <option value="b">乙</option>
-          <option value="c">丙</option>
+          <option value={'a'}>甲</option>
+          <option value={'b'}>乙</option>
+          <option value={'c'}>丙</option>
         </select>
       </label>
       <output data-select-mode-value>{JSON.stringify(selection)}</output>

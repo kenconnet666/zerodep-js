@@ -76,8 +76,8 @@ export const TaskItem = _component(
     return (
       <li class={task.completed ? 'task-row is-complete' : 'task-row'} data-task-id={task.id}>
         <input
-          class="task-check"
-          type="checkbox"
+          class={'task-check'}
+          type={'checkbox'}
           aria-label={`完成：${task.title}`}
           checked={optimisticCompleted ?? task.completed}
           disabled={disabled || pending}
@@ -86,14 +86,14 @@ export const TaskItem = _component(
           }}
         />
 
-        <div class="task-content">
+        <div class={'task-content'}>
           <form
             onSubmit={(event) => {
               void save(event);
             }}
-            class="task-edit"
+            class={'task-edit'}
           >
-            <label class="sr-only" for={`task-${task.id}`}>
+            <label class={'sr-only'} for={`task-${task.id}`}>
               编辑：{task.title}
             </label>
             <input
@@ -101,16 +101,16 @@ export const TaskItem = _component(
               data-task-draft
               value={draft}
               maxLength={160}
-              autoComplete="off"
+              autoComplete={'off'}
               onInput={(event) => (draft = event.currentTarget.value)}
             />
 
-            <button type="submit" disabled={disabled || pending || !dirty}>
+            <button type={'submit'} disabled={disabled || pending || !dirty}>
               保存
             </button>
             <button
-              type="button"
-              class="quiet"
+              type={'button'}
+              class={'quiet'}
               disabled={disabled || pending}
               onClick={() => {
                 void remove();
@@ -119,7 +119,7 @@ export const TaskItem = _component(
               删除
             </button>
           </form>
-          <div class="task-meta">
+          <div class={'task-meta'}>
             <span>
               {pending
                 ? '正在保存…'
@@ -131,8 +131,8 @@ export const TaskItem = _component(
             </span>
             {dirty && (
               <button
-                type="button"
-                class="text-button"
+                type={'button'}
+                class={'text-button'}
                 disabled={pending}
                 onClick={() => {
                   draft = task.title;
@@ -144,9 +144,9 @@ export const TaskItem = _component(
             )}
           </div>
           {failure && (
-            <p role="alert" class="task-error">
+            <p role={'alert'} class={'task-error'}>
               {failure}
-              <span class="server-title">服务器内容：{task.title}</span>
+              <span class={'server-title'}>服务器内容：{task.title}</span>
             </p>
           )}
         </div>

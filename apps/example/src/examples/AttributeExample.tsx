@@ -10,7 +10,7 @@ export const AttributeExample = _component(() => {
   });
   const presentation = _state<{ 'stroke-width'?: number }>({ 'stroke-width': 3 });
   return (
-    <section aria-label="属性与命名空间">
+    <section aria-label={'属性与命名空间'}>
       <h2>属性与命名空间</h2>
       <button data-change-first onClick={() => (first = '前项已更新')}>
         更新较早属性
@@ -53,23 +53,23 @@ export const AttributeExample = _component(() => {
       <button data-native-disabled disabled={enabled ? true : undefined}>
         布尔属性
       </button>
-      <input aria-label="保留首次默认值" defaultValue="默认文本" value={undefined} />
-      <input type="checkbox" aria-label="保留首次勾选" defaultChecked checked={undefined} />
+      <input aria-label={'保留首次默认值'} defaultValue={'默认文本'} value={undefined} />
+      <input type={'checkbox'} aria-label={'保留首次勾选'} defaultChecked checked={undefined} />
       <button
         data-associated-popover
-        popoverTarget="attribute-popover"
-        popoverTargetAction="toggle"
+        popoverTarget={'attribute-popover'}
+        popoverTargetAction={'toggle'}
       >
         打开提示
       </button>
-      <div id="attribute-popover" popover="auto">
+      <div id={'attribute-popover'} popover={'auto'}>
         原生提示
       </div>
-      <form data-form-encoding encoding="multipart/form-data" />
+      <form data-form-encoding encoding={'multipart/form-data'} />
       <table>
         <tbody>
           <tr>
-            <td data-table-char ch="." chOff="2">
+            <td data-table-char ch={'.'} chOff={'2'}>
               表格对齐
             </td>
           </tr>
@@ -90,43 +90,43 @@ export const AttributeExample = _component(() => {
       </template>
       <svg
         data-native-svg
-        viewBox="0 0 20 20"
+        viewBox={'0 0 20 20'}
         focusable={false}
-        data-StatusCode="有效"
-        xmlns="http://www.w3.org/2000/svg"
-        xmlnsXlink="http://www.w3.org/1999/xlink"
+        data-StatusCode={'有效'}
+        xmlns={'http://www.w3.org/2000/svg'}
+        xmlnsXlink={'http://www.w3.org/1999/xlink'}
         xmlLang={enabled ? 'zh-CN' : undefined}
-        width="100"
-        height="60"
+        width={'100'}
+        height={'60'}
       >
         <defs>
           <filter
-            id="attribute-filter"
-            filterUnits="userSpaceOnUse"
-            primitiveUnits="objectBoundingBox"
+            id={'attribute-filter'}
+            filterUnits={'userSpaceOnUse'}
+            primitiveUnits={'objectBoundingBox'}
           >
             <feGaussianBlur
               data-filter-blur
-              in="SourceGraphic"
+              in={'SourceGraphic'}
               stdDeviation={enabled ? '1 2' : '2 3'}
             />
 
             <feConvolveMatrix
               data-filter-matrix
-              order="3"
-              kernelMatrix="0 0 0 0 1 0 0 0 0"
+              order={'3'}
+              kernelMatrix={'0 0 0 0 1 0 0 0 0'}
               preserveAlpha={false}
             />
           </filter>
-          <path id="attribute-shape" d="M0 0 L10 10" />
-          <linearGradient id="attribute-gradient" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="red" stopOpacity={0.5} />
+          <path id={'attribute-shape'} d={'M0 0 L10 10'} />
+          <linearGradient id={'attribute-gradient'} gradientUnits={'userSpaceOnUse'}>
+            <stop offset={'0%'} stopColor={'red'} stopOpacity={0.5} />
           </linearGradient>
         </defs>
         <path
           data-presentation
-          d="M0 10 L10 0"
-          stroke="black"
+          d={'M0 10 L10 0'}
+          stroke={'black'}
           strokeWidth={enabled ? 2 : 4}
           {...presentation}
           fillOpacity={enabled ? 0.5 : undefined}
@@ -136,10 +136,10 @@ export const AttributeExample = _component(() => {
         <use
           data-native-use
           xlinkHref={enabled ? '#attribute-shape' : undefined}
-          xmlSpace="preserve"
+          xmlSpace={'preserve'}
         />
 
-        <foreignObject width="10" height="10">
+        <foreignObject width={'10'} height={'10'}>
           <div data-foreign-html>HTML</div>
         </foreignObject>
         <title>
@@ -157,19 +157,19 @@ export const AttributeExample = _component(() => {
         </mrow>
         <mtext>
           {enabled ? <span data-mtext-html>开启</span> : <span data-mtext-html>关闭</span>}
-          <svg data-mtext-svg viewBox="0 0 2 2">
-            <circle r="1" />
+          <svg data-mtext-svg viewBox={'0 0 2 2'}>
+            <circle r={'1'} />
           </svg>
         </mtext>
-        <annotation-xml encoding="Application/XHTML+XML">
+        <annotation-xml encoding={'Application/XHTML+XML'}>
           <div data-annotation-html>HTML</div>
         </annotation-xml>
-        <annotation-xml encoding="application/mathml+xml">
+        <annotation-xml encoding={'application/mathml+xml'}>
           <mrow data-annotation-math>
             <mi>z</mi>
           </mrow>
-          <svg data-annotation-svg viewBox="0 0 2 2">
-            <circle r="1" />
+          <svg data-annotation-svg viewBox={'0 0 2 2'}>
+            <circle r={'1'} />
           </svg>
         </annotation-xml>
       </math>

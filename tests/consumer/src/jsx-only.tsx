@@ -11,4 +11,4 @@ export const view = (
   </button>
 );
 // @ts-expect-error 普通属性仍检查类型，不能退化为任意属性。
-export const invalid = <button disabled="yes" />;
+export const invalid = <button disabled={'yes'} />;

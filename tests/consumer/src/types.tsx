@@ -59,9 +59,9 @@ let boundText = '';
 let boundNumber = 123;
 let expanded = false;
 let selected: string[] = [];
-<input type="checkbox" value="a" bind:group={selected} />;
+<input type={'checkbox'} value={'a'} bind:group={selected} />;
 // @ts-expect-error 分组模型不接受 boolean。
-<input type="checkbox" value="a" bind:group={expanded} />;
+<input type={'checkbox'} value={'a'} bind:group={expanded} />;
 <details bind:open={expanded} />;
 // @ts-expect-error 展开状态需要 boolean，不能写回 string。
 <details bind:open={boundText} />;
@@ -69,7 +69,7 @@ let selected: string[] = [];
 // @ts-expect-error 文本绑定不会把 number 偷换成 string。
 <input bind:value={boundNumber} />;
 const LazyCounter = _lazy(async () => Counter);
-<LazyCounter label="按需" />;
+<LazyCounter label={'按需'} />;
 // @ts-expect-error 按需包装保留原组件的必填 props。
 <LazyCounter />;
 
@@ -80,9 +80,9 @@ _mount(OptionalParameter, { target: document.body, props: optionalProps });
 _render(OptionalParameter, { props: optionalProps });
 // @ts-expect-error 包声明不能把可选参数中的属性类型放宽。
 _render(OptionalParameter, { props: { label: 123 } });
-<button popoverTarget="help" />;
+<button popoverTarget={'help'} />;
 <svg>
-  <feGaussianBlur stdDeviation="1 2" />
+  <feGaussianBlur stdDeviation={'1 2'} />
 </svg>;
 // @ts-expect-error 生成数据的声明随包提供，但不放宽元素对象类型。
 <button popoverTarget={document.body} />;
