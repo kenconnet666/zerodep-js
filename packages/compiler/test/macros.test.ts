@@ -5,6 +5,25 @@ import { _derived, _state } from '../../core/dist/runtime/macros.js';
 import { CompileError, compile } from '../src/index.js';
 
 describe('变量宏的绑定转换', () => {
+  it('状态初始化函数与派生工厂中的命名宏都转换，闭包保持正确的词法绑定', () => {
+    expect(
+      execute(`
+import {_state, _derived} from 'zerodep-js';
+const holder = _state((() => {
+  let value = _state(2);
+  return {get value() {return value;}, increment() {value++;}};
+})());
+const total = _derived.by(() => {
+  const doubled = _derived(holder.value * 2);
+  return doubled + 1;
+});
+const before = total;
+holder.increment();
+const result = [before, total];
+`),
+    ).toEqual([5, 7]);
+  });
+
   it('普通变量式读写、表达式派生和计算函数真实执行', () => {
     expect(
       execute(`

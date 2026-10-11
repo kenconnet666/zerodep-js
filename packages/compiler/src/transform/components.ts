@@ -11,16 +11,28 @@ function readonlyObject(
   binding: Binding,
   report: Report,
 ): void {
+  function targets(node: t.Node): t.MemberExpression[] {
+    if (t.isMemberExpression(node)) return [node];
+    if (t.isRestElement(node)) return targets(node.argument);
+    if (t.isAssignmentPattern(node)) return targets(node.left);
+    if (t.isArrayPattern(node)) return node.elements.flatMap((item) => (item ? targets(item) : []));
+    if (t.isObjectPattern(node))
+      return node.properties.flatMap((property) =>
+        targets(t.isRestElement(property) ? property.argument : property.value),
+      );
+    return [];
+  }
   setup.traverse({
-    'AssignmentExpression|UpdateExpression|UnaryExpression'(write) {
+    'AssignmentExpression|UpdateExpression|UnaryExpression|ForInStatement|ForOfStatement'(write) {
       if (write.isUnaryExpression() && write.node.operator !== 'delete') return;
-      const target = write.isAssignmentExpression() ? write.node.left : write.node.argument;
-      if (
-        t.isMemberExpression(target) &&
-        t.isIdentifier(target.object) &&
-        write.scope.getBinding(target.object.name) === binding
-      )
-        report(write.node, 'ZJ1203', '不能修改 props 或 rest 输入的顶层属性，请使用回调。');
+      const target =
+        write.isUpdateExpression() || write.isUnaryExpression()
+          ? write.node.argument
+          : write.node.left;
+      // 只检查赋值位置；默认表达式里的读取和深层共享对象的修改仍然合法。
+      for (const member of targets(target))
+        if (t.isIdentifier(member.object) && write.scope.getBinding(member.object.name) === binding)
+          report(member, 'ZJ1203', '不能修改 props 或 rest 输入的顶层属性，请使用回调。');
     },
   });
 }

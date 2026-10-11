@@ -87,7 +87,8 @@ export function prepareDerivedPatterns(ast: t.File, program: NodePath<t.Program>
       }
       if (changed) {
         path.node.declarations = declarations;
-        path.skip();
+        // 继续进入工厂及默认表达式，里面也可能声明派生解构。
+        // 生成的中间声明均为命名绑定，不会被本转换重复展开。
       }
     },
   });

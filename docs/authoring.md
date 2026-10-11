@@ -1,5 +1,35 @@
 # 输入绑定、快照和按需组件
 
+## props 参数解构直接响应
+
+`_component` 的顶层参数解构已经保持最新输入，不需要 `_derived`、额外的 props 宏或绑定字段名单：
+
+```tsx
+const NameField = _component(
+  ({
+    model: form,
+    label = '姓名',
+    ...attrs
+  }: {
+    model: { name: string };
+    label?: string;
+    title?: string;
+  }) => <input {...attrs} aria-label={label} bind:value={form.name} />,
+);
+
+let form = _state({ name: '张三' });
+<NameField model={form} />;
+// 之后执行 form = { name: '李四' }，子组件显示和输入写回都使用新对象。
+```
+
+别名 `form`、默认值 `label`、剩余属性 `attrs` 都由组件编译边界处理。回调 prop 在事件执行时读取最新函数，组件初始化和局部状态不会因此重建。默认值只在输入为 undefined 时使用；默认对象不会自动成为深响应式状态。
+
+持续读取不等于顶层参数可写：`form.name` 是共享对象的字段，允许在其类型可写时绑定；`form = other` 仍禁止。标量组件输入通过下文的 `value/onValueChange` 与 `bind:value` 写回。
+
+普通局部解构依然是当次取值：组件体内的 `const { name } = form` 保存当前名字，需要持续计算时才使用 `const { name } = _derived(form)`。顶层参数里的复杂嵌套解构会明确报错；先解构出 `form` 再使用 `form.name` 即可。
+
+完整例子见 `apps/example/src/examples/AuthoringExample.tsx` 的“props 解构直接跟随表单替换”，包含别名、默认值、rest、最新事件回调、对象字段绑定和 CSS。
+
 ## 普通函数与派生解构
 
 普通函数参数、普通解构和返回对象都是本次调用的值。纯计算在 `_derived` 内同步读取的依赖会被追踪，包括函数内部的解构和下游同步调用：
@@ -52,7 +82,7 @@ let text = _state('');
 | select           | `bind:value={choice}`         | option 的字符串 value              |
 | select multiple  | `bind:value={choices}`        | 已选字符串数组                     |
 
-数字请声明 `let amount = _state<number>()`，多选请声明 `let choices = _state<string[]>([])`。当前 select 的绑定类型允许字符串或字符串数组，TS 不根据 multiple 自动收窄；按表格选择匹配的模型。radio 的 checked 表示一个按钮是否选中，不提供自动管理整个单选组的额外协议。
+数字请声明 `let amount = _state<number>()`，多选请声明 `let choices = _state<string[]>([])`。当前 select 的绑定类型允许字符串或字符串数组，TS 不根据 multiple 自动收窄；按表格选择匹配的模型。radio 的 checked 表示一个按钮是否选中；字符串单选组或字符串数组多选组可使用 `bind:group`，见 [表单](forms.md)。
 
 绑定接受可写变量或属性，例如 `bind:value={form.name}`。不能绑定函数调用、常量绑定、派生值或组件的只读顶层 props。不能同时声明同一字段的 value/defaultValue（或 checked/defaultChecked），包括藏在 spread 中的冲突。普通 spread 不包含赋值关系，不支持把 `bind:*` 放在 spread 对象里。
 
@@ -83,7 +113,7 @@ const NameField = _component(
 
 ## 快照备份
 
-`const saved = form` 只是多一个指向原数据的变量，改 form 时 saved 也跟着变。`const saved = _snapshot(form)` 才是独立备份；恢复时用 `form = _snapshot(saved)`，避免下一次编辑改掉备份。
+`const saved = form` 只是多一个指向同一对象的变量，修改该对象的字段时两边都能看到；整体替换 form 后，saved 仍然指向旧对象。`const saved = _snapshot(form)` 才是独立备份；恢复时用 `form = _snapshot(saved)`，避免下一次编辑改掉备份。
 
 ## 按需下载组件
 

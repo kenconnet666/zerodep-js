@@ -116,3 +116,19 @@ it('解构派生继续拒绝跨回调沿用外层收窄与纯计算内写状态'
     ),
   ).toThrow();
 });
+
+it('派生工厂里的局部派生解构也经过转换，复用业务函数时保持更新', () => {
+  expect(
+    execute(`
+import {_state, _derived} from 'zerodep-js';
+let quantity = _state(2);
+const {total} = _derived.by(() => {
+  const {price} = _derived({price: quantity * 5});
+  return {total: price * 2};
+});
+const before = total;
+quantity = 3;
+const result = [before, total];
+`),
+  ).toEqual([20, 30]);
+});

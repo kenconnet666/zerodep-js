@@ -229,6 +229,31 @@ const result = View;`,
     ['读取保留 key', '_component(({ key }) => key);', 'ZJ1207'],
     ['删除 props', '_component((props) => {delete props.title;return null;});', 'ZJ1203'],
     [
+      '解构赋值写入 props',
+      '_component((props) => {({title: props.title} = input);return null;});',
+      'ZJ1203',
+    ],
+    [
+      '循环写入 rest',
+      '_component(({...rest}) => {for (rest.title of values) {} return null;});',
+      'ZJ1203',
+    ],
+    [
+      '数组默认赋值写入 props',
+      '_component((props) => {[props.title = "默认"] = input;return null;});',
+      'ZJ1203',
+    ],
+    [
+      'rest 解构赋值写入 props',
+      '_component((props) => {({...props.title} = input);return null;});',
+      'ZJ1203',
+    ],
+    [
+      'for in 写入 props',
+      '_component((props) => {for (props.title in input) {} return null;});',
+      'ZJ1203',
+    ],
+    [
       '写入 rest',
       '_component(({ label, ...attrs }) => {attrs.title = label;return null;});',
       'ZJ1203',
@@ -237,5 +262,23 @@ const result = View;`,
     expect(() =>
       compile(`import { _component } from 'zerodep-js';${source};`, 'invalid.ts'),
     ).toThrow(code);
+  });
+
+  it('只读输入诊断不误报默认表达式读取、深层对象写入和同名局部变量', () => {
+    expect(() =>
+      compile(
+        `
+import {_component} from 'zerodep-js';
+const View = _component((props) => {
+  let title;
+  ({title = props.title} = {});
+  [props.form.title] = ['允许'];
+  for (props.form.title of ['继续允许']) {}
+  function local(props) { ({title: props.title} = {title: '普通对象'}); }
+  return null;
+});`,
+        'readonly.ts',
+      ),
+    ).not.toThrow();
   });
 });

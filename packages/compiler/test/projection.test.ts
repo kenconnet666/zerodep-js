@@ -62,6 +62,21 @@ async function check(source: string) {
   }
 }
 
+it('props 参数解构无需派生包装，别名、默认值、rest 和对象字段绑定保持原类型', async () => {
+  const source = `
+const Field = _component(({model: form, label = '姓名', ...attrs}: {
+  model: {name: string}; label?: string; title?: string;
+}) => <input {...attrs} aria-label={label} bind:value={form.name}/>);
+let model = _state({name: '甲'});
+const view = <Field model={model} title="输入"/>;
+`;
+  expect((await check(source)).diagnostics).toEqual([]);
+  const invalid = await check(
+    source.replace('model: {name: string}', 'model: {readonly name: string}'),
+  );
+  expect(invalid.diagnostics.some((item) => item.code === 2540)).toBe(true);
+});
+
 it('details 展开绑定保留 DOM 事件类型，并检查 boolean 写回', async () => {
   expect(
     (

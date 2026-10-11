@@ -7,7 +7,7 @@ import { createServerCssHost, withCssHost } from 'zerodep-js-css';
 import { execute } from '../../../compiler/test/execute.js';
 import { renderToString } from 'zerodep-js';
 
-it('真实编译后的主题绑定在 SSR 输出变量，特殊值不输出且请求互不污染', () => {
+it('真实编译后的主题在 SSR 保留原声明，不输出私有变量且请求互不污染', () => {
   class Theme extends SystemKeywords {
     // oxlint-disable-next-line typescript/no-misused-spread -- 主题属性组只复制原始值。
     override readonly color = { ...systemKeywords.color, _primary: '' };
@@ -35,10 +35,16 @@ const result = render(App);`;
   };
   const a = render('#123456');
   const b = render('#654321');
-  const variable = a.html.match(/--zj-[a-z0-9-]+/)![0];
-  expect(a.html).toContain(`${variable}:#123456`);
-  expect(b.html).toContain(`${variable}:#654321`);
-  expect(a.css).toBe(b.css);
+  expect(a.html).not.toContain('--zj-');
+  expect(b.html).not.toContain('--zj-');
+  expect(a.html).toContain('--user:yes');
+  expect(b.html).toContain('--user:yes');
+  expect(a.css).toContain('color:#123456;');
+  expect(a.css).not.toContain('#654321');
+  expect(b.css).toContain('color:#654321;');
+  expect(b.css).not.toContain('#123456');
+  expect(a.html.match(/class="([^"]+)"/)?.[1]).toBeTruthy();
+  expect(a.html.match(/class="([^"]+)"/)?.[1]).not.toBe(b.html.match(/class="([^"]+)"/)?.[1]);
   for (const value of [
     'inherit',
     'initial',

@@ -1,4 +1,43 @@
 import { _component, _state, _lazy, _snapshot } from 'zerodep-js';
+import { Css, css } from 'zerodep-js-css';
+
+const s = new Css();
+interface EditableProfile {
+  name: string;
+  width: number;
+}
+
+const ProfileField = _component(
+  ({
+    model: form,
+    caption = '默认姓名',
+    onEdited,
+    ...attrs
+  }: {
+    model: EditableProfile;
+    caption?: string | undefined;
+    onEdited?: (name: string) => void;
+    'data-revision': string;
+  }) => {
+    let edits = _state(0);
+    // props 参数别名仍是实时读取；CSS 和绑定都直接使用它，不需要 _derived。
+    const appearance = css(s.width.px(form.width));
+    return (
+      <div {...attrs} data-live-profile class={appearance}>
+        <input
+          aria-label="实时表单姓名"
+          title={caption}
+          bind:value={form.name}
+          onInput={() => {
+            edits++;
+            onEdited?.(form.name);
+          }}
+        />
+        <span data-profile-edits>{edits}</span>
+      </div>
+    );
+  },
+);
 
 const NameField = _component(
   ({ value, onValueChange }: { value: string; onValueChange: (value: string) => void }) => (
@@ -36,6 +75,16 @@ export const AuthoringExample = _component(() => {
   let selected = _state<string[]>(['a']);
   let custom = _state('父组件数据');
   let form = _state({ name: '保存的姓名' });
+  let profile = _state<EditableProfile>({ name: '第一份', width: 160 });
+  const originalProfile = profile;
+  let revision = _state('A');
+  let edited = _state('');
+  function firstEdited(name: string) {
+    edited = `A:${name}`;
+  }
+  function secondEdited(name: string) {
+    edited = `B:${name}`;
+  }
   let show = _state(false);
   const initial = _snapshot(form);
 
@@ -101,6 +150,25 @@ export const AuthoringExample = _component(() => {
         }}
       >
         恢复初始快照
+      </button>
+
+      <h3>props 解构直接跟随表单替换</h3>
+      <ProfileField
+        model={profile}
+        caption={revision === 'A' ? undefined : '新姓名'}
+        onEdited={revision === 'A' ? firstEdited : secondEdited}
+        data-revision={revision}
+      />
+      <p data-profile-current>{profile.name}</p>
+      <p data-profile-original>{originalProfile.name}</p>
+      <p data-profile-callback>{edited}</p>
+      <button
+        onClick={() => {
+          profile = { name: '第二份', width: 240 };
+          revision = 'B';
+        }}
+      >
+        替换整份表单
       </button>
 
       <h3>显示时才加载组件</h3>

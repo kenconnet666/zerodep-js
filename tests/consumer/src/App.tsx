@@ -79,15 +79,20 @@ export const App = _component(({ title }: { title: string }) => {
         class={css(themed.color._primary)}
         style={{ '--consumer-accent': '#663399' }}
       >
-        主题变量
+        主题声明
       </div>
       <button
         data-packed-keyword-update
         onClick={() => {
-          keyword = keyword === '#245fc5' ? 'var(--consumer-accent, inherit)' : '#ffffff';
+          keyword =
+            keyword === '#245fc5'
+              ? 'var(--consumer-accent, inherit)'
+              : keyword === '#ffffff'
+                ? '#245fc5'
+                : '#ffffff';
         }}
       >
-        更新主题变量
+        更新主题声明
       </button>
       <div
         data-packed-mapped-css

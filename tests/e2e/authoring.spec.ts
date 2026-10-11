@@ -1,6 +1,40 @@
 import { expect, test } from '@playwright/test';
 
 for (const mode of ['csr', 'ssr']) {
+  test(`${mode} props 参数解构直接跟随对象替换，绑定与 CSS 使用最新值`, async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    await page.goto(`/?render=${mode}`);
+    const field = page.locator('[data-live-profile]');
+    const input = page.getByLabel('实时表单姓名');
+    await expect(input).toHaveValue('第一份');
+    await expect(input).toHaveAttribute('title', '默认姓名');
+    await expect(field).toHaveCSS('width', '160px');
+    await expect(field).toHaveAttribute('data-revision', 'A');
+    const originalNode = await input.elementHandle();
+    const originalClass = await field.getAttribute('class');
+    await input.fill('第一次编辑');
+    await expect(page.locator('[data-profile-callback]')).toHaveText('A:第一次编辑');
+    await expect(page.locator('[data-profile-edits]')).toHaveText('1');
+
+    await page.getByRole('button', { name: '替换整份表单', exact: true }).click();
+    await expect(input).toHaveValue('第二份');
+    await expect(input).toHaveAttribute('title', '新姓名');
+    await expect(field).toHaveCSS('width', '240px');
+    await expect(field).toHaveAttribute('data-revision', 'B');
+    expect(await field.getAttribute('class')).toBe(originalClass);
+    expect(await originalNode!.evaluate((node) => node.isConnected)).toBe(true);
+    await expect(page.locator('[data-profile-edits]')).toHaveText('1');
+
+    await input.fill('第二次编辑');
+    await expect(page.locator('[data-profile-current]')).toHaveText('第二次编辑');
+    await expect(page.locator('[data-profile-original]')).toHaveText('第一次编辑');
+    await expect(page.locator('[data-profile-callback]')).toHaveText('B:第二次编辑');
+    await expect(page.locator('[data-profile-edits]')).toHaveText('2');
+    expect(errors).toEqual([]);
+    await originalNode!.dispose();
+  });
+
   test(`${mode} 原生和组件双向绑定沿用受控输入流程`, async ({ page }) => {
     await page.goto(`/?render=${mode}`);
     const section = page.getByRole('region', { name: '绑定、快照和按需加载' });

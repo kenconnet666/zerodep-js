@@ -203,7 +203,8 @@ function transformFramework(
           path,
           helper('derived', [member === 'by' ? argument : t.arrowFunctionExpression([], argument)]),
         );
-      path.skip();
+      // 转换后的调用不再是宏，继续遍历参数中的函数和声明。
+      // 跳过整棵子树会遗漏 _derived.by 工厂或状态初始化函数里的嵌套宏。
     },
   });
 
