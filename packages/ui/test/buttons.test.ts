@@ -9,12 +9,9 @@ import {
   Provider,
   Button,
   Icon,
-  IconButton,
   ToggleButton,
   LinkButton,
   ButtonGroup,
-  ButtonBase,
-  ButtonContent,
   useCss,
 } from '../dist/index.js';
 import { build } from 'vite';
@@ -61,18 +58,21 @@ function render(
   return { html: withCssHost(host, () => renderToString(App)), css: host.cssText() };
 }
 
-it('包根保留裸底座与内容组合，不暴露内部装配或旧样式函数', () => {
+it('包根删除重复按钮入口，保留正式按钮的自定义样式能力', () => {
   expect(ui).not.toHaveProperty('_buttonStyle');
   expect(ui).not.toHaveProperty('_buttonAppearance');
+  expect(ui).not.toHaveProperty('ButtonBase');
+  expect(ui).not.toHaveProperty('IconButton');
   expect(ui).not.toHaveProperty('ButtonView');
   expect(ui).not.toHaveProperty('LinkButtonRoot');
   const Custom = defineComponent(() => {
     const s = useCss();
     const appearance = collectCss(() => s.color(bx('#123456')));
-    return element(ButtonBase, {
+    return element(Button, {
       class: appearance,
       disabled: true,
-      children: element(ButtonContent, { loading: true, children: '自定义按钮' }),
+      loading: true,
+      children: '自定义按钮',
     });
   });
   const { html, css } = render(Custom, {});
@@ -83,18 +83,19 @@ it('包根保留裸底座与内容组合，不暴露内部装配或旧样式函�
   expect(css).toMatch(/color:var\(--zj-[a-z0-9-]+\)/);
 });
 
-it.each([Button, IconButton, ToggleButton, LinkButton])(
-  '按钮连续颜色不增加规则，特殊 CSS 与外部 style 保持原意',
-  (component) => {
+it.each([
+  ['文字', Button, { children: '测试', ripple: false }],
+  [
+    '图标',
+    Button,
+    { variant: 'text', icon: element(Icon, { icon: Search }), 'aria-label': '测试', ripple: false },
+  ],
+  ['切换', ToggleButton, { children: '测试', pressed: false, onPressedChange() {}, ripple: false }],
+  ['链接', LinkButton, { children: '测试', href: '/docs', ripple: false }],
+] as const)(
+  '%s按钮连续颜色不增加规则，特殊 CSS 与外部 style 保持原意',
+  (_name, component, fixed) => {
     const host = createServerCssHost();
-    const fixed =
-      component === IconButton
-        ? { icon: element(Icon, { icon: Search }), 'aria-label': '测试', ripple: false }
-        : component === ToggleButton
-          ? { children: '测试', pressed: false, onPressedChange() {}, ripple: false }
-          : component === LinkButton
-            ? { children: '测试', href: '/docs', ripple: false }
-            : { children: '测试', ripple: false };
     const App = defineComponent((props: Record<string, unknown>) =>
       element(Provider, {
         children: element(component, { ...fixed, ...props }),
@@ -157,8 +158,9 @@ it('Button 加载首屏即原生禁用，保留标签并隔离槽语义', () => 
   expectCssValue({ html, css }, 'border-width', '0.0625em');
   expect(css).toContain('cursor:not-allowed;');
 });
-it('IconButton 保留名称、方形尺寸与根 ref 类型对应的原生节点', () => {
-  const { html, css } = render(IconButton, {
+it('Button 图标模式保留名称、方形尺寸与原生根节点', () => {
+  const { html, css } = render(Button, {
+    variant: 'text',
     icon: element(Icon, { icon: Search }),
     'aria-label': '搜索',
     loading: true,

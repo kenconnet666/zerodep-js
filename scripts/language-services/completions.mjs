@@ -90,14 +90,14 @@ const cases = [
   ...[
     ['Button', 'variant', 'outline'],
     ['Button', 'color', '_primary'],
-    ['IconButton', 'size', '_lg'],
+    ['Button', 'size', '_lg'],
     ['LinkButton', 'backgroundColor', '_surface'],
     ['Flex', 'alignItems', 'center'],
     ['ButtonGroup', 'direction', 'column'],
   ].map(([component, property, member]) => ({
     name: `按钮属性-${component}.${property}`,
     directory: 'apps/docs/src',
-    source: `import { ${component}${component === 'IconButton' ? ', Icon' : ''} } from 'zerodep-js-ui'; import { Search } from '@lucide/icons'; const view = <${component} ${component === 'IconButton' ? 'icon={<Icon icon={Search} />} aria-label="搜索"' : component === 'LinkButton' ? 'href="/docs"' : ''} ${property}="${member.slice(0, -1)}¦" />;`,
+    source: `import { ${component}${component === 'Button' && property === 'size' ? ', Icon' : ''} } from 'zerodep-js-ui'; import { Search } from '@lucide/icons'; const view = <${component} ${component === 'Button' && property === 'size' ? 'icon={<Icon icon={Search} />} aria-label="搜索"' : component === 'LinkButton' ? 'href="/docs"' : ''} ${property}="${member.slice(0, -1)}¦" />;`,
     expected: member,
     word: member.slice(0, -1),
   })),
@@ -113,7 +113,7 @@ const cases = [
     ['Text', 'color', '_muted'],
     ['Text', 'weight', '_semibold'],
     ['Ripple', 'color', '_primary'],
-    ['ButtonBase', 'size', '_md'],
+    ['Button', 'size', '_md'],
     ['Provider', 'size', '_md'],
   ].map(([component, property, member]) => ({
     name: `基础属性-${component}.${property}`,
@@ -126,7 +126,7 @@ const cases = [
     name: '基础属性-slotRipple状态',
     directory: 'apps/docs/src',
     source:
-      "import { ButtonBase } from 'zerodep-js-ui'; const view = <ButtonBase slotRipple={state => ({color: state.dis¦ ? '_disabled' : '_primary'})} />;",
+      "import { Button } from 'zerodep-js-ui'; const view = <Button slotRipple={state => ({color: state.dis¦ ? '_disabled' : '_primary'})} />;",
     expected: 'disabled',
     word: 'dis',
   },

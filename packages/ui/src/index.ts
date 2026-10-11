@@ -8,7 +8,6 @@ export {
   type ButtonProps,
   Button,
 } from './base/Button.js';
-export { type ButtonBaseState, type ButtonBaseProps, ButtonBase } from './base/ButtonBase.js';
 export {
   type DecorationProps,
   type ButtonContentProps,
@@ -16,7 +15,6 @@ export {
 } from './base/ButtonContent.js';
 export { buttonBorderWidth, type ButtonGroupProps, ButtonGroup } from './base/ButtonGroup.js';
 export { type IconProps, Icon } from './base/Icon.js';
-export { type IconButtonProps, IconButton } from './base/IconButton.js';
 export { type LinkButtonProps, LinkButton } from './base/LinkButton.js';
 export { type RippleProps, Ripple } from './base/Ripple.js';
 export { type SpinnerProps, Spinner } from './base/Spinner.js';

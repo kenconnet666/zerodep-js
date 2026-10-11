@@ -5,7 +5,7 @@ import { pathToFileURL } from 'node:url';
 
 const url = 'http://127.0.0.1:4176';
 for (const mode of ['csr', 'ssr']) {
-  test(`${mode} Text/ButtonBase/Ripple/Spinner 状态、焦点、取消与清理`, async ({ page }) => {
+  test(`${mode} Text/Button/Ripple/Spinner 状态、焦点、取消与清理`, async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (error) => errors.push(error.message));
     if (mode === 'ssr') {
@@ -61,12 +61,12 @@ for (const mode of ['csr', 'ssr']) {
     await button.dispatchEvent('pointercancel', { pointerId: 91 });
     await expect(wave).toHaveCount(0);
     await expect(page.locator('[data-base-clicks]')).toHaveText('2');
-    await page.getByLabel('禁用底座', { exact: true }).check();
+    await page.getByLabel('禁用基础按钮', { exact: true }).check();
     await expect(button).toBeDisabled();
     await expect(button).toHaveCSS('cursor', 'not-allowed');
     await button.dispatchEvent('click');
     await expect(page.locator('[data-base-clicks]')).toHaveText('2');
-    await page.getByLabel('禁用底座', { exact: true }).uncheck();
+    await page.getByLabel('禁用基础按钮', { exact: true }).uncheck();
     await expect(button).toHaveCSS('cursor', 'pointer');
     await page.getByLabel('开启波纹', { exact: true }).uncheck();
     await expect(page.locator('[data-ripple]')).toHaveCount(0);

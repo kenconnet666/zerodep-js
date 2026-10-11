@@ -137,7 +137,7 @@ for (const mode of ['csr', 'ssr']) {
     await demo.getByLabel('禁用表单区域', { exact: true }).check();
     await expect(demo.locator('[data-action="submit"]')).toBeDisabled();
     await expect(demo.locator('[data-action="submit"]')).toHaveCSS('cursor', 'not-allowed');
-    const base = demo.locator('[data-action="fieldset-base"]');
+    const base = demo.locator('[data-action="fieldset-icon"]');
     await expect(base).toBeDisabled();
     await expect(base).not.toHaveAttribute('disabled');
     await expect(base).toHaveCSS('cursor', 'not-allowed');

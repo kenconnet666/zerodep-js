@@ -5,8 +5,6 @@ import {
   darkTheme,
   lightTheme,
   Button,
-  ButtonBase,
-  IconButton,
   ToggleButton,
   LinkButton,
   Flex,
@@ -125,7 +123,8 @@ export const ButtonDemo = _component(() => {
               <Button variant="outline" color={liveColor} borderColor={liveColor} ripple={false}>
                 颜色预览
               </Button>
-              <IconButton
+              <Button
+                variant="text"
                 icon={<Icon icon={Search} />}
                 aria-label="颜色图标"
                 color={liveColor}
@@ -166,7 +165,8 @@ export const ButtonDemo = _component(() => {
             >
               <span data-save-label>保存按钮</span>
             </Button>
-            <IconButton
+            <Button
+              variant="text"
               data-action="icon"
               icon={<Icon icon={Search} />}
               aria-label="搜索按钮"
@@ -266,15 +266,16 @@ export const ButtonDemo = _component(() => {
               <Button data-action="reset" type="reset" disabled={disabled} loading={loading}>
                 重置表单
               </Button>
-              <ButtonBase
-                data-action="fieldset-base"
+              <Button
+                data-action="fieldset-icon"
+                variant="text"
+                icon={<Icon icon={Search} />}
+                aria-label="表单图标操作"
                 ripple={false}
                 onClick={() => {
                   clicks++;
                 }}
-              >
-                基础按钮
-              </ButtonBase>
+              />
             </fieldset>
           </form>
           <ButtonGroup
@@ -296,7 +297,7 @@ export const ButtonDemo = _component(() => {
             <Button variant="outline" disabled={disabled}>
               混排文字
             </Button>
-            <IconButton
+            <Button
               variant="outline"
               icon={<Icon icon={Search} />}
               aria-label="混排图标"

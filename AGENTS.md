@@ -23,10 +23,10 @@
 
 - 2026-10-11：普通函数、局部解构和返回值继续按 JavaScript 取值；新增 `_derived`/`_derived.by` 声明解构，共享一次原生解构结果，字段只读。CSS 保留直接命名 const 自动派生，包装函数在 JSX 或 `_derived` 中更新。此前 CSS 协议基线为 ABI 4；新作者迁移按最新计划更新协议并要求旧应用/预编译库重建。不新增活引用函数。
 
-- 2026-10-09：core 提供 DomRef/_composeRefs 并允许 DOM bind:this 与 ref 共存；UI src/utils 承担组件组合与按压工具，src/base 提供 Icon/Text/Ripple/Spinner/ButtonBase。仅维护 UI src/index.ts 根入口，由 pnpm ui:generate 自动生成，pnpm ui:check 校验；不创建子目录 index.ts。
+- core 提供 DomRef/_composeRefs 并允许 DOM bind:this 与 ref 共存；UI src/utils 承担组件组合与按压工具，src/base 提供 Icon/Text/Ripple/Spinner 及直接渲染原生按钮的 Button。仅维护 UI src/index.ts 根入口，由 pnpm ui:generate 自动生成，pnpm ui:check 校验；不创建子目录 index.ts。
 - 组件使用独立 slotXxx 属性转发底层参数，例如 slotRipple；多个部件分别提供各自属性，不使用统一 slotProps 对象。对象/状态回调只复用 _resolveSlotProps 解析；已删除 _mergeSlotProps 和 _composeEventHandlers。
-- 基础组件 size 表示 CSS 字号基准；Icon/Spinner 宽高 1em，ButtonBase 默认继承字号且不预设间距。组件内部视觉尺寸（含边框/焦点）默认用 em；不隐式叠加 rem 点击区域下限，应用可显式约束。根 Provider 默认 _md，嵌套默认继承，size 支持任意合法 CSS 字号。测量使用实际 CSS px，观察工具按需启用并清理。
-- 2026-10-09 用户授权完整执行的 Button/IconButton/ToggleButton/LinkButton/Flex 已进入源码。后续相连职责已迁至 ButtonGroup，Flex 仅做普通布局；不保留旧 Group 别名。加载采用原生 disabled，MenuButton 暂不做。稳定契约见 docs/buttons.md，当前交接见 docs/handoff-ui-buttons-2026-10-09.md；完整验收以对应提交 CI 为准。
+- 基础组件 size 表示 CSS 字号基准；Icon/Spinner 宽高 1em，Button 未传 size 时继承字号，文字/纯图标模式各自使用既定几何。组件内部视觉尺寸（含边框/焦点）默认用 em；不隐式叠加 rem 点击区域下限，应用可显式约束。根 Provider 默认 _md，嵌套默认继承，size 支持任意合法 CSS 字号。测量使用实际 CSS px，观察工具按需启用并清理。
+- Button（文字/图标）/ToggleButton/LinkButton/Flex 已进入源码。相连职责归 ButtonGroup，Flex 仅做普通布局；不保留旧 Group 别名。加载采用原生 disabled，MenuButton 暂不做。稳定契约见 docs/buttons.md；docs/handoff-ui-buttons-2026-10-09.md 是旧阶段记录，不作为当前 API 清单；完整验收以对应提交 CI 为准。
 - 2026-10-09 新增 Grid，位于 UI layout 并由根入口自动导出。支持原生 CSS 二维轨道；后续已取消 attached 二维相连。当前契约见 docs/grid.md。
 
 - CSS 只公开包根 src/index.ts，不提供 /server 或 /internal 子入口；主题继承机制归 CSS，具体 UI 主题归 UI。Vite 通过标准 browser 字段替换浏览器宿主，源码采用普通相对导入。
@@ -41,7 +41,7 @@
 - 优先使用成熟依赖；ESLint 的 TS 支持满足选定版本时再评估替换现有 lint，不引入 TS6 或自造通用 linter。项目不引入 Zod，MCP 使用 JSON Schema、vscode-jsonrpc 与标准 stdio JSON-RPC。
 - CSS 新作者生成真实类方法，保留各属性 Property.* 参数约束和中文说明；不使用映射函数属性或 class/interface 合并伪装方法，已实测会影响 WebStorm 方法分类或参数/括号补全。
 - 生成数据应有明确维护入口与检查命令。中文注释解释语义、原因、资源责任，不机械复述代码。
-- 2026-10-11 按 Naive UI 研究收敛按钮，暂不做浮动按钮。Button 为主要实现，IconButton 只提供图标模式的名称约束和默认变体，ToggleButton 只负责受控切换；LinkButton 保留原生 a。删除试验 ButtonView/根组件注入与旧 _buttonStyle/ButtonStyleOptions；按用户最新要求删除 button-shared 及 _buttonAppearance，Button/LinkButton 在各自 css 回调内直接声明样式，不建立替代共享样式模块。icon/startIcon/endIcon 接收 Renderable，删除 slotIcon/slotStartIcon/slotEndIcon/slotText；调用方直接创建 Icon、SVG 或文本内容，内置 Spinner/Ripple 保留槽配置。加载保留文字并在一个图标区域显示 Spinner，原图标节点/ref 不卸载；无图标时新增起始区域，宽度可以变化。裸 ButtonBase、ButtonContent、字号/em、原生 disabled 与链接语义保留。按钮类型归 Button，装饰内容类型归 ButtonContent，buttonBorderWidth 归 ButtonGroup；Button/LinkButton 各自遵循 0.0625em 接缝协议。
+- 2026-10-11 按 Naive UI 研究收敛按钮，暂不做浮动按钮。Button 为主要实现，删除 ButtonBase/IconButton 及对应类型，Button 直接渲染 button 并接管默认类型、禁用拦截、字号和 Ripple；纯图标仍使用 Button.icon 并要求名称，旧 text 外观由调用方显式指定。ToggleButton 只负责受控切换；LinkButton 保留原生 a。删除试验 ButtonView/根组件注入与旧 _buttonStyle/ButtonStyleOptions；按用户最新要求删除 button-shared 及 _buttonAppearance，Button/LinkButton 在各自 css 回调内直接声明样式，不建立替代共享样式模块。icon/startIcon/endIcon 接收 Renderable，删除 slotIcon/slotStartIcon/slotEndIcon/slotText；调用方直接创建 Icon、SVG 或文本内容，内置 Spinner/Ripple 保留槽配置。加载保留文字并在一个图标区域显示 Spinner，原图标节点/ref 不卸载；无图标时新增起始区域，宽度可以变化。ButtonContent、字号/em、原生 disabled 与链接语义保留。按钮类型归 Button，装饰内容类型归 ButtonContent，buttonBorderWidth 归 ButtonGroup；Button/LinkButton 各自遵循 0.0625em 接缝协议。
 - 2026-10-10 布局职责调整：Flex/Grid 仅提供普通布局，删除 attached、按钮子项检查和专用接缝样式。base/ButtonGroup 承担横向/纵向的一维相连，默认 role=group；不做二维，不提供 columns、换行或间距属性，不管理选择状态与方向键导航。此决定取代旧 Flex/Grid attached 契约，不保留兼容别名。
 - 2026-10-10 审查优化：按钮颜色先由主题作者解析，再复用 CSS 安全变量转换；特殊值保留原声明，用户 style 仍最后覆盖。Provider 仅复用当前配置的默认 Intl 格式器，自定义选项逐次读取，不累计历史配置。core 不再公开仅供内部使用的 HTML/SSR 工具。ButtonGroup 由 CSS 处理一维相连，删除仅用于警告的 DOM 子项检查；语言服务只忽略仓库根 .idea/.release/reports，继续监听 dist 与源码同名目录。
 - 不增加 Provider 样式覆盖层；向下传样式只作为确有需要的组件间协作方式，不预建通用体系。ButtonGroup 当前继续使用 CSS 继承和直接子项选择器。

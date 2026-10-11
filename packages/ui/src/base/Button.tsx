@@ -1,9 +1,8 @@
 import { _component, _derived, type JSX, type Renderable } from 'zerodep-js';
 import { css, bx, type CssValue } from 'zerodep-js-css';
 import type { UiTheme } from '../provider/theme/theme.js';
-import type { RippleProps } from './Ripple.js';
+import { Ripple, type RippleProps } from './Ripple.js';
 import type { SlotProps } from '../utils/slot-props.js';
-import { ButtonBase } from './ButtonBase.js';
 import { ButtonContent, type DecorationProps } from './ButtonContent.js';
 import { _resolveSlotProps } from '../utils/slot-props.js';
 import { useCss } from '../provider/context.js';
@@ -65,6 +64,7 @@ export type ButtonProps = Omit<
 
 export const Button = _component(
   ({
+    type = 'button',
     variant = 'solid',
     size,
     color,
@@ -79,6 +79,7 @@ export const Button = _component(
     children,
     slotSpinner,
     slotRipple,
+    onClick,
     'aria-pressed': ariaPressed,
     class: className,
     ...rest
@@ -89,11 +90,13 @@ export const Button = _component(
     );
 
     return (
-      <ButtonBase
+      <button
         {...rest}
-        size={size}
+        type={type}
         disabled={state.unavailable}
-        ripple={ripple}
+        onClick={(event) => {
+          if (!state.unavailable && !event.currentTarget.matches(':disabled')) onClick?.(event);
+        }}
         aria-busy={loading || undefined}
         aria-pressed={ariaPressed}
         data-ui-action=""
@@ -109,6 +112,7 @@ export const Button = _component(
             s.justifyContent('center');
             s.verticalAlign('middle');
             s.font('inherit');
+            s.fontSize(bx(size));
             s.lineHeight(1.25);
             s.fontWeight('_medium');
             s.textDecoration('none');
@@ -118,6 +122,7 @@ export const Button = _component(
             s.flexShrink(0);
             s.minInlineSize(0);
             s.minBlockSize('2.625em');
+            s.padding(0);
             s.paddingBlock(bx(`${iconOnly ? 0 : 0.625}em`));
             s.paddingInline(bx(`${iconOnly ? 0 : 1}em`));
             if (iconOnly) {
@@ -172,7 +177,6 @@ export const Button = _component(
           }),
           className,
         ]}
-        slotRipple={_resolveSlotProps(slotRipple, state)}
       >
         <ButtonContent
           loading={loading}
@@ -183,7 +187,10 @@ export const Button = _component(
         >
           {children}
         </ButtonContent>
-      </ButtonBase>
+        {ripple && (
+          <Ripple {..._resolveSlotProps(slotRipple, state)} disabled={state.unavailable} />
+        )}
+      </button>
     );
   },
 );

@@ -1,14 +1,14 @@
 # zerodep-js-ui
 
-组件库提供 Provider、Icon、Text、Ripple、Spinner、ButtonBase、Button/IconButton/ToggleButton/LinkButton、ButtonGroup、Flex/Grid，以及语言/地区工具。亮暗主题与通用 token 位于本包 provider/theme。包保持 private，不加入框架三包发布流程。
+组件库提供 Provider、Icon、Text、Ripple、Spinner、Button/ToggleButton/LinkButton、ButtonGroup、Flex/Grid，以及语言/地区工具。亮暗主题与通用 token 位于本包 provider/theme。包保持 private，不加入框架三包发布流程。
 
 - `src/provider/`：Provider 组件、上下文与相关基础配置。
 - `src/index.ts`：公开导出入口。
 - `src/utils/`：slot 属性解析、测量和按压资源工具；不设置子目录 index.ts。
 - `src/base/Icon.tsx`：静态 Lucide 图标，颜色/尺寸复用 CSS 主题类型。
-- `src/base/`：原生按钮底座、四类成品按钮、ButtonGroup 一维相连及文字/加载/波纹。
-- `src/base/Button.tsx`：主要按钮实现；IconButton/ToggleButton 复用，LinkButton 保留原生链接。两个组件分别直接声明自己的外观。
-- `src/base/ButtonContent.tsx`：可复用的按钮内容；类型按 Button/ButtonContent 的职责归属，边框协议常量归 ButtonGroup。裸 `ButtonBase` 继续支持自定义组合。
+- `src/base/`：Button（文字/图标）、ToggleButton、LinkButton、ButtonGroup 一维相连及文字/加载/波纹。
+- `src/base/Button.tsx`：主要按钮实现；ToggleButton 复用，LinkButton 保留原生链接。两个组件分别直接声明自己的外观。
+- `src/base/ButtonContent.tsx`：可复用的按钮内容；类型按 Button/ButtonContent 的职责归属，边框协议常量归 ButtonGroup。Button 直接渲染原生按钮，纯图标同样通过 Button.icon 组合。
 - `src/layout/Flex.tsx`：普通一维布局。
 - `src/layout/Grid.tsx`：普通二维轨道、自动填充与跨格布局。
 - 通用主题位于 `packages/ui/src/provider/theme/`，从 `zerodep-js-ui` 导入。
@@ -100,18 +100,19 @@ Spinner 复用 Lucide 图形，继承 Icon 的颜色/尺寸与可访问属性；
 
 Ripple 直接放在 position:relative 的 button 或 a 内，自己的 span 负责绝对定位和裁剪。color 接受主题关键字/CSS 值；centered 控制从中心扩散，键盘总从中心反馈。链接的 Space 不产生按钮式反馈。disabled、指针取消/移出、滚动、失焦和卸载均会结束按压。它不合成 click，也不承担焦点语义。
 
-ButtonBase 是后续按钮的原生底座，默认 type=button；支持原生按钮属性、disabled 和 ripple 开关。关闭 Ripple 后保留 focus-visible 轮廓。slotRipple 可为对象或接收 {disabled} 的纯函数；disabled 由底座拥有，槽不能覆盖。
+Button 直接渲染原生 button，默认 type=button，支持表单属性、disabled/loading 和 ripple 开关。关闭 Ripple 后保留焦点轮廓。slotRipple 接收对象或 ButtonState 回调，有效禁用由组件拥有。纯图标使用 icon 属性并提供名称，不再维护 ButtonBase/IconButton 及其类型。
 
-ButtonBase 的 size 与 Icon/Text/Spinner 一致，表示根字号（CssValue<'fontSize', UiTheme>），不是固定高度或密度档位；可写 `_md`、`20px`、`1.25rem`，省略/undefined 时继承，裸数字不自动补 px。底座本身仍不预设内边距。
+Button 的 size 与 Icon/Text/Spinner 一致，表示根字号（CssValue<'fontSize', UiTheme>），不是固定高度或密度档位；可写 `_md`、`20px`、`1.25rem`，省略/undefined 时继承，裸数字不自动补 px。普通按钮使用 0.625em 1em 内边距，纯图标模式为零内边距。
 
 ```tsx
-<ButtonBase
+<Button
+  variant="outline"
+  startIcon={<Icon icon={Search} />}
   aria-label="搜索"
   slotRipple={(state) => ({ color: state.disabled ? '_disabled' : '_primary' })}
 >
-  <Icon icon={Search} />
   <Text weight="_semibold">搜索</Text>
-</ButtonBase>
+</Button>
 ```
 
 工具从 UI 根入口导入：
@@ -131,23 +132,16 @@ CssValue<K, Theme> 和 css 在 zerodep-js-css 中；DomRef<T> 与 _composeRefs �
 
 size 是 CSS 字号输入，允许主题关键字以及 px/rem/em/%/vw/cqw/clamp()/var() 等合法 CSS 写法。根 Provider 默认 _md（主题默认为 1rem）；嵌套 Provider 与普通组件未指定 size 时继承 DOM 父级字号。实际字体可能来自页面样式或用户环境，不假定为 16px。
 
-Icon/Spinner 宽高为 1em，局部放大只通过 size 表达一次。ButtonBase 的焦点轮廓与偏移为 0.125em；底座不预设高度和内边距。组合示例的边框为 0.0625em、内边距为 0.625em 1em、gap 为 0.5em、最小区域为 2.5em，不再混入默认 rem 下限。应用可显式添加独立点击区域约束，但此时不承诺完全等比。
+Icon/Spinner 宽高为 1em，局部放大只通过 size 表达一次。Button 的焦点轮廓与偏移为 0.125em；标准边框为 0.0625em、文字模式内边距为 0.625em 1em、内容 gap 为 0.5em、border-box 最小高度为 2.625em，纯图标模式为 2.625em 方形，不再混入默认 rem 下限。应用可显式添加独立点击区域约束，但此时不承诺完全等比。
 
 字体栅格化、边框量化及长文字换行仍由浏览器处理，不能把“尺寸参数等比”当成最终图像严格相似。布局与显示坐标也不同：transform 可改变 getBoundingClientRect，但不改变 ResizeObserver 的布局尺寸。
 
 组件初始化中的样例：
 
 ```tsx
-const s = useCss();
-const buttonStyle = css(() => {
-  s.lineHeight(1.25).paddingBlock('0.625em').paddingInline('1em');
-  s.gap('0.5em').borderRadius('0.5em');
-  s.border('0.0625em solid currentColor').minBlockSize('2.5em').minInlineSize('2.5em');
-});
-<ButtonBase size="clamp(0.875rem, 1vw + 0.5rem, 1.5rem)" class={buttonStyle}>
-  <Icon icon={Search} size="1.125em" />
-  <Text>搜索</Text>
-</ButtonBase>;
+<Button size="clamp(0.875rem, 1vw + 0.5rem, 1.5rem)" startIcon={<Icon icon={Search} />}>
+  搜索
+</Button>
 ```
 
 ### 按需测量工具

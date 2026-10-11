@@ -2,7 +2,7 @@ import { expectCssValue } from './style-assertions.js';
 import { expect, it } from 'vitest';
 import { defineComponent, element, renderToString } from 'zerodep-js';
 import { css, createServerCssHost, withCssHost, Css } from 'zerodep-js-css';
-import { Provider, Text, Spinner, ButtonBase, Ripple } from '../dist/index.js';
+import { Provider, Text, Spinner, Button, Ripple } from '../dist/index.js';
 const _cssAuthor = new Css();
 function render(
   component: Exclude<Parameters<typeof element>[0], string>,
@@ -49,8 +49,8 @@ it('Spinner 使用实际 Lucide 节点，默认装饰并包含减少动态效果
   expect(result.css).toContain('prefers-reduced-motion');
   expect(result.css).toContain('animation:none;');
 });
-it('ButtonBase 保留原生按钮语义、独立焦点样式及可关闭 Ripple', () => {
-  const result = render(ButtonBase, {
+it('Button 保留原生按钮语义、独立焦点样式及可关闭 Ripple', () => {
+  const result = render(Button, {
     children: '确定',
     ripple: false,
     disabled: true,
@@ -61,14 +61,14 @@ it('ButtonBase 保留原生按钮语义、独立焦点样式及可关闭 Ripple'
   expect(result.css).toContain(':focus-visible');
   expect(result.css).toContain('outline-width:0.125em;');
   expect(result.css).toContain('outline-offset:0.125em;');
-  expect(result.css).toContain('&:disabled{cursor:not-allowed;opacity:');
+  expect(result.css).toContain('&:disabled, &[aria-disabled="true"]{cursor:not-allowed;opacity:');
   expect(
-    render(ButtonBase, {
+    render(Button, {
       type: 'submit',
       children: '提交',
     }).html,
   ).toContain('type="submit"');
-  const forwarded = render(ButtonBase, {
+  const forwarded = render(Button, {
     slotRipple: {
       color: '#123456',
       'data-slot': 'ripple',
@@ -77,13 +77,13 @@ it('ButtonBase 保留原生按钮语义、独立焦点样式及可关闭 Ripple'
   expect(forwarded.html).toContain('data-slot="ripple"');
   expect(forwarded.html).not.toContain('slotRipple=');
   expectCssValue(forwarded, 'color', '#123456');
-  const sized = render(ButtonBase, {
+  const sized = render(Button, {
     size: '_lg',
     children: '搜索',
   });
   expectCssValue(sized, 'font-size', '1.125rem');
   expect(sized.html).not.toContain(' size=');
-  const inherited = render(ButtonBase, {
+  const inherited = render(Button, {
     size: undefined,
   });
   expect(inherited.css).not.toContain('font-size:undefined');

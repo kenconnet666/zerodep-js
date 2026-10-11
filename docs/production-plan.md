@@ -12,7 +12,7 @@
 ## 已有组件职责
 
 - Provider 管理主题、语言、地区、时区和字号。CSS 作者在 CSS 包，具体主题 token 在 UI；见 [Provider](provider.md)。
-- Icon/Text/Ripple/Spinner/ButtonBase 提供基础能力；Button/IconButton/ToggleButton/LinkButton 复用它们。尺寸使用字号和 em，不强加点击区域或间距；见 [按钮](buttons.md)。
+- Icon/Text/Ripple/Spinner 提供基础能力；Button 直接渲染原生按钮，ToggleButton 复用 Button，LinkButton 保留原生链接。尺寸使用字号和 em，不强加点击区域或间距；见 [按钮](buttons.md)。
 - Flex/Grid 只负责布局；ButtonGroup 负责一维相连，不管理选择状态和键盘导航；见 [Grid](grid.md)。
 - 独立 slotXxx 属性转发底层参数；仅保留 _resolveSlotProps 等确有共用责任的工具。UI 根入口由生成器维护，其他组件另行讨论。
 

@@ -1,6 +1,6 @@
 import { Search } from '@lucide/icons';
 import { _component, _state } from 'zerodep-js';
-import { Icon, Button, IconButton, ToggleButton, LinkButton, ButtonGroup } from '../src/index.js';
+import { Icon, Button, ToggleButton, LinkButton, ButtonGroup } from '../src/index.js';
 import type { LinkButtonProps } from '../src/index.js';
 
 export const ButtonTypes = _component(() => {
@@ -14,7 +14,7 @@ export const ButtonTypes = _component(() => {
       >
         保存
       </Button>
-      <IconButton icon={<Icon icon={Search} />} aria-label="搜索" />
+      <Button variant="text" icon={<Icon icon={Search} />} aria-label="搜索" />
       <ToggleButton
         bind:pressed={pressed}
         slotSpinner={(state) => ({ color: state.pressed ? '_error' : '_primary' })}
@@ -36,7 +36,7 @@ export const ButtonTypes = _component(() => {
   );
 });
 // @ts-expect-error 图标按钮必须有名称。
-const unnamed = <IconButton icon={<Icon icon={Search} />} />;
+const unnamed = <Button variant="text" icon={<Icon icon={Search} />} />;
 const unnamedToggle = (
   // @ts-expect-error 图标 Toggle 同样必须有名称。
   <ToggleButton icon={<Icon icon={Search} />} pressed={false} onPressedChange={() => {}} />
@@ -65,9 +65,10 @@ const linkRef: LinkButtonProps = {
 // @ts-expect-error 内部图标不能通过槽成为另一可访问对象。
 const namedDecoration = <Button slotSpinner={{ 'aria-label': '覆盖' }} />;
 // @ts-expect-error 图标槽接收节点，不接收 Lucide 原始数据。
-const rawIcon = <IconButton icon={Search} aria-label="搜索" />;
+const rawIcon = <Button variant="text" icon={Search} aria-label="搜索" />;
 const customIcon = (
-  <IconButton
+  <Button
+    variant="text"
     aria-label="自定义图标"
     icon={
       <svg viewBox="0 0 24 24">

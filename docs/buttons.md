@@ -7,7 +7,7 @@
 ```tsx
 import { _component, _state } from 'zerodep-js';
 import { Save, Search, Bold } from '@lucide/icons';
-import { Provider, Flex, Icon, Button, IconButton, ToggleButton, LinkButton } from 'zerodep-js-ui';
+import { Provider, Flex, Icon, Button, ToggleButton, LinkButton } from 'zerodep-js-ui';
 
 export const Actions = _component(() => {
   let bold = _state(false);
@@ -15,7 +15,7 @@ export const Actions = _component(() => {
     <Provider>
       <Flex size="1rem" gap="0.5em">
         <Button startIcon={<Icon icon={Save} />}>保存</Button>
-        <IconButton icon={<Icon icon={Search} />} aria-label="搜索" />
+        <Button variant="text" icon={<Icon icon={Search} />} aria-label="搜索" />
         <ToggleButton icon={<Icon icon={Bold} />} aria-label="加粗" bind:pressed={bold} />
         <LinkButton href="/docs">查看文档</LinkButton>
       </Flex>
@@ -24,26 +24,25 @@ export const Actions = _component(() => {
 });
 ```
 
-## 四类控件
+## 按钮与导航
 
 | 组件         | 根与默认值                                | 内容及状态                                                        |
 | ------------ | ----------------------------------------- | ----------------------------------------------------------------- |
-| Button       | button，type=button、variant=solid        | children、startIcon/endIcon、disabled/loading                     |
-| IconButton   | button，type=button、variant=text         | 必填 icon，以及 aria-label 或 aria-labelledby；默认方形           |
+| Button       | button，type=button、variant=solid        | children、startIcon/endIcon 或纯图标 icon、disabled/loading       |
 | ToggleButton | button，固定 type=button、variant=outline | 必填 pressed/onPressedChange，支持 bind:pressed；文字或 icon 模式 |
 | LinkButton   | a，必填 href、variant=outline             | children、startIcon/endIcon，保留导航属性与链接按键语义           |
 
 variant 为 solid/outline/text。color/backgroundColor/borderColor 分别采用对应 CssValue 类型，接受主题关键字和 CSS 原值；color 始终表示前景色。用户自定义配色自行确保可读性，不从任意背景色自动推断文字色。
 
-Button/IconButton 保留原生 button 属性，包括 type=submit/reset、name/value 和 form。禁用 fieldset 的原生规则有效，包括第一个 legend 中的例外。ToggleButton 不自动提交表单或生成隐藏 input；多个 ToggleButton 放入 Flex 也不会自动互斥。
+Button 保留原生 button 属性，包括 type=submit/reset、name/value 和 form。禁用 fieldset 的原生规则有效，包括第一个 legend 中的例外。ToggleButton 不自动提交表单或生成隐藏 input；多个 ToggleButton 放入 Flex 也不会自动互斥。
 
-ToggleButton 激活时先检查禁用，再执行用户 onClick；未取消且未抛错才调用 onPressedChange(!pressed)。父级拒绝写回时仍显示原 pressed。持续选中、按下和焦点分别表达；根 aria-pressed 由组件拥有。图标模式与 IconButton 一样必须有有效操作名称，title 不替代名称。
+ToggleButton 激活时先检查禁用，再执行用户 onClick；未取消且未抛错才调用 onPressedChange(!pressed)。父级拒绝写回时仍显示原 pressed。持续选中、按下和焦点分别表达；根 aria-pressed 由组件拥有。图标模式与 Button 的 icon 模式一样必须有有效操作名称，title 不替代名称。
 
 ## 加载与禁用
 
 loading 由业务控制，不自动跟踪 Promise。button 的有效 disabled 为 disabled || loading；SSR 初始加载也会输出原生 disabled。动态禁用可能改变焦点，不承诺保留或自动恢复焦点。表单整体的重复提交校验仍由业务负责。
 
-disabled/loading 状态使用标准 cursor: not-allowed 禁止光标。ButtonBase 的禁用外观通过 :disabled 判断，同时覆盖原生 fieldset 继承并保留首个 legend 的例外；ButtonGroup 不给禁用子项应用 hover 层级。光标图案由浏览器/操作系统绘制，不使用自定义图片。
+disabled/loading 状态使用标准 cursor: not-allowed 禁止光标。Button 的禁用外观通过 :disabled 判断，同时覆盖原生 fieldset 继承并保留首个 legend 的例外；ButtonGroup 不给禁用子项应用 hover 层级。光标图案由浏览器/操作系统绘制，不使用自定义图片。
 
 加载时文字保持可见，根 aria-busy=true。Spinner 优先使用起始图标区域，其次结束图标区域；两侧都有图标时只替换起始侧。纯图标按钮使用原图标区域。原图标通过 opacity 隐藏但不卸载，ref 保持；没有图标时临时增加起始区域，因此宽度可以变化。自定义 Spinner 尺寸也可能改变区域大小。Spinner 是装饰，不默认创建额外 live region。
 
@@ -51,13 +50,13 @@ LinkButton 正常时保留 target/rel/download、修饰键点击、中键和右�
 
 ## 内容槽与内置部件
 
-startIcon/endIcon/icon 接收 TSX 渲染内容，不接收 Lucide 数据。调用方直接设置图标的 size/color/class/ref，也可以传自定义 SVG；按钮提供装饰区域与默认 1.125em 字号，不扫描 children 推断图标种类。纯图标模式继续要求 aria-label 或 aria-labelledby，IconButton 保留方形默认几何。文字通过 children 自由组合，不强制包装为 Text 组件。
+startIcon/endIcon/icon 接收 TSX 渲染内容，不接收 Lucide 数据。调用方直接设置图标的 size/color/class/ref，也可以传自定义 SVG；按钮提供装饰区域与默认 1.125em 字号，不扫描 children 推断图标种类。纯图标模式继续要求 aria-label 或 aria-labelledby，Button 的 icon 模式使用方形几何。文字通过 children 自由组合，不强制包装为 Text 组件。
 
 ```tsx
 <Button startIcon={<Icon icon={Save} size="1.25em" />}>
   <Text weight="_semibold">保存</Text>
 </Button>
-<IconButton aria-label="搜索" icon={<Icon icon={Search} />} />
+<Button variant="text" aria-label="搜索" icon={<Icon icon={Search} />} />
 <Button
   endIcon={<svg width="1em" height="1em" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6" /></svg>}
   slotRipple={(state) => ({ color: state.unavailable ? '_disabled' : 'currentColor' })}
@@ -98,7 +97,7 @@ import { ButtonGroup } from 'zerodep-js-ui';
 <ButtonGroup direction="row" size="1rem" role="group" aria-label="文件操作">
   <Button variant="outline">保存</Button>
   <Button variant="outline">另存为</Button>
-  <IconButton variant="outline" icon={<Icon icon={Search} />} aria-label="查找" />
+  <Button variant="outline" icon={<Icon icon={Search} />} aria-label="查找" />
 </ButtonGroup>;
 ```
 
@@ -108,7 +107,7 @@ import { ButtonGroup } from 'zerodep-js-ui';
 - 标准控件重叠一条边框厚度，避免双线；不删除边框使内容位移。所有变体保留同样的边框占位。
 - focus-visible 子项位于相邻项之上，pressed 和 hover 使用较低层级；ButtonGroup 不裁剪焦点轮廓，层级隔离在自身范围内。
 - 条件移除、列表重排和原生 hidden 自动更新首尾；disabled/loading 项仍参与几何。任意外部 display:none 无法仅靠 CSS 首尾选择器识别，使用 hidden 或条件渲染。
-- 长标签可在按钮内换行；相连容器本身不换行，交叉轴拉伸。默认方形 IconButton 在这种拉伸组合中也会服从行高。
+- 长标签可在按钮内换行；相连容器本身不换行，交叉轴拉伸。方形图标按钮 在这种拉伸组合中也会服从行高。
 - 只处理直接兼容控件，不穿透 wrapper 或嵌套组；调用方保证子项结构，不扫描 DOM 或为不兼容内容发出运行时警告。
 - 自定义字号、边框厚度或 inline/important 圆角覆盖可能使接缝不齐或覆盖内侧零圆角；此时不承诺默认连接几何。优先统一 ButtonGroup.size、变体和边框。
 
@@ -120,7 +119,7 @@ ButtonGroup 不提供互斥选择语义，不会让多个 ToggleButton 互斥。
 
 交互示例：apps/docs/src/pages/components/ButtonDemo.tsx。组件及消费测试在 packages/ui/test/buttons.test.ts、flex.test.ts；真实 TSX 类型反例在 buttons-types.tsx；浏览器用例在 tests/e2e/buttons.spec.ts。补全使用 pnpm lsp:completions --case 按钮属性。
 
-Button 直接拥有成品按钮的状态、CSS 和内容装配；IconButton/ToggleButton 复用它，LinkButton 保留原生链接实现。Button 与 LinkButton 各自在自己的 css 回调中声明外观，不再经共享样式函数或根组件注入。裸 ButtonBase 保持无成品外观默认值和自定义 children。
+Button 直接渲染原生 button，拥有状态、CSS、字号、事件拦截、Ripple 和内容装配；ToggleButton 复用它，LinkButton 保留原生链接实现。Button 与 LinkButton 各自在自己的 css 回调中声明外观，不再经共享样式函数或根组件注入。删除 ButtonBase、IconButton 及对应类型，不保留兼容别名。纯图标使用 Button.icon，需要原先的无底色外观时显式设置 variant="text"。
 
 ButtonContent/ButtonContentProps、DecorationProps、AccessibleName、ActionProps 和 LabelProps 继续从包根导出。删除 _buttonStyle/ButtonStyleOptions。ButtonVariant/ButtonState/ActionProps/LabelProps 等类型归 Button，DecorationProps 归 ButtonContent；buttonBorderWidth 归 ButtonGroup。Button/LinkButton 各自使用 0.0625em 边框，按钮组按同一协议处理接缝。根入口由 pnpm ui:generate 维护，pnpm ui:check 校验，不创建子目录 index.ts。本轮不增加 FloatButton/FloatButtonGroup。
 

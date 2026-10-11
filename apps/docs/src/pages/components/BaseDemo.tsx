@@ -1,5 +1,5 @@
 import { _component, _state } from 'zerodep-js';
-import { darkTheme, lightTheme, ButtonBase, Icon, Provider, Spinner, Text } from 'zerodep-js-ui';
+import { darkTheme, lightTheme, Button, Icon, Provider, Spinner, Text } from 'zerodep-js-ui';
 import { Search } from '@lucide/icons';
 
 export const BaseDemo = _component(() => {
@@ -22,7 +22,7 @@ export const BaseDemo = _component(() => {
       <h3 id="base-heading">按钮基础组件</h3>
       <label>
         <input type="checkbox" bind:checked={disabled} />
-        禁用底座
+        禁用基础按钮
       </label>
       <label>
         <input type="checkbox" bind:checked={ripple} />
@@ -55,7 +55,9 @@ export const BaseDemo = _component(() => {
           >
             文字与图标共享主题
           </Text>
-          <ButtonBase
+          <Button
+            variant="outline"
+            startIcon={<Icon icon={Search} />}
             disabled={disabled}
             ripple={ripple}
             size="_md"
@@ -63,26 +65,23 @@ export const BaseDemo = _component(() => {
             onClick={() => {
               clicks++;
             }}
-            style="padding:.625em 1em;line-height:1.25;min-block-size:2.5em;min-inline-size:2.5em;border:.0625em solid currentColor;border-radius:.5em;gap:.5em;"
             slotRipple={(state) => ({
               color: state.disabled ? '_disabled' : '_primary',
               'data-ripple': true,
               ref: observe,
             })}
           >
-            <Icon icon={Search} size="1.125em" />
             <Text>搜索</Text>
-          </ButtonBase>
+          </Button>
           <Spinner size="24px" color="_primary" aria-label="正在加载" data-spinner />
         </Provider>
       )}
       <output data-base-clicks>{clicks}</output>
       <output data-base-refs>{refs}</output>
       <pre>
-        <code>{`<ButtonBase slotRipple={{ color: '_primary' }}>
-  <Icon icon={Search} />
+        <code>{`<Button variant="outline" startIcon={<Icon icon={Search} />} slotRipple={{ color: '_primary' }}>
   <Text weight="_semibold">搜索</Text>
-</ButtonBase>`}</code>
+</Button>`}</code>
       </pre>
     </section>
   );

@@ -34,20 +34,32 @@ for (const mode of ['csr', 'ssr']) {
       const long = row.locator('[data-sizing="long"]');
       for (const button of [text, mixed, icon, loading, long]) {
         await expect(button).toHaveCSS('font-size', `${size}px`);
-        expect(await button.evaluate((node) => node.style.borderTopWidth)).toBe('0.0625em');
-        await expect(button).toHaveCSS('padding-top', `${size * 0.625}px`);
+        await expect(button).toHaveCSS('min-block-size', `${size * 2.625}px`);
+        await expect(button).toHaveCSS('box-sizing', 'border-box');
+        await expect(button).toHaveCSS(
+          'padding-top',
+          button === icon ? '0px' : `${size * 0.625}px`,
+        );
         const rect = (await button.boundingBox())!;
-        expect(rect.height).toBeGreaterThanOrEqual(size * 2.5);
-        expect(rect.width).toBeGreaterThanOrEqual(size * 2.5);
+        expect(rect.height).toBeGreaterThanOrEqual(size * 2.625);
+        expect(rect.width).toBeGreaterThanOrEqual(size * 2.625);
       }
-      await expect(mixed).toHaveCSS('column-gap', `${size * 0.5}px`);
+      await expect(mixed.locator('[data-ui-button-content]')).toHaveCSS(
+        'column-gap',
+        `${size * 0.5}px`,
+      );
       await expect(mixed.locator('svg')).toHaveCSS('width', `${size * 1.125}px`);
       await expect(loading.locator('svg')).toHaveCSS('width', `${size * 1.125}px`);
-      // 边框可能被浏览器量化；验证声明的 em 单位，并使用实际边框核对自然高度。
+      // 边框可能被浏览器量化；正式按钮的自然高度与 border-box 最小高度共同决定结果。
       const border = await text.evaluate((node) =>
         Number.parseFloat(getComputedStyle(node).borderTopWidth),
       );
-      expect((await text.boundingBox())!.height).toBeCloseTo(size * 2.5 + border * 2, 1);
+      expect((await text.boundingBox())!.height).toBeCloseTo(
+        Math.max(size * 2.625, size * 2.5 + border * 2),
+        1,
+      );
+      expect((await icon.boundingBox())!.width).toBeCloseTo(size * 2.625, 1);
+      expect((await icon.boundingBox())!.height).toBeCloseTo(size * 2.625, 1);
       expect((await long.boundingBox())!.height).toBeGreaterThan(
         (await mixed.boundingBox())!.height,
       );
@@ -72,14 +84,14 @@ for (const mode of ['csr', 'ssr']) {
     await page.getByLabel('继承外围字号', { exact: true }).check();
     await expect(inherited).toHaveCSS('font-size', '18px');
     for (const svg of await inherited.locator('svg').all())
-      await expect(svg).toHaveCSS('width', '18px');
+      await expect(svg).toHaveCSS('width', '20.25px');
     await page.getByLabel('继承外围字号', { exact: true }).uncheck();
     await expect(inherited).toHaveCSS('font-size', '14px');
     const local = page.locator('[data-sizing-local]');
     await expect(local).toHaveCSS('font-size', '20px');
     await expect(local).toHaveCSS('padding-top', '12.5px');
     await expect(local.locator('svg')).toHaveCSS('width', '16px');
-    await expect(local.locator('span').first()).toHaveCSS('font-size', '14px');
+    await expect(local.locator('[data-sizing-label]')).toHaveCSS('font-size', '14px');
     expect(errors).toEqual([]);
   });
 }

@@ -1,7 +1,7 @@
 import { _component, _effect, _state, Portal } from 'zerodep-js';
 import {
   Icon,
-  ButtonBase,
+  Button,
   Provider,
   Text,
   _observeFontSize,
@@ -90,10 +90,9 @@ export const MeasurementDemo = _component(() => {
               style={{ width: '160px', height: '80px', fontSize: choice, boxSizing: 'border-box' }}
             >
               <Provider data-measure-nested>
-                <ButtonBase data-measure-button>
-                  <Icon icon={Search} />
+                <Button startIcon={<Icon icon={Search} />} data-measure-button>
                   <Text>字号</Text>
-                </ButtonBase>
+                </Button>
               </Provider>
             </div>
           )}
