@@ -162,18 +162,15 @@ type NativeBindings<T> = T extends HTMLInputElement
         : {};
 
 type ChangeName<K extends string> = `on${Capitalize<K>}Change`;
-type FirstArgument<F> = F extends (...args: infer Args) => unknown
-  ? Args extends [infer Value, ...unknown[]]
-    ? Value
-    : never
-  : never;
 type BindableKeys<P> = {
+  // 这里只识别 value/onValueChange 的形状。参数能否写回由真实赋值投影交给 TS 检查；
+  // 在这里比较尚未实例化的 T 会让普通泛型组件的 props 转发也无法通过。
   [K in keyof P & string]: ChangeName<K> extends keyof P
-    ? [FirstArgument<NonNullable<P[ChangeName<K>]>>] extends [never]
-      ? never
-      : FirstArgument<NonNullable<P[ChangeName<K>]>> extends P[K]
+    ? NonNullable<P[ChangeName<K>]> extends (...args: infer Args) => unknown
+      ? Args extends [unknown, ...unknown[]]
         ? K
         : never
+      : never
     : never;
 }[keyof P & string];
 type BindingChoice<P, K extends keyof P & string> =

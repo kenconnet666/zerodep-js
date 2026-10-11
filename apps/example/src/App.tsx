@@ -20,6 +20,7 @@ import { StyleExample } from './examples/StyleExample.js';
 import { TaskExample } from './examples/TaskExample.js';
 import { LifecycleExample } from './examples/LifecycleExample.js';
 import { AuthoringExample } from './examples/AuthoringExample.js';
+import { LayeredFieldsExample } from './examples/LayeredFieldsExample.js';
 import { ReferenceExample } from './examples/ReferenceExample.js';
 import { IdExample } from './examples/IdExample.js';
 import { PortalExample } from './examples/PortalExample.js';
@@ -108,6 +109,7 @@ export const App = _component(({ mode = 'csr', onUnmount }: AppProps) => {
     <main style={{ '--step': step }}>
       <p class="eyebrow">框架运行验证</p>
       <CssExample />
+      <LayeredFieldsExample />
       <DisclosureExample />
       <GroupExample />
       <HeadExample />

@@ -64,33 +64,33 @@ export function createRuleRegistry(
     return name;
   }
 
-  function resolvePart(input: CssClassInput, styles: string[], external: Set<string>): string {
+  function classBody(name: string): string {
+    if (!name) return '';
+    if (/\s/.test(name)) throw new Error('CSS 组合只接受单个生成类；旧产物请重新构建。');
+    const rule = byName.get(name);
+    if (!rule || (rule.kind && rule.kind !== 'class'))
+      throw new Error(
+        `CSS 样式类 ${name} 在当前宿主未登记；请先恢复 SSR 清单或在当前宿主生成样式。`,
+      );
+    return rule.body;
+  }
+
+  function resolvePart(input: CssClassInput, styles: string[]): string {
     if (typeof input === 'string') {
-      // 仅本库样式类使用 z- 前缀，仍以登记表精确匹配为准。
-      return (input.startsWith('z-') ? byName.get(input)?.body : undefined) ?? input;
+      // 只识别保留的生成类格式，不靠 CSS 标点猜测任意原生声明片段。
+      return /^z-[a-z0-9]{14}(?:\s+z-[a-z0-9]{14})*$/.test(input) ? classBody(input) : input;
     }
     if (!input) return '';
-    if (Array.isArray(input))
-      return input.map((part) => resolvePart(part, styles, external)).join('');
+    if (Array.isArray(input)) return input.map((part) => resolvePart(part, styles)).join('');
     const bundle = input as Exclude<CssClass, string>;
     styles.push(bundle.style);
-    return bundle.class
-      .split(/\s+/)
-      .filter(Boolean)
-      .map((name) => {
-        const rule = byName.get(name);
-        if (rule && (!rule.kind || rule.kind === 'class')) return rule.body;
-        external.add(name);
-        return '';
-      })
-      .join('');
+    return classBody(bundle.class);
   }
 
   const css = (...parts: CssClassInput[]): CssClass => {
     const styles: string[] = [];
-    const external = new Set<string>();
-    const body = parts.map((part) => resolvePart(part, styles, external)).join('');
-    const name = [register(body, 'class'), ...external].join(' ');
+    const body = parts.map((part) => resolvePart(part, styles)).join('');
+    const name = body.trim() ? register(body, 'class') : '';
     return styles.some(Boolean) ? { class: name, style: styles.filter(Boolean).join(';') } : name;
   };
   return {

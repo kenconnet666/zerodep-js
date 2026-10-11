@@ -77,6 +77,37 @@ const view = <Field model={model} title="输入"/>;
   expect(invalid.diagnostics.some((item) => item.code === 2540)).toBe(true);
 });
 
+it('两层泛型组件的参数解构和 rest 转发保留可选值及只读写回检查', async () => {
+  const source = `
+type Props<T> = {value: T; onValueChange: (next:T)=>void; format:(value:T)=>string; parse:(text:string)=>T; title?:string;};
+const Input = _component(<T,>({value,onValueChange,format,parse,...rest}:Props<T>) =>
+  <input {...rest} value={format(value)} onInput={event=>onValueChange(parse(event.currentTarget.value))}/>);
+const Field = _component(<T,>({value:model,onValueChange,...rest}:Props<T>) =>
+  <Input {...rest} value={model} onValueChange={next=>onValueChange(next)}/>);
+let form = _state<{name:string|undefined}>({name:'甲'});
+const view = <Field<string|undefined> bind:value={form.name} format={value=>value??''} parse={text=>text||undefined}/>;
+`;
+  expect((await check(source)).diagnostics).toEqual([]);
+  expect(
+    (
+      await check(source.replace('name:string|undefined', 'readonly name:string|undefined'))
+    ).diagnostics.some((item) => item.code === 2540),
+  ).toBe(true);
+  expect(
+    (
+      await check(source.replace('parse={text=>text||undefined}', 'parse={text=>Number(text)}'))
+    ).diagnostics.some((item) => item.code === 2322),
+  ).toBe(true);
+});
+
+it('组件回调写回类型由真实赋值检查，不因存在同名回调就放过错误模型', async () => {
+  const source = `
+const Field = _component((props:{value:string;onValueChange:(next:number)=>void}) => null);
+let text = _state('');
+const view = <Field bind:value={text}/>;`;
+  expect((await check(source)).diagnostics.some((item) => item.code === 2322)).toBe(true);
+});
+
 it('details 展开绑定保留 DOM 事件类型，并检查 boolean 写回', async () => {
   expect(
     (
