@@ -26,10 +26,17 @@ function collect(body, scope = '') {
   for (const entry of body) {
     const node = entry.type === 'ExportNamedDeclaration' ? entry.declaration : entry;
     if (!node) continue;
-    if (node.type === 'TSModuleDeclaration') collect(node.body.body, node.id.name);
-    if (node.type === 'TSTypeAliasDeclaration')
-      aliases.set(scope ? scope + '.' + node.id.name : node.id.name, { node, scope });
-    if (node.type === 'TSInterfaceDeclaration') interfaces.set(node.id.name, node);
+    switch (node.type) {
+      case 'TSModuleDeclaration':
+        collect(node.body.body, node.id.name);
+        break;
+      case 'TSTypeAliasDeclaration':
+        aliases.set(scope ? scope + '.' + node.id.name : node.id.name, { node, scope });
+        break;
+      case 'TSInterfaceDeclaration':
+        interfaces.set(node.id.name, node);
+        break;
+    }
   }
 }
 collect(ast.program.body);
@@ -37,13 +44,21 @@ const typeName = (node) =>
   node.type === 'Identifier' ? node.name : typeName(node.left) + '.' + node.right.name;
 function valuesOf(node, scope = '', parameters = new Map(), seen = new Set()) {
   if (!node) return [];
-  if (node.type === 'TSLiteralType') return [node.literal.value];
-  if (node.type === 'TSNumberKeyword') return [0];
-  if (node.type === 'TSUnionType' || node.type === 'TSIntersectionType')
-    return node.types.flatMap((item) => valuesOf(item, scope, parameters, seen));
-  if (node.type === 'TSParenthesizedType')
-    return valuesOf(node.typeAnnotation, scope, parameters, seen);
-  if (node.type !== 'TSTypeReference') return [];
+  switch (node.type) {
+    case 'TSLiteralType':
+      return [node.literal.value];
+    case 'TSNumberKeyword':
+      return [0];
+    case 'TSUnionType':
+    case 'TSIntersectionType':
+      return node.types.flatMap((item) => valuesOf(item, scope, parameters, seen));
+    case 'TSParenthesizedType':
+      return valuesOf(node.typeAnnotation, scope, parameters, seen);
+    case 'TSTypeReference':
+      break;
+    default:
+      return [];
+  }
   const name = typeName(node.typeName);
   if (parameters.has(name)) return parameters.get(name);
   // csstype 的根接口默认长度允许 0，时间参数默认开放字符串。

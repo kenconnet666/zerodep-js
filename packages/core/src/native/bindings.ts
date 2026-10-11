@@ -16,13 +16,17 @@ export function bindProps(input: Props, bindings: readonly Binding[]): Props {
 }
 
 function readControl(event: Event, name: string): unknown {
-  if (name === 'open') return (event.currentTarget as HTMLDetailsElement).open;
-  const element = event.currentTarget as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
-  if (name === 'checked') return (element as HTMLInputElement).checked;
-  if (name === 'valueAsNumber') {
-    const value = (element as HTMLInputElement).valueAsNumber;
-    return Number.isNaN(value) ? undefined : value;
+  switch (name) {
+    case 'open':
+      return (event.currentTarget as HTMLDetailsElement).open;
+    case 'checked':
+      return (event.currentTarget as HTMLInputElement).checked;
+    case 'valueAsNumber': {
+      const value = (event.currentTarget as HTMLInputElement).valueAsNumber;
+      return Number.isNaN(value) ? undefined : value;
+    }
   }
+  const element = event.currentTarget as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
   if (element.localName === 'select' && (element as HTMLSelectElement).multiple)
     return Array.from((element as HTMLSelectElement).selectedOptions, (option) => option.value);
   return element.value;

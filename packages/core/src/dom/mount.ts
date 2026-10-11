@@ -124,26 +124,25 @@ export function renderValue(
     synchronous(value, '渲染内容不能是 Promise；请先准备异步数据再渲染。');
     throw new Error('无效 JSX 内容；函数请显式调用，对象请转换为可呈现值。');
   }
-  if (value.kind === 'fragment') {
-    for (const child of value.children)
-      renderValue(child, parent, before, namespaceParent, hydration);
-    return;
-  }
-  if (value.kind === 'dynamic') {
-    renderDynamic(value, parent, before, namespaceParent, hydration);
-    return;
-  }
-  if (value.kind === 'list') {
-    renderList(value, parent, before, namespaceParent, renderValue, hydration);
-    return;
-  }
-  if (value.kind === 'boundary') {
-    renderBoundary(value, parent, before, namespaceParent, renderValue, hydration);
-    return;
-  }
-  if (value.kind === 'portal') {
-    renderPortal(value, parent, before, renderValue, hydration);
-    return;
+  switch (value.kind) {
+    case 'fragment':
+      for (const child of value.children)
+        renderValue(child, parent, before, namespaceParent, hydration);
+      return;
+    case 'dynamic':
+      renderDynamic(value, parent, before, namespaceParent, hydration);
+      return;
+    case 'list':
+      renderList(value, parent, before, namespaceParent, renderValue, hydration);
+      return;
+    case 'boundary':
+      renderBoundary(value, parent, before, namespaceParent, renderValue, hydration);
+      return;
+    case 'portal':
+      renderPortal(value, parent, before, renderValue, hydration);
+      return;
+    case 'element':
+      break;
   }
   if (typeof value.tag !== 'string') {
     const scope = new Scope();

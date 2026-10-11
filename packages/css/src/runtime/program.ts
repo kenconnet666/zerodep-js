@@ -101,24 +101,28 @@ function checkSelector(value: string): void {
   const stack: TokenType[] = [];
   for (;;) {
     const type = reader.nextToken()[0];
-    if (type === TokenType.EOF) {
-      if (stack.length) fail();
-      return;
+    switch (type) {
+      case TokenType.EOF:
+        if (stack.length) fail();
+        return;
+      case TokenType.OpenCurly:
+      case TokenType.CloseCurly:
+      case TokenType.Semicolon:
+        return fail();
+      case TokenType.Function:
+      case TokenType.OpenParen:
+        stack.push(TokenType.CloseParen);
+        break;
+      case TokenType.OpenSquare:
+        stack.push(TokenType.CloseSquare);
+        break;
+      case TokenType.CloseParen:
+      case TokenType.CloseSquare:
+        if (stack.pop() !== type) fail();
+        break;
+      default:
+        break;
     }
-    if (
-      type === TokenType.OpenCurly ||
-      type === TokenType.CloseCurly ||
-      type === TokenType.Semicolon
-    )
-      fail();
-    if (type === TokenType.Function || type === TokenType.OpenParen)
-      stack.push(TokenType.CloseParen);
-    else if (type === TokenType.OpenSquare) stack.push(TokenType.CloseSquare);
-    else if (
-      (type === TokenType.CloseParen || type === TokenType.CloseSquare) &&
-      stack.pop() !== type
-    )
-      fail();
   }
 }
 export function collectCss(build: Callback, resolve: ClassResolver): CssProgram {

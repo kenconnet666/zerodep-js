@@ -102,21 +102,33 @@ function declarationValue(value: string, name: string): void {
   const closing: TokenType[] = [];
   while (true) {
     const type = reader.nextToken()[0];
-    if (type === TokenType.EOF) break;
-    if (type === TokenType.Function || type === TokenType.OpenParen)
-      closing.push(TokenType.CloseParen);
-    else if (type === TokenType.OpenSquare) closing.push(TokenType.CloseSquare);
-    else if (type === TokenType.OpenCurly) closing.push(TokenType.CloseCurly);
-    else if (
-      type === TokenType.CloseParen ||
-      type === TokenType.CloseSquare ||
-      type === TokenType.CloseCurly
-    ) {
-      if (closing.pop() !== type) throw new Error(`style 的 ${name} 包含不匹配的 CSS 括号。`);
-    } else if (type === TokenType.Semicolon && !closing.length)
-      throw new Error(`style 的 ${name} 只能包含一个声明值；多声明请使用 style 字符串。`);
+    switch (type) {
+      case TokenType.EOF:
+        if (closing.length) throw new Error(`style 的 ${name} 包含未闭合的 CSS 括号。`);
+        return;
+      case TokenType.Function:
+      case TokenType.OpenParen:
+        closing.push(TokenType.CloseParen);
+        break;
+      case TokenType.OpenSquare:
+        closing.push(TokenType.CloseSquare);
+        break;
+      case TokenType.OpenCurly:
+        closing.push(TokenType.CloseCurly);
+        break;
+      case TokenType.CloseParen:
+      case TokenType.CloseSquare:
+      case TokenType.CloseCurly:
+        if (closing.pop() !== type) throw new Error(`style 的 ${name} 包含不匹配的 CSS 括号。`);
+        break;
+      case TokenType.Semicolon:
+        if (!closing.length)
+          throw new Error(`style 的 ${name} 只能包含一个声明值；多声明请使用 style 字符串。`);
+        break;
+      default:
+        break;
+    }
   }
-  if (closing.length) throw new Error(`style 的 ${name} 包含未闭合的 CSS 括号。`);
 }
 
 /** CSR 和 SSR 共用整段声明，避免 shorthand/important 与逐属性更新产生不同结果。 */

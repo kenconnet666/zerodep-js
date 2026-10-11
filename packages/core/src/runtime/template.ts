@@ -73,7 +73,14 @@ export function logical(
   return conditional(
     () => {
       const current = value.read();
-      return operator === '&&' ? Boolean(current) : operator === '||' ? !current : current == null;
+      switch (operator) {
+        case '&&':
+          return Boolean(current);
+        case '||':
+          return !current;
+        case '??':
+          return current == null;
+      }
     },
     right,
     () => original,

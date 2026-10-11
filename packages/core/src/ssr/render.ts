@@ -70,72 +70,77 @@ function render(value: Renderable, owner: Scope, context: Context): string {
     synchronous(value, '渲染内容不能是 Promise；请先准备异步数据再渲染。');
     throw new Error('无效的服务端渲染值。');
   }
-  if (value.kind === 'fragment')
-    return value.children.map((child) => render(child, owner, context)).join('');
-  // 不读取 target/children，服务端也不会执行 Portal 子组件的初始化代码。
-  if (value.kind === 'portal') return range('portal', '');
-  if (value.kind === 'dynamic')
-    return range(
-      'dynamic',
-      scoped(owner, (scope) => render(value.value.read(), scope, context)),
-    );
-  if (value.kind === 'list') {
-    const entries = value.entries.read();
-    const body = entries.length
-      ? entries
-          .map((entry, index) =>
-            range(
-              'row',
-              scoped(owner, (scope) =>
-                render(
-                  value.render(
-                    () => entry.item,
-                    () => index,
+  switch (value.kind) {
+    case 'fragment':
+      return value.children.map((child) => render(child, owner, context)).join('');
+    // 不读取 target/children，服务端也不会执行 Portal 子组件的初始化代码。
+    case 'portal':
+      return range('portal', '');
+    case 'dynamic':
+      return range(
+        'dynamic',
+        scoped(owner, (scope) => render(value.value.read(), scope, context)),
+      );
+    case 'list': {
+      const entries = value.entries.read();
+      const body = entries.length
+        ? entries
+            .map((entry, index) =>
+              range(
+                'row',
+                scoped(owner, (scope) =>
+                  render(
+                    value.render(
+                      () => entry.item,
+                      () => index,
+                    ),
+                    scope,
+                    context,
                   ),
-                  scope,
-                  context,
                 ),
               ),
-            ),
-          )
-          .join('')
-      : scoped(owner, (scope) => render(dynamic(value.fallback), scope, context));
-    return range('list', body);
-  }
-  if (value.kind === 'boundary') {
-    const scope = new Scope(owner);
-    const matched = context.selection?.matched;
-    try {
-      const body = scope.run(() =>
-        render(
-          dynamic(() => value.input.children),
-          scope,
-          context,
-        ),
-      );
-      return range('boundary', body);
-    } catch (error) {
-      if (context.selection && matched !== undefined) context.selection.matched = matched;
-      let failure = error;
-      try {
-        scope.dispose();
-      } catch (cleanupError) {
-        failure = new AggregateError([error, cleanupError], '服务端子树与清理失败。');
-      }
-      const body = scoped(owner, (fallback) =>
-        render(
-          dynamic(() =>
-            value.input.fallback(failure, () => {
-              throw new Error('reset 只能在客户端交互中使用。');
-            }),
-          ),
-          fallback,
-          context,
-        ),
-      );
-      // 只标记失败，不把异常或堆栈自动写入协议；客户端对该区域局部重试。
-      return range('boundary', body, true);
+            )
+            .join('')
+        : scoped(owner, (scope) => render(dynamic(value.fallback), scope, context));
+      return range('list', body);
     }
+    case 'boundary': {
+      const scope = new Scope(owner);
+      const matched = context.selection?.matched;
+      try {
+        const body = scope.run(() =>
+          render(
+            dynamic(() => value.input.children),
+            scope,
+            context,
+          ),
+        );
+        return range('boundary', body);
+      } catch (error) {
+        if (context.selection && matched !== undefined) context.selection.matched = matched;
+        let failure = error;
+        try {
+          scope.dispose();
+        } catch (cleanupError) {
+          failure = new AggregateError([error, cleanupError], '服务端子树与清理失败。');
+        }
+        const body = scoped(owner, (fallback) =>
+          render(
+            dynamic(() =>
+              value.input.fallback(failure, () => {
+                throw new Error('reset 只能在客户端交互中使用。');
+              }),
+            ),
+            fallback,
+            context,
+          ),
+        );
+        // 只标记失败，不把异常或堆栈自动写入协议；客户端对该区域局部重试。
+        return range('boundary', body, true);
+      }
+    }
+    case 'element':
+      break;
   }
   if (typeof value.tag !== 'string')
     return scoped(owner, (scope) => {
