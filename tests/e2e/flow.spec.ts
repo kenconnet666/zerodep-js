@@ -2,6 +2,24 @@ import { expect, test } from '@playwright/test';
 
 for (const mode of ['csr', 'ssr']) {
   test.describe(mode, () => {
+    test('同 key 替换后的事件读取新数据，过滤恢复重建草稿并只清理一次', async ({ page }) => {
+      await page.goto(`/?render=${mode}`);
+      const row = page.locator('[data-row="2"]');
+      await row.locator('input').fill('草稿');
+      await page.locator('[data-replace-rows]').click();
+      await row.locator('[data-pick-row]').click();
+      await expect(page.locator('[data-picked-row]')).toHaveText('2:乙更新');
+      await expect(row.locator('input')).toHaveValue('草稿');
+      await page.locator('[data-reverse]').click();
+      await page.locator('[data-filter-rows]').click();
+      await expect(row).toHaveCount(0);
+      await expect(page.locator('[data-removed]')).toHaveText('2');
+      await page.locator('[data-filter-rows]').click();
+      await expect(row.locator('input')).toHaveValue('乙更新');
+      await row.getByRole('button', { name: '删除 2' }).click();
+      await expect(page.locator('[data-removed]')).toHaveText('2,2');
+    });
+
     for (const fallback of [false, true]) {
       test(`列表排序保留节点、草稿、焦点与选区${fallback ? '（兼容移动路径）' : ''}`, async ({
         page,

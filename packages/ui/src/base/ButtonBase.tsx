@@ -1,6 +1,6 @@
 import type { UiTheme } from '../provider/theme/theme.js';
 import { _component, _derived, type JSX } from 'zerodep-js';
-import { css, _mergeClasses, type CssValue } from 'zerodep-js-css';
+import { css, type CssValue } from 'zerodep-js-css';
 import { useCss } from '../provider/context.js';
 import { Ripple, type RippleProps } from './Ripple.js';
 import { _resolveSlotProps, type SlotProps } from '../utils/slot-props.js';
@@ -53,6 +53,7 @@ export const ButtonBase = _component(
         s.outlineOffset.em(0.125),
         s.outlineColor._focus,
       ),
+      className,
     );
     return (
       <button
@@ -62,7 +63,7 @@ export const ButtonBase = _component(
         onClick={(event) => {
           if (!disabled && !event.currentTarget.matches(':disabled')) onClick?.(event);
         }}
-        class={_mergeClasses(style, className)}
+        class={style}
       >
         {children}
         {ripple && <Ripple {...rippleProps} disabled={Boolean(disabled)} />}

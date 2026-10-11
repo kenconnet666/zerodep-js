@@ -8,11 +8,13 @@ const EditableRow = _component(
     index,
     remove,
     disposed,
+    pick,
   }: {
     row: Item;
     index: number;
     remove: (id: number) => void;
     disposed: (id: number) => void;
+    pick: (id: number, name: string) => void;
   }) => {
     let draft = _state(row.name);
     _onCleanup(() => disposed(row.id));
@@ -31,6 +33,9 @@ const EditableRow = _component(
         <button type="button" onClick={() => remove(row.id)}>
           删除 {row.id}
         </button>
+        <button type="button" data-pick-row onClick={() => pick(row.id, row.name)}>
+          选择记录
+        </button>
       </li>
     );
   },
@@ -44,12 +49,23 @@ export const ListExample = _component(() => {
   ]);
   const removed = _state<number[]>([]);
   let nextId = 4;
+  let filtered = _state(false);
+  let picked = _state('');
   const remove = (id: number) => {
     rows = rows.filter((row) => row.id !== id);
   };
   return (
     <section aria-label="带状态列表">
       <h2>带状态列表</h2>
+      <button
+        data-filter-rows
+        onClick={() => {
+          filtered = !filtered;
+        }}
+      >
+        切换过滤第二行
+      </button>
+      <output data-picked-row>{picked}</output>
       <button
         type="button"
         data-reverse
@@ -118,7 +134,11 @@ export const ListExample = _component(() => {
         )}
       >
         <ul data-list>
-          <For each={rows} keyBy={(row) => row.id} fallback={<li data-empty>空列表</li>}>
+          <For
+            each={filtered ? rows.filter((row) => row.id !== 2) : rows}
+            keyBy={(row) => row.id}
+            fallback={<li data-empty>空列表</li>}
+          >
             {(row, index) =>
               row.id > 0 ? (
                 <EditableRow
@@ -126,6 +146,9 @@ export const ListExample = _component(() => {
                   index={index}
                   remove={remove}
                   disposed={(id) => removed.push(id)}
+                  pick={(id, name) => {
+                    picked = `${id}:${name}`;
+                  }}
                 />
               ) : null
             }

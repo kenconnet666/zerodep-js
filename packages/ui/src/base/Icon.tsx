@@ -1,7 +1,7 @@
 import type { UiTheme } from '../provider/theme/theme.js';
 import { _component, _derived, type JSX, type Template, element } from 'zerodep-js';
 
-import { css, _mergeClasses, type CssValue } from 'zerodep-js-css';
+import { css, type CssValue } from 'zerodep-js-css';
 import type { LucideIconData, LucideIconNode } from '@lucide/icons';
 import { buildLucideIconNode } from '@lucide/icons/build';
 import { useCss } from '../provider/context.js';
@@ -42,6 +42,7 @@ export const Icon = _component(({ icon, color, size, class: className, ...rest }
     s.flexShrink.raw(0),
     s.color.raw(color),
     s.fontSize.raw(size),
+    className,
   );
   return (
     <svg
@@ -50,7 +51,7 @@ export const Icon = _component(({ icon, color, size, class: className, ...rest }
       role={named ? 'img' : undefined}
       aria-hidden={named ? undefined : true}
       {...rest}
-      class={_mergeClasses(style, className)}
+      class={style}
     >
       {svg.children}
     </svg>

@@ -5,6 +5,23 @@ import { _derived, _state } from '../../core/dist/runtime/macros.js';
 import { CompileError, compile } from '../src/index.js';
 
 describe('变量宏的绑定转换', () => {
+  it('辅助函数内实际读取决定派生依赖，分支切换、异常与恢复不污染普通快照', () => {
+    expect(
+      execute(`
+import {_state,_derived} from 'zerodep-js';
+let first=_state(true), a=_state(1), b=_state(10);
+let calls=0;
+function calculate(){calls++;const n=first?a:b;if(n<0)throw new Error('negative');return n*2;}
+const value=_derived(calculate());
+const saved=value;
+const before=[value,calls];first=false;const switched=[value,calls];
+a=9;const unrelated=[value,calls];b=-1;
+let failed=false;try{value;}catch{failed=true;}
+b=3;const result=[before,switched,unrelated,failed,value,calls,saved];
+`),
+    ).toEqual([[2, 1], [20, 2], [20, 2], true, 6, 4, 2]);
+  });
+
   it('状态初始化函数与派生工厂中的命名宏都转换，闭包保持正确的词法绑定', () => {
     expect(
       execute(`
