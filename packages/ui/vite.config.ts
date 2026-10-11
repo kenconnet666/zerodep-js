@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
-import { zerodep } from 'zerodep-js-compiler';
+import { zerodep } from '../compiler/src/tooling/vite.js';
 
 export default defineConfig({
   plugins: [zerodep()],

@@ -39,15 +39,14 @@ UI 组件在 Provider 内使用。按钮支持 solid/outline/text/soft 外观，
 
 ```sh
 pnpm install --frozen-lockfile
-pnpm --dir packages/core build
-pnpm --dir packages/css build
-pnpm --dir packages/compiler build
 pnpm --dir apps/example dev
 ```
 
-文档应用使用 `pnpm --dir apps/docs dev`，开发时直接消费 UI 源码。生产构建分别执行包的 build、UI 的 build:types，以及应用的 build:client/build:server；命令不隐式捆绑类型检查或补建依赖。
+文档应用使用 `pnpm --dir apps/docs dev`。两个应用的 Vite 开发与构建直接关联 core/CSS/UI 源码，编译器插件也从源码加载，不必先构建依赖包。UI 修改支持组件热更新；底层运行时修改可能触发整页刷新，Vite 插件修改需要服务重启。
 
-换机使用 Codex 时，完成上述 core/css/compiler 构建后运行 `pnpm --dir packages/compiler lsp:setup`，再在 Codex 中信任项目并重新加载项目工具。Git 保留 `.codex/config.example.toml` 模板；含本机 Node/仓库路径的 `.codex/config.toml` 由命令重新生成，不直接复制或提交。旧 `.codex/lsp4ij/` 不再使用，也不提交。
+发布包仍单独执行包的 build、UI 的 build:types，独立消费测试继续验证真实产物。应用分别执行 build:client/build:server；命令不隐式捆绑类型检查或补建依赖。
+
+换机使用 Codex 时，完成 core/css/compiler 各包的 build 后运行 `pnpm --dir packages/compiler lsp:setup`，再在 Codex 中信任项目并重新加载项目工具。Git 保留 `.codex/config.example.toml` 模板；含本机 Node/仓库路径的 `.codex/config.toml` 由命令重新生成，不直接复制或提交。旧 `.codex/lsp4ij/` 不再使用，也不提交。
 
 ## 维护
 
