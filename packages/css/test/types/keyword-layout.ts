@@ -1,37 +1,19 @@
-import {
-  ColorCss,
-  ColorKeywords,
-  WidthCss,
-  Css,
-  SystemKeywords,
-  systemKeywords,
-} from '../../src/index.js';
-
-class ProjectColor extends ColorCss {
-  protected override readonly name = 'outline-color';
-  override readonly red: string = 'color:#123456;';
-  readonly _brand: string = 'color:#654321;';
-  override raw(value: string): string {
-    return this.declaration(value);
-  }
+import { Css, css, bx, SystemKeywords, type KeywordValues } from '../../src/index.js';
+class Theme extends SystemKeywords {
+  override readonly color: { readonly _brand: KeywordValues['color'] } = { _brand: '#123456' };
 }
-class ProjectValues extends ColorKeywords {
-  override readonly red: string = '#123456';
+const s = new Css(new Theme());
+css(() => s.color('_brand').color(bx('_brand')).color('red'));
+s.keywords.color._brand satisfies string;
+// @ts-expect-error 主题读取仍保留准确成员类型。
+void s.keywords.color._missing;
+// @ts-expect-error 主题成员只读。
+s.keywords.color._brand = 'red';
+class ReservedNames extends SystemKeywords {
+  override readonly color = { red: 'blue' };
 }
-class ProjectTheme extends SystemKeywords {
-  override readonly color = { ...systemKeywords.color, _brand: '#123456' };
-}
-const color = new ProjectColor();
-color.red satisfies string;
-color._brand satisfies string;
-new ProjectValues().red satisfies string;
-new Css(new ProjectTheme()).color._brand satisfies string;
-new WidthCss().px(12) satisfies string;
-// @ts-expect-error 没有把关键字改为任意字符串索引。
-color.notAKeyword satisfies string;
-// @ts-expect-error 颜色作者不具有长度方法。
-color.px(12);
-// @ts-expect-error 单位方法仍要求数值。
-new WidthCss().px('12');
-// @ts-expect-error 默认成员仍只读。
-new ColorCss().red = 'red';
+// @ts-expect-error 系统关键字不能被主题覆盖，主题只使用下划线 token。
+new Css(new ReservedNames());
+// @ts-expect-error 旧属性作者类型不再公开。
+import type { ColorCss } from '../../src/index.js';
+export type RemovedColorAuthor = ColorCss;

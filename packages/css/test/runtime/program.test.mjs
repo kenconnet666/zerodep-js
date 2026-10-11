@@ -167,3 +167,22 @@ test('select 保留引号中的分隔符，拒绝块注入，标准条件可正�
   assert.throws(() => css(() => s.select('&:is(', () => s.color('red'))), /完整选择器/);
   assert.equal(nativeAttributes({ class: '' }, 'div').get('class'), '');
 });
+
+test('无关声明插入不改动画名，不同目标的动画参数仍隔离', () => {
+  const { host, s, css, resolve } = setup();
+  const frames = (value) => collectKeyframes(() => s.select('to', () => s.opacity(bx(value))));
+  const animation = frames(0.5);
+  resolve([css(() => s.animationName(animation))]);
+  resolve([css(() => s.color('red').animationName(animation))]);
+  assert.equal(host.rules().filter((rule) => rule.kind === 'keyframes').length, 1);
+  const result = resolve([
+    css(() => {
+      s.animationName(animation);
+      s.select('&::before', () => s.animationName(frames(0.8)));
+    }),
+  ]);
+  assert.match(result.style, /:0.5;/);
+  assert.match(result.style, /:0.8;/);
+  const names = [...result.style.matchAll(/(--zj-[^:;]+):/g)].map((match) => match[1]);
+  assert.equal(new Set(names).size, 2);
+});

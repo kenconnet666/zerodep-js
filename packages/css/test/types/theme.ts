@@ -1,48 +1,28 @@
-import { ColorCss, Css, WidthCss } from '../../src';
-
-class ThemeWidthCss extends WidthCss {
-  readonly _md = this.raw('48rem');
+import { Css, css, bx, SystemKeywords, type KeywordValues } from '../../src/index.js';
+class Theme extends SystemKeywords {
+  override readonly width = { _md: '48rem' };
+  override readonly color: { readonly _brand: KeywordValues['color'] } = {
+    _brand: 'rebeccapurple',
+  };
 }
-
-class ThemeColorCss extends ColorCss {
-  readonly brand = this.raw('rebeccapurple');
+class AppTheme extends Theme {
+  override readonly width = { _md: '48rem', _sidebar: '18rem' };
 }
-
-class ThemeCss extends Css {
-  override readonly width = new ThemeWidthCss();
-  override readonly color = new ThemeColorCss();
+const s = new Css(new AppTheme());
+s.keywords.width._md satisfies string;
+s.keywords.width._sidebar satisfies string;
+css(() => {
+  s.width('_md').width(bx('_sidebar')).width('20px').width('auto');
+  s.padding('8px 16px').gap('8px 12px').display('flex').justifyContent('space-between');
+  s.borderRadius('8px').gridTemplateColumns('1fr 2fr').fill('red').d('path("M0 0")');
+  s.opacity(0.5).color('_brand').color('red');
+});
+// @ts-expect-error 自定义主题作者必须提供主题值。
+new Css<AppTheme>();
+// @ts-expect-error 不混淆属性组中的主题字段。
+void s.keywords.color._sidebar;
+class InvalidTheme extends SystemKeywords {
+  override readonly color = { _brand: 123 };
 }
-
-class AppWidthCss extends ThemeWidthCss {
-  readonly _sidebar = this.raw('18rem');
-}
-
-class AppCss extends ThemeCss {
-  override readonly width = new AppWidthCss();
-}
-
-const s = new AppCss();
-s.width._md satisfies string;
-s.width._sidebar satisfies string;
-s.width.raw('20px') satisfies string;
-s.width.auto satisfies string;
-s.width.px(20) satisfies string;
-s.padding.px(8, 16) satisfies string;
-s.gap.px(8, 12) satisfies string;
-s.display.flex satisfies string;
-s.justifyContent.spaceBetween satisfies string;
-s.borderRadius.px(8) satisfies string;
-s.gridTemplateColumns.raw('1fr 2fr') satisfies string;
-s.fill.red satisfies string;
-s.d.raw('path("M0 0")') satisfies string;
-s.opacity.raw(0.5) satisfies string;
-s.color.brand satisfies string;
-s.color.red satisfies string;
-// @ts-expect-error opacity 不接受长度单位
-s.opacity.px(0.5);
-// @ts-expect-error 普通属性只接受一个 px 参数
-s.width.px(8, 16);
-// @ts-expect-error width.raw 的非零数字应明确选择单位
-s.width.raw(24);
-// @ts-expect-error 时间属性不是长度属性
-s.animationDuration.px(200);
+// @ts-expect-error 主题颜色值仍有对应 CSS 属性类型约束。
+new Css(new InvalidTheme());

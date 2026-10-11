@@ -1,46 +1,24 @@
-import { Css, ColorCss, type CssInput } from '../../src/index.js';
-
-class ProjectColor extends ColorCss {
-  readonly _text = this.raw('var(--z-theme-text)');
+import { Css, css, SystemKeywords, type CssInput } from '../../src/index.js';
+class Theme extends SystemKeywords {
+  override readonly color = { _text: '#123456' };
 }
-
-/** 示例项目自己选择允许覆盖的主题键，不属于框架公共配置。 */
-interface ProjectTheme {
-  text?: string;
-  surface?: string;
-}
-
-/** 项目按自己的约定扩展；这些方法不加入系统 Css 或主题预设入口。 */
-class ProjectCss extends Css {
-  override readonly color = new ProjectColor();
-  _media(query: string, ...parts: CssInput[]): string {
-    return this._selector(`@media ${query}`, parts);
+class ProjectCss extends Css<Theme> {
+  media(query: string, build: () => void | Css<Theme>): this {
+    return this.select('@media ' + query, build);
   }
-
-  _supports(condition: string, ...parts: CssInput[]): string {
-    return this._selector(`@supports ${condition}`, parts);
-  }
-
-  _container(query: string, ...parts: CssInput[]): string {
-    return this._selector(`@container ${query}`, parts);
-  }
-
-  theme(values: ProjectTheme): string {
-    // 只声明本次提供的值；其他主题色沿原生 DOM 继承。
-    return Object.entries(values)
-      .filter(([, value]) => value !== undefined)
-      .map(([name, value]) => `--z-theme-${name}:${value};`)
-      .join('');
+  text(value: CssInput<'color', Theme>): this {
+    return this.color(value);
   }
 }
-
-const s = new ProjectCss();
-s._media('(width >= 48rem)', [s.color.red, false, [s.width.rem(20)]]) satisfies string;
-s._supports('(display: grid)', s.display.grid);
-s._container('card (width >= 24rem)', s.padding.rem(2));
-s.theme({ text: '#7c3aed', surface: 'var(--project-surface)' }) satisfies string;
-s.color._text satisfies string;
-// @ts-expect-error 系统作者没有项目的条件规则快捷方法
-new Css()._media('(width >= 48rem)', s.color.red);
-// @ts-expect-error 示例项目自行决定可覆盖的主题键
-s.theme({ unknown: '#ffffff' });
+const s = new ProjectCss(new Theme());
+css(() => {
+  s.media('(width >= 48rem)', () => s.text('_text').width('20rem'));
+  s.select('@supports (display: grid)', () => s.display('grid'));
+  s.select('@container card (width >= 24rem)', () => s.padding('2rem'));
+});
+// @ts-expect-error 项目辅助方法不会加入标准作者。
+new Css().media('(width >= 48rem)', () => {});
+// @ts-expect-error 项目扩展同样保留颜色输入约束。
+s.text(12);
+// @ts-expect-error select 是同步收集范围。
+css(() => s.select('&:hover', async () => {}));

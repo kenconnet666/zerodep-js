@@ -1,35 +1,23 @@
-import { Css, WidthCss, type CssString } from '../../src/index.js';
-import type { Property } from 'csstype';
-
+import { Css, css, bx, type CssClass } from '../../src/index.js';
+import type { ClassValue } from 'zerodep-js';
 const s = new Css();
-s.animationPlayState.raw('running');
-s.animationPlayState.raw('arbitrary-css-value');
-s.animationPlayState.running satisfies string;
-s.width.raw(0);
-s.color.raw(undefined) satisfies string;
-s.fontSize.raw(undefined) satisfies string;
-s.display.raw(undefined) satisfies string;
-// @ts-expect-error raw 只新增 undefined 省略语义，不接受布尔值。
-s.color.raw(false);
-s.width.min(0, '10px');
-s.opacity.max(0.25, 1);
-s.fontWeight.clamp(100, 400, 900);
-s.animationDuration.min('100ms', '1s');
-// @ts-expect-error 宽度数学值仍需要明确单位，0 除外
-s.width.min(12);
-// @ts-expect-error 动画时长不接受无单位数值
-s.animationDuration.min(0);
-// @ts-expect-error animation-play-state 不接受数字
-s.animationPlayState.raw(1);
-// @ts-expect-error 颜色不接受裸数字
-s.color.raw(1);
-// @ts-expect-error 公共格式化实现不作为业务 API 暴露
+const result: CssClass = css(() => {
+  s.animationPlayState('running').animationPlayState('arbitrary-css-value');
+  s.width(0).color(undefined).fontSize(undefined).display(undefined);
+  s.width('min(0px, 10px)').opacity('max(0.25, 1)').fontWeight('clamp(100, 400, 900)');
+  // @ts-expect-error CSS 值不接受布尔值。
+  s.color(false);
+  // @ts-expect-error 动画时长需要单位。
+  s.animationDuration(100);
+  // @ts-expect-error 播放状态不接受数字。
+  s.animationPlayState(1);
+  // @ts-expect-error bx 保留错误类型，不抹掉颜色的数值约束。
+  s.color(bx(1));
+});
+const list: ClassValue = [result, false, [null, undefined, 'external']];
+void list;
+// @ts-expect-error 结构化结果不是类名字符串。
+const name: string = result;
+void name;
+// @ts-expect-error 不保留旧声明格式化入口。
 s.width.declaration('1px');
-
-class ProjectWidth extends WidthCss {
-  readonly _md = this.rem(48);
-  override raw(value: Property.Width | CssString): string {
-    return super.raw(value);
-  }
-}
-new ProjectWidth()._md satisfies string;

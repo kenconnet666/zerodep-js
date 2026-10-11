@@ -267,7 +267,7 @@ export function themeDeclarations(author: CssAuthor): readonly Declaration[] {
   const result: Declaration[] = [];
   const theme = author.keywords;
   if (theme === systemKeywords) return Object.freeze(result);
-  // 只读取用户覆写的主题组，避免枚举系统表时实例化全部属性的懒缓存。
+  // 主题只保存 token；系统空组共用一个对象，不创建旧式属性作者或关键字缓存。
   const properties = new Set<keyof KeywordValues>();
   for (
     let object: object | null = theme;
@@ -337,7 +337,12 @@ function materialize(
     }
     let value = entry.value;
     if (typeof value === 'object') {
-      const animation = materialize(value[ANIMATION], host, `${namespace}-${index}`);
+      // 动画参数由目标选择器区分，不随无关声明的插入位置改变动画名。
+      const animation = materialize(
+        value[ANIMATION],
+        host,
+        `animation-${hash(JSON.stringify(entry.path))}`,
+      );
       value = host.keyframes(animation.body);
       if (animation.style) styles.push(animation.style.slice(0, -1));
     } else if (entry.variable) {
