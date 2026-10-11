@@ -1,5 +1,14 @@
 # 基础 API 完善与 CSS 协作计划
 
+## 2026-10-11 下一阶段：统一 CSS 组合与框架完善
+
+用户确认：一个最终样式组合生成一个哈希类，按顺序保留完整 CSS 声明；DOM 识别使用 data-*、必要的 id 和既有语义化查询。下一阶段按 [单一 CSS 组合入口与框架完善计划](css-simplification-plan.md) 执行；本节是规划，不表示 API 已删除。
+
+- css 作为唯一作者组合入口，计划删除 `_mergeClasses`、登记器 mergeClasses、`className(name)` 标记函数和 CssProps 重复公开别名；不保留兼容转发。保留作者字符串、动态变量传递、keyframes/globalCss、SSR 与编译协议职责。
+- 先恢复 a269fda 的原生生成声明一致性，再固定 CSS 内核契约；ButtonBase/Icon 局部试点通过后迁移其余 UI、测试、类型和文档。
+- 与多层表单包装、props 直接解构、对象替换、CSS/主题变化和 CSR/SSR 接管组合验收一起推进；仍不要求 props 加 `_derived`，不扩张公共 API。
+- 详细计划中的新组合契约在实施阶段取代下文历史 `_mergeClasses` 与任意外部类名拼接方案；普通 DOM class/className 支持不顺带删除，core 不新增 CSS 依赖。
+
 ## 2026-10-11 表单类型与 TSX 易用性
 
 继续参考 Svelte 的表单值语义与 Solid 的细粒度组件/列表边界，不扩张公共 API。props 参数解构仍直接响应，不要求 `_derived` 或 splitProps。

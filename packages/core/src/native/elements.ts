@@ -10263,7 +10263,7 @@ interface ScriptProps3 extends Common4<HTMLScriptElement | SVGScriptElement> {
 interface SelectProps extends Common1<HTMLSelectElement> {
   autocomplete?: AutoFill | null | undefined;
   autoComplete?: string | null | undefined;
-  /** 单选写回字符串；multiple 多选写回字符串数组。 */
+  /** 单选写回 string，多选写回 string[]；动态 multiple 需容纳两者，框架检查器验证写回类型。 */
   'bind:value'?: string | readonly string[] | null | undefined;
   children?:
     | string
