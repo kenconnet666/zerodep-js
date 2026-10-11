@@ -3,7 +3,7 @@
 ## 目标与范围
 
 - 直接在当前主目录工作，只有用户明确要求才创建或使用新工作树。保留用户已有改动。
-- 独立 TSX 细粒度响应式框架。2026-10-09 用户确认只维护本仓库 CSS：packages/css 承担作者、生成数据和浏览器/SSR 宿主；compiler 内置 CSS 转换和 Vite 插件，不维护 Vue/Svelte 适配、CompileExtension、公开 adapter 或 bx。相邻 zerodep-css 仓库只作为历史迁移来源，不继续开发或发布。
+- 独立 TSX 细粒度响应式框架。只维护本仓库 CSS：packages/css 承担作者、生成数据和浏览器/SSR 宿主；compiler 内置 CSS 转换和 Vite 插件，不维护 Vue/Svelte 适配、CompileExtension 或公开 adapter。2026-10-11 已批准新的 bx 作者标记，取代此前删除 bx 的约定。相邻 zerodep-css 仓库只作为历史迁移来源。
 - 2026-10-08 用户已授权建立 packages/ui 与 apps/docs，并确认实施 div Provider、继承 SystemKeywords 的亮暗主题、独立语言/地区/时区，以及日期库接入。契约见 docs/provider.md；UI 仍保持 private。2026-10-09 已授权在 packages/ui/src/base 实施 Icon，静态导入 Lucide 数据；通用主题/token 归 packages/ui/src/provider/theme，组件专用默认值留在组件内部，基础属性复用 CSS 输入类型。其他组件另行讨论。框架主计划为 docs/production-plan.md。
 - 2026-10-09 用户最新决定：IDE 与项目统一固定微软官方 TypeScript 7.1.0-dev.20261008.1，取代此前 JetBrains 分支。主包与平台包直接使用官方 npm 发行版，catalog 精确锁定并由 lockfile 校验；不维护 SDK 内核补丁或多版本兼容。Babel/Vite 不变；已授权备份并适配 WebStorm EAP 的 ts-go-proxy，开启服务驱动类型引擎并验证实际行为。
 - 首要目标是简单易维护、方便使用、良好类型提示与适当中文注释。性能次要；不为减少依赖或解析次数引入复杂后台、缓存和协议。
@@ -17,9 +17,11 @@
 
 ## 结构与 API
 
+- 2026-10-11 最新批准的 CSS 重构以 docs/css-redesign-plan.md 为准：const s = useCss(); css(() => { s.color(bx(color)).width(bx(width)); }); 真实方法、同步运行时收集、整个回调重算、select 入口、undefined 忽略、bx 接受主题 token 并在属性处安全回退。class 数组先组合结构化声明再生成单类；主题改为 Provider CSS 变量继承，不使用 @scope；动画保留结构化结果。这些决定取代下文历史字符串作者和主题 class 切换限制。正式旧入口迁移后删除，不长期保留兼容层。
+
 - 2026-10-11 目标模式实施：单类组合统一使用 css；删除 _mergeClasses、className(name) 标记函数和 CssProps 重复公开别名，不保留兼容入口。普通 DOM class/className 能力保留，CSS 变量协议仍由编译器及原生渲染处理。执行证据见 docs/framework-css-execution.md。
 
-- 2026-10-11：普通函数、局部解构和返回值继续按 JavaScript 取值；新增 `_derived`/`_derived.by` 声明解构，共享一次原生解构结果，字段只读。CSS 保留直接命名 const 自动派生，包装函数在 JSX 或 `_derived` 中更新。主题成员及 raw 主题 token 通过 class 重算，不变量化；普通主题作者值与系统作者共用保守分类。删除 cssKeyword 协议，core/compiler ABI 为 4；旧应用及预编译库需重建。不新增 bx、活引用函数或新的作者 DSL。
+- 2026-10-11：普通函数、局部解构和返回值继续按 JavaScript 取值；新增 `_derived`/`_derived.by` 声明解构，共享一次原生解构结果，字段只读。CSS 保留直接命名 const 自动派生，包装函数在 JSX 或 `_derived` 中更新。此前 CSS 协议基线为 ABI 4；新作者迁移按最新计划更新协议并要求旧应用/预编译库重建。不新增活引用函数。
 
 - 2026-10-09：core 提供 DomRef/_composeRefs 并允许 DOM bind:this 与 ref 共存；UI src/utils 承担组件组合与按压工具，src/base 提供 Icon/Text/Ripple/Spinner/ButtonBase。仅维护 UI src/index.ts 根入口，由 pnpm ui:generate 自动生成，pnpm ui:check 校验；不创建子目录 index.ts。
 - 组件使用独立 slotXxx 属性转发底层参数，例如 slotRipple；多个部件分别提供各自属性，不使用统一 slotProps 对象。对象/状态回调只复用 _resolveSlotProps 解析；已删除 _mergeSlotProps 和 _composeEventHandlers。
@@ -37,7 +39,7 @@
 - TypeScript target/lib 与 Vite 插件默认构建目标统一 ES2025；不要退回旧基线或改为随版本变化的 ESNext。新 API 的类型声明不代替运行时支持，不默认注入 polyfill。
 - 共享版本放在 pnpm catalog，包间依赖使用 workspace:*。使用 Node 24 和 package.json 固定的 pnpm，不添加其他包管理器锁文件。
 - 优先使用成熟依赖；ESLint 的 TS 支持满足选定版本时再评估替换现有 lint，不引入 TS6 或自造通用 linter。项目不引入 Zod，MCP 使用 JSON Schema、vscode-jsonrpc 与标准 stdio JSON-RPC。
-- CSS 生成属性直接继承共享泛型基类，保留各属性 Property.* 参数约束和基类中文说明；不要用 class/interface 合并重述方法，这会使当前 WebStorm 丢失普通方法的参数列表展示。
+- CSS 新作者生成真实类方法，保留各属性 Property.* 参数约束和中文说明；不使用映射函数属性或 class/interface 合并伪装方法，已实测会影响 WebStorm 方法分类或参数/括号补全。
 - 生成数据应有明确维护入口与检查命令。中文注释解释语义、原因、资源责任，不机械复述代码。
 - 2026-10-10 后续要求：UI 不再维护 src/internal；按钮内容、样式与共用类型放在 base，ButtonContent/ButtonContentProps、_buttonStyle/ButtonStyleOptions 和共用按钮类型从根入口导出。单文件使用的辅助函数不额外建立公共 API。
 - 2026-10-10 布局职责调整：Flex/Grid 仅提供普通布局，删除 attached、按钮子项检查和专用接缝样式。base/ButtonGroup 承担横向/纵向的一维相连，默认 role=group；不做二维，不提供 columns、换行或间距属性，不管理选择状态与方向键导航。此决定取代旧 Flex/Grid attached 契约，不保留兼容别名。

@@ -1,5 +1,7 @@
 # 原生 CSS
 
+> 正在按 [CSS 回调作者计划](css-redesign-plan.md) 重构。以下记录迁移前公开契约；新计划中的能力只有在对应阶段验证后才视为已实现。
+
 CSS 由本仓库 packages/css（包名 zerodep-js-css）提供，TSX 中的 CSS 调用由 compiler 内置转换。core 不依赖 CSS 包，不使用它的应用可以继续用普通 CSS。
 
 ```ts

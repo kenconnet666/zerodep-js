@@ -1,206 +1,28 @@
-# 基础 API 完善与 CSS 协作计划
+# 框架与组件生产计划
 
-目标模式执行状态以 [框架/CSS 执行记录](framework-css-execution.md) 为准。下面保留各阶段决策背景；2026-10-11 单类组合已进入源码，旧合并/标记入口已删除，当前作者用法见 [CSS](css.md)。
+当前 CSS 重构执行 [CSS 回调作者计划](css-redesign-plan.md)。框架语义审计执行 [框架完善计划](framework-hardening-plan.md)，上一阶段已完成的修复及 CI 证据见 [执行记录](framework-css-execution.md)。本页只维护范围和索引，不重复历史 API 方案。
 
-## 2026-10-11 补充：框架是独立主线
+## 保持的框架契约
 
-框架工作不能只写成 CSS 完成后的联合验收。独立实施范围见 [框架语义与 TSX 易用性完善计划](framework-hardening-plan.md)：F1 编译/派生正确性、F2 props/组件组合、F3 表单绑定、F4 列表/条件、F5 生命周期/异步、F6 类型/语言服务、F7 SSR/接管/开发状态。
+- 标准 TSX、显式 _state/_derived、普通变量使用；无 .value。props 参数解构/default/rest 直接响应，普通函数、局部解构、返回值仍按 JavaScript 取值。
+- 保留 bind、DOM bind:this、For 身份与清理、Portal、快照、懒加载、SSR/接管及开发状态保留。请求使用普通 async/await 与生命周期，不恢复 _task 或 packages/use。
+- 官方 TS 7.1.0-dev.20261008.1、Babel/Vite、ES2025。core/css/compiler/ui 保持根入口边界；不补丁化 SDK、不新增 CSS 专用响应式系统。
+- 维护性、类型提示和实际使用优先；新功能从业务场景讨论，不照抄其他框架 API 数量。
 
-首个工作包为 F2/F3/F6：两层包装的泛型字段组件、整份表单替换、空值/默认值、最新回调与准确写回类型。框架先形成可独立交付的工作包，再与 CSS 单类组合接入同一业务场景；不等待 CSS 删除 API 全部结束才开展。
+## 已有组件职责
 
-新增计划仍是待实施范围，不声称每一项已有缺陷，也不重复计算上一阶段已完成的 props/select 修复。新增语义候选另行讨论，已有能力只在证据表明存在问题时修改。
+- Provider 管理主题、语言、地区、时区和字号。CSS 作者在 CSS 包，具体主题 token 在 UI；见 [Provider](provider.md)。
+- Icon/Text/Ripple/Spinner/ButtonBase 提供基础能力；Button/IconButton/ToggleButton/LinkButton 复用它们。尺寸使用字号和 em，不强加点击区域或间距；见 [按钮](buttons.md)。
+- Flex/Grid 只负责布局；ButtonGroup 负责一维相连，不管理选择状态和键盘导航；见 [Grid](grid.md)。
+- 独立 slotXxx 属性转发底层参数；仅保留 _resolveSlotProps 等确有共用责任的工具。UI 根入口由生成器维护，其他组件另行讨论。
 
-## 2026-10-11 下一阶段：统一 CSS 组合与框架完善
+## 当前实施顺序
 
-用户确认：一个最终样式组合生成一个哈希类，按顺序保留完整 CSS 声明；DOM 识别使用 data-*、必要的 id 和既有语义化查询。下一阶段按 [单一 CSS 组合入口与框架完善计划](css-simplification-plan.md) 执行；本节是规划，不表示 API 已删除。
+1. CSS 计划先固定作者、绑定、组合、主题和动画契约。
+2. 底层实现与焦点验证后试点 Button/Icon，再迁移其余使用处。
+3. 保持框架 props、表单、列表、生命周期与 SSR 断言；发现真实回归即时修复。
+4. 本地只跑相关检查，每阶段中文提交推送；完整平台/浏览器/消费验证交 CI。未完成 CI 不写为通过，不自动发布 npm。
 
-- css 作为唯一作者组合入口，计划删除 `_mergeClasses`、登记器 mergeClasses、`className(name)` 标记函数和 CssProps 重复公开别名；不保留兼容转发。保留作者字符串、动态变量传递、keyframes/globalCss、SSR 与编译协议职责。
-- 先恢复 a269fda 的原生生成声明一致性，再固定 CSS 内核契约；ButtonBase/Icon 局部试点通过后迁移其余 UI、测试、类型和文档。
-- 与多层表单包装、props 直接解构、对象替换、CSS/主题变化和 CSR/SSR 接管组合验收一起推进；仍不要求 props 加 `_derived`，不扩张公共 API。
-- 详细计划中的新组合契约在实施阶段取代下文历史 `_mergeClasses` 与任意外部类名拼接方案；普通 DOM class/className 支持不顺带删除，core 不新增 CSS 依赖。
+## 文档入口
 
-## 2026-10-11 表单类型与 TSX 易用性
-
-继续参考 Svelte 的表单值语义与 Solid 的细粒度组件/列表边界，不扩张公共 API。props 参数解构仍直接响应，不要求 `_derived` 或 splitProps。
-
-- 完善原生 select 的绑定检查：单选写回 string，多选写回 string[]；显式 true/false、spread 及属性覆盖顺序都需要正确检查。动态 multiple 保留既有能力，模型必须容纳两种写回结果，不照搬 Svelte 对动态 multiple 的禁止。
-- 使用官方 TS7 判断属性类型，继续由检查投影验证写回；不新增类型内核补丁或通用 AST 类型推断器。
-- 对照 Svelte each 与 Solid For，优先复用现有 For、props 参数解构和 `_derived` 解构；是否扩展行参数语法取决于实际简化收益，不为对齐 API 数量新增 Index/Show/splitProps 等入口。
-- 先复现单选/多选检查问题，再补类型、浏览器和文档焦点验证；完整验收由同一提交 CI 执行。
-
-## 2026-10-11 TSX 响应式复审
-
-本轮继续完善当前变量式框架，不实施此前讨论的全引用或响应式父类模型。`_component(({ query, ...rest }) => ...)` 的参数解构直接读取最新 props，不要求 `_derived`，也不新增绑定字段名单。普通函数、局部解构和返回值保持取值语义；写回沿用现有 `bind:*` 与组件回调契约。
-
-- 先修复提交 a049fe3 的 CI 回归：SSR 与独立安装验收仍要求主题 token 输出 CSS 变量，改为验证原声明、class 切换、实际颜色及请求隔离；继续验证普通安全值的变量优化。
-- 审查 props 的别名/default/rest、对象替换、回调更新、原生绑定与 CSS 组合；用真实 TSX 编译和运行验证，不仅检查输出文本。
-- 审查派生解构的嵌套转换和只读输入写入诊断；先复现，再修复，不把合法快照变成错误。
-- 核对状态、列表身份、清理/异步、SSR 与类型工具的既有覆盖，将实际缺陷、明确边界和待讨论能力分开记录。只跑变更相关焦点检查，完整验收仍交同一提交 CI。
-
-## 2026-10-11 响应式与 CSS 完善
-
-用户确认沿用 Svelte 式边界：普通传参、局部解构和返回值保持 JavaScript 取值语义，不引入活引用参数、bx 或新的回调 DSL。实施范围如下：
-
-- 支持 `_derived` / `_derived.by` 的声明解构。一次原生解构共享来源计算、getter、默认值和 rest 求值；字段是只读派生，不反向写回。普通解构不变，诊断继续检查延后读取的类型收窄。
-- 保留函数内直接 `const name = css(...)` 自动派生；普通共享函数不自动升级为宏，需要放在动态 JSX 或 `_derived` 中调用。快照合法，不把所有初始化取值升级为编译错误。
-- CSS 响应式求值与变量优化分开。主题关键字成员及 raw 的主题 token 保留声明、通过 class 更新；普通主题作者单位方法及常用 raw 长度可优化。安全分类不再信任全部系统关键字；无法证明等价的声明回退 class。
-- 保留 CssClass 传递、class/className/spread 覆盖、显式 style 最后覆盖、变量移除和 SSR 请求隔离。完整表达式按原 JS 顺序求值一次；复杂或嵌套样式即使不变量化也继续响应式重算。
-- 本地仅运行派生解构、CSS 编译/运行时/原生样式及必要浏览器焦点用例；完整语言、平台和三浏览器验收交同一提交 CI。不发布 npm。
-
-不增加 CSS 专用 effect、历史值缓存、LRU 或全局引用收集器；不修改作者方法的字符串返回类型。声明不合法仍由作者负责，但不能为优化改变原声明的浏览器降级行为。
-
-更新：2026-10-09。当前包边界以 docs/packages.md 为准：CSS 收入本仓库，Vite 并入 compiler，删除外部适配器与 bx。框架基础 API、编译/类型工具及原生 CSS 能力继续维护。用户后续已授权搭建组件库/文档站并实施 Provider 基础设施，具体契约见 [Provider](provider.md)；这项授权取代下文对 Provider 和基础组件目录的早期限制，其他完整组件仍另行讨论。
-
-2026-10-09 后续安排：CI 修复已通过验收，用户随后授权实现 base/Icon。通用 token 归入 CSS 主题工具，组件专用 token 留在组件内部；基础组件属性直接接受对应 CSS 属性允许的类型。第 9 节记录当前实施契约。
-
-2026-10-08 用户已授权按本计划自主执行并适当调整 API，实施前记录明确契约；无须为已在范围内的取舍逐项再确认。已有契约以 [语义](semantics.md)、[API](api.md) 和 [CSS](css.md) 为准；选定候选后更新公开契约并通过测试验收。持续检查点见 [交接记录](api-hardening-handoff.md)。
-
-本轮基础 API 与 CSS 集成已作为 1.0.0-rc.8 交付：源码合入 main，CSS 固定 npm 0.3.1，完整 CI、五包发布及注册表消费通过。下文继续定义维护边界，不把已完成的候选交付重新列为未实施；后续易用性审查只处理真实缺口。用户随后决定删除 `_task` 整组 API，当前源码直接使用普通请求；CSS 的服务端标签拼接继续由应用负责，不改动。
-
-## 1. 目标与交付边界
-
-- 首要目标是简单维护、使用直接、类型提示准确、错误可定位以及适当中文注释。性能次要，不以绑定率、包体积或基准数字驱动复杂设计。
-- 保持显式变量式 _state/_derived、普通 TSX、_component 参数解构/默认值/实时 rest、既有 bind、For、Portal 和作用域模型。
-- 框架示例中的按钮、输入、任务行、确认弹窗仍用于验证基础 API。组件库已实施 Provider 与 base/Icon/Text/Ripple/Spinner/ButtonBase，其他成品组件、变体系统和 UI 发布另行讨论。
-- 不以整页样式迁移率为目标。只迁移验证所需片段，保留仍有用途的原生 CSS、示例和业务逻辑。
-- 现有实现先审计为“已覆盖 / 真实缺口 / 不适用”，只修复实际问题、补足确有价值的用法，不重新实现已有能力。
-
-2026-10-09 用户决定取消整个 packages/use，移除路由、store、持久化和历史工具；不将这些实现搬到其他包。这一决定取代此前维护这些工具的安排，框架状态/上下文/快照与 UI Provider 不变。
-
-## 2. 当前基线
-
-- zerodep-js 固定微软官方 TS7.1.0-dev.20261008.1、Babel 和 Vite；不退回 TS6，不建立多版本兼容或自定义 TS 内核。
-- CSS 作者与运行时迁入 packages/css，Babel 转换属于 compiler；统一 TS7，不维护 Vue/Svelte 适配。
-- css 自动追踪、直接变量及简单响应式表达式保守绑定、SSR 样式收集/恢复、_id、Portal 已落地。
-- 框架提交 b34b0f3 的 CI 已确认通过：基础检查、六个平台工具链、Linux/Windows 独立消费和三浏览器。CSS 提交 ca86a9d 的完整 CI 也已通过。规划提交后的 CI 状态另行记录，不把这些证据套到后续实现。
-
-## 3. 已有 API 的完善清单
-
-| 范围                                                                                | 要解决的问题与边界                                                                         | 验收方式                                                           |
-| ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
-| _state/raw、_derived/by、_snapshot                                                  | 对象/数组、普通快照、浅状态和类实例边界一致；动态依赖变化正确；纯计算限制及错误位置清楚    | 状态更新、依赖切换、快照、非法写入与类型用例                       |
-| _effect、_onMount/_onCleanup、_createRoot、_getAbortSignal、_tick/_batch/_flushSync | 清理顺序、重入、取消、DOM 提交时点一致；不跨 await 隐式跟踪                                | 创建/重跑/销毁、迟到异步结果、异常清理；只补现有覆盖缺口           |
-| _component、props、children、事件                                                   | 保留解构/default/rest；完善泛型、可选回调、原生属性转发、参数化 children 推断与原源码诊断  | 最小组件夹具、TS7 严格检查、补全/悬浮/重命名和预编译消费           |
-| 既有 bind 与 DOM bind:this                                                          | 原生及自定义组件写回一致；保留 IME、光标、同值校准、reset 和接管前编辑；引用按既有范围清理 | 原生控件与一层/多层包装夹具、错误类型、CSR/SSR；不扩张组件实例 API |
-| For、条件分支、Portal、context、_id                                                 | 组合使用 CSS/主题时保持 key 身份、最新数据、焦点、上下文、ID 与资源归属                    | 排序、同 key 替换、删除、多根、Portal 移动与卸载、并发 SSR         |
-| _lazy、ErrorBoundary、普通请求                                                      | 代码加载重试、子树重建、业务失败各守自己的范围；CSS/主题与懒加载协同                       | 成功/失败/重试、过期结果、卸载及 SSR 占位；不制造万能异步边界      |
-
-上述清单包含已具备的能力，不表示每一项都有缺陷，也不要求机械增加重复测试。
-
-## 4. CSS 协作的重点
-
-### 4.1 完善既有 css 语义
-
-- 普通安全值绑定元素变量，主题成员、特殊关键字与已有 var()/复杂表达式保留原声明；切换时清理对应私有变量，不改变用户 style、原始 keywords 或 SSR 标签拼接。嵌套选择器与自定义作者保持原边界。
-- 函数内命名 const css 声明与 JSX 内联调用保持一致的依赖更新；普通别名仍是快照。结果使用 CssClass/ClassValue 转发，由原生元素展开，不把所有结果当成字符串。
-- 评估支持可直接证明覆盖顺序的 spread 用法，例如在 spread 后明确写 class；后续 spread 可能覆盖 class 时继续保守处理。先看可读性和维护代价，不追求所有位置都自动绑定。
-- 保留用户 style、属性覆盖顺序、条件惰性及 JS 方法/参数求值顺序；CSS 变量转换失败时保留正确原声明。
-- 直接 _state/_derived 值与条件/计算表达式分工不变，单位由 JS 写为完整值。不加入原生 bx、class 合并、普通函数全面自动追踪或跨组件隐藏样式对象。
-- 系统作者、继承、自定义方法、注入主题、选择器、关键字及无效值边界以共同测试固定；不在两个仓库复制单位或主题规则。
-
-### 4.2 主题作用域
-
-先用现有 Css(() => theme) 和框架 context 验证：主题替换、子树覆盖、Portal/懒加载中的逻辑继承、请求隔离和自定义关键字提示。逻辑 context 的继承与 CSS 变量在实际 DOM 上的继承需要区分，不能宣称 Portal 自动搬运所有 CSS 变量。
-
-已采用 createCssContext 薄封装，并覆盖嵌套提供、根隔离和 SSR 请求隔离。组件库 Provider 复用此能力和 zerodep-js-css 的 SystemKeywords/Css，不建立第二套 CSS 属性作者或全局主题注册表。
-
-### 4.3 SSR、接管与开发工具
-
-- 将样式宿主创建、收集、安全输出和客户端恢复接到统一文档流程，覆盖所需入口；用小范围公共/内部函数减少重复，不先建立通用插件注册系统。
-- CSS 对不使用它的应用继续可选；不得强制依赖旧模板编译器，不更改 renderToString 的既有返回类型。
-- 覆盖并发请求、多根、Portal、懒加载、nonce、内联变量的 CSP 边界、HMR 重建与 source map。
-- 验证 TS7 对 CSS 作者、方法参数、自定义主题和 CssClass/ClassValue 的提示及错误；以真实包安装验证，不能靠源码别名通过。
-
-## 5. 新增基础 API（源码已实现，持续验收）
-
-| API                        | 当前契约                                                                                                          | 入口与文档                               |
-| -------------------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
-| 原生 bind:group            | radio 字符串、checkbox 字符串数组；静态 type/明确 value 在所有 spread 后；写回声明值；原生 name/form 分组保持一致 | compiler/core/类型投影；[表单](forms.md) |
-| 原生 details 的 bind:open  | 用户 toggle 写回 boolean，模型控制展开；验证 SSR 原值后接纳接管前操作；没有 Dialog 模态协议                       | compiler/core/类型投影；[表单](forms.md) |
-| createCssContext<AppCss>() | provideCss/useCss 薄封装，保留作者类型，缺失提供者报错；复用既有 context                                          | 可选 zerodep-js-css；[CSS](css.md)       |
-| _head(() => data)          | 只支持 title/description；同步纯读取、SSR 收集、客户端更新、按字段覆盖和卸载恢复，多文档隔离                      | zerodep-js 根入口；[元信息](head.md)     |
-
-这些是源码实现状态，不表示新 npm 版本已发布，也不替代同一提交完整 CI。当前重点转向组合与错误路径审计，阶段证据和待验收项集中在 [交接记录](api-hardening-handoff.md)。授权允许继续有价值的完善，不为清单数量扩充 API。
-
-当前未纳入 UI 范围的能力包括 Dialog/TextField、退场动画协调、通用 Suspense/流式 SSR、请求缓存/并发策略、watch、防抖和复杂外部订阅。按钮与基础组合能力的当前状态见第 10–12 节。
-
-## 6. 单仓库职责与依赖
-
-| 归属                     | 负责内容                                                                                          |
-| ------------------------ | ------------------------------------------------------------------------------------------------- |
-| packages/css             | 作者、关键字、单位、选择器、隐式变量辅助、浏览器/SSR 样式收集                                     |
-| zerodep-js compiler/core | Babel TSX 转换、响应式来源判断、JS 求值和覆盖顺序、DOM 属性/生命周期、类型投影、框架 context 接入 |
-| zerodep-js / compiler    | 文档组合、SSR/接管接线、开发/HMR 与构建器集成                                                     |
-
-同仓库统一固定 TS7.1，CSS 转换复用框架 Babel AST。包间使用 workspace 依赖；发布清单为 core、css、compiler，UI 暂不发布。完整 CI 验证通过后再准备新版本，不继续旧 CSS 仓库的发布任务。
-
-## 7. 执行阶段与完成条件
-
-1. **P0：契约审计与决策。** 用本计划标记现状与真实缺口；为选中的新候选固定签名、默认值、错误/取消、SSR 和资源所有权，不写成品组件。
-2. **P1：已有基础 API 完善。** 优先处理 props/类型、bind/原生事件、生命周期及列表/Portal/context 的真实缺口；以小夹具测试，不进行业务页面重做。
-3. **P2：CSS 完整协作。** 完成普通/命名 css、可确认 spread、主题、SSR/接管、HMR 与类型消费；仅为验证迁移必要片段，清理失效重复样式。
-4. **P3：已确认的新基础 API。** bind:group、details bind:open 逐项落地；每项含类型诊断、运行时、SSR、组合用例和中文文档。主题封装和元信息按讨论结论分别加入，不为依赖倒置新建空包。
-5. **P4：集成验收和清理。** 用一个小型综合夹具连接状态、组件、绑定、列表、任务、CSS、路由及 SSR；检查预编译组件消费、IDE 提示、回归矩阵和资源释放，再清理本任务产物与空目录。
-
-每阶段的完成要求：支持范围与默认行为写清；真实用例通过；类型/诊断保持；已有断言不弱化；失效代码/文档清理；两个仓库相关改动独立可审阅。先做相关本地检查，完整平台和三浏览器交 CI；不重复跑已通过且未受影响的检查，不把 queued/pending 当通过。发布仍遵循既有验收和 next 授权边界。
-
-## 8. 文档入口
-
-本文件是当前执行范围的唯一主计划。[Svelte API 对照](../.design/svelte-api-review.md) 保留来源与历史取舍，不覆盖本次组件库边界；[CSS 接入设计](../.design/zerodep-css-integration.md) 记录已落地实现；[执行记录](execution.md) 记录提交和验证证据；换机仍使用 [环境配置](environment-setup.md)。
-
-## 9. Icon 与 token 实施契约
-
-2026-10-09 用户已授权实施，Icon 位于 packages/ui/src/base/Icon.tsx。图标来源使用静态导入的 @lucide/icons；UI 保持 private。组件用法见 packages/ui/README.md 和 apps/docs 的 Icon 示例。
-
-- UiTheme、UiColors、亮暗主题及通用颜色、字号、间距、圆角、动效等 token 归 packages/ui/src/provider/theme，统一从 zerodep-js-ui 导出；CSS 包不包含具体 UI 主题。手写主题继承 SystemKeywords，不修改生成数据。Provider 继续负责作用域注入。
-- Icon 的 color/size 分别复用 color/fontSize 作者的 raw 参数类型，接受 _primary、_lg 等主题关键字及 CSS 原值。省略时继承周围文字的颜色和字号。默认宽高为 1em，数字不隐式转换为 px。
-- 后续用户授权 CSS 属性作者统一接受 raw(undefined)，返回空声明字符串，css(...) 中自然省略该项。响应式值撤销时清理旧声明与私有变量，恢复原有继承/层叠；保留合法 0 值。Icon 直接调用 raw(color)/raw(size)，不再逐项判断 undefined。
-- 单个 icon 属性接收 LucideIconData，不接收名称字符串或 children。调用方静态导入图标，自定义数据沿用 Lucide 契约。使用官方 @lucide/icons/build 节点 builder，再转换为框架模板，不扫描 DOM、不下载图标、不注入 SVG 字符串。
-- 根节点为 svg，viewBox 来自图标数据；透传原生 SVG 属性、事件、class/style。局部 display、vertical-align、flex-shrink 等规则留在组件内部。用户 class 在默认声明后组合，style 保留原生语义。
-- 默认装饰图标 aria-hidden=true；存在 aria-label/aria-labelledby 时默认 role=img，移除默认 aria-hidden。显式原生属性优先于默认值。按钮负责操作名称；Icon 不包含按钮或加载状态协议。
-- 同其他 UI 消费者一样要求上层 Provider。SSR 和客户端使用同一节点结构；验证覆盖命名空间、节点复用、嵌套图形、主题替换、原生样式、可访问名称、图标更新和卸载。
-- 类型和定义导航保持显式 token 成员及中文说明；LSP 用例验证 Icon 的颜色/尺寸关键字与迁移后的 token 定义位置。
-
-依据：[Lucide 图标数据](https://lucide.dev/guide/icons/)。发行包 1.54.0 的实际节点 builder 子入口为 @lucide/icons/build；以锁定包导出为准。
-
-## 10. 按钮基础设施（2026-10-09 已授权）
-
-- core 导出 DomRef/_composeRefs：按顺序初始化、逆序清理，失败回滚与同步契约复用现有作用域。DOM bind:this 与 ref 可共存，先写引用，再初始化行为；行为清理后清空引用。仍只支持 DOM 和简单可写变量，SSR 不执行，接管成功后执行。
-- CSS 提供通用 CssValue 属性输入类型，UI 显式传入 UiTheme。UI 的 src/utils 保留 _resolveSlotProps 状态回调解析及按压反馈工具；2026-10-10 按用户决定删除 _mergeSlotProps、_composeEventHandlers，不保留兼容导出。组件独立 slotXxx 转发不变。
-- CSS 的 _mergeClasses 合并同宿主生成类的声明并保留外部类名，外部样式仍按正常层叠。组件声明标记为可移除的纯包装，按需消费 Icon 不会带入未使用的 Spinner 图标。
-- src/base 实施 Text（有限原生文字标签、CSS 排版输入）、Ripple（直接父 button 上的视觉按压层）、Spinner（Lucide 图形与局部旋转）、ButtonBase（原生 button 底座、默认 type=button、disabled、独立 focus-visible 和 slotRipple）。按钮的语义默认值由底座拥有，转发参数采用独立 slotXxx 属性，当前为 slotRipple；后续分别增加 slotIcon、slotText 等，不提供统一 slotProps 对象。
-- Ripple 使用真实 pointer/keyboard 事件，只负责视觉，不模拟业务 click；处理取消、移出、滚动、失焦、禁用和卸载。动画只在挂载后创建并在清理时取消，减少动态效果时省略扩散。Spinner 用 CSS 媒体查询尊重减少动态效果。
-- 工具先保持小型、明确的 DOM/作用域职责；不新增 ref 数组、对象 ref、attachment 语法、全局焦点管理器、弹层或路由工具。焦点视觉优先 CSS，焦点范围/组内导航随未来控件实施。
-- 用户要求只保留 UI src/index.ts；scripts/generate-ui-exports.mjs 解析 AST 自动生成 base/utils 公开声明及选定 Provider API，pnpm ui:check 已接入完整检查。子目录不维护 index.ts。
-
-## 11. 字号与相对尺寸（2026-10-09 已授权）
-
-后续确认以自动等比为优先：组件内部边框、轮廓和偏移也用 em，默认不再混入独立 rem 最小点击区域。应用可显式加最小区域约束，但此时不承诺完全等比。size 保留 vw/rem/%/clamp()/var() 等 CSS 字号输入；浏览器负责解析，测量工具读取实际 CSS 像素。
-
-- 根 Provider 默认 _md，嵌套 Provider 未传 size 时继承 DOM 字号；显式 size 可覆盖。Portal 不跨 DOM 自动继承字号，浮层需要时同步触发容器解析后的像素字号。
-- UI utils 增加 _readFontSizePx、_observeFontSize、_observeSize：只在客户端按需使用，返回清理，读实际字号与布局 border-box。字号观察使用隐藏的 1em 探针，应放在可容纳子元素的 HTML 容器中；不对每个普通组件安装观察器，不手工解析 CSS 单位。
-- 字号/尺寸通知不等同于位置观察，不覆盖 transform 的视觉变化。浮层与虚拟列表的库接入仍留待对应组件；本轮用 Portal 继承桥接和固定尺寸容器验证工具。
-
-- 基础组件的 size 统一表示字号输入，使用 CssValue<'fontSize', UiTheme>，省略时继承；ButtonBase 增加同一入口。Icon/Spinner 保持宽高 1em，局部比例只通过其自身字号表达一次。
-- ButtonBase 保持原生语义与无预设间距的底座，不在此阶段创建成品 Button 或密度枚举。按钮内边距、图文间距和圆角的 em 比例在文档组合样例中试点；字体与组件密度分开。
-- 采用讨论中的比例样例：line-height 1.25、padding-block 0.625em、padding-inline 1em、gap 0.5em、图标字号 1.125em。边框 0.0625em、焦点轮廓/偏移 0.125em；样例最小区域使用 2.5em，应用可显式选择额外下限。尺寸样例值归组合示例，不扩充全局 token。
-- 用 14/16/20px 基准验证纯文字、图文、仅图标、加载和长文字；同时覆盖主题字号、继承、动态撤销 size、局部字号覆盖和 SSR/接管。成品按钮与 Flex 的当前契约见第 12 节，不引入密度枚举。
-
-## 12. Button 系列与 Flex（源码已实现）
-
-2026-10-09 用户最新范围为 Button、IconButton、ToggleButton、LinkButton、Flex 及必要基础能力。2026-10-10 后续决定：Flex 只做普通布局，新增一维 ButtonGroup，不提供 ToggleButtonGroup 或二维按钮组；MenuButton 暂不做。
-
-用户随后授权完整执行。公共契约和使用边界见 [按钮与 Flex](buttons.md)，实现与验证记录见 [UI 交接](handoff-ui-buttons-2026-10-09.md)。原候选规划已由这两个入口替代。
-
-- Flex 负责横纵布局、间距、换行与等分；ButtonGroup 承担一维接缝、首尾圆角、RTL、动态隐藏/重排与焦点层级，不接管选择状态和键盘导航。
-- 四类控件复用已有 ButtonBase/Icon/Text/Spinner/Ripple 与槽工具；LinkButton 使用原生 a，ToggleButton 复用 pressed/onPressedChange 的组件绑定。新增组件仍使用独立 slotXxx 属性。
-- size 继续是 CSS 字号，组件专用几何值用 em，通用 token 在 UI Provider，按钮外观复用代码位于 UI base 并从根入口导出。core 暂无新增 API；不为本次按钮引入定位库或通用焦点管理器。
-- 加载采用原生 disabled || loading；不承诺保留焦点，不自动恢复焦点。LinkButton 不可用时移除 href。ToggleButton 使用受控 pressed/onPressedChange 与 bind:pressed。
-- core 修复绑定类型映射丢失 ARIA 必填成员的问题，没有新增运行时 API。UI 自动入口收集 base/layout，包括可复用的按钮内容与样式函数。
-- 本地相关检查与中文提交按阶段完成；完整矩阵由同一提交 CI 验证，UI 仍 private，不进行 npm 发布。
-
-## 13. Grid 二维布局
-
-2026-10-09 用户授权新增 Grid。复用现有 CSS 作者，数字 columns 表示等宽列，普通模式可直接传原生轨道、自动填充、命名区域和自动放置；子项跨格使用原生 CSS。详细契约见 [Grid](grid.md)。
-
-2026-10-10 已取消二维相连；Grid 只保留普通轨道布局。移除对应接缝算法、参数组合约束和二维相连验收用例，保留普通 Grid 的 CSR/SSR、类型、自动填充和跨格验证。
+[语义](semantics.md) · [API](api.md) · [CSS 使用](css.md) · [包边界](packages.md) · [环境](environment-setup.md) · [发布](releasing.md)
