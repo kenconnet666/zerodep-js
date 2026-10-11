@@ -21,4 +21,4 @@ export {
 } from './runtime/browser.js';
 
 // 编译器生成的调用也走包根；应用通常直接使用 css()。
-export { cssBinding, cssKeyword, cssResult, type CssProps } from './runtime/bindings.js';
+export { cssBinding, cssResult, type CssProps } from './runtime/bindings.js';

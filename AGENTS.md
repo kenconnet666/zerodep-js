@@ -17,6 +17,8 @@
 
 ## 结构与 API
 
+- 2026-10-11：普通函数、局部解构和返回值继续按 JavaScript 取值；新增 `_derived`/`_derived.by` 声明解构，共享一次原生解构结果，字段只读。CSS 保留直接命名 const 自动派生，包装函数在 JSX 或 `_derived` 中更新。主题成员及 raw 主题 token 通过 class 重算，不变量化；普通主题作者值与系统作者共用保守分类。删除 cssKeyword 协议，core/compiler ABI 为 4；旧应用及预编译库需重建。不新增 bx、活引用函数或新的作者 DSL。
+
 - 2026-10-09：core 提供 DomRef/_composeRefs 并允许 DOM bind:this 与 ref 共存；UI src/utils 承担组件组合与按压工具，src/base 提供 Icon/Text/Ripple/Spinner/ButtonBase。仅维护 UI src/index.ts 根入口，由 pnpm ui:generate 自动生成，pnpm ui:check 校验；不创建子目录 index.ts。
 - 组件使用独立 slotXxx 属性转发底层参数，例如 slotRipple；多个部件分别提供各自属性，不使用统一 slotProps 对象。对象/状态回调只复用 _resolveSlotProps 解析；已删除 _mergeSlotProps 和 _composeEventHandlers。
 - 基础组件 size 表示 CSS 字号基准；Icon/Spinner 宽高 1em，ButtonBase 默认继承字号且不预设间距。组件内部视觉尺寸（含边框/焦点）默认用 em；不隐式叠加 rem 点击区域下限，应用可显式约束。根 Provider 默认 _md，嵌套默认继承，size 支持任意合法 CSS 字号。测量使用实际 CSS px，观察工具按需启用并清理。

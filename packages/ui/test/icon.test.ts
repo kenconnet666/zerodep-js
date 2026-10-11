@@ -82,7 +82,7 @@ describe('Icon 真实构建产物', () => {
     expect(light.css).toContain('font-size:1.125rem;');
     const raw = render({ icon: Check, color: 'var(--brand-color)', size: '20px' });
     expect(raw.css).toContain('color:var(--brand-color);');
-    expect(raw.css).toContain('font-size:20px;');
+    expectCssValue(raw, 'font-size', '20px');
     expectCssValue(render({ icon: Check, color: '_primary' }), 'color', '#245fc5');
   });
 

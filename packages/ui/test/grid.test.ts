@@ -21,7 +21,7 @@ it('Grid SSR 复用 CSS 轨道，保留普通子项和原生属性', () => {
   });
   expect(result.css).toContain('grid-template-columns:repeat(3, minmax(0, 1fr));');
   expect(result.css).toContain('grid-template-rows:auto 1fr;');
-  expect(result.css).toContain('font-size:2vw;');
+  expectCssValue(result, 'font-size', '2vw');
   expect(result.html).toContain('grid-column:span 2');
   expect(result.html).toContain('custom');
   expect(result.html).not.toContain('columns=');
@@ -43,7 +43,7 @@ it('Grid 拒绝非法数字列数，普通轨道不附加按钮接缝', () => {
   for (const columns of [0, -1, 1.5, NaN, Infinity])
     expect(() => render({ columns })).toThrow('正安全整数');
   const result = render({ columns: 2, gap: '1em', alignContent: 'space-between' });
-  expect(result.css).toContain('gap:1em;');
+  expectCssValue(result, 'gap', '1em');
   expectCssValue(result, 'align-content', 'space-between');
   expect(result.css).not.toContain('data-ui-action');
   expect(result.css).not.toContain('margin-inline-start');

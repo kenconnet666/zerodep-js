@@ -1,6 +1,7 @@
 import traverse, { type Binding, type NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
 import { coreImport } from './imports.js';
+import { isCssCall } from './css.js';
 
 type Report = (node: t.Node, code: string, message: string) => void;
 type Guard = { test: NodePath; owner: NodePath | null };
@@ -60,6 +61,15 @@ export function checkGuards(
   traverse(ast, {
     CallExpression(path) {
       const name = macro(path);
+      if (
+        isCssCall(path) &&
+        path.getFunctionParent() &&
+        path.parentPath.isVariableDeclarator() &&
+        t.isIdentifier(path.parentPath.node.id)
+      ) {
+        const binding = path.scope.getBinding(path.parentPath.node.id.name);
+        if (binding) live.add(binding);
+      }
       if (name === 'state' || name === 'derived') {
         if (path.parentPath.isVariableDeclarator() && t.isIdentifier(path.parentPath.node.id)) {
           const binding = path.scope.getBinding(path.parentPath.node.id.name)!;

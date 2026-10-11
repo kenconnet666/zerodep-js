@@ -1,7 +1,31 @@
 import { expect, test } from '@playwright/test';
 
 for (const mode of ['csr', 'ssr']) {
-  test(`${mode} 主题关键字与全局值、用户 var 切换时清理自动变量`, async ({ page }) => {
+  test(`${mode} 派生解构与主题作者长度绑定，省略和特殊值保持浏览器层叠`, async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    await page.goto(`/?render=${mode}`);
+    const node = page.locator('[data-css-value-width]');
+    await expect(node).toHaveCSS('width', '12px');
+    const name = await node.getAttribute('class');
+    // run-in 不支持时保留前面的 flex；支持时与原生声明一样采用 run-in。
+    const supported = await page.evaluate(() => CSS.supports('display', 'run-in'));
+    await expect(page.locator('[data-css-value-display]')).toHaveCSS(
+      'display',
+      supported ? 'run-in' : 'flex',
+    );
+    for (const [index, value] of ['24px', '80px', '180px', '30px', '12px'].entries()) {
+      await page.locator('[data-css-value-step]').click();
+      await expect(node).toHaveCSS('width', value);
+      await expect(node).toHaveText(`步骤 ${index + 1}`);
+      if (index === 0 || index === 4) {
+        expect(await node.getAttribute('class')).toBe(name);
+        expect(await node.getAttribute('style')).toMatch(/--zj-/);
+      } else expect(await node.getAttribute('style')).toBeNull();
+    }
+    expect(errors).toEqual([]);
+  });
+  test(`${mode} 主题关键字与全局值、用户 var 通过 class 更新且无自动变量`, async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (error) => errors.push(error.message));
     await page.goto(`/?render=${mode}`);
@@ -12,7 +36,7 @@ for (const mode of ['csr', 'ssr']) {
         Array.from(element.style).filter((key) => key.startsWith('--zj-')),
       );
     await expect(node).toHaveCSS('color', 'rgb(36, 95, 197)');
-    expect(await variables()).toHaveLength(1);
+    expect(await variables()).toHaveLength(0);
     for (const color of [
       'rgb(20, 30, 40)',
       'rgb(0, 0, 0)',
@@ -37,8 +61,8 @@ for (const mode of ['csr', 'ssr']) {
     }
     await page.locator('[data-css-keyword-next]').click();
     await expect(node).toHaveCSS('color', 'rgb(255, 255, 255)');
-    expect(await node.getAttribute('class')).toBe(name);
-    expect(await variables()).toHaveLength(1);
+    expect(await node.getAttribute('class')).not.toBe(name);
+    expect(await variables()).toHaveLength(0);
     expect(errors).toEqual([]);
   });
 
@@ -139,13 +163,13 @@ for (const mode of ['csr', 'ssr']) {
     await expect(page.locator('[data-css-theme=local]')).toHaveCSS('color', 'rgb(128, 0, 128)');
     const outer = page.locator('[data-css-theme=outer]');
     const themeClass = await outer.getAttribute('class');
-    expect(await outer.getAttribute('style')).toMatch(/--zj-[a-z0-9-]+:blue/);
+    expect(await outer.getAttribute('style')).toBeNull();
     await page.locator('[data-css-theme-toggle]').click();
     await expect(page.locator('[data-css-theme=outer]')).toHaveCSS('color', 'rgb(0, 128, 0)');
     await expect(page.locator('[data-css-theme=portal]')).toHaveCSS('color', 'rgb(0, 128, 0)');
     await expect(page.locator('[data-css-theme=local]')).toHaveCSS('color', 'rgb(128, 0, 128)');
-    expect(await outer.getAttribute('class')).toBe(themeClass);
-    expect(await outer.getAttribute('style')).toMatch(/--zj-[a-z0-9-]+:green/);
+    expect(await outer.getAttribute('class')).not.toBe(themeClass);
+    expect(await outer.getAttribute('style')).toBeNull();
     await page.locator('[data-unmount]').click();
     await expect(page.locator('[data-css-theme=portal]')).toHaveCount(0);
     expect(errors).toEqual([]);

@@ -25,12 +25,9 @@ export type CheckedKeywords<T extends SystemKeywords> = {
 // 状态属于作者自身；普通框架代理也能转发读取，不依赖代理前后的对象身份相同。
 const sourceKey = Symbol('zerodep-css-keywords');
 interface KeywordBinding {
-  property: string;
-  members: ReadonlySet<string>;
   raw: (value: never) => string;
   method: (value: unknown) => string;
-  apply(value: unknown): { value: unknown; declaration: string };
-  read(member: string): { value: string | number; declaration: string };
+  apply(value: unknown): { value: unknown; declaration: string; token: boolean };
 }
 // 只登记本库创建并冻结的视图；未知作者和代理继续执行原成员读取。
 const keywordBindings = new WeakMap<object, KeywordBinding>();
@@ -47,10 +44,6 @@ export function setKeywordSource(author: object, source: KeywordSource<SystemKey
 export function getKeywordSource(author: object): (() => SystemKeywords) | undefined {
   return (author as SourceOwner)[sourceKey];
 }
-export function hasKeywordSource(author: object): boolean {
-  return getKeywordSource(author) !== undefined;
-}
-
 function keysOf(value: object): string[] {
   const keys = new Set<string>();
   for (
@@ -111,15 +104,13 @@ export function bindKeywords<A extends { raw(value: never): string }>(
   }
   const apply = (input: unknown) => {
     // raw 与隐式变量绑定共用这次读取，不重复调用主题 getter。
-    const value =
-      typeof input === 'string' && input.startsWith('_') && input in initial
-        ? readValue(input)
-        : input;
-    return { value, declaration: raw.call(author, value as never) };
+    const token = typeof input === 'string' && input.startsWith('_') && input in initial;
+    const value = token ? readValue(input as string) : input;
+    return { value, declaration: raw.call(author, value as never), token };
   };
   const method = (value: unknown) => apply(value).declaration;
   Object.defineProperty(author, 'raw', { value: method });
-  keywordBindings.set(author, { property, members, raw, method, apply, read: readKeyword });
+  keywordBindings.set(author, { raw, method, apply });
   return Object.freeze(author);
 }
 

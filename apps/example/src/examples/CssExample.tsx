@@ -48,6 +48,32 @@ const KeywordBindingProbe = _component(() => {
 });
 
 const LazyThemeProbe = _lazy(() => import('./LazyThemeProbe.js'));
+const ValueBindingProbe = _component(() => {
+  const author = useCss();
+  const sizes = ['12px', '24px', undefined, 'inherit', 'calc(10px + 20px)', '12px'] as const;
+  let step = _state(0);
+  let display = _state('run-in');
+  const { size, label } = _derived({ size: sizes[step], label: `步骤 ${step}` });
+  const width = css(s.width.px(80), author.width.raw(size));
+  return (
+    <section data-css-values style={{ width: '180px' }}>
+      <button
+        data-css-value-step
+        onClick={() => {
+          step = (step + 1) % sizes.length;
+        }}
+      >
+        切换长度
+      </button>
+      <div data-css-value-width class={width}>
+        {label}
+      </div>
+      <div data-css-value-display class={css(s.display.flex, s.display.raw(display))}>
+        保留原声明降级
+      </div>
+    </section>
+  );
+});
 const ThemeProbe = _component(({ location }: { location: string }) => {
   const author = useCss();
   return (
@@ -130,6 +156,7 @@ export const CssExample = _component(() => {
     <section aria-label="原生 CSS 接入">
       <h2>原生 CSS 接入</h2>
       <KeywordBindingProbe />
+      <ValueBindingProbe />
       <button
         data-css-theme-toggle
         onClick={() => {

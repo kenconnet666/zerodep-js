@@ -39,7 +39,7 @@ await test('系统作者不预建主题缓存；访问过的主题属性才创�
   }
 });
 
-await test('重复颜色绑定复用固定关键字查询表，特殊值仍回退普通声明', () => {
+await test('重复颜色绑定不枚举作者关键字表，特殊值仍回退普通声明', () => {
   const original = Object.values;
   const keywords = systemKeywords.color;
   let enumerations = 0;
@@ -56,7 +56,7 @@ await test('重复颜色绑定复用固定关键字查询表，特殊值仍回�
         value,
       });
     }
-    assert.equal(enumerations, 1);
+    assert.equal(enumerations, 0);
     for (const value of ['inherit', 'var(--brand, inherit)', 'unknown-color']) {
       assert.deepEqual(bindValue(s, 'color', 'raw', value, '--zj-color'), {
         declaration: `color:${value};`,

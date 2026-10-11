@@ -72,7 +72,7 @@ const result = create();`);
     expect(host.cssText()).not.toContain('#654321');
   });
 
-  it('主题 raw 关键字隐式绑定只读一次主题值，覆写 raw 保留原语义', () => {
+  it('主题 raw token 保留声明且只读一次主题值，覆写 raw 保留原语义', () => {
     let reads = 0;
     class Theme extends SystemKeywords {
       override readonly color = {
@@ -92,7 +92,8 @@ function appearance(value) { return css(s.color.raw(value)); }
 const result = appearance('_brand');`,
         { s: themed },
       ) as { style: string };
-      expect(result.style).toContain(':#123456;');
+      expect(result.style).toBe('');
+      expect(host.cssText()).toContain('color:#123456;');
     });
     expect(reads).toBe(1);
     const custom = { color: { raw: (value: string) => 'background-color:' + value + ';' } };
@@ -133,17 +134,17 @@ const result = create();`);
     expect(restored!.className).toBe(before!.className);
     expect(host.cssText()).not.toContain('undefined');
   });
-  it('关键字绑定源码映射仍指向原始成员读取', () => {
+  it('主题成员保留原始读取的源码映射', () => {
     const source = `import { css } from 'zerodep-js-css';
 function view() { return <div class={css(s.color._primary)} />; }`;
     const result = compile(source, 'KeywordMap.tsx');
     const lines = result.code.split('\n');
-    const index = lines.findIndex((line) => line.includes('.cssKeyword('));
+    const index = lines.findIndex((line) => line.includes('s.color._primary'));
     expect(index).toBeGreaterThanOrEqual(0);
     expect(
       originalPositionFor(new TraceMap(result.map!), {
         line: index + 1,
-        column: lines[index]!.indexOf('.cssKeyword('),
+        column: lines[index]!.indexOf('s.color._primary'),
       }),
     ).toMatchObject({
       source: 'KeywordMap.tsx',
@@ -152,7 +153,7 @@ function view() { return <div class={css(s.color._primary)} />; }`;
     });
   });
   it.each([false, true])(
-    '主题关键字动态绑定并在特殊值/var 之间清理私有变量（named=%s）',
+    '主题关键字与特殊值通过 class 更新，不创建私有变量（named=%s）',
     (named) => {
       class Theme extends SystemKeywords {
         // oxlint-disable-next-line typescript/no-misused-spread -- 只复制库契约中的原始值字段，不复制作者方法。
@@ -185,17 +186,12 @@ const result = create();`,
           { Theme, makeAuthor: (read: () => Theme) => new Css(read) },
         ),
       ) as string[][];
-      expect(result[0]![0]).toBe(result.at(-1)![0]);
-      for (const [index, [, style, value]] of result.entries()) {
+      expect(result[0]![0]).not.toBe(result.at(-1)![0]);
+      for (const [, style, value] of result) {
         expect(style).toContain('--brand:#abcdef');
         expect(style).toContain('padding:2px');
-        if (index === 0 || index === result.length - 1) expect(style).toContain(`:${value}`);
-        else {
-          expect(style).not.toContain(value);
-          // display.flex 是主题中的安全值，只有 color 对应的变量应被移除。
-          expect(style!.match(/--zj-[^:]+:/g)).toHaveLength(1);
-          expect(host.cssText()).toContain(`color:${value};`);
-        }
+        expect(style).not.toContain('--zj-');
+        expect(host.cssText()).toContain(`color:${value};`);
       }
     },
   );
@@ -228,14 +224,14 @@ const result = { class: attrs.class, style: attrs.style };`,
     expect(order).toEqual(['color', 'primary']);
   });
 
-  it('跨组件主题类名携带变量，嵌套选择器仍保持原声明', () => {
+  it('跨组件主题类名和嵌套选择器均保留原声明', () => {
     const code = compile(
       `import { css } from 'zerodep-js-css';
 function view() { const name = css(s.color._primary);
 return <Widget class={name}><div class={css(s._hover(s.color._primary))} /></Widget>; }`,
       'theme.tsx',
     ).code;
-    expect(code.match(/\.cssKeyword\(/g)).toHaveLength(1);
+    expect(code).not.toContain('cssKeyword');
     expect(code).toContain('css(s._hover(s.color._primary))');
   });
   it.each([

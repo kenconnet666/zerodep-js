@@ -12,6 +12,7 @@ import { checkGuards } from './guards.js';
 import { coreImport } from './imports.js';
 import { Development } from './development.js';
 import { prepareCss, isCssCall } from './css.js';
+import { prepareDerivedPatterns } from './derived.js';
 
 export interface CompileOptions {
   /** Vite 开发转换使用；生产和预编译库默认不注入调试/HMR 协议。 */
@@ -40,7 +41,7 @@ export interface CompileResult {
 }
 
 // 这是输出协议版本，不跟随普通修复版本变化；修改时须同步 core 的 runtime/bindings。
-const RUNTIME_ABI = 3;
+const RUNTIME_ABI = 4;
 
 interface ReactiveBinding {
   binding: Binding;
@@ -85,6 +86,7 @@ function transformFramework(
   });
   const runtime = program.scope.generateUidIdentifier('zj');
   normalizeNamespaces(program);
+  prepareDerivedPatterns(ast, program);
   const development = options.development
     ? new Development(program, filename, options.hmr !== false)
     : undefined;
@@ -162,7 +164,11 @@ function transformFramework(
         declaration.node.init !== path.node ||
         !t.isIdentifier(declaration.node.id)
       ) {
-        report(path.node, 'ZJ1002', '响应式宏只能作为单个命名变量的初始化表达式。');
+        report(
+          path.node,
+          'ZJ1002',
+          '状态宏直接初始化命名变量；派生宏还支持非空对象或数组解构声明。',
+        );
         return;
       }
       const args = path.node.arguments;

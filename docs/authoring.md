@@ -1,5 +1,24 @@
 # 输入绑定、快照和按需组件
 
+## 普通函数与派生解构
+
+普通函数参数、普通解构和返回对象都是本次调用的值。纯计算在 `_derived` 内同步读取的依赖会被追踪，包括函数内部的解构和下游同步调用：
+
+```tsx
+function quote({ quantity, price }: { quantity: number; price: number }) {
+  return { total: quantity * price, label: `${quantity} 件` };
+}
+let order = _state({ quantity: 2, price: 5 });
+const { total, label } = _derived(quote(order));
+const saved = total; // 当前值的快照，后续不跟随。
+```
+
+`order` 字段改变或整体替换后，total/label 随派生更新；调用和解构共用一次缓存结果。解构字段只读，不反向修改 order。数组、别名、默认值、嵌套和 rest 使用相同规则。默认值可读取前面的解构字段；读取任意字段都会执行本轮整组原生解构，不能在 getter/default 中建立副作用。空解构没有可读取的结果，仍不作为派生声明支持。
+
+初始化一次的业务 helper 若要在事件发生时读取最新根对象，应接收 `() => order` 等读取函数。传入 order 只持有当时的对象；根变量整体替换后不会把旧参数移到新对象。异步操作需要本次数据时使用 `_snapshot`，不跨 await 自动追踪。
+
+CSS 遵循相同的边界：直接 `const name = css(...)` 保留自动派生便利规则；包装函数通过 `<div class={appearance(order)} />` 或 `const name = _derived(appearance(order))` 更新，普通 `const name = appearance(order)` 只保存本次结果。无需新增 bx、活引用参数或手写元素变量。
+
 本文说明当前源码的绑定、快照和按需组件。core/compiler/css 使用一致版本，Vite 插件从 `zerodep-js-compiler` 包根导入；packages/use 已移除。升级框架后重新构建应用及预编译组件库，历史发行记录见发布文档。
 
 ## 输入绑定

@@ -23,63 +23,46 @@ export const Card = _component(() => {
 });
 ```
 
-className 的公开类型仍是 string，依赖变化时自动重算，不必套 `_derived`。也可直接写 `class={css(...)}`。普通快照规则不变：`const saved = className` 保存当时结果。
+className 的类型是 CssClass，可能是普通 class 字符串，也可能携带当前元素变量值。直接传给 class，由原生渲染统一展开；不要字符串拼接、模板插值或 classList.add() 消费样式结果。组件属性复用 ClassValue 或原生 JSX 属性类型，组合用 css/_mergeClasses。
 
-所有系统属性的 `raw` 接受 `undefined`，返回空字符串以省略该声明，不输出 `color:undefined;`。因此可选值可以直接传入，无需每次在 css(...) 外加条件：
+## 响应式求值边界
 
-```tsx
-const className = css(s.color.raw(color), s.fontSize.raw(size));
-```
+函数内从 zerodep-js-css 命名导入的 css（包括导入别名）直接初始化命名 const 时，复用普通派生缓存。JSX 中调用按动态属性求值。普通参数、局部解构、返回结果和别名仍是当次取值；不会跨包装函数自动传播宏语义。
 
-从有值变为 `undefined` 时，响应式样式移除对应声明及其私有 CSS 变量，恢复原有继承/层叠；之后重新赋值仍正常生效。`0` 保留为合法属性值，例如 `s.opacity.raw(0)` 输出 `opacity:0;`。返回类型仍为 string，主题关键字解析和其他格式化方法的参数契约不变。
+| 写法                                     | 行为                                       |
+| ---------------------------------------- | ------------------------------------------ |
+| const name = css(...)                    | 函数内直接声明自动派生，模块顶层仍普通执行 |
+| JSX class={appearance(width)}            | 在 JSX 动态位置重新调用共享函数            |
+| const name = _derived(appearance(width)) | 共享函数显式派生                           |
+| const saved = appearance(width)          | 保存本次结果，之后不自动更新               |
+| const saved = name                       | 保存当前样式结果的快照                     |
 
-## 自动追踪
+样式计算应为同步纯计算。函数调用、成员/getter、模板字符串及运算在求值时读取的依赖正常跟踪；普通快照不会重新关联到原变量。订阅与异步请求不能放入样式计算。不使用 let 重新赋值命名 css 派生。
 
-识别从 `zerodep-js-css` 命名导入的 css，包括导入别名。函数内直接初始化命名 const 的调用使用派生缓存；输入应是纯样式计算。修改它读取的状态或 props 即可；命名样式不能用 let 再赋值。
+模块顶层优先保存作者和声明片段；SSR 的 css 登记需要请求宿主。未优化的值仍可响应式重算；能否转为变量和能否跟踪依赖是两件事。
 
-模块顶层仍是普通 JS，不建立组件派生。SSR 登记需要请求宿主，因此顶层优先保存 `new Css()` 和声明片段，在组件中调用 css。其他库或局部同名函数不转换。普通 helper、字符串处理或别名不会自动成为新的派生声明。
+## 元素变量与 class 回退
 
-## 元素变量与重算
+只接管 css 的直接属性方法参数，保留接收者、方法先于参数的求值顺序；完整参数在原位置求值一次，不展开用户函数、不提前进入条件分支。同步调用、成员访问、模板字符串和简单表达式可参与优化；赋值、自增、await/yield 不搬入绑定回调。普通参数和快照也可使用绑定表示，但不会因此变成实时引用。
 
-css(...) 中直接读取注入主题的关键字（如 `s.color._primary`）也尝试元素变量绑定。编译器只标记读取位置，CSS 库根据每次读取的实际值和可信作者元数据决定是否绑定；普通系统常量仍直接输出。共享函数返回和跨组件 class 传递同样保留绑定；嵌套选择器与声明级条件保留原声明。不改变 SSR CSS 标签拼接。
+主题成员（如 s.color._primary）及 raw 的下划线主题 token 保留实际声明，通过 class 更新。raw 先按原语义解析 token，不重复读取 getter。直接传入的普通值，以及主题作者未覆写的单位方法，与系统作者使用同一安全分类。
 
-| 写法                                               | 行为                                                 |
-| -------------------------------------------------- | ---------------------------------------------------- |
-| `s.width.px(width)`，width 为状态、参数或普通变量  | 系统方法和支持值使用元素变量                         |
-| `s.color.raw(color)`，color 为状态、参数或普通变量 | 可确认的颜色值使用元素变量                           |
-| `s.color._primary`，s 是注入主题的作者             | 每次读取后按安全值绑定，原值仍可通过 s.keywords 读取 |
-| `s.width.px(width * 2)`                            | 包含变量的简单运算，安全结果使用元素变量             |
-| `s.color.raw(active ? 'red' : 'blue')`             | 保留条件短路，安全结果使用元素变量                   |
-| `s._hover(s.width.px(width))`                      | 嵌套调用保留普通重算                                 |
-| 自定义或覆写方法                                   | 保留原调用，不猜测作者实现                           |
+| 输入                                                                   | 输出策略                                            |
+| ---------------------------------------------------------------------- | --------------------------------------------------- |
+| 常用长度属性的 px/em/rem 等基础单位、raw 单个长度字符串或零            | 支持范围内使用元素变量；属性允许百分比/负值时才接管 |
+| 十六进制颜色、常用基础颜色名、transparent/currentColor                 | 对支持的颜色属性变量化                              |
+| 合法 opacity、lineHeight、flexGrow/flexShrink、fontWeight、整数 zIndex | 支持范围内变量化                                    |
+| 主题 token、布局关键词（包括 flex、run-in）                            | 原声明重算 class                                    |
+| CSS-wide、important、已有 var()/calc()、未知/复合值                    | 原声明重算 class                                    |
+| 覆写作者方法、嵌套选择器、声明级条件                                   | 保持原调用与重算，不猜测实现                        |
 
-参数允许标识符、原始字面量、一元数值/逻辑运算、算术/比较、三元条件以及 && / || / ??，可以组合；包含变量即可尝试绑定，支持共享函数参数和组件 props。普通变量仍按原值读取，不把快照别名变成响应式引用。TS 的 as、satisfies 和非空断言不妨碍识别。函数调用、成员访问、赋值/自增、await/yield 等不接管；Math.max(width, 0) 可自行先写为 _derived，而不是在编译期猜测函数行为。
+安全表与作者关键字全集分开。浏览器可能不支持作者类型表里的某些关键词；放进 var 后才无效会改变层叠，因此不能用“命中系统关键字”代替安全判断。SSR 与客户端使用同一分类，不读取 CSS.supports。负 margin/偏移可以优化，负 width/padding 仍保留原声明，不裁剪输入。
 
-整个参数仍按 JavaScript 顺序求值一次，未进入的分支不执行。识别到表达式并不代表一定使用 CSS 变量：每次结果仍由原有安全分类判断，特殊值回退不改变层叠语义。响应式依旧只缓存最近一次结果，不增加历史值缓存。
+所有系统 raw 接受 undefined 并省略声明。安全值切到 undefined、inherit、revert 等时，会撤销该项自动变量并切换 class；恢复安全值后复用规则。0 是合法值，不被当成缺失。raw 不自动补单位；px(width) 的完整 width px 值放在变量里，声明使用 width:var(--zj-...)。
 
-`.px(width)` 的绑定效果是 `width:var(--zj-...)`，配合元素 style 中完整的 `${width}px`。`.raw()` 不自动补单位，变量由编译器生成。
+共享函数返回 CssClass，组件原样转发，直到原生元素展开。class/className/spread 按覆盖顺序决定最终结果，被覆盖的结果不留下旧变量。显式用户 style 始终最后覆盖；--zj- 为内部前缀，不手写。多个元素只持有各自当前值，不添加 CSS 专用 effect 或历史值注册表。
 
-优化范围是有限非负单位值、系统关键字、颜色十六进制值与 0–1 的 opacity。CSS-wide、important、未知值、负单位值或覆写方法均可继续使用，但保留原声明重算，避免改变层叠语义。可信主题作者的 raw 方法先解析关键字，再使用相同的安全值分类；不重复读取主题 getter。条件分支不会提前计算。主题成员使用相同的安全值分类，不因类型标注为 string 就假设任意 CSS 字符串都可以等价转换。
-
-`inherit` / `initial` / `unset` / `revert` / `revert-layer` 始终作为目标属性的原始声明，不放入生成变量。值从普通颜色切换到这些关键字时，会更新类名并清除该项私有变量；恢复安全颜色后重新绑定。回退依然响应式，不表示冻结初值。
-
-组件只描述样式，不需要手工声明 CSS 变量、调用 cssBinding/cssResult 或拼接 style。共享函数同样可写：
-
-```tsx
-function buttonStyle(color: CssValue<'color'>) {
-  return css(s.color.raw(color));
-}
-
-<ButtonBase class={_mergeClasses(buttonStyle(color), className)} />;
-```
-
-编译器和 CSS 工具自动生成变量并携带当前值，直到最终原生元素才展开。已有 var()/calc() 等复杂 CSS 值仍原样处理，不强行再套变量。
-
-作者接收者和方法先于参数求值；如果参数计算替换了作者属性，本次仍调用已经取得的方法，并保守回退为普通声明。不会为了元素变量绑定重新选择另一个方法，也不会重复计算参数。
-
-css(...) 的公开返回类型是 CssClass，可为普通类名或携带动态值的样式结果。直接传给 class，使用 css(...) 或 _mergeClasses(...) 组合；不要用字符串拼接、模板字符串或 classList.add() 处理样式结果。自定义组件的 class 属性复用 ClassValue 或原生 JSX 属性类型，并原样转发。
-
-JSX spread 和 class/className 按原有覆盖顺序决定最终样式；覆盖掉的样式结果不会留下旧变量。共享结果不保存历史值，多个元素分别持有当前值。显式用户 style 保留并最后覆盖；--zj- 是工具内部前缀，不应手写。特殊值回退时对应变量自动移除，不创建 CSS 专用 effect 或订阅表。
+规则登记表按声明内容去重，但不会在子组件卸载时逐条回收。连续输入若走 class 回退，仍会登记不同规则；cssStats/warnAfter 用于观察增长，不是 LRU 或自动回收。有限主题切换复用已出现的 class，不承诺所有 CSS 输入都保持一个 class。
 
 ## SSR 与接管
 
@@ -103,13 +86,15 @@ const styles =
 
 ## 类型和维护
 
-源码布局固定为 runtime/generated/util 三个目录，src 根目录仅 index.ts。小型声明工具和关键字机制在 util，宿主、规则表、组件上下文及动态绑定在 runtime。系统作者按需建立主题属性缓存，关键字查询只复用固定系统表，不记录用户历史值。
+源码布局固定为 runtime/generated/util 三个目录，src 根目录仅 index.ts。小型声明工具和关键字机制在 util，宿主、规则表、组件上下文及动态绑定在 runtime。系统作者按需建立主题属性缓存；优化器使用固定的安全值范围，不枚举主题关键字表、不记录用户历史值。
 
-所有 API（包括 SSR 收集器和编译器调用的 cssBinding/cssKeyword/cssResult）统一从 zerodep-js-css 根入口导入，不再提供子入口。类型统一指向 dist/index.d.ts，并发布声明映射与源码；Vite 按标准 browser 字段将 Node 宿主替换为浏览器实现，源码不使用包内导入别名。
+所有 API（包括 SSR 收集器和编译器调用的 cssBinding/cssResult）统一从 zerodep-js-css 根入口导入，不再提供子入口。类型统一指向 dist/index.d.ts，并发布声明映射与源码；Vite 按标准 browser 字段将 Node 宿主替换为浏览器实现，源码不使用包内导入别名。
+
+2026-10-11 删除主题变量化所用的 cssKeyword 内部协议，core/compiler ABI 升为 4。应用与预编译组件库需要一起重建，不能混用旧产物。
 
 CSS 提供 SystemKeywords 和继承机制，不提供 UiTheme 或亮暗配色。UI 的主题从 zerodep-js-ui 导入；自定义作者也可直接继承 SystemKeywords。CssValue 的第二个参数指定主题类型，默认不包含 UI 自定义关键字。
 
-当前工作区 CSS 已沿用关键字压缩实现。沿用原有写法：原始值只保存一份，按值和语义说明一致分组，公开作者/关键字构造器仍可继承。公开类型保持 ColorCss、ColorKeywords、FontSizeCss 等语义名称，公共集合使用 globalKeywords、colorKeywords、fontSizeKeywords；中文说明在 hover 和补全详情中均保留，不要求重复输出每个属性的完整声明示例。默认系统声明仍是自有字符串字段，主题读取和元素变量的安全回退不变。
+当前工作区 CSS 已沿用关键字压缩实现。沿用原有写法：原始值只保存一份，按值和语义说明一致分组，公开作者/关键字构造器仍可继承。公开类型保持 ColorCss、ColorKeywords、FontSizeCss 等语义名称，公共集合使用 globalKeywords、colorKeywords、fontSizeKeywords；中文说明在 hover 和补全详情中均保留，不要求重复输出每个属性的完整声明示例。默认系统声明仍是自有字符串字段，主题读取保留声明，普通值的元素变量采用保守回退。
 
 CSS 与框架使用同仓库 workspace 依赖及同一套 微软官方 TS7.1。生成器通过 Babel 解析 csstype 声明；pnpm css:generate 更新，pnpm css:check 检查生成结果。没有外部 CSS 仓库或 TS6 依赖。
 

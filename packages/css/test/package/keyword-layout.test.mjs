@@ -2,7 +2,6 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { Css, ColorCss, ColorKeywords, WidthCss, SystemKeywords } from '../../dist/index.js';
 import { authorInputs } from '../../dist/runtime/bindings.js';
-import { inlineKeyword } from '../../dist/runtime/bindings.js';
 
 await test('公开构造器、实例身份和可覆盖的自有字段保持不变', () => {
   // 发布 JS 原本就会压缩 Function.name；验证导出和实例身份，不为调试名引入顶层副作用。
@@ -50,20 +49,18 @@ await test('共享数据不共享用户实例的可变字段，系统作者继�
   assert(authorInputs(first, 'color', 'red'));
 });
 
-await test('主题替换与变量安全回退不依赖已删除的预制声明表', () => {
+await test('主题替换直接生成原声明，不依赖已删除的预制声明表', () => {
   class Theme extends SystemKeywords {
     color = { ...this.color, _primary: '#123456' };
   }
   let theme = new Theme();
   const s = new Css(() => theme);
   const color = s.color;
-  assert.equal(inlineKeyword(color, '_primary', '--zj-test').value, '#123456');
+  assert.equal(color._primary, 'color:#123456;');
   theme = new Theme();
   theme.color._primary = 'inherit';
-  assert.deepEqual(inlineKeyword(color, '_primary', '--zj-test'), {
-    declaration: 'color:inherit;',
-  });
+  assert.equal(color._primary, 'color:inherit;');
   theme.color._primary = '#654321';
-  assert.equal(inlineKeyword(color, '_primary', '--zj-test').value, '#654321');
+  assert.equal(color._primary, 'color:#654321;');
   assert.equal(color.red, 'color:red;');
 });

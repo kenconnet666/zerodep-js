@@ -29,7 +29,7 @@ it('Flex SSR 保留原生子项、字号继承与显式布局，不创建隐式�
   expect(html).not.toContain('role=');
   expect(html).not.toContain('equal=');
   expectCssValue({ html, css: host.cssText() }, 'flex-direction', 'column');
-  expect(host.cssText()).toContain('font-size:2vw;');
+  expectCssValue({ html, css: host.cssText() }, 'font-size', '2vw');
   expect(host.cssText()).toContain('flex:1 1 0;');
   expect(host.cssText()).not.toContain('data-ui-action');
   expect(host.cssText()).not.toContain('margin-inline-start');

@@ -15,8 +15,8 @@ export function isCssCall(path: NodePath): path is NodePath<t.CallExpression> {
   );
 }
 
-/** undefined 表示不接管；false 为字面量，true 表示含变量（包括参数和快照）。
- * 只组合简单表达式，不展开函数、属性 getter 或赋值；参数仍整体求值一次。
+/** undefined 表示不接管；false 为字面量，true 表示运行时输入（包括参数和快照）。
+ * 同步计算仍在原位置整体求值一次；此判断只影响变量优化，不决定依赖跟踪。
  */
 function variableValue(node: t.Node): boolean | undefined {
   if (t.isIdentifier(node)) return node.name !== 'undefined';
@@ -32,6 +32,25 @@ function variableValue(node: t.Node): boolean | undefined {
     return variableValue(node.expression);
   if (t.isUnaryExpression(node) && ['+', '-', '!', '~'].includes(node.operator))
     return variableValue(node.argument);
+  if (
+    t.isMemberExpression(node) ||
+    t.isOptionalMemberExpression(node) ||
+    t.isCallExpression(node) ||
+    t.isOptionalCallExpression(node) ||
+    t.isTemplateLiteral(node)
+  ) {
+    let unsupported = false;
+    t.traverseFast(node, (child) => {
+      if (
+        t.isAwaitExpression(child) ||
+        t.isYieldExpression(child) ||
+        t.isAssignmentExpression(child) ||
+        t.isUpdateExpression(child)
+      )
+        unsupported = true;
+    });
+    return unsupported ? undefined : true;
+  }
   let parts: t.Node[];
   if (
     (t.isBinaryExpression(node) && !['in', 'instanceof'].includes(node.operator)) ||
@@ -71,25 +90,7 @@ export function prepareCss(ast: t.File, program: NodePath<t.Program>, source: st
       let slot = 0;
       const site = count++;
       const parts = path.node.arguments.map((argument) => {
-        if (
-          t.isMemberExpression(argument) &&
-          !argument.computed &&
-          t.isIdentifier(argument.property) &&
-          t.isMemberExpression(argument.object) &&
-          !argument.object.computed &&
-          t.isIdentifier(argument.object.property) &&
-          t.isIdentifier(argument.object.object)
-        ) {
-          // 编译期不猜主题或执行 getter；实际成员身份和值由 CSS 库在运行时核对。
-          return t.inherits(
-            call('cssKeyword', [
-              argument.object,
-              t.stringLiteral(argument.property.name),
-              t.stringLiteral(`--zj-${file}-${site}-${slot++}`),
-            ]),
-            argument,
-          );
-        }
+        // 主题成员保留原读取及 class 重算，不建立元素变量。
         if (
           !t.isCallExpression(argument) ||
           argument.arguments.length !== 1 ||

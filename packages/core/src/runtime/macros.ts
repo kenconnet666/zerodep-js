@@ -8,7 +8,9 @@ interface StateMacro {
 }
 
 interface DerivedMacro {
+  /** 同步纯计算；可直接解构为只读派生字段，普通函数参数与返回仍按值处理。 */
   <T>(expression: T): T;
+  /** 多语句计算与表达式使用相同依赖跟踪；解构结果共享一次计算和原生解构。 */
   by<T>(calculate: () => T): T;
 }
 

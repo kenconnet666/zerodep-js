@@ -1,27 +1,26 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { runInNewContext } from 'node:vm';
-import { Css, WidthCss, ColorCss } from '../../dist/index.js';
+import { Css, WidthCss } from '../../dist/index.js';
 import { authorInputs } from '../../dist/runtime/bindings.js';
-import { inlineKeyword } from '../../dist/runtime/bindings.js';
 import { bindValue } from './bindings.mjs';
 
-await test('跨 realm 和无原型的关键字对象不混入 Object.prototype 成员', () => {
+await test('跨 realm 和无原型主题 token 保留原声明', () => {
   for (const color of [
     runInNewContext('({ _primary: "red" })'),
     Object.assign(Object.create(null), { _primary: 'red' }),
   ]) {
     const s = new Css({ color });
-    assert.deepEqual(inlineKeyword(s.color, '_primary', '--zj-test'), {
-      declaration: 'color:var(--zj-test);',
-      value: 'red',
+    assert.equal(s.color._primary, 'color:red;');
+    assert.deepEqual(bindValue(s, 'color', 'raw', '_primary', '--zj-test'), {
+      declaration: 'color:red;',
     });
   }
 });
 
-await test('主题关键字在安全值、全局关键字与已有变量之间动态切换，保留原始值', () => {
-  let value = '#245fc5';
-  let reads = 0;
+await test('主题 token 切换、原始值与 getter 单次求值', () => {
+  let value = '#123456',
+    reads = 0;
   const s = new Css(() => ({
     color: {
       get _primary() {
@@ -30,93 +29,28 @@ await test('主题关键字在安全值、全局关键字与已有变量之间�
       },
     },
   }));
-  const target = s.color;
   for (const next of [
-    '#245fc5',
+    '#123456',
     'inherit',
     'initial',
     'unset',
     'revert',
     'revert-layer',
-    'var(--brand, inherit)',
-    'rgb(0 0 0 / 0.5)',
-    'not-a-color',
-    '#ffffff',
+    'var(--brand)',
+    'nonsense',
+    '#abcdef',
   ]) {
     value = next;
     reads = 0;
-    const actual = inlineKeyword(target, '_primary', '--zj-test');
+    assert.deepEqual(bindValue(s, 'color', 'raw', '_primary', '--zj-test'), {
+      declaration: 'color:' + next + ';',
+    });
     assert.equal(reads, 1);
-    assert.deepEqual(
-      actual,
-      next.startsWith('#')
-        ? { declaration: 'color:var(--zj-test);', value: next }
-        : { declaration: `color:${next};` },
-    );
-    assert.equal(s.keywords.color._primary, next);
+    assert.equal(s.color._primary, 'color:' + next + ';');
   }
-});
-
-await test('主题替换、覆盖的原生关键字和多个作者独立取值，普通常量不变量化', () => {
-  let theme = { display: { flex: 'grid' } };
-  const a = new Css(() => theme),
-    b = new Css({ display: { flex: 'block' } });
-  const view = a.display;
-  assert.equal(inlineKeyword(view, 'flex', '--zj-test').value, 'grid');
-  theme = { display: { flex: 'inline-flex' } };
-  assert.equal(inlineKeyword(view, 'flex', '--zj-test').value, 'inline-flex');
-  assert.equal(inlineKeyword(b.display, 'flex', '--zj-test').value, 'block');
-  assert.deepEqual(inlineKeyword(new Css().display, 'flex', '--zj-test'), {
-    declaration: 'display:flex;',
-  });
-});
-
-await test('未知成员保持一次 getter 读取及异常，不把普通对象伪装成主题视图', () => {
-  let reads = 0;
-  const target = {
-    get _primary() {
-      reads++;
-      return 'color:blue;';
-    },
-  };
-  assert.deepEqual(inlineKeyword(target, '_primary', '--zj-test'), { declaration: 'color:blue;' });
-  assert.equal(reads, 1);
-  assert.throws(() => inlineKeyword(null, '_primary', '--zj-test'), TypeError);
-  assert.throws(
-    () =>
-      inlineKeyword(
-        {
-          get _primary() {
-            throw Error('getter');
-          },
-        },
-        '_primary',
-        '--zj-test',
-      ),
-    /getter/,
-  );
-});
-
-await test('注入主题的自定义 raw 不按系统方法绑定，主题无效值仍报原错误', () => {
-  class CustomColor extends ColorCss {
-    raw(value) {
-      return `outline-color:${value};`;
-    }
-  }
-  class Custom extends Css {
-    color = new CustomColor();
-  }
-  const s = new Custom({ color: { _primary: 'red' } });
-  // 自有作者覆盖了主题属性 getter，没有库登记的视图。
-  assert.deepEqual(inlineKeyword(s.color, 'red', '--zj-test'), { declaration: 'color:red;' });
-  const invalid = new Css({ color: { _primary: {} } });
-  assert.throws(
-    () => inlineKeyword(invalid.color, '_primary', '--zj-test'),
-    /Invalid CSS keyword value/,
-  );
-  const valid = new Css({ color: { _primary: 'red' } });
-  assert.deepEqual(inlineKeyword(valid.color, '_primary', '--user-owned'), {
-    declaration: 'color:red;',
+  assert.deepEqual(bindValue(s, 'color', 'raw', '#654321', '--zj-test'), {
+    declaration: 'color:var(--zj-test);',
+    value: '#654321',
   });
 });
 
@@ -213,9 +147,9 @@ await test('覆写和主题作者保持方法调用及读取，不猜测实现',
     declaration: 'width:20px;',
   });
   assert.equal(calls, 1);
-  const original = new Css();
   const themed = new Css(() => ({ color: { red: 'blue' } }));
   assert.deepEqual(bindValue(themed, 'color', 'raw', 'red', '--zj-test'), {
-    declaration: original.color.raw('red'),
+    declaration: 'color:var(--zj-test);',
+    value: 'red',
   });
 });

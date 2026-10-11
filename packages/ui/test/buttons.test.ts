@@ -1,4 +1,5 @@
 import { expect, it } from 'vitest';
+import { expectCssValue } from './style-assertions.js';
 import { Search } from '@lucide/icons';
 import { defineComponent, element, renderToString } from 'zerodep-js';
 
@@ -143,7 +144,7 @@ it('Button 加载首屏即原生禁用，保留标签并隔离槽语义', () => 
   const opacityVariable = css.match(/opacity:var\((--zj-[a-z0-9-]+)\)/)?.[1];
   expect(opacityVariable).toBeTruthy();
   expect(html).toContain(`${opacityVariable}:0;`);
-  expect(css).toContain('0.0625em');
+  expectCssValue({ html, css }, 'border-width', '0.0625em');
   expect(css).toContain('cursor:not-allowed;');
 });
 it('IconButton 保留名称、方形尺寸与根 ref 类型对应的原生节点', () => {
@@ -190,9 +191,7 @@ it('ButtonGroup 首屏拥有一维连接样式和分组语义', () => {
   });
   expect(html).toContain('role="group"');
   expect(html).toContain('aria-label="操作"');
-  const wrapVariable = css.match(/flex-wrap:var\((--zj-[a-z0-9-]+)\)/)?.[1];
-  expect(wrapVariable).toBeTruthy();
-  expect(html).toContain(`${wrapVariable}:nowrap;`);
+  expect(css).toContain('flex-wrap:nowrap;');
   expect(css).toContain('gap:0;');
   expect(css).toContain('border-start-start-radius:0;');
   expect(css).toContain('margin-block-start:-0.0625em;');

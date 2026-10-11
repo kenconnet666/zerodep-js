@@ -1,9 +1,8 @@
 import type { CssClassInput, CssClass } from '../util/author.js';
 import type { ClassStyle } from 'zerodep-js';
 import { Css } from '../generated/author.js';
-import { hasKeywordSource, getKeywordBinding } from '../util/keywords.js';
+import { getKeywordBinding } from '../util/keywords.js';
 import { unitSuffix } from '../generated/base.js';
-import { systemKeywords } from '../generated/keywords.js';
 
 const VALUE = Symbol('implicit CSS value');
 interface Value {
@@ -29,15 +28,15 @@ export function cssBinding(
   const before = authorInputs(author, property, member);
   const value = read();
   const keyword = getKeywordBinding(target);
-  if (
-    member === 'raw' &&
-    keyword?.method === fn &&
-    isSystemKeyword(target, property, keyword.raw)
-  ) {
+  const after = before && authorInputs(author, property, member);
+  const same =
+    before && after && before.length === after.length && before.every((v, i) => v === after[i]);
+  if (member === 'raw' && keyword?.method === fn && before) {
     const resolved = keyword.apply(value);
-    const text = /^--zj-[a-z0-9-]+$/.test(variable)
-      ? inlineValue(property, member, resolved.value)
-      : undefined;
+    const text =
+      same && !resolved.token && /^--zj-[a-z0-9-]+$/.test(variable)
+        ? inlineValue(property, member, resolved.value)
+        : undefined;
     return {
       [VALUE]: true,
       declaration:
@@ -48,9 +47,6 @@ export function cssBinding(
       value: text,
     };
   }
-  const after = before && authorInputs(author, property, member);
-  const same =
-    before && after && before.length === after.length && before.every((v, i) => v === after[i]);
   // 保留原方法的一次调用；只复用已核对结果，不跳过自定义副作用或异常。
   const declaration = Reflect.apply(fn, target, [value]) as string;
   const text =
@@ -60,15 +56,12 @@ export function cssBinding(
     declaration:
       text === undefined
         ? declaration
-        : (Reflect.apply(Reflect.get(target, 'raw'), target, [`var(${variable})`]) as string),
+        : (Reflect.apply(keyword?.raw ?? Reflect.get(target, 'raw'), target, [
+            `var(${variable})`,
+          ]) as string),
     variable,
     value: text,
   };
-}
-
-export function cssKeyword(target: unknown, member: string, variable: string): Value {
-  const result = inlineKeyword(target, member, variable);
-  return { [VALUE]: true, ...result, variable, value: result.value };
 }
 
 export function cssResult(
@@ -97,28 +90,12 @@ export function cssResult(
 }
 
 let system: Css | undefined;
-// 只复用冻结的系统关键字表；不记录用户输入过的值。
-const keywordValues = new WeakMap<object, ReadonlySet<unknown>>();
 
 function descriptor(value: object, name: string): PropertyDescriptor | undefined {
   for (let current: object | null = value; current; current = Object.getPrototypeOf(current)) {
     const found = Object.getOwnPropertyDescriptor(current, name);
     if (found) return found;
   }
-}
-
-/** 主题视图的 raw 已被包装；核对包装前的方法与底层声明，不能推断自定义作者。 */
-function isSystemKeyword(target: object, property: string, raw: unknown): boolean {
-  const reference = Reflect.get((system ??= new Css()), property);
-  if (!reference) return false;
-  const name = descriptor(target, 'name');
-  return (
-    !!name &&
-    'value' in name &&
-    name.value === descriptor(reference, 'name')?.value &&
-    raw === reference.raw &&
-    descriptor(target, 'declaration')?.value === reference.declaration
-  );
 }
 
 /** 不执行自定义 getter；覆写方法不能使用系统作者方法的优化假设。 */
@@ -128,13 +105,13 @@ export function authorInputs(
   member: string,
 ): unknown[] | undefined {
   if (!(author instanceof Css)) return;
-  // 注入值可随框架响应式状态改变，不能仅凭方法身份跳过本次读取。
-  if (hasKeywordSource(author)) return;
   const entry = descriptor(author, property);
   if (!entry || (entry.get && entry.get !== descriptor(Css.prototype, property)?.get)) return;
   const target = Reflect.get(author, property) as object;
   if (!target || typeof target !== 'object') return;
   const reference = Reflect.get((system ??= new Css()), property);
+  if (!reference) return;
+  const keyword = getKeywordBinding(target);
   if (target === reference && Object.isFrozen(target)) {
     const value = Reflect.get(target, member);
     if (typeof value !== 'string' && typeof value !== 'function') return;
@@ -150,27 +127,54 @@ export function authorInputs(
   if (!name || !('value' in name) || name.value !== descriptor(reference, 'name')?.value) return;
   if (
     typeof own.value !== 'function' ||
-    own.value !== reference?.[member] ||
-    descriptor(target, 'raw')?.value !== reference.raw ||
+    own.value !== (member === 'raw' && keyword ? keyword.method : reference[member]) ||
+    (keyword?.raw ?? descriptor(target, 'raw')?.value) !== reference.raw ||
     descriptor(target, 'declaration')?.value !== reference.declaration
   )
     return;
   return [author, target, own.value];
 }
 
-export interface InlineDeclaration {
-  declaration: string;
-  value?: string;
+// 作者关键词全集包含未获浏览器支持的值，不能充当变量优化白名单。
+const colors = new Set(
+  'aqua black blue fuchsia gray green lime maroon navy olive orange purple red silver teal white yellow transparent currentcolor rebeccapurple'.split(
+    ' ',
+  ),
+);
+const lengths = new Set(
+  'width height minWidth minHeight maxWidth maxHeight inlineSize blockSize minInlineSize minBlockSize maxInlineSize maxBlockSize fontSize lineHeight flexBasis gap rowGap columnGap padding paddingTop paddingRight paddingBottom paddingLeft paddingInline paddingBlock paddingInlineStart paddingInlineEnd paddingBlockStart paddingBlockEnd margin marginTop marginRight marginBottom marginLeft marginInline marginBlock marginInlineStart marginInlineEnd marginBlockStart marginBlockEnd top right bottom left inset insetInline insetBlock insetInlineStart insetInlineEnd insetBlockStart insetBlockEnd borderWidth borderTopWidth borderRightWidth borderBottomWidth borderLeftWidth borderInlineWidth borderBlockWidth borderInlineStartWidth borderInlineEndWidth borderBlockStartWidth borderBlockEndWidth borderRadius borderTopLeftRadius borderTopRightRadius borderBottomLeftRadius borderBottomRightRadius borderStartStartRadius borderStartEndRadius borderEndStartRadius borderEndEndRadius outlineWidth outlineOffset letterSpacing wordSpacing textIndent'.split(
+    ' ',
+  ),
+);
+const units = new Set('px cm mm q in pt pc em rem ex ch vw vh vmin vmax %'.split(' '));
+
+function safeLength(property: string, value: number, unit: string): boolean {
+  if (!lengths.has(property) || !Number.isFinite(value) || !units.has(unit)) return false;
+  if (
+    value < 0 &&
+    !/^(margin|inset)/.test(property) &&
+    ![
+      'top',
+      'right',
+      'bottom',
+      'left',
+      'outlineOffset',
+      'letterSpacing',
+      'wordSpacing',
+      'textIndent',
+    ].includes(property)
+  )
+    return false;
+  return unit !== '%' || !/^(border.*Width|outline|letterSpacing|wordSpacing)/.test(property);
 }
 
-/** 关键字和显式参数共用保守分类；SSR 与浏览器不能依赖不同的 CSS.supports 结果。 */
+/** 只接管能确认的完整值；同一输入在 SSR/浏览器使用相同分类，不读取 CSS.supports。 */
 function inlineValue(property: string, member: string, value: unknown): string | undefined {
   let text: string | undefined;
   if (
     Object.hasOwn(unitSuffix, member) &&
     typeof value === 'number' &&
-    Number.isFinite(value) &&
-    value >= 0
+    safeLength(property, value, unitSuffix[member]!)
   ) {
     text = `${value}${unitSuffix[member]}`;
   } else if (
@@ -178,59 +182,27 @@ function inlineValue(property: string, member: string, value: unknown): string |
     typeof value === 'string' &&
     !/^(initial|inherit|unset|revert|revert-layer)$/i.test(value)
   ) {
-    const keywords = Reflect.get(systemKeywords, property);
-    if (keywords && includesKeyword(keywords, value)) text = value;
-    else if (
+    if (
       /^(color|backgroundColor|border(?:Top|Right|Bottom|Left)?Color|outlineColor|fill|stroke)$/.test(
         property,
       ) &&
-      /^#(?:[a-f\d]{3,4}|[a-f\d]{6}|[a-f\d]{8})$/i.test(value)
+      (colors.has(value.toLowerCase()) || /^#(?:[a-f\d]{3,4}|[a-f\d]{6}|[a-f\d]{8})$/i.test(value))
     )
       text = value;
-  } else if (
-    member === 'raw' &&
-    property === 'opacity' &&
-    typeof value === 'number' &&
-    Number.isFinite(value) &&
-    value >= 0 &&
-    value <= 1
-  ) {
-    text = String(value);
+    else {
+      const length = /^([+-]?(?:\d+(?:\.\d+)?|\.\d+)(?:e[+-]?\d+)?)([a-z]+|%)$/i.exec(value);
+      if (length && safeLength(property, Number(length[1]), length[2]!.toLowerCase())) text = value;
+      else if (value === '0' && lengths.has(property)) text = value;
+    }
+  } else if (member === 'raw' && typeof value === 'number' && Number.isFinite(value)) {
+    if (
+      (property === 'opacity' && value >= 0 && value <= 1) ||
+      (['lineHeight', 'flexGrow', 'flexShrink'].includes(property) && value >= 0) ||
+      (property === 'fontWeight' && value >= 1 && value <= 1000) ||
+      (property === 'zIndex' && Number.isSafeInteger(value)) ||
+      (value === 0 && lengths.has(property))
+    )
+      text = String(value);
   }
   return text;
-}
-
-function includesKeyword(keywords: object, value: string): boolean {
-  // 正常系统表只含冻结的原始值；可变替换对象仍按当前内容判断。
-  if (!Object.isFrozen(keywords)) return Object.values(keywords).includes(value);
-  let values = keywordValues.get(keywords);
-  if (!values) {
-    values = new Set(Object.values(keywords));
-    keywordValues.set(keywords, values);
-  }
-  return values.has(value);
-}
-
-/** 只将可信主题视图的安全值转换为变量；成员及主题 getter 均只读取一次。 */
-export function inlineKeyword(
-  target: unknown,
-  member: string,
-  variable: string,
-): InlineDeclaration {
-  const binding =
-    target !== null && typeof target === 'object' ? getKeywordBinding(target) : undefined;
-  if (!binding?.members.has(member))
-    return { declaration: (target as Record<string, string>)[member]! };
-  const { value, declaration } = binding.read(member);
-  if (
-    !/^--zj-[a-z0-9-]+$/.test(variable) ||
-    !isSystemKeyword(target as object, binding.property, binding.raw)
-  )
-    return { declaration };
-  const text = inlineValue(binding.property, 'raw', value);
-  if (text === undefined) return { declaration };
-  return {
-    declaration: binding.raw.call(target, `var(${variable})` as never),
-    value: text,
-  };
 }
