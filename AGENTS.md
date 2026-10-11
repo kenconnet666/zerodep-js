@@ -14,6 +14,7 @@
 - **先看脚本范围与耗时。本地只查修改相关文件的 LSP 错误、做必要的局部短测试，通过即可提交推送继续。完整类型检查、构建、长测试、浏览器、稳定性、独立消费与全量 LSP 都交 CI。**
 - 每个可审阅阶段中文提交并推送；推送前核对上一轮 CI 并定点修复失败，推送后不空等或反复轮询。pending 不记为通过，不靠减少行为覆盖或放宽断言提速。
 - WebStorm 选择项目 SDK，保留语言服务和 JSX 编辑支持，关闭服务驱动类型引擎；不恢复旧代理补丁/LSP4IJ。项目 MCP 名为 zerodep_js_lsp，不改全局或其他项目设置；安装、进程和实际 IDE 行为分别报告。
+- 换机保留已跟踪的 .codex/config.example.toml；完成框架包构建后运行 compiler 的 lsp:setup，生成本机 .codex/config.toml。生成配置与旧 .codex/lsp4ij 均不提交，不把个人全局设置或凭据复制进仓库。
 - 发布清单在 scripts/package-list.mjs，只有 core/compiler/css；prepare 改版本，pack 只打包已有产物，不自动构建。缺少入口拒绝登记，恢复时核对 release.json 的提交、版本和摘要。
 - 发布复用同一提交完整 CI 通过的固定 tgz 与摘要，已有 next 授权不包含自动提升 latest；凭据只走环境变量。
 - Windows 清理先核对绝对目标，逐文件删除、不跟随链接，再移除空目录。不碰共享 store、其他工作区、根 .git、用户配置与应用数据，只停止本任务进程。保留许可证及第三方声明。

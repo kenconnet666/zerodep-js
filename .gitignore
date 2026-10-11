@@ -8,6 +8,7 @@ reports/stability/
 .release/
 playwright-report/
 .codex/config.toml
+.codex/lsp4ij/
 .idea
 apps/example/.dev-check-*/
 apps/example/.data/
