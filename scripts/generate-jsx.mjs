@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { API, TypeFlags, TypeFormatFlags } from 'typescript/unstable/sync';
+import { API, TypeFlags, TypeFormatFlags } from 'typescript/sync';
 import { format, resolveConfig } from 'prettier';
 
 // 使用官方 TS7.1 API 生成清晰的平台声明，不依赖项目定制 SDK。

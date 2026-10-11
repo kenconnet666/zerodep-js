@@ -5,7 +5,7 @@
 - 直接在当前主目录工作，只有用户明确要求才创建或使用新工作树。保留用户已有改动。
 - 独立 TSX 细粒度响应式框架。只维护本仓库 CSS：packages/css 承担作者、生成数据和浏览器/SSR 宿主；compiler 内置 CSS 转换和 Vite 插件，不维护 Vue/Svelte 适配、CompileExtension 或公开 adapter。2026-10-11 已批准新的 bx 作者标记，取代此前删除 bx 的约定。相邻 zerodep-css 仓库只作为历史迁移来源。
 - 2026-10-08 用户已授权建立 packages/ui 与 apps/docs，并确认实施 div Provider、继承 SystemKeywords 的亮暗主题、独立语言/地区/时区，以及日期库接入。契约见 docs/provider.md；UI 仍保持 private。2026-10-09 已授权在 packages/ui/src/base 实施 Icon，静态导入 Lucide 数据；通用主题/token 归 packages/ui/src/provider/theme，组件专用默认值留在组件内部，基础属性复用 CSS 输入类型。其他组件另行讨论。框架主计划为 docs/production-plan.md。
-- 2026-10-09 用户最新决定：IDE 与项目统一固定微软官方 TypeScript 7.1.0-dev.20261008.1，取代此前 JetBrains 分支。主包与平台包直接使用官方 npm 发行版，catalog 精确锁定并由 lockfile 校验；不维护 SDK 内核补丁或多版本兼容。Babel/Vite 不变；WebStorm 使用项目 SDK，当前关闭服务驱动类型引擎。
+- 2026-10-11 更新：IDE 与项目统一固定微软官方 TypeScript 7.1.0-dev.20261011.1，取代此前 JetBrains 分支。主包与平台包直接使用官方 npm 发行版，catalog 精确锁定并由 lockfile 校验；不维护 SDK 内核补丁或多版本兼容。Babel/Vite 不变；WebStorm 使用项目 SDK，当前关闭服务驱动类型引擎。
 - 首要目标是简单易维护、方便使用、良好类型提示与适当中文注释。性能次要；不为减少依赖或解析次数引入复杂后台、缓存和协议。
 - 控制流按语义选择：同一判别值下的多个互斥模式优先集中为 switch，同类 case 可合并；布尔判断、简单二选一、有序校验和类型守卫保留清楚的 if/早返回。先归并重复判断，不机械替换关键字或增加包装函数。
 - 2026-10-08 用户已授权按基础 API 计划自主执行、完善测试和修复，并允许为简洁性适当调整 API；在实施前记录选定契约，不必逐项再次确认。本地只跑相关焦点检查，完整测试交 CI。CSS 0.3.1 与框架 rc.8 已交付，发布/恢复规则见 docs/releasing.md，历史发行证据见 CHANGELOG.md；此前限时窗口已经结束，不作为后续截止时间，不触发额度重置或购买。
@@ -59,7 +59,7 @@
 - 已授权生产验收后使用环境变量中的 npm token 发布固定 tgz 到 next，并核对注册表与干净安装；凭据不写入文件或日志。发布与恢复见 docs/releasing.md，未经授权不提升 latest。
 - 项目服务名 zerodep_js_lsp，由 pnpm --dir packages/compiler lsp:setup 配置，不改全局或其他项目设置。先独立验证，再请求重新加载；磁盘配置、独立服务、当前会话和 IDE 实际接入分别说明。
 - 换机先阅读 docs/environment-setup.md；API 对照研究见 .design/svelte-api-review.md，未确认的提议不能当作已实现契约。
-- 2026-10-11 用户改用项目 node_modules/typescript（官方 7.1.0-dev.20261008.1），关闭 WebStorm 服务驱动类型引擎，使用 IDE 自身的类型分析处理字符串导航与文档。此前原生预览/代理适配只保留为历史说明，不再要求开启服务驱动引擎。SDK 不自动加载项目框架增强；IDE MCP 可能漏报 TS 错误，不能把空诊断当作验收。
+- 2026-10-11 用户改用项目 node_modules/typescript（官方 7.1.0-dev.20261011.1），关闭 WebStorm 服务驱动类型引擎，使用 IDE 自身的类型分析处理字符串导航与文档。此前原生预览/代理适配只保留为历史说明，不再要求开启服务驱动引擎。SDK 不自动加载项目框架增强；IDE MCP 可能漏报 TS 错误，不能把空诊断当作验收。
 
 - 文档只维护当前契约、操作指南和仍有价值的研究；已完成的重复计划与交接直接删除，历史过程查 Git。测试保留真实行为与回归，不为脚本拼写、固定数量或一次性迁移清单设置长期断言。
 

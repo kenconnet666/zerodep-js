@@ -5,8 +5,8 @@ import {
   type JsxAttribute,
   type JsxAttributes,
   type Node,
-} from 'typescript/unstable/ast';
-import type { Symbol as TypeScriptSymbol } from 'typescript/unstable/async';
+} from 'typescript/ast';
+import type { Symbol as TypeScriptSymbol } from 'typescript/async';
 import type {
   CompletionItem,
   CompletionList,

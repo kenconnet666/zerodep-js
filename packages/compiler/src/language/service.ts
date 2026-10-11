@@ -10,7 +10,7 @@ import {
   type MessageConnection,
 } from 'vscode-jsonrpc/node';
 import { compilerPath } from '../checking/sdk.js';
-import { API } from 'typescript/unstable/async';
+import { API } from 'typescript/async';
 
 export interface SourceDocument {
   uri: string;

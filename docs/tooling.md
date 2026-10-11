@@ -1,6 +1,6 @@
 # 编译、检查与语言工具
 
-当前源码按用户最新要求固定微软官方 `typescript@7.1.0-dev.20261008.1` 与 Babel 8，Vite 负责开发和打包。项目不再编译、打补丁或分发 TypeScript SDK。接口变化集中在 `packages/compiler` 的适配层，只维护选定的 TS7.1 版本。
+当前源码按用户最新要求固定微软官方 `typescript@7.1.0-dev.20261011.1` 与 Babel 8，Vite 负责开发和打包。项目不再编译、打补丁或分发 TypeScript SDK。接口变化集中在 `packages/compiler` 的适配层，只维护选定的 TS7.1 版本。
 
 安装与当前 WebStorm 配置见 [环境配置](environment-setup.md)。
 

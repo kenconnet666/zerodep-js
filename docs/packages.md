@@ -1,6 +1,6 @@
 # 包边界与独立消费
 
-框架发布清单保留 core、compiler、css 三包；UI 为私有组件库。2026-10-09 已删除 use 包，不再提供其路由、store、持久化与历史入口。当前源码使用微软官方 npm TypeScript 7.1.0-dev.20261008.1；主包由 catalog 固定，平台包由官方 optionalDependencies 选择，锁文件保存完整性校验。无需 JetBrains 分支下载或平台 overrides。
+框架发布清单保留 core、compiler、css 三包；UI 为私有组件库。2026-10-09 已删除 use 包，不再提供其路由、store、持久化与历史入口。当前源码使用微软官方 npm TypeScript 7.1.0-dev.20261011.1；主包由 catalog 固定，平台包由官方 optionalDependencies 选择，锁文件保存完整性校验。无需 JetBrains 分支下载或平台 overrides。
 
 独立项目安装相同固定版本的 typescript 即可；不再需要复制平台 URL 或覆盖配置。完整步骤见 [环境配置](environment-setup.md)。
 

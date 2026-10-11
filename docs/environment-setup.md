@@ -1,6 +1,6 @@
 # 开发环境与 WebStorm
 
-使用仓库固定的 Node 24、pnpm 10.34.5 和微软官方 TypeScript 7.1.0-dev.20261008.1。依赖以 pnpm-workspace.yaml 和锁文件为准，不维护 SDK 补丁或多版本兼容。
+使用仓库固定的 Node 24、pnpm 10.34.5 和微软官方 TypeScript 7.1.0-dev.20261011.1。依赖以 pnpm-workspace.yaml 和锁文件为准，不维护 SDK 补丁或多版本兼容。
 
 ## 安装
 

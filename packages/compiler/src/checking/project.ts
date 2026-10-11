@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
-import { API, type Diagnostic as TypeScriptDiagnostic } from 'typescript/unstable/async';
-import { createFileSystemLayer, serverFS, type FileSystemCallbacks } from 'typescript/unstable/fs';
+import { API, type Diagnostic as TypeScriptDiagnostic } from 'typescript/async';
+import { createFileSystemLayer, serverFS, type FileSystemCallbacks } from 'typescript/fs';
 import { TraceMap, originalPositionFor } from '@jridgewell/trace-mapping';
 import { diagnose } from '../transform/compile.js';
 import type { CheckProjection } from './projection.js';

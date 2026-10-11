@@ -1,4 +1,4 @@
-import { SymbolFlags, TypeFlags, type Program, type Type } from 'typescript/unstable/async';
+import { SymbolFlags, TypeFlags, type Program, type Type } from 'typescript/async';
 import {
   isIdentifier,
   isJsxAttribute,
@@ -7,7 +7,7 @@ import {
   isJsxSelfClosingElement,
   isJsxSpreadAttribute,
   type Node,
-} from 'typescript/unstable/ast';
+} from 'typescript/ast';
 import { projectForCheck, type CheckProjection, type SelectSpread } from './projection.js';
 
 type SelectMode = SelectSpread['mode'];

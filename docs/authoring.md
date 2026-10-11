@@ -157,7 +157,7 @@ const NameField = _component(
 
 其他字段遵循相同规则：open 对应 onOpenChange，checked 对应 onCheckedChange。组件可以绑定多个字段，无关必填 props 仍必须提供；父组件拥有数据，子组件通过回调请求改变。
 
-当前源码固定微软官方 TypeScript 7.1.0-dev.20261008.1；WebStorm 原生类型引擎与框架 LSP 的配置、适用 EAP 构建和代理适配统一见 [环境配置](environment-setup.md)。不使用 JetBrains 分支或自维护 SDK。Ctrl+空格可能被输入法截获，必要时使用“代码 → 代码补全 → 基本”；代码中的冒号使用 ASCII `:`，不使用输入法生成的 `：`。
+当前源码固定微软官方 TypeScript 7.1.0-dev.20261011.1；WebStorm 内置编辑支持与框架 LSP 的配置统一见 [环境配置](environment-setup.md)。不使用 JetBrains 分支或自维护 SDK。Ctrl+空格可能被输入法截获，必要时使用“代码 → 代码补全 → 基本”；代码中的冒号使用 ASCII `:`，不使用输入法生成的 `：`。
 
 ## 快照备份
 

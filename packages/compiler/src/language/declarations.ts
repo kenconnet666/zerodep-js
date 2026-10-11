@@ -2,11 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { TraceMap, originalPositionFor } from '@jridgewell/trace-mapping';
-import {
-  isPropertyDeclaration,
-  isPropertySignatureDeclaration,
-  type Node,
-} from 'typescript/unstable/ast';
+import { isPropertyDeclaration, isPropertySignatureDeclaration, type Node } from 'typescript/ast';
 import type { Location } from 'vscode-languageserver-types';
 
 function position(text: string, offset: number) {

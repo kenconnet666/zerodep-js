@@ -73,8 +73,8 @@ catalogs:
       specifier: 1.9.0
       version: 1.9.0
     typescript:
-      specifier: 7.1.0-dev.20261008.1
-      version: 7.1.0-dev.20261008.1
+      specifier: 7.1.0-dev.20261011.1
+      version: 7.1.0-dev.20261011.1
     vite:
       specifier: 8.3.1
       version: 8.3.1
@@ -130,7 +130,7 @@ importers:
         version: 1.9.0
       typescript:
         specifier: 'catalog:'
-        version: 7.1.0-dev.20261008.1
+        version: 7.1.0-dev.20261011.1
       vite:
         specifier: 'catalog:'
         version: 8.3.1(@types/node@24.13.5)
@@ -170,7 +170,7 @@ importers:
     devDependencies:
       typescript:
         specifier: 'catalog:'
-        version: 7.1.0-dev.20261008.1
+        version: 7.1.0-dev.20261011.1
       vite:
         specifier: 'catalog:'
         version: 8.3.1(@types/node@24.13.5)
@@ -192,7 +192,7 @@ importers:
     devDependencies:
       typescript:
         specifier: 'catalog:'
-        version: 7.1.0-dev.20261008.1
+        version: 7.1.0-dev.20261011.1
       vite:
         specifier: 'catalog:'
         version: 8.3.1(@types/node@24.13.5)
@@ -222,7 +222,7 @@ importers:
         version: 0.3.31
       typescript:
         specifier: 'catalog:'
-        version: 7.1.0-dev.20261008.1
+        version: 7.1.0-dev.20261011.1
       vscode-jsonrpc:
         specifier: 'catalog:'
         version: 9.0.3
@@ -263,7 +263,7 @@ importers:
     devDependencies:
       typescript:
         specifier: 'catalog:'
-        version: 7.1.0-dev.20261008.1
+        version: 7.1.0-dev.20261011.1
 
   packages/css:
     dependencies:
@@ -279,7 +279,7 @@ importers:
         version: 24.13.5
       typescript:
         specifier: 'catalog:'
-        version: 7.1.0-dev.20261008.1
+        version: 7.1.0-dev.20261011.1
       zerodep-js:
         specifier: workspace:*
         version: link:../core
@@ -298,7 +298,7 @@ importers:
     devDependencies:
       typescript:
         specifier: 'catalog:'
-        version: 7.1.0-dev.20261008.1
+        version: 7.1.0-dev.20261011.1
       vite:
         specifier: 'catalog:'
         version: 8.3.1(@types/node@24.13.5)
@@ -898,44 +898,44 @@ packages:
   '@types/node@24.13.5':
     resolution: {integrity: sha512-TXyindR+lBr22aJIdMQzCFHPHR6cR4js838mRDCSz5hOKWZvZwsXSSiXDmjRj4iJmgl+sR9O+1mkoVBSMadNug==}
 
-  '@typescript/typescript-darwin-arm64@7.1.0-dev.20261008.1':
-    resolution: {integrity: sha512-kwcULzED0iril/I2+RyjiESxUnrjd1FrEgl8NMDx7cjLBzHTkpEGRq/Dx3MejLOTtBFMjMYQ6pS9e5tvGhENaw==}
+  '@typescript/typescript-darwin-arm64@7.1.0-dev.20261011.1':
+    resolution: {integrity: sha512-Kj6wL95dLXjtx7um9LaF61YPaMSKlmTh6IffZUCwQlJntRh613hVKfWtbj3k7odmRe/K5hghQox8cvyKkFotjA==}
     engines: {node: '>=16.20.0'}
     cpu: [arm64]
     os: [darwin]
 
-  '@typescript/typescript-darwin-x64@7.1.0-dev.20261008.1':
-    resolution: {integrity: sha512-FWy0++LUEY5LfxA9j/mtpj0hEa0z8OyRDATuozm3QsIbLq4s79OrIy4jnSKeQHWA3g63hHX79A9nzVhn0igpcA==}
+  '@typescript/typescript-darwin-x64@7.1.0-dev.20261011.1':
+    resolution: {integrity: sha512-ng8qcExjcmG2HG5Z22OcL07BntZQX7MwBlN9DmTwZX7+TMe1h9UitAiWPxCtmltcc5ObE+5YSF6AGyKMVgfMKg==}
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [darwin]
 
-  '@typescript/typescript-linux-arm64@7.1.0-dev.20261008.1':
-    resolution: {integrity: sha512-UNcmGp8wDmwQ2LtZI241unHoIkFXFyHLgdAw6Th7OsWakhwl9vzV30YVF7vtGeOR46xW5gA7XC4DyVw4otsCgg==}
+  '@typescript/typescript-linux-arm64@7.1.0-dev.20261011.1':
+    resolution: {integrity: sha512-cX7seCo65VvUeQOvI2Ho4kVszrTMj+FMAJHDtJ6X4PBE2Dqv48OG+tNncPF1Z8VDNCCdJGr5FRjzxiHbUDzYLQ==}
     engines: {node: '>=16.20.0'}
     cpu: [arm64]
     os: [linux]
 
-  '@typescript/typescript-linux-arm@7.1.0-dev.20261008.1':
-    resolution: {integrity: sha512-ssZlwAQutnjtIajZ8yVIT3ZfoyRTmPOrRSJmTMM9kNKwzwo+/qLt/F13c1gZNPEOESdmi9HIVijf7aUf0b3YAw==}
+  '@typescript/typescript-linux-arm@7.1.0-dev.20261011.1':
+    resolution: {integrity: sha512-TbBRba9ft28ME4JfCPkQ1zSTkNle1+dmKrSBCu9LFP2e/SgvTbt4mX8LgCwzg9EPe0CH8k6Zd+i/xxZys65qgQ==}
     engines: {node: '>=16.20.0'}
     cpu: [arm]
     os: [linux]
 
-  '@typescript/typescript-linux-x64@7.1.0-dev.20261008.1':
-    resolution: {integrity: sha512-IrFrXv4xCm367mzjCBC7JMJ3mc+ShiG3VFS/RkUemjpYxKVamj6vVTiFuSmAqipM31wICk36zzf0Z5JRbk2HaQ==}
+  '@typescript/typescript-linux-x64@7.1.0-dev.20261011.1':
+    resolution: {integrity: sha512-0pt6E6fRcffVEUaHYIYGVYBghfeJL2E+JNz91dJf/UidoIU8kmj6qBd27xhsDzKe2aoxolt0t48ipRc+a2NjBA==}
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [linux]
 
-  '@typescript/typescript-win32-arm64@7.1.0-dev.20261008.1':
-    resolution: {integrity: sha512-F/EbCJVItYPn0eODppLW2v7cb9tJB2ojiwFmPF+WQVmlUk8RbiZapcP/kfb3wgKEFEXYNwMSFRIPLhlAVlwteA==}
+  '@typescript/typescript-win32-arm64@7.1.0-dev.20261011.1':
+    resolution: {integrity: sha512-8UkixI8b4a12rZXr1RZk8oyx8yPZg8QNiJhbe3vTSA45o43YViVPoAll8bA5oTzi9UjetFT2iPDSpAPCZENVug==}
     engines: {node: '>=16.20.0'}
     cpu: [arm64]
     os: [win32]
 
-  '@typescript/typescript-win32-x64@7.1.0-dev.20261008.1':
-    resolution: {integrity: sha512-biCwDfpv/twCU1nMP0+0wGQGZ2vkJ3qupAoDYDf+H9ZxbuHMMYM3uKqmZyNz7XrMwqWG1TVWV0CIP+WOwRKkCw==}
+  '@typescript/typescript-win32-x64@7.1.0-dev.20261011.1':
+    resolution: {integrity: sha512-gw2jMUgKpICqDRFhpe1Cx/ol/xv2+/80y4dAf3CKnkG5GdSVZvULYL1MRXlHdZIi0WA27t8T+TKtqzi4WJ3WOw==}
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [win32]
@@ -1233,8 +1233,8 @@ packages:
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
-  typescript@7.1.0-dev.20261008.1:
-    resolution: {integrity: sha512-uLsmzahldysHoZtETvHwK+sxWMk6yufIIunCWho7l3EuWVzVc/K2wjkj2r2Tg3GJ+gj4WGrv8VcxHc4yujc1ng==}
+  typescript@7.1.0-dev.20261011.1:
+    resolution: {integrity: sha512-Oestzc61TT5cqxAyVxRsbL+pmMF8pzPlsnLcbCqAWqvC0eYQcp8EJrLWatIgjdUh4RiL79avUCHfM8hdkv07xg==}
     engines: {node: '>=16.20.0'}
     hasBin: true
 
@@ -1787,25 +1787,25 @@ snapshots:
     dependencies:
       undici-types: 7.18.2
 
-  '@typescript/typescript-darwin-arm64@7.1.0-dev.20261008.1':
+  '@typescript/typescript-darwin-arm64@7.1.0-dev.20261011.1':
     optional: true
 
-  '@typescript/typescript-darwin-x64@7.1.0-dev.20261008.1':
+  '@typescript/typescript-darwin-x64@7.1.0-dev.20261011.1':
     optional: true
 
-  '@typescript/typescript-linux-arm64@7.1.0-dev.20261008.1':
+  '@typescript/typescript-linux-arm64@7.1.0-dev.20261011.1':
     optional: true
 
-  '@typescript/typescript-linux-arm@7.1.0-dev.20261008.1':
+  '@typescript/typescript-linux-arm@7.1.0-dev.20261011.1':
     optional: true
 
-  '@typescript/typescript-linux-x64@7.1.0-dev.20261008.1':
+  '@typescript/typescript-linux-x64@7.1.0-dev.20261011.1':
     optional: true
 
-  '@typescript/typescript-win32-arm64@7.1.0-dev.20261008.1':
+  '@typescript/typescript-win32-arm64@7.1.0-dev.20261011.1':
     optional: true
 
-  '@typescript/typescript-win32-x64@7.1.0-dev.20261008.1':
+  '@typescript/typescript-win32-x64@7.1.0-dev.20261011.1':
     optional: true
 
   '@vitest/mocker@5.0.3(vite@8.3.1(@types/node@24.13.5))':
@@ -2063,15 +2063,15 @@ snapshots:
   tslib@2.8.1:
     optional: true
 
-  typescript@7.1.0-dev.20261008.1:
+  typescript@7.1.0-dev.20261011.1:
     optionalDependencies:
-      '@typescript/typescript-darwin-arm64': 7.1.0-dev.20261008.1
-      '@typescript/typescript-darwin-x64': 7.1.0-dev.20261008.1
-      '@typescript/typescript-linux-arm': 7.1.0-dev.20261008.1
-      '@typescript/typescript-linux-arm64': 7.1.0-dev.20261008.1
-      '@typescript/typescript-linux-x64': 7.1.0-dev.20261008.1
-      '@typescript/typescript-win32-arm64': 7.1.0-dev.20261008.1
-      '@typescript/typescript-win32-x64': 7.1.0-dev.20261008.1
+      '@typescript/typescript-darwin-arm64': 7.1.0-dev.20261011.1
+      '@typescript/typescript-darwin-x64': 7.1.0-dev.20261011.1
+      '@typescript/typescript-linux-arm': 7.1.0-dev.20261011.1
+      '@typescript/typescript-linux-arm64': 7.1.0-dev.20261011.1
+      '@typescript/typescript-linux-x64': 7.1.0-dev.20261011.1
+      '@typescript/typescript-win32-arm64': 7.1.0-dev.20261011.1
+      '@typescript/typescript-win32-x64': 7.1.0-dev.20261011.1
 
   undici-types@7.18.2: {}
 

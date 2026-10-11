@@ -14,7 +14,7 @@ pnpm --dir packages/compiler build
 pnpm --dir apps/example dev
 ```
 
-工作区统一使用 微软官方 TypeScript 7.1.0-dev.20261008.1；官方 npm 安装方式见 [工具链](tooling.md)。不需要 Go、自建 SDK 或相邻 CSS 仓库。npm 已发布版本的安装记录见维护交接，不与当前源码入口混用。
+工作区统一使用 微软官方 TypeScript 7.1.0-dev.20261011.1；官方 npm 安装方式见 [工具链](tooling.md)。不需要 Go、自建 SDK 或相邻 CSS 仓库。npm 已发布版本的记录见 CHANGELOG，不与当前源码入口混用。
 
 应用 package.json 的基本脚本：
 
