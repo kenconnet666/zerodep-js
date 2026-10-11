@@ -59,19 +59,16 @@ export const ButtonGroup = _component(
                 s.borderEndStartRadius(0);
                 s.marginInlineStart(bx(`${-buttonBorderWidth}em`));
               });
+              s.select(beforeLast, () => {
+                s.borderStartEndRadius(0);
+                s.borderEndEndRadius(0);
+              });
             } else {
               s.select(afterFirst, () => {
                 s.borderStartStartRadius(0);
                 s.borderStartEndRadius(0);
                 s.marginBlockStart(bx(`${-buttonBorderWidth}em`));
               });
-            }
-            if (direction === 'row') {
-              s.select(beforeLast, () => {
-                s.borderStartEndRadius(0);
-                s.borderEndEndRadius(0);
-              });
-            } else {
               s.select(beforeLast, () => {
                 s.borderEndStartRadius(0);
                 s.borderEndEndRadius(0);

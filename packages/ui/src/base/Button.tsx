@@ -104,7 +104,6 @@ export const Button = _component(
           css(() => {
             const iconOnly = icon !== undefined;
             const pressed = ariaPressed === true || ariaPressed === 'true';
-            const filled = variant === 'solid' || pressed;
             s.boxSizing('border-box');
             s.position('relative');
             s.display('inline-flex');
@@ -132,9 +131,22 @@ export const Button = _component(
             // 与 ButtonGroup 的 0.0625em 接缝协议一致。
             s.borderWidth('0.0625em');
             s.borderRadius('0.5em');
-            s.color(bx(color ?? (filled ? '_onPrimary' : '_primary')));
-            s.backgroundColor(bx(backgroundColor ?? (filled ? '_primary' : 'transparent')));
-            s.borderColor(bx(borderColor ?? (variant === 'outline' ? '_primary' : 'transparent')));
+            s.color('_primary').backgroundColor('transparent').borderColor('transparent');
+            switch (variant) {
+              case 'solid':
+                s.color('_onPrimary').backgroundColor('_primary');
+                break;
+              case 'outline':
+                s.borderColor('_primary');
+                break;
+              case 'text':
+                break;
+            }
+            if (pressed) s.color('_onPrimary').backgroundColor('_primary');
+            // 显式配色最后覆盖；空值不擦掉变体和状态默认值。
+            s.color(bx(color ?? undefined));
+            s.backgroundColor(bx(backgroundColor ?? undefined));
+            s.borderColor(bx(borderColor ?? undefined));
             s.cursor('pointer');
             s.select('&[hidden]', () => {
               s.display('none');

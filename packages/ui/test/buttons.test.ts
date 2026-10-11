@@ -7,6 +7,7 @@ import { css as collectCss, bx, createServerCssHost, withCssHost } from 'zerodep
 import * as ui from '../dist/index.js';
 import {
   Provider,
+  lightTheme,
   Button,
   Icon,
   ToggleButton,
@@ -125,6 +126,70 @@ it.each([
         expect(host.cssText()).toContain(`color:${color};`);
       }
     });
+  },
+);
+
+it.each(['solid', 'outline', 'text'] as const)(
+  '%s 变体默认值、选中状态和显式配色按层覆盖',
+  (variant) => {
+    for (const pressed of [false, true]) {
+      const result = render(Button, {
+        variant,
+        'aria-pressed': pressed,
+        children: '操作',
+        ripple: false,
+      });
+      const filled = variant === 'solid' || pressed;
+      expectCssValue(
+        result,
+        'color',
+        filled ? lightTheme.color._onPrimary : lightTheme.color._primary,
+      );
+      expectCssValue(
+        result,
+        'background-color',
+        filled ? lightTheme.backgroundColor._primary : 'transparent',
+      );
+      expectCssValue(
+        result,
+        'border-color',
+        variant === 'outline' ? lightTheme.borderColor._primary : 'transparent',
+      );
+      const custom = render(Button, {
+        variant,
+        'aria-pressed': pressed,
+        color: '#123456',
+        backgroundColor: '#abcdef',
+        borderColor: 'currentColor',
+        ripple: false,
+      });
+      expectCssValue(custom, 'color', '#123456');
+      expectCssValue(custom, 'background-color', '#abcdef');
+      expectCssValue(custom, 'border-color', 'currentColor');
+    }
+    const link = render(LinkButton, {
+      variant,
+      href: '/docs',
+      color: undefined,
+      backgroundColor: null,
+      borderColor: undefined,
+      ripple: false,
+    });
+    expectCssValue(
+      link,
+      'color',
+      variant === 'solid' ? lightTheme.color._onPrimary : lightTheme.color._primary,
+    );
+    expectCssValue(
+      link,
+      'background-color',
+      variant === 'solid' ? lightTheme.backgroundColor._primary : 'transparent',
+    );
+    expectCssValue(
+      link,
+      'border-color',
+      variant === 'outline' ? lightTheme.borderColor._primary : 'transparent',
+    );
   },
 );
 

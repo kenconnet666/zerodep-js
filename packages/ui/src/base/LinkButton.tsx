@@ -57,7 +57,6 @@ export const LinkButton = _component(
         data-ui-action=""
         class={[
           css(() => {
-            const filled = variant === 'solid';
             s.boxSizing('border-box');
             s.position('relative');
             s.display('inline-flex');
@@ -80,9 +79,21 @@ export const LinkButton = _component(
             // 与 ButtonGroup 的 0.0625em 接缝协议一致。
             s.borderWidth('0.0625em');
             s.borderRadius('0.5em');
-            s.color(bx(color ?? (filled ? '_onPrimary' : '_primary')));
-            s.backgroundColor(bx(backgroundColor ?? (filled ? '_primary' : 'transparent')));
-            s.borderColor(bx(borderColor ?? (variant === 'outline' ? '_primary' : 'transparent')));
+            s.color('_primary').backgroundColor('transparent').borderColor('transparent');
+            switch (variant) {
+              case 'solid':
+                s.color('_onPrimary').backgroundColor('_primary');
+                break;
+              case 'outline':
+                s.borderColor('_primary');
+                break;
+              case 'text':
+                break;
+            }
+            // 显式配色最后覆盖；空值不擦掉变体和状态默认值。
+            s.color(bx(color ?? undefined));
+            s.backgroundColor(bx(backgroundColor ?? undefined));
+            s.borderColor(bx(borderColor ?? undefined));
             s.cursor('pointer');
             s.select('&[hidden]', () => {
               s.display('none');
