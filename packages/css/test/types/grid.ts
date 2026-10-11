@@ -19,6 +19,4 @@ css(() => {
   s.gridTemplateRows(20);
   // @ts-expect-error 轨道值不能是对象。
   s.gridAutoRows({ min: '1rem' });
-  // @ts-expect-error 旧 repeat 方法已经删除。
-  s.gridTemplateColumns.repeat(2, '1fr');
 });

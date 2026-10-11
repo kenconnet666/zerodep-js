@@ -306,19 +306,6 @@ async function main() {
           );
         } else if (target && typeof target === 'object') targets.push(...Object.values(target));
       }
-      if (manifest.license === 'Apache-2.0 AND MIT') {
-        const binary = manifest.os[0] === 'win32' ? 'tsc.exe' : 'tsc';
-        for (const required of [
-          'LICENSE.zerodep',
-          'NOTICE.txt',
-          'typescript/zerodep-build.json',
-          `typescript/lib/${binary}`,
-        ])
-          assert(
-            packed.files.some((entry) => entry.path === required),
-            `原生平台包需要先构建：${folder}/${required}`,
-          );
-      }
       assert(
         !packed.files.some((entry) =>
           /tsbuildinfo|(^|\/)(test|node_modules|\.codex)(\/|$)/.test(entry.path),

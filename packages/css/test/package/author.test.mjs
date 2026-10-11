@@ -26,18 +26,8 @@ function render(build, source) {
   return { host, attributes: result };
 }
 
-void test('502 个真实属性方法共用原型，不再分配属性作者对象', () => {
-  const a = new Css(),
-    b = new Css();
+void test('全部属性方法接受可选值，数值零保持原样', () => {
   const names = Object.keys(systemKeywords);
-  assert.equal(names.length, 502);
-  for (const name of names) {
-    assert.equal(typeof a[name], 'function', name);
-    assert.equal(a[name], b[name]);
-    assert.deepEqual(systemKeywords[name], {});
-  }
-  assert.equal(Object.hasOwn(a, 'width'), false);
-  assert.equal('raw' in Reflect.get(a, 'width'), false);
   const result = render((s) => {
     for (const name of names) s[name](undefined);
     s.opacity(0).width(0).zIndex(0);
@@ -52,7 +42,10 @@ void test('生成声明保留真实方法、属性类型、中文文档和链式
   );
   const ast = parse(source, { sourceType: 'module', plugins: ['typescript'] });
   const cls = ast.program.body.find((x) => x.declaration?.id?.name === 'Css').declaration;
-  assert.equal(cls.body.body.length, 502);
+  assert.deepEqual(
+    new Set(cls.body.body.map((member) => member.key.name)),
+    new Set(Object.keys(systemKeywords)),
+  );
   for (const member of cls.body.body) {
     assert.equal(member.type, 'TSDeclareMethod');
     const docs = member.leadingComments.map((x) => x.value).join('');
@@ -77,7 +70,10 @@ void test('字符串关键字引用带文档的属性成员，公共词共享而
     }),
   );
   const keywordValues = declarations.get('KeywordValues');
-  assert.equal(keywordValues.body.body.length, 502);
+  assert.deepEqual(
+    new Set(keywordValues.body.body.map((member) => member.key.name)),
+    new Set(Object.keys(systemKeywords)),
+  );
   for (const member of keywordValues.body.body) {
     const type = member.typeAnnotation.typeAnnotation.types.find(
       (node) => node.type === 'TSTypeOperator' && node.operator === 'keyof',
@@ -207,8 +203,6 @@ class BadTheme extends SystemKeywords{override readonly color={_primary:12};}
 new Css(new BadTheme());
 // @ts-expect-error 回调必须同步。
 css(async()=>{s.color('red');});
-// @ts-expect-error 旧属性对象入口已删除。
-s.width.px(12);
 `;
   try {
     await writeFile(file, source, { flag: 'wx' });

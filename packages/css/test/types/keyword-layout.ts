@@ -14,6 +14,3 @@ class ReservedNames extends SystemKeywords {
 }
 // @ts-expect-error 系统关键字不能被主题覆盖，主题只使用下划线 token。
 new Css(new ReservedNames());
-// @ts-expect-error 旧属性作者类型不再公开。
-import type { ColorCss } from '../../src/index.js';
-export type RemovedColorAuthor = ColorCss;

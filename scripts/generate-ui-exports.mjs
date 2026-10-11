@@ -51,8 +51,7 @@ async function collect(directory) {
     );
   }
 }
-for (const directory of ['base', 'utils', 'layout', 'input', 'display', 'feedback', 'navigation'])
-  await collect(directory);
+for (const directory of ['base', 'utils', 'layout']) await collect(directory);
 const seen = new Set();
 const lines = [
   '// 由 scripts/generate-ui-exports.mjs 生成；运行 pnpm --dir packages/ui generate 更新。',

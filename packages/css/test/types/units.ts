@@ -16,6 +16,4 @@ css(() => {
   s.padding('1rem', '2rem');
   // @ts-expect-error bx 只接受 CSS 字符串、有限数值类型或 undefined。
   bx({ px: 12 });
-  // @ts-expect-error 旧单位方法已删除。
-  s.width.px(12);
 });

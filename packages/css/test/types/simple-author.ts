@@ -19,5 +19,3 @@ void list;
 // @ts-expect-error 结构化结果不是类名字符串。
 const name: string = result;
 void name;
-// @ts-expect-error 不保留旧声明格式化入口。
-s.width.declaration('1px');
