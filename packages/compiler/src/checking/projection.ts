@@ -12,6 +12,13 @@ export interface CheckProjection {
 export interface ProjectionOptions {
   /** 官方 checker 确认的可选组件属性；避免把显式 undefined 误当普通属性传入。 */
   optionalBindings?: ReadonlySet<number>;
+  /** 官方 checker 判断 spread 中的 multiple；null 表示没有此属性。 */
+  selectSpreads?: ReadonlyMap<number, SelectSpread | null>;
+}
+
+export interface SelectSpread {
+  mode: 'single' | 'multiple' | 'dynamic';
+  optional: boolean;
 }
 
 function attributeName(attribute: t.JSXAttribute): string {
@@ -120,10 +127,28 @@ export function projectForCheck(
               value,
             );
           } else if (tag === 'select' && property === 'value') {
-            const multiple = original.find(
-              (item) => t.isJSXAttribute(item) && attributeName(item) === 'multiple',
-            );
-            if (t.isJSXAttribute(multiple)) {
+            let mode: SelectSpread['mode'] = 'single';
+            // 按作者顺序覆盖；不存在的 spread 属性不会撤销前面的 multiple。
+            for (const item of original) {
+              if (t.isJSXSpreadAttribute(item)) {
+                const spread = options.selectSpreads?.get(item.start!);
+                if (spread === undefined) mode = 'dynamic';
+                else if (spread !== null)
+                  mode = spread.optional && mode !== spread.mode ? 'dynamic' : spread.mode;
+              } else if (attributeName(item) === 'multiple') {
+                const expression = t.isJSXExpressionContainer(item.value)
+                  ? item.value.expression
+                  : item.value;
+                mode =
+                  expression === null || t.isBooleanLiteral(expression, { value: true })
+                    ? 'multiple'
+                    : t.isBooleanLiteral(expression, { value: false }) ||
+                        t.isNullLiteral(expression)
+                      ? 'single'
+                      : 'dynamic';
+              }
+            }
+            if (mode !== 'single') {
               const option = path.scope.generateUidIdentifier('option');
               const values = t.callExpression(
                 t.memberExpression(t.identifier('Array'), t.identifier('from')),
@@ -136,7 +161,7 @@ export function projectForCheck(
                 ],
               );
               value =
-                multiple.value === null
+                mode === 'multiple'
                   ? values
                   : t.conditionalExpression(
                       t.memberExpression(t.cloneNode(currentTarget), t.identifier('multiple')),

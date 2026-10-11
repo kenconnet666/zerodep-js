@@ -1,5 +1,14 @@
 # 基础 API 完善与 CSS 协作计划
 
+## 2026-10-11 表单类型与 TSX 易用性
+
+继续参考 Svelte 的表单值语义与 Solid 的细粒度组件/列表边界，不扩张公共 API。props 参数解构仍直接响应，不要求 `_derived` 或 splitProps。
+
+- 完善原生 select 的绑定检查：单选写回 string，多选写回 string[]；显式 true/false、spread 及属性覆盖顺序都需要正确检查。动态 multiple 保留既有能力，模型必须容纳两种写回结果，不照搬 Svelte 对动态 multiple 的禁止。
+- 使用官方 TS7 判断属性类型，继续由检查投影验证写回；不新增类型内核补丁或通用 AST 类型推断器。
+- 对照 Svelte each 与 Solid For，优先复用现有 For、props 参数解构和 `_derived` 解构；是否扩展行参数语法取决于实际简化收益，不为对齐 API 数量新增 Index/Show/splitProps 等入口。
+- 先复现单选/多选检查问题，再补类型、浏览器和文档焦点验证；完整验收由同一提交 CI 执行。
+
 ## 2026-10-11 TSX 响应式复审
 
 本轮继续完善当前变量式框架，不实施此前讨论的全引用或响应式父类模型。`_component(({ query, ...rest }) => ...)` 的参数解构直接读取最新 props，不要求 `_derived`，也不新增绑定字段名单。普通函数、局部解构和返回值保持取值语义；写回沿用现有 `bind:*` 与组件回调契约。

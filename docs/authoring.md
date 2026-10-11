@@ -51,6 +51,41 @@ CSS 遵循相同的边界：直接 `const name = css(...)` 保留自动派生便
 
 本文说明当前源码的绑定、快照和按需组件。core/compiler/css 使用一致版本，Vite 插件从 `zerodep-js-compiler` 包根导入；packages/use 已移除。升级框架后重新构建应用及预编译组件库，历史发行记录见发布文档。
 
+## 列表中的简洁写法
+
+简单行直接用 row.name；需要抽出多个计算字段时，用已有的派生解构：
+
+```tsx
+<For each={rows} keyBy={(row) => row.id}>
+  {(row, index) => {
+    const { name, quantity } = _derived(row);
+    return (
+      <li>
+        {index + 1}. {name} × {quantity}
+      </li>
+    );
+  }}
+</For>
+```
+
+同 key 的数据整体替换时字段更新，排序时 index 更新。普通 `const initialName = row.name` 仍可用于保存行的初始值。不要把 For 回调误当普通数组 map：For 有明确的身份与资源清理。
+
+行包含输入、局部状态或较多事件时，提取一个 `_component`，直接在组件参数中解构 props。这里不需要给组件参数加 `_derived`：
+
+```tsx
+const RowLabel = _component(({ name, index }: { name: string; index: number }) => (
+  <li>
+    {index + 1}. {name}
+  </li>
+));
+
+<For each={rows} keyBy={(row) => row.id}>
+  {(row, index) => <RowLabel name={row.name} index={index} />}
+</For>;
+```
+
+当前不新增 For 的参数解构语法、Index 或 splitProps。组件参数解构/default/rest、JSX spread、普通函数和 `_derived` 已覆盖这些写法；先复用已有边界。
+
 ## 输入绑定
 
 原来要把“显示哪个值”和“输入后改哪个变量”各写一次：
@@ -82,7 +117,20 @@ let text = _state('');
 | select           | `bind:value={choice}`         | option 的字符串 value              |
 | select multiple  | `bind:value={choices}`        | 已选字符串数组                     |
 
-数字请声明 `let amount = _state<number>()`，多选请声明 `let choices = _state<string[]>([])`。当前 select 的绑定类型允许字符串或字符串数组，TS 不根据 multiple 自动收窄；按表格选择匹配的模型。radio 的 checked 表示一个按钮是否选中；字符串单选组或字符串数组多选组可使用 `bind:group`，见 [表单](forms.md)。
+数字请声明 `let amount = _state<number>()`，多选请声明 `let choices = _state<string[]>([])`。框架检查器按 select 的 multiple 与 spread 覆盖顺序检查写回：省略或 false 写回 string，true 写回 string[]，动态模式要求模型能接收两者。WebStorm 原生 TS 的属性提示仍是读取类型，完整写回诊断由框架 checker/LSP 提供。radio 的 checked 表示一个按钮是否选中；字符串单选组或字符串数组多选组可使用 `bind:group`，见 [表单](forms.md)。
+
+```tsx
+let single = _state('a');
+let many = _state<string[]>(['a']);
+<select multiple={false} bind:value={single} />;
+<select multiple={true} bind:value={many} />;
+
+let multiple = _state(false);
+let selection = _state<string | string[]>('a');
+<select multiple={multiple} bind:value={selection} />;
+```
+
+动态模式的读取可能是字符串或数组，不代表框架在切换 multiple 时自动替你转换模型。切换模式时由业务设置对应形状，输入事件则按控件当前模式写回。需要限定选项 ID 的业务可使用 value/onChange 显式校验；原生 bind 不根据 option 列表猜测字符串联合。
 
 绑定接受可写变量或属性，例如 `bind:value={form.name}`。不能绑定函数调用、常量绑定、派生值或组件的只读顶层 props。不能同时声明同一字段的 value/defaultValue（或 checked/defaultChecked），包括藏在 spread 中的冲突。普通 spread 不包含赋值关系，不支持把 `bind:*` 放在 spread 对象里。
 

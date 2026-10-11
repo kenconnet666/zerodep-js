@@ -43,37 +43,44 @@ describe('For 的实时参数', () => {
       }
     });
   });
-  it('row/index 跟随替换，普通局部值保留初始化语义', () => {
-    const view = execute(`
-      import { For as Each } from 'zerodep-js';
+  it.each([false, true])(
+    'row/index 跟随替换，派生解构可选且普通局部值保持初值（解构=%s）',
+    (destructure) => {
+      const view = execute(`
+      import { For as Each, _derived } from 'zerodep-js';
       const result = <Each each={[{ id: 1, name: 'A' }]} keyBy={(row) => row.id}>
-        {(row, index) => { const initial = row.name; return <input title={row.name} data-index={index} data-initial={initial} />; }}
+        {(row, index) => {
+          const initial = row.name;
+          ${destructure ? 'const {name} = _derived(row);' : ''}
+          return <input title={${destructure ? 'name' : 'row.name'}} data-index={index} data-initial={initial} />;
+        }}
       </Each>;
     `) as DynamicTemplate;
-    _createRoot((dispose) => {
-      try {
-        const element = view.value.read() as ElementTemplate;
-        const list = setupComponent(
-          element.tag as Parameters<typeof setupComponent>[0],
-          element.props,
-        ) as ListTemplate;
-        const row = new Source({ id: 1, name: 'A' });
-        const index = new Source(0);
-        const output = list.render(
-          () => row.read(),
-          () => index.read(),
-        ) as ElementTemplate;
-        expect(output.props.title).toBe('A');
-        row.write({ id: 1, name: 'B' });
-        index.write(2);
-        expect(output.props.title).toBe('B');
-        expect(output.props['data-index']).toBe(2);
-        expect(output.props['data-initial']).toBe('A');
-      } finally {
-        dispose();
-      }
-    });
-  });
+      _createRoot((dispose) => {
+        try {
+          const element = view.value.read() as ElementTemplate;
+          const list = setupComponent(
+            element.tag as Parameters<typeof setupComponent>[0],
+            element.props,
+          ) as ListTemplate;
+          const row = new Source({ id: 1, name: 'A' });
+          const index = new Source(0);
+          const output = list.render(
+            () => row.read(),
+            () => index.read(),
+          ) as ElementTemplate;
+          expect(output.props.title).toBe('A');
+          row.write({ id: 1, name: 'B' });
+          index.write(2);
+          expect(output.props.title).toBe('B');
+          expect(output.props['data-index']).toBe(2);
+          expect(output.props['data-initial']).toBe('A');
+        } finally {
+          dispose();
+        }
+      });
+    },
+  );
 
   it('普通 render callback children 仍是函数，不被包装成自动执行内容', () => {
     const view = execute(`

@@ -1,4 +1,4 @@
-import { _component, _state, _lazy, _snapshot } from 'zerodep-js';
+import { _component, _state, _derived, _lazy, _snapshot } from 'zerodep-js';
 import { Css, css } from 'zerodep-js-css';
 
 const s = new Css();
@@ -73,6 +73,9 @@ export const AuthoringExample = _component(() => {
   let checked = _state(false);
   let amount = _state<number>();
   let selected = _state<string[]>(['a']);
+  let multipleMode = _state(false);
+  let selection = _state<string | string[]>('a');
+  const selectOptions = _derived({ multiple: multipleMode });
   let custom = _state('父组件数据');
   let form = _state({ name: '保存的姓名' });
   let profile = _state<EditableProfile>({ name: '第一份', width: 160 });
@@ -114,13 +117,30 @@ export const AuthoringExample = _component(() => {
       <output data-bind-number>{amount === undefined ? '空' : amount}</output>
       <label>
         双向多选
-        <select multiple bind:value={selected}>
+        <select multiple={true} bind:value={selected}>
           <option value="a">甲</option>
           <option value="b">乙</option>
           <option value="c">丙</option>
         </select>
       </label>
       <output data-bind-selected>{selected.join(',')}</output>
+      <label>
+        可切换单多选
+        <select {...selectOptions} bind:value={selection}>
+          <option value="a">甲</option>
+          <option value="b">乙</option>
+          <option value="c">丙</option>
+        </select>
+      </label>
+      <output data-select-mode-value>{JSON.stringify(selection)}</output>
+      <button
+        onClick={() => {
+          multipleMode = !multipleMode;
+          selection = multipleMode ? ['a', 'b'] : 'a';
+        }}
+      >
+        切换选择模式
+      </button>
       <NameField bind:value={custom} />
       <output data-bind-component>{custom}</output>
       <button

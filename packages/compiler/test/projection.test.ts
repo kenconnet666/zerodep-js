@@ -195,6 +195,85 @@ const view = <>
   expect(diagnostics).toEqual([]);
 });
 
+it('select 按 multiple 的真假、spread 和覆盖顺序检查实际写回类型', async () => {
+  for (const [attributes, type] of [
+    ['', 'string'],
+    ['multiple', 'string[]'],
+    ['multiple={true}', 'string[]'],
+    ['multiple={false}', 'string'],
+    ['{...{multiple: true as const}}', 'string[]'],
+    ['{...{multiple: false as const}}', 'string'],
+    ['{...{title: "提示"}}', 'string'],
+    ['{...{multiple: true as const}} {...{multiple: false as const}}', 'string'],
+    ['{...{multiple: false as const}} {...{multiple: true as const}}', 'string[]'],
+    ['multiple {...optionalTrue}', 'string[]'],
+    ['{...optionalFalse}', 'string'],
+    ['{...{multiple: flag}} multiple', 'string[]'],
+    ['{...{multiple: flag}} multiple={false}', 'string'],
+  ]) {
+    const source = `let flag = _state(false); let value = _state<${type}>();
+let optionalTrue = _state<{multiple?: true}>({});
+let optionalFalse = _state<{multiple?: false}>({});
+const view = <select ${attributes} bind:value={value}/>;`;
+    expect((await check(source)).diagnostics, attributes).toEqual([]);
+    const wrong = source.replace(
+      `_state<${type}>`,
+      `_state<${type === 'string' ? 'string[]' : 'string'}>`,
+    );
+    expect(
+      (await check(wrong)).diagnostics.some((item) => item.code === 2322),
+      attributes,
+    ).toBe(true);
+  }
+}, 30000);
+
+it('动态 select multiple 要求模型接受单选和多选，不从初始化值假定模式', async () => {
+  for (const attributes of [
+    'multiple={flag}',
+    '{...options}',
+    'multiple {...options}',
+    '{...maybe}',
+    '{...indexed}',
+    'multiple {...explicitUndefined}',
+  ]) {
+    const source = `let flag = _state(false);
+let options = _state<{multiple?: boolean}>({});
+let maybe = _state<{multiple: true} | undefined>();
+let indexed = _state<Record<string, boolean>>({});
+let explicitUndefined = _state<{multiple?: true | undefined}>({});
+let value = _state<string | string[]>();
+const view = <select ${attributes} bind:value={value}/>;`;
+    expect((await check(source)).diagnostics, attributes).toEqual([]);
+    for (const type of ['string', 'string[]']) {
+      const wrong = source.replace('_state<string | string[]>', `_state<${type}>`);
+      expect(
+        (await check(wrong)).diagnostics.some((item) => item.code === 2322),
+        attributes,
+      ).toBe(true);
+    }
+  }
+}, 30000);
+
+it('select 写回检查保留 TS 的覆盖警告，错误定位回原绑定字段', async () => {
+  const duplicate = await check(`let values = _state<string[]>([]);
+const view = <select multiple={false} {...{multiple:true as const}} bind:value={values}/>;`);
+  expect(duplicate.diagnostics.map((item) => item.code)).toEqual([2783]);
+
+  const source = `let value = _state('');
+const view = <select {...{multiple: true as const}} bind:value={value}/>;`;
+  const { projection, diagnostics } = await check(source);
+  expect(diagnostics.map((item) => item.code)).toEqual([2322]);
+  const error = diagnostics[0]!;
+  const position = originalPositionFor(new TraceMap(projection.map!), {
+    line: error.startPosition!.line + 1,
+    column: error.startPosition!.character,
+  });
+  expect(position.line).toBe(3);
+  expect(position.column).toBe(
+    'const view = <select {...{multiple: true as const}} bind:value={'.length,
+  );
+});
+
 it('写回错误通过 Babel source map 定位到原绑定目标', async () => {
   const source = `let value: 'a' | 'b' = 'a';\nconst view = <input bind:value={value} />;`;
   const { diagnostics, projection } = await check(source);

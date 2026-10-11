@@ -1,6 +1,26 @@
 import { expect, test } from '@playwright/test';
 
 for (const mode of ['csr', 'ssr']) {
+  test(`${mode} select 的 multiple 展开属性切换后按当前模式写回`, async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    await page.goto(`/?render=${mode}`);
+    const select = page.getByLabel('可切换单多选');
+    const output = page.locator('[data-select-mode-value]');
+    await expect(select).toHaveValue('a');
+    await select.selectOption('c');
+    await expect(output).toHaveText('"c"');
+    await page.getByRole('button', { name: '切换选择模式', exact: true }).click();
+    await expect(select).toHaveValues(['a', 'b']);
+    await select.selectOption(['b', 'c']);
+    await expect(output).toHaveText('["b","c"]');
+    await page.getByRole('button', { name: '切换选择模式', exact: true }).click();
+    await expect(select).toHaveValue('a');
+    await select.selectOption('b');
+    await expect(output).toHaveText('"b"');
+    expect(errors).toEqual([]);
+  });
+
   test(`${mode} props 参数解构直接跟随对象替换，绑定与 CSS 使用最新值`, async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (error) => errors.push(error.message));

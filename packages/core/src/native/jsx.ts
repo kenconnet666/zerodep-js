@@ -144,7 +144,7 @@ interface InputBindings extends TextBindings {
   'bind:valueAsNumber'?: number | undefined;
 }
 interface SelectBindings {
-  /** 单选写回字符串；multiple 多选写回字符串数组。 */
+  /** 单选写回 string，多选写回 string[]；动态 multiple 需容纳两者，框架检查器验证写回类型。 */
   'bind:value'?: string | readonly string[] | null | undefined;
 }
 interface DetailsBindings {
