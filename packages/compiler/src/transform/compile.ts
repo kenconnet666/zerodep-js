@@ -73,6 +73,17 @@ function transformFramework(
       },
     ]);
   }
+  // 纯类型模块没有可执行宏；解析仍检查语法，TS 类型错误由官方 SDK 负责。
+  // 在建立 Babel 作用域前退出，避免大型生成声明反复爬取与重建绑定。
+  if (
+    ast.program.body.every((statement) => {
+      if (t.isImportDeclaration(statement)) return statement.importKind === 'type';
+      if (t.isExportNamedDeclaration(statement) && statement.exportKind === 'type') return true;
+      const declaration = t.isExportNamedDeclaration(statement) ? statement.declaration : statement;
+      return t.isTSInterfaceDeclaration(declaration) || t.isTSTypeAliasDeclaration(declaration);
+    })
+  )
+    return { ast, hasDevelopment: false };
   const errors: Diagnostic[] = [];
   const macros = new Map<Binding, 'state' | 'derived'>();
   const reactive = new Map<Binding, ReactiveBinding>();

@@ -323,7 +323,13 @@ try {
     pathToFileURL(resolve(consumer, 'dist/css-tree/css-tree.js')).href
   );
   assert.deepEqual(isolatedCss.defaults.color, {});
-  assert.equal(Object.keys(isolatedCss.defaults).length, 502);
+  // 与作者文档的完整属性契约对齐，新增属性无需同步一份易过期的数量常量。
+  const documentedProperties = (await json(resolve(root, 'scripts/css-author-docs.json')))
+    .properties;
+  assert.deepEqual(
+    Object.keys(isolatedCss.defaults).sort(),
+    Object.keys(documentedProperties).sort(),
+  );
   assert.deepEqual(Object.keys(isolatedCss), ['defaults']);
   const treeModules = report.tree.flatMap((chunk) => chunk.modules);
   assert(

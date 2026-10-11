@@ -1,27 +1,43 @@
-import { describe, expect, it } from 'vitest';
-import { compile } from '../src/index.js';
+import { describe, expect, it, vi } from 'vitest';
+import { compile, diagnose } from '../src/index.js';
 import { execute } from './execute.js';
-import { execFile } from 'node:child_process';
-import { promisify } from 'node:util';
-import { resolve } from 'node:path';
-import { pathToFileURL } from 'node:url';
-
-it('大型声明只做框架诊断，不触发代码生成提示，框架错误仍会报告', async () => {
-  const module = pathToFileURL(resolve('packages/compiler/dist/index.js')).href;
-  const program = `import { diagnose } from ${JSON.stringify(module)};
 import { readFileSync } from 'node:fs';
-const filename = 'packages/core/src/native/elements.ts';
-const large = diagnose(readFileSync(filename, 'utf8'), filename);
-const invalid = diagnose("import { _state } from 'zerodep-js'; const n = _state(0); n++;", 'invalid.ts');
-console.log(JSON.stringify({ large, codes: invalid.map(item => item.code) }));`;
-  const result = await promisify(execFile)(
-    process.execPath,
-    ['--input-type=module', '-e', program],
-    { windowsHide: true },
-  );
-  expect(result.stderr).toBe('');
-  expect(JSON.parse(result.stdout)).toEqual({ large: [], codes: ['ZJ1005'] });
+
+it('大型声明只做框架诊断，不触发代码生成提示，框架错误仍会报告', () => {
+  const filename = 'packages/core/src/native/elements.ts';
+  const source = readFileSync(filename, 'utf8');
+  expect(source.length).toBeGreaterThan(500_000);
+  // 验证本次源码，直接捕获生成器的 stderr，不依赖旧 dist 或另启 Node 进程。
+  const stderr = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
+  try {
+    expect(diagnose(source, filename)).toEqual([]);
+    expect(stderr).not.toHaveBeenCalled();
+  } finally {
+    stderr.mockRestore();
+  }
+  expect(
+    diagnose(
+      "export interface Model { n: number }\nimport { _state } from 'zerodep-js'; const n = _state(0); n++;",
+      filename,
+    ).map((item) => item.code),
+  ).toEqual(['ZJ1005']);
 }, 15000);
+
+it('纯类型快捷路径保留语法检查，运行时枚举与宏引用仍参与诊断', () => {
+  expect(diagnose('export interface Broken { value: }', 'invalid.ts')[0]?.code).toBe('ZJ1000');
+  expect(
+    diagnose(
+      "import { _state } from 'zerodep-js'; export type T = number; const alias = _state;",
+      'escape.ts',
+    )[0]?.code,
+  ).toBe('ZJ1009');
+  expect(
+    diagnose("import { _state } from 'zerodep-js'; enum E { X = _state(0) }", 'enum.ts')[0]?.code,
+  ).toBe('ZJ1002');
+  expect(compile('export interface Model { n: number }', 'model.ts').code).not.toContain(
+    'assertRuntime',
+  );
+});
 
 describe('静态命名空间导入', () => {
   it('命名空间 state/derived、raw/by 和 component 使用同一转换', () => {
