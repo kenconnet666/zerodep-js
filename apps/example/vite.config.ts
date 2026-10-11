@@ -3,7 +3,7 @@ import { zerodep } from 'zerodep-js-compiler';
 import { resolve } from 'node:path';
 
 export default defineConfig(({ isSsrBuild }) => ({
-  // 完整检查由 build/check 执行一次，客户端与服务端转换不重复检查。
+  // 完整类型检查由独立 check 命令执行，客户端与服务端构建只做转换。
   plugins: [zerodep()],
   appType: 'custom',
   // 等完整保存后更新，避免分段写入及短时间内的错误/修复被文件监听合并。

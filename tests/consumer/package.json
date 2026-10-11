@@ -4,8 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "library": "zerodep-check -p tsconfig.library.json && node build-library.mjs && tsc -p tsconfig.library.json",
-    "check": "zerodep-check -p tsconfig.json && tsc -p tsconfig.data.json",
+    "check:library": "zerodep-check -p tsconfig.library.json",
+    "build:library": "node build-library.mjs",
+    "build:library:types": "tsc -p tsconfig.library.json --noCheck",
+    "check": "zerodep-check -p tsconfig.json",
+    "check:data": "tsc -p tsconfig.data.json",
     "build": "node build.mjs"
   }
 }

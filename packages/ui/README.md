@@ -22,9 +22,9 @@
 
 二维布局见 [Grid](../../docs/grid.md)。Grid 不修改子项外观；ButtonGroup 不支持二维。
 
-从仓库根目录执行 `pnpm build:ui`。构建先检查框架语义，再由 Vite + zerodep 插件转换 TSX，最后由固定的 TypeScript 7.1 生成声明；不能用普通 tsc 擦除结果执行组件宏。
+从仓库根目录执行 `pnpm --dir packages/ui build`，仅由 Vite + zerodep 插件转换 TSX；`build:types` 单独生成声明，`check` 单独检查类型与框架语义。先准备 core、css、compiler 的产物；不能用普通 tsc 擦除结果执行组件宏。
 
-组件开发运行 `pnpm dev:docs`：只先构建框架工具，文档的 Vite 开发模式直接转换 UI 源码并提供 HMR，无需每次手工重打 UI 包。正式文档构建仍读取 UI dist，继续验证真实包产物。
+组件开发运行 `pnpm --dir apps/docs dev`：需要事先准备框架工具产物，文档的 Vite 开发模式直接转换 UI 源码并提供 HMR，无需每次手工重打 UI 包。正式文档构建仍读取 UI dist，继续验证真实包产物。
 
 运行时和 zerodep-js-css 由应用提供，组件库不打包第二份实例。组件示例和使用说明放在 `apps/docs/src/pages/components/`。
 
@@ -62,7 +62,7 @@ locale.formatNumber(1234.5);
 
 Portal 保留组件上下文，但不会自动继承原 DOM 上的字体/lang/dir；在 Portal 内放 `<Provider>...</Provider>` 即可重新应用继承配置。SSR 要传入与客户端首屏相同的配置，并由应用收集 CSS 和拼接标签；Provider 不改变现有 SSR 输出流程。
 
-相关检查：根目录 `pnpm test:ui`；浏览器场景位于 `tests/e2e/provider.spec.ts`，随现有三浏览器 CI 运行。
+相关检查：根目录 `pnpm --dir packages/ui test`；浏览器场景位于 `tests/e2e/provider.spec.ts`，随现有三浏览器 CI 运行。
 
 ## Icon
 
@@ -124,7 +124,7 @@ CssValue<K, Theme> 和 css 在 zerodep-js-css 中；DomRef<T> 与 _composeRefs �
 
 ## 自动维护唯一入口
 
-运行 pnpm ui:generate 更新 src/index.ts；pnpm ui:check 检查过期与重复导出，已进入 CI 的 pnpm check。生成器用 Babel AST 读取 base/utils/layout 下的具名声明，递归收集并区分 type 导出；拒绝链接、子目录 index.ts 和重复名称。internal 不扫描，Provider 通过明确入口清单限制。
+运行 pnpm --dir packages/ui generate 更新 src/index.ts；pnpm --dir packages/ui generate:check 检查过期与重复导出，由 CI 独立执行。生成器用 Babel AST 读取 base/utils/layout 下的具名声明，递归收集并区分 type 导出；拒绝链接、子目录 index.ts 和重复名称。internal 不扫描，Provider 通过明确入口清单限制。
 
 按钮图标通过 icon/startIcon/endIcon 传入 TSX 节点，文本通过 children 组合；属性与 ref 直接写在节点上。内置部件保留 slotRipple/slotSpinner，没有 slotIcon/slotStartIcon/slotEndIcon/slotText 或统一 slotProps 对象。SlotProps<P, S> 与 _resolveSlotProps 用于内置部件配置。
 

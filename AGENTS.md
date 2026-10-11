@@ -24,7 +24,7 @@
 
 - 2026-10-11：普通函数、局部解构和返回值继续按 JavaScript 取值；新增 `_derived`/`_derived.by` 声明解构，共享一次原生解构结果，字段只读。CSS 保留直接命名 const 自动派生，包装函数在 JSX 或 `_derived` 中更新。此前 CSS 协议基线为 ABI 4；新作者迁移按最新计划更新协议并要求旧应用/预编译库重建。不新增活引用函数。
 
-- core 提供 DomRef/_composeRefs 并允许 DOM bind:this 与 ref 共存；UI src/utils 承担组件组合与按压工具，src/base 提供 Icon/Text/Ripple/Spinner 及直接渲染原生按钮的 Button。仅维护 UI src/index.ts 根入口，由 pnpm ui:generate 自动生成，pnpm ui:check 校验；不创建子目录 index.ts。
+- core 提供 DomRef/_composeRefs 并允许 DOM bind:this 与 ref 共存；UI src/utils 承担组件组合与按压工具，src/base 提供 Icon/Text/Ripple/Spinner 及直接渲染原生按钮的 Button。仅维护 UI src/index.ts 根入口，由 pnpm --dir packages/ui generate 自动生成，pnpm --dir packages/ui generate:check 校验；不创建子目录 index.ts。
 - 组件使用独立 slotXxx 属性转发底层参数，例如 slotRipple；多个部件分别提供各自属性，不使用统一 slotProps 对象。对象/状态回调只复用 _resolveSlotProps 解析；已删除 _mergeSlotProps 和 _composeEventHandlers。
 - 基础组件 size 表示 CSS 字号基准；Icon/Spinner 宽高 1em，Button 未传 size 时继承字号，文字/纯图标模式各自使用既定几何。组件内部视觉尺寸（含边框/焦点）默认用 em；不隐式叠加 rem 点击区域下限，应用可显式约束。根 Provider 默认 _md，嵌套默认继承，size 支持任意合法 CSS 字号。测量使用实际 CSS px，观察工具按需启用并清理。
 - Button（文字/图标）/ToggleButton/LinkButton/Flex 已进入源码。相连职责归 ButtonGroup，Flex 仅做普通布局；不保留旧 Group 别名。加载采用原生 disabled，MenuButton 暂不做。稳定契约见 docs/buttons.md；docs/handoff-ui-buttons-2026-10-09.md 是旧阶段记录，不作为当前 API 清单；完整验收以对应提交 CI 为准。
@@ -52,11 +52,12 @@
 ## 验证与交付
 
 - 编译语义测试在 packages/compiler/test，工具链测试在 tests/tooling，浏览器测试在 tests/e2e。测试实际框架和选定 SDK，不以 mock 或空用例代替功能验收。
-- 本地只运行改动相关的焦点检查，不运行完整测试。配置变更的 pnpm check、pnpm build 及完整平台/三浏览器矩阵交给 CI；语言工具变更只在本地验证相关补全或协议用例，完整语言检查也由 CI 执行。
+- 各项目命令维护在自己的 package.json，类型检查、编译、声明生成、客户端/服务端构建、测试分别执行，不隐式串联。根目录仅保留仓库工具、跨包验收和发布操作，CI 显式安排前置构建。
+- 本地仅做改动文件的 LSP/IDE 局部语法诊断与必要的短测试；配置、公共类型或语言工具变更也不在本地运行完整类型检查、构建、长测试或完整 LSP 矩阵。这些检查全部交给 CI，局部通过后继续提交、推送，不以本地全量验收作为前置。
 - 每个可审阅阶段中文提交并推送；推送前检查上一轮 CI 并修复真实失败，推送后继续工作，不空等或反复轮询。未完成的 CI 不记为通过。
 - CI 按浏览器、平台和 Linux/Windows 独立消费并行；发布等待同一提交全部必需任务通过，不减少用例或放宽断言提速。
 - 已授权生产验收后使用环境变量中的 npm token 发布固定 tgz 到 next，并核对注册表与干净安装；凭据不写入文件或日志。发布与恢复见 docs/releasing.md，未经授权不提升 latest。
-- 项目服务名 zerodep_js_lsp，由 pnpm lsp:setup 配置，不改全局或其他项目设置。先独立验证，再请求重新加载；磁盘配置、独立服务、当前会话和 IDE 实际接入分别说明。
+- 项目服务名 zerodep_js_lsp，由 pnpm --dir packages/compiler lsp:setup 配置，不改全局或其他项目设置。先独立验证，再请求重新加载；磁盘配置、独立服务、当前会话和 IDE 实际接入分别说明。
 - 换机先阅读 docs/environment-setup.md；API 对照研究见 .design/svelte-api-review.md，未确认的提议不能当作已实现契约。
 - 2026-10-11 用户改用项目 node_modules/typescript（官方 7.1.0-dev.20261008.1），关闭 WebStorm 服务驱动类型引擎，使用 IDE 自身的类型分析处理字符串导航与文档。此前原生预览/代理适配只保留为历史说明，不再要求开启服务驱动引擎。SDK 不自动加载项目框架增强；IDE MCP 可能漏报 TS 错误，不能把空诊断当作验收。
 

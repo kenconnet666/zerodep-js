@@ -17,7 +17,7 @@ for (const mode of ['csr', 'ssr']) {
       const { html, styles } = render();
       expect(html).not.toContain('data-zj-font-probe');
       expect(html).toMatch(/data-measured-font[^>]*>pending<\/output>/);
-      const template = await readFile('apps/docs/dist/index.html', 'utf8');
+      const template = await readFile('apps/docs/dist/client/index.html', 'utf8');
       await page.route(url + '/', (route) =>
         route.fulfill({
           contentType: 'text/html',

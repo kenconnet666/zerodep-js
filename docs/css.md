@@ -123,6 +123,6 @@ CssValue<'color', UiTheme> 等是组件 props 的普通输入类型；CssInput �
 
 CSSType 提供属性值类型，生成器输出 502 个真实方法、中文说明和去重的系统关键字分类数据，不恢复旧的逐属性对象及大量关键字成员。字符串 token 候选保留补全，但不承诺 IDE 能展示每个字符串候选的中文说明；s.keywords 的主题字段继续保留定义导航。
 
-源码为 generated/runtime/util，根目录只有 index.ts。pnpm css:generate 更新，pnpm css:check 检查；入口和文档不用维护另一份方法名单。语言服务使用固定的官方 TS7，完整验证由最新提交 CI 给出。
+源码为 generated/runtime/util，根目录只有 index.ts。pnpm --dir packages/css generate 更新，pnpm --dir packages/css generate:check 检查；入口和文档不用维护另一份方法名单。语言服务使用固定的官方 TS7，完整验证由最新提交 CI 给出。
 
 系统关键字通过有文档的类型成员提供字符串导航，数值限制仍来自 csstype；常用值有中文行为说明，其余值提供所属属性及参考链接。WebStorm 当前使用项目 TypeScript，并关闭服务驱动类型引擎；可在 CssKeywordDocumentation.tsx 对照不同属性的同名关键字。泛型 bx 内字符串的悬浮文档仍有 IDE 解析限制，不能用补全候选存在代替文档验收。生成器不输出只有单属性调用的无意义示例。

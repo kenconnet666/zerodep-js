@@ -12,7 +12,7 @@ import { relative } from 'node:path';
 
 const config = parse(await readFile(resolve(root, '.codex/config.toml'), 'utf8'));
 const registered = config.mcp_servers?.zerodep_js_lsp;
-assert(registered, 'Run pnpm lsp:setup first.');
+assert(registered, 'Run pnpm --dir packages/compiler lsp:setup first.');
 assert.equal(resolve(registered.cwd), root);
 let log = '';
 const client = await connectMcp(registered, 'zerodep-js-lsp-verification', (data) => {

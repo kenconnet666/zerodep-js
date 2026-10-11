@@ -83,7 +83,12 @@ jobs:
           run-id: ${{ needs.gate.outputs.run_id }}
           name: release-candidate
           path: .release
-      - run: pnpm build:packages
+      - name: 编译 core
+        run: pnpm --dir packages/core build
+      - name: 编译 CSS
+        run: pnpm --dir packages/css build
+      - name: 编译 compiler
+        run: pnpm --dir packages/compiler build
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm release:ci
         env:

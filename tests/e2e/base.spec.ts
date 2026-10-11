@@ -13,7 +13,7 @@ for (const mode of ['csr', 'ssr']) {
         pathToFileURL(resolve('apps/docs/dist/server/entry-server.js')).href
       );
       const { html, styles } = render();
-      const template = await readFile('apps/docs/dist/index.html', 'utf8');
+      const template = await readFile('apps/docs/dist/client/index.html', 'utf8');
       await page.route(url + '/', (route) =>
         route.fulfill({
           contentType: 'text/html',

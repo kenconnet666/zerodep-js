@@ -43,7 +43,13 @@ jobs:
       - run: node -e "if(process.platform+'-'+process.arch !== process.env.EXPECTED_PLATFORM) throw Error('Runner architecture mismatch')"
         env:
           EXPECTED_PLATFORM: ${{ matrix.platform }}
-      - run: pnpm test:compiler
+      - name: 编译 core
+        run: pnpm --dir packages/core build
+      - name: 编译 CSS
+        run: pnpm --dir packages/css build
+      - name: 编译 compiler
+        run: pnpm --dir packages/compiler build
+      - run: pnpm --dir packages/compiler test
 
   verify:
     runs-on: ubuntu-latest
@@ -62,16 +68,33 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm format:check
-      - run: pnpm check
-      # 示例也检查原始 TSX，避免框架投影通过而官方 IDE 仍报告类型错误。
-      - run: pnpm exec tsc -p apps/example/tsconfig.json --noEmit
-      # check 已完成包与 UI 构建，这里直接运行相同的测试，避免再次构建 UI。
-      - run: pnpm test:unit
-      - run: pnpm test:css
-      - run: pnpm test:stability
-      - run: pnpm lsp:setup
-      - run: pnpm lsp:verify
-      - run: pnpm lsp:completions
+      - name: 检查生成数据
+        run: pnpm -r --filter "./packages/**" generate:check
+      - run: pnpm lint
+      - name: 编译 core
+        run: pnpm --dir packages/core build
+      - name: 编译 CSS
+        run: pnpm --dir packages/css build
+      - name: 编译 compiler
+        run: pnpm --dir packages/compiler build
+      - name: 编译 UI
+        run: pnpm --dir packages/ui build
+      - name: 生成 UI 类型声明
+        run: pnpm --dir packages/ui build:types
+      - name: 检查各项目类型与框架语义
+        run: pnpm -r check
+      - name: 检查仓库工具类型与框架语义
+        run: pnpm check
+      - name: 检查原始 TSX 的 IDE 兼容性
+        run: pnpm --dir apps/example check:tsx
+      - name: 各项目测试
+        run: pnpm -r test
+      - name: 仓库工具测试
+        run: pnpm test
+      - run: pnpm --dir packages/core test:stability
+      - run: pnpm --dir packages/compiler lsp:setup
+      - run: pnpm --dir packages/compiler lsp:verify
+      - run: pnpm --dir packages/compiler lsp:completions
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()
         with:
@@ -108,6 +131,24 @@ jobs:
           node-version-file: .node-version
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - name: 编译 core
+        run: pnpm --dir packages/core build
+      - name: 编译 CSS
+        run: pnpm --dir packages/css build
+      - name: 编译 compiler
+        run: pnpm --dir packages/compiler build
+      - name: 编译 UI
+        run: pnpm --dir packages/ui build
+      - name: 生成 UI 类型声明
+        run: pnpm --dir packages/ui build:types
+      - name: 编译文档客户端
+        run: pnpm --dir apps/docs build:client
+      - name: 编译文档服务端
+        run: pnpm --dir apps/docs build:server
+      - name: 编译示例客户端
+        run: pnpm --dir apps/example build:client
+      - name: 编译示例服务端
+        run: pnpm --dir apps/example build:server
       - run: pnpm test:e2e --project=${{ matrix.browser }}
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()
@@ -141,8 +182,14 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
+      - name: 编译 core
+        run: pnpm --dir packages/core build
+      - name: 编译 CSS
+        run: pnpm --dir packages/css build
+      - name: 编译 compiler
+        run: pnpm --dir packages/compiler build
       - run: pnpm test:packages
-      - run: pnpm test:dev
+      - run: pnpm --dir apps/example test:dev
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: failure()
         with:
@@ -168,6 +215,12 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install chromium
+      - name: 编译 core
+        run: pnpm --dir packages/core build
+      - name: 编译 CSS
+        run: pnpm --dir packages/css build
+      - name: 编译 compiler
+        run: pnpm --dir packages/compiler build
       - run: pnpm test:packages
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: failure()
@@ -195,6 +248,12 @@ jobs:
           node-version-file: .node-version
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - name: 编译 core
+        run: pnpm --dir packages/core build
+      - name: 编译 CSS
+        run: pnpm --dir packages/css build
+      - name: 编译 compiler
+        run: pnpm --dir packages/compiler build
       - run: pnpm release:pack
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:

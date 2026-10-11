@@ -20,4 +20,4 @@ Grid 只负责普通 CSS Grid 布局，Flex 负责一维排列。两者在 Provi
 </Grid>
 ```
 
-源码为 packages/ui/src/layout/Grid.tsx，示例为 apps/docs/src/pages/components/GridDemo.tsx。检查覆盖数字列数、原生轨道、命名区域、动态增删/隐藏/重排、自动填充、跨列、SSR 接管与类型约束；二维相连功能及其专用用例已取消。补全验证使用 pnpm lsp:completions --case Grid属性。
+源码为 packages/ui/src/layout/Grid.tsx，示例为 apps/docs/src/pages/components/GridDemo.tsx。检查覆盖数字列数、原生轨道、命名区域、动态增删/隐藏/重排、自动填充、跨列、SSR 接管与类型约束；二维相连功能及其专用用例已取消。补全验证使用 pnpm --dir packages/compiler lsp:completions --case Grid属性。

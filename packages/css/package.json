@@ -22,9 +22,12 @@
     }
   },
   "scripts": {
-    "dev": "tsc -b --watch",
+    "dev": "tsc -p tsconfig.json --noCheck --watch",
     "check": "tsc -p tsconfig.json --noEmit --incremental false --composite false",
-    "build": "tsc -b"
+    "build": "tsc -p tsconfig.json --noCheck",
+    "test": "pnpm -w exec node --test packages/css/test/runtime/*.test.mjs packages/css/test/package/*.test.mjs",
+    "generate": "node ../../scripts/generate-css-author.mjs --write",
+    "generate:check": "node ../../scripts/generate-css-author.mjs --check"
   },
   "dependencies": {
     "csstype": "catalog:",

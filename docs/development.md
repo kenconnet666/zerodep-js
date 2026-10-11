@@ -19,7 +19,7 @@ UI 通过 core 根入口共享组件身份、调度和所有权；SSR 已合并�
 
 ## 检查入口
 
-CI 使用 `pnpm check` 做完整工程检查。本地只运行改动相关的文件/类型夹具检查和焦点测试，不把完整测试列为每次提交的本地前置。应用项目使用 `zerodep-check -p tsconfig.json`，通过选定 SDK 检查类型，同时执行框架规则。
+CI 分别执行各项目 check、编译、测试，根目录 check 只检查仓库工具。本地只运行修改文件的 LSP/IDE 局部语法诊断和必要的短测试；完整类型检查、构建和长测试全部交给 CI。应用项目使用 `zerodep-check -p tsconfig.json`，通过选定 SDK 检查类型，同时执行框架规则。
 
 zerodep-js-compiler 的 compile 输出 JS/map，diagnose 检查单文件框架语义。普通包与声明输出使用选定 SDK 的 tsc，框架应用使用 Vite。
 
@@ -111,7 +111,7 @@ ZJ1501 是保守的源码边界检查，不是第二套 TypeScript 类型系统�
 
 ## 编辑器和 Codex 诊断桥
 
-项目桥接器使用官方 LSP/API 和 Babel 检查投影；补全从真实 JSX 属性类型取符号，导航跟随声明映射。独立验证入口为 `pnpm lsp:verify` 与 `pnpm lsp:completions`，本机配置通过 `pnpm lsp:setup` 生成。
+项目桥接器使用官方 LSP/API 和 Babel 检查投影；补全从真实 JSX 属性类型取符号，导航跟随声明映射。独立验证入口为 `pnpm --dir packages/compiler lsp:verify` 与 `pnpm --dir packages/compiler lsp:completions`，本机配置通过 `pnpm --dir packages/compiler lsp:setup` 生成。
 
 WebStorm 的服务驱动类型引擎选择同版本的 **TypeScript 7（原生）**，缓存与 EAP 代理补丁按 [环境配置](environment-setup.md) 操作；项目工具从 `node_modules/typescript` 读取 SDK。这是两个独立入口，原生 SDK 不会自动加载框架增强。源码检查和框架检查之间的区别、绑定限制见 [工具链](tooling.md)。IDE MCP 曾漏报编辑器可见的 TS 错误，不能把空诊断作为验收证据。
 
@@ -127,7 +127,7 @@ Vite 插件在现有转换入口报告带位置的源码错误，并自动注入
 
 依赖扫描也经过框架转换，避免按默认 React JSX 扫描出错误依赖；`.mts/.mjs` 中的显式宏与普通 TS/JS 使用同一规则。预编译依赖继续跳过 node_modules，产物消费验证见 [包产物](packages.md)。
 
-`pnpm test:dev` 使用独立临时项目验证实际 Vite HMR：兼容数据保留、声明变化及手动重置、旧监听清理、编译/执行错误恢复、导出变化、检查面板与开发 SSR 接管。浏览器、服务和临时目录在结束时释放；CI 在完整浏览器用例前运行它。
+`pnpm --dir apps/example test:dev` 使用独立临时项目验证实际 Vite HMR：兼容数据保留、声明变化及手动重置、旧监听清理、编译/执行错误恢复、导出变化、检查面板与开发 SSR 接管。浏览器、服务和临时目录在结束时释放；CI 在完整浏览器用例前运行它。
 
 示例与开发夹具使用 `server.watch.awaitWriteFinish`，在文件稳定 100 毫秒后处理完整写入，每 20 毫秒检查一次。这个保存策略避免分段写入和短时间的错误/修复被底层文件监听合并，代价是少量开发更新延迟；未向断言添加固定 sleep，也不改变框架插件使用者的全局监听配置。宿主应用可以根据编辑器保存行为选择相应 Vite 设置。
 

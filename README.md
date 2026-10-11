@@ -27,14 +27,15 @@
 
 ```sh
 pnpm install --frozen-lockfile
-pnpm dev
-pnpm build
-pnpm preview
+pnpm --dir packages/core build
+pnpm --dir packages/css build
+pnpm --dir packages/compiler build
+pnpm --dir apps/example dev
 ```
 
 开发默认端口 5173，生产预览默认端口 4173。主示例支持 CSR/SSR 和独立任务页面；应用数据保存在 apps/example/.data，测试使用独立临时数据。
 
-组件库与文档工程已独立准备：`pnpm dev:docs` 启动文档站（5174），`pnpm build:ui` 构建组件库，`pnpm build:docs` 构建文档站，`pnpm preview:docs` 预览产物（4174）。根命令 `pnpm dev` 仍只启动原有示例和框架包监听，`pnpm build` 包含两个应用。目录和后续放置代码的位置见 [组件库](packages/ui/README.md) 与 [文档应用](apps/docs/README.md)。
+项目操作均在各自 package.json 中。`pnpm --dir apps/docs dev` 启动文档站（5174）；UI 的 `build` 与 `build:types` 分别生成 JS 和声明；两个应用的 `build:client` 与 `build:server` 分别构建客户端和服务端，`preview` 只预览已有产物。首次开发需先显式构建 core、css、compiler；命令不会自动检查或编译其他项目。完整命令及依赖顺序见 [开发命令](docs/commands.md)。
 
 ## 写法
 
@@ -64,19 +65,7 @@ Vite 使用 zerodep-js-compiler 的 zerodep()。应用 TS 配置使用 `jsx: "pr
 
 ## 验证与工具
 
-下面是 CI 使用的完整验收入口，不是本地开发需要依次执行的清单：
-
-```sh
-pnpm check
-pnpm test
-pnpm test:compiler
-pnpm test:dev
-pnpm test:packages
-pnpm lsp:verify
-pnpm lsp:completions
-```
-
-本地只执行改动相关的焦点检查，例如 `pnpm exec vitest run packages/core/test/lifecycle.test.ts`；完整测试留给 CI。CI 并行运行工程检查、三浏览器、Linux/Windows 独立消费和选定 SDK 的六平台验证。LSP 探针会临时写主示例源码，不与同一工作区的应用 check/build 同时运行。
+本地只检查修改文件的 LSP/IDE 局部语法问题并运行必要的短测试，例如 `pnpm exec vitest run packages/core/test/lifecycle.test.ts`。完整类型检查、构建、长测试及 LSP 验证交给 CI，不作为本地提交前置。CI 显式安排依赖构建、各项目 check/test、仓库工具检查、三浏览器、Linux/Windows 独立消费和六平台验证；见 [开发命令](docs/commands.md)。
 
 [环境配置](docs/environment-setup.md) · [Svelte API 取舍](.design/svelte-api-review.md) · [工具分工](docs/tooling.md) · [开始使用](docs/getting-started.md) · [API](docs/api.md) · [语义](docs/semantics.md) · [表单](docs/forms.md) · [SSR](docs/ssr-and-hydration.md) · [包消费](docs/packages.md) · [发布](docs/releasing.md)
 

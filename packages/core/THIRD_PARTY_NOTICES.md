@@ -1,6 +1,6 @@
 # 生成数据的第三方许可
 
-本文件由 pnpm native:generate 生成。以下数据仅在维护时用于生成原生属性映射和类型，相关许可随 core 包分发。
+本文件由 pnpm --dir packages/core generate 生成。以下数据仅在维护时用于生成原生属性映射和类型，相关许可随 core 包分发。
 
 ## property-information 7.2.0
 

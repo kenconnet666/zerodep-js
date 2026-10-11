@@ -96,7 +96,7 @@ function values(name, map) {
     .map(([key, type]) => `${JSON.stringify(key)}?: ${type} | null | undefined;`)
     .join('\n')}\n}`;
 }
-const header = `// 由 pnpm native:generate 生成，请修改 scripts/generate-native.mjs 后重新生成。
+const header = `// 由 pnpm --dir packages/core generate 生成，请修改 scripts/generate-native.mjs 后重新生成。
 // 数据来源：${sources.map(({ name, version }) => `${name}@${version}`).join('、')}。
 // 原作者及 MIT 许可见 ../THIRD_PARTY_NOTICES.md；类型补充不改变浏览器支持范围。`;
 const code = await format(
@@ -124,7 +124,7 @@ ${entries(events)
 const notices = await format(
   `# 生成数据的第三方许可
 
-本文件由 pnpm native:generate 生成。以下数据仅在维护时用于生成原生属性映射和类型，相关许可随 core 包分发。
+本文件由 pnpm --dir packages/core generate 生成。以下数据仅在维护时用于生成原生属性映射和类型，相关许可随 core 包分发。
 
 ${sources.map(({ name, version, license }) => `## ${name} ${version}\n\n来源：https://github.com/wooorm/${name}\n\n\`\`\`text\n${license.trim()}\n\`\`\`\n`).join('\n')}
 `,
@@ -137,7 +137,7 @@ for (const [path, content] of [
 ]) {
   if (check) {
     if ((await readFile(path, 'utf8')) !== content)
-      throw new Error(`生成结果已过期：${path}；请运行 pnpm native:generate。`);
+      throw new Error(`生成结果已过期：${path}；请运行 pnpm --dir packages/core generate。`);
   } else await writeFile(path, content);
 }
 console.log(

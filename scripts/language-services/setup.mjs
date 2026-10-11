@@ -25,5 +25,5 @@ const next = managed.test(existing)
 parse(next);
 await writeFile(path, next);
 console.log(
-  'Generated project-local zerodep_js_lsp configuration. Run pnpm lsp:verify before reload.',
+  'Generated project-local zerodep_js_lsp configuration. Run pnpm --dir packages/compiler lsp:verify before reload.',
 );

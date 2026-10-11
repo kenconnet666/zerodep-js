@@ -1,4 +1,4 @@
-// 由 pnpm native:generate 生成；规则维护于 native/jsx.ts，官方 TS7.1 API 负责展开。
+// 由 pnpm --dir packages/core generate 生成；规则维护于 native/jsx.ts，官方 TS7.1 API 负责展开。
 
 import type { NativeIndexProps } from './jsx.js';
 interface Common0<T extends Element> extends NativeIndexProps {

@@ -55,7 +55,7 @@ JSX 使用 TS7 的 HTMLElementTagNameMap、SVGElementTagNameMap 和 MathMLElemen
 
 HTML 的额外内容属性按标签补齐，包括 popoverTarget、commandFor、part/exportParts 等；SVG 的滤镜、渐变、图案与动画属性也有类型提示。运行时 SVG 别名和类型来自同一次生成，兼容 strokeDasharray / strokeDashArray 等已存在的拼写。原生事件补充 onLoadedMetadata、onPlayCapture 等常见别名，同时保留 TS7 事件表中的小写 on* 写法和具体 currentTarget 类型。
 
-维护时运行 `pnpm native:generate`，`pnpm check` 会检查生成产物没有过期。数据源是固定版本的 [property-information](https://github.com/wooorm/property-information) 和 [html-element-attributes](https://github.com/wooorm/html-element-attributes)；它们只在维护侧使用。少量框架语义修正在 scripts/generate-native.mjs，生成文件不手工修改，MIT 许可随 core 包分发。数据中包含历史名称，生成提示不代表浏览器实现所有历史能力，也不覆盖表单模型、实例化和子树所有权规则。
+维护时运行 `pnpm --dir packages/core generate`，CI 单独执行本包 `generate:check` 检查生成产物没有过期。数据源是固定版本的 [property-information](https://github.com/wooorm/property-information) 和 [html-element-attributes](https://github.com/wooorm/html-element-attributes)；它们只在维护侧使用。少量框架语义修正在 scripts/generate-native.mjs，生成文件不手工修改，MIT 许可随 core 包分发。数据中包含历史名称，生成提示不代表浏览器实现所有历史能力，也不覆盖表单模型、实例化和子树所有权规则。
 
 form.encoding 映射为 enctype；表格相关元素的 ch/chOff 映射为 char/charoff。这些别名只作用于对应的 HTML 标签，不会改写 MathML 的 encoding 或自定义元素的同名字段。链接 URL 的 username/password 等拆分成员使用 prop:*，不能伪装为内容属性。
 

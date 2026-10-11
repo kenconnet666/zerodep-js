@@ -12,7 +12,11 @@
   },
   "scripts": {
     "check": "zerodep-check -p tsconfig.json",
-    "build": "pnpm check && vite build && tsc -p tsconfig.build.json"
+    "build": "vite build",
+    "build:types": "tsc -p tsconfig.build.json --noCheck",
+    "test": "pnpm -w exec vitest run packages/ui/test",
+    "generate": "node ../../scripts/generate-ui-exports.mjs --write",
+    "generate:check": "node ../../scripts/generate-ui-exports.mjs --check"
   },
   "peerDependencies": {
     "zerodep-js": "workspace:*",

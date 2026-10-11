@@ -8,7 +8,10 @@ zerodep-js 使用标准 TSX、显式变量式状态和一次初始化的组件�
 
 ```sh
 pnpm install --frozen-lockfile
-pnpm dev
+pnpm --dir packages/core build
+pnpm --dir packages/css build
+pnpm --dir packages/compiler build
+pnpm --dir apps/example dev
 ```
 
 工作区统一使用 微软官方 TypeScript 7.1.0-dev.20261008.1；官方 npm 安装方式见 [工具链](tooling.md)。不需要 Go、自建 SDK 或相邻 CSS 仓库。npm 已发布版本的安装记录见维护交接，不与当前源码入口混用。
@@ -20,7 +23,8 @@ pnpm dev
   "scripts": {
     "dev": "vite",
     "check": "zerodep-check -p tsconfig.json",
-    "build": "pnpm check && vite build",
+    "build:client": "vite build",
+    "build:server": "vite build --ssr src/entry-server.ts --outDir dist/server",
     "preview": "vite preview"
   }
 }

@@ -1,4 +1,4 @@
-// 由 scripts/generate-ui-exports.mjs 生成；运行 pnpm ui:generate 更新。
+// 由 scripts/generate-ui-exports.mjs 生成；运行 pnpm --dir packages/ui generate 更新。
 export {
   type ButtonVariant,
   type ButtonState,

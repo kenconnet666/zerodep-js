@@ -140,7 +140,7 @@ type Probe = { [K in keyof HTMLElementTagNameMap | keyof SVGElementTagNameMap | 
           return `${description ? `/** ${description.replaceAll('*/', '* /')} */\n` : ''}${JSON.stringify(name)}?: ${type};`;
         })
         .join('\n');
-    const text = `// 由 pnpm native:generate 生成；规则维护于 native/jsx.ts，官方 TS7.1 API 负责展开。\n
+    const text = `// 由 pnpm --dir packages/core generate 生成；规则维护于 native/jsx.ts，官方 TS7.1 API 负责展开。\n
 import type { NativeIndexProps } from './jsx.js';
 ${[...groups.values()].map(({ name, properties }) => `interface ${name}<T extends Element> extends NativeIndexProps { ${fields(properties)} }`).join('\n')}
 ${records.map(({ name, dom, properties, group }) => `interface ${name} extends ${group.name}<${dom}> { ${fields(new Map([...properties].filter(([key]) => !group.properties.has(key)))).replaceAll(/\bT\b/g, dom)} }`).join('\n')}
@@ -151,7 +151,7 @@ export interface NativeElements { ${tags.map(([tag, type]) => `${JSON.stringify(
       assert.equal(
         await readFile(output, 'utf8'),
         formatted,
-        'DOM 声明已过期，请运行 pnpm native:generate。',
+        'DOM 声明已过期，请运行 pnpm --dir packages/core generate。',
       );
     else await writeFile(output, formatted);
     console.log(

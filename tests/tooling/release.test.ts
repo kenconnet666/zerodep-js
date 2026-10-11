@@ -22,10 +22,7 @@ const folders = packageList.map((item) => item.folder);
 const names = packageList.map((item) => item.name);
 
 it('发布工具固定产物、拒绝篡改/越界/私有包，并仅准备明确候选版本', async () => {
-  expect(
-    process.env.npm_execpath,
-    '请通过 pnpm test 或 pnpm test:unit 运行发布工具集成用例',
-  ).toBeTruthy();
+  expect(process.env.npm_execpath, '请通过 pnpm test 运行发布工具集成用例').toBeTruthy();
   const temporary = await realpath(tmpdir());
   const fixture = await mkdtemp(resolve(temporary, 'zerodep-release-'));
   const inside = relative(temporary, fixture);
@@ -54,7 +51,7 @@ it('发布工具固定产物、拒绝篡改/越界/私有包，并仅准备明�
       private: true,
       type: 'module',
       packageManager: workspace.packageManager,
-      scripts: { 'build:packages': 'node -e "0"' },
+      scripts: { build: 'node -e "process.exit(99)"' },
     });
     await writeFile(resolve(fixture, 'pnpm-workspace.yaml'), 'packages:\n  - packages/*\n');
     await writeFile(resolve(fixture, '.gitignore'), '.release/\nnode_modules/\n');
@@ -70,6 +67,7 @@ it('发布工具固定产物、拒绝篡改/越界/私有包，并仅准备明�
         type: 'module',
         license: 'MIT',
         files: ['index.js', 'LICENSE'],
+        exports: { '.': './index.js' },
         publishConfig: { access: 'public', registry: 'https://registry.npmjs.org/' },
       });
     }

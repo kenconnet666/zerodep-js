@@ -15,7 +15,7 @@ for (const mode of ['csr', 'ssr']) {
         render: () => { html: string; styles: string };
       };
       const result = render();
-      const template = await readFile('apps/docs/dist/index.html', 'utf8');
+      const template = await readFile('apps/docs/dist/client/index.html', 'utf8');
       const html = template
         .replace('<div id="app"></div>', `<div id="app">${result.html}</div>`)
         .replace('</head>', `${result.styles}</head>`);

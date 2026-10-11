@@ -22,9 +22,13 @@
     }
   },
   "scripts": {
-    "dev": "tsc -b --watch",
+    "dev": "tsc -p tsconfig.json --noCheck --watch",
     "check": "tsc -p tsconfig.json --noEmit --incremental false --composite false",
-    "build": "tsc -b"
+    "build": "tsc -p tsconfig.json --noCheck",
+    "test": "pnpm -w exec vitest run packages/core/test",
+    "generate": "node ../../scripts/generate-native.mjs",
+    "generate:check": "node ../../scripts/generate-native.mjs --check",
+    "test:stability": "node --expose-gc ../../scripts/verify-stability.mjs"
   },
   "dependencies": {
     "@csstools/css-tokenizer": "catalog:",

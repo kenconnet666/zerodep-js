@@ -30,7 +30,11 @@ const { values } = parseArgs({
 });
 const iterations = Number(values.iterations);
 assert(Number.isSafeInteger(iterations) && iterations > 0, '--iterations 需要正整数。');
-assert.equal(typeof globalThis.gc, 'function', '请通过 pnpm test:stability 启动显式 GC。');
+assert.equal(
+  typeof globalThis.gc,
+  'function',
+  '请通过 pnpm --dir packages/core test:stability 启动显式 GC。',
+);
 const nextTurn = () => new Promise(setImmediate);
 async function collect() {
   // WeakRef 的目标在本 job 内保活；registry 清理后还需下一轮才能释放其持有的键。

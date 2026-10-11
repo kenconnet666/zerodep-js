@@ -5,11 +5,11 @@
 ## Node 工作负载
 
 ```sh
-pnpm test:stability
-pnpm test:stability --iterations 5000
+pnpm --dir packages/core test:stability
+pnpm --dir packages/core test:stability --iterations 5000
 ```
 
-命令构建真实包产物后启动带显式 GC 的独立 Node 进程。默认本地每组 1,000 轮，CI 每组 5,000 轮，包含：
+命令读取事先构建的真实包产物，启动带显式 GC 的独立 Node 进程，不自动构建。稳定性测试交给 CI；默认非 CI 每组 1,000 轮，CI 每组 5,000 轮，包含：
 
 - 共享 source、两级派生、动态依赖、DOM/property/effect 阶段的重复创建和销毁。销毁前留下排队任务，检查任务撤销、cleanup 次数、订阅解除及作用域可回收。
 - 长期存活字典上的临时字段查询，分别读取值与存在性。查询结束后键可回收，实际对象始终不含这些字段；仍存活的冷派生保持缓存身份，后续更新和重新订阅正确。
@@ -21,7 +21,12 @@ pnpm test:stability --iterations 5000
 ## 浏览器工作负载
 
 ```sh
-pnpm build
+pnpm --dir packages/core build
+pnpm --dir packages/css build
+pnpm --dir packages/compiler build
+pnpm --dir packages/ui build
+pnpm -r build:client
+pnpm -r build:server
 pnpm exec playwright test tests/e2e/stability.spec.ts --project=chromium
 ```
 

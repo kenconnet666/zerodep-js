@@ -26,12 +26,18 @@
 下列命令列出完整工程入口；日常本地只检查改动相关范围，完整检查、构建与测试交给 CI。
 
 ```sh
-pnpm build:packages
+pnpm --dir packages/core build
+pnpm --dir packages/css build
+pnpm --dir packages/compiler build
+pnpm --dir packages/ui build
+pnpm --dir packages/ui build:types
+pnpm -r check
 pnpm check
-pnpm build
+pnpm -r build:client
+pnpm -r build:server
 ```
 
-普通运行时包由 SDK 的 `tsc -b` 输出 JS、声明与映射。包含框架宏的应用通过 Vite 插件转换，不能把仅经 tsc 擦除类型的宏调用作为可执行产物。
+普通运行时包由 SDK 的 `tsc -p tsconfig.json --noCheck` 输出 JS、声明与映射。包含框架宏的应用通过 Vite 插件转换，不能把仅经 tsc 擦除类型的宏调用作为可执行产物。
 
 `zerodep-check -p tsconfig.json` 同时执行框架规则和SDK 类型检查。它覆盖配置包含及实际依赖的源文件，不只检查当前路由加载的组件。`--json` 输出结构化诊断；文件/目录与 `--stdin` 模式只执行框架语义检查。
 
@@ -52,9 +58,9 @@ Vite 保留框架语义错误反馈，不在每次转换时启动项目类型检
 ## 语言工具与编辑器边界
 
 ```sh
-pnpm lsp:setup
-pnpm lsp:verify
-pnpm lsp:completions
+pnpm --dir packages/compiler lsp:setup
+pnpm --dir packages/compiler lsp:verify
+pnpm --dir packages/compiler lsp:completions
 ```
 
 项目 `zerodep_js_lsp` 基于选定 SDK 的 LSP/API。命名空间属性补全来自 JSX 上下文中的真实符号，不硬编码候选；导航追溯组件原属性并跟随声明映射。绑定检查使用同一投影规则，普通重命名、自动导入等继续交给SDK 语言服务。
@@ -95,7 +101,7 @@ IDE Registry 的 typescript.native-preview.ts-go.version 设为 v7.1.0-dev.20261
 
 ## 生成类型与注释
 
-`pnpm native:generate` 中的 native 指浏览器原生元素数据。它使用成熟的 HTML 属性数据、csstype 和选定 TS7.1 API 生成清楚的 JSX 接口，不依赖被删除的 Go 补丁。
+`pnpm --dir packages/core generate` 生成浏览器原生元素数据。它使用成熟的 HTML 属性数据、csstype 和选定 TS7.1 API 生成清楚的 JSX 接口，不依赖被删除的 Go 补丁。
 
 生成文件有明确人工维护入口，禁止修改生成输出绕过检查。源码中文注释解释默认值、求值顺序、资源所有权、映射和生命周期等不明显的原因，不机械复述语句。
 

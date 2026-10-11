@@ -275,7 +275,6 @@ async function main() {
       console.log(`已保留并复核现有产物：${ledgerFile}`);
       return;
     }
-    await manager(['build:packages']);
     await mkdir(directory, { recursive: true });
     const ledger = {
       repository,
@@ -296,6 +295,17 @@ async function main() {
       const file = basename(packed.filename);
       await access(resolve(directory, file));
       assert(packed.files.some((entry) => entry.path === 'LICENSE'));
+      // pack 不再负责构建；拒绝把缺少入口产物的源码包登记为候选。
+      const targets = [manifest.exports ?? {}, manifest.bin ?? {}, manifest.browser ?? {}];
+      while (targets.length) {
+        const target = targets.pop();
+        if (typeof target === 'string') {
+          assert(
+            packed.files.some((entry) => entry.path === target.replace(/^\.\//, '')),
+            `缺少打包入口 ${manifest.name}/${target}；请先执行对应项目的构建。`,
+          );
+        } else if (target && typeof target === 'object') targets.push(...Object.values(target));
+      }
       if (manifest.license === 'Apache-2.0 AND MIT') {
         const binary = manifest.os[0] === 'win32' ? 'tsc.exe' : 'tsc';
         for (const required of [

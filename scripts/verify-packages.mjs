@@ -261,7 +261,9 @@ try {
     resolve(consumer, 'library/package.json'),
     JSON.stringify(libraryManifest, null, 2),
   );
-  await run(['run', 'library']);
+  await run(['run', 'check:library']);
+  await run(['run', 'build:library']);
+  await run(['run', 'build:library:types']);
   const library = JSON.parse(
     (await run(['pack', '--json', '--pack-destination', archives], resolve(consumer, 'library')))
       .stdout,
@@ -274,6 +276,7 @@ try {
       relative(consumer, resolve(archives, basename(library.filename))).replaceAll('\\', '/'),
   ]);
   await run(['run', 'check']);
+  await run(['run', 'check:data']);
   console.log('独立安装、声明、泛型/事件类型与预编译组件库通过。');
   await run(['run', 'build']);
   const report = await json(resolve(consumer, 'dist/build-report.json'));

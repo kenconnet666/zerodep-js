@@ -24,7 +24,9 @@ node --version
 pnpm --version
 pnpm install --frozen-lockfile
 pnpm exec tsc --version
-pnpm build:packages
+pnpm --dir packages/core build
+pnpm --dir packages/css build
+pnpm --dir packages/compiler build
 ```
 
 最后一个版本检查应返回 `Version 7.1.0-dev.20261008.1`。不需要 Go、TypeScript 源码仓库或自行编译 SDK。
@@ -38,11 +40,15 @@ SDK 主包与七个平台包均来自微软官方 npm 发行版。pnpm-workspace
 以下是完整 CI 的检查入口，换机后不要求在本地逐项运行。本地先核对上节 SDK 版本和产物是否可用，开发时只跑改动相关的焦点检查。
 
 ```powershell
+pnpm --dir packages/ui build
+pnpm --dir packages/ui build:types
+pnpm -r check
 pnpm check
-pnpm build
-pnpm test:compiler
-pnpm lsp:verify
-pnpm lsp:completions
+pnpm -r build:client
+pnpm -r build:server
+pnpm --dir packages/compiler test
+pnpm --dir packages/compiler lsp:verify
+pnpm --dir packages/compiler lsp:completions
 ```
 
 CI 在各自任务中执行这些检查；语言探针会临时创建示例源码，不能与同工作区的 check/build 并行。补全探针的全部用例都应通过，总数以当前脚本输出为准，服务版本应为上述 微软官方 SDK。完整浏览器与独立包消费同样由 CI 执行。完整远端 CI 尚未结束时，不能把本机焦点检查当作六平台和三浏览器矩阵全部通过。
@@ -130,14 +136,14 @@ UI 包已使用下述源码类型入口。此时应保留 WebStorm 原生补全�
 可用焦点探针检查服务端新增导入和合并导入两种情况：
 
 ```powershell
-pnpm lsp:completions --case UI自动导入
+pnpm --dir packages/compiler lsp:completions --case UI自动导入
 ```
 
 该命令验证项目 LSP；WebStorm 的候选选择仍需在编辑器中实际测试。如果 `Ctrl+Space` 被中文输入法占用，用菜单“代码 → 代码补全 → 基本”验证，再在 Keymap 给 Basic Completion 选择不冲突的快捷键。
 
 当前私有工作区包 `zerodep-js-ui` 的 `exports["."].types` 直接指向 `src/index.ts`，运行时入口仍指向经过框架转换的 `dist/index.js`。这是为了让开发中的 UI 源码直接参与类型检查和导航：在上述 EAP 中，使用 `dist/index.d.ts` 时 TS7 能返回正确定义，但 IDE 的符号高亮缺失，调用处跳转先停在本文件 import；切换源码类型入口后已验证单次 Ctrl+B 直达函数实现。包名导入保持不变，不开放 `/src` 子路径。UI 正式发布前需重新验收发行包的源码/声明文件包含范围。
 
-`pnpm lsp:completions --case UI调用跳转` 覆盖 `useCss`、`useLang`、`useLocale` 补全后定位到函数声明的行为。IDE 高亮与单次跳转仍须人工验收，不能用这项协议测试替代。
+`pnpm --dir packages/compiler lsp:completions --case UI调用跳转` 覆盖 `useCss`、`useLang`、`useLocale` 补全后定位到函数声明的行为。IDE 高亮与单次跳转仍须人工验收，不能用这项协议测试替代。
 
 ### JSX/TSX 属性补全与绑定跳转
 
@@ -168,9 +174,9 @@ JavaScript 语言版本保持 ECMAScript 6+；项目实际语言与构建目标�
 项目 LSP 和 WebStorm 原生 LSP 使用同版本、同一发行二进制。项目保留 bind 写回、源码映射等增强，不连接 IDE 私有管道。
 
 ```powershell
-pnpm lsp:setup
-pnpm lsp:verify
-pnpm lsp:completions
+pnpm --dir packages/compiler lsp:setup
+pnpm --dir packages/compiler lsp:verify
+pnpm --dir packages/compiler lsp:completions
 ```
 
 `lsp:setup` 自动写入本机 Node/项目绝对路径，只生成 `.codex/config.toml`。该文件已被忽略，换机或移动仓库后应重新生成，不能复制旧机器生成的文件。
