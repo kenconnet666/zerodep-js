@@ -3,17 +3,18 @@ import { expectCssValue } from './style-assertions.js';
 import { Search } from '@lucide/icons';
 import { defineComponent, element, renderToString } from 'zerodep-js';
 
-import { createServerCssHost, withCssHost } from 'zerodep-js-css';
+import { css as collectCss, bx, createServerCssHost, withCssHost } from 'zerodep-js-css';
+import * as ui from '../dist/index.js';
 import {
   Provider,
   Button,
+  Icon,
   IconButton,
   ToggleButton,
   LinkButton,
   ButtonGroup,
   ButtonBase,
   ButtonContent,
-  _buttonStyle,
   useCss,
 } from '../dist/index.js';
 import { build } from 'vite';
@@ -60,9 +61,14 @@ function render(
   return { html: withCssHost(host, () => renderToString(App)), css: host.cssText() };
 }
 
-it('从包根复用按钮内容与样式，不依赖私有路径', () => {
+it('包根保留裸底座与内容组合，不暴露内部装配或旧样式函数', () => {
+  expect(ui).not.toHaveProperty('_buttonStyle');
+  expect(ui).not.toHaveProperty('_buttonAppearance');
+  expect(ui).not.toHaveProperty('ButtonView');
+  expect(ui).not.toHaveProperty('LinkButtonRoot');
   const Custom = defineComponent(() => {
-    const appearance = _buttonStyle(useCss(), { variant: 'outline', color: '#123456' });
+    const s = useCss();
+    const appearance = collectCss(() => s.color(bx('#123456')));
     return element(ButtonBase, {
       class: appearance,
       disabled: true,
@@ -83,7 +89,7 @@ it.each([Button, IconButton, ToggleButton, LinkButton])(
     const host = createServerCssHost();
     const fixed =
       component === IconButton
-        ? { icon: Search, 'aria-label': '测试', ripple: false }
+        ? { icon: element(Icon, { icon: Search }), 'aria-label': '测试', ripple: false }
         : component === ToggleButton
           ? { children: '测试', pressed: false, onPressedChange() {}, ripple: false }
           : component === LinkButton
@@ -128,9 +134,11 @@ it('Button 加载首屏即原生禁用，保留标签并隔离槽语义', () => 
     type: 'submit',
     name: 'action',
     value: 'save',
-    startIcon: Search,
-    slotStartIcon: { 'aria-label': '不应成为名称', 'aria-hidden': false },
-    slotText: { as: 'h1', 'data-label': 'keep' },
+    startIcon: element('svg', {
+      'data-custom-icon': '',
+      children: element('path', { d: 'M0 0h1' }),
+    }),
+    slotSpinner: { 'aria-label': '不应成为名称', 'aria-hidden': false },
     slotRipple: (state: { loading: boolean }) => ({ 'data-loading': state.loading }),
   });
   expect(html).toContain('type="submit"');
@@ -139,6 +147,8 @@ it('Button 加载首屏即原生禁用，保留标签并隔离槽语义', () => 
   expect(html).toContain('保存');
   expect(html).not.toContain('<h1');
   expect(html).not.toContain('不应成为名称');
+  expect(html).toContain('data-custom-icon');
+  expect(html).toContain('data-ui-button-label');
   expect(html).toContain('name="action"');
   expect(html).toContain('data-loading="true"');
   const opacityVariable = css.match(/opacity:var\((--zj-[a-z0-9-]+)\)/)?.[1];
@@ -148,11 +158,46 @@ it('Button 加载首屏即原生禁用，保留标签并隔离槽语义', () => 
   expect(css).toContain('cursor:not-allowed;');
 });
 it('IconButton 保留名称、方形尺寸与根 ref 类型对应的原生节点', () => {
-  const { html, css } = render(IconButton, { icon: Search, 'aria-label': '搜索', loading: true });
+  const { html, css } = render(IconButton, {
+    icon: element(Icon, { icon: Search }),
+    'aria-label': '搜索',
+    loading: true,
+  });
   expect(html).toContain('<button');
   expect(html).toContain('aria-label="搜索"');
   expect(css).toContain('inline-size:2.625em;');
   expect(css).toContain('min-block-size:2.625em;');
+});
+it.each([
+  { name: '无图标', props: {}, count: 1 },
+  { name: '结束图标', props: { endIcon: element('svg', { 'data-end': '' }) }, count: 1 },
+  {
+    name: '两侧图标',
+    props: {
+      startIcon: element('svg', { 'data-start': '' }),
+      endIcon: element('svg', { 'data-end': '' }),
+    },
+    count: 2,
+  },
+])('加载只占用一个图标区域：$name', ({ props, count }) => {
+  const { html } = render(Button, { ...props, children: '可见标签', loading: true, ripple: false });
+  expect(html.match(/data-ui-button-icon(?:[\s=>])/g)).toHaveLength(count);
+  expect(html.match(/data-ui-button-spinner(?:[\s=>])/g)).toHaveLength(1);
+  expect(html.replace(/<!--[\s\S]*?-->/g, '')).toMatch(/data-ui-button-label[^>]*>可见标签/);
+});
+it('Toggle 的内部 Spinner/Ripple 槽仍接收受控 pressed 状态', () => {
+  const { html } = render(ToggleButton, {
+    pressed: true,
+    loading: true,
+    children: '选中',
+    onPressedChange() {},
+    slotSpinner: (state: { pressed: boolean }) => ({
+      'data-spinner-pressed': String(state.pressed),
+    }),
+    slotRipple: (state: { pressed: boolean }) => ({ 'data-ripple-pressed': String(state.pressed) }),
+  });
+  expect(html).toContain('data-spinner-pressed="true"');
+  expect(html).toContain('data-ripple-pressed="true"');
 });
 it('ToggleButton 的 pressed 与 type 由组件拥有，不创建隐式表单 input', () => {
   const { html } = render(ToggleButton, {
@@ -182,6 +227,7 @@ it('LinkButton 保留原生导航属性，不可用首屏移除 href', () => {
   expect(blocked.html).not.toContain(' disabled');
   expect(blocked.html).toContain('aria-disabled="true"');
   expect(blocked.html).toContain('tabindex="-1"');
+  expect(normal.html).not.toMatch(/\s(?:root|variant|iconOnly|pressed|slotRipple)=/);
 });
 it('ButtonGroup 首屏拥有一维连接样式和分组语义', () => {
   const { html, css } = render(ButtonGroup, {

@@ -1,22 +1,22 @@
 # 按钮、ButtonGroup 与布局
 
-按钮只使用 css(...) 与属性作者描述样式；共享函数和组件转发由编译器/CSS 工具自动绑定安全动态值，UI 不手工声明 CSS 变量或拼接 style。连续改变十六进制颜色不会不断登记新类。inherit/revert/!important、自定义 var() 等值沿用原始声明，不为优化改变层叠语义。用户 class 仍最后组合，显式 style 由原生渲染统一合并，保持调用方最后覆盖。ButtonGroup 负责一维相连；Flex/Grid 只做普通布局。
+按钮只使用 css(...) 与属性作者描述样式；动态值通过 bx 与原生 class 消费自动绑定，UI 不手工声明 CSS 变量或拼接 style。连续改变十六进制颜色不会不断登记新类。inherit/revert/!important、自定义 var() 等值沿用原始声明，不为优化改变层叠语义。用户 class 仍最后组合，显式 style 由原生渲染统一合并，保持调用方最后覆盖。ButtonGroup 负责一维相连；Flex/Grid 只做普通布局。
 
 从 zerodep-js-ui 根入口导入，在 Provider 内使用。UI 保持 private。所有 size 属性都是 CSS 字号，省略时继承；组件内部尺寸使用 em。通用 token 位于 UI Provider，按钮专用比例在 UI 内部。
 
 ```tsx
 import { _component, _state } from 'zerodep-js';
 import { Save, Search, Bold } from '@lucide/icons';
-import { Provider, Flex, Button, IconButton, ToggleButton, LinkButton } from 'zerodep-js-ui';
+import { Provider, Flex, Icon, Button, IconButton, ToggleButton, LinkButton } from 'zerodep-js-ui';
 
 export const Actions = _component(() => {
   let bold = _state(false);
   return (
     <Provider>
       <Flex size="1rem" gap="0.5em">
-        <Button startIcon={Save}>保存</Button>
-        <IconButton icon={Search} aria-label="搜索" />
-        <ToggleButton icon={Bold} aria-label="加粗" bind:pressed={bold} />
+        <Button startIcon={<Icon icon={Save} />}>保存</Button>
+        <IconButton icon={<Icon icon={Search} />} aria-label="搜索" />
+        <ToggleButton icon={<Icon icon={Bold} />} aria-label="加粗" bind:pressed={bold} />
         <LinkButton href="/docs">查看文档</LinkButton>
       </Flex>
     </Provider>
@@ -45,32 +45,30 @@ loading 由业务控制，不自动跟踪 Promise。button 的有效 disabled �
 
 disabled/loading 状态使用标准 cursor: not-allowed 禁止光标。ButtonBase 的禁用外观通过 :disabled 判断，同时覆盖原生 fieldset 继承并保留首个 legend 的例外；ButtonGroup 不给禁用子项应用 hover 层级。光标图案由浏览器/操作系统绘制，不使用自定义图片。
 
-加载时原标签和图标节点保留，opacity 隐藏视觉内容，Spinner 居中覆盖，根 aria-busy=true。按钮名称和布局占位保持；原内容 ref 不会因加载切换而卸载。Spinner 是装饰，不默认创建额外 live region。
+加载时文字保持可见，根 aria-busy=true。Spinner 优先使用起始图标区域，其次结束图标区域；两侧都有图标时只替换起始侧。纯图标按钮使用原图标区域。原图标通过 opacity 隐藏但不卸载，ref 保持；没有图标时临时增加起始区域，因此宽度可以变化。自定义 Spinner 尺寸也可能改变区域大小。Spinner 是装饰，不默认创建额外 live region。
 
 LinkButton 正常时保留 target/rel/download、修饰键点击、中键和右键菜单。Enter 激活，Space 滚动；不接管路由。disabled/loading 时实际移除 href，设 aria-disabled、role=link、tabIndex=-1，并拦截 click/auxclick 的业务处理。恢复时使用最新 href。它不会给 a 写无效 disabled 属性，也不靠 pointer-events:none 伪装禁用。
 
-## 独立槽属性
+## 内容槽与内置部件
 
-| 组件                | 槽                                                            |
-| ------------------- | ------------------------------------------------------------- |
-| Button / LinkButton | slotStartIcon、slotEndIcon、slotText、slotSpinner、slotRipple |
-| IconButton          | slotIcon、slotSpinner、slotRipple                             |
-| ToggleButton        | 按文字/图标模式使用上述对应槽                                 |
-
-槽接受对象或纯状态回调。所有成品按钮状态含 variant/disabled/loading/unavailable；disabled 表示显式禁用，unavailable 为 disabled || loading。ToggleButton 另有 pressed。
+startIcon/endIcon/icon 接收 TSX 渲染内容，不接收 Lucide 数据。调用方直接设置图标的 size/color/class/ref，也可以传自定义 SVG；按钮提供装饰区域与默认 1.125em 字号，不扫描 children 推断图标种类。纯图标模式继续要求 aria-label 或 aria-labelledby，IconButton 保留方形默认几何。文字通过 children 自由组合，不强制包装为 Text 组件。
 
 ```tsx
+<Button startIcon={<Icon icon={Save} size="1.25em" />}>
+  <Text weight="_semibold">保存</Text>
+</Button>
+<IconButton aria-label="搜索" icon={<Icon icon={Search} />} />
 <Button
-  startIcon={Save}
-  slotStartIcon={{ size: '1.25em' }}
-  slotText={{ weight: '_semibold' }}
+  endIcon={<svg width="1em" height="1em" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6" /></svg>}
   slotRipple={(state) => ({ color: state.unavailable ? '_disabled' : 'currentColor' })}
 >
-  保存
+  继续
 </Button>
 ```
 
-根的 class/style/ref 和原生事件直接传入，没有 slotRoot 或统一 slotProps。内容、图标来源、内部装饰标记、禁用与 busy/pressed 语义由组件拥有，槽不能覆盖。slotText 固定 span；children 不应嵌套链接或其他交互控件。外部类仍遵循 CSS 层叠，不能把类名字符串顺序当作所有 CSS 规则的优先级。
+只保留 slotSpinner/slotRipple 两个内置部件配置，接受对象或状态回调。共有状态是 variant/disabled/loading/unavailable，ToggleButton 额外提供 pressed。删除 slotIcon/slotStartIcon/slotEndIcon/slotText，不保留兼容入口。图标/文字的样式和 ref 直接写在传入节点上。
+
+根 class/style/ref 与原生事件直接传入，没有 slotRoot 或任意 as。内容槽中的图标属于装饰，内部 Spinner 的装饰标记及禁用/busy/pressed 语义由组件拥有；内容中不应嵌套其他交互控件。外部类仍遵循 CSS 层叠，不能把类名字符串顺序当作所有 CSS 规则的优先级。
 
 ## Flex 普通布局
 
@@ -100,7 +98,7 @@ import { ButtonGroup } from 'zerodep-js-ui';
 <ButtonGroup direction="row" size="1rem" role="group" aria-label="文件操作">
   <Button variant="outline">保存</Button>
   <Button variant="outline">另存为</Button>
-  <IconButton variant="outline" icon={Search} aria-label="查找" />
+  <IconButton variant="outline" icon={<Icon icon={Search} />} aria-label="查找" />
 </ButtonGroup>;
 ```
 
@@ -122,6 +120,8 @@ ButtonGroup 不提供互斥选择语义，不会让多个 ToggleButton 互斥。
 
 交互示例：apps/docs/src/pages/components/ButtonDemo.tsx。组件及消费测试在 packages/ui/test/buttons.test.ts、flex.test.ts；真实 TSX 类型反例在 buttons-types.tsx；浏览器用例在 tests/e2e/buttons.spec.ts。补全使用 pnpm lsp:completions --case 按钮属性。
 
-按钮组件、内容和样式组合放在 base，布局放在 layout，不维护 internal 目录。ButtonContent/ButtonContentProps、_buttonStyle/ButtonStyleOptions、DecorationProps、AccessibleName、ActionProps 和 LabelProps 均从 zerodep-js-ui 根入口导出，可用于自定义按钮组合。_buttonStyle 返回 CssClass，直接传给 class 或交给 css；动态值随样式结果传递，不需要拆成 class/style。buttonBorderWidth 是标准按钮与相连接缝共用的 em 数值。根入口由 pnpm ui:generate 维护，pnpm ui:check 校验，不创建子目录 index.ts。普通按钮/Flex 不读取像素尺寸；几何观察另见 [字号与测量](../packages/ui/README.md#字号等比尺寸与测量)。
+Button 直接拥有成品按钮的状态、CSS 和内容装配；IconButton/ToggleButton 复用它，LinkButton 保留原生链接实现。button/a 只共享 Button.tsx 中不从包根导出的外观声明函数，不再使用 ButtonView 或根组件注入。裸 ButtonBase 保持无成品外观默认值和自定义 children。
+
+ButtonContent/ButtonContentProps、DecorationProps、AccessibleName、ActionProps 和 LabelProps 继续从包根导出。删除 _buttonStyle/ButtonStyleOptions。ButtonVariant/ButtonState 与 buttonBorderWidth 位于 button-props，边框常量供标准按钮与相连接缝共用。根入口由 pnpm ui:generate 维护，pnpm ui:check 校验，不创建子目录 index.ts。本轮不增加 FloatButton/FloatButtonGroup。
 
 研究依据：[WAI-ARIA Button](https://www.w3.org/WAI/ARIA/apg/patterns/button/)、[Link](https://www.w3.org/WAI/ARIA/apg/patterns/link/)、[Toolbar](https://www.w3.org/WAI/ARIA/apg/patterns/toolbar/)、[Radix Flex](https://www.radix-ui.com/themes/docs/components/flex)、[Mantine Group](https://mantine.dev/core/group/)、[MUI Button 加载](https://mui.com/material-ui/api/button/)。本库使用自身运行时和原生元素，不引入上述组件库。

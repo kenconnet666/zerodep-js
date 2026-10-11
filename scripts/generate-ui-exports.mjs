@@ -33,7 +33,24 @@ async function collect(directory) {
     }
     if (!item.isFile() || !/\.tsx?$/.test(item.name) || item.name.endsWith('.d.ts')) continue;
     assert(item.name !== 'index.ts', `UI 不维护子目录入口：${directory}/index.ts`);
-    entries.set(`${directory}/${item.name}`, null);
+    const file = `${directory}/${item.name}`;
+    // 两种原生根仅共享内部外观声明，不公开额外的作者函数。
+    entries.set(
+      file,
+      file === 'base/Button.tsx'
+        ? ['Button', 'ButtonProps']
+        : file === 'base/button-props.ts'
+          ? [
+              'ButtonVariant',
+              'ButtonState',
+              'buttonBorderWidth',
+              'DecorationProps',
+              'AccessibleName',
+              'ActionProps',
+              'LabelProps',
+            ]
+          : null,
+    );
   }
 }
 for (const directory of ['base', 'utils', 'layout', 'input', 'display', 'feedback', 'navigation'])

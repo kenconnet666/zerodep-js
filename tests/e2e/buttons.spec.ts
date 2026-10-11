@@ -98,7 +98,9 @@ for (const mode of ['csr', 'ssr']) {
     await expect(save.locator('[data-save-icon]')).toHaveCSS('cursor', 'not-allowed');
     await expect(save).toHaveAttribute('aria-busy', 'true');
     await expect(save).toHaveAccessibleName('保存按钮');
-    await expect(save.locator('[data-ui-button-content]')).toHaveCSS('opacity', '0');
+    await expect(save.locator('[data-ui-button-label]')).toHaveCSS('opacity', '1');
+    await expect(save.locator('[data-ui-button-icon-content]')).toHaveCSS('opacity', '0');
+    await expect(save.locator('[data-ui-button-spinner]')).toBeVisible();
     await expect(save.locator('[data-loading-ripple]')).toHaveAttribute(
       'data-loading-ripple',
       'true',
@@ -162,12 +164,18 @@ for (const mode of ['csr', 'ssr']) {
     const demo = page.locator('#button-demo');
     const toggle = demo.locator('[data-action="toggle"]');
     const icon = demo.locator('[data-action="icon-toggle"]');
+    const toggleIcon = icon.locator('[data-pressed-state]');
+    await expect(toggleIcon).toHaveAttribute('data-pressed-state', 'off');
+    await toggleIcon.evaluate((node) => node.setAttribute('data-same-toggle-icon', 'yes'));
     await toggle.focus();
     await page.keyboard.press('Space');
     await expect(toggle).toHaveAttribute('aria-pressed', 'true');
     await expect(icon).toHaveAttribute('aria-pressed', 'true');
+    await expect(toggleIcon).toHaveAttribute('data-pressed-state', 'on');
+    await expect(toggleIcon).toHaveAttribute('data-same-toggle-icon', 'yes');
     await page.keyboard.press('Enter');
     await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+    await expect(toggleIcon).toHaveAttribute('data-pressed-state', 'off');
     await demo.getByLabel('拒绝切换请求', { exact: true }).check();
     await icon.click();
     await expect(icon).toHaveAttribute('aria-pressed', 'false');

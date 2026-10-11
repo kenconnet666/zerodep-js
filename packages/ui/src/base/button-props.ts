@@ -1,12 +1,20 @@
 import type { UiTheme } from '../provider/theme/theme.js';
 import type { CssValue } from 'zerodep-js-css';
-import type { LucideIconData } from '@lucide/icons';
 import type { Renderable } from 'zerodep-js';
 import type { IconProps } from './Icon.js';
-import type { TextProps } from './Text.js';
 import type { RippleProps } from './Ripple.js';
 import type { SlotProps } from '../utils/slot-props.js';
-import type { ButtonVariant } from './Button.js';
+export type ButtonVariant = 'solid' | 'outline' | 'text';
+export interface ButtonState {
+  readonly variant: ButtonVariant;
+  /** 调用方显式禁用，不包含 loading。 */
+  readonly disabled: boolean;
+  readonly loading: boolean;
+  /** disabled || loading，用于判断当前能否激活。 */
+  readonly unavailable: boolean;
+}
+/** 标准按钮边框厚度，单位 em；ButtonGroup 使用相同数值重叠接缝。 */
+export const buttonBorderWidth = 0.0625;
 
 type Decoration = 'aria-hidden' | 'aria-label' | 'aria-labelledby' | 'role';
 export type DecorationProps = Omit<IconProps, 'icon' | 'children' | Decoration> & {
@@ -38,16 +46,13 @@ export interface ActionProps<S> {
       >
     | undefined;
 }
-export interface LabelProps<S> {
-  /** 非交互标签内容，不嵌套链接或其他交互控件。 */
+/** 图标是调用方创建的装饰内容，按钮只负责区域布局，不依赖图标库。 */
+export interface LabelProps {
   children?: Renderable;
-  /** 文字起始侧图标，遵循 RTL 方向。 */
-  startIcon?: LucideIconData | undefined;
-  /** 文字结束侧图标，遵循 RTL 方向。 */
-  endIcon?: LucideIconData | undefined;
-  slotStartIcon?: SlotProps<DecorationProps, S> | undefined;
-  slotEndIcon?: SlotProps<DecorationProps, S> | undefined;
-  slotText?:
-    | SlotProps<Omit<TextProps, 'as' | 'children' | 'aria-hidden'> & { 'aria-hidden'?: never }, S>
-    | undefined;
+  startIcon?: Renderable;
+  endIcon?: Renderable;
 }
+/** 显式 icon 模式保留名称约束，不通过扫描 children 猜测纯图标按钮。 */
+export type ButtonContentInput =
+  | (LabelProps & { icon?: never })
+  | (AccessibleName & { icon: Renderable; children?: never; startIcon?: never; endIcon?: never });

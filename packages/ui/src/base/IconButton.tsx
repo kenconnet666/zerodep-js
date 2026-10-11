@@ -1,77 +1,18 @@
-import { _component, _derived, type JSX } from 'zerodep-js';
-import type { LucideIconData } from '@lucide/icons';
-import type { ButtonState } from './Button.js';
-import { ButtonBase } from './ButtonBase.js';
-import { ButtonContent } from './ButtonContent.js';
-import { _buttonStyle } from './button-style.js';
-import type { AccessibleName, ActionProps, DecorationProps } from './button-props.js';
-import { _resolveSlotProps, type SlotProps } from '../utils/slot-props.js';
-import { useCss } from '../provider/context.js';
+import { _component, type JSX, type Renderable } from 'zerodep-js';
+import { Button } from './Button.js';
+import type { AccessibleName, ActionProps, ButtonState } from './button-props.js';
 export type IconButtonProps = Omit<
   JSX.IntrinsicElements['button'],
   'size' | 'color' | 'children' | 'aria-busy'
 > &
   ActionProps<ButtonState> &
   AccessibleName & {
-    icon: LucideIconData;
+    icon: Renderable;
     children?: never;
-    slotIcon?: SlotProps<DecorationProps, ButtonState> | undefined;
+    startIcon?: never;
+    endIcon?: never;
   };
-export const IconButton = _component(
-  ({
-    icon,
-    variant = 'text',
-    size,
-    color,
-    backgroundColor,
-    borderColor,
-    disabled = false,
-    loading = false,
-    ripple = true,
-    slotIcon,
-    slotSpinner,
-    slotRipple,
-    class: className,
-    children: _children,
-    ...rest
-  }: IconButtonProps) => {
-    const s = useCss();
-    const state = _derived(
-      Object.freeze({
-        variant,
-        disabled,
-        loading,
-        unavailable: disabled || loading,
-      }),
-    );
-    const style = _derived([
-      _buttonStyle(s, {
-        variant,
-        color,
-        backgroundColor,
-        borderColor,
-        iconOnly: true,
-      }),
-      className,
-    ]);
-    return (
-      <ButtonBase
-        {...rest}
-        size={size}
-        disabled={state.unavailable}
-        ripple={ripple}
-        aria-busy={loading || undefined}
-        data-ui-action=""
-        class={style}
-        slotRipple={_resolveSlotProps(slotRipple, state)}
-      >
-        <ButtonContent
-          loading={loading}
-          icon={icon}
-          iconProps={_resolveSlotProps(slotIcon, state)}
-          spinnerProps={_resolveSlotProps(slotSpinner, state)}
-        />
-      </ButtonBase>
-    );
-  },
-);
+/** 纯图标只增加名称约束与默认变体，其余实现复用 Button。 */
+export const IconButton = _component(({ variant = 'text', ...rest }: IconButtonProps) => (
+  <Button {...rest} variant={variant} />
+));

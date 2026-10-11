@@ -7,7 +7,8 @@
 - `src/utils/`：slot 属性解析、测量和按压资源工具；不设置子目录 index.ts。
 - `src/base/Icon.tsx`：静态 Lucide 图标，颜色/尺寸复用 CSS 主题类型。
 - `src/base/`：原生按钮底座、四类成品按钮、ButtonGroup 一维相连及文字/加载/波纹。
-- `src/base/ButtonContent.tsx`、`button-style.ts`、`button-props.ts`：可复用的按钮内容、样式与类型，统一从根入口导出。
+- `src/base/Button.tsx`：主要按钮实现；IconButton/ToggleButton 复用，LinkButton 保留原生链接，只共享私有外观声明。
+- `src/base/ButtonContent.tsx`、`button-props.ts`：可复用的按钮内容与共用类型/边框常量；裸 `ButtonBase` 继续支持自定义组合。删除旧 `_buttonStyle` 样式函数入口。
 - `src/layout/Flex.tsx`：普通一维布局。
 - `src/layout/Grid.tsx`：普通二维轨道、自动填充与跨格布局。
 - 通用主题位于 `packages/ui/src/provider/theme/`，从 `zerodep-js-ui` 导入。
@@ -124,7 +125,7 @@ CssValue<K, Theme> 和 css 在 zerodep-js-css 中；DomRef<T> 与 _composeRefs �
 
 运行 pnpm ui:generate 更新 src/index.ts；pnpm ui:check 检查过期与重复导出，已进入 CI 的 pnpm check。生成器用 Babel AST 读取 base/utils/layout 下的具名声明，递归收集并区分 type 导出；拒绝链接、子目录 index.ts 和重复名称。internal 不扫描，Provider 通过明确入口清单限制。
 
-组件转发使用独立 slotXxx 属性：slotRipple、slotIcon、slotStartIcon、slotEndIcon、slotText、slotSpinner。无统一 slotProps 对象。SlotProps<P, S> 与 _resolveSlotProps 是单槽通用工具。
+按钮图标通过 icon/startIcon/endIcon 传入 TSX 节点，文本通过 children 组合；属性与 ref 直接写在节点上。内置部件保留 slotRipple/slotSpinner，没有 slotIcon/slotStartIcon/slotEndIcon/slotText 或统一 slotProps 对象。SlotProps<P, S> 与 _resolveSlotProps 用于内置部件配置。
 
 ## 字号、等比尺寸与测量
 

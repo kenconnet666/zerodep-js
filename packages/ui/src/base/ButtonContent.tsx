@@ -1,103 +1,50 @@
 import { _component, type Renderable } from 'zerodep-js';
 import { css, bx } from 'zerodep-js-css';
-import type { LucideIconData } from '@lucide/icons';
-import { Icon } from './Icon.js';
-import { Text, type TextProps } from './Text.js';
 import { Spinner } from './Spinner.js';
 import { useCss } from '../provider/context.js';
 import type { DecorationProps } from './button-props.js';
+
 export interface ButtonContentProps {
   loading: boolean;
-  icon?: LucideIconData | undefined;
-  startIcon?: LucideIconData | undefined;
-  endIcon?: LucideIconData | undefined;
+  icon?: Renderable;
+  startIcon?: Renderable;
+  endIcon?: Renderable;
   children?: Renderable;
-  iconProps?: DecorationProps | undefined;
-  startProps?: DecorationProps | undefined;
-  endProps?: DecorationProps | undefined;
-  textProps?: Omit<TextProps, 'as' | 'children' | 'aria-hidden'> | undefined;
   spinnerProps?: DecorationProps | undefined;
 }
 
-/** 原内容始终保留，opacity 只改变视觉，加载不丢失按钮名称或重建 ref。 */
-export const ButtonContent = _component(
+/** 同一图标区域叠放原内容和加载器；加载切换不卸载调用方的图标/ref。 */
+const ButtonIcon = _component(
   ({
-    loading,
-    icon,
-    startIcon,
-    endIcon,
     children,
-    iconProps,
-    startProps,
-    endProps,
-    textProps,
+    loading = false,
     spinnerProps,
-  }: ButtonContentProps) => {
+  }: {
+    children?: Renderable;
+    loading?: boolean;
+    spinnerProps?: DecorationProps | undefined;
+  }) => {
     const s = useCss();
-    const content = css(() => {
-      s.display('inline-flex');
-      s.alignItems('center');
-      s.justifyContent('center');
-      s.gap('0.5em');
-      s.minInlineSize(0);
-      s.maxInlineSize('100%');
+    const area = css(() => {
+      s.display('inline-grid').alignItems('center').justifyItems('center');
+      s.fontSize('1.125em').flexShrink(0);
+    });
+    const original = css(() => {
+      s.gridArea('1 / 1').display('inline-flex');
       s.opacity(bx(loading ? 0 : 1));
     });
     const overlay = css(() => {
-      s.position('absolute');
-      s.inset(0);
-      s.display('flex');
-      s.alignItems('center');
-      s.justifyContent('center');
-      s.pointerEvents('none');
+      s.gridArea('1 / 1').display('inline-flex');
     });
     return (
-      <>
-        <span class={content} data-ui-button-content>
-          {icon ? (
-            <Icon
-              size="1.125em"
-              {...iconProps}
-              icon={icon}
-              aria-hidden="true"
-              aria-label={undefined}
-              aria-labelledby={undefined}
-              role={undefined}
-            />
-          ) : (
-            <>
-              {startIcon && (
-                <Icon
-                  size="1.125em"
-                  {...startProps}
-                  icon={startIcon}
-                  aria-hidden="true"
-                  aria-label={undefined}
-                  aria-labelledby={undefined}
-                  role={undefined}
-                />
-              )}
-              <Text {...textProps} as="span" aria-hidden={undefined}>
-                {children}
-              </Text>
-              {endIcon && (
-                <Icon
-                  size="1.125em"
-                  {...endProps}
-                  icon={endIcon}
-                  aria-hidden="true"
-                  aria-label={undefined}
-                  aria-labelledby={undefined}
-                  role={undefined}
-                />
-              )}
-            </>
-          )}
+      <span class={area} aria-hidden="true" data-ui-button-icon>
+        <span class={original} data-ui-button-icon-content>
+          {children}
         </span>
         {loading && (
-          <span class={overlay} aria-hidden="true">
+          <span class={overlay} data-ui-button-spinner>
             <Spinner
-              size="1.125em"
+              size="1em"
               {...spinnerProps}
               aria-hidden="true"
               aria-label={undefined}
@@ -106,7 +53,41 @@ export const ButtonContent = _component(
             />
           </span>
         )}
-      </>
+      </span>
+    );
+  },
+);
+
+/** 文字始终可见；加载优先占用起始图标，其次结束图标，无图标时新增起始区域。 */
+export const ButtonContent = _component(
+  ({ loading, icon, startIcon, endIcon, children, spinnerProps }: ButtonContentProps) => {
+    const s = useCss();
+    const content = css(() => {
+      s.display('inline-flex').alignItems('center').justifyContent('center');
+      s.gap('0.5em').minInlineSize(0).maxInlineSize('100%');
+    });
+    return (
+      <span class={content} data-ui-button-content>
+        {icon !== undefined ? (
+          <ButtonIcon loading={loading} spinnerProps={spinnerProps}>
+            {icon}
+          </ButtonIcon>
+        ) : (
+          <>
+            {(startIcon !== undefined || (loading && endIcon === undefined)) && (
+              <ButtonIcon loading={loading} spinnerProps={spinnerProps}>
+                {startIcon}
+              </ButtonIcon>
+            )}
+            <span data-ui-button-label>{children}</span>
+            {endIcon !== undefined && (
+              <ButtonIcon loading={loading && startIcon === undefined} spinnerProps={spinnerProps}>
+                {endIcon}
+              </ButtonIcon>
+            )}
+          </>
+        )}
+      </span>
     );
   },
 );

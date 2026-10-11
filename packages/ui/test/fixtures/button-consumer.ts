@@ -1,9 +1,9 @@
 import { Search } from '@lucide/icons';
 import { defineComponent, element } from 'zerodep-js';
-import { Button, Provider } from '../../dist/index.js';
+import { Button, Icon, Provider } from '../../dist/index.js';
 
 export const Example = defineComponent(() =>
   element(Provider, {
-    children: element(Button, { startIcon: Search, children: '搜索' }),
+    children: element(Button, { startIcon: element(Icon, { icon: Search }), children: '搜索' }),
   }),
 );

@@ -1,6 +1,7 @@
 import { _component, _state, For } from 'zerodep-js';
 import { Save, Search, Bold } from '@lucide/icons';
 import {
+  Icon,
   darkTheme,
   lightTheme,
   Button,
@@ -125,7 +126,7 @@ export const ButtonDemo = _component(() => {
                 颜色预览
               </Button>
               <IconButton
-                icon={Search}
+                icon={<Icon icon={Search} />}
                 aria-label="颜色图标"
                 color={liveColor}
                 borderColor={liveColor}
@@ -153,23 +154,21 @@ export const ButtonDemo = _component(() => {
           <Flex data-button-row>
             <Button
               data-action="save"
-              startIcon={Save}
+              startIcon={<Icon icon={Save} ref={observe} data-save-icon="" />}
               loading={loading}
               disabled={disabled}
               color={custom ? '#123456' : undefined}
               backgroundColor={custom ? '#fedcba' : undefined}
-              slotStartIcon={{ ref: observe, 'data-save-icon': '' }}
-              slotText={{ 'data-save-label': '' }}
               slotRipple={(state) => ({ 'data-loading-ripple': String(state.loading) })}
               onClick={() => {
                 clicks++;
               }}
             >
-              保存按钮
+              <span data-save-label>保存按钮</span>
             </Button>
             <IconButton
               data-action="icon"
-              icon={Search}
+              icon={<Icon icon={Search} />}
               aria-label="搜索按钮"
               loading={loading}
               disabled={disabled}
@@ -187,7 +186,13 @@ export const ButtonDemo = _component(() => {
             </ToggleButton>
             <ToggleButton
               data-action="icon-toggle"
-              icon={Bold}
+              icon={
+                <Icon
+                  icon={Bold}
+                  color={pressed ? '_error' : 'currentColor'}
+                  data-pressed-state={pressed ? 'on' : 'off'}
+                />
+              }
               aria-label="图标加粗"
               pressed={pressed}
               onPressedChange={(next) => {
@@ -199,7 +204,6 @@ export const ButtonDemo = _component(() => {
               }}
               disabled={disabled}
               loading={loading}
-              slotIcon={(state) => ({ color: state.pressed ? '_error' : 'currentColor' })}
             />
             <LinkButton
               data-action="link"
@@ -292,7 +296,12 @@ export const ButtonDemo = _component(() => {
             <Button variant="outline" disabled={disabled}>
               混排文字
             </Button>
-            <IconButton variant="outline" icon={Search} aria-label="混排图标" disabled={disabled} />
+            <IconButton
+              variant="outline"
+              icon={<Icon icon={Search} />}
+              aria-label="混排图标"
+              disabled={disabled}
+            />
             <ToggleButton variant="outline" bind:pressed={pressed} disabled={disabled}>
               混排切换
             </ToggleButton>

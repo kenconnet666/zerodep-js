@@ -1,10 +1,9 @@
 import { _component, _derived, type NativeProps, element } from 'zerodep-js';
 import { css, bx } from 'zerodep-js-css';
-import type { ButtonState } from './Button.js';
-import { Ripple } from './Ripple.js';
+import { _buttonAppearance } from './Button.js';
 import { ButtonContent } from './ButtonContent.js';
-import { _buttonStyle } from './button-style.js';
-import type { ActionProps, LabelProps } from './button-props.js';
+import { Ripple } from './Ripple.js';
+import type { ActionProps, ButtonState, LabelProps } from './button-props.js';
 import { _resolveSlotProps } from '../utils/slot-props.js';
 import { useCss } from '../provider/context.js';
 export interface LinkButtonProps
@@ -14,14 +13,12 @@ export interface LinkButtonProps
       'size' | 'color' | 'children' | 'href' | 'aria-busy' | 'aria-disabled'
     >,
     ActionProps<ButtonState>,
-    LabelProps<ButtonState> {
+    LabelProps {
   href: string;
 }
-
-// JSX 的 a 同时覆盖 HTML/SVG/MathML；这里明确 HTML 契约，并原样保留活跃 props。
+// JSX 的 a 同时覆盖多个命名空间；保持明确的 HTML 事件/ref 类型。
 const HtmlAnchor = _component((props: NativeProps<HTMLAnchorElement>) => element('a', props));
-
-/** 导航始终由原生 a 执行；不可用时真实移除 href，SSR 也不暴露可激活链接。 */
+/** 链接保留原生导航，不可用时真实移除 href。 */
 export const LinkButton = _component(
   ({
     href,
@@ -35,9 +32,7 @@ export const LinkButton = _component(
     ripple = true,
     startIcon,
     endIcon,
-    slotStartIcon,
-    slotEndIcon,
-    slotText,
+    children,
     slotSpinner,
     slotRipple,
     onClick,
@@ -45,30 +40,16 @@ export const LinkButton = _component(
     tabIndex,
     role,
     class: className,
-    children,
     ...rest
   }: LinkButtonProps) => {
     const s = useCss();
     const state = _derived(
-      Object.freeze({
-        variant,
-        disabled,
-        loading,
-        unavailable: disabled || loading,
-      }),
+      Object.freeze({ variant, disabled, loading, unavailable: disabled || loading }),
     );
-    const appearance = _derived([
-      _buttonStyle(s, {
-        variant,
-        color,
-        backgroundColor,
-        borderColor,
-      }),
-      css(() => {
-        s.fontSize(bx(size));
-      }),
-      className,
-    ]);
+    const appearance = css(() => {
+      _buttonAppearance(s, { variant, color, backgroundColor, borderColor });
+      s.fontSize(bx(size));
+    });
     return (
       <HtmlAnchor
         {...rest}
@@ -78,7 +59,7 @@ export const LinkButton = _component(
         aria-disabled={state.unavailable || undefined}
         aria-busy={loading || undefined}
         data-ui-action=""
-        class={appearance}
+        class={[appearance, className]}
         onClick={(event) => {
           if (state.unavailable) {
             event.preventDefault();
@@ -98,9 +79,6 @@ export const LinkButton = _component(
           loading={loading}
           startIcon={startIcon}
           endIcon={endIcon}
-          startProps={_resolveSlotProps(slotStartIcon, state)}
-          endProps={_resolveSlotProps(slotEndIcon, state)}
-          textProps={_resolveSlotProps(slotText, state)}
           spinnerProps={_resolveSlotProps(slotSpinner, state)}
         >
           {children}

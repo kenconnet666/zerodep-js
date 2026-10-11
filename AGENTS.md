@@ -41,7 +41,7 @@
 - 优先使用成熟依赖；ESLint 的 TS 支持满足选定版本时再评估替换现有 lint，不引入 TS6 或自造通用 linter。项目不引入 Zod，MCP 使用 JSON Schema、vscode-jsonrpc 与标准 stdio JSON-RPC。
 - CSS 新作者生成真实类方法，保留各属性 Property.* 参数约束和中文说明；不使用映射函数属性或 class/interface 合并伪装方法，已实测会影响 WebStorm 方法分类或参数/括号补全。
 - 生成数据应有明确维护入口与检查命令。中文注释解释语义、原因、资源责任，不机械复述代码。
-- 2026-10-10 后续要求：UI 不再维护 src/internal；按钮内容、样式与共用类型放在 base，ButtonContent/ButtonContentProps、_buttonStyle/ButtonStyleOptions 和共用按钮类型从根入口导出。单文件使用的辅助函数不额外建立公共 API。
+- 2026-10-11 按 Naive UI 研究收敛按钮，暂不做浮动按钮。Button 为主要实现，IconButton 只提供图标模式的名称约束和默认变体，ToggleButton 只负责受控切换；LinkButton 保留原生 a。删除试验 ButtonView/根组件注入与旧 _buttonStyle/ButtonStyleOptions；button/a 只共享 Button 文件内的私有外观声明函数。icon/startIcon/endIcon 接收 Renderable，删除 slotIcon/slotStartIcon/slotEndIcon/slotText；调用方直接创建 Icon、SVG 或文本内容，内置 Spinner/Ripple 保留槽配置。加载保留文字并在一个图标区域显示 Spinner，原图标节点/ref 不卸载；无图标时新增起始区域，宽度可以变化。裸 ButtonBase、ButtonContent、字号/em、原生 disabled 与链接语义保留。共用类型/边框常量归 button-props，内部声明不进入包根。
 - 2026-10-10 布局职责调整：Flex/Grid 仅提供普通布局，删除 attached、按钮子项检查和专用接缝样式。base/ButtonGroup 承担横向/纵向的一维相连，默认 role=group；不做二维，不提供 columns、换行或间距属性，不管理选择状态与方向键导航。此决定取代旧 Flex/Grid attached 契约，不保留兼容别名。
 - 2026-10-10 审查优化：按钮颜色先由主题作者解析，再复用 CSS 安全变量转换；特殊值保留原声明，用户 style 仍最后覆盖。Provider 仅复用当前配置的默认 Intl 格式器，自定义选项逐次读取，不累计历史配置。core 不再公开仅供内部使用的 HTML/SSR 工具。ButtonGroup 由 CSS 处理一维相连，删除仅用于警告的 DOM 子项检查；语言服务只忽略仓库根 .idea/.release/reports，继续监听 dist 与源码同名目录。
 - 不增加 Provider 样式覆盖层；向下传样式只作为确有需要的组件间协作方式，不预建通用体系。ButtonGroup 当前继续使用 CSS 继承和直接子项选择器。
