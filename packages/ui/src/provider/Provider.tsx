@@ -85,9 +85,15 @@ export const Provider = _component(
     const style = _derived([
       _themeStyle(s),
       css(() => {
-        s.colorScheme(s.keywords.name).fontFamily('_sans');
+        // 系统控件使用当前亮/暗配色方案；字体与字号为整棵子树建立排版基准。
+        s.colorScheme(s.keywords.name);
+        s.fontFamily('_sans');
+        // 根 Provider 默认 _md，嵌套 Provider 未传 size 时继承，避免重置局部字号。
         s.fontSize(bx(size ?? (parentTheme ? 'inherit' : '_md')));
-        s.fontWeight('_normal').lineHeight('_normal').color('_text').backgroundColor('_background');
+        s.fontWeight('_normal').lineHeight('_normal');
+
+        // 前景与背景来自同一主题，通过主题变量更新；子组件仍可各自覆盖。
+        s.color('_text').backgroundColor('_background');
       }),
       className,
     ]);

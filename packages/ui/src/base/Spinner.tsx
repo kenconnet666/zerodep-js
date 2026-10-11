@@ -20,10 +20,13 @@ export const Spinner = _component(({ class: className, ...rest }: SpinnerProps) 
       icon={LoaderCircle}
       class={[
         css(() => {
+          // 加载图形匀速循环；动画只表达进行中，不接管上层控件的 loading 状态。
           s.animationName(rotation)
             .animationDuration('800ms')
             .animationTimingFunction('linear')
             .animationIterationCount('infinite');
+
+          // 尊重系统减少动态效果的偏好：停转但保留图形和占位，不改变内容结构。
           s.select('@media (prefers-reduced-motion: reduce)', () => {
             s.animation('none');
           });

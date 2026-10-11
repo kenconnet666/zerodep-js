@@ -6,6 +6,7 @@
 - 简洁可维护、方便使用、准确类型提示优先。新 API 从实际业务讨论；不为对应 Svelte/Solid 名称扩大功能，不增加无必要抽象、后台、缓存或兼容层。
 - 保留显式 _state/_derived、普通变量读写与 props 参数解构/default/rest 直接响应，无 .value；普通函数、局部解构和 return 遵循 JS 取值。保留 bind、生命周期、列表身份、SSR/接管及真实回归断言。
 - CSS 使用 useCss + 同步 css 回调、真实链式方法、bx、select；系统关键字保留原值，主题 token 交给主题变量机制，安全值才元素变量化。class 数组合成单类；无复用的样式直接写模板 class。
+- CSS 作者按布局、尺寸/间距、文字、外观、交互状态等用途组织多条短链，复用同一个 s，组间留空行。注释说明布局目的、覆盖顺序、尺寸约定和特殊状态，必要时用两三行讲清原因；不逐属性翻译。保留简写/长写和条件声明的求值与覆盖顺序，不为分组新建作者实例或辅助 API。
 - UI 保持 private；Button 直接渲染 button，纯图标用 icon，ToggleButton 复用，LinkButton 保留 a。无 ButtonBase/IconButton、共享外观模块或任意根注入。其他组件/API 按实际需求讨论。
 - 各包只公开 src/index.ts 根入口；CSS 用 generated/runtime/util，compiler 用 transform/checking/language/tooling，core 的 SSR 在 ssr、JSX 在 native、协议在 runtime；UI 无 internal/子目录 index.ts，根导出由 generate 维护。
 - 顶层框架函数单下划线声明并直接导出；UI 消费入口沿用 useCss/useLang/useLocale。中文注释解释语义、原因和所有权；多互斥模式可用 switch，不机械替换清楚的 if。

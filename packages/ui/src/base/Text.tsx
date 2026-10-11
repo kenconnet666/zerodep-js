@@ -34,14 +34,14 @@ export const Text = _component(
         {...rest}
         class={[
           css(() => {
+            // 标签负责语义，组件负责排版：清除标题/段落的原生外边距与字号、字重差异。
+            // 未显式配置时统一继承父级，切换 as 不应意外改变字号和字重。
             s.margin(0);
-            s.fontSize('inherit');
-            s.fontWeight('inherit');
-            s.lineHeight('inherit');
+            s.fontSize('inherit').fontWeight('inherit').lineHeight('inherit');
+
+            // 显式外观放在继承声明之后；省略的值不覆盖默认继承和浏览器原生对齐行为。
             s.color(bx(color));
-            s.fontSize(bx(size));
-            s.fontWeight(bx(weight));
-            s.lineHeight(bx(lineHeight));
+            s.fontSize(bx(size)).fontWeight(bx(weight)).lineHeight(bx(lineHeight));
             s.textAlign(bx(align));
           }),
           className,

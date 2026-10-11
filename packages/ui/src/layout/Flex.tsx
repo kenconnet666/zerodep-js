@@ -36,23 +36,30 @@ export const Flex = _component(
     const s = useCss();
     const style = _derived([
       css(() => {
-        s.display(bx(inline ? 'inline-flex' : 'flex'));
-        s.flexDirection(bx(direction));
-        s.flexWrap(bx(wrap));
-        s.gap(bx(gap));
-        s.rowGap(bx(rowGap));
-        s.columnGap(bx(columnGap));
-        s.alignItems(bx(alignItems));
-        s.justifyContent(bx(justifyContent));
+        // 布局：inline 只决定容器在父级中的排版，direction/wrap 决定内部主轴和换行。
+        s.display(bx(inline ? 'inline-flex' : 'flex'))
+          .flexDirection(bx(direction))
+          .flexWrap(bx(wrap));
+
+        // 间距：先给统一 gap，再允许行/列单独覆盖；undefined 保留前面的默认值。
+        s.gap(bx(gap)).rowGap(bx(rowGap)).columnGap(bx(columnGap));
+
+        // 对齐分别作用于交叉轴和主轴；轴向随 direction 变化，不固定等同于水平/垂直。
+        s.alignItems(bx(alignItems)).justifyContent(bx(justifyContent));
+
+        // 字号作为子孙 em 尺寸的基准；未传入时继承父级。
         s.fontSize(bx(size));
+
+        // 作者设置了 display，仍需显式让原生 hidden 属性退出布局。
         s.select('&[hidden]', () => {
           s.display('none');
         });
+
+        // 等分仅作用于直接元素子项；清除固有最小尺寸，避免长内容阻止分配。
+        // 纵向等分仍要求外部提供可分配的容器高度，不在这里猜测高度。
         if (equal) {
           s.select('& > *', () => {
-            s.flex('1 1 0');
-            s.minInlineSize(0);
-            s.minBlockSize(0);
+            s.flex('1 1 0').minInlineSize(0).minBlockSize(0);
           });
         }
       }),

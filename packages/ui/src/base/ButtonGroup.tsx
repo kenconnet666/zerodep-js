@@ -36,44 +36,49 @@ export const ButtonGroup = _component(
         role={role}
         class={[
           css(() => {
-            s.display(bx(inline ? 'inline-flex' : 'flex'));
-            s.flexDirection(bx(direction));
-            s.flexWrap('nowrap');
-            s.gap(0);
-            s.alignItems('stretch');
+            // 一维相连：禁止换行和间距，沿交叉轴拉伸，才能让相邻边框形成连续接缝。
+            s.display(bx(inline ? 'inline-flex' : 'flex'))
+              .flexDirection(bx(direction))
+              .flexWrap('nowrap');
+            s.gap(0).alignItems('stretch');
+
+            // 统一字号让各按钮的 em 边框匹配；隔离堆叠上下文，状态层级不影响组外元素。
             s.fontSize(bx(size));
             s.isolation('isolate');
+
+            // display 由组件显式设置，保留 hidden 的原生隐藏效果。
             s.select('&[hidden]', () => {
               s.display('none');
             });
+
+            // 只等分未带 hidden 的直接按钮，其他节点不参与按钮尺寸与接缝处理。
             if (equal) {
               s.select(`& > ${item}`, () => {
-                s.flex('1 1 0');
-                s.minInlineSize(0);
-                s.minBlockSize(0);
+                s.flex('1 1 0').minInlineSize(0).minBlockSize(0);
               });
             }
+
+            // 接缝：按逻辑方向去掉内侧圆角，并重叠一层标准边框；自动适应 RTL/书写方向。
+            // 首尾选择器排除带 hidden 的按钮，切换该属性或重排后无需手工更新类名。
             if (direction === 'row') {
               s.select(afterFirst, () => {
-                s.borderStartStartRadius(0);
-                s.borderEndStartRadius(0);
+                s.borderStartStartRadius(0).borderEndStartRadius(0);
                 s.marginInlineStart(bx(`${-buttonBorderWidth}em`));
               });
               s.select(beforeLast, () => {
-                s.borderStartEndRadius(0);
-                s.borderEndEndRadius(0);
+                s.borderStartEndRadius(0).borderEndEndRadius(0);
               });
             } else {
               s.select(afterFirst, () => {
-                s.borderStartStartRadius(0);
-                s.borderStartEndRadius(0);
+                s.borderStartStartRadius(0).borderStartEndRadius(0);
                 s.marginBlockStart(bx(`${-buttonBorderWidth}em`));
               });
               s.select(beforeLast, () => {
-                s.borderEndStartRadius(0);
-                s.borderEndEndRadius(0);
+                s.borderEndStartRadius(0).borderEndEndRadius(0);
               });
             }
+
+            // 重叠边框下依次抬高 hover、持续选中、键盘焦点；禁用按钮不获得 hover 层级。
             s.select(`& > ${item}:where(:not(:disabled):not([aria-disabled="true"])):hover`, () => {
               s.zIndex(1);
             });

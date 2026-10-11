@@ -49,11 +49,13 @@ export const Icon = _component(({ icon, color, size, class: className, ...rest }
       {...rest}
       class={[
         css(() => {
-          s.display('inline-block');
-          s.verticalAlign('middle');
-          s.flexShrink(0);
-          s.color(bx(color));
-          s.fontSize(bx(size));
+          // 行内与文字居中对齐；放入 Flex 时保留图标占位，避免被长文本压扁。
+          // SVG 本身的宽高仍由图标数据提供，默认 1em。
+          s.display('inline-block').verticalAlign('middle').flexShrink(0);
+
+          // 颜色与字号只在显式传入时覆盖；undefined 保留周围文字的继承值。
+          // 只改字号即可让默认 1em 图标等比缩放，不重复写 width/height。
+          s.color(bx(color)).fontSize(bx(size));
         }),
         className,
       ]}

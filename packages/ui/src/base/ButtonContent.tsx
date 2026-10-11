@@ -32,7 +32,10 @@ const ButtonIcon = _component(
     return (
       <span
         class={css(() => {
+          // 单个网格区域叠放图标与 Spinner，两者居中；内容本身仍参与区域尺寸计算。
           s.display('inline-grid').alignItems('center').justifyItems('center');
+
+          // 图标相对按钮字号略放大，并保持独立占位，不被长标签压缩。
           s.fontSize('1.125em').flexShrink(0);
         })}
         aria-hidden="true"
@@ -40,6 +43,7 @@ const ButtonIcon = _component(
       >
         <span
           class={css(() => {
+            // 原图标留在同一网格位置，加载时只隐藏像素，保留节点、尺寸与 ref 生命周期。
             s.gridArea('1 / 1').display('inline-flex');
             s.opacity(bx(loading ? 0 : 1));
           })}
@@ -50,6 +54,7 @@ const ButtonIcon = _component(
         {loading && (
           <span
             class={css(() => {
+              // 加载器覆盖原图标区域，不额外挤开文字；自定义 Spinner 仍可影响区域尺寸。
               s.gridArea('1 / 1').display('inline-flex');
             })}
             data-ui-button-spinner
@@ -77,7 +82,10 @@ export const ButtonContent = _component(
     return (
       <span
         class={css(() => {
+          // 内容布局：装饰图标和文字整体居中，不为调用方的文字强加 Text 包装。
           s.display('inline-flex').alignItems('center').justifyContent('center');
+
+          // 间距随字号缩放；限制内容区域宽度，让按钮的换行规则能够作用于长标签。
           s.gap('0.5em').minInlineSize(0).maxInlineSize('100%');
         })}
         data-ui-button-content

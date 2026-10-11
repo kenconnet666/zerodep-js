@@ -53,20 +53,24 @@ export const Grid = _component(
     });
     const style = _derived([
       css(() => {
+        // 容器排版：inline 影响外部流布局，内部始终使用原生 Grid 轨道算法。
         s.display(bx(inline ? 'inline-grid' : 'grid'));
-        s.gridTemplateColumns(bx(tracks));
-        s.gridTemplateRows(bx(rows));
-        s.gridTemplateAreas(bx(areas));
-        s.gridAutoRows(bx(autoRows));
-        s.gridAutoColumns(bx(autoColumns));
-        s.gridAutoFlow(bx(autoFlow));
-        s.gap(bx(gap));
-        s.rowGap(bx(rowGap));
-        s.columnGap(bx(columnGap));
-        s.alignItems(bx(alignItems));
-        s.justifyItems(bx(justifyItems));
-        s.alignContent(bx(alignContent));
-        s.justifyContent(bx(justifyContent));
+
+        // 显式轨道：数字 columns 已校验并转换为等宽 repeat，字符串保持原生含义。
+        // 行定义与命名区域由调用方组合，不把二维布局转换成按钮组规则。
+        s.gridTemplateColumns(bx(tracks)).gridTemplateRows(bx(rows)).gridTemplateAreas(bx(areas));
+
+        // 自动放置：控制隐式轨道尺寸与填充方向，不改写子项的 DOM 次序。
+        s.gridAutoRows(bx(autoRows)).gridAutoColumns(bx(autoColumns)).gridAutoFlow(bx(autoFlow));
+
+        // 间距先统一设置，再允许行/列覆盖，保持 CSS 简写在长写之前。
+        s.gap(bx(gap)).rowGap(bx(rowGap)).columnGap(bx(columnGap));
+
+        // items 对齐单元格内的子项，content 对齐整组轨道，两组职责分开阅读。
+        s.alignItems(bx(alignItems)).justifyItems(bx(justifyItems));
+        s.alignContent(bx(alignContent)).justifyContent(bx(justifyContent));
+
+        // 字号只提供继承基准，不替代轨道尺寸；hidden 仍应完全退出布局。
         s.fontSize(bx(size));
         s.select('&[hidden]', () => {
           s.display('none');

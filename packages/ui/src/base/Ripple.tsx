@@ -104,12 +104,16 @@ export const Ripple = _component(
         aria-hidden="true"
         class={[
           css(() => {
-            s.position('absolute');
-            s.inset(0);
-            s.borderRadius('inherit');
-            s.overflow('hidden');
+            // 覆盖层铺满定位父级，并按按钮圆角裁剪波纹，不参与文字和图标布局。
+            s.position('absolute').inset(0);
+            s.borderRadius('inherit').overflow('hidden');
+
+            // 装饰层不能截获输入；按压事件仍由原生 button/a 处理。
             s.pointerEvents('none');
+
+            // 外观使用低透明度覆盖；波纹子节点读取 currentColor，未传颜色时沿父级继承。
             s.opacity(0.14);
+            // transition-duration 只用于解析主题时长；真正的扩散/淡出由上面的 WAAPI 控制。
             s.transitionDuration('_normal');
             s.color(bx(color));
           }),
