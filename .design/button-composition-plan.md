@@ -5,7 +5,7 @@
 ## 已确定契约
 
 - Button 是主要实现，拥有成品按钮状态、CSS 与内容装配。IconButton 只保留名称约束、纯图标默认几何和 text 默认变体；ToggleButton 只保留受控 pressed、取消顺序与内部槽状态补充。
-- LinkButton 保留真实 a 及导航、禁用、ref 语义；两种原生根只共享 Button.tsx 内的私有外观声明函数，不创建任意 as 或根组件协议。单独导入 Button 仍不带入链接处理。
+- LinkButton 保留真实 a 及导航、禁用、ref 语义；两种原生根只共享 button-shared.ts 内的私有外观声明函数，不创建任意 as 或根组件协议。单独导入 Button 仍不带入链接处理。
 - icon/startIcon/endIcon 接收 Renderable；调用方直接创建 Icon 或自定义 SVG 并设置属性/ref。文本通过 children 组合。删除 slotIcon/slotStartIcon/slotEndIcon/slotText，不保留兼容入口。
 - 内部创建的 Spinner/Ripple 保留 slotSpinner/slotRipple 对象或状态回调；Toggle 的回调仍含 pressed。
 - 加载时文字保持可见，只在一个图标区域显示 Spinner；原图标节点保留。无图标时增加起始区域，宽度可以变化。loading 继续使用原生 disabled，根 aria-busy 不变。

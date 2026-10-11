@@ -1,6 +1,6 @@
 import { _component, type JSX, type Renderable } from 'zerodep-js';
 import { Button } from './Button.js';
-import type { AccessibleName, ActionProps, ButtonState } from './button-props.js';
+import type { AccessibleName, ActionProps, ButtonState } from './button-shared.js';
 export type IconButtonProps = Omit<
   JSX.IntrinsicElements['button'],
   'size' | 'color' | 'children' | 'aria-busy'

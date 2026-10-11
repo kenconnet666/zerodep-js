@@ -2,7 +2,7 @@ import { _component, type JSX, _derived } from 'zerodep-js';
 import { css, type CssValue, bx } from 'zerodep-js-css';
 import { useCss } from '../provider/context.js';
 import type { UiTheme } from '../provider/theme/theme.js';
-import { buttonBorderWidth } from './button-props.js';
+import { buttonBorderWidth } from './button-shared.js';
 export interface ButtonGroupProps extends Omit<JSX.IntrinsicElements['div'], 'size'> {
   /** 只支持一维相连，容器不换行。 */
   direction?: 'row' | 'column' | undefined;

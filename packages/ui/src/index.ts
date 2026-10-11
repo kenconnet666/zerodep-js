@@ -7,8 +7,8 @@ export {
   type AccessibleName,
   type ActionProps,
   type LabelProps,
-} from './base/button-props.js';
-export { Button, type ButtonProps } from './base/Button.js';
+} from './base/button-shared.js';
+export { type ButtonProps, Button } from './base/Button.js';
 export { type ButtonBaseState, type ButtonBaseProps, ButtonBase } from './base/ButtonBase.js';
 export { type ButtonContentProps, ButtonContent } from './base/ButtonContent.js';
 export { type ButtonGroupProps, ButtonGroup } from './base/ButtonGroup.js';

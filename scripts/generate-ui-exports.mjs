@@ -37,19 +37,17 @@ async function collect(directory) {
     // 两种原生根仅共享内部外观声明，不公开额外的作者函数。
     entries.set(
       file,
-      file === 'base/Button.tsx'
-        ? ['Button', 'ButtonProps']
-        : file === 'base/button-props.ts'
-          ? [
-              'ButtonVariant',
-              'ButtonState',
-              'buttonBorderWidth',
-              'DecorationProps',
-              'AccessibleName',
-              'ActionProps',
-              'LabelProps',
-            ]
-          : null,
+      file === 'base/button-shared.ts'
+        ? [
+            'ButtonVariant',
+            'ButtonState',
+            'buttonBorderWidth',
+            'DecorationProps',
+            'AccessibleName',
+            'ActionProps',
+            'LabelProps',
+          ]
+        : null,
     );
   }
 }

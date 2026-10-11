@@ -1,9 +1,13 @@
 import { _component, _derived, type NativeProps, element } from 'zerodep-js';
 import { css, bx } from 'zerodep-js-css';
-import { _buttonAppearance } from './Button.js';
 import { ButtonContent } from './ButtonContent.js';
 import { Ripple } from './Ripple.js';
-import type { ActionProps, ButtonState, LabelProps } from './button-props.js';
+import {
+  _buttonAppearance,
+  type ActionProps,
+  type ButtonState,
+  type LabelProps,
+} from './button-shared.js';
 import { _resolveSlotProps } from '../utils/slot-props.js';
 import { useCss } from '../provider/context.js';
 export interface LinkButtonProps

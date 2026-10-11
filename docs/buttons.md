@@ -120,8 +120,8 @@ ButtonGroup 不提供互斥选择语义，不会让多个 ToggleButton 互斥。
 
 交互示例：apps/docs/src/pages/components/ButtonDemo.tsx。组件及消费测试在 packages/ui/test/buttons.test.ts、flex.test.ts；真实 TSX 类型反例在 buttons-types.tsx；浏览器用例在 tests/e2e/buttons.spec.ts。补全使用 pnpm lsp:completions --case 按钮属性。
 
-Button 直接拥有成品按钮的状态、CSS 和内容装配；IconButton/ToggleButton 复用它，LinkButton 保留原生链接实现。button/a 只共享 Button.tsx 中不从包根导出的外观声明函数，不再使用 ButtonView 或根组件注入。裸 ButtonBase 保持无成品外观默认值和自定义 children。
+Button 直接拥有成品按钮的状态、CSS 和内容装配；IconButton/ToggleButton 复用它，LinkButton 保留原生链接实现。button/a 只共享 button-shared.ts 中不从包根导出的外观声明函数，不再使用 ButtonView 或根组件注入。裸 ButtonBase 保持无成品外观默认值和自定义 children。
 
-ButtonContent/ButtonContentProps、DecorationProps、AccessibleName、ActionProps 和 LabelProps 继续从包根导出。删除 _buttonStyle/ButtonStyleOptions。ButtonVariant/ButtonState 与 buttonBorderWidth 位于 button-props，边框常量供标准按钮与相连接缝共用。根入口由 pnpm ui:generate 维护，pnpm ui:check 校验，不创建子目录 index.ts。本轮不增加 FloatButton/FloatButtonGroup。
+ButtonContent/ButtonContentProps、DecorationProps、AccessibleName、ActionProps 和 LabelProps 继续从包根导出。删除 _buttonStyle/ButtonStyleOptions。ButtonVariant/ButtonState 与 buttonBorderWidth 位于 button-shared，边框常量供标准按钮与相连接缝共用。根入口由 pnpm ui:generate 维护，pnpm ui:check 校验，不创建子目录 index.ts。本轮不增加 FloatButton/FloatButtonGroup。
 
 研究依据：[WAI-ARIA Button](https://www.w3.org/WAI/ARIA/apg/patterns/button/)、[Link](https://www.w3.org/WAI/ARIA/apg/patterns/link/)、[Toolbar](https://www.w3.org/WAI/ARIA/apg/patterns/toolbar/)、[Radix Flex](https://www.radix-ui.com/themes/docs/components/flex)、[Mantine Group](https://mantine.dev/core/group/)、[MUI Button 加载](https://mui.com/material-ui/api/button/)。本库使用自身运行时和原生元素，不引入上述组件库。

@@ -2,7 +2,7 @@ import { _component, type Renderable } from 'zerodep-js';
 import { css, bx } from 'zerodep-js-css';
 import { Spinner } from './Spinner.js';
 import { useCss } from '../provider/context.js';
-import type { DecorationProps } from './button-props.js';
+import type { DecorationProps } from './button-shared.js';
 
 export interface ButtonContentProps {
   loading: boolean;
