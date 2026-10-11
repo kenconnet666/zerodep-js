@@ -23,7 +23,8 @@ export const BaseDemo = _component(() => {
   };
   return (
     <section id={'base-demo'} aria-labelledby={'base-heading'}>
-      <h3 id={'base-heading'}>按钮基础组件</h3>
+      <h3 id={'base-heading'}>Text、Spinner 与按钮反馈</h3>
+      <p>Text 保留完整文本内容；截断只改变显示行数。Spinner 和波纹分别表达加载与按压反馈。</p>
       <label>
         <input type={'checkbox'} bind:checked={disabled} />
         禁用基础按钮
@@ -49,7 +50,7 @@ export const BaseDemo = _component(() => {
         显示基础预览
       </label>
       {visible && (
-        <Provider theme={dark ? darkTheme : lightTheme}>
+        <Provider class={'demo-preview'} theme={dark ? darkTheme : lightTheme}>
           <button
             type={'button'}
             onClick={() => {
@@ -67,7 +68,8 @@ export const BaseDemo = _component(() => {
           >
             切换文字行数
           </button>
-          <div class={css(() => s.inlineSize('14em'))}>
+          <p role={'status'}>显示行数：{lines ?? '不限'}</p>
+          <div class={css(() => s.inlineSize('14em').maxInlineSize('100%'))}>
             <Text lines={lines} data-text-lines>
               这是一段需要在有限宽度内展示的完整文字，切换单行、多行或不限行数只影响排版，不会删除原始内容。
             </Text>
@@ -99,14 +101,29 @@ export const BaseDemo = _component(() => {
           >
             <Text>搜索</Text>
           </Button>
-          <Spinner size={'24px'} color={'_primary'} aria-label={'正在加载'} data-spinner />
+          <span class={'spinner-example'}>
+            <Spinner size={'24px'} color={'_primary'} aria-label={'正在加载'} data-spinner />
+            <span>加载反馈</span>
+          </span>
         </Provider>
       )}
-      <output data-base-clicks>{clicks}</output>
-      <output data-base-refs>{refs}</output>
+      <dl class={'demo-results'}>
+        <div>
+          <dt>点击次数</dt>
+          <dd>
+            <output data-base-clicks>{clicks}</output>
+          </dd>
+        </div>
+        <div>
+          <dt>已挂载波纹</dt>
+          <dd>
+            <output data-base-refs>{refs}</output>
+          </dd>
+        </div>
+      </dl>
       <pre>
-        <code>{`<Button variant="outline" startIcon={<Icon icon={Search} />} slotRipple={{ color: '_primary' }}>
-  <Text weight="_semibold">搜索</Text>
+        <code>{`<Button variant={'outline'} startIcon={<Icon icon={Search} />} slotRipple={{ color: '_primary' }}>
+  <Text weight={'_semibold'}>搜索</Text>
 </Button>`}</code>
       </pre>
     </section>

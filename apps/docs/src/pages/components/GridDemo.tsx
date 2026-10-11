@@ -62,50 +62,66 @@ export const GridDemo = _component(() => {
         <input type={'checkbox'} bind:checked={narrow} />
         自动网格收窄
       </label>
-      <Provider size={large ? '32px' : '16px'}>
-        <Grid
-          columns={columns}
-          dir={rtl ? 'rtl' : 'ltr'}
-          data-grid-layout
-          style={{
-            inlineSize: '24em',
-            maxInlineSize: '100%',
-            writingMode: vertical ? 'vertical-rl' : 'horizontal-tb',
-            marginBlock: '1em',
-          }}
-        >
-          <For
-            each={Array.from({ length: count }, (_, index) =>
-              reversed ? count - index : index + 1,
-            )}
-            keyBy={(item) => item}
+      <Provider class={'demo-preview'} size={large ? '32px' : '16px'}>
+        <div class={'demo-case'}>
+          <h4>指定列数</h4>
+          <p>列数由输入控制；放大字号后保留单元格的可读宽度，空间不足可横向滚动。</p>
+          <div class={'demo-scroll'}>
+            <Grid
+              columns={columns}
+              dir={rtl ? 'rtl' : 'ltr'}
+              data-grid-layout
+              style={{
+                inlineSize: '24em',
+                minInlineSize: `${columns * 4}em`,
+                maxInlineSize: '100%',
+                writingMode: vertical ? 'vertical-rl' : 'horizontal-tb',
+                marginBlock: '1em',
+              }}
+            >
+              <For
+                each={Array.from({ length: count }, (_, index) =>
+                  reversed ? count - index : index + 1,
+                )}
+                keyBy={(item) => item}
+              >
+                {(item) => (
+                  <Button variant={'outline'} data-grid-item={item} hidden={hidden && item === 1}>
+                    操作 {item}
+                  </Button>
+                )}
+              </For>
+            </Grid>
+          </div>
+        </div>
+        <div class={'demo-case'}>
+          <h4>自动适应宽度</h4>
+          <p>按最小单元格宽度自动换列；使用“自动网格收窄”观察变化。</p>
+          <Grid
+            columns={'repeat(auto-fit, minmax(min(100%, 6em), 1fr))'}
+            gap={'0.5em'}
+            data-grid-auto
+            style={{ inlineSize: narrow ? '13em' : '26em', maxInlineSize: '100%' }}
           >
-            {(item) => (
-              <Button variant={'outline'} data-grid-item={item} hidden={hidden && item === 1}>
-                操作 {item}
-              </Button>
-            )}
-          </For>
-        </Grid>
-        <Grid
-          columns={'repeat(auto-fit, minmax(min(100%, 6em), 1fr))'}
-          gap={'0.5em'}
-          data-grid-auto
-          style={{ inlineSize: narrow ? '13em' : '26em', maxInlineSize: '100%' }}
-        >
-          <For each={[1, 2, 3, 4]} keyBy={(item) => item}>
-            {(item) => <Button variant={'outline'}>自动 {item}</Button>}
-          </For>
-        </Grid>
-        <Grid
-          columns={3}
-          data-grid-span
-          gap={'0.5em'}
-          style={'inline-size:24em;max-inline-size:100%;margin-block:1em'}
-        >
-          <Button style={'grid-column:span 2'}>跨两列</Button>
-          <Button>一列</Button>
-        </Grid>
+            <For each={[1, 2, 3, 4]} keyBy={(item) => item}>
+              {(item) => <Button variant={'outline'}>自动 {item}</Button>}
+            </For>
+          </Grid>
+        </div>
+        <div class={'demo-case'}>
+          <h4>跨列布局</h4>
+          <div class={'demo-scroll'}>
+            <Grid
+              columns={3}
+              data-grid-span
+              gap={'0.5em'}
+              style={'inline-size:24em;min-inline-size:12em;max-inline-size:100%;margin-block:1em'}
+            >
+              <Button style={'grid-column:span 2'}>跨两列</Button>
+              <Button>一列</Button>
+            </Grid>
+          </div>
+        </div>
       </Provider>
     </section>
   );

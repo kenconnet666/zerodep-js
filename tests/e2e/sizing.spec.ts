@@ -92,6 +92,26 @@ for (const mode of ['csr', 'ssr']) {
     await expect(local).toHaveCSS('padding-top', '12.5px');
     await expect(local.locator('svg')).toHaveCSS('width', '16px');
     await expect(local.locator('[data-sizing-label]')).toHaveCSS('font-size', '14px');
+    // 不指定按钮宽度时，按钮、链接和切换按钮也不能突破受限容器。
+    const longActions = page.locator('[data-long-action]');
+    for (const narrow of [false, true]) {
+      await page.getByLabel('收窄长标签容器').setChecked(narrow);
+      for (const button of await longActions.all()) {
+        expect(
+          await button.evaluate((node) => {
+            const parent = node.parentElement!;
+            const rect = node.getBoundingClientRect();
+            const bounds = parent.getBoundingClientRect();
+            return rect.right <= bounds.right && node.scrollWidth <= node.clientWidth;
+          }),
+        ).toBe(true);
+      }
+    }
+    await page.locator('[data-long-action="toggle"]').click();
+    await expect(page.locator('[data-long-action="toggle"]')).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
     expect(errors).toEqual([]);
   });
 }

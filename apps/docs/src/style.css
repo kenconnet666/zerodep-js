@@ -45,6 +45,7 @@ header {
 }
 nav {
   display: flex;
+  flex-wrap: wrap;
   gap: 24px;
 }
 main {
@@ -111,10 +112,167 @@ footer {
 [data-ui='provider-portal'] p {
   overflow-wrap: anywhere;
 }
-.provider-demo pre {
+.docs pre {
+  max-inline-size: 100%;
   overflow-x: auto;
   padding: 16px;
   background: #f0f3f7;
+}
+
+/* 目录与正文共用锚点；键盘用户可跳过顶部导航直接进入正文。 */
+.skip-link {
+  position: absolute;
+  inset-block-start: 8px;
+  transform: translateY(-200%);
+  z-index: 20;
+  padding: 8px 16px;
+  background: white;
+}
+.skip-link:focus {
+  transform: none;
+}
+.component-nav {
+  gap: 8px 16px;
+  padding-block: 12px;
+  border-block: 1px solid #dce1e8;
+}
+.docs :is(section, #provider-demo) {
+  scroll-margin-block-start: 24px;
+}
+.docs :is(section, article, .provider-grid > *) {
+  min-inline-size: 0;
+}
+.docs pre code {
+  overflow-wrap: normal;
+}
+.docs section > label,
+.demo-controls label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 12px 4px 0;
+}
+.docs input:not([type='checkbox']):not([type='radio']) {
+  max-inline-size: 100%;
+  min-inline-size: 0;
+}
+.demo-controls {
+  min-inline-size: 0;
+  margin-block: 16px;
+  padding: 12px 16px;
+  border: 1px solid #dce1e8;
+  border-radius: 8px;
+}
+.demo-controls legend {
+  padding-inline: 6px;
+  font-weight: 600;
+}
+.demo-actions,
+.demo-results {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.demo-results > div {
+  min-inline-size: 5em;
+  padding: 8px 12px;
+  background: #f0f3f7;
+  border-radius: 6px;
+}
+.demo-results dt {
+  color: #526171;
+  font-size: 0.875em;
+}
+.demo-results dd {
+  margin: 0;
+  min-block-size: 1.7em;
+  font-variant-numeric: tabular-nums;
+}
+.docs summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.demo-preview {
+  margin-block-start: 20px;
+  padding: 20px;
+  border: 1px solid #dce1e8;
+  border-radius: 10px;
+}
+.demo-case + .demo-case {
+  margin-block-start: 28px;
+  padding-block-start: 20px;
+  border-block-start: 1px solid #b5c3d4;
+}
+.demo-case h4 {
+  margin-block: 0 12px;
+  font-size: 1em;
+}
+.demo-case p {
+  margin-block: 8px 16px;
+}
+.demo-case label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-block-end: 12px;
+}
+.demo-case fieldset {
+  min-inline-size: 0;
+  padding: 16px;
+  border: 1px solid #b5c3d4;
+  border-radius: 8px;
+}
+.demo-scroll {
+  overflow: auto;
+  padding: 4px;
+}
+.long-label-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  max-inline-size: 100%;
+  padding: 12px;
+  border: 1px dashed #b5c3d4;
+  border-radius: 8px;
+}
+.demo-actions button,
+.demo-controls button {
+  font: inherit;
+  padding: 4px 12px;
+  border: 1px solid #b5c3d4;
+  border-radius: 6px;
+  background: #f7f8fa;
+  color: #202a36;
+  cursor: pointer;
+}
+.demo-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.docs :is(button:not([data-ui-action]), input, select, summary):focus-visible {
+  outline: 2px solid #245fc5;
+  outline-offset: 3px;
+}
+@media (max-width: 640px) {
+  .docs {
+    padding-inline: 12px;
+  }
+  main {
+    padding-block: 24px;
+  }
+  section {
+    padding: 12px;
+  }
+  [data-ui='provider-region'] {
+    padding: 12px;
+  }
+  .demo-preview {
+    padding: 12px;
+  }
+  .provider-controls label {
+    flex-wrap: wrap;
+  }
 }
 [data-ui='provider-portal'] {
   position: fixed;
@@ -126,4 +284,57 @@ footer {
   overflow: auto;
   box-shadow: 0 8px 28px rgb(0 0 0 / 0.2);
   border-radius: 8px;
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+  background: white;
+  color: #202a36;
+}
+.portal-close {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
+  padding: 8px 12px;
+  border: 1px solid #b5c3d4;
+  border-radius: 6px;
+  background: white;
+  color: #202a36;
+  font: inherit;
+  cursor: pointer;
+}
+.demo-controls button + button {
+  margin-inline-start: 8px;
+}
+.spinner-example {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-inline-start: 16px;
+}
+.nested-icon-preview {
+  padding: 12px;
+  border-radius: 6px;
+}
+.docs input[type='checkbox'] {
+  inline-size: 1em;
+  block-size: 1em;
+  accent-color: #245fc5;
+}
+.docs section > label,
+.demo-controls label {
+  min-block-size: 32px;
+}
+.docs :is(input[type='number'], select) {
+  padding: 4px 6px;
+  border: 1px solid #b5c3d4;
+  border-radius: 4px;
+  font: inherit;
+}
+.docs input[type='number'] {
+  inline-size: 4.5em;
+}
+[data-measure-source] {
+  outline: 1px dashed #526171;
+  outline-offset: 2px;
+  margin-block: 16px;
 }

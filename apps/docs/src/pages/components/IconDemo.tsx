@@ -40,7 +40,7 @@ export const IconDemo = _component(() => {
         继承文字样式
       </label>
       {visible && (
-        <Provider theme={dark ? darkTheme : lightTheme}>
+        <Provider class={'demo-preview'} theme={dark ? darkTheme : lightTheme}>
           <div
             style={'--icon-demo-color: rgb(120, 40, 160); color: rgb(10, 80, 120); font-size: 30px'}
           >
@@ -69,17 +69,15 @@ export const IconDemo = _component(() => {
               <Icon icon={Search} />
             </button>
           </div>
-          <Provider theme={darkTheme}>
+          <p>下面的图标使用嵌套暗色主题，不跟随外层主题开关。</p>
+          <Provider class={'nested-icon-preview'} theme={darkTheme}>
             <Icon icon={Search} color={'_primary'} data-icon={'nested'} />
           </Provider>
         </Provider>
       )}
       <pre>
-        <code>{`
-
-
-<Icon icon={Search} color="_primary" size="_lg" />
-<Icon icon={Search} color="var(--brand-color)" size="20px" />`}</code>
+        <code>{`<Icon icon={Search} color={'_primary'} size={'_lg'} />
+<Icon icon={Search} color={'var(--brand-color)'} size={'20px'} />`}</code>
       </pre>
     </section>
   );

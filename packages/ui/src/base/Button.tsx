@@ -122,10 +122,11 @@ export const Button = _component(
             s.fontWeight('_medium').textDecoration('none').textAlign('center');
             s.whiteSpace('normal').overflowWrap('anywhere');
 
-            // 尺寸：按钮不被父级 Flex 压缩；最小宽度不受标签的固有宽度限制。
+            // 尺寸：按钮不被同排项目挤窄，但不能超过容器；长文字在容器内换行。
             // 高度与内边距都用 em，随实际字号缩放，不额外引入固定像素点击区。
             s.flexShrink(0)
               .minInlineSize(0)
+              .maxInlineSize('100%')
               .minBlockSize(compact ? '2em' : '2.625em');
             // 先清空原生 padding，再按内容模式设置逻辑方向；纯图标不留文字内边距。
             s.padding(0)

@@ -101,7 +101,15 @@ export const ButtonContent = _component(
                 {startIcon}
               </ButtonIcon>
             )}
-            <span data-ui-button-label>{children}</span>
+            <span
+              data-ui-button-label
+              class={css(() => {
+                // 图标保留尺寸，标签让出剩余空间；嵌套 Text 等元素也不能抬高自动最小宽度。
+                s.minInlineSize(0);
+              })}
+            >
+              {children}
+            </span>
             {endIcon !== undefined && (
               <ButtonIcon loading={loading && startIcon === undefined} spinnerProps={spinnerProps}>
                 {endIcon}

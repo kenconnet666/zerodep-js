@@ -4,6 +4,9 @@ import { SystemPage } from './pages/system/index.js';
 
 export const App = _component(() => (
   <div class={'docs'}>
+    <a class={'skip-link'} href={'#top'}>
+      跳到正文
+    </a>
     <header>
       <a class={'brand'} href={'#top'}>
         zerodep-js
@@ -13,10 +16,12 @@ export const App = _component(() => (
         <a href={'#system'}>框架文档</a>
       </nav>
     </header>
-    <main id={'top'}>
+    <main id={'top'} tabIndex={-1}>
       <p class={'eyebrow'}>开发文档</p>
       <h1>组件与框架，从这里开始</h1>
-      <p class={'intro'}>组件用法、交互示例和框架指南。从 Provider 的主题、语言和时区开始。</p>
+      <p class={'intro'}>
+        直接操作示例，观察主题、尺寸和交互状态如何变化。组件基于标准 TSX，状态通过普通变量读写。
+      </p>
       <ComponentsPage />
       <SystemPage />
     </main>

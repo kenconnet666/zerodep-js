@@ -74,16 +74,20 @@ if (values.production) {
     server: { middlewareMode: true, ws: { server } },
   });
   const development = vite;
-  const environment = development.environments.ssr;
-  if (!environment || !isRunnableDevEnvironment(environment))
-    throw new Error('Missing runnable SSR environment.');
-  loadPage = async (url, page) => ({
-    template: await development.transformIndexHtml(
+  loadPage = async (url, page) => {
+    const template = await development.transformIndexHtml(
       url,
       await readFile(resolve(root, `${page}.html`), 'utf8'),
-    ),
-    entry: (await environment.runner.import('/src/entry-server.ts')) as ServerEntry,
-  });
+    );
+    // Vite 配置热重启会关闭旧 runner；每次请求读取当前环境，不捕获初次启动的实例。
+    const environment = development.environments.ssr;
+    if (!environment || !isRunnableDevEnvironment(environment))
+      throw new Error('Missing runnable SSR environment.');
+    return {
+      template,
+      entry: (await environment.runner.import('/src/entry-server.ts')) as ServerEntry,
+    };
+  };
 }
 
 function reply(response: ServerResponse, status: number, message: string) {

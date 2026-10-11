@@ -69,7 +69,7 @@ export const ProviderDemo = _component(() => {
   let portal = _state(false);
   let visible = _state(true);
   return (
-    <div class={'provider-demo'}>
+    <div class={'provider-demo'} id={'provider-demo'}>
       <h3>Provider：主题、语言与时区</h3>
       <p>独立切换外层设置；关闭内层覆盖后，它会重新继承外层。输入内容在切换时保留。</p>
       <div class={'provider-controls'}>
@@ -125,10 +125,21 @@ export const ProviderDemo = _component(() => {
               <Preview name={'inner'} />
               {portal && (
                 <Portal>
-                  <Preview name={'portal-direct'} />
-                  <Provider data-ui={'provider-portal'} data-provider={'portal'}>
-                    <Preview name={'portal'} />
-                  </Provider>
+                  <div data-ui={'provider-portal'} role={'region'} aria-label={'主题继承浮层'}>
+                    <button
+                      class={'portal-close'}
+                      type={'button'}
+                      onClick={() => {
+                        portal = false;
+                      }}
+                    >
+                      关闭主题浮层
+                    </button>
+                    <Preview name={'portal-direct'} />
+                    <Provider data-provider={'portal'}>
+                      <Preview name={'portal'} />
+                    </Provider>
+                  </div>
                 </Portal>
               )}
             </Provider>
@@ -136,7 +147,7 @@ export const ProviderDemo = _component(() => {
         </Provider>
       )}
       <pre>
-        <code>{`<Provider theme={lightTheme} lang={zhCN} locale="zh-CN" timeZone="Asia/Shanghai">
+        <code>{`<Provider theme={lightTheme} lang={zhCN} locale={'zh-CN'} timeZone={'Asia/Shanghai'}>
   <App />
 </Provider>`}</code>
       </pre>

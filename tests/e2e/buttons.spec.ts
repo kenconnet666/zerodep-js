@@ -312,6 +312,10 @@ for (const mode of ['csr', 'ssr']) {
     await expect(mixed.nth(1)).toHaveCSS('border-radius', '0px');
     await expect(mixed.nth(2)).toHaveCSS('border-radius', '0px');
     const equal = demo.locator('[data-equal] > button');
+    const natural = demo.locator('[data-natural-width] > button');
+    expect((await natural.nth(1).boundingBox())!.width).toBeGreaterThan(
+      (await natural.nth(0).boundingBox())!.width,
+    );
     const selected = mixed.nth(2);
     await selected.click();
     await expect(selected).toHaveAttribute('aria-pressed', 'true');
