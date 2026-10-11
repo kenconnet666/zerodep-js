@@ -4,13 +4,13 @@
 
 ## 阶段
 
-| 阶段 | 范围                                             | 状态                             |
-| ---- | ------------------------------------------------ | -------------------------------- |
-| R0   | 基线 CI、生成声明一致性                          | 5616bae 完整 CI 已通过           |
-| R1   | F2/F3/F6 两层泛型表单与类型；CSS P1 单类组合内核 | 焦点验证通过，提交后完整 CI 验收 |
-| R2   | F1/F4 编译与列表矩阵；ButtonBase/Icon 试点       | 焦点验证通过，提交后完整 CI 验收 |
-| R3   | F5 资源/异步；UI 迁移、删除旧 CSS API            | 已迁移删除，焦点验证通过         |
-| R4   | F7 SSR/接管/类型与独立消费、文档清理和完整 CI    | 待实施                           |
+| 阶段 | 范围                                             | 状态                                       |
+| ---- | ------------------------------------------------ | ------------------------------------------ |
+| R0   | 基线 CI、生成声明一致性                          | 5616bae 完整 CI 已通过                     |
+| R1   | F2/F3/F6 两层泛型表单与类型；CSS P1 单类组合内核 | 已完成，包含在 47731e9 的完整 CI 验收中    |
+| R2   | F1/F4 编译与列表矩阵；ButtonBase/Icon 试点       | 已完成，包含在 47731e9 的完整 CI 验收中    |
+| R3   | F5 资源/异步；UI 迁移、删除旧 CSS API            | 已完成，47731e9 完整 CI 通过               |
+| R4   | F7 SSR/接管/类型与独立消费、文档清理和完整 CI    | 实现与本地验收完成；远端以最终提交检查为准 |
 
 ## 实施约束
 
@@ -46,3 +46,28 @@
 - F5 增加旧成功/失败和卸载后返回的普通 Promise 用例，包含旧请求不得清除新 loading 的检查；运行时现有取消/清理正确，无需引入任务 API。requests 文档同步示例。
 - CSS runtime 12 例、CSS compiler 46 例通过。core 生命周期/reactivity/ref 焦点测试通过；Grid/Flex 迁移后与 lifecycle 16 例通过。Chromium buttons/base/grid/provider/icon 共 18 例（含 CSR/SSR）通过。
 - CSS/UI 生成检查、native 生成检查、独立 LSP 与变更 lint/格式检查作为阶段门槛；完整矩阵在最终提交验收。
+
+### R4 与最终交付边界
+
+- R3 已提交 47731e9，独立 tgz 消费通过：安装、声明、泛型/事件、预编译库、旧公开入口缺席、CSR/SSR、接管、卸载及 tree-shaking。CssProps 的删除另有真实类型负例，未用运行时 typeof 代替类型验收。
+- SSR render/css-context/css-keywords/id 与 development 五文件 27 例通过；Chromium hydration/css/layered-fields 共 20 例通过，覆盖节点身份、接管前编辑、错误接管恢复、CSS 主题与懒加载、请求隔离和多层 props。
+- 新增 binding-language.test：独立启动官方语言服务，泛型两层组件正确源码 → readonly 写回错误 → 恢复，诊断 0 → TS2540 → 0，错误仍位于原 bind 行。焦点测试及该文件的 lint/LSP 通过。
+- 本轮没有新增公共 API，也没有重写本来正确的依赖图、列表或清理运行时。实际框架修复是泛型组件绑定类型；其他明确边界用现有及新增组合用例固定。
+
+## 语义证据矩阵
+
+| 工作包 | 证据入口                                                            | 结论                                                                              |
+| ------ | ------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| F1     | compiler macros/derived-patterns、core reactivity                   | 保留普通 JS 结果/顺序、实际同步依赖、异常恢复和合法快照；组合回归通过             |
+| F2     | LayeredFieldsExample、components/props、projection                  | 参数别名/default/rest 直接响应；泛型转发误报已修复                                |
+| F3     | layered-fields/authoring/forms/group、绑定类型夹具                  | 可选值、最新回调、整份替换和只读/错误写回检查；原生 IME/reset 路径继续覆盖        |
+| F4     | ListExample、flow、loops                                            | 同 key 保留节点/草稿，排序与最新事件数据正确；过滤销毁后恢复新实例                |
+| F5     | core lifecycle/reactivity/refs、flow/base/provider、requests        | 旧结果和旧 loading 不覆盖新请求，卸载取消和失败清理有明确责任                     |
+| F6     | projection、binding-language、独立 lsp:inspect、native/css/ui check | 官方 TS7 正反例、源码坐标、泛型上下文及生成一致性通过；当前旧连接需重载时单独说明 |
+| F7     | SSR 五文件、hydration/css、独立 tgz 消费；完整 CI 的开发/平台矩阵   | 本地相关场景通过；完整验收看最终提交 CI，不借用旧提交的通过记录                   |
+
+## 远端验收与清理
+
+- 运行时与 API 迁移提交 47731e9 的 [完整 CI](https://github.com/kenconnet666/zerodep-js/actions/runs/38117779881) 全部任务成功，包含六个平台、三浏览器、Linux/Windows 独立消费、主验证和发行产物生成。后续语言服务回归与记录提交仍需自身完整 CI，不预先宣称通过。
+- 生成产物保留供 IDE/应用使用；临时迁移/清理脚本、浏览器配置与独立结果目录已删除。独立消费脚本已回收其临时包、安装和私有 store。用户已有 `.codex/lsp4ij/` 保留。
+- For 参数解构、深层 props 参数解构、可覆写派生、自动异步呈现等仍在原计划的候选边界外，不作为未完成的本轮实施项。
