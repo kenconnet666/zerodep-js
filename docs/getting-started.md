@@ -1,6 +1,6 @@
 # 开始使用 zerodep-js
 
-zerodep-js 使用标准 TSX、显式变量式状态和一次初始化的组件。当前源码采用固定的 微软官方 TS7.1、Babel 与 Vite；发布状态见 [执行记录](execution.md)和[变更记录](../CHANGELOG.md)。源码工作区运行方式见 [环境配置](environment-setup.md)。
+zerodep-js 使用标准 TSX、显式变量式状态和一次初始化的组件。当前源码采用固定的 微软官方 TS7.1、Babel 与 Vite；发布状态见 [维护范围](production-plan.md)和[变更记录](../CHANGELOG.md)。源码工作区运行方式见 [环境配置](environment-setup.md)。
 
 ## 当前源码工作区
 

@@ -70,7 +70,6 @@ jobs:
       - run: pnpm format:check
       - name: 检查生成数据
         run: pnpm -r --filter "./packages/**" generate:check
-      - run: pnpm lint
       - name: 编译 core
         run: pnpm --dir packages/core build
       - name: 编译 CSS
@@ -81,6 +80,8 @@ jobs:
         run: pnpm --dir packages/ui build
       - name: 生成 UI 类型声明
         run: pnpm --dir packages/ui build:types
+      # 类型感知 lint 需要工作区依赖的声明产物。
+      - run: pnpm lint
       - name: 检查各项目类型与框架语义
         run: pnpm -r check
       - name: 检查仓库工具类型与框架语义

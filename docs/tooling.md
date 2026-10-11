@@ -2,7 +2,7 @@
 
 当前源码按用户最新要求固定微软官方 `typescript@7.1.0-dev.20261008.1` 与 Babel 8，Vite 负责开发和打包。项目不再编译、打补丁或分发 TypeScript SDK。接口变化集中在 `packages/compiler` 的适配层，只维护选定的 TS7.1 版本。
 
-换机、安装缓存、应用补丁与回退的完整步骤见 [环境配置](environment-setup.md)。
+安装与当前 WebStorm 配置见 [环境配置](environment-setup.md)。
 
 ## 职责
 
@@ -23,25 +23,13 @@
 
 ## 构建和检查
 
-下列命令列出完整工程入口；日常本地只检查改动相关范围，完整检查、构建与测试交给 CI。
-
-```sh
-pnpm --dir packages/core build
-pnpm --dir packages/css build
-pnpm --dir packages/compiler build
-pnpm --dir packages/ui build
-pnpm --dir packages/ui build:types
-pnpm -r check
-pnpm check
-pnpm -r build:client
-pnpm -r build:server
-```
+具体操作和 CI 顺序统一维护在 [开发命令](commands.md)。本地只检查修改文件的 LSP 错误和必要的局部短测试。
 
 普通运行时包由 SDK 的 `tsc -p tsconfig.json --noCheck` 输出 JS、声明与映射。包含框架宏的应用通过 Vite 插件转换，不能把仅经 tsc 擦除类型的宏调用作为可执行产物。
 
 `zerodep-check -p tsconfig.json` 同时执行框架规则和SDK 类型检查。它覆盖配置包含及实际依赖的源文件，不只检查当前路由加载的组件。`--json` 输出结构化诊断；文件/目录与 `--stdin` 模式只执行框架语义检查。
 
-Vite 保留框架语义错误反馈，不在每次转换时启动项目类型检查。生产入口先检查一次，再分别构建 client/server。原 `typeCheck` 选项和自有编译会话已移除。
+Vite 保留框架语义错误反馈，不在每次转换时启动项目类型检查。CI 独立执行类型检查及 client/server 构建。原 `typeCheck` 选项和自有编译会话已移除。
 
 ## 绑定类型与映射
 
@@ -57,15 +45,9 @@ Vite 保留框架语义错误反馈，不在每次转换时启动项目类型检
 
 ## 语言工具与编辑器边界
 
-```sh
-pnpm --dir packages/compiler lsp:setup
-pnpm --dir packages/compiler lsp:verify
-pnpm --dir packages/compiler lsp:completions
-```
-
 项目 `zerodep_js_lsp` 基于选定 SDK 的 LSP/API。命名空间属性补全来自 JSX 上下文中的真实符号，不硬编码候选；导航追溯组件原属性并跟随声明映射。绑定检查使用同一投影规则，普通重命名、自动导入等继续交给SDK 语言服务。
 
-磁盘配置、独立语言工具和 IDE/已运行 MCP 进程是不同层次。独立测试通过后，已启动 MCP 仍可能需要新会话加载模块。项目工具从 `node_modules/typescript` 解析 SDK；WebStorm 类型引擎使用同版本的原生预览项；配置更改不证明旧进程已经退出。框架扩展在 IDE 中的实际接入需单独验证，不能以 MCP 成功代替 IDE 验收。
+磁盘配置、独立语言工具和 IDE/已运行 MCP 进程是不同层次。独立测试通过后，已启动 MCP 仍可能需要新会话加载模块。项目工具从 `node_modules/typescript` 解析 SDK；WebStorm 选择项目 SDK 并关闭服务驱动类型引擎；配置更改不证明旧进程已经退出。框架扩展在 IDE 中的实际接入需单独验证，不能以 MCP 成功代替 IDE 验收。
 
 LSP 探针会在主示例目录创建临时源码，不与同一工作区的应用 check/build 同时执行。脚本负责恢复文件并关闭自己创建的服务。
 
@@ -73,31 +55,11 @@ LSP 探针会在主示例目录创建临时源码，不与同一工作区的应�
 
 `zerodep-language-server --stdio` 是 compiler 包提供的标准 LSP 入口。传输与增量文档管理使用微软的 vscode-languageserver / vscode-languageserver-textdocument；它与 MCP 复用官方进程、框架检查和源码映射。编辑器连接关闭时释放官方进程与监听，多个未保存文件共享该连接的缓冲区，临时检查投影不会覆盖原文。
 
-2026-10-09 当前 WebStorm 使用内置 TypeScript 服务与内置 React 插件的通用 JSX/TSX 支持。用户启用 React 插件后确认 `bind:checked` 原语法的编辑能力可用，保留现有绑定 API。LSP4IJ 的额外框架服务器接入已撤销，其补全详情等待曾造成 IDE 界面线程卡死；不再将这条接入路线作为本机默认配置。
-
-`lsp:setup` 现在只配置项目 MCP，不再生成或安装 LSP4IJ 模板。独立标准 LSP 命令保留，供协议客户端显式启动。
+WebStorm 使用内置 TypeScript 服务及 React 插件提供的通用 JSX 支持，当前设置见 [环境配置](environment-setup.md)。lsp:setup 只配置项目 MCP，不生成 LSP4IJ 模板；标准 LSP 可供其他编辑器显式连接。
 
 标准协议测试覆盖跨文件未保存修改、Unicode 增量范围、绑定写回负例与修复、重命名、引用及自动导入。Windows URI 的盘符大小写和编码差异先归一化；同一绑定在投影中的读写引用合并为原文的一次编辑。补全 resolve 重开原投影并映射自动导入编辑，有限的菜单上下文在连接关闭时释放。
 
 不声明生成代码的格式化、语义 token 或未经验证的编辑能力。历史验证记录不代表当前 IDE 已启用该服务，当前接入以本节开头为准。
-
-### WebStorm 的服务驱动类型引擎
-
-按 2026-10-09 最新决定，IDE 与项目统一使用微软官方 npm typescript@7.1.0-dev.20261008.1。catalog 固定版本，主包与七个平台包的完整性写入 lockfile；移除 JetBrains GitHub 下载和平台 overrides，不修改 SDK 内核。
-
-EAP 263.6259.34 原始代理使用旧快照 API，与新 SDK 不兼容。用户授权直接修改 IDE 代理；补丁只将两个 API 调用改为 getCurrentLanguageServerSnapshot，并将两个按配置路径查找项目的调用改为 getConfiguredProject，保留原有快照租约和释放逻辑。
-
-`scripts/language-services/webstorm-patch.mjs <IDE目录> check|apply|restore` 管理此本机补丁。脚本只接受已验证的原文件/补丁 SHA256，备份保存在代理文件旁的 index.js.original-263.6259.34；不分发 JetBrains 代理源码。IDE 更新后校验不符就停止，需重新研究，不能盲目套用旧补丁。
-
-IDE Registry 的 typescript.native-preview.ts-go.version 设为 v7.1.0-dev.20261008.1，TypeScript 选择“TypeScript 7（原生）”，开启“服务驱动的类型引擎”。发行包须先进入该版本的预览缓存，再重启 TypeScript 服务。本机已确认 IDE 的 LSP 与代理进程使用官方新 SDK；独立代理类型查询返回 string，IDE 的 _thin 查询返回声明及中文说明；框架诊断、泛型绑定导航和错误修复循环另由项目 LSP 验证。
-
-### 与 WebStorm 复用 LSP 的范围
-
-项目与 IDE 预览缓存使用同一份微软官方 TypeScript 发行二进制，各自运行 tsc --lsp --stdio 并管理独立文档连接。IDE 自身的 ts-go-proxy 仍使用已验证的 API 适配补丁，这不改变 SDK 来源。
-
-[JetBrains 公开 LSP API](https://plugins.jetbrains.com/docs/intellij/language-server-protocol.html) 是 IDE 的客户端/插件集成 API，不是可直接代替 TypeScript 的服务端。ts-go-proxy 则以 IDE 专有 JSON 命令连接 SDK API，服务于类型引擎，不能作为标准 stdio LSP 配置。
-
-项目现有 Zerodep LSP 仍保留必要的 bind 写回检查、源码映射和命名空间导航，底层统一使用同一份 微软官方 SDK。若把入口直接换成原生 tsc LSP，会丢失这些框架增强。无需再维护第二个通用语言服务器或复制 WebStorm 插件；IDE 专有能力通过 WebStorm MCP 读取，框架能力通过项目服务读取。
 
 ## 生成类型与注释
 
@@ -105,4 +67,4 @@ IDE Registry 的 typescript.native-preview.ts-go.version 设为 v7.1.0-dev.20261
 
 生成文件有明确人工维护入口，禁止修改生成输出绕过检查。源码中文注释解释默认值、求值顺序、资源所有权、映射和生命周期等不明显的原因，不机械复述语句。
 
-当前迁移验证与未完成事项见 [执行记录](execution.md)，发布规则见 [发布](releasing.md)。
+维护范围见 [维护范围](production-plan.md)，发布规则见 [发布](releasing.md)。

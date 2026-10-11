@@ -1,6 +1,6 @@
 # CSS 回调作者
 
-CSS 由本仓库 zerodep-js-css 提供，使用真实属性方法、同步回调和结构化样式结果。迁移计划与验证记录见 [重构计划](css-redesign-plan.md)。本次是破坏性作者 API 迁移，core/compiler ABI 为 5，应用和预编译库需要一起重建。
+CSS 由本仓库 zerodep-js-css 提供，使用真实属性方法、同步回调和结构化样式结果。本次是破坏性作者 API 迁移，core/compiler ABI 为 5，应用和预编译库需要一起重建。
 
 ## 作者与组合
 

@@ -12,7 +12,7 @@
 | 浏览器          | 面向现代 DOM、Proxy、WeakRef/FinalizationRegistry 和 AbortController 环境。CI 使用固定 Playwright 版本的 Chromium、Firefox、WebKit；状态保留移动提供 moveBefore 兼容路径。 |
 | Windows / Linux | Windows 本地与独立包消费、Linux 完整 CI 均有证据。WebKit 自动化不等于实机 Safari 或所有平台输入法验证。                                                                    |
 | 输入法          | 三浏览器组合事件序列已验证；Chromium CDP 编辑管线已覆盖候选、提交、取消、外部更新及 Unicode 选区。协议输入不等于 OS 输入法实测。                                           |
-| 编辑器          | 项目框架 LSP 与 WebStorm 原生类型引擎分开配置；指定 EAP 构建、同版本 SDK 和代理补丁步骤见 [环境配置](environment-setup.md)，不将历史 SDK 实测套到其他版本。                |
+| 编辑器          | 项目框架 LSP 与 WebStorm 内置编辑支持分开配置；当前关闭服务驱动类型引擎，SDK 与编辑器配置见 [环境配置](environment-setup.md)，不将历史 SDK 实测套到其他版本。              |
 
 包的体积和速度没有硬性上限，仍保留资源回收、压力和按需打包观察。验证脚本的运行超时用于发现挂起，不是性能排名或用户负载承诺。
 
@@ -43,4 +43,4 @@
 
 ## 发布边界
 
-历史交付与注册表验收保留在 CHANGELOG。当前源码固定微软官方 TS7.1.0-dev.20261008.1、Babel 与 Vite；基础 API 最新提交、CI 与待发布边界见 [交接记录](api-hardening-handoff.md)，之前迁移和发布证据见 [执行记录](execution.md)。历史候选通过不代表当前提交通过，稳定 1.0.0 尚未发布。
+历史交付与注册表验收保留在 CHANGELOG。当前源码固定微软官方 TS7.1.0-dev.20261008.1、Babel 与 Vite；发布门槛见 [发布与恢复](releasing.md)，当前维护范围见 [维护范围](production-plan.md)。历史候选通过不代表当前提交通过，稳定 1.0.0 尚未发布。

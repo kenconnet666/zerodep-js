@@ -4,7 +4,7 @@
 
 优先保证实现简单、容易维护、使用方便、类型提示准确，并用适当中文注释解释关键语义。性能不是首要目标，不维护自有 TypeScript 分支、原生 SDK 或跨命令编译后台。
 
-> 当前源码已收拢为 core、css、compiler：CSS 在本仓库维护，Vite 插件来自 compiler 根入口。新结构尚未发布；既有 rc.9 npm 产物仍是旧布局，不能用旧包验证下面的新入口。历史发行证据见 [维护交接](docs/api-hardening-handoff.md)。
+> 当前源码已收拢为 core、css、compiler：CSS 在本仓库维护，Vite 插件来自 compiler 根入口。新结构尚未发布；既有 rc.9 npm 产物仍是旧布局，不能用旧包验证下面的新入口。历史发行证据见 [变更记录](CHANGELOG.md)。
 
 ## 工作区
 
@@ -21,7 +21,7 @@
 
 ## 开发
 
-完整换机步骤见 [环境配置](docs/environment-setup.md)，包括 SDK、WebStorm 补丁、MCP/LSP 和回退。
+完整换机步骤见 [环境配置](docs/environment-setup.md)，包括 SDK、WebStorm 配置和 MCP/LSP。
 
 使用 Node 24、pnpm 10.34.5；当前工作区使用 微软官方 TypeScript 7.1.0-dev.20261008.1。安装不需要 Go 或 TypeScript 源码仓库。TypeScript target/lib 与 Vite 默认输出统一使用 ES2025；新内置 API 仍由运行环境提供。
 
@@ -73,4 +73,4 @@ Vite 使用 zerodep-js-compiler 的 zerodep()。应用 TS 配置使用 `jsx: "pr
 
 原生 [CSS](docs/css.md) 由工作区 zerodep-js-css 提供：命名 css 自动追踪，安全动态值隐式绑定元素变量；zerodep() 默认完成转换，无需适配器或扩展配置。
 
-UI 的 [按钮与 Flex](docs/buttons.md) 已提供独立槽转发、等比尺寸、受控切换及相连布局。当前状态见 [UI 交接](docs/handoff-ui-buttons-2026-10-09.md)，UI 保持 private。
+UI 的 [按钮与 Flex](docs/buttons.md) 已提供独立槽转发、等比尺寸、受控切换及相连布局。UI 保持 private。

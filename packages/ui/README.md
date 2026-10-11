@@ -18,7 +18,7 @@
 
 后续组件按职责放置，不增加 `components` 层；input/display/feedback/navigation 仍为预留目录。公开 API 统一从 `src/index.ts` 导出。
 
-成品组件契约与示例见 [按钮与 Flex](../../docs/buttons.md)，当前工程状态见 [UI 交接](../../docs/handoff-ui-buttons-2026-10-09.md)。
+成品组件契约与示例见 [按钮与 Flex](../../docs/buttons.md)。
 
 二维布局见 [Grid](../../docs/grid.md)。Grid 不修改子项外观；ButtonGroup 不支持二维。
 

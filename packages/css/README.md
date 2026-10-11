@@ -16,4 +16,4 @@ return <div class={[base, style, className]} />;
 
 UI 的 useCss 来自 zerodep-js-ui；独立使用可 new Css() 或 createCssContext。组件 props 复用 CssValue，class 复用 core ClassValue。所有入口都在包根，不手工拼接样式结果或变量。
 
-正式契约、SSR 接线、选择器和动画见 [CSS 文档](../../docs/css.md)，迁移阶段见 [重构计划](../../docs/css-redesign-plan.md)。生成器为 scripts/generate-css-author.mjs，数据来自固定 CSSType；源码目录只有 generated/runtime/util。
+正式契约、SSR 接线、选择器和动画见 [CSS 文档](../../docs/css.md)。生成器为 scripts/generate-css-author.mjs，数据来自固定 CSSType；源码目录只有 generated/runtime/util。

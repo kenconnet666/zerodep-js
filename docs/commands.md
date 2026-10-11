@@ -51,6 +51,6 @@ pnpm --dir apps/example dev
 
 ## 本地与 CI
 
-本地只做改动文件的 LSP/IDE 局部语法诊断、配置语法检查和必要的短测试。例如修改一个工具测试后，执行 `pnpm exec vitest run tests/tooling/workspace-scripts.test.ts`。完整类型检查、构建、长测试和完整语言服务验证均交给 CI；不因改了配置或公共类型而在本地补跑全量检查。
+先看命令的实际执行范围与耗时；会启动完整类型检查、构建、浏览器或长循环的验证交给 CI。本地只做修改文件的 LSP 错误检查和必要的局部短测试。例如修改一个工具测试后，执行 `pnpm exec vitest run tests/tooling/ci-browser-image.test.ts`。完整类型检查、构建、长测试和完整语言服务验证均交给 CI；不因改了配置或公共类型而在本地补跑全量检查。
 
 CI 保留六平台编译器验证、三浏览器、Linux/Windows 独立消费、稳定性、语言服务和工程检查。各 job 显式准备自己的构建依赖，类型检查与测试不再承担隐含构建责任。发布仍要求同一提交全部必需任务成功，复用 CI 保存的固定 tgz 和摘要。

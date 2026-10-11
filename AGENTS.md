@@ -5,12 +5,12 @@
 - 直接在当前主目录工作，只有用户明确要求才创建或使用新工作树。保留用户已有改动。
 - 独立 TSX 细粒度响应式框架。只维护本仓库 CSS：packages/css 承担作者、生成数据和浏览器/SSR 宿主；compiler 内置 CSS 转换和 Vite 插件，不维护 Vue/Svelte 适配、CompileExtension 或公开 adapter。2026-10-11 已批准新的 bx 作者标记，取代此前删除 bx 的约定。相邻 zerodep-css 仓库只作为历史迁移来源。
 - 2026-10-08 用户已授权建立 packages/ui 与 apps/docs，并确认实施 div Provider、继承 SystemKeywords 的亮暗主题、独立语言/地区/时区，以及日期库接入。契约见 docs/provider.md；UI 仍保持 private。2026-10-09 已授权在 packages/ui/src/base 实施 Icon，静态导入 Lucide 数据；通用主题/token 归 packages/ui/src/provider/theme，组件专用默认值留在组件内部，基础属性复用 CSS 输入类型。其他组件另行讨论。框架主计划为 docs/production-plan.md。
-- 2026-10-09 用户最新决定：IDE 与项目统一固定微软官方 TypeScript 7.1.0-dev.20261008.1，取代此前 JetBrains 分支。主包与平台包直接使用官方 npm 发行版，catalog 精确锁定并由 lockfile 校验；不维护 SDK 内核补丁或多版本兼容。Babel/Vite 不变；已授权备份并适配 WebStorm EAP 的 ts-go-proxy，开启服务驱动类型引擎并验证实际行为。
+- 2026-10-09 用户最新决定：IDE 与项目统一固定微软官方 TypeScript 7.1.0-dev.20261008.1，取代此前 JetBrains 分支。主包与平台包直接使用官方 npm 发行版，catalog 精确锁定并由 lockfile 校验；不维护 SDK 内核补丁或多版本兼容。Babel/Vite 不变；WebStorm 使用项目 SDK，当前关闭服务驱动类型引擎。
 - 首要目标是简单易维护、方便使用、良好类型提示与适当中文注释。性能次要；不为减少依赖或解析次数引入复杂后台、缓存和协议。
 - 控制流按语义选择：同一判别值下的多个互斥模式优先集中为 switch，同类 case 可合并；布尔判断、简单二选一、有序校验和类型守卫保留清楚的 if/早返回。先归并重复判断，不机械替换关键字或增加包装函数。
-- 2026-10-08 用户已授权按基础 API 计划自主执行、完善测试和修复，并允许为简洁性适当调整 API；在实施前记录选定契约，不必逐项再次确认。本地只跑相关焦点检查，完整测试交 CI。CSS 0.3.1 与框架 rc.8 已交付，发布/恢复证据见 docs/api-hardening-handoff.md；此前限时窗口已经结束，不作为后续截止时间，不触发额度重置或购买。
+- 2026-10-08 用户已授权按基础 API 计划自主执行、完善测试和修复，并允许为简洁性适当调整 API；在实施前记录选定契约，不必逐项再次确认。本地只跑相关焦点检查，完整测试交 CI。CSS 0.3.1 与框架 rc.8 已交付，发布/恢复规则见 docs/releasing.md，历史发行证据见 CHANGELOG.md；此前限时窗口已经结束，不作为后续截止时间，不触发额度重置或购买。
 - 保留显式变量式 _state/_derived（无 .value）、_component 参数解构/默认值/实时 rest、bind、DOM bind:this、_lazy、快照和开发状态保留。不能以弱化类型或生命周期、表单、列表、SSR 断言完成迁移。
-- 选择性参考 Svelte 的语义和资源所有权，参考 Vue Devtools 的使用体验；无需复制其全部功能。以 docs/production-plan.md、docs/semantics.md 和 .design/standard-toolchain-plan.md 为执行依据。
+- 选择性参考 Svelte 的语义和资源所有权，参考 Vue Devtools 的使用体验；无需复制其全部功能。以 docs/production-plan.md、docs/semantics.md 和 docs/tooling.md 为执行依据。
 
 - 2026-10-08 后续决定：删除 `_task` 整组 API，不新增 `_query`；参考 Svelte 的普通 async/await 请求，复用现有状态与生命周期。保留 useCss 写法，服务端 CSS 标签由应用自己拼接，不改动该流程。
 
@@ -18,16 +18,16 @@
 
 ## 结构与 API
 
-- 2026-10-11 最新批准的 CSS 重构以 docs/css-redesign-plan.md 为准：const s = useCss(); css(() => { s.color(bx(color)).width(bx(width)); }); 真实方法、同步运行时收集、整个回调重算、select 入口、undefined 忽略、bx 接受主题 token 并在属性处安全回退；系统关键字查表后按原值输出，主题 token 由作者/Provider 的主题变量机制处理，不额外套 bx 元素变量。class 数组先组合结构化声明再生成单类；主题改为 Provider CSS 变量继承，不使用 @scope；动画保留结构化结果。这些决定取代下文历史字符串作者和主题 class 切换限制。正式旧入口迁移后删除，不长期保留兼容层。
+- 2026-10-11 CSS 当前契约以 docs/css.md 为准：const s = useCss(); css(() => { s.color(bx(color)).width(bx(width)); }); 真实方法、同步运行时收集、整个回调重算、select 入口、undefined 忽略、bx 接受主题 token 并在属性处安全回退；系统关键字查表后按原值输出，主题 token 由作者/Provider 的主题变量机制处理，不额外套 bx 元素变量。class 数组先组合结构化声明再生成单类；主题改为 Provider CSS 变量继承，不使用 @scope；动画保留结构化结果。旧字符串属性作者及主题 class 切换方案已撤销，不保留兼容层。
 
-- 2026-10-11 目标模式实施：单类组合统一使用 css；删除 _mergeClasses、className(name) 标记函数和 CssProps 重复公开别名，不保留兼容入口。普通 DOM class/className 能力保留，CSS 变量协议仍由编译器及原生渲染处理。执行证据见 docs/framework-css-execution.md。
+- 2026-10-11 目标模式实施：单类组合统一使用 css；删除 _mergeClasses、className(name) 标记函数和 CssProps 重复公开别名，不保留兼容入口。普通 DOM class/className 能力保留，CSS 变量协议仍由编译器及原生渲染处理。当前语义见 docs/css.md，历史验收查对应提交 CI。
 
-- 2026-10-11：普通函数、局部解构和返回值继续按 JavaScript 取值；新增 `_derived`/`_derived.by` 声明解构，共享一次原生解构结果，字段只读。CSS 保留直接命名 const 自动派生，包装函数在 JSX 或 `_derived` 中更新。此前 CSS 协议基线为 ABI 4；新作者迁移按最新计划更新协议并要求旧应用/预编译库重建。不新增活引用函数。
+- 2026-10-11：普通函数、局部解构和返回值继续按 JavaScript 取值；新增 `_derived`/`_derived.by` 声明解构，共享一次原生解构结果，字段只读。CSS 保留直接命名 const 自动派生，包装函数在 JSX 或 `_derived` 中更新。当前 core/compiler ABI 为 5，旧应用与预编译库需一起重建。不新增活引用函数。
 
 - core 提供 DomRef/_composeRefs 并允许 DOM bind:this 与 ref 共存；UI src/utils 承担组件组合与按压工具，src/base 提供 Icon/Text/Ripple/Spinner 及直接渲染原生按钮的 Button。仅维护 UI src/index.ts 根入口，由 pnpm --dir packages/ui generate 自动生成，pnpm --dir packages/ui generate:check 校验；不创建子目录 index.ts。
 - 组件使用独立 slotXxx 属性转发底层参数，例如 slotRipple；多个部件分别提供各自属性，不使用统一 slotProps 对象。对象/状态回调只复用 _resolveSlotProps 解析；已删除 _mergeSlotProps 和 _composeEventHandlers。
 - 基础组件 size 表示 CSS 字号基准；Icon/Spinner 宽高 1em，Button 未传 size 时继承字号，文字/纯图标模式各自使用既定几何。组件内部视觉尺寸（含边框/焦点）默认用 em；不隐式叠加 rem 点击区域下限，应用可显式约束。根 Provider 默认 _md，嵌套默认继承，size 支持任意合法 CSS 字号。测量使用实际 CSS px，观察工具按需启用并清理。
-- Button（文字/图标）/ToggleButton/LinkButton/Flex 已进入源码。相连职责归 ButtonGroup，Flex 仅做普通布局；不保留旧 Group 别名。加载采用原生 disabled，MenuButton 暂不做。稳定契约见 docs/buttons.md；docs/handoff-ui-buttons-2026-10-09.md 是旧阶段记录，不作为当前 API 清单；完整验收以对应提交 CI 为准。
+- Button（文字/图标）/ToggleButton/LinkButton/Flex 已进入源码。相连职责归 ButtonGroup，Flex 仅做普通布局；不保留旧 Group 别名。加载采用原生 disabled，MenuButton 暂不做。稳定契约见 docs/buttons.md；完整验收以对应提交 CI 为准。
 - 2026-10-09 新增 Grid，位于 UI layout 并由根入口自动导出。支持原生 CSS 二维轨道；后续已取消 attached 二维相连。当前契约见 docs/grid.md。
 
 - CSS 只公开包根 src/index.ts，不提供 /server 或 /internal 子入口；主题继承机制归 CSS，具体 UI 主题归 UI。Vite 通过标准 browser 字段替换浏览器宿主，源码采用普通相对导入。
@@ -53,13 +53,15 @@
 
 - 编译语义测试在 packages/compiler/test，工具链测试在 tests/tooling，浏览器测试在 tests/e2e。测试实际框架和选定 SDK，不以 mock 或空用例代替功能验收。
 - 各项目命令维护在自己的 package.json，类型检查、编译、声明生成、客户端/服务端构建、测试分别执行，不隐式串联。根目录仅保留仓库工具、跨包验收和发布操作，CI 显式安排前置构建。
-- 本地仅做改动文件的 LSP/IDE 局部语法诊断与必要的短测试；配置、公共类型或语言工具变更也不在本地运行完整类型检查、构建、长测试或完整 LSP 矩阵。这些检查全部交给 CI，局部通过后继续提交、推送，不以本地全量验收作为前置。
+- 先评估验证脚本的实际范围与执行时间。本地仅做改动文件的 LSP 错误检查与必要的局部短测试；配置、公共类型或语言工具变更也不在本地运行完整类型检查、构建、长测试或完整 LSP 矩阵。这些检查全部交给 CI，局部通过后继续提交、推送，不以本地全量验收作为前置。
 - 每个可审阅阶段中文提交并推送；推送前检查上一轮 CI 并修复真实失败，推送后继续工作，不空等或反复轮询。未完成的 CI 不记为通过。
 - CI 按浏览器、平台和 Linux/Windows 独立消费并行；发布等待同一提交全部必需任务通过，不减少用例或放宽断言提速。
 - 已授权生产验收后使用环境变量中的 npm token 发布固定 tgz 到 next，并核对注册表与干净安装；凭据不写入文件或日志。发布与恢复见 docs/releasing.md，未经授权不提升 latest。
 - 项目服务名 zerodep_js_lsp，由 pnpm --dir packages/compiler lsp:setup 配置，不改全局或其他项目设置。先独立验证，再请求重新加载；磁盘配置、独立服务、当前会话和 IDE 实际接入分别说明。
 - 换机先阅读 docs/environment-setup.md；API 对照研究见 .design/svelte-api-review.md，未确认的提议不能当作已实现契约。
 - 2026-10-11 用户改用项目 node_modules/typescript（官方 7.1.0-dev.20261008.1），关闭 WebStorm 服务驱动类型引擎，使用 IDE 自身的类型分析处理字符串导航与文档。此前原生预览/代理适配只保留为历史说明，不再要求开启服务驱动引擎。SDK 不自动加载项目框架增强；IDE MCP 可能漏报 TS 错误，不能把空诊断当作验收。
+
+- 文档只维护当前契约、操作指南和仍有价值的研究；已完成的重复计划与交接直接删除，历史过程查 Git。测试保留真实行为与回归，不为脚本拼写、固定数量或一次性迁移清单设置长期断言。
 
 ## 清理
 

@@ -150,4 +150,4 @@
 - 完整 raw-text 规则、HTML/SVG 标签名称规范化和 script 双重转义保护；明确支持与安全边界。
 - 固定产物与完整性、候选 CI、注册表消费及稳定 tag 提升工具；MIT 许可和统一版本策略。
 
-用户将本轮收尾调整为 RC1 交付和 zerodep-css 接入研究；接入方案见 [.design/zerodep-css-integration.md](.design/zerodep-css-integration.md)，尚未实施。稳定版本与后续接入由讨论后的任务继续推进。
+用户将本轮收尾调整为 RC1 交付和 zerodep-css 接入研究；接入方案见 [当时的接入方案](https://github.com/kenconnet666/zerodep-js/blob/890ef5b/.design/zerodep-css-integration.md)，尚未实施。稳定版本与后续接入由讨论后的任务继续推进。

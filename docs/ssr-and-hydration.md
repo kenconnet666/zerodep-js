@@ -1,6 +1,6 @@
 # SSR、CSR 与客户端接管
 
-本文记录已经实现的入口与边界。完整生产验收仍在推进，进度见 [execution.md](execution.md)。
+本文记录已经实现的入口与边界。完整生产验收仍在推进，进度见 [维护范围](production-plan.md)。
 
 ## 同一 App 的两个入口
 

@@ -1,6 +1,6 @@
 # Naive UI 按钮体系研究
 
-2026-10-11。检查官方 main 的固定提交 [8b249214](https://github.com/tusen-ai/naive-ui/tree/8b249214f17328a47eeb57dd5c7b80a47c94d116)，该提交 package.json 为 2.45.3。以下是源码与官方示例审阅，不是对 Naive UI 的本地运行验收；研究后用户批准普通按钮的内容槽与实现收敛，明确暂不做浮动按钮；最终契约见 button-composition-plan.md。
+2026-10-11。检查官方 main 的固定提交 [8b249214](https://github.com/tusen-ai/naive-ui/tree/8b249214f17328a47eeb57dd5c7b80a47c94d116)，该提交 package.json 为 2.45.3。以下是源码与官方示例审阅，不是对 Naive UI 的本地运行验收；研究后用户批准普通按钮的内容槽与实现收敛，明确暂不做浮动按钮；最终契约见 [按钮文档](../docs/buttons.md)。
 
 ## 组件划分与实现
 
