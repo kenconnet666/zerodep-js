@@ -25,6 +25,22 @@ for (const mode of ['csr', 'ssr']) {
     }
     await page.goto(url);
     await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
+    const clipped = page.locator('[data-text-lines]');
+    const fullText = await clipped.textContent();
+    await expect(clipped).toHaveCSS('-webkit-line-clamp', '2');
+    expect(await clipped.evaluate((node) => node.scrollHeight > node.clientHeight)).toBe(true);
+    await page.getByRole('button', { name: '切换文字行数', exact: true }).click();
+    await expect(clipped).toHaveCSS('white-space', 'nowrap');
+    await expect(clipped).toHaveCSS('text-overflow', 'ellipsis');
+    expect(await clipped.textContent()).toBe(fullText);
+    await page.getByRole('button', { name: '切换文字行数', exact: true }).click();
+    await expect(clipped).toHaveCSS('display', 'inline');
+    await expect(clipped).toHaveCSS('-webkit-line-clamp', 'none');
+    await expect(clipped).not.toHaveAttribute('lines');
+    await expect(clipped).not.toHaveAttribute('title');
+    expect(await clipped.textContent()).toBe(fullText);
+    await page.getByRole('button', { name: '切换文字行数', exact: true }).click();
+    await expect(clipped).toHaveCSS('-webkit-line-clamp', '2');
     const button = page.getByRole('button', { name: '基础搜索', exact: true });
     const wave = page.locator('[data-ripple] > span');
     const text = page.locator('[data-base-text]');

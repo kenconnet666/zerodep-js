@@ -5,6 +5,21 @@ import type { CssString } from '../util/author.js';
 /** 属性原始值类型，仅用于类型检查和补全，不复制系统关键字运行时表。 */
 export interface KeywordValues {
   /**
+   * 指定旧版弹性盒的排列方向；仅为多行截断兼容保留，常规布局请使用 Flex/Grid。（-webkit-box-orient）
+   *
+   * CSS 初始值：`inline-axis`（不同于浏览器默认样式表）。
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/-webkit-box-orient
+   */
+  readonly WebkitBoxOrient: keyof BoxOrientValues | CssString;
+  /**
+   * 限制多行文本显示的行数；与 display: -webkit-box、WebkitBoxOrient('vertical') 和 overflow: hidden 配合，不删除文本内容。（-webkit-line-clamp）
+   *
+   * CSS 初始值：`none`（不同于浏览器默认样式表）。
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/-webkit-line-clamp
+   */
+  readonly WebkitLineClamp:
+    keyof WebkitLineClampValues | Exclude<Property.WebkitLineClamp, string> | CssString;
+  /**
    * 设置复选框、单选框等原生控件的强调色；具体使用部位由浏览器决定。（accent-color）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
@@ -3831,6 +3846,8 @@ export interface KeywordValues {
 type EmptyTokens = Readonly<Record<never, never>>;
 const empty: EmptyTokens = Object.freeze({});
 export class SystemKeywords {
+  readonly WebkitBoxOrient: EmptyTokens = empty;
+  readonly WebkitLineClamp: EmptyTokens = empty;
   readonly accentColor: EmptyTokens = empty;
   readonly alignContent: EmptyTokens = empty;
   readonly alignItems: EmptyTokens = empty;
@@ -5362,6 +5379,45 @@ interface DeprecatedSystemColorValues {
    * @see https://developer.mozilla.org/docs/Web/CSS/system-color
    */
   readonly WindowText: 'WindowText';
+}
+interface BoxOrientValues extends GlobalsValues {
+  /**
+   * 原生 CSS 关键字 block-axis。
+   *
+   * 指定旧版弹性盒的排列方向；仅为多行截断兼容保留，常规布局请使用 Flex/Grid。该值的具体行为见属性参考。
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/-webkit-box-orient
+   */
+  readonly 'block-axis': 'block-axis';
+  /**
+   * 原生 CSS 关键字 horizontal。
+   *
+   * 指定旧版弹性盒的排列方向；仅为多行截断兼容保留，常规布局请使用 Flex/Grid。该值的具体行为见属性参考。
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/-webkit-box-orient
+   */
+  readonly horizontal: 'horizontal';
+  /**
+   * 原生 CSS 关键字 inline-axis。
+   *
+   * 指定旧版弹性盒的排列方向；仅为多行截断兼容保留，常规布局请使用 Flex/Grid。该值的具体行为见属性参考。
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/-webkit-box-orient
+   */
+  readonly 'inline-axis': 'inline-axis';
+  /**
+   * 原生 CSS 关键字 vertical。
+   *
+   * 指定旧版弹性盒的排列方向；仅为多行截断兼容保留，常规布局请使用 Flex/Grid。该值的具体行为见属性参考。
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/-webkit-box-orient
+   */
+  readonly vertical: 'vertical';
+}
+interface WebkitLineClampValues extends GlobalsValues {
+  /**
+   * 原生 CSS 关键字 none。
+   *
+   * 限制多行文本显示的行数；与 display: -webkit-box、WebkitBoxOrient('vertical') 和 overflow: hidden 配合，不删除文本内容。该值的具体行为见属性参考。
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/-webkit-line-clamp
+   */
+  readonly none: 'none';
 }
 interface AccentColorValues
   extends GlobalsValues, NamedColorValues, SystemColorValues, DeprecatedSystemColorValues {

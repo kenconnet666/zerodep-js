@@ -4,11 +4,13 @@
 - 只维护 AGENTS.md 和用于 GitHub/npm 介绍的 README；不恢复 docs/.design/.agent 或其他 Markdown 文档，不为每轮变更新建计划、交接或验收汇总。API 细节以源码类型和示例为准，历史查 Git。
 - 独立标准 TSX 细粒度框架，只维护本仓库 core/css/compiler/ui。相邻框架仅作研究，不恢复外部适配或已删除的 use/vite/ssr 包。
 - 简洁可维护、方便使用、准确类型提示优先。新 API 从实际业务讨论；不为对应 Svelte/Solid 名称扩大功能，不增加无必要抽象、后台、缓存或兼容层。
+- 发现问题时沿同类组件和调用链检查关联的 CSS、core、编译器与工具，修复有证据的共同问题，不局限当前文件，也不借机扩大无关需求。
 - 保留显式 _state/_derived、普通变量读写与 props 参数解构/default/rest 直接响应，无 .value；普通函数、局部解构和 return 遵循 JS 取值。保留 bind、生命周期、列表身份、SSR/接管及真实回归断言。
 - 手写 TSX/JSX 的字符串属性统一使用 prop={'字符串'}，沿用 WebStorm 自动补出的表达式容器；变量与条件表达式也直接放在容器内。原生 HTML 保持 HTML 语法，编译器测试字符串可保留其他合法 JSX 写法以覆盖语法支持，不将作者风格变成框架限制。
-- CSS 使用 useCss + 同步 css 回调、真实链式方法、bx、select；系统关键字保留原值，主题 token 交给主题变量机制，安全值才元素变量化。class 数组合成单类；无复用的样式直接写模板 class。
+- CSS 使用 useCss + 同步 css 回调、真实链式方法、bx、select；系统关键字保留原值，主题 token 交给主题变量机制，安全值才元素变量化。class 数组合成单类；没有跨位置复用、动画资源或其他特殊处理的样式，直接写在模板 class={css(() => ...)} 中，不额外声明转发样式变量或抽共享函数。
 - CSS 作者按布局、尺寸/间距、文字、外观、交互状态等用途组织多条短链，复用同一个 s，组间留空行。注释说明布局目的、覆盖顺序、尺寸约定和特殊状态，必要时用两三行讲清原因；不逐属性翻译。保留简写/长写和条件声明的求值与覆盖顺序，不为分组新建作者实例或辅助 API。
 - UI 保持 private；Button 直接渲染 button，纯图标用 icon，ToggleButton 复用，LinkButton 保留 a。无 ButtonBase/IconButton、共享外观模块或任意根注入。其他组件/API 按实际需求讨论。
+- 按钮外观支持 solid/outline/text/soft；density 的 normal/compact 只调整几何尺寸，size 仍为字号。主题负责默认交互配色，显式颜色不被 hover/active 覆盖；暂不增加 tone。Text 的 lines 为正安全整数，1 表示单行省略，其余为多行截断；不自动创建 Tooltip 或删除文本内容。
 - 各包只公开 src/index.ts 根入口；CSS 用 generated/runtime/util，compiler 用 transform/checking/language/tooling，core 的 SSR 在 ssr、JSX 在 native、协议在 runtime；UI 无 internal/子目录 index.ts，根导出由 generate 维护。
 - 顶层框架函数单下划线声明并直接导出；UI 消费入口沿用 useCss/useLang/useLocale。中文注释解释语义、原因和所有权；多互斥模式可用 switch，不机械替换清楚的 if。
 - 使用 Node 24、固定 pnpm、catalog 精确固定的微软官方 TS7.1 夜间版本和 ES2025；不降级 TS6、不维护多版本或 SDK 补丁，不添加其他锁文件或默认 polyfill。

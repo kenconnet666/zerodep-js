@@ -9,7 +9,12 @@ import type {
 } from '../src/index.js';
 import type { CssValue } from 'zerodep-js-css';
 
-const text: TextProps = { as: 'h2', color: '_primary', weight: 500, size: '1.25rem' };
+const text: TextProps = { as: 'h2', color: '_primary', weight: 500, size: '1.25rem', lines: 2 };
+// @ts-expect-error 行数只接受数字；零和非整数由运行时校验。
+const invalidLines: TextProps = { lines: '2' };
+// @ts-expect-error 密度独立于字号，不提供其他尺寸别名。
+const invalidDensity: ButtonProps = { density: 'small' };
+void [invalidLines, invalidDensity];
 const color: CssValue<'color', UiTheme> = '_primary';
 const button: ButtonProps = {
   size: '_md',

@@ -129,7 +129,7 @@ it.each([
   },
 );
 
-it.each(['solid', 'outline', 'text'] as const)(
+it.each(['solid', 'outline', 'text', 'soft'] as const)(
   '%s 变体默认值、选中状态和显式配色按层覆盖',
   (variant) => {
     for (const pressed of [false, true]) {
@@ -148,7 +148,11 @@ it.each(['solid', 'outline', 'text'] as const)(
       expectCssValue(
         result,
         'background-color',
-        filled ? lightTheme.backgroundColor._primary : 'transparent',
+        filled
+          ? lightTheme.backgroundColor._primary
+          : variant === 'soft'
+            ? lightTheme.backgroundColor._primarySurface
+            : 'transparent',
       );
       expectCssValue(
         result,
@@ -183,7 +187,11 @@ it.each(['solid', 'outline', 'text'] as const)(
     expectCssValue(
       link,
       'background-color',
-      variant === 'solid' ? lightTheme.backgroundColor._primary : 'transparent',
+      variant === 'solid'
+        ? lightTheme.backgroundColor._primary
+        : variant === 'soft'
+          ? lightTheme.backgroundColor._primarySurface
+          : 'transparent',
     );
     expectCssValue(
       link,

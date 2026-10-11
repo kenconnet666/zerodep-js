@@ -7,7 +7,7 @@ import { ButtonContent, type DecorationProps } from './ButtonContent.js';
 import { _resolveSlotProps } from '../utils/slot-props.js';
 import { useCss } from '../provider/context.js';
 
-export type ButtonVariant = 'solid' | 'outline' | 'text';
+export type ButtonVariant = 'solid' | 'outline' | 'text' | 'soft';
 export interface ButtonState {
   readonly variant: ButtonVariant;
   /** 调用方显式禁用，不包含 loading。 */
@@ -27,6 +27,8 @@ export interface ActionProps<S> {
   variant?: ButtonVariant | undefined;
   /** CSS 字号，省略时继承；内部几何尺寸按 em 缩放。 */
   size?: CssValue<'fontSize', UiTheme>;
+  /** 只改变高度与内边距，compact 不缩小字号；图标模式同步缩小方形区域。 */
+  density?: 'normal' | 'compact' | undefined;
   /** 前景色；与 backgroundColor 分开，不自动推算对比文字色。 */
   color?: CssValue<'color', UiTheme>;
   backgroundColor?: CssValue<'backgroundColor', UiTheme>;
@@ -67,6 +69,7 @@ export const Button = _component(
     type = 'button',
     variant = 'solid',
     size,
+    density = 'normal',
     color,
     backgroundColor,
     borderColor,
@@ -103,7 +106,10 @@ export const Button = _component(
         class={[
           css(() => {
             const iconOnly = icon !== undefined;
+            const compact = density === 'compact';
             const pressed = ariaPressed === true || ariaPressed === 'true';
+            const filled = variant === 'solid' || pressed;
+            const customColors = color != null || backgroundColor != null || borderColor != null;
             // 布局：边框计入盒子尺寸；relative 为内部 Ripple 提供定位参照。
             // 图标与文字在按钮中居中，行内使用时与周围内容保持垂直对齐。
             s.boxSizing('border-box').position('relative');
@@ -118,13 +124,15 @@ export const Button = _component(
 
             // 尺寸：按钮不被父级 Flex 压缩；最小宽度不受标签的固有宽度限制。
             // 高度与内边距都用 em，随实际字号缩放，不额外引入固定像素点击区。
-            s.flexShrink(0).minInlineSize(0).minBlockSize('2.625em');
+            s.flexShrink(0)
+              .minInlineSize(0)
+              .minBlockSize(compact ? '2em' : '2.625em');
             // 先清空原生 padding，再按内容模式设置逻辑方向；纯图标不留文字内边距。
             s.padding(0)
-              .paddingBlock(bx(`${iconOnly ? 0 : 0.625}em`))
-              .paddingInline(bx(`${iconOnly ? 0 : 1}em`));
+              .paddingBlock(bx(`${iconOnly ? 0 : compact ? 0.3125 : 0.625}em`))
+              .paddingInline(bx(`${iconOnly ? 0 : compact ? 0.625 : 1}em`));
             if (iconOnly) {
-              s.inlineSize('2.625em');
+              s.inlineSize(compact ? '2em' : '2.625em');
             }
 
             // 边框：各变体预留相同边框空间，切换配色时不改变几何尺寸。
@@ -132,7 +140,7 @@ export const Button = _component(
             s.borderStyle('solid').borderWidth('0.0625em').borderRadius('0.5em');
 
             // 配色：先建立透明底色和边框，再由 variant 设置默认外观。
-            // text 沿用透明声明，outline 只补边框，solid 同时设置前景与背景。
+            // text 沿用透明声明，outline 补边框，soft 使用柔和底色；solid 使用实心配色。
             s.color('_primary').backgroundColor('transparent').borderColor('transparent');
             switch (variant) {
               case 'solid':
@@ -140,6 +148,9 @@ export const Button = _component(
                 break;
               case 'outline':
                 s.borderColor('_primary');
+                break;
+              case 'soft':
+                s.backgroundColor('_primarySurface');
                 break;
               case 'text':
                 break;
@@ -160,17 +171,50 @@ export const Button = _component(
               s.display('none');
             });
             s.select('&:disabled, &[aria-disabled="true"]', () => {
-              s.cursor('not-allowed').opacity('_disabled');
+              s.cursor('not-allowed');
+              if (customColors) {
+                // 自定义色不被主题重写，保留用透明度表达禁用的既有行为。
+                s.opacity('_disabled');
+              } else {
+                // 默认禁用用主题前景/表面表达，不再对整组文字和图标二次变淡。
+                s.color('_disabled')
+                  .backgroundColor(
+                    filled || variant === 'soft' ? '_disabledSurface' : 'transparent',
+                  )
+                  .borderColor(variant === 'outline' ? '_border' : 'transparent');
+              }
             });
+
+            // 悬停/按下只改未显式配置的颜色，不对整个按钮加滤镜，避免连图标一起变暗。
+            // 两种状态共用同一组规则；外部 CSS 仍可在对应选择器中覆盖默认状态。
+            const feedback = (active: boolean) => {
+              if (color == null && !filled) s.color(active ? '_primaryPressed' : '_primaryHover');
+              if (backgroundColor == null) {
+                switch (filled ? 'solid' : variant) {
+                  case 'solid':
+                    s.backgroundColor(active ? '_primaryPressed' : '_primaryHover');
+                    break;
+                  case 'soft':
+                    s.backgroundColor(active ? '_primarySurfacePressed' : '_primarySurfaceHover');
+                    break;
+                  case 'outline':
+                  case 'text':
+                    s.backgroundColor(active ? '_primarySurfaceHover' : '_primarySurface');
+                    break;
+                }
+              }
+              if (borderColor == null && variant === 'outline')
+                s.borderColor(active ? '_primaryPressed' : '_primaryHover');
+            };
 
             // 指针反馈只应用于可激活项；hover 限定到支持悬停的设备，避免触屏粘住状态。
             s.select('@media (hover: hover)', () => {
               s.select('&:not(:disabled):not([aria-disabled="true"]):hover', () => {
-                s.filter('brightness(0.92)');
+                feedback(false);
               });
             });
             s.select('&:not(:disabled):not([aria-disabled="true"]):active', () => {
-              s.filter('brightness(0.84)');
+              feedback(true);
             });
 
             // 键盘焦点使用外置轮廓，不占布局空间，也不依赖 Ripple 是否开启。

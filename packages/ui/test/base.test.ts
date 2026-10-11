@@ -61,7 +61,7 @@ it('Button 保留原生按钮语义、独立焦点样式及可关闭 Ripple', ()
   expect(result.css).toContain(':focus-visible');
   expect(result.css).toContain('outline-width:0.125em;');
   expect(result.css).toContain('outline-offset:0.125em;');
-  expect(result.css).toContain('&:disabled, &[aria-disabled="true"]{cursor:not-allowed;opacity:');
+  expect(result.css).toContain('&:disabled, &[aria-disabled="true"]{cursor:not-allowed;color:');
   expect(
     render(Button, {
       type: 'submit',

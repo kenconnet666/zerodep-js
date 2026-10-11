@@ -5,6 +5,30 @@ import type { SystemKeywords } from './keywords.js';
 /** 真实方法作者；声明写入当前 css 收集范围，实例只保存主题来源。 */
 export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T> {
   /**
+   * 指定旧版弹性盒的排列方向；仅为多行截断兼容保留，常规布局请使用 Flex/Grid。（-webkit-box-orient）
+   *
+   * CSS 初始值：`inline-axis`（不同于浏览器默认样式表）。
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/-webkit-box-orient
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   */
+  WebkitBoxOrient(value: PropertyInput<'WebkitBoxOrient', T>): this {
+    this.write('WebkitBoxOrient', '-webkit-box-orient', value);
+    return this;
+  }
+  /**
+   * 限制多行文本显示的行数；与 display: -webkit-box、WebkitBoxOrient('vertical') 和 overflow: hidden 配合，不删除文本内容。（-webkit-line-clamp）
+   *
+   * CSS 初始值：`none`（不同于浏览器默认样式表）。
+   * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/-webkit-line-clamp
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   */
+  WebkitLineClamp(value: PropertyInput<'WebkitLineClamp', T>): this {
+    this.write('WebkitLineClamp', '-webkit-line-clamp', value);
+    return this;
+  }
+  /**
    * 设置复选框、单选框等原生控件的强调色；具体使用部位由浏览器决定。（accent-color）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。

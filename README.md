@@ -31,6 +31,8 @@ export const Counter = _component(({ step = 1 }: { step?: number }) => {
 
 所有公开 API 从各包根入口导入。没有独立 use/router/store/持久化包，也不提供外部框架适配。
 
+UI 组件在 Provider 内使用。按钮支持 solid/outline/text/soft 外观，`density={'compact'}` 调整几何尺寸而不缩小字号，`color` 始终表示前景色。Text 的 `lines={1}` 为单行省略，`lines={2}` 等正整数为多行截断；完整内容保留在 DOM 中，不自动添加 Tooltip。
+
 ## 启动
 
 使用 Node 24 和 package.json 固定的 pnpm。在仓库根运行：

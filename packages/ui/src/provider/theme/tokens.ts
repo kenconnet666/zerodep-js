@@ -26,6 +26,12 @@ export interface UiColors {
   readonly _primaryHover: KeywordValues['color'];
   /** 主操作按下颜色。 */
   readonly _primaryPressed: KeywordValues['color'];
+  /** 主操作的柔和表面颜色。 */
+  readonly _primarySurface: KeywordValues['color'];
+  /** 柔和主操作表面的悬停颜色。 */
+  readonly _primarySurfaceHover: KeywordValues['color'];
+  /** 柔和主操作表面的按下颜色。 */
+  readonly _primarySurfacePressed: KeywordValues['color'];
   /** 主操作背景上的文字与图标颜色。 */
   readonly _onPrimary: KeywordValues['color'];
   /** 成功状态颜色。 */

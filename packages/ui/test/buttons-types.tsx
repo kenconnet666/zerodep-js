@@ -8,6 +8,8 @@ export const ButtonTypes = _component(() => {
   return (
     <ButtonGroup>
       <Button
+        variant={'soft'}
+        density={'compact'}
         size={'2vw'}
         color={'_primary'}
         slotSpinner={(state) => ({ color: state.loading ? '_muted' : 'currentColor' })}
@@ -27,6 +29,8 @@ export const ButtonTypes = _component(() => {
         bind:pressed={pressed}
       />
       <LinkButton
+        variant={'soft'}
+        density={'compact'}
         href={'/docs'}
         ref={(node) => {
           node.href = '/docs';

@@ -34,6 +34,48 @@ async function open(page: Page, mode: string) {
 }
 
 for (const mode of ['csr', 'ssr']) {
+  test(`${mode} 柔和外观、紧凑密度与主题状态独立更新，显式颜色保持优先`, async ({ page }) => {
+    await open(page, mode);
+    const demo = page.locator('#button-demo');
+    const soft = demo.locator('[data-appearance="soft"]');
+    const link = demo.locator('[data-appearance="link"]');
+    const normal = demo.locator('[data-appearance="normal"]');
+    await expect(soft).toHaveCSS('background-color', 'rgb(232, 239, 251)');
+    await soft.hover();
+    await expect(soft).toHaveCSS('background-color', 'rgb(216, 229, 250)');
+    await expect(soft).toHaveCSS('filter', 'none');
+    await page.mouse.down();
+    await expect(soft).toHaveCSS('background-color', 'rgb(198, 217, 246)');
+    await page.mouse.up();
+
+    await demo.getByLabel('按钮暗色', { exact: true }).check();
+    await expect(soft).toHaveCSS('background-color', 'rgb(36, 54, 80)');
+    await soft.hover();
+    await expect(soft).toHaveCSS('background-color', 'rgb(32, 49, 76)');
+    await demo.getByLabel('按钮自定义色', { exact: true }).check();
+    await soft.hover();
+    await expect(soft).toHaveCSS('color', 'rgb(18, 52, 86)');
+    await expect(soft).toHaveCSS('background-color', 'rgb(254, 220, 186)');
+    await page.mouse.down();
+    await expect(soft).toHaveCSS('background-color', 'rgb(254, 220, 186)');
+    await page.mouse.up();
+    await demo.getByLabel('按钮自定义色', { exact: true }).uncheck();
+
+    await demo.getByLabel('紧凑按钮', { exact: true }).check();
+    await expect(soft).toHaveCSS('font-size', '16px');
+    await expect(soft).toHaveCSS('height', '32px');
+    await expect(link).toHaveCSS('height', '32px');
+    await expect(normal).toHaveCSS('height', '42px');
+    await expect(soft).not.toHaveAttribute('density');
+    await demo.getByLabel('按钮禁用', { exact: true }).check();
+    await expect(soft).toBeDisabled();
+    await expect(soft).toHaveCSS('opacity', '1');
+    await expect(soft).toHaveCSS('color', 'rgb(137, 149, 165)');
+    await expect(soft).toHaveCSS('background-color', 'rgb(48, 57, 71)');
+    await expect(link).not.toHaveAttribute('href');
+    await expect(link).toHaveAttribute('aria-disabled', 'true');
+  });
+
   test(`${mode} 连续颜色更新复用类名和规则，保留主题切换`, async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (error) => errors.push(error.message));
@@ -141,7 +183,8 @@ for (const mode of ['csr', 'ssr']) {
     await expect(base).toBeDisabled();
     await expect(base).not.toHaveAttribute('disabled');
     await expect(base).toHaveCSS('cursor', 'not-allowed');
-    expect(await base.evaluate((node) => Number(getComputedStyle(node).opacity))).toBeLessThan(1);
+    await expect(base).toHaveCSS('opacity', '1');
+    await expect(base).toHaveCSS('color', 'rgb(115, 126, 140)');
     await base.dispatchEvent('click');
     await expect(demo.locator('[data-button-clicks]')).toHaveText('1');
     await expect(demo.locator('[data-action="legend"]')).toBeEnabled();

@@ -7,7 +7,8 @@ export function expectCssValue(
   value: string,
 ) {
   const declarations = [
-    ...result.css.matchAll(new RegExp(`(?:[;{])${RegExp.escape(property)}:([^;}]+)`, 'g')),
+    // 嵌套选择器结束后仍可继续写父级声明，前一个分隔符也可能是 }。
+    ...result.css.matchAll(new RegExp(`(?:[;{}])${RegExp.escape(property)}:([^;}]+)`, 'g')),
   ];
   const found = declarations.some(([, declaration]) => {
     if (declaration === value) return true;

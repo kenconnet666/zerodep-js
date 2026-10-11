@@ -35,6 +35,7 @@ export const ButtonDemo = _component(() => {
     refs = _state(0);
   let items = _state(['第一项', '中间项', '最后项']);
   let liveColor = _state('#245fc5');
+  let compact = _state(false);
   const observe = (_node: SVGSVGElement) => {
     refs++;
     return () => {
@@ -56,6 +57,10 @@ export const ButtonDemo = _component(() => {
       <label>
         <input type={'checkbox'} bind:checked={large} />
         按钮放大
+      </label>
+      <label>
+        <input type={'checkbox'} bind:checked={compact} />
+        紧凑按钮
       </label>
       <label>
         <input type={'checkbox'} bind:checked={dark} />
@@ -115,6 +120,33 @@ export const ButtonDemo = _component(() => {
       </button>
       {visible && (
         <Provider theme={dark ? darkTheme : lightTheme} size={large ? '32px' : '16px'}>
+          <p>柔和外观提供次要操作层次；紧凑密度只减少高度和内边距，不缩小文字。</p>
+          <Flex>
+            <Button data-appearance={'normal'} ripple={false}>
+              常规密度
+            </Button>
+            <Button
+              data-appearance={'soft'}
+              variant={'soft'}
+              density={compact ? 'compact' : 'normal'}
+              disabled={disabled}
+              color={custom ? '#123456' : undefined}
+              backgroundColor={custom ? '#fedcba' : undefined}
+              ripple={false}
+            >
+              柔和操作
+            </Button>
+            <LinkButton
+              data-appearance={'link'}
+              href={'#button-heading'}
+              variant={'soft'}
+              density={compact ? 'compact' : 'normal'}
+              disabled={disabled}
+              ripple={false}
+            >
+              柔和链接
+            </LinkButton>
+          </Flex>
           <div data-button-color-demo>
             <label>
               按钮连续颜色 <input type={'color'} bind:value={liveColor} />

@@ -90,15 +90,24 @@ function members(name) {
     }));
 }
 const properties = new Map();
+// 多行截断仍需这两个浏览器兼容属性；不因此引入整套废弃或厂商专属 API。
+const compatibility = new Set(['WebkitLineClamp', 'WebkitBoxOrient']);
 for (const [camel, hyphen] of [
   ['StandardLonghandProperties', 'StandardLonghandPropertiesHyphen'],
   ['StandardShorthandProperties', 'StandardShorthandPropertiesHyphen'],
   ['SvgProperties', 'SvgPropertiesHyphen'],
+  ['VendorLonghandProperties', 'VendorLonghandPropertiesHyphen'],
+  ['ObsoleteProperties', 'ObsoletePropertiesHyphen'],
 ]) {
   const names = members(camel),
     cssNames = members(hyphen);
   if (names.length !== cssNames.length) throw new Error('CSS property interfaces are misaligned.');
   for (const [index, item] of names.entries()) {
+    if (
+      (camel === 'VendorLonghandProperties' || camel === 'ObsoleteProperties') &&
+      !compatibility.has(item.name)
+    )
+      continue;
     const types = item.type.type === 'TSUnionType' ? item.type.types : [item.type];
     const reference = types.find(
       (type) =>
