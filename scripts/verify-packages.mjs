@@ -115,7 +115,7 @@ try {
         ),
         'core 不得包含旧入口产物。',
       );
-      assert(files.has('THIRD_PARTY_NOTICES.md'), 'core 缺少生成数据的第三方许可。');
+      assert(files.has('THIRD_PARTY_NOTICES'), 'core 缺少生成数据的第三方许可。');
       assert(
         ![...files].some((file) => /^(src|dist)\/(router|storage)(\/|\.)/.test(file)),
         'core 包不能残留拆出能力的源码或旧构建文件。',

@@ -1,6 +1,6 @@
 // 由 pnpm --dir packages/core generate 生成，请修改 scripts/generate-native.mjs 后重新生成。
 // 数据来源：property-information@7.2.0、html-element-attributes@3.5.0。
-// 原作者及 MIT 许可见 ../THIRD_PARTY_NOTICES.md；类型补充不改变浏览器支持范围。
+// 原作者及 MIT 许可见 ../THIRD_PARTY_NOTICES；类型补充不改变浏览器支持范围。
 export const svgAliases = {
   accentHeight: 'accent-height',
   alignmentBaseline: 'alignment-baseline',

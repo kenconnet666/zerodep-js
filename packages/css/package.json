@@ -12,7 +12,7 @@
     "dist/**/*.d.ts",
     "dist/**/*.d.ts.map",
     "src",
-    "THIRD_PARTY_NOTICES.md",
+    "THIRD_PARTY_NOTICES",
     "LICENSE"
   ],
   "exports": {

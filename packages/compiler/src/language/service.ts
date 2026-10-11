@@ -60,10 +60,10 @@ export class TypeScriptService {
     this.child.on('exit', () => {
       this.connection.dispose();
       this.stopWatching();
-      void this.api?.then((api) => api.client.close()).catch(() => {});
+      void this.api?.then((api) => api.close()).catch(() => {});
     });
     this.child.stdout.once('end', () => {
-      void this.api?.then((api) => api.client.close()).catch(() => {});
+      void this.api?.then((api) => api.close()).catch(() => {});
     });
     this.connection.onRequest('workspace/configuration', ({ items }: { items: unknown[] }) =>
       items.map(() => ({})),
@@ -321,8 +321,8 @@ export class TypeScriptService {
       else this.child.once('exit', () => done());
     });
     try {
-      await this.connection.sendRequest('shutdown', null);
-      await this.connection.sendNotification('exit', null);
+      await this.connection.sendRequest('shutdown');
+      await this.connection.sendNotification('exit');
     } catch {
       this.child.kill();
     } finally {

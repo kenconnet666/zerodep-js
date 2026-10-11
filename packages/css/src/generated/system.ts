@@ -1,5 +1,5 @@
 // 由 scripts/generate-css-author.mjs 从 csstype@3.2.3 生成；请勿手改。
-// 来源许可见 packages/css/THIRD_PARTY_NOTICES.md。
+// 来源许可见 packages/css/THIRD_PARTY_NOTICES。
 import type { KeywordValues } from './keywords.js';
 const groups = [
   new Set<string>([

@@ -1,43 +1,6 @@
 # zerodep-js
 
-使用标准 TSX、显式变量式状态和细粒度更新的独立框架。框架转换使用 Babel，类型检查、声明和基础语言服务使用选定 TypeScript 7.1 dev，开发与打包使用 Vite。
-
-优先保证实现简单、容易维护、使用方便、类型提示准确，并用适当中文注释解释关键语义。性能不是首要目标，不维护自有 TypeScript 分支、原生 SDK 或跨命令编译后台。
-
-> 当前源码已收拢为 core、css、compiler：CSS 在本仓库维护，Vite 插件来自 compiler 根入口。新结构尚未发布；既有 rc.9 npm 产物仍是旧布局，不能用旧包验证下面的新入口。历史发行证据见 [变更记录](CHANGELOG.md)。
-
-## 工作区
-
-| 包                | 职责                                                    |
-| ----------------- | ------------------------------------------------------- |
-| packages/core     | 响应式、组件、DOM、SSR、生命周期、JSX 类型和运行时协议  |
-| packages/compiler | Babel/CSS 转换、Vite 插件、框架检查与 TS7.1 语言服务    |
-| packages/css      | CSS 作者、关键字、通用主题与浏览器/SSR 样式收集         |
-| apps/example      | 使用实际包产物的 CSR/SSR 示例和任务应用                 |
-| packages/ui       | Provider、Icon/Text/Ripple/Spinner/ButtonBase，暂不发布 |
-| apps/docs         | 组件库与框架文档应用                                    |
-
-不提供外部框架运行时适配，也不把预编译组件库链接到工作区源码。
-
-## 开发
-
-完整换机步骤见 [环境配置](docs/environment-setup.md)，包括 SDK、WebStorm 配置和 MCP/LSP。
-
-使用 Node 24、pnpm 10.34.5；当前工作区使用 微软官方 TypeScript 7.1.0-dev.20261011.1。安装不需要 Go 或 TypeScript 源码仓库。TypeScript target/lib 与 Vite 默认输出统一使用 ES2025；新内置 API 仍由运行环境提供。
-
-```sh
-pnpm install --frozen-lockfile
-pnpm --dir packages/core build
-pnpm --dir packages/css build
-pnpm --dir packages/compiler build
-pnpm --dir apps/example dev
-```
-
-开发默认端口 5173，生产预览默认端口 4173。主示例支持 CSR/SSR 和独立任务页面；应用数据保存在 apps/example/.data，测试使用独立临时数据。
-
-项目操作均在各自 package.json 中。`pnpm --dir apps/docs dev` 启动文档站（5174）；UI 的 `build` 与 `build:types` 分别生成 JS 和声明；两个应用的 `build:client` 与 `build:server` 分别构建客户端和服务端，`preview` 只预览已有产物。首次开发需先显式构建 core、css、compiler；命令不会自动检查或编译其他项目。完整命令及依赖顺序见 [开发命令](docs/commands.md)。
-
-## 写法
+使用标准 TSX、显式变量式状态和细粒度更新的独立框架。Babel 负责框架转换，微软官方 TypeScript 7.1 夜间版本负责类型与语言服务，Vite 负责开发和构建。具体版本由 pnpm catalog 和锁文件固定。
 
 ```tsx
 import { _component, _state, _derived } from 'zerodep-js';
@@ -53,24 +16,39 @@ export const Counter = _component(({ step = 1 }: { step?: number }) => {
 });
 ```
 
-保留变量式读写、组件参数解构/默认值/实时 rest，以及原生和组件 bind、DOM bind:this。它们都是标准 TSX 语法，由框架编译器实现响应式语义；普通局部变量不隐式变为响应式。
+变量直接读写，无 .value。props 参数解构、默认值和 rest 直接响应；普通函数传参、局部解构与返回值保持 JavaScript 取值语义。
 
-`_id()` 提供 SSR/接管一致的组件 ID。当前源码已移除 rc.8 中的 task 工具，请直接使用 async/await、状态和生命周期回调；见 [普通请求](docs/requests.md)。
+## 工作区
 
-`<Portal>内容</Portal>` 可以把弹层内容放到 body，仍随原父组件更新和销毁；指定位置使用 `target={container}`。SSR 只留占位，接管成功后再显示。它也属于当前分支新增能力，详见 [Portal](docs/api.md#portal把内容放到页面外层)。
+| 目录              | 职责                                          |
+| ----------------- | --------------------------------------------- |
+| packages/core     | 状态、组件、DOM、SSR、生命周期、JSX 类型      |
+| packages/compiler | Babel/CSS 转换、Vite 插件、框架检查和语言服务 |
+| packages/css      | CSS 回调作者、主题变量及浏览器/SSR 样式宿主   |
+| packages/ui       | Provider、基础组件和布局，保持 private        |
+| apps/example      | CSR/SSR 功能示例和任务应用                    |
+| apps/docs         | UI 组件示例站                                 |
 
-Vite 使用 zerodep-js-compiler 的 zerodep()。应用 TS 配置使用 `jsx: "preserve"`、`types: ["zerodep-js"]`。客户端通过 _mount/_hydrate 返回的 disposer 卸载；服务端也从 `zerodep-js` 根入口导入 `renderToString` / `renderDocument`。
+所有公开 API 从各包根入口导入。没有独立 use/router/store/持久化包，也不提供外部框架适配。
 
-2026-10-09 起，当前源码已删除整个 zerodep-use 包，不再提供路由、store、持久化和撤销重做工具。core 的状态、上下文、快照以及 UI Provider 保留；旧 npm 发行记录不变。
+## 启动
 
-## 验证与工具
+使用 Node 24 和 package.json 固定的 pnpm。在仓库根运行：
 
-本地只检查修改文件的 LSP/IDE 局部语法问题并运行必要的短测试，例如 `pnpm exec vitest run packages/core/test/lifecycle.test.ts`。完整类型检查、构建、长测试及 LSP 验证交给 CI，不作为本地提交前置。CI 显式安排依赖构建、各项目 check/test、仓库工具检查、三浏览器、Linux/Windows 独立消费和六平台验证；见 [开发命令](docs/commands.md)。
+```sh
+pnpm install --frozen-lockfile
+pnpm --dir packages/core build
+pnpm --dir packages/css build
+pnpm --dir packages/compiler build
+pnpm --dir apps/example dev
+```
 
-[环境配置](docs/environment-setup.md) · [Svelte API 取舍](.design/svelte-api-review.md) · [工具分工](docs/tooling.md) · [开始使用](docs/getting-started.md) · [API](docs/api.md) · [语义](docs/semantics.md) · [表单](docs/forms.md) · [SSR](docs/ssr-and-hydration.md) · [包消费](docs/packages.md) · [发布](docs/releasing.md)
+文档应用使用 `pnpm --dir apps/docs dev`，开发时直接消费 UI 源码。生产构建分别执行包的 build、UI 的 build:types，以及应用的 build:client/build:server；命令不隐式捆绑类型检查或补建依赖。
 
-框架源码使用 MIT License；成熟依赖按各自许可证分发，core 的生成数据来源见包内 THIRD_PARTY_NOTICES.md。
+## 维护
 
-原生 [CSS](docs/css.md) 由工作区 zerodep-js-css 提供：命名 css 自动追踪，安全动态值隐式绑定元素变量；zerodep() 默认完成转换，无需适配器或扩展配置。
+API 细节以源码类型和实际组件示例为准，项目只维护 AGENTS.md 和必要的 README。
 
-UI 的 [按钮与 Flex](docs/buttons.md) 已提供独立槽转发、等比尺寸、受控切换及相连布局。UI 保持 private。
+本地只检查修改文件的 LSP 错误和必要的局部短测试；完整类型检查、构建及长测试交 CI。协作要求见 [AGENTS.md](AGENTS.md)，历史变更与发行记录查 Git 和 GitHub Releases。
+
+框架采用 MIT License；第三方生成数据的许可保留在对应包的 THIRD_PARTY_NOTICES。

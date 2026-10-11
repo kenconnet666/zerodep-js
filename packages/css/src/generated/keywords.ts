@@ -1,5 +1,5 @@
 // 由 scripts/generate-css-author.mjs 从 csstype@3.2.3 生成；请勿手改。
-// 来源许可见 packages/css/THIRD_PARTY_NOTICES.md。
+// 来源许可见 packages/css/THIRD_PARTY_NOTICES。
 import type { Property } from 'csstype';
 import type { CssString } from '../util/author.js';
 /** 属性原始值类型，仅用于类型检查和补全，不复制系统关键字运行时表。 */

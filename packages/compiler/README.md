@@ -1,32 +1,7 @@
 # zerodep-js-compiler
 
-使用 Babel 编译标准 TS/TSX 中的 zerodep-js 框架语义，并通过官方 TypeScript 7.1 开发版检查类型。不构建或携带定制 TypeScript SDK。
+提供 Babel 框架/CSS 转换、Vite 插件、类型检查投影和语言服务，只公开包根。Vite 使用 zerodep()，独立转换使用 compile()/diagnose()；CLI 为 zerodep-check 与 zerodep-language-server。
 
-保留 `_state`、`_derived`、组件参数解构、实时 rest、DOM/组件 bind、DOM bind:this、keyed 列表、SSR 与开发更新协议。普通 TypeScript 类型由官方检查器负责；绑定的隐式写回通过检查用源码表达，错误映射回原文件。
+仅适配工作区精确固定的微软官方 TypeScript 7.1 夜间版本，不维护 SDK 补丁或旧版兼容。类型检查与构建分别执行，语言服务进程及临时投影按连接生命周期清理。
 
-```ts
-import { compile } from 'zerodep-js-compiler';
-
-const result = compile(source, 'App.tsx');
-// result.code 为运行代码，result.map 为 source map。
-```
-
-编译函数与 Vite 插件统一从 `zerodep-js-compiler` 导入。项目检查使用 `zerodep-check -p tsconfig.json`，会同时执行官方类型检查和框架规则。`--json` 输出结构化诊断；显式文件/目录和 `--stdin` 模式仅检查框架语义。
-
-预编译组件库使用 Vite library mode 输出 JS，官方 `tsc --emitDeclarationOnly` 输出声明，并在构建前运行 `zerodep-check`。Babel 与 TypeScript 只属于开发工具依赖，不进入浏览器运行时。
-
-编辑器可使用 `zerodep-language-server --stdio`。标准 LSP 入口复用同一套官方 TS7.1、框架检查和源码映射；支持未保存文本、补全、悬浮、定义、引用、重命名和诊断。协议及增量文档同步使用微软维护的 vscode-languageserver，不维护 IDE 插件或另一套类型系统。格式化继续使用项目 Prettier。
-
-当前固定 微软官方 SDK `7.1.0-dev.20261011.1`，完整获取方式见 `docs/environment-setup.md`。开发版接口变化集中在本包的检查与语言工具适配中，不维护 TS6 或旧版本兼容线路。完整工具接入见 docs/tooling.md；CLI/协议检查通过不代表具体 IDE 的操作验收已完成。
-
-Vite 插件直接从 zerodep-js-compiler 导入 zerodep，默认处理 TSX 与 CSS，不提供 extensions 或独立 CSS 插件。CSS 运行时代码属于 packages/css，编译器生成对 CSS 包根的调用。
-
-zerodep() 默认将 Vite 构建目标设为 es2025，与工作区 TypeScript 目标一致；应用可以用 build.target 覆盖。插件不自动提供标准库 API 的 polyfill。
-
-源码根目录只保留 `index.ts` 导出清单：`transform` 保存 Babel 与 CSS 转换；`checking` 保存项目检查、绑定检查投影和 SDK 定位；`language` 保存语言服务与源码导航；`tooling` 保存 Vite 和检查命令。实现之间直接引用，不经过根入口，以免普通检查加载不需要的 Vite 工具。
-
-```ts
-import { compile, diagnose, zerodep } from 'zerodep-js-compiler';
-```
-
-不提供 `/vite` 子入口。导入包不会启动 CLI 或语言服务器；`zerodep-check` 和 `zerodep-language-server` 由命令行显式启动。编译输出始终导入 `zerodep-js`，不再提供测试专用的 `runtimeModule` 选项。
+[使用与工作区](https://github.com/kenconnet666/zerodep-js#readme)

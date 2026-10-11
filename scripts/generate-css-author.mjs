@@ -115,7 +115,7 @@ const names = [...properties.keys()].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0)
 validatePropertyDocs(names);
 const header = [
   '// 由 scripts/generate-css-author.mjs 从 csstype@' + version + ' 生成；请勿手改。',
-  '// 来源许可见 packages/css/THIRD_PARTY_NOTICES.md。',
+  '// 来源许可见 packages/css/THIRD_PARTY_NOTICES。',
 ];
 const keywords = [
   ...header,

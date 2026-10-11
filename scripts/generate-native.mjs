@@ -98,7 +98,7 @@ function values(name, map) {
 }
 const header = `// 由 pnpm --dir packages/core generate 生成，请修改 scripts/generate-native.mjs 后重新生成。
 // 数据来源：${sources.map(({ name, version }) => `${name}@${version}`).join('、')}。
-// 原作者及 MIT 许可见 ../THIRD_PARTY_NOTICES.md；类型补充不改变浏览器支持范围。`;
+// 原作者及 MIT 许可见 ../THIRD_PARTY_NOTICES；类型补充不改变浏览器支持范围。`;
 const code = await format(
   `${header}
 export const svgAliases = ${JSON.stringify(Object.fromEntries(entries(svgAliases)))} as const;
@@ -133,7 +133,7 @@ ${sources.map(({ name, version, license }) => `## ${name} ${version}\n\n来源�
 
 for (const [path, content] of [
   [output, code],
-  [resolve(root, 'packages/core/THIRD_PARTY_NOTICES.md'), notices],
+  [resolve(root, 'packages/core/THIRD_PARTY_NOTICES'), notices],
 ]) {
   if (check) {
     if ((await readFile(path, 'utf8')) !== content)

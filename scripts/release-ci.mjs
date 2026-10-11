@@ -101,7 +101,7 @@ if (existing) {
   );
   await writeFile(
     notes,
-    `候选 ${version}，源码 ${revision}。\n\n包含 ${releasePackages.map((item) => item.folder).join('、')}。框架由 Babel 转换，类型和语言服务固定使用 微软官方 TS${sdk.version}。SDK 与平台包直接来自微软官方 npm 发行版；独立项目无需平台 overrides，不分发自建 SDK。产物来自同一提交的完整 CI；发布到 npm next，不提升稳定标签。\n\n具体变更及安装要求见 CHANGELOG.md、docs/packages.md 和 docs/environment-setup.md。\n`,
+    `候选 ${version}，源码 ${revision}。\n\n包含 ${releasePackages.map((item) => item.folder).join('、')}。框架由 Babel 转换，类型和语言服务固定使用 微软官方 TS${sdk.version}。SDK 与平台包直接来自微软官方 npm 发行版；独立项目无需平台 overrides，不分发自建 SDK。产物来自同一提交的完整 CI；发布到 npm next，不提升稳定标签。\n\n使用说明见 README.md，开发约定见 AGENTS.md，具体变更查对应 Git 提交。\n`,
   );
   await gh([
     'release',

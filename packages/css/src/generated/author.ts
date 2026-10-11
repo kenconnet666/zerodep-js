@@ -1,5 +1,5 @@
 // 由 scripts/generate-css-author.mjs 从 csstype@3.2.3 生成；请勿手改。
-// 来源许可见 packages/css/THIRD_PARTY_NOTICES.md。
+// 来源许可见 packages/css/THIRD_PARTY_NOTICES。
 import { CssAuthor, type PropertyInput } from '../runtime/program.js';
 import type { SystemKeywords } from './keywords.js';
 /** 真实方法作者；声明写入当前 css 收集范围，实例只保存主题来源。 */
