@@ -44,9 +44,9 @@ const result = create();`);
   it('共享函数的隐式样式经过 class 合并和组件转发，SSR 多实例不串值', () => {
     const { result, host } = run(`
 import { _component, _state, renderToString } from 'zerodep-js';
-import { css, _mergeClasses } from 'zerodep-js-css';
+import { css } from 'zerodep-js-css';
 function appearance(color) { return css(s.color.raw(color)); }
-const Child = _component(({ class: name, ...rest }) => <button {...rest} class={_mergeClasses(css(s.display.block), name)} />);
+const Child = _component(({ class: name, ...rest }) => <button {...rest} class={css(s.display.block, name)} />);
 function create() {
   let color = _state('#123456');
   const App = _component(() => <div><Child class={appearance(color)} style={{color:'blue'}}/><Child class={appearance('#abcdef')}/></div>);

@@ -1,8 +1,7 @@
 import type { UiTheme } from '../provider/theme/theme.js';
 import { _component, _derived, type JSX, type DomRef } from 'zerodep-js';
-import { css, _mergeClasses, type CssValue } from 'zerodep-js-css';
+import { css, type CssValue } from 'zerodep-js-css';
 import { useCss } from '../provider/context.js';
-
 export type TextTag =
   'span' | 'p' | 'strong' | 'em' | 'small' | 'code' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 export type TextProps = Omit<JSX.IntrinsicElements['span'], 'color' | 'ref' | 'bind:this'> & {
@@ -15,7 +14,6 @@ export type TextProps = Omit<JSX.IntrinsicElements['span'], 'color' | 'ref' | 'b
   align?: CssValue<'textAlign', UiTheme>;
   ref?: DomRef<HTMLElement> | undefined;
 };
-
 export const Text = _component(
   ({
     as = 'span',
@@ -40,9 +38,10 @@ export const Text = _component(
       s.fontWeight.raw(weight),
       s.lineHeight.raw(lineHeight),
       s.textAlign.raw(align),
+      className,
     );
     return (
-      <Tag {...rest} class={_mergeClasses(style, className)}>
+      <Tag {...rest} class={style}>
         {children}
       </Tag>
     );

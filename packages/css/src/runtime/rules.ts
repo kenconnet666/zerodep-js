@@ -12,12 +12,6 @@ export function hash(text: string): string {
   return (left >>> 0).toString(36).padStart(7, '0') + (right >>> 0).toString(36).padStart(7, '0');
 }
 
-/** 纯标记，不登记样式；可在模块顶层创建，名称由作者明确分组。 */
-export function className(name: string): string {
-  const label = name.replace(/[^a-zA-Z0-9_-]+/g, '-').slice(0, 48);
-  return `zm-${label || 'part'}-${hash(name)}`;
-}
-
 export interface CssRule {
   className: string;
   body: string;
@@ -95,29 +89,6 @@ export function createRuleRegistry(
   };
   return {
     css,
-    mergeClasses(
-      this: void,
-      ...values: readonly (CssClass | null | undefined | false)[]
-    ): CssClass {
-      const bodies: string[] = [];
-      const styles: string[] = [];
-      const external = new Set<string>();
-      for (const value of values) {
-        if (!value) continue;
-        const names = typeof value === 'string' ? value : value.class;
-        if (typeof value !== 'string') styles.push(value.style);
-        for (const name of names.split(/\s+/).filter(Boolean)) {
-          const rule = byName.get(name);
-          if (rule && (!rule.kind || rule.kind === 'class')) bodies.push(rule.body);
-          else external.add(name);
-        }
-      }
-      // 本宿主生成类按声明顺序合并；外部类名保留原样，遵循普通 CSS 层叠。
-      const name = [bodies.length ? register(bodies.join(''), 'class') : '', ...external]
-        .filter(Boolean)
-        .join(' ');
-      return styles.some(Boolean) ? { class: name, style: styles.filter(Boolean).join(';') } : name;
-    },
     keyframes: (...parts: CssInput[]) => register(joinFragments(parts), 'keyframes'),
     globalCss(this: void, key: string, ...parts: CssInput[]): void {
       if (!parts.length) {
@@ -209,7 +180,6 @@ export function serializeCssRules(rules: readonly CssRule[], options: { nonce?: 
 }
 
 export interface ServerCssHost {
-  mergeClasses(...values: readonly (CssClass | null | undefined | false)[]): CssClass;
   css(...parts: CssClassInput[]): CssClass;
   keyframes(...parts: CssInput[]): string;
   globalCss(key: string, ...parts: CssInput[]): void;
@@ -221,7 +191,6 @@ export interface ServerCssHost {
 export function createServerCssHost(options: { nonce?: string } = {}): ServerCssHost {
   const registry = createRuleRegistry(() => {});
   return {
-    mergeClasses: registry.mergeClasses,
     css: registry.css,
     keyframes: registry.keyframes,
     globalCss: registry.globalCss,

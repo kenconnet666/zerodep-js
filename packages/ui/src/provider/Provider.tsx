@@ -1,5 +1,5 @@
 import { _component, _derived, _provideContext, _useContext, type JSX } from 'zerodep-js';
-import { css, Css, _mergeClasses, type CssValue } from 'zerodep-js-css';
+import { css, Css, type CssValue } from 'zerodep-js-css';
 import { lightTheme } from './theme/light.js';
 import type { UiTheme } from './theme/theme.js';
 import { zhCN } from './lang/zh-CN.js';
@@ -12,7 +12,6 @@ import {
   provideCss,
   themeContext,
 } from './context.js';
-
 export type ProviderProps = Omit<JSX.IntrinsicElements['div'], 'lang' | 'dir' | 'size'> & {
   /** 字号基准；根默认 _md，嵌套未指定时继承 DOM 父级，Portal 需显式桥接。 */
   size?: CssValue<'fontSize', UiTheme>;
@@ -22,7 +21,6 @@ export type ProviderProps = Omit<JSX.IntrinsicElements['div'], 'lang' | 'dir' | 
   locale?: string | undefined;
   timeZone?: string | undefined;
 };
-
 export const Provider = _component(
   ({
     theme,
@@ -84,10 +82,10 @@ export const Provider = _component(
       s.lineHeight._normal,
       s.color._text,
       s.backgroundColor._background,
+      className,
     );
-
     return (
-      <div {...rest} lang={language.code} dir={direction} class={_mergeClasses(style, className)}>
+      <div {...rest} lang={language.code} dir={direction} class={style}>
         {children}
       </div>
     );

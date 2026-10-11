@@ -1,5 +1,7 @@
 # CSS 隐式绑定与按钮简化交接
 
+2026-10-11 更新：本文保留历史交付证据；组合 API 已统一为 css，旧 _mergeClasses 已删除，当前契约见 [CSS](css.md)。
+
 ## 本轮决定
 
 - UI 源码通过 `css(...)`、属性作者和 `class` 表达样式，不手写 CSS 变量名、`var(...)`、`cssBinding/cssResult` 或拼接工具生成的 `style`。

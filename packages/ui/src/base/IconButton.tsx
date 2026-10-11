@@ -1,5 +1,5 @@
 import { _component, _derived, type JSX } from 'zerodep-js';
-import { _mergeClasses } from 'zerodep-js-css';
+import { css } from 'zerodep-js-css';
 import type { LucideIconData } from '@lucide/icons';
 import type { ButtonState } from './Button.js';
 import { ButtonBase } from './ButtonBase.js';
@@ -8,7 +8,6 @@ import { _buttonStyle } from './button-style.js';
 import type { AccessibleName, ActionProps, DecorationProps } from './button-props.js';
 import { _resolveSlotProps, type SlotProps } from '../utils/slot-props.js';
 import { useCss } from '../provider/context.js';
-
 export type IconButtonProps = Omit<
   JSX.IntrinsicElements['button'],
   'size' | 'color' | 'children' | 'aria-busy'
@@ -19,7 +18,6 @@ export type IconButtonProps = Omit<
     children?: never;
     slotIcon?: SlotProps<DecorationProps, ButtonState> | undefined;
   };
-
 export const IconButton = _component(
   ({
     icon,
@@ -40,10 +38,22 @@ export const IconButton = _component(
   }: IconButtonProps) => {
     const s = useCss();
     const state = _derived(
-      Object.freeze({ variant, disabled, loading, unavailable: disabled || loading }),
+      Object.freeze({
+        variant,
+        disabled,
+        loading,
+        unavailable: disabled || loading,
+      }),
     );
-    const style = _derived(
-      _buttonStyle(s, { variant, color, backgroundColor, borderColor, iconOnly: true }),
+    const style = css(
+      _buttonStyle(s, {
+        variant,
+        color,
+        backgroundColor,
+        borderColor,
+        iconOnly: true,
+      }),
+      className,
     );
     return (
       <ButtonBase
@@ -53,7 +63,7 @@ export const IconButton = _component(
         ripple={ripple}
         aria-busy={loading || undefined}
         data-ui-action=""
-        class={_mergeClasses(style, className)}
+        class={style}
         slotRipple={_resolveSlotProps(slotRipple, state)}
       >
         <ButtonContent

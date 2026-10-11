@@ -2,28 +2,35 @@ import { expectCssValue } from './style-assertions.js';
 import { expect, it } from 'vitest';
 import { defineComponent, element, renderToString } from 'zerodep-js';
 
-import { createServerCssHost, withCssHost } from 'zerodep-js-css';
+import { css, createServerCssHost, withCssHost } from 'zerodep-js-css';
 import { Provider, Text, Spinner, ButtonBase, Ripple } from '../dist/index.js';
 
 function render(
   component: Exclude<Parameters<typeof element>[0], string>,
-  props: Record<string, unknown>,
+  props: Record<string, unknown> | (() => Record<string, unknown>),
 ) {
   const host = createServerCssHost();
-  const App = defineComponent(() => element(Provider, { children: element(component, props) }));
+  const App = defineComponent(() =>
+    element(Provider, {
+      children: element(component, typeof props === 'function' ? props() : props),
+    }),
+  );
   return { html: withCssHost(host, () => renderToString(App)), css: host.cssText() };
 }
-it('Text 保留语义标签、主题输入、内容转义与外部类名', () => {
-  const result = render(Text, {
+it('Text 保留语义标签、主题输入、内容转义与传入声明，定位使用 data 属性', () => {
+  const result = render(Text, () => ({
     as: 'h2',
     size: '_xl',
     weight: '_semibold',
     color: '_primary',
-    class: 'heading',
+    class: css('font-style:italic;'),
+    'data-part': 'heading',
     children: '<标题>',
-  });
+  }));
   expect(result.html).toContain('<h2');
-  expect(result.html).toContain('heading');
+  expect(result.html).toContain('data-part="heading"');
+  expect(result.css).toContain('font-style:italic;');
+  expect(result.html.match(/<h2[^>]*class="([^"]+)"/)?.[1]).toMatch(/^z-[a-z0-9]{14}$/);
   expect(result.html).toContain('&lt;标题&gt;');
   expect(result.css).toContain('font-size:1.5rem;');
   expect(result.css).toContain('font-weight:600;');

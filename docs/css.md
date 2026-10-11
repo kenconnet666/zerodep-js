@@ -23,7 +23,20 @@ export const Card = _component(() => {
 });
 ```
 
-className 的类型是 CssClass，可能是普通 class 字符串，也可能携带当前元素变量值。直接传给 class，由原生渲染统一展开；不要字符串拼接、模板插值或 classList.add() 消费样式结果。组件属性复用 ClassValue 或原生 JSX 属性类型，组合用 css/_mergeClasses。
+className 的类型是 CssClass，可能是单个哈希类字符串，也可能携带当前元素变量值。直接传给 class，由原生渲染统一展开；不要字符串拼接、模板插值或 classList.add() 消费样式结果。组件属性复用 ClassValue 或原生 JSX 属性类型，组合只有 css 一个入口。
+
+## 单个样式类与 DOM 定位
+
+```tsx
+const panel = css(s.width.px(width), s.color.raw(color), incomingClass);
+return <div data-ui="panel" class={panel} />;
+```
+
+incomingClass 使用本 CSS 宿主生成的样式结果。css 按参数顺序展开已有类的声明与动态值，生成一个最终哈希类；不是把多个类名拼到 DOM 上。空输入返回空结果，不登记空规则。重复声明、无效值前的合法回退、important、嵌套选择器与媒体条件都保留原顺序，由浏览器处理层叠。
+
+原生 CSS 字符串片段及嵌套条件数组继续支持；不按标点猜测 class。内部哈希引用若没有在当前宿主登记，或传入旧的多个生成类，会明确报错。SSR 先恢复对应清单再接管，不跨请求共享登记器。
+
+不再提供 `_mergeClasses`、标记函数 `className(name)` 或重复类型 `CssProps`，旧应用和预编译库需要重新构建。样式哈希不作为稳定身份；组件/部件定位使用必要的 data-*，唯一关联使用 id/_id。原生 DOM class/className 仍可用，但 css 组合不承诺展开第三方任意类名。
 
 ## 响应式求值边界
 

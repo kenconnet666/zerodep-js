@@ -1,8 +1,7 @@
 import type { UiTheme } from '../provider/theme/theme.js';
 import { _component, _derived, type JSX } from 'zerodep-js';
-import { css, _mergeClasses, type CssValue } from 'zerodep-js-css';
+import { css, type CssValue } from 'zerodep-js-css';
 import { useCss } from '../provider/context.js';
-
 export interface GridProps extends Omit<JSX.IntrinsicElements['div'], 'size'> {
   inline?: boolean | undefined;
   size?: CssValue<'fontSize', UiTheme>;
@@ -69,9 +68,10 @@ export const Grid = _component(
       s.justifyContent.raw(justifyContent),
       s.fontSize.raw(size),
       s._selector('&[hidden]', s.display.none),
+      className,
     );
     return (
-      <div {...rest} class={_mergeClasses(style, className)}>
+      <div {...rest} class={style}>
         {children}
       </div>
     );

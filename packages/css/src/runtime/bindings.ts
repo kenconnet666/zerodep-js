@@ -11,8 +11,6 @@ interface Value {
   variable: string;
   value: string | undefined;
 }
-export type CssProps = ClassStyle;
-
 /** 编译器内部协议：和 TSX 一样保留接收者/方法先于参数求值的顺序。 */
 export function cssBinding(
   author: unknown,
@@ -67,7 +65,7 @@ export function cssBinding(
 export function cssResult(
   register: (...parts: CssClassInput[]) => CssClass,
   parts: (CssClassInput | Value)[],
-): CssProps {
+): ClassStyle {
   const styles: string[] = [];
   const resolve = (part: CssClassInput | Value): CssClassInput => {
     if (part && typeof part === 'object' && VALUE in part) {
@@ -76,7 +74,7 @@ export function cssResult(
     }
     if (Array.isArray(part)) return part.map(resolve);
     if (part && typeof part === 'object') {
-      const bundle = part as CssProps;
+      const bundle = part as ClassStyle;
       styles.push(bundle.style);
       return { class: bundle.class, style: '' };
     }

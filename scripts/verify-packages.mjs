@@ -248,6 +248,7 @@ try {
     const css = await import('zerodep-js-css');
     for (const name of ['UiTheme', 'LightTheme', 'DarkTheme', 'lightTheme', 'darkTheme']) assert.equal(name in css, false);
     for (const name of ['css', 'createServerCssHost', 'withCssHost', 'hydrateCss', 'cssBinding', 'cssResult']) assert.equal(typeof css[name], 'function');
+    for (const name of ['_mergeClasses', 'className', 'CssProps']) assert.equal(name in css, false, '旧 CSS 入口已删除');
   `,
     ],
     { cwd: consumer, env, windowsHide: true, encoding: 'utf8' },
@@ -319,7 +320,7 @@ try {
     pathToFileURL(resolve(consumer, 'dist/css-tree/css-tree.js')).href
   );
   assert.equal(isolatedCss.red, 'color:red;');
-  assert.equal(typeof isolatedCss.marker, 'string');
+  assert.deepEqual(Object.keys(isolatedCss), ['red']);
   const treeModules = report.tree.flatMap((chunk) => chunk.modules);
   assert(
     !treeModules.some(

@@ -1,9 +1,8 @@
 import { _component, type JSX } from 'zerodep-js';
-import { css, _mergeClasses, type CssValue } from 'zerodep-js-css';
+import { css, type CssValue } from 'zerodep-js-css';
 import { useCss } from '../provider/context.js';
 import type { UiTheme } from '../provider/theme/theme.js';
 import { buttonBorderWidth } from './button-style.js';
-
 export interface ButtonGroupProps extends Omit<JSX.IntrinsicElements['div'], 'size'> {
   /** 只支持一维相连，容器不换行。 */
   direction?: 'row' | 'column' | undefined;
@@ -12,7 +11,6 @@ export interface ButtonGroupProps extends Omit<JSX.IntrinsicElements['div'], 'si
   /** 直接按钮沿主轴等分；纵向需要可分配的容器高度。 */
   equal?: boolean | undefined;
 }
-
 const item = '[data-ui-action]:not([hidden])';
 const afterFirst = `& > ${item}:not(:nth-child(1 of ${item}))`;
 const beforeLast = `& > ${item}:not(:nth-last-child(1 of ${item}))`;
@@ -69,9 +67,10 @@ export const ButtonGroup = _component(
       ),
       s._selector(`& > ${item}[aria-pressed="true"]`, s.zIndex.raw(2)),
       s._selector(`& > ${item}:focus-visible`, s.zIndex.raw(3)),
+      className,
     );
     return (
-      <div {...rest} role={role} class={_mergeClasses(style, className)}>
+      <div {...rest} role={role} class={style}>
         {children}
       </div>
     );

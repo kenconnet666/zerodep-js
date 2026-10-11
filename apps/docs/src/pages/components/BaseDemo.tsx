@@ -51,7 +51,6 @@ export const BaseDemo = _component(() => {
             size={custom ? '22px' : '_sm'}
             weight="_semibold"
             color={custom ? '#663399' : '_primary'}
-            class="base-text"
             data-base-text
           >
             文字与图标共享主题

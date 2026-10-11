@@ -19,8 +19,5 @@ function requireHost(): ServerCssHost {
   return host;
 }
 export const keyframes = (...parts: CssInput[]): string => requireHost().keyframes(...parts);
-export const _mergeClasses = (
-  ...values: readonly (CssClass | null | undefined | false)[]
-): CssClass => requireHost().mergeClasses(...values);
 export const globalCss = (key: string, ...parts: CssInput[]): void =>
   requireHost().globalCss(key, ...parts);

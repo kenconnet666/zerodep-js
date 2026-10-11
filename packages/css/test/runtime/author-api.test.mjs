@@ -1,13 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createRuleRegistry, className } from './runtime.mjs';
+import { createRuleRegistry } from './runtime.mjs';
 
-await test('Unicode 与已知旧哈希碰撞均生成不同类，标记不占规则', () => {
+await test('Unicode 与已知旧哈希碰撞均生成不同类', () => {
   const registry = createRuleRegistry(() => {});
   assert.notEqual(registry.css('--probe:28fx-1rqasrx;'), registry.css('--probe:28vj-gi2s3j;'));
   assert.notEqual(registry.css('content:"Ā";'), registry.css('content:"Ȁ";'));
-  assert.equal(className('Card.title'), className('Card.title'));
-  assert.notEqual(className('Card.title'), className('Card.icon'));
   assert.equal(registry.size, 4);
 });
 

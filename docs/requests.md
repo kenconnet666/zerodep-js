@@ -34,6 +34,8 @@ _onMount(() => {
 在 effect 中同步读取查询条件，并将该轮的取消信号传给普通函数：
 
 ```tsx
+let loading = _state(false);
+
 _effect(() => {
   const id = selectedId;
   const signal = _getAbortSignal();
@@ -41,6 +43,8 @@ _effect(() => {
 });
 
 async function loadItem(id: string, signal: AbortSignal) {
+  loading = true;
+  error = '';
   try {
     const response = await fetch(`/api/items/${encodeURIComponent(id)}`, { signal });
     if (!response.ok) throw new Error('查询失败');
@@ -48,6 +52,9 @@ async function loadItem(id: string, signal: AbortSignal) {
     if (!signal.aborted) data = result;
   } catch (cause) {
     if (!signal.aborted) error = cause instanceof Error ? cause.message : '查询失败';
+  } finally {
+    // 旧请求不能清除新请求的加载状态。
+    if (!signal.aborted) loading = false;
   }
 }
 ```

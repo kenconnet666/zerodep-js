@@ -1,8 +1,7 @@
 import type { UiTheme } from '../provider/theme/theme.js';
 import { _component, type JSX } from 'zerodep-js';
-import { css, _mergeClasses, type CssValue } from 'zerodep-js-css';
+import { css, type CssValue } from 'zerodep-js-css';
 import { useCss } from '../provider/context.js';
-
 export interface FlexProps extends Omit<JSX.IntrinsicElements['div'], 'size'> {
   direction?: 'row' | 'column' | 'row-reverse' | 'column-reverse' | undefined;
   inline?: boolean | undefined;
@@ -48,9 +47,10 @@ export const Flex = _component(
       s._selector('&[hidden]', s.display.none),
       equal &&
         s._selector('& > *', s.flex.raw('1 1 0'), s.minInlineSize.raw(0), s.minBlockSize.raw(0)),
+      className,
     );
     return (
-      <div {...rest} class={_mergeClasses(style, className)}>
+      <div {...rest} class={style}>
         {children}
       </div>
     );

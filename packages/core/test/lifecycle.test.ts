@@ -11,6 +11,63 @@ import {
 } from '../src/runtime/reactivity.js';
 import { _createContext, _provideContext, _useContext } from '../src/runtime/context.js';
 
+it.each(['success', 'failure'])('普通请求忽略旧的 %s 和卸载后的结果', async (outcome) => {
+  const query = new Source('A');
+  const data = new Source('初始');
+  const error = new Source('');
+  const loading = new Source(false);
+  const requests = new Map<
+    string,
+    { signal: AbortSignal; resolve: (value: string) => void; reject: (error: Error) => void }
+  >();
+  const pending: Promise<void>[] = [];
+  async function load(name: string, signal: AbortSignal) {
+    loading.write(true);
+    error.write('');
+    try {
+      const value = await new Promise<string>((resolve, reject) => {
+        requests.set(name, { signal, resolve, reject });
+      });
+      if (!signal.aborted) data.write(value);
+    } catch (cause) {
+      if (!signal.aborted) error.write(String(cause));
+    } finally {
+      if (!signal.aborted) loading.write(false);
+    }
+  }
+  const stop = _createRoot((dispose) => {
+    _effect(() => {
+      const name = query.read();
+      const signal = _getAbortSignal();
+      pending.push(load(name, signal));
+    });
+    return dispose;
+  });
+  try {
+    _flushSync();
+    _flushSync(() => query.write('B'));
+    expect(requests.get('A')!.signal.aborted).toBe(true);
+    if (outcome === 'success') requests.get('A')!.resolve('迟到 A');
+    else requests.get('A')!.reject(new Error('迟到失败'));
+    await pending[0];
+    expect(data.read()).toBe('初始');
+    expect(loading.read()).toBe(true);
+    requests.get('B')!.resolve('最新 B');
+    await pending[1];
+    expect(data.read()).toBe('最新 B');
+    expect(loading.read()).toBe(false);
+    expect(error.read()).toBe('');
+    _flushSync(() => query.write('C'));
+    stop();
+    expect(requests.get('C')!.signal.aborted).toBe(true);
+    requests.get('C')!.resolve('卸载后 C');
+    await pending[2];
+    expect(data.read()).toBe('最新 B');
+  } finally {
+    stop();
+  }
+});
+
 it('onMount 排队执行一次，不跟踪内部读取，并回收返回资源', () => {
   const count = new Source(0);
   const called = vi.fn();

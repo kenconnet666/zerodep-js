@@ -118,3 +118,6 @@ const futureContent = Promise.resolve('稍后');
 <output children={futureContent} />;
 // @ts-expect-error DOM ref 必须同步返回，异步资源显式启动并清理。
 <div ref={async () => {}} />;
+// @ts-expect-error 重复类型已删除，消费项目不能继续依赖旧导出。
+import type { CssProps } from 'zerodep-js-css';
+export type RemovedCssAliasProbe = CssProps;

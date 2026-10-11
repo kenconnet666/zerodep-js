@@ -1,5 +1,5 @@
 import { _component, _derived, type JSX } from 'zerodep-js';
-import { _mergeClasses } from 'zerodep-js-css';
+import { css } from 'zerodep-js-css';
 import type { LucideIconData } from '@lucide/icons';
 import type { ButtonState } from './Button.js';
 import { ButtonBase } from './ButtonBase.js';
@@ -8,7 +8,6 @@ import { _buttonStyle } from './button-style.js';
 import type { AccessibleName, ActionProps, DecorationProps, LabelProps } from './button-props.js';
 import { _resolveSlotProps, type SlotProps } from '../utils/slot-props.js';
 import { useCss } from '../provider/context.js';
-
 export interface ToggleButtonState extends ButtonState {
   readonly pressed: boolean;
 }
@@ -23,7 +22,10 @@ export type ToggleButtonProps = Omit<
     onPressedChange: (pressed: boolean) => void;
     type?: never;
   } & (
-    | (LabelProps<ToggleButtonState> & { icon?: never; slotIcon?: never })
+    | (LabelProps<ToggleButtonState> & {
+        icon?: never;
+        slotIcon?: never;
+      })
     | (AccessibleName & {
         icon: LucideIconData;
         children?: never;
@@ -63,9 +65,15 @@ export const ToggleButton = _component(
   }: ToggleButtonProps) => {
     const s = useCss();
     const state = _derived(
-      Object.freeze({ variant, disabled, loading, unavailable: disabled || loading, pressed }),
+      Object.freeze({
+        variant,
+        disabled,
+        loading,
+        unavailable: disabled || loading,
+        pressed,
+      }),
     );
-    const style = _derived(
+    const style = css(
       _buttonStyle(s, {
         variant,
         pressed,
@@ -74,6 +82,7 @@ export const ToggleButton = _component(
         borderColor,
         iconOnly: Boolean(icon),
       }),
+      className,
     );
     const activate: NonNullable<JSX.IntrinsicElements['button']['onClick']> = (event) => {
       if (state.unavailable || event.currentTarget.matches(':disabled')) return;
@@ -89,7 +98,7 @@ export const ToggleButton = _component(
         aria-busy={loading || undefined}
         data-ui-action=""
         onClick={activate}
-        class={_mergeClasses(style, className)}
+        class={style}
         slotRipple={_resolveSlotProps(slotRipple, state)}
       >
         <ButtonContent

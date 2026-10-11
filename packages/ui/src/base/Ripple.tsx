@@ -1,9 +1,8 @@
 import type { UiTheme } from '../provider/theme/theme.js';
 import { _component, _effect, _state, type JSX } from 'zerodep-js';
-import { _mergeClasses, css, type CssValue } from 'zerodep-js-css';
+import { css, type CssValue } from 'zerodep-js-css';
 import { useCss } from '../provider/context.js';
 import { _press } from '../utils/press.js';
-
 export type RippleProps = Omit<JSX.IntrinsicElements['span'], 'children' | 'color'> & {
   disabled?: boolean | undefined;
   centered?: boolean | undefined;
@@ -45,11 +44,21 @@ export const Ripple = _component(
           // 时长由 CSS 主题解析，WAAPI 只接收计算后的毫秒值。
           const text = view.getComputedStyle(node).transitionDuration.split(',')[0]!;
           const duration = Number.parseFloat(text) * (text.endsWith('ms') ? 1 : 1000);
-          const grow = wave.animate([{ transform: 'scale(0)' }, { transform: 'scale(1)' }], {
-            duration,
-            fill: 'forwards',
-            easing: 'ease-out',
-          });
+          const grow = wave.animate(
+            [
+              {
+                transform: 'scale(0)',
+              },
+              {
+                transform: 'scale(1)',
+              },
+            ],
+            {
+              duration,
+              fill: 'forwards',
+              easing: 'ease-out',
+            },
+          );
           let fade: Animation | undefined;
           const dispose = () => {
             grow.cancel();
@@ -58,7 +67,20 @@ export const Ripple = _component(
           };
           remove = dispose;
           release = () => {
-            fade = wave.animate([{ opacity: 1 }, { opacity: 0 }], { duration, fill: 'forwards' });
+            fade = wave.animate(
+              [
+                {
+                  opacity: 1,
+                },
+                {
+                  opacity: 0,
+                },
+              ],
+              {
+                duration,
+                fill: 'forwards',
+              },
+            );
             void fade.finished.then(dispose, () => {});
           };
         },
@@ -83,14 +105,8 @@ export const Ripple = _component(
       s.opacity.raw(0.14),
       s.transitionDuration._normal,
       s.color.raw(color),
+      className,
     );
-    return (
-      <span
-        {...rest}
-        bind:this={layer}
-        aria-hidden="true"
-        class={_mergeClasses(style, className)}
-      />
-    );
+    return <span {...rest} bind:this={layer} aria-hidden="true" class={style} />;
   },
 );

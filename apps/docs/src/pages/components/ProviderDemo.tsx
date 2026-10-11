@@ -107,7 +107,7 @@ export const ProviderDemo = _component(() => {
       {visible && (
         <Provider
           data-provider="outer"
-          class="provider-region"
+          data-ui="provider-region"
           theme={dark ? darkTheme : lightTheme}
           lang={english ? enUS : zhCN}
           locale={usFormat ? 'en-US' : 'zh-CN'}
@@ -127,7 +127,7 @@ export const ProviderDemo = _component(() => {
               <Preview name="inner" />
               {portal && (
                 <Portal>
-                  <Provider class="provider-portal" data-provider="portal">
+                  <Provider data-ui="provider-portal" data-provider="portal">
                     <Preview name="portal" />
                   </Provider>
                 </Portal>

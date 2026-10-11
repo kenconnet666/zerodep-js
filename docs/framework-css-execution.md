@@ -9,7 +9,7 @@
 | R0   | 基线 CI、生成声明一致性                          | 5616bae 完整 CI 已通过           |
 | R1   | F2/F3/F6 两层泛型表单与类型；CSS P1 单类组合内核 | 焦点验证通过，提交后完整 CI 验收 |
 | R2   | F1/F4 编译与列表矩阵；ButtonBase/Icon 试点       | 焦点验证通过，提交后完整 CI 验收 |
-| R3   | F5 资源/异步；UI 迁移、删除旧 CSS API            | 待实施                           |
+| R3   | F5 资源/异步；UI 迁移、删除旧 CSS API            | 已迁移删除，焦点验证通过         |
 | R4   | F7 SSR/接管/类型与独立消费、文档清理和完整 CI    | 待实施                           |
 
 ## 实施约束
@@ -37,3 +37,12 @@
 - F1 的赋值/自增/BigInt/短路/词法绑定/源码映射使用既有 macros 测试；增加辅助函数实际依赖、条件切换、异常恢复及快照的组合用例，运行时已有行为正确，无须改写。
 - F4 新增同 key 替换后的事件读取、排序、过滤、恢复、删除连续用例，确认旧草稿在复用时保留、销毁后不再复用、每个实例只清理一次。
 - macros/derived-patterns/loops 三文件 47 例、Icon/Base/Buttons 三文件 21 例通过；Chromium flow/icon/base 18 例（含 CSR/SSR）通过。新启动 LSP、变更 lint 和相关构建通过。
+
+### R3
+
+- R2 已提交 63d8843。该提交 CI 的 verify 在 lint 发现 CSS 测试对 CssClass 的未收窄字符串拼接；已增加真实 string 类型断言，不关闭规则或削弱错误用例。
+- 13 个 UI 组件全部统一到 css；删除 _mergeClasses、宿主 mergeClasses、className 标记函数与 CssProps 重复公开别名。保留编译协议函数和原生 DOM class/className；协议仍为 ABI 4，旧预编译 UI 需重建。
+- Provider 文档示例的标记类改为 data-ui 选择器；Text/Flex/Grid 测试改用当前宿主生成样式并保留声明和 data 定位断言。单属性按需导入夹具移除标记函数，新增旧公开导出缺席检查。
+- F5 增加旧成功/失败和卸载后返回的普通 Promise 用例，包含旧请求不得清除新 loading 的检查；运行时现有取消/清理正确，无需引入任务 API。requests 文档同步示例。
+- CSS runtime 12 例、CSS compiler 46 例通过。core 生命周期/reactivity/ref 焦点测试通过；Grid/Flex 迁移后与 lifecycle 16 例通过。Chromium buttons/base/grid/provider/icon 共 18 例（含 CSR/SSR）通过。
+- CSS/UI 生成检查、native 生成检查、独立 LSP 与变更 lint/格式检查作为阶段门槛；完整矩阵在最终提交验收。

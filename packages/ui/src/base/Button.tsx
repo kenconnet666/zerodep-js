@@ -1,12 +1,11 @@
 import { _component, _derived, type JSX } from 'zerodep-js';
-import { _mergeClasses } from 'zerodep-js-css';
+import { css } from 'zerodep-js-css';
 import { ButtonBase } from './ButtonBase.js';
 import { ButtonContent } from './ButtonContent.js';
 import { _buttonStyle } from './button-style.js';
 import type { ActionProps, LabelProps } from './button-props.js';
 import { _resolveSlotProps } from '../utils/slot-props.js';
 import { useCss } from '../provider/context.js';
-
 export type ButtonVariant = 'solid' | 'outline' | 'text';
 export interface ButtonState {
   readonly variant: ButtonVariant;
@@ -22,7 +21,6 @@ export type ButtonProps = Omit<
 > &
   ActionProps<ButtonState> &
   LabelProps<ButtonState>;
-
 export const Button = _component(
   ({
     variant = 'solid',
@@ -46,9 +44,22 @@ export const Button = _component(
   }: ButtonProps) => {
     const s = useCss();
     const state = _derived(
-      Object.freeze({ variant, disabled, loading, unavailable: disabled || loading }),
+      Object.freeze({
+        variant,
+        disabled,
+        loading,
+        unavailable: disabled || loading,
+      }),
     );
-    const style = _derived(_buttonStyle(s, { variant, color, backgroundColor, borderColor }));
+    const style = css(
+      _buttonStyle(s, {
+        variant,
+        color,
+        backgroundColor,
+        borderColor,
+      }),
+      className,
+    );
     return (
       <ButtonBase
         {...rest}
@@ -57,7 +68,7 @@ export const Button = _component(
         ripple={ripple}
         aria-busy={loading || undefined}
         data-ui-action=""
-        class={_mergeClasses(style, className)}
+        class={style}
         slotRipple={_resolveSlotProps(slotRipple, state)}
       >
         <ButtonContent

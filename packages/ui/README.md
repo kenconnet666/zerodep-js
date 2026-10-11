@@ -118,7 +118,7 @@ ButtonBase 的 size 与 Icon/Text/Spinner 一致，表示根字号（CssValue<'f
 - _resolveSlotProps(source, state)：解析对象或纯函数，在 JSX/派生计算中调用以跟踪状态。
 - _press(element, options)：客户端 DOM 按压反馈，返回必须调用的清理函数；配合已有挂载/effect 生命周期，SSR 不调用。不模拟业务 click。
 
-CssValue<K, Theme> 和 _mergeClasses 在 zerodep-js-css 中；DomRef<T> 与 _composeRefs 在 zerodep-js 中。外部类名遵循正常 CSS 层叠，不承诺按类名字符串顺序覆盖。
+CssValue<K, Theme> 和 css 在 zerodep-js-css 中；DomRef<T> 与 _composeRefs 在 zerodep-js 中。UI 传入 class 使用本 CSS 系统的样式结果，在内部 css 末尾参与单类组合；DOM 定位使用 data-* 或 id。
 
 ## 自动维护唯一入口
 

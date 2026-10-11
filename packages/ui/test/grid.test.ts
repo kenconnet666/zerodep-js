@@ -2,28 +2,32 @@ import { expectCssValue } from './style-assertions.js';
 import { expect, it } from 'vitest';
 import { defineComponent, element, renderToString } from 'zerodep-js';
 
-import { createServerCssHost, withCssHost } from 'zerodep-js-css';
+import { css, createServerCssHost, withCssHost } from 'zerodep-js-css';
 import { Provider, Grid } from '../dist/index.js';
 
-function render(props: Record<string, unknown>) {
+function render(props: Record<string, unknown> | (() => Record<string, unknown>)) {
   const host = createServerCssHost();
-  const App = defineComponent(() => element(Provider, { children: element(Grid, props) }));
+  const App = defineComponent(() =>
+    element(Provider, { children: element(Grid, typeof props === 'function' ? props() : props) }),
+  );
   return { html: withCssHost(host, () => renderToString(App)), css: host.cssText() };
 }
 it('Grid SSR 复用 CSS 轨道，保留普通子项和原生属性', () => {
-  const result = render({
+  const result = render(() => ({
     columns: 3,
     rows: 'auto 1fr',
     gap: '1em',
     size: '2vw',
-    class: 'custom',
+    class: css('padding:3px;'),
+    'data-part': 'custom',
     children: element('div', { style: 'grid-column:span 2', children: '跨列' }),
-  });
+  }));
   expect(result.css).toContain('grid-template-columns:repeat(3, minmax(0, 1fr));');
   expect(result.css).toContain('grid-template-rows:auto 1fr;');
   expectCssValue(result, 'font-size', '2vw');
   expect(result.html).toContain('grid-column:span 2');
-  expect(result.html).toContain('custom');
+  expect(result.html).toContain('data-part="custom"');
+  expect(result.css).toContain('padding:3px;');
   expect(result.html).not.toContain('columns=');
   expect(result.html).not.toContain('role=');
 });

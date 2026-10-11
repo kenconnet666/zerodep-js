@@ -1,6 +1,5 @@
 import { _component, _derived, type NativeProps, element } from 'zerodep-js';
-
-import { css, _mergeClasses } from 'zerodep-js-css';
+import { css } from 'zerodep-js-css';
 import type { ButtonState } from './Button.js';
 import { Ripple } from './Ripple.js';
 import { ButtonContent } from './ButtonContent.js';
@@ -8,7 +7,6 @@ import { _buttonStyle } from './button-style.js';
 import type { ActionProps, LabelProps } from './button-props.js';
 import { _resolveSlotProps } from '../utils/slot-props.js';
 import { useCss } from '../provider/context.js';
-
 export interface LinkButtonProps
   extends
     Omit<
@@ -52,10 +50,23 @@ export const LinkButton = _component(
   }: LinkButtonProps) => {
     const s = useCss();
     const state = _derived(
-      Object.freeze({ variant, disabled, loading, unavailable: disabled || loading }),
+      Object.freeze({
+        variant,
+        disabled,
+        loading,
+        unavailable: disabled || loading,
+      }),
     );
-    const appearance = _derived(_buttonStyle(s, { variant, color, backgroundColor, borderColor }));
-    const font = css(s.fontSize.raw(size));
+    const appearance = css(
+      _buttonStyle(s, {
+        variant,
+        color,
+        backgroundColor,
+        borderColor,
+      }),
+      s.fontSize.raw(size),
+      className,
+    );
     return (
       <HtmlAnchor
         {...rest}
@@ -65,7 +76,7 @@ export const LinkButton = _component(
         aria-disabled={state.unavailable || undefined}
         aria-busy={loading || undefined}
         data-ui-action=""
-        class={_mergeClasses(appearance, font, className)}
+        class={appearance}
         onClick={(event) => {
           if (state.unavailable) {
             event.preventDefault();

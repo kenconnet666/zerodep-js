@@ -17,6 +17,8 @@
 
 ## 结构与 API
 
+- 2026-10-11 目标模式实施：单类组合统一使用 css；删除 _mergeClasses、className(name) 标记函数和 CssProps 重复公开别名，不保留兼容入口。普通 DOM class/className 能力保留，CSS 变量协议仍由编译器及原生渲染处理。执行证据见 docs/framework-css-execution.md。
+
 - 2026-10-11：普通函数、局部解构和返回值继续按 JavaScript 取值；新增 `_derived`/`_derived.by` 声明解构，共享一次原生解构结果，字段只读。CSS 保留直接命名 const 自动派生，包装函数在 JSX 或 `_derived` 中更新。主题成员及 raw 主题 token 通过 class 重算，不变量化；普通主题作者值与系统作者共用保守分类。删除 cssKeyword 协议，core/compiler ABI 为 4；旧应用及预编译库需重建。不新增 bx、活引用函数或新的作者 DSL。
 
 - 2026-10-09：core 提供 DomRef/_composeRefs 并允许 DOM bind:this 与 ref 共存；UI src/utils 承担组件组合与按压工具，src/base 提供 Icon/Text/Ripple/Spinner/ButtonBase。仅维护 UI src/index.ts 根入口，由 pnpm ui:generate 自动生成，pnpm ui:check 校验；不创建子目录 index.ts。
@@ -41,7 +43,7 @@
 - 2026-10-10 布局职责调整：Flex/Grid 仅提供普通布局，删除 attached、按钮子项检查和专用接缝样式。base/ButtonGroup 承担横向/纵向的一维相连，默认 role=group；不做二维，不提供 columns、换行或间距属性，不管理选择状态与方向键导航。此决定取代旧 Flex/Grid attached 契约，不保留兼容别名。
 - 2026-10-10 审查优化：按钮颜色先由主题作者解析，再复用 CSS 安全变量转换；特殊值保留原声明，用户 style 仍最后覆盖。Provider 仅复用当前配置的默认 Intl 格式器，自定义选项逐次读取，不累计历史配置。core 不再公开仅供内部使用的 HTML/SSR 工具。ButtonGroup 由 CSS 处理一维相连，删除仅用于警告的 DOM 子项检查；语言服务只忽略仓库根 .idea/.release/reports，继续监听 dist 与源码同名目录。
 - 不增加 Provider 样式覆盖层；向下传样式只作为确有需要的组件间协作方式，不预建通用体系。ButtonGroup 当前继续使用 CSS 继承和直接子项选择器。
-- UI 使用 css(...)、属性作者与 class 隐式绑定，不手工声明 CSS 变量或拼接工具生成的 style。CSS 共享函数返回 CssClass，_mergeClasses 保留动态值，原生元素统一展开；组件 class 类型复用 ClassValue/JSX 属性。不使用字符串拼接消费样式结果。按钮边框与相连接缝共用 buttonBorderWidth 数值。
+- UI 使用 css(...)、属性作者与 class 隐式绑定，不手工声明 CSS 变量或拼接工具生成的 style。CSS 共享函数返回 CssClass，css 统一组合为单个哈希类并保留动态值，原生元素统一展开；组件 class 类型复用 ClassValue/JSX 属性。不使用字符串拼接消费样式结果。按钮边框与相连接缝共用 buttonBorderWidth 数值。
 
 ## 验证与交付
 

@@ -118,13 +118,6 @@ export function css(...parts: CssClassInput[]): CssClass {
   return getHost(document).registry.css(...parts);
 }
 
-/** 合并本宿主样式类并保留外部类名；不把外部类名当 CSS 声明。 */
-export function _mergeClasses(
-  ...values: readonly (CssClass | null | undefined | false)[]
-): CssClass {
-  return getHost(document).registry.mergeClasses(...values);
-}
-
 export const keyframes = (...parts: CssInput[]): string =>
   getHost(document).registry.keyframes(...parts);
 export function globalCss(key: string, ...parts: CssInput[]): void {

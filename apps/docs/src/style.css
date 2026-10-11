@@ -94,7 +94,7 @@ footer {
   align-items: center;
   gap: 6px;
 }
-.provider-region {
+[data-ui='provider-region'] {
   padding: 20px;
   border-radius: 12px;
 }
@@ -108,7 +108,7 @@ footer {
   border-radius: 8px;
 }
 .provider-demo p,
-.provider-portal p {
+[data-ui='provider-portal'] p {
   overflow-wrap: anywhere;
 }
 .provider-demo pre {
@@ -116,7 +116,7 @@ footer {
   padding: 16px;
   background: #f0f3f7;
 }
-.provider-portal {
+[data-ui='provider-portal'] {
   position: fixed;
   z-index: 10;
   inset-inline-end: 16px;

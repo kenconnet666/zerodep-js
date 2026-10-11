@@ -4,10 +4,13 @@ import { createRuleRegistry } from './runtime.mjs';
 
 await test('单类组合保留声明次序，空结果不登记，旧多类与未登记引用明确失败', () => {
   const registry = createRuleRegistry(() => {});
+  assert.equal('mergeClasses' in registry, false);
   assert.equal(registry.css(false, null, undefined, ['', []]), '');
   assert.equal(registry.size, 0);
   const red = registry.css('color:red;');
   const blue = registry.css('color:blue;');
+  if (typeof red !== 'string' || typeof blue !== 'string')
+    throw new Error('静态声明应返回单个类名字符串');
   const result = registry.css(red, ['padding:1px;', blue]);
   assert.match(result, /^z-[a-z0-9]{14}$/);
   assert.equal(
