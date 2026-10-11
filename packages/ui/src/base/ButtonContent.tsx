@@ -28,24 +28,32 @@ const ButtonIcon = _component(
     spinnerProps?: DecorationProps | undefined;
   }) => {
     const s = useCss();
-    const area = css(() => {
-      s.display('inline-grid').alignItems('center').justifyItems('center');
-      s.fontSize('1.125em').flexShrink(0);
-    });
-    const original = css(() => {
-      s.gridArea('1 / 1').display('inline-flex');
-      s.opacity(bx(loading ? 0 : 1));
-    });
-    const overlay = css(() => {
-      s.gridArea('1 / 1').display('inline-flex');
-    });
+
     return (
-      <span class={area} aria-hidden="true" data-ui-button-icon>
-        <span class={original} data-ui-button-icon-content>
+      <span
+        class={css(() => {
+          s.display('inline-grid').alignItems('center').justifyItems('center');
+          s.fontSize('1.125em').flexShrink(0);
+        })}
+        aria-hidden="true"
+        data-ui-button-icon
+      >
+        <span
+          class={css(() => {
+            s.gridArea('1 / 1').display('inline-flex');
+            s.opacity(bx(loading ? 0 : 1));
+          })}
+          data-ui-button-icon-content
+        >
           {children}
         </span>
         {loading && (
-          <span class={overlay} data-ui-button-spinner>
+          <span
+            class={css(() => {
+              s.gridArea('1 / 1').display('inline-flex');
+            })}
+            data-ui-button-spinner
+          >
             <Spinner
               size="1em"
               {...spinnerProps}
@@ -65,12 +73,15 @@ const ButtonIcon = _component(
 export const ButtonContent = _component(
   ({ loading, icon, startIcon, endIcon, children, spinnerProps }: ButtonContentProps) => {
     const s = useCss();
-    const content = css(() => {
-      s.display('inline-flex').alignItems('center').justifyContent('center');
-      s.gap('0.5em').minInlineSize(0).maxInlineSize('100%');
-    });
+
     return (
-      <span class={content} data-ui-button-content>
+      <span
+        class={css(() => {
+          s.display('inline-flex').alignItems('center').justifyContent('center');
+          s.gap('0.5em').minInlineSize(0).maxInlineSize('100%');
+        })}
+        data-ui-button-content
+      >
         {icon !== undefined ? (
           <ButtonIcon loading={loading} spinnerProps={spinnerProps}>
             {icon}

@@ -35,35 +35,7 @@ export const ButtonBase = _component(
       }),
     );
     const rippleProps = _derived.by(() => _resolveSlotProps(slotRipple, state));
-    const style = _derived([
-      css(() => {
-        s.position('relative');
-        s.display('inline-flex');
-        s.alignItems('center');
-        s.justifyContent('center');
-        s.font('inherit');
-        s.fontSize(bx(size));
-        s.color('inherit');
-        s.backgroundColor('transparent');
-        s.border('0');
-        s.padding(0);
-        s.cursor('pointer');
-        s.select('&:disabled', () => {
-          s.cursor('not-allowed');
-          s.opacity('_disabled');
-        });
-        s.select('&[hidden]', () => {
-          s.display('none');
-        });
-        s.select('&:focus-visible', () => {
-          s.outlineStyle('solid');
-          s.outlineWidth('0.125em');
-          s.outlineOffset('0.125em');
-          s.outlineColor('_focus');
-        });
-      }),
-      className,
-    ]);
+
     return (
       <button
         {...rest}
@@ -72,7 +44,35 @@ export const ButtonBase = _component(
         onClick={(event) => {
           if (!disabled && !event.currentTarget.matches(':disabled')) onClick?.(event);
         }}
-        class={style}
+        class={[
+          css(() => {
+            s.position('relative');
+            s.display('inline-flex');
+            s.alignItems('center');
+            s.justifyContent('center');
+            s.font('inherit');
+            s.fontSize(bx(size));
+            s.color('inherit');
+            s.backgroundColor('transparent');
+            s.border('0');
+            s.padding(0);
+            s.cursor('pointer');
+            s.select('&:disabled', () => {
+              s.cursor('not-allowed');
+              s.opacity('_disabled');
+            });
+            s.select('&[hidden]', () => {
+              s.display('none');
+            });
+            s.select('&:focus-visible', () => {
+              s.outlineStyle('solid');
+              s.outlineWidth('0.125em');
+              s.outlineOffset('0.125em');
+              s.outlineColor('_focus');
+            });
+          }),
+          className,
+        ]}
       >
         {children}
         {ripple && <Ripple {...rippleProps} disabled={Boolean(disabled)} />}

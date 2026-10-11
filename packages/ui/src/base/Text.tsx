@@ -28,22 +28,25 @@ export const Text = _component(
   }: TextProps) => {
     const s = useCss();
     const Tag = _derived(as);
-    const style = _derived([
-      css(() => {
-        s.margin(0);
-        s.fontSize('inherit');
-        s.fontWeight('inherit');
-        s.lineHeight('inherit');
-        s.color(bx(color));
-        s.fontSize(bx(size));
-        s.fontWeight(bx(weight));
-        s.lineHeight(bx(lineHeight));
-        s.textAlign(bx(align));
-      }),
-      className,
-    ]);
+
     return (
-      <Tag {...rest} class={style}>
+      <Tag
+        {...rest}
+        class={[
+          css(() => {
+            s.margin(0);
+            s.fontSize('inherit');
+            s.fontWeight('inherit');
+            s.lineHeight('inherit');
+            s.color(bx(color));
+            s.fontSize(bx(size));
+            s.fontWeight(bx(weight));
+            s.lineHeight(bx(lineHeight));
+            s.textAlign(bx(align));
+          }),
+          className,
+        ]}
+      >
         {children}
       </Tag>
     );

@@ -6,16 +6,25 @@ CSS 由本仓库 zerodep-js-css 提供，使用真实属性方法、同步回调
 
 ```tsx
 const s = useCss();
-const appearance = css(() => {
-  s.display('flex').padding('_md');
-  s.color(bx(color)).width(bx(width));
-  if (disabled) s.opacity(0.5);
-  s.select('&:hover', () => s.color('_primary'));
-});
-return <div class={[base, appearance, className]} />;
+return (
+  <div
+    class={[
+      base,
+      css(() => {
+        s.display('flex').padding('_md');
+        s.color(bx(color)).width(bx(width));
+        if (disabled) s.opacity(0.5);
+        s.select('&:hover', () => s.color('_primary'));
+      }),
+      className,
+    ]}
+  />
+);
 ```
 
 UI 的 useCss() 从 Provider 取得带 UiTheme 类型的作者。没有 UI 时可从 CSS 包创建 new Css()，或使用 createCssContext<Css<AppTheme>>() 提供自定义作者。作者只持有主题来源；每次 css 独立收集，不把状态保存在共享作者上。
+
+没有复用或特殊处理需求时，直接在模板 class 中写 css；只有一个样式时使用 class={css(() => ...)}，组合时使用数组。跨位置复用或确有独立处理需求再提取命名样式，避免只用一次的 appearance/style 和额外 _derived 转发。此约定不取消命名 css 的自动派生能力。
 
 属性方法返回 this，既能链式调用，也能分行调用。回调支持普通同步函数、if/switch 和循环；返回值不参与样式组合。属性方法不能在收集范围外调用，回调不能跨 await。嵌套 css 和异常退出恢复外层收集范围。
 

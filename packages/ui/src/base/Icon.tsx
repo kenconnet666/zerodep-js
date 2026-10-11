@@ -39,16 +39,7 @@ export const Icon = _component(({ icon, color, size, class: className, ...rest }
     };
   });
   const named = _derived(Boolean(rest['aria-label'] || rest['aria-labelledby']));
-  const style = _derived([
-    css(() => {
-      s.display('inline-block');
-      s.verticalAlign('middle');
-      s.flexShrink(0);
-      s.color(bx(color));
-      s.fontSize(bx(size));
-    }),
-    className,
-  ]);
+
   return (
     <svg
       {...svg.attributes}
@@ -56,7 +47,16 @@ export const Icon = _component(({ icon, color, size, class: className, ...rest }
       role={named ? 'img' : undefined}
       aria-hidden={named ? undefined : true}
       {...rest}
-      class={style}
+      class={[
+        css(() => {
+          s.display('inline-block');
+          s.verticalAlign('middle');
+          s.flexShrink(0);
+          s.color(bx(color));
+          s.fontSize(bx(size));
+        }),
+        className,
+      ]}
     >
       {svg.children}
     </svg>

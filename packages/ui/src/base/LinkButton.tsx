@@ -45,71 +45,7 @@ export const LinkButton = _component(
     const state = _derived(
       Object.freeze({ variant, disabled, loading, unavailable: disabled || loading }),
     );
-    const appearance = css(() => {
-      const filled = variant === 'solid';
-      s.boxSizing('border-box');
-      s.position('relative');
-      s.display('inline-flex');
-      s.alignItems('center');
-      s.justifyContent('center');
-      s.verticalAlign('middle');
-      s.font('inherit');
-      s.lineHeight(1.25);
-      s.fontWeight('_medium');
-      s.textDecoration('none');
-      s.textAlign('center');
-      s.whiteSpace('normal');
-      s.overflowWrap('anywhere');
-      s.flexShrink(0);
-      s.minInlineSize(0);
-      s.minBlockSize('2.625em');
-      s.paddingBlock('0.625em');
-      s.paddingInline('1em');
-      s.borderStyle('solid');
-      // 与 ButtonGroup 的 0.0625em 接缝协议一致。
-      s.borderWidth('0.0625em');
-      s.borderRadius('0.5em');
-      s.color(bx(color ?? (filled ? '_onPrimary' : '_primary')));
-      s.backgroundColor(bx(backgroundColor ?? (filled ? '_primary' : 'transparent')));
-      s.borderColor(bx(borderColor ?? (variant === 'outline' ? '_primary' : 'transparent')));
-      s.cursor('pointer');
-      s.select('&[hidden]', () => {
-        s.display('none');
-      });
-      s.select('&:disabled, &[aria-disabled="true"]', () => {
-        s.cursor('not-allowed');
-        s.opacity('_disabled');
-      });
-      s.select('@media (hover: hover)', () => {
-        s.select('&:not(:disabled):not([aria-disabled="true"]):hover', () => {
-          s.filter('brightness(0.92)');
-        });
-      });
-      s.select('&:not(:disabled):not([aria-disabled="true"]):active', () => {
-        s.filter('brightness(0.84)');
-      });
-      s.select('&:focus-visible', () => {
-        s.outlineStyle('solid');
-        s.outlineWidth('0.125em');
-        s.outlineOffset('0.125em');
-        s.outlineColor('_focus');
-      });
-      s.select('@media (forced-colors: active)', () => {
-        s.borderColor('ButtonText');
-        s.select('&:focus-visible', () => {
-          s.outlineColor('Highlight');
-        });
-        s.select('&[aria-pressed="true"]', () => {
-          s.backgroundColor('Highlight');
-          s.color('HighlightText');
-        });
-        s.select('&:disabled, &[aria-disabled="true"]', () => {
-          s.color('GrayText');
-          s.opacity(1);
-        });
-      });
-      s.fontSize(bx(size));
-    });
+
     return (
       <HtmlAnchor
         {...rest}
@@ -119,7 +55,74 @@ export const LinkButton = _component(
         aria-disabled={state.unavailable || undefined}
         aria-busy={loading || undefined}
         data-ui-action=""
-        class={[appearance, className]}
+        class={[
+          css(() => {
+            const filled = variant === 'solid';
+            s.boxSizing('border-box');
+            s.position('relative');
+            s.display('inline-flex');
+            s.alignItems('center');
+            s.justifyContent('center');
+            s.verticalAlign('middle');
+            s.font('inherit');
+            s.lineHeight(1.25);
+            s.fontWeight('_medium');
+            s.textDecoration('none');
+            s.textAlign('center');
+            s.whiteSpace('normal');
+            s.overflowWrap('anywhere');
+            s.flexShrink(0);
+            s.minInlineSize(0);
+            s.minBlockSize('2.625em');
+            s.paddingBlock('0.625em');
+            s.paddingInline('1em');
+            s.borderStyle('solid');
+            // 与 ButtonGroup 的 0.0625em 接缝协议一致。
+            s.borderWidth('0.0625em');
+            s.borderRadius('0.5em');
+            s.color(bx(color ?? (filled ? '_onPrimary' : '_primary')));
+            s.backgroundColor(bx(backgroundColor ?? (filled ? '_primary' : 'transparent')));
+            s.borderColor(bx(borderColor ?? (variant === 'outline' ? '_primary' : 'transparent')));
+            s.cursor('pointer');
+            s.select('&[hidden]', () => {
+              s.display('none');
+            });
+            s.select('&:disabled, &[aria-disabled="true"]', () => {
+              s.cursor('not-allowed');
+              s.opacity('_disabled');
+            });
+            s.select('@media (hover: hover)', () => {
+              s.select('&:not(:disabled):not([aria-disabled="true"]):hover', () => {
+                s.filter('brightness(0.92)');
+              });
+            });
+            s.select('&:not(:disabled):not([aria-disabled="true"]):active', () => {
+              s.filter('brightness(0.84)');
+            });
+            s.select('&:focus-visible', () => {
+              s.outlineStyle('solid');
+              s.outlineWidth('0.125em');
+              s.outlineOffset('0.125em');
+              s.outlineColor('_focus');
+            });
+            s.select('@media (forced-colors: active)', () => {
+              s.borderColor('ButtonText');
+              s.select('&:focus-visible', () => {
+                s.outlineColor('Highlight');
+              });
+              s.select('&[aria-pressed="true"]', () => {
+                s.backgroundColor('Highlight');
+                s.color('HighlightText');
+              });
+              s.select('&:disabled, &[aria-disabled="true"]', () => {
+                s.color('GrayText');
+                s.opacity(1);
+              });
+            });
+            s.fontSize(bx(size));
+          }),
+          className,
+        ]}
         onClick={(event) => {
           if (state.unavailable) {
             event.preventDefault();
