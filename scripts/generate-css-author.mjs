@@ -558,6 +558,30 @@ const files = new Map([
   ['keywords', keywordRoot],
   ['keyword-sets', sharedKeywordLines],
 ]);
+// 迁移阶段与旧作者并存，正式入口切换后删除旧作者生成分支。
+const methods = [
+  ...header,
+  "import { CssAuthor, type PropertyInput } from '../runtime/program.js';",
+  "import type { SystemKeywords } from './keywords.js';",
+  '/** 回调作者：真实方法保留 IDE 参数和括号补全，状态属于当前 css 收集范围。 */',
+  'export class CssMethods<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T> {',
+];
+for (const name of names) {
+  const { member, cssName } = properties.get(name);
+  const description = commentOf(member, name, cssName).replace(
+    /s\.[\w.]+\([^\n]*\)/g,
+    'css(() => s.' + name + '(value))',
+  );
+  methods.push(
+    description,
+    name + '(value: PropertyInput<' + JSON.stringify(name) + ', T>): this {',
+    'this.write(' + JSON.stringify(name) + ', ' + JSON.stringify(cssName) + ', value);',
+    'return this;',
+    '}',
+  );
+}
+methods.push('}');
+files.set('methods', methods);
 // 这里只生成系统作者与关键字；具体 UI 主题由 UI 包维护。
 for (const [name, lines] of files) {
   const output = resolve(outputDir, `${name}.ts`);

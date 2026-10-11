@@ -22,7 +22,43 @@ export interface ClassStyle {
   readonly class: string;
   readonly style: string;
 }
-export type ClassValue = string | ClassStyle;
+/** 样式包提供数据及最终组合器；core 只消费协议，不依赖具体 CSS 作者。 */
+export interface ClassSource {
+  readonly _resolveClass: (sources: readonly ClassSource[]) => ClassStyle;
+}
+export type ClassValue =
+  string | ClassStyle | ClassSource | false | null | undefined | readonly ClassValue[];
+
+/** 在原生元素的求值边界合并；className 覆盖 class 时不会提前登记被丢弃的结果。 */
+export function resolveClass(value: unknown): ClassStyle {
+  const names: string[] = [];
+  const styles: string[] = [];
+  const sources: ClassSource[] = [];
+  const visit = (part: unknown): void => {
+    if (part == null || part === false) return;
+    if (Array.isArray(part)) {
+      for (const child of part) visit(child);
+    } else if (typeof part === 'string') names.push(part);
+    else if (typeof part === 'object') {
+      const candidate = part as Partial<ClassSource & ClassStyle>;
+      if (typeof candidate._resolveClass === 'function') sources.push(candidate as ClassSource);
+      else if (typeof candidate.class === 'string' && typeof candidate.style === 'string') {
+        names.push(candidate.class);
+        styles.push(candidate.style);
+      } else throw new Error('class 使用类名、样式结果或它们的数组。');
+    } else throw new Error('class 使用类名、样式结果或它们的数组。');
+  };
+  visit(value);
+  if (sources.length) {
+    const resolve = sources[0]!._resolveClass;
+    if (sources.some((source) => source._resolveClass !== resolve))
+      throw new Error('不能组合来自不同样式协议或宿主模块的结果。');
+    const result = resolve(sources);
+    names.push(result.class);
+    styles.push(result.style);
+  }
+  return { class: names.filter(Boolean).join(' '), style: styles.filter(Boolean).join(';') };
+}
 
 function tokens(css: string, label: string) {
   return tokenizer(

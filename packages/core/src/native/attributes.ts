@@ -1,7 +1,7 @@
 import { TEMPLATE, type Renderable } from '../runtime/template.js';
 import type { Props } from '../runtime/props.js';
 import { clientProperty, ownsContent, propertyName } from './properties.js';
-import { styleText } from './style.js';
+import { resolveClass, styleText } from './style.js';
 import { textValue } from './text.js';
 import { svgAliases } from './data.js';
 import { synchronous } from '../runtime/synchronous.js';
@@ -292,15 +292,17 @@ export function nativeAttributes(input: Props, tag: string, namespace = HTML): M
     let original = input[key];
     if (name === 'class') {
       classStyle = '';
-      if (original !== null && typeof original === 'object') {
-        const bundle = original as { class?: unknown; style?: unknown };
-        const className = bundle.class;
-        const style = bundle.style;
-        if (typeof className !== 'string' || typeof style !== 'string')
-          throw new Error('class 使用类名字符串或包含 class/style 字符串的样式结果。');
-        original = className;
-        classStyle = styleText(style);
-      }
+      // 别名最后覆盖：被覆盖的结构化结果不应登记规则或读取绑定。
+      const keys = Object.keys(input);
+      if (
+        keys
+          .slice(keys.indexOf(key) + 1)
+          .some((later) => later === 'class' || later === 'className')
+      )
+        continue;
+      const bundle = resolveClass(original);
+      original = bundle.class || null;
+      classStyle = styleText(bundle.style);
     }
     const value =
       name === 'style' ? styleText(original) || null : attributeValue(name, original, namespace);

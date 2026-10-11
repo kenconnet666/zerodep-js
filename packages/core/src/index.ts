@@ -59,4 +59,4 @@ export {
 } from './runtime/template.js';
 export { liveRender } from './runtime/flow.js';
 export { styleText } from './native/style.js';
-export type { ClassValue, ClassStyle } from './native/style.js';
+export type { ClassValue, ClassStyle, ClassSource } from './native/style.js';
