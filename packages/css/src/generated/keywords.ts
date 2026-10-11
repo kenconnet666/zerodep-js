@@ -10,15 +10,14 @@ export interface KeywordValues {
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/accent-color
    */
-  readonly accentColor: keyof AccentColorValues | Exclude<Property.AccentColor, string> | CssString;
+  readonly accentColor: keyof AccentColorValues | CssString;
   /**
    * 分配布局容器交叉轴或块轴上的剩余空间，控制内容整体的对齐。（align-content）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/align-content
    */
-  readonly alignContent:
-    keyof AlignContentValues | Exclude<Property.AlignContent, string> | CssString;
+  readonly alignContent: keyof AlignContentValues | CssString;
   /**
    * 设置容器内项目在交叉轴或块轴上的默认对齐方式。（align-items）
    *
@@ -36,7 +35,7 @@ export interface KeywordValues {
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/align-items
    */
-  readonly alignItems: keyof AlignItemsValues | Exclude<Property.AlignItems, string> | CssString;
+  readonly alignItems: keyof AlignItemsValues | CssString;
   /**
    * 单独覆盖一个项目的交叉轴或块轴对齐方式。（align-self）
    *
@@ -50,39 +49,38 @@ export interface KeywordValues {
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/align-self
    */
-  readonly alignSelf: keyof AlignSelfValues | Exclude<Property.AlignSelf, string> | CssString;
+  readonly alignSelf: keyof AlignSelfValues | CssString;
   /**
    * 旧版瀑布流布局提案中沿块轴对齐轨道的属性；使用前核对实现与规范版本。（align-tracks）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/align-tracks
    */
-  readonly alignTracks: keyof AlignTracksValues | Exclude<Property.AlignTracks, string> | CssString;
+  readonly alignTracks: keyof AlignTracksValues | CssString;
   /**
    * 选择行内或 SVG 文本参与对齐时使用的基线。（alignment-baseline）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/alignment-baseline
    */
-  readonly alignmentBaseline:
-    keyof AlignmentBaselineValues | Exclude<Property.AlignmentBaseline, string> | CssString;
+  readonly alignmentBaseline: keyof AlignmentBaselineValues | CssString;
   /**
    * 批量重置 CSS 属性；不重置 direction、unicode-bidi 和自定义属性。（all）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/all
    */
-  readonly all: keyof AllValues | Exclude<Property.All, string> | CssString;
+  readonly all: keyof AllValues | CssString;
   /**
    * 为元素声明锚点名称，供锚点定位的元素引用。（anchor-name）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/anchor-name
    */
-  readonly anchorName: keyof AnchorNameValues | Exclude<Property.AnchorName, string> | CssString;
+  readonly anchorName: keyof AnchorNameValues | CssString;
   /**
    * 限制锚点名称的可见范围，避免同名锚点跨组件互相影响。（anchor-scope）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/anchor-scope
    */
-  readonly anchorScope: keyof AnchorScopeValues | Exclude<Property.AnchorScope, string> | CssString;
+  readonly anchorScope: keyof AnchorScopeValues | CssString;
   /**
    * 集中设置关键帧动画的名称、时长、缓动、延迟、次数及播放行为。（animation）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation
@@ -94,32 +92,28 @@ export interface KeywordValues {
    * CSS 初始值：`replace`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-composition
    */
-  readonly animationComposition:
-    keyof AnimationCompositionValues | Exclude<Property.AnimationComposition, string> | CssString;
+  readonly animationComposition: keyof AnimationCompositionValues | CssString;
   /**
    * 设置动画开始前的延迟；负值表示从动画中途开始播放。（animation-delay）
    *
    * CSS 初始值：`0s`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-delay
    */
-  readonly animationDelay:
-    keyof AnimationDelayValues | Exclude<Property.AnimationDelay, string> | CssString;
+  readonly animationDelay: keyof AnimationDelayValues | CssString;
   /**
    * 设置动画按正向、反向或交替方向播放。（animation-direction）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-direction
    */
-  readonly animationDirection:
-    keyof AnimationDirectionValues | Exclude<Property.AnimationDirection, string> | CssString;
+  readonly animationDirection: keyof AnimationDirectionValues | CssString;
   /**
    * 设置动画完成一次循环的时长。（animation-duration）
    *
    * CSS 初始值：`0s`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-duration
    */
-  readonly animationDuration:
-    keyof AnimationDurationValues | Exclude<Property.AnimationDuration, string> | CssString;
+  readonly animationDuration: keyof AnimationDurationValues | CssString;
   /**
    * 设置动画在有效播放区间之外是否应用关键帧样式。（animation-fill-mode）
    *
@@ -136,8 +130,7 @@ export interface KeywordValues {
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-fill-mode
    */
-  readonly animationFillMode:
-    keyof AnimationFillModeValues | Exclude<Property.AnimationFillMode, string> | CssString;
+  readonly animationFillMode: keyof AnimationFillModeValues | CssString;
   /**
    * 设置动画循环次数，或无限循环。（animation-iteration-count）
    *
@@ -154,16 +147,14 @@ export interface KeywordValues {
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-name
    */
-  readonly animationName:
-    keyof AnimationNameValues | Exclude<Property.AnimationName, string> | CssString;
+  readonly animationName: keyof AnimationNameValues | CssString;
   /**
    * 控制动画运行或暂停，暂停后可从原位置继续。（animation-play-state）
    *
    * CSS 初始值：`running`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-play-state
    */
-  readonly animationPlayState:
-    keyof AnimationPlayStateValues | Exclude<Property.AnimationPlayState, string> | CssString;
+  readonly animationPlayState: keyof AnimationPlayStateValues | CssString;
   /**
    * 设置动画附着到时间线的起止范围。（animation-range）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-range
@@ -192,25 +183,21 @@ export interface KeywordValues {
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-timeline
    */
-  readonly animationTimeline:
-    keyof AnimationTimelineValues | Exclude<Property.AnimationTimeline, string> | CssString;
+  readonly animationTimeline: keyof AnimationTimelineValues | CssString;
   /**
    * 设置动画每个关键帧区间内进度变化的缓动函数。（animation-timing-function）
    *
    * CSS 初始值：`ease`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-timing-function
    */
-  readonly animationTimingFunction:
-    | keyof AnimationTimingFunctionValues
-    | Exclude<Property.AnimationTimingFunction, string>
-    | CssString;
+  readonly animationTimingFunction: keyof AnimationTimingFunctionValues | CssString;
   /**
    * 控制元素是否采用平台原生控件外观。（appearance）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/appearance
    */
-  readonly appearance: keyof AppearanceValues | Exclude<Property.Appearance, string> | CssString;
+  readonly appearance: keyof AppearanceValues | CssString;
   /**
    * 设置盒子的首选宽高比，参与自动尺寸计算。（aspect-ratio）
    *
@@ -228,16 +215,14 @@ export interface KeywordValues {
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/backdrop-filter
    */
-  readonly backdropFilter:
-    keyof BackdropFilterValues | Exclude<Property.BackdropFilter, string> | CssString;
+  readonly backdropFilter: keyof BackdropFilterValues | CssString;
   /**
    * 控制经过三维变换后背向观察者的元素背面是否可见。（backface-visibility）
    *
    * CSS 初始值：`visible`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/backface-visibility
    */
-  readonly backfaceVisibility:
-    keyof BackfaceVisibilityValues | Exclude<Property.BackfaceVisibility, string> | CssString;
+  readonly backfaceVisibility: keyof BackfaceVisibilityValues | CssString;
   /**
    * 集中设置背景颜色、图像、位置、尺寸、重复及绘制区域。（background）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background
@@ -249,48 +234,42 @@ export interface KeywordValues {
    * CSS 初始值：`scroll`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background-attachment
    */
-  readonly backgroundAttachment:
-    keyof BackgroundAttachmentValues | Exclude<Property.BackgroundAttachment, string> | CssString;
+  readonly backgroundAttachment: keyof BackgroundAttachmentValues | CssString;
   /**
    * 设置背景图层彼此之间以及与背景色之间的混合模式。（background-blend-mode）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background-blend-mode
    */
-  readonly backgroundBlendMode:
-    keyof BackgroundBlendModeValues | Exclude<Property.BackgroundBlendMode, string> | CssString;
+  readonly backgroundBlendMode: keyof BackgroundBlendModeValues | CssString;
   /**
    * 设置背景允许绘制到的边界区域。（background-clip）
    *
    * CSS 初始值：`border-box`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background-clip
    */
-  readonly backgroundClip:
-    keyof BackgroundClipValues | Exclude<Property.BackgroundClip, string> | CssString;
+  readonly backgroundClip: keyof BackgroundClipValues | CssString;
   /**
    * 设置元素背景颜色，位于背景图像下方。（background-color）
    *
    * CSS 初始值：`transparent`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background-color
    */
-  readonly backgroundColor:
-    keyof BackgroundColorValues | Exclude<Property.BackgroundColor, string> | CssString;
+  readonly backgroundColor: keyof BackgroundColorValues | CssString;
   /**
    * 设置一个或多个背景图像或渐变图层。（background-image）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background-image
    */
-  readonly backgroundImage:
-    keyof BackgroundImageValues | Exclude<Property.BackgroundImage, string> | CssString;
+  readonly backgroundImage: keyof BackgroundImageValues | CssString;
   /**
    * 设置背景图像定位所依据的盒子区域。（background-origin）
    *
    * CSS 初始值：`padding-box`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background-origin
    */
-  readonly backgroundOrigin:
-    keyof BackgroundOriginValues | Exclude<Property.BackgroundOrigin, string> | CssString;
+  readonly backgroundOrigin: keyof BackgroundOriginValues | CssString;
   /**
    * 设置背景图像在定位区域内的位置。（background-position）
    *
@@ -321,8 +300,7 @@ export interface KeywordValues {
    * CSS 初始值：`repeat`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background-repeat
    */
-  readonly backgroundRepeat:
-    keyof BackgroundRepeatValues | Exclude<Property.BackgroundRepeat, string> | CssString;
+  readonly backgroundRepeat: keyof BackgroundRepeatValues | CssString;
   /**
    * 设置背景图像尺寸，以及覆盖或完整容纳图像的缩放方式。（background-size）
    *
@@ -373,8 +351,7 @@ export interface KeywordValues {
    * CSS 初始值：`currentcolor`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block-color
    */
-  readonly borderBlockColor:
-    keyof BorderBlockColorValues | Exclude<Property.BorderBlockColor, string> | CssString;
+  readonly borderBlockColor: keyof BorderBlockColorValues | CssString;
   /**
    * 设置逻辑块轴结束侧边框的宽度、线型和颜色。（border-block-end）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block-end
@@ -387,16 +364,14 @@ export interface KeywordValues {
    * CSS 初始值：`currentcolor`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block-end-color
    */
-  readonly borderBlockEndColor:
-    keyof BorderBlockEndColorValues | Exclude<Property.BorderBlockEndColor, string> | CssString;
+  readonly borderBlockEndColor: keyof BorderBlockEndColorValues | CssString;
   /**
    * 设置逻辑块轴结束侧的边框线型。（border-block-end-style）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block-end-style
    */
-  readonly borderBlockEndStyle:
-    keyof BorderBlockEndStyleValues | Exclude<Property.BorderBlockEndStyle, string> | CssString;
+  readonly borderBlockEndStyle: keyof BorderBlockEndStyleValues | CssString;
   /**
    * 设置逻辑块轴结束侧的边框宽度。（border-block-end-width）
    *
@@ -417,16 +392,14 @@ export interface KeywordValues {
    * CSS 初始值：`currentcolor`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block-start-color
    */
-  readonly borderBlockStartColor:
-    keyof BorderBlockStartColorValues | Exclude<Property.BorderBlockStartColor, string> | CssString;
+  readonly borderBlockStartColor: keyof BorderBlockStartColorValues | CssString;
   /**
    * 设置逻辑块轴起始侧的边框线型。（border-block-start-style）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block-start-style
    */
-  readonly borderBlockStartStyle:
-    keyof BorderBlockStartStyleValues | Exclude<Property.BorderBlockStartStyle, string> | CssString;
+  readonly borderBlockStartStyle: keyof BorderBlockStartStyleValues | CssString;
   /**
    * 设置逻辑块轴起始侧的边框宽度。（border-block-start-width）
    *
@@ -441,8 +414,7 @@ export interface KeywordValues {
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block-style
    */
-  readonly borderBlockStyle:
-    keyof BorderBlockStyleValues | Exclude<Property.BorderBlockStyle, string> | CssString;
+  readonly borderBlockStyle: keyof BorderBlockStyleValues | CssString;
   /**
    * 设置逻辑块轴两侧的边框宽度。（border-block-width）
    *
@@ -463,8 +435,7 @@ export interface KeywordValues {
    * CSS 初始值：`currentcolor`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-bottom-color
    */
-  readonly borderBottomColor:
-    keyof BorderBottomColorValues | Exclude<Property.BorderBottomColor, string> | CssString;
+  readonly borderBottomColor: keyof BorderBottomColorValues | CssString;
   /**
    * 设置左下角边框的圆角半径。（border-bottom-left-radius）
    *
@@ -491,8 +462,7 @@ export interface KeywordValues {
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-bottom-style
    */
-  readonly borderBottomStyle:
-    keyof BorderBottomStyleValues | Exclude<Property.BorderBottomStyle, string> | CssString;
+  readonly borderBottomStyle: keyof BorderBottomStyleValues | CssString;
   /**
    * 设置下边框宽度。（border-bottom-width）
    *
@@ -507,13 +477,12 @@ export interface KeywordValues {
    * CSS 初始值：`separate`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-collapse
    */
-  readonly borderCollapse:
-    keyof BorderCollapseValues | Exclude<Property.BorderCollapse, string> | CssString;
+  readonly borderCollapse: keyof BorderCollapseValues | CssString;
   /**
    * 设置四边边框颜色，支持按上、右、下、左顺序简写。（border-color）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-color
    */
-  readonly borderColor: keyof BorderColorValues | Exclude<Property.BorderColor, string> | CssString;
+  readonly borderColor: keyof BorderColorValues | CssString;
   /**
    * 设置逻辑块轴结束侧与行内轴结束侧相交角的圆角。（border-end-end-radius）
    *
@@ -549,8 +518,7 @@ export interface KeywordValues {
    * CSS 初始值：`stretch`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-image-repeat
    */
-  readonly borderImageRepeat:
-    keyof BorderImageRepeatValues | Exclude<Property.BorderImageRepeat, string> | CssString;
+  readonly borderImageRepeat: keyof BorderImageRepeatValues | CssString;
   /**
    * 设置边框图像的切片位置及是否填充中间区域。（border-image-slice）
    *
@@ -565,8 +533,7 @@ export interface KeywordValues {
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-image-source
    */
-  readonly borderImageSource:
-    keyof BorderImageSourceValues | Exclude<Property.BorderImageSource, string> | CssString;
+  readonly borderImageSource: keyof BorderImageSourceValues | CssString;
   /**
    * 设置边框图像各边的绘制宽度。（border-image-width）
    *
@@ -587,8 +554,7 @@ export interface KeywordValues {
    * CSS 初始值：`currentcolor`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline-color
    */
-  readonly borderInlineColor:
-    keyof BorderInlineColorValues | Exclude<Property.BorderInlineColor, string> | CssString;
+  readonly borderInlineColor: keyof BorderInlineColorValues | CssString;
   /**
    * 设置逻辑行内轴结束侧边框的宽度、线型和颜色。（border-inline-end）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline-end
@@ -601,16 +567,14 @@ export interface KeywordValues {
    * CSS 初始值：`currentcolor`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline-end-color
    */
-  readonly borderInlineEndColor:
-    keyof BorderInlineEndColorValues | Exclude<Property.BorderInlineEndColor, string> | CssString;
+  readonly borderInlineEndColor: keyof BorderInlineEndColorValues | CssString;
   /**
    * 设置逻辑行内轴结束侧边框线型。（border-inline-end-style）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline-end-style
    */
-  readonly borderInlineEndStyle:
-    keyof BorderInlineEndStyleValues | Exclude<Property.BorderInlineEndStyle, string> | CssString;
+  readonly borderInlineEndStyle: keyof BorderInlineEndStyleValues | CssString;
   /**
    * 设置逻辑行内轴结束侧边框宽度。（border-inline-end-width）
    *
@@ -631,20 +595,14 @@ export interface KeywordValues {
    * CSS 初始值：`currentcolor`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline-start-color
    */
-  readonly borderInlineStartColor:
-    | keyof BorderInlineStartColorValues
-    | Exclude<Property.BorderInlineStartColor, string>
-    | CssString;
+  readonly borderInlineStartColor: keyof BorderInlineStartColorValues | CssString;
   /**
    * 设置逻辑行内轴起始侧边框线型。（border-inline-start-style）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline-start-style
    */
-  readonly borderInlineStartStyle:
-    | keyof BorderInlineStartStyleValues
-    | Exclude<Property.BorderInlineStartStyle, string>
-    | CssString;
+  readonly borderInlineStartStyle: keyof BorderInlineStartStyleValues | CssString;
   /**
    * 设置逻辑行内轴起始侧边框宽度。（border-inline-start-width）
    *
@@ -661,8 +619,7 @@ export interface KeywordValues {
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline-style
    */
-  readonly borderInlineStyle:
-    keyof BorderInlineStyleValues | Exclude<Property.BorderInlineStyle, string> | CssString;
+  readonly borderInlineStyle: keyof BorderInlineStyleValues | CssString;
   /**
    * 设置逻辑行内轴两侧边框宽度。（border-inline-width）
    *
@@ -682,16 +639,14 @@ export interface KeywordValues {
    * CSS 初始值：`currentcolor`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-left-color
    */
-  readonly borderLeftColor:
-    keyof BorderLeftColorValues | Exclude<Property.BorderLeftColor, string> | CssString;
+  readonly borderLeftColor: keyof BorderLeftColorValues | CssString;
   /**
    * 设置左边框线型。（border-left-style）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-left-style
    */
-  readonly borderLeftStyle:
-    keyof BorderLeftStyleValues | Exclude<Property.BorderLeftStyle, string> | CssString;
+  readonly borderLeftStyle: keyof BorderLeftStyleValues | CssString;
   /**
    * 设置左边框宽度。（border-left-width）
    *
@@ -721,16 +676,14 @@ export interface KeywordValues {
    * CSS 初始值：`currentcolor`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-right-color
    */
-  readonly borderRightColor:
-    keyof BorderRightColorValues | Exclude<Property.BorderRightColor, string> | CssString;
+  readonly borderRightColor: keyof BorderRightColorValues | CssString;
   /**
    * 设置右边框线型。（border-right-style）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-right-style
    */
-  readonly borderRightStyle:
-    keyof BorderRightStyleValues | Exclude<Property.BorderRightStyle, string> | CssString;
+  readonly borderRightStyle: keyof BorderRightStyleValues | CssString;
   /**
    * 设置右边框宽度。（border-right-width）
    *
@@ -769,7 +722,7 @@ export interface KeywordValues {
    * 设置四边边框线型。（border-style）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-style
    */
-  readonly borderStyle: keyof BorderStyleValues | Exclude<Property.BorderStyle, string> | CssString;
+  readonly borderStyle: keyof BorderStyleValues | CssString;
   /**
    * 设置上边框的宽度、线型和颜色。（border-top）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-top
@@ -781,8 +734,7 @@ export interface KeywordValues {
    * CSS 初始值：`currentcolor`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-top-color
    */
-  readonly borderTopColor:
-    keyof BorderTopColorValues | Exclude<Property.BorderTopColor, string> | CssString;
+  readonly borderTopColor: keyof BorderTopColorValues | CssString;
   /**
    * 设置左上角边框的圆角半径。（border-top-left-radius）
    *
@@ -805,8 +757,7 @@ export interface KeywordValues {
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-top-style
    */
-  readonly borderTopStyle:
-    keyof BorderTopStyleValues | Exclude<Property.BorderTopStyle, string> | CssString;
+  readonly borderTopStyle: keyof BorderTopStyleValues | CssString;
   /**
    * 设置上边框宽度。（border-top-width）
    *
@@ -833,8 +784,7 @@ export interface KeywordValues {
    * CSS 初始值：`slice`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/box-decoration-break
    */
-  readonly boxDecorationBreak:
-    keyof BoxDecorationBreakValues | Exclude<Property.BoxDecorationBreak, string> | CssString;
+  readonly boxDecorationBreak: keyof BoxDecorationBreakValues | CssString;
   /**
    * 设置盒子的外部或内部阴影，可叠加多层。（box-shadow）
    *
@@ -845,7 +795,7 @@ export interface KeywordValues {
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/box-shadow
    */
-  readonly boxShadow: keyof BoxShadowValues | Exclude<Property.BoxShadow, string> | CssString;
+  readonly boxShadow: keyof BoxShadowValues | CssString;
   /**
    * 决定 width、height 等尺寸是否包含内边距和边框。（box-sizing）
    *
@@ -858,113 +808,107 @@ export interface KeywordValues {
    * CSS 初始值：`content-box`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/box-sizing
    */
-  readonly boxSizing: keyof BoxSizingValues | Exclude<Property.BoxSizing, string> | CssString;
+  readonly boxSizing: keyof BoxSizingValues | CssString;
   /**
    * 设置元素之后的分页、分栏或区域分片行为。（break-after）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/break-after
    */
-  readonly breakAfter: keyof BreakAfterValues | Exclude<Property.BreakAfter, string> | CssString;
+  readonly breakAfter: keyof BreakAfterValues | CssString;
   /**
    * 设置元素之前的分页、分栏或区域分片行为。（break-before）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/break-before
    */
-  readonly breakBefore: keyof BreakBeforeValues | Exclude<Property.BreakBefore, string> | CssString;
+  readonly breakBefore: keyof BreakBeforeValues | CssString;
   /**
    * 设置元素内部是否允许分页、分栏或区域分片。（break-inside）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/break-inside
    */
-  readonly breakInside: keyof BreakInsideValues | Exclude<Property.BreakInside, string> | CssString;
+  readonly breakInside: keyof BreakInsideValues | CssString;
   /**
    * 设置表格标题相对于表格的放置侧。（caption-side）
    *
    * CSS 初始值：`top`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/caption-side
    */
-  readonly captionSide: keyof CaptionSideValues | Exclude<Property.CaptionSide, string> | CssString;
+  readonly captionSide: keyof CaptionSideValues | CssString;
   /**
    * 集中设置文本插入光标的颜色和形状。（caret）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/caret
    */
-  readonly caret: keyof CaretValues | Exclude<Property.Caret, string> | CssString;
+  readonly caret: keyof CaretValues | CssString;
   /**
    * 设置可编辑内容中的文本插入光标颜色。（caret-color）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/caret-color
    */
-  readonly caretColor: keyof CaretColorValues | Exclude<Property.CaretColor, string> | CssString;
+  readonly caretColor: keyof CaretColorValues | CssString;
   /**
    * 设置文本插入光标的形状。（caret-shape）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/caret-shape
    */
-  readonly caretShape: keyof CaretShapeValues | Exclude<Property.CaretShape, string> | CssString;
+  readonly caretShape: keyof CaretShapeValues | CssString;
   /**
    * 要求元素避让指定侧的前置浮动元素。（clear）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/clear
    */
-  readonly clear: keyof ClearValues | Exclude<Property.Clear, string> | CssString;
+  readonly clear: keyof ClearValues | CssString;
   /**
    * 使用旧式矩形裁剪绝对定位元素；新代码优先考虑 clip-path。（clip）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/clip
    */
-  readonly clip: keyof ClipValues | Exclude<Property.Clip, string> | CssString;
+  readonly clip: keyof ClipValues | CssString;
   /**
    * 通过基本形状、路径或引用裁剪元素的可见区域。（clip-path）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/clip-path
    */
-  readonly clipPath: keyof ClipPathValues | Exclude<Property.ClipPath, string> | CssString;
+  readonly clipPath: keyof ClipPathValues | CssString;
   /**
    * 设置 SVG 裁剪路径判断内部区域所用的填充规则。（clip-rule）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/clip-rule
    */
-  readonly clipRule: keyof ClipRuleValues | Exclude<Property.ClipRule, string> | CssString;
+  readonly clipRule: keyof ClipRuleValues | CssString;
   /**
    * 设置文字前景色，同时作为 currentColor 的来源。（color）
    *
    * 改变文字和 currentColor 的来源，不会自动改变背景。颜色函数方法返回完整 color 声明。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/color
    */
-  readonly color: keyof ColorValues | Exclude<Property.Color, string> | CssString;
+  readonly color: keyof ColorValues | CssString;
   /**
    * 控制输出设备对颜色的自动调整；这是 print-color-adjust 的旧名称。（color-adjust）
    *
    * CSS 初始值：`economy`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/print-color-adjust
    */
-  readonly colorAdjust:
-    keyof PrintColorAdjustValues | Exclude<Property.PrintColorAdjust, string> | CssString;
+  readonly colorAdjust: keyof PrintColorAdjustValues | CssString;
   /**
    * 设置 SVG 图形颜色插值所用的色彩空间。（color-interpolation）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/color-interpolation
    */
-  readonly colorInterpolation:
-    keyof ColorInterpolationValues | Exclude<Property.ColorInterpolation, string> | CssString;
+  readonly colorInterpolation: keyof ColorInterpolationValues | CssString;
   /**
    * 设置 SVG 滤镜效果进行颜色计算时所用的色彩空间。（color-interpolation-filters）
    *
    * CSS 初始值：`linearRGB`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/color-interpolation-filters
    */
-  readonly colorInterpolationFilters:
-    | keyof ColorInterpolationFiltersValues
-    | Exclude<Property.ColorInterpolationFilters, string>
-    | CssString;
+  readonly colorInterpolationFilters: keyof ColorInterpolationFiltersValues | CssString;
   /**
    * 向 SVG 渲染器提供颜色绘制质量与速度之间的偏好。（color-rendering）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/color-rendering
    */
-  readonly colorRendering:
-    keyof ColorRenderingValues | Exclude<Property.ColorRendering, string> | CssString;
+  readonly colorRendering: keyof ColorRenderingValues | CssString;
   /**
    * 声明元素支持的配色方案，影响原生控件、滚动条等浏览器绘制内容。（color-scheme）
    *
@@ -973,7 +917,7 @@ export interface KeywordValues {
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/color-scheme
    */
-  readonly colorScheme: keyof ColorSchemeValues | Exclude<Property.ColorScheme, string> | CssString;
+  readonly colorScheme: keyof ColorSchemeValues | CssString;
   /**
    * 设置多栏布局的目标栏数。（column-count）
    *
@@ -987,7 +931,7 @@ export interface KeywordValues {
    * CSS 初始值：`balance`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/column-fill
    */
-  readonly columnFill: keyof ColumnFillValues | Exclude<Property.ColumnFill, string> | CssString;
+  readonly columnFill: keyof ColumnFillValues | CssString;
   /**
    * 设置布局中相邻列之间的间距。（column-gap）
    *
@@ -1006,16 +950,14 @@ export interface KeywordValues {
    * CSS 初始值：`currentcolor`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/column-rule-color
    */
-  readonly columnRuleColor:
-    keyof ColumnRuleColorValues | Exclude<Property.ColumnRuleColor, string> | CssString;
+  readonly columnRuleColor: keyof ColumnRuleColorValues | CssString;
   /**
    * 设置多栏分隔线的线型。（column-rule-style）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/column-rule-style
    */
-  readonly columnRuleStyle:
-    keyof ColumnRuleStyleValues | Exclude<Property.ColumnRuleStyle, string> | CssString;
+  readonly columnRuleStyle: keyof ColumnRuleStyleValues | CssString;
   /**
    * 设置多栏分隔线的宽度。（column-rule-width）
    *
@@ -1030,7 +972,7 @@ export interface KeywordValues {
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/column-span
    */
-  readonly columnSpan: keyof ColumnSpanValues | Exclude<Property.ColumnSpan, string> | CssString;
+  readonly columnSpan: keyof ColumnSpanValues | CssString;
   /**
    * 设置多栏布局的首选栏宽，实际栏宽由容器空间决定。（column-width）
    *
@@ -1060,7 +1002,7 @@ export interface KeywordValues {
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/contain
    */
-  readonly contain: keyof ContainValues | Exclude<Property.Contain, string> | CssString;
+  readonly contain: keyof ContainValues | CssString;
   /**
    * 设置块轴尺寸隔离或跳过内容渲染时使用的替代内部尺寸。（contain-intrinsic-block-size）
    *
@@ -1109,15 +1051,14 @@ export interface KeywordValues {
    * 同时声明查询容器的名称和类型。（container）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/container
    */
-  readonly container: keyof ContainerValues | Exclude<Property.Container, string> | CssString;
+  readonly container: keyof ContainerValues | CssString;
   /**
    * 为查询容器命名，供 @container 条件规则选择。（container-name）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/container-name
    */
-  readonly containerName:
-    keyof ContainerNameValues | Exclude<Property.ContainerName, string> | CssString;
+  readonly containerName: keyof ContainerNameValues | CssString;
   /**
    * 建立指定类型的查询容器，并施加所需的隔离行为。（container-type）
    *
@@ -1133,15 +1074,14 @@ export interface KeywordValues {
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/container-type
    */
-  readonly containerType:
-    keyof ContainerTypeValues | Exclude<Property.ContainerType, string> | CssString;
+  readonly containerType: keyof ContainerTypeValues | CssString;
   /**
    * 设置生成内容、替换内容或伪元素的内容。（content）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/content
    */
-  readonly content: keyof ContentValues | Exclude<Property.Content, string> | CssString;
+  readonly content: keyof ContentValues | CssString;
   /**
    * 控制是否渲染元素内容，并允许浏览器跳过暂时不可见的子树。（content-visibility）
    *
@@ -1157,36 +1097,33 @@ export interface KeywordValues {
    * CSS 初始值：`visible`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/content-visibility
    */
-  readonly contentVisibility:
-    keyof ContentVisibilityValues | Exclude<Property.ContentVisibility, string> | CssString;
+  readonly contentVisibility: keyof ContentVisibilityValues | CssString;
   /**
    * 增加或减少指定 CSS 计数器的值。（counter-increment）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/counter-increment
    */
-  readonly counterIncrement:
-    keyof CounterIncrementValues | Exclude<Property.CounterIncrement, string> | CssString;
+  readonly counterIncrement: keyof CounterIncrementValues | CssString;
   /**
    * 创建或重置 CSS 计数器。（counter-reset）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/counter-reset
    */
-  readonly counterReset:
-    keyof CounterResetValues | Exclude<Property.CounterReset, string> | CssString;
+  readonly counterReset: keyof CounterResetValues | CssString;
   /**
    * 设置已有 CSS 计数器的值，必要时创建计数器。（counter-set）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/counter-set
    */
-  readonly counterSet: keyof CounterSetValues | Exclude<Property.CounterSet, string> | CssString;
+  readonly counterSet: keyof CounterSetValues | CssString;
   /**
    * 设置指针位于元素上方时显示的光标。（cursor）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/cursor
    */
-  readonly cursor: keyof CursorValues | Exclude<Property.Cursor, string> | CssString;
+  readonly cursor: keyof CursorValues | CssString;
   /**
    * 设置 SVG 圆或椭圆中心的横坐标。（cx）
    *
@@ -1207,12 +1144,12 @@ export interface KeywordValues {
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/d
    */
-  readonly d: keyof DValues | Exclude<Property.D, string> | CssString;
+  readonly d: keyof DValues | CssString;
   /**
    * 设置文本基本方向，参与双向文本及部分布局计算。（direction）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/direction
    */
-  readonly direction: keyof DirectionValues | Exclude<Property.Direction, string> | CssString;
+  readonly direction: keyof DirectionValues | CssString;
   /**
    * 决定元素是否生成布局盒子，以及元素自身和内部内容如何排版。（display）
    *
@@ -1229,32 +1166,31 @@ export interface KeywordValues {
    * 适用场景：选择容器的布局方式；具体对齐、间距和换行由对应布局属性控制。
    * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/Reference/Properties/display
    */
-  readonly display: keyof DisplayValues | Exclude<Property.Display, string> | CssString;
+  readonly display: keyof DisplayValues | CssString;
   /**
    * 选择 SVG 文本布局的主导基线及基线表。（dominant-baseline）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/dominant-baseline
    */
-  readonly dominantBaseline:
-    keyof DominantBaselineValues | Exclude<Property.DominantBaseline, string> | CssString;
+  readonly dominantBaseline: keyof DominantBaselineValues | CssString;
   /**
    * 控制分离边框表格中空单元格的边框和背景是否绘制。（empty-cells）
    *
    * CSS 初始值：`show`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/empty-cells
    */
-  readonly emptyCells: keyof EmptyCellsValues | Exclude<Property.EmptyCells, string> | CssString;
+  readonly emptyCells: keyof EmptyCellsValues | CssString;
   /**
    * 控制表单控件采用固定默认尺寸还是根据内容调整尺寸。（field-sizing）
    *
    * CSS 初始值：`fixed`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/field-sizing
    */
-  readonly fieldSizing: keyof FieldSizingValues | Exclude<Property.FieldSizing, string> | CssString;
+  readonly fieldSizing: keyof FieldSizingValues | CssString;
   /**
    * 设置 SVG 图形内部的填充绘制方式。（fill）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/fill
    */
-  readonly fill: keyof FillValues | Exclude<Property.Fill, string> | CssString;
+  readonly fill: keyof FillValues | CssString;
   /**
    * 设置 SVG 填充的不透明度，不影响描边。（fill-opacity）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/fill-opacity
@@ -1264,12 +1200,12 @@ export interface KeywordValues {
    * 设置复杂 SVG 路径的内部区域判定规则。（fill-rule）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/fill-rule
    */
-  readonly fillRule: keyof FillRuleValues | Exclude<Property.FillRule, string> | CssString;
+  readonly fillRule: keyof FillRuleValues | CssString;
   /**
    * 对元素的最终图像应用模糊、亮度等滤镜。（filter）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/filter
    */
-  readonly filter: keyof FilterValues | Exclude<Property.Filter, string> | CssString;
+  readonly filter: keyof FilterValues | CssString;
   /**
    * 集中设置弹性项目的增长系数、收缩系数和基础尺寸。（flex）
    *
@@ -1312,13 +1248,12 @@ export interface KeywordValues {
    * CSS 初始值：`row`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/flex-direction
    */
-  readonly flexDirection:
-    keyof FlexDirectionValues | Exclude<Property.FlexDirection, string> | CssString;
+  readonly flexDirection: keyof FlexDirectionValues | CssString;
   /**
    * 同时设置弹性布局的主轴方向和换行方式。（flex-flow）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/flex-flow
    */
-  readonly flexFlow: keyof FlexFlowValues | Exclude<Property.FlexFlow, string> | CssString;
+  readonly flexFlow: keyof FlexFlowValues | CssString;
   /**
    * 设置弹性项目分配正剩余空间时的增长系数。（flex-grow）
    *
@@ -1354,19 +1289,19 @@ export interface KeywordValues {
    * CSS 初始值：`nowrap`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/flex-wrap
    */
-  readonly flexWrap: keyof FlexWrapValues | Exclude<Property.FlexWrap, string> | CssString;
+  readonly flexWrap: keyof FlexWrapValues | CssString;
   /**
    * 将元素浮动到指定侧，使相邻行内内容围绕它排列。（float）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/float
    */
-  readonly float: keyof FloatValues | Exclude<Property.Float, string> | CssString;
+  readonly float: keyof FloatValues | CssString;
   /**
    * 设置 SVG feFlood 或相关滤镜的洪泛颜色。（flood-color）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/flood-color
    */
-  readonly floodColor: keyof FloodColorValues | Exclude<Property.FloodColor, string> | CssString;
+  readonly floodColor: keyof FloodColorValues | CssString;
   /**
    * 设置 SVG 洪泛滤镜颜色的不透明度。（flood-opacity）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/flood-opacity
@@ -1377,50 +1312,47 @@ export interface KeywordValues {
    * 集中设置字体样式、粗细、大小、行高和字体族等信息。（font）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font
    */
-  readonly font: keyof FontValues | Exclude<Property.Font, string> | CssString;
+  readonly font: keyof FontValues | CssString;
   /**
    * 设置按优先级排列的字体族及通用字体回退。（font-family）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-family
    */
-  readonly fontFamily: keyof FontFamilyValues | Exclude<Property.FontFamily, string> | CssString;
+  readonly fontFamily: keyof FontFamilyValues | CssString;
   /**
    * 通过 OpenType 特性标签控制字体的底层排版功能。（font-feature-settings）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-feature-settings
    */
-  readonly fontFeatureSettings:
-    keyof FontFeatureSettingsValues | Exclude<Property.FontFeatureSettings, string> | CssString;
+  readonly fontFeatureSettings: keyof FontFeatureSettingsValues | CssString;
   /**
    * 设置是否应用字体提供的字偶间距调整。（font-kerning）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-kerning
    */
-  readonly fontKerning: keyof FontKerningValues | Exclude<Property.FontKerning, string> | CssString;
+  readonly fontKerning: keyof FontKerningValues | CssString;
   /**
    * 覆盖字体排版使用的语言系统标签，不改变文本实际语言。（font-language-override）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-language-override
    */
-  readonly fontLanguageOverride:
-    keyof FontLanguageOverrideValues | Exclude<Property.FontLanguageOverride, string> | CssString;
+  readonly fontLanguageOverride: keyof FontLanguageOverrideValues | CssString;
   /**
    * 控制支持光学尺寸轴的字体是否按字号优化字形。（font-optical-sizing）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-optical-sizing
    */
-  readonly fontOpticalSizing:
-    keyof FontOpticalSizingValues | Exclude<Property.FontOpticalSizing, string> | CssString;
+  readonly fontOpticalSizing: keyof FontOpticalSizingValues | CssString;
   /**
    * 选择或覆盖彩色字体使用的调色板。（font-palette）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-palette
    */
-  readonly fontPalette: keyof FontPaletteValues | Exclude<Property.FontPalette, string> | CssString;
+  readonly fontPalette: keyof FontPaletteValues | CssString;
   /**
    * 设置字体大小，也影响 em 等相对单位的计算。（font-size）
    *
@@ -1447,123 +1379,108 @@ export interface KeywordValues {
    * 选择字体的宽窄字面；font-width 是其较新的名称。（font-stretch）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-stretch
    */
-  readonly fontStretch: keyof FontStretchValues | Exclude<Property.FontStretch, string> | CssString;
+  readonly fontStretch: keyof FontStretchValues | CssString;
   /**
    * 选择正常、斜体或倾斜字体样式。（font-style）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-style
    */
-  readonly fontStyle: keyof FontStyleValues | Exclude<Property.FontStyle, string> | CssString;
+  readonly fontStyle: keyof FontStyleValues | CssString;
   /**
    * 控制缺少真实字体字形时浏览器可否合成粗体、斜体等样式。（font-synthesis）
    *
    * CSS 初始值：`weight style small-caps position `（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-synthesis
    */
-  readonly fontSynthesis:
-    keyof FontSynthesisValues | Exclude<Property.FontSynthesis, string> | CssString;
+  readonly fontSynthesis: keyof FontSynthesisValues | CssString;
   /**
    * 控制浏览器是否可以合成上标和下标字形。（font-synthesis-position）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-synthesis-position
    */
-  readonly fontSynthesisPosition:
-    keyof FontSynthesisPositionValues | Exclude<Property.FontSynthesisPosition, string> | CssString;
+  readonly fontSynthesisPosition: keyof FontSynthesisPositionValues | CssString;
   /**
    * 控制浏览器是否可以合成小型大写字形。（font-synthesis-small-caps）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-synthesis-small-caps
    */
-  readonly fontSynthesisSmallCaps:
-    | keyof FontSynthesisSmallCapsValues
-    | Exclude<Property.FontSynthesisSmallCaps, string>
-    | CssString;
+  readonly fontSynthesisSmallCaps: keyof FontSynthesisSmallCapsValues | CssString;
   /**
    * 控制浏览器是否可以合成倾斜字体。（font-synthesis-style）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-synthesis-style
    */
-  readonly fontSynthesisStyle:
-    keyof FontSynthesisStyleValues | Exclude<Property.FontSynthesisStyle, string> | CssString;
+  readonly fontSynthesisStyle: keyof FontSynthesisStyleValues | CssString;
   /**
    * 控制浏览器是否可以合成加粗字体。（font-synthesis-weight）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-synthesis-weight
    */
-  readonly fontSynthesisWeight:
-    keyof FontSynthesisWeightValues | Exclude<Property.FontSynthesisWeight, string> | CssString;
+  readonly fontSynthesisWeight: keyof FontSynthesisWeightValues | CssString;
   /**
    * 集中设置字体的连字、大小写、数字及其他变体。（font-variant）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variant
    */
-  readonly fontVariant: keyof FontVariantValues | Exclude<Property.FontVariant, string> | CssString;
+  readonly fontVariant: keyof FontVariantValues | CssString;
   /**
    * 选择字体提供的替代字形。（font-variant-alternates）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variant-alternates
    */
-  readonly fontVariantAlternates:
-    keyof FontVariantAlternatesValues | Exclude<Property.FontVariantAlternates, string> | CssString;
+  readonly fontVariantAlternates: keyof FontVariantAlternatesValues | CssString;
   /**
    * 设置小型大写等大小写字形变体。（font-variant-caps）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variant-caps
    */
-  readonly fontVariantCaps:
-    keyof FontVariantCapsValues | Exclude<Property.FontVariantCaps, string> | CssString;
+  readonly fontVariantCaps: keyof FontVariantCapsValues | CssString;
   /**
    * 设置东亚文字字形及宽度变体。（font-variant-east-asian）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variant-east-asian
    */
-  readonly fontVariantEastAsian:
-    keyof FontVariantEastAsianValues | Exclude<Property.FontVariantEastAsian, string> | CssString;
+  readonly fontVariantEastAsian: keyof FontVariantEastAsianValues | CssString;
   /**
    * 设置字符优先采用文本字形还是 emoji 字形。（font-variant-emoji）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variant-emoji
    */
-  readonly fontVariantEmoji:
-    keyof FontVariantEmojiValues | Exclude<Property.FontVariantEmoji, string> | CssString;
+  readonly fontVariantEmoji: keyof FontVariantEmojiValues | CssString;
   /**
    * 设置字体连字的启用方式。（font-variant-ligatures）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variant-ligatures
    */
-  readonly fontVariantLigatures:
-    keyof FontVariantLigaturesValues | Exclude<Property.FontVariantLigatures, string> | CssString;
+  readonly fontVariantLigatures: keyof FontVariantLigaturesValues | CssString;
   /**
    * 设置数字的等宽、比例、分数及其他排版变体。（font-variant-numeric）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variant-numeric
    */
-  readonly fontVariantNumeric:
-    keyof FontVariantNumericValues | Exclude<Property.FontVariantNumeric, string> | CssString;
+  readonly fontVariantNumeric: keyof FontVariantNumericValues | CssString;
   /**
    * 选择字体提供的上标或下标字形。（font-variant-position）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variant-position
    */
-  readonly fontVariantPosition:
-    keyof FontVariantPositionValues | Exclude<Property.FontVariantPosition, string> | CssString;
+  readonly fontVariantPosition: keyof FontVariantPositionValues | CssString;
   /**
    * 直接设置可变字体各个轴的数值。（font-variation-settings）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variation-settings
    */
-  readonly fontVariationSettings:
-    keyof FontVariationSettingsValues | Exclude<Property.FontVariationSettings, string> | CssString;
+  readonly fontVariationSettings: keyof FontVariationSettingsValues | CssString;
   /**
    * 设置字体粗细，实际可用字重取决于字体。（font-weight）
    *
@@ -1585,15 +1502,14 @@ export interface KeywordValues {
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-width
    */
-  readonly fontWidth: keyof FontWidthValues | Exclude<Property.FontWidth, string> | CssString;
+  readonly fontWidth: keyof FontWidthValues | CssString;
   /**
    * 控制元素是否参与系统强制颜色模式的自动替换。（forced-color-adjust）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/forced-color-adjust
    */
-  readonly forcedColorAdjust:
-    keyof ForcedColorAdjustValues | Exclude<Property.ForcedColorAdjust, string> | CssString;
+  readonly forcedColorAdjust: keyof ForcedColorAdjustValues | CssString;
   /**
    * 设置行与列之间的间距，用于 Grid、Flex 和多栏等布局。（gap）
    *
@@ -1615,7 +1531,7 @@ export interface KeywordValues {
    * 集中设置显式和隐式网格的轨道、区域及自动放置方式。（grid）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid
    */
-  readonly grid: keyof GridValues | Exclude<Property.Grid, string> | CssString;
+  readonly grid: keyof GridValues | CssString;
   /**
    * 设置网格项目的区域名，或行起点、列起点、行终点、列终点。（grid-area）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-area
@@ -1644,8 +1560,7 @@ export interface KeywordValues {
    * CSS 初始值：`row`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-auto-flow
    */
-  readonly gridAutoFlow:
-    keyof GridAutoFlowValues | Exclude<Property.GridAutoFlow, string> | CssString;
+  readonly gridAutoFlow: keyof GridAutoFlowValues | CssString;
   /**
    * 设置隐式生成的网格行尺寸。（grid-auto-rows）
    *
@@ -1699,16 +1614,14 @@ export interface KeywordValues {
    * 集中设置显式网格的行、列和命名区域。（grid-template）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-template
    */
-  readonly gridTemplate:
-    keyof GridTemplateValues | Exclude<Property.GridTemplate, string> | CssString;
+  readonly gridTemplate: keyof GridTemplateValues | CssString;
   /**
    * 用区域名称矩阵定义网格布局区域。（grid-template-areas）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-template-areas
    */
-  readonly gridTemplateAreas:
-    keyof GridTemplateAreasValues | Exclude<Property.GridTemplateAreas, string> | CssString;
+  readonly gridTemplateAreas: keyof GridTemplateAreasValues | CssString;
   /**
    * 定义显式网格的列轨道尺寸及网格线名称。（grid-template-columns）
    *
@@ -1739,8 +1652,7 @@ export interface KeywordValues {
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/hanging-punctuation
    */
-  readonly hangingPunctuation:
-    keyof HangingPunctuationValues | Exclude<Property.HangingPunctuation, string> | CssString;
+  readonly hangingPunctuation: keyof HangingPunctuationValues | CssString;
   /**
    * 设置元素的物理高度，盒子范围受 box-sizing 影响。（height）
    *
@@ -1758,8 +1670,7 @@ export interface KeywordValues {
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/hyphenate-character
    */
-  readonly hyphenateCharacter:
-    keyof HyphenateCharacterValues | Exclude<Property.HyphenateCharacter, string> | CssString;
+  readonly hyphenateCharacter: keyof HyphenateCharacterValues | CssString;
   /**
    * 限制可断词的最小单词长度以及断点两侧的最少字符数。（hyphenate-limit-chars）
    *
@@ -1774,29 +1685,26 @@ export interface KeywordValues {
    * CSS 初始值：`manual`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/hyphens
    */
-  readonly hyphens: keyof HyphensValues | Exclude<Property.Hyphens, string> | CssString;
+  readonly hyphens: keyof HyphensValues | CssString;
   /**
    * 设置图像是否按元数据等信息调整方向。（image-orientation）
    *
    * CSS 初始值：`from-image`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/image-orientation
    */
-  readonly imageOrientation:
-    keyof ImageOrientationValues | Exclude<Property.ImageOrientation, string> | CssString;
+  readonly imageOrientation: keyof ImageOrientationValues | CssString;
   /**
    * 向浏览器指定图像缩放时的插值与清晰度偏好。（image-rendering）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/image-rendering
    */
-  readonly imageRendering:
-    keyof ImageRenderingValues | Exclude<Property.ImageRendering, string> | CssString;
+  readonly imageRendering: keyof ImageRenderingValues | CssString;
   /**
    * 设置图像的分辨率解释方式；使用前核对目标浏览器支持。（image-resolution）
    *
    * CSS 初始值：`1dppx`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/image-resolution
    */
-  readonly imageResolution:
-    keyof ImageResolutionValues | Exclude<Property.ImageResolution, string> | CssString;
+  readonly imageResolution: keyof ImageResolutionValues | CssString;
   /**
    * 设置段落首字下沉或抬升时占用的行数与对齐位置。（initial-letter）
    *
@@ -1811,8 +1719,7 @@ export interface KeywordValues {
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/initial-letter-align
    */
-  readonly initialLetterAlign:
-    keyof InitialLetterAlignValues | Exclude<Property.InitialLetterAlign, string> | CssString;
+  readonly initialLetterAlign: keyof InitialLetterAlignValues | CssString;
   /**
    * 设置逻辑行内轴尺寸；水平书写时通常对应宽度。（inline-size）
    *
@@ -1877,8 +1784,7 @@ export interface KeywordValues {
    * CSS 初始值：`numeric-only`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/interpolate-size
    */
-  readonly interpolateSize:
-    keyof InterpolateSizeValues | Exclude<Property.InterpolateSize, string> | CssString;
+  readonly interpolateSize: keyof InterpolateSizeValues | CssString;
   /**
    * 控制元素是否建立独立的层叠上下文，隔离混合效果。（isolation）
    *
@@ -1891,7 +1797,7 @@ export interface KeywordValues {
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/isolation
    */
-  readonly isolation: keyof IsolationValues | Exclude<Property.Isolation, string> | CssString;
+  readonly isolation: keyof IsolationValues | CssString;
   /**
    * 分配布局主轴或行内轴的剩余空间，控制内容整体对齐。（justify-content）
    *
@@ -1906,31 +1812,28 @@ export interface KeywordValues {
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/justify-content
    */
-  readonly justifyContent:
-    keyof JustifyContentValues | Exclude<Property.JustifyContent, string> | CssString;
+  readonly justifyContent: keyof JustifyContentValues | CssString;
   /**
    * 设置容器内项目在行内轴上的默认对齐方式；不控制 Flex 项目的主轴对齐。（justify-items）
    *
    * CSS 初始值：`legacy`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/justify-items
    */
-  readonly justifyItems:
-    keyof JustifyItemsValues | Exclude<Property.JustifyItems, string> | CssString;
+  readonly justifyItems: keyof JustifyItemsValues | CssString;
   /**
    * 单独设置项目在其布局区域内的行内轴对齐方式。（justify-self）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/justify-self
    */
-  readonly justifySelf: keyof JustifySelfValues | Exclude<Property.JustifySelf, string> | CssString;
+  readonly justifySelf: keyof JustifySelfValues | CssString;
   /**
    * 旧版瀑布流布局提案中沿行内轴对齐轨道的属性；使用前核对实现与规范版本。（justify-tracks）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/justify-tracks
    */
-  readonly justifyTracks:
-    keyof JustifyTracksValues | Exclude<Property.JustifyTracks, string> | CssString;
+  readonly justifyTracks: keyof JustifyTracksValues | CssString;
   /**
    * 设置定位元素相对于其定位参照的左侧偏移。（left）
    *
@@ -1948,15 +1851,14 @@ export interface KeywordValues {
    * 设置 SVG 光照滤镜使用的光源颜色。（lighting-color）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/lighting-color
    */
-  readonly lightingColor:
-    keyof LightingColorValues | Exclude<Property.LightingColor, string> | CssString;
+  readonly lightingColor: keyof LightingColorValues | CssString;
   /**
    * 设置东亚文字标点等字符的换行严格程度。（line-break）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/line-break
    */
-  readonly lineBreak: keyof LineBreakValues | Exclude<Property.LineBreak, string> | CssString;
+  readonly lineBreak: keyof LineBreakValues | CssString;
   /**
    * 限制块容器显示的行数及截断行为；使用前核对所需语法的支持情况。（line-clamp）
    *
@@ -1985,31 +1887,28 @@ export interface KeywordValues {
    * 集中设置列表标记的类型、图像和位置。（list-style）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/list-style
    */
-  readonly listStyle: keyof ListStyleValues | Exclude<Property.ListStyle, string> | CssString;
+  readonly listStyle: keyof ListStyleValues | CssString;
   /**
    * 设置用作列表标记的图像。（list-style-image）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/list-style-image
    */
-  readonly listStyleImage:
-    keyof ListStyleImageValues | Exclude<Property.ListStyleImage, string> | CssString;
+  readonly listStyleImage: keyof ListStyleImageValues | CssString;
   /**
    * 设置列表标记位于主块盒内部还是外部。（list-style-position）
    *
    * CSS 初始值：`outside`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/list-style-position
    */
-  readonly listStylePosition:
-    keyof ListStylePositionValues | Exclude<Property.ListStylePosition, string> | CssString;
+  readonly listStylePosition: keyof ListStylePositionValues | CssString;
   /**
    * 设置列表标记或计数器的样式。（list-style-type）
    *
    * CSS 初始值：`disc`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/list-style-type
    */
-  readonly listStyleType:
-    keyof ListStyleTypeValues | Exclude<Property.ListStyleType, string> | CssString;
+  readonly listStyleType: keyof ListStyleTypeValues | CssString;
   /**
    * 设置盒子四周的外边距，可使用负值或自动外边距。（margin）
    *
@@ -2097,27 +1996,27 @@ export interface KeywordValues {
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin-trim
    */
-  readonly marginTrim: keyof MarginTrimValues | Exclude<Property.MarginTrim, string> | CssString;
+  readonly marginTrim: keyof MarginTrimValues | CssString;
   /**
    * 同时设置 SVG 路径起点、中间顶点和终点的标记图形。（marker）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/marker
    */
-  readonly marker: keyof MarkerValues | Exclude<Property.Marker, string> | CssString;
+  readonly marker: keyof MarkerValues | CssString;
   /**
    * 设置 SVG 路径终点的标记图形。（marker-end）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/marker-end
    */
-  readonly markerEnd: keyof MarkerEndValues | Exclude<Property.MarkerEnd, string> | CssString;
+  readonly markerEnd: keyof MarkerEndValues | CssString;
   /**
    * 设置 SVG 路径中间顶点的标记图形。（marker-mid）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/marker-mid
    */
-  readonly markerMid: keyof MarkerMidValues | Exclude<Property.MarkerMid, string> | CssString;
+  readonly markerMid: keyof MarkerMidValues | CssString;
   /**
    * 设置 SVG 路径起点的标记图形。（marker-start）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/marker-start
    */
-  readonly markerStart: keyof MarkerStartValues | Exclude<Property.MarkerStart, string> | CssString;
+  readonly markerStart: keyof MarkerStartValues | CssString;
   /**
    * 集中设置遮罩图层的图像、位置、尺寸、重复及合成方式。（mask）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask
@@ -2134,8 +2033,7 @@ export interface KeywordValues {
    * CSS 初始值：`alpha`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-border-mode
    */
-  readonly maskBorderMode:
-    keyof MaskBorderModeValues | Exclude<Property.MaskBorderMode, string> | CssString;
+  readonly maskBorderMode: keyof MaskBorderModeValues | CssString;
   /**
    * 设置边框遮罩超出边框盒的距离。（mask-border-outset）
    *
@@ -2150,8 +2048,7 @@ export interface KeywordValues {
    * CSS 初始值：`stretch`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-border-repeat
    */
-  readonly maskBorderRepeat:
-    keyof MaskBorderRepeatValues | Exclude<Property.MaskBorderRepeat, string> | CssString;
+  readonly maskBorderRepeat: keyof MaskBorderRepeatValues | CssString;
   /**
    * 设置边框遮罩图像的切片位置。（mask-border-slice）
    *
@@ -2166,8 +2063,7 @@ export interface KeywordValues {
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-border-source
    */
-  readonly maskBorderSource:
-    keyof MaskBorderSourceValues | Exclude<Property.MaskBorderSource, string> | CssString;
+  readonly maskBorderSource: keyof MaskBorderSourceValues | CssString;
   /**
    * 设置边框遮罩各边的宽度。（mask-border-width）
    *
@@ -2182,36 +2078,35 @@ export interface KeywordValues {
    * CSS 初始值：`border-box`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-clip
    */
-  readonly maskClip: keyof MaskClipValues | Exclude<Property.MaskClip, string> | CssString;
+  readonly maskClip: keyof MaskClipValues | CssString;
   /**
    * 设置多个遮罩图层之间的合成运算。（mask-composite）
    *
    * CSS 初始值：`add`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-composite
    */
-  readonly maskComposite:
-    keyof MaskCompositeValues | Exclude<Property.MaskComposite, string> | CssString;
+  readonly maskComposite: keyof MaskCompositeValues | CssString;
   /**
    * 设置遮罩使用的图像、渐变或 SVG 遮罩引用。（mask-image）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-image
    */
-  readonly maskImage: keyof MaskImageValues | Exclude<Property.MaskImage, string> | CssString;
+  readonly maskImage: keyof MaskImageValues | CssString;
   /**
    * 设置遮罩按 alpha、亮度或源类型解释。（mask-mode）
    *
    * CSS 初始值：`match-source`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-mode
    */
-  readonly maskMode: keyof MaskModeValues | Exclude<Property.MaskMode, string> | CssString;
+  readonly maskMode: keyof MaskModeValues | CssString;
   /**
    * 设置遮罩图像定位所依据的盒子。（mask-origin）
    *
    * CSS 初始值：`border-box`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-origin
    */
-  readonly maskOrigin: keyof MaskOriginValues | Exclude<Property.MaskOrigin, string> | CssString;
+  readonly maskOrigin: keyof MaskOriginValues | CssString;
   /**
    * 设置遮罩图像在定位区域中的位置。（mask-position）
    *
@@ -2226,7 +2121,7 @@ export interface KeywordValues {
    * CSS 初始值：`repeat`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-repeat
    */
-  readonly maskRepeat: keyof MaskRepeatValues | Exclude<Property.MaskRepeat, string> | CssString;
+  readonly maskRepeat: keyof MaskRepeatValues | CssString;
   /**
    * 设置遮罩图像的尺寸。（mask-size）
    *
@@ -2240,15 +2135,14 @@ export interface KeywordValues {
    * CSS 初始值：`luminance`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-type
    */
-  readonly maskType: keyof MaskTypeValues | Exclude<Property.MaskType, string> | CssString;
+  readonly maskType: keyof MaskTypeValues | CssString;
   /**
    * 旧版瀑布流布局提案中的自动放置策略；使用前核对实现与规范版本。（masonry-auto-flow）
    *
    * CSS 初始值：`pack`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/masonry-auto-flow
    */
-  readonly masonryAutoFlow:
-    keyof MasonryAutoFlowValues | Exclude<Property.MasonryAutoFlow, string> | CssString;
+  readonly masonryAutoFlow: keyof MasonryAutoFlowValues | CssString;
   /**
    * 设置数学公式的嵌套深度，用于数学字号等排版计算。（math-depth）
    *
@@ -2262,14 +2156,14 @@ export interface KeywordValues {
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/math-shift
    */
-  readonly mathShift: keyof MathShiftValues | Exclude<Property.MathShift, string> | CssString;
+  readonly mathShift: keyof MathShiftValues | CssString;
   /**
    * 设置数学公式采用正常还是紧凑排版。（math-style）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/math-style
    */
-  readonly mathStyle: keyof MathStyleValues | Exclude<Property.MathStyle, string> | CssString;
+  readonly mathStyle: keyof MathStyleValues | CssString;
   /**
    * 限制元素逻辑块轴的最大尺寸。（max-block-size）
    *
@@ -2351,8 +2245,7 @@ export interface KeywordValues {
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mix-blend-mode
    */
-  readonly mixBlendMode:
-    keyof MixBlendModeValues | Exclude<Property.MixBlendMode, string> | CssString;
+  readonly mixBlendMode: keyof MixBlendModeValues | CssString;
   /**
    * 设置运动路径的旧式简写；对应现代 offset 属性族。（motion）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/offset
@@ -2372,15 +2265,14 @@ export interface KeywordValues {
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/offset-path
    */
-  readonly motionPath: keyof OffsetPathValues | Exclude<Property.OffsetPath, string> | CssString;
+  readonly motionPath: keyof OffsetPathValues | CssString;
   /**
    * 设置运动路径旋转方式的旧属性；对应 offset-rotate。（motion-rotation）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/offset-rotate
    */
-  readonly motionRotation:
-    keyof OffsetRotateValues | Exclude<Property.OffsetRotate, string> | CssString;
+  readonly motionRotation: keyof OffsetRotateValues | CssString;
   /**
    * 设置替换元素的内容如何适应其内容盒，例如图像的裁切和缩放。（object-fit）
    *
@@ -2398,7 +2290,7 @@ export interface KeywordValues {
    * CSS 初始值：`fill`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/object-fit
    */
-  readonly objectFit: keyof ObjectFitValues | Exclude<Property.ObjectFit, string> | CssString;
+  readonly objectFit: keyof ObjectFitValues | CssString;
   /**
    * 设置替换元素内容在内容盒内的对齐位置。（object-position）
    *
@@ -2413,8 +2305,7 @@ export interface KeywordValues {
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/object-view-box
    */
-  readonly objectViewBox:
-    keyof ObjectViewBoxValues | Exclude<Property.ObjectViewBox, string> | CssString;
+  readonly objectViewBox: keyof ObjectViewBoxValues | CssString;
   /**
    * 集中设置运动路径、起始位置、距离、方向和锚点。（offset）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/offset
@@ -2442,7 +2333,7 @@ export interface KeywordValues {
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/offset-path
    */
-  readonly offsetPath: keyof OffsetPathValues | Exclude<Property.OffsetPath, string> | CssString;
+  readonly offsetPath: keyof OffsetPathValues | CssString;
   /**
    * 设置运动路径的初始位置。（offset-position）
    *
@@ -2457,16 +2348,14 @@ export interface KeywordValues {
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/offset-rotate
    */
-  readonly offsetRotate:
-    keyof OffsetRotateValues | Exclude<Property.OffsetRotate, string> | CssString;
+  readonly offsetRotate: keyof OffsetRotateValues | CssString;
   /**
    * 设置路径旋转的旧名称；新代码使用 offset-rotate。（offset-rotation）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/offset-rotate
    */
-  readonly offsetRotation:
-    keyof OffsetRotateValues | Exclude<Property.OffsetRotate, string> | CssString;
+  readonly offsetRotation: keyof OffsetRotateValues | CssString;
   /**
    * 设置元素及其子树合成后的整体不透明度。（opacity）
    *
@@ -2507,8 +2396,7 @@ export interface KeywordValues {
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/outline-color
    */
-  readonly outlineColor:
-    keyof OutlineColorValues | Exclude<Property.OutlineColor, string> | CssString;
+  readonly outlineColor: keyof OutlineColorValues | CssString;
   /**
    * 设置轮廓线与边框边缘之间的距离。（outline-offset）
    *
@@ -2523,8 +2411,7 @@ export interface KeywordValues {
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/outline-style
    */
-  readonly outlineStyle:
-    keyof OutlineStyleValues | Exclude<Property.OutlineStyle, string> | CssString;
+  readonly outlineStyle: keyof OutlineStyleValues | CssString;
   /**
    * 设置轮廓线宽度。（outline-width）
    *
@@ -2548,31 +2435,28 @@ export interface KeywordValues {
    * 适用场景：滚动面板、内容裁剪和受限尺寸区域。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overflow
    */
-  readonly overflow: keyof OverflowValues | Exclude<Property.Overflow, string> | CssString;
+  readonly overflow: keyof OverflowValues | CssString;
   /**
    * 控制元素是否参与滚动锚定，以减少内容变化造成的视口跳动。（overflow-anchor）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overflow-anchor
    */
-  readonly overflowAnchor:
-    keyof OverflowAnchorValues | Exclude<Property.OverflowAnchor, string> | CssString;
+  readonly overflowAnchor: keyof OverflowAnchorValues | CssString;
   /**
    * 设置逻辑块轴上的溢出行为。（overflow-block）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overflow-block
    */
-  readonly overflowBlock:
-    keyof OverflowBlockValues | Exclude<Property.OverflowBlock, string> | CssString;
+  readonly overflowBlock: keyof OverflowBlockValues | CssString;
   /**
    * 设置溢出裁剪参照盒的非标准属性；使用前核对目标浏览器。（overflow-clip-box）
    *
    * CSS 初始值：`padding-box`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overflow-clip-box
    */
-  readonly overflowClipBox:
-    keyof OverflowClipBoxValues | Exclude<Property.OverflowClipBox, string> | CssString;
+  readonly overflowClipBox: keyof OverflowClipBoxValues | CssString;
   /**
    * 设置 overflow:clip 的裁剪边界允许向外扩展的距离。（overflow-clip-margin）
    *
@@ -2587,8 +2471,7 @@ export interface KeywordValues {
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overflow-inline
    */
-  readonly overflowInline:
-    keyof OverflowInlineValues | Exclude<Property.OverflowInline, string> | CssString;
+  readonly overflowInline: keyof OverflowInlineValues | CssString;
   /**
    * 设置不可正常断开的长文本是否允许额外换行。（overflow-wrap）
    *
@@ -2602,8 +2485,7 @@ export interface KeywordValues {
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overflow-wrap
    */
-  readonly overflowWrap:
-    keyof OverflowWrapValues | Exclude<Property.OverflowWrap, string> | CssString;
+  readonly overflowWrap: keyof OverflowWrapValues | CssString;
   /**
    * 设置水平方向的溢出行为。（overflow-x）
    *
@@ -2619,7 +2501,7 @@ export interface KeywordValues {
    * CSS 初始值：`visible`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overflow-x
    */
-  readonly overflowX: keyof OverflowXValues | Exclude<Property.OverflowX, string> | CssString;
+  readonly overflowX: keyof OverflowXValues | CssString;
   /**
    * 设置垂直方向的溢出行为。（overflow-y）
    *
@@ -2635,14 +2517,14 @@ export interface KeywordValues {
    * CSS 初始值：`visible`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overflow-y
    */
-  readonly overflowY: keyof OverflowYValues | Exclude<Property.OverflowY, string> | CssString;
+  readonly overflowY: keyof OverflowYValues | CssString;
   /**
    * 反映元素是否位于顶层，主要用于顶层退出过渡；通常由浏览器管理。（overlay）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overlay
    */
-  readonly overlay: keyof OverlayValues | Exclude<Property.Overlay, string> | CssString;
+  readonly overlay: keyof OverlayValues | CssString;
   /**
    * 控制滚动到边界后的滚动链和越界反馈行为。（overscroll-behavior）
    *
@@ -2656,44 +2538,35 @@ export interface KeywordValues {
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overscroll-behavior
    */
-  readonly overscrollBehavior:
-    keyof OverscrollBehaviorValues | Exclude<Property.OverscrollBehavior, string> | CssString;
+  readonly overscrollBehavior: keyof OverscrollBehaviorValues | CssString;
   /**
    * 控制逻辑块轴上到达滚动边界后的行为。（overscroll-behavior-block）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overscroll-behavior-block
    */
-  readonly overscrollBehaviorBlock:
-    | keyof OverscrollBehaviorBlockValues
-    | Exclude<Property.OverscrollBehaviorBlock, string>
-    | CssString;
+  readonly overscrollBehaviorBlock: keyof OverscrollBehaviorBlockValues | CssString;
   /**
    * 控制逻辑行内轴上到达滚动边界后的行为。（overscroll-behavior-inline）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overscroll-behavior-inline
    */
-  readonly overscrollBehaviorInline:
-    | keyof OverscrollBehaviorInlineValues
-    | Exclude<Property.OverscrollBehaviorInline, string>
-    | CssString;
+  readonly overscrollBehaviorInline: keyof OverscrollBehaviorInlineValues | CssString;
   /**
    * 控制水平方向到达滚动边界后的行为。（overscroll-behavior-x）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overscroll-behavior-x
    */
-  readonly overscrollBehaviorX:
-    keyof OverscrollBehaviorXValues | Exclude<Property.OverscrollBehaviorX, string> | CssString;
+  readonly overscrollBehaviorX: keyof OverscrollBehaviorXValues | CssString;
   /**
    * 控制垂直方向到达滚动边界后的行为。（overscroll-behavior-y）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overscroll-behavior-y
    */
-  readonly overscrollBehaviorY:
-    keyof OverscrollBehaviorYValues | Exclude<Property.OverscrollBehaviorY, string> | CssString;
+  readonly overscrollBehaviorY: keyof OverscrollBehaviorYValues | CssString;
   /**
    * 设置内容与边框之间的四边内边距，不接受负值。（padding）
    *
@@ -2783,12 +2656,12 @@ export interface KeywordValues {
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/page
    */
-  readonly page: keyof PageValues | Exclude<Property.Page, string> | CssString;
+  readonly page: keyof PageValues | CssString;
   /**
    * 设置 SVG 填充、描边和标记的绘制先后顺序。（paint-order）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/paint-order
    */
-  readonly paintOrder: keyof PaintOrderValues | Exclude<Property.PaintOrder, string> | CssString;
+  readonly paintOrder: keyof PaintOrderValues | CssString;
   /**
    * 设置观察子元素三维变换时的透视距离。（perspective）
    *
@@ -2808,18 +2681,17 @@ export interface KeywordValues {
    * 同时设置 align-content 与 justify-content。（place-content）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/place-content
    */
-  readonly placeContent:
-    keyof PlaceContentValues | Exclude<Property.PlaceContent, string> | CssString;
+  readonly placeContent: keyof PlaceContentValues | CssString;
   /**
    * 同时设置 align-items 与 justify-items。（place-items）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/place-items
    */
-  readonly placeItems: keyof PlaceItemsValues | Exclude<Property.PlaceItems, string> | CssString;
+  readonly placeItems: keyof PlaceItemsValues | CssString;
   /**
    * 同时设置 align-self 与 justify-self。（place-self）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/place-self
    */
-  readonly placeSelf: keyof PlaceSelfValues | Exclude<Property.PlaceSelf, string> | CssString;
+  readonly placeSelf: keyof PlaceSelfValues | CssString;
   /**
    * 设置元素何时可以成为指针命中目标；SVG 还支持按填充和描边命中。（pointer-events）
    *
@@ -2832,8 +2704,7 @@ export interface KeywordValues {
    * 适用场景：允许指针穿过装饰层；可交互控件的禁用应同时处理行为和语义。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/pointer-events
    */
-  readonly pointerEvents:
-    keyof PointerEventsValues | Exclude<Property.PointerEvents, string> | CssString;
+  readonly pointerEvents: keyof PointerEventsValues | CssString;
   /**
    * 设置元素的定位方式，并决定偏移属性如何参与布局。（position）
    *
@@ -2851,65 +2722,59 @@ export interface KeywordValues {
    * CSS 初始值：`static`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position
    */
-  readonly position: keyof PositionValues | Exclude<Property.Position, string> | CssString;
+  readonly position: keyof PositionValues | CssString;
   /**
    * 选择绝对定位元素使用的默认锚点。（position-anchor）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-anchor
    */
-  readonly positionAnchor:
-    keyof PositionAnchorValues | Exclude<Property.PositionAnchor, string> | CssString;
+  readonly positionAnchor: keyof PositionAnchorValues | CssString;
   /**
    * 选择相对于锚点的定位区域。（position-area）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-area
    */
-  readonly positionArea:
-    keyof PositionAreaValues | Exclude<Property.PositionArea, string> | CssString;
+  readonly positionArea: keyof PositionAreaValues | CssString;
   /**
    * 同时设置锚点定位的候选回退方式及尝试顺序。（position-try）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-try
    */
-  readonly positionTry: keyof PositionTryValues | Exclude<Property.PositionTry, string> | CssString;
+  readonly positionTry: keyof PositionTryValues | CssString;
   /**
    * 设置锚点定位溢出时尝试的替代位置。（position-try-fallbacks）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-try-fallbacks
    */
-  readonly positionTryFallbacks:
-    keyof PositionTryFallbacksValues | Exclude<Property.PositionTryFallbacks, string> | CssString;
+  readonly positionTryFallbacks: keyof PositionTryFallbacksValues | CssString;
   /**
    * 设置锚点定位候选方案的尝试顺序。（position-try-order）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-try-order
    */
-  readonly positionTryOrder:
-    keyof PositionTryOrderValues | Exclude<Property.PositionTryOrder, string> | CssString;
+  readonly positionTryOrder: keyof PositionTryOrderValues | CssString;
   /**
    * 设置锚点定位元素根据锚点可见性和溢出情况是否显示。（position-visibility）
    *
    * CSS 初始值：`anchors-visible`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-visibility
    */
-  readonly positionVisibility:
-    keyof PositionVisibilityValues | Exclude<Property.PositionVisibility, string> | CssString;
+  readonly positionVisibility: keyof PositionVisibilityValues | CssString;
   /**
    * 设置打印时浏览器是否可以为节墨或可读性调整颜色。（print-color-adjust）
    *
    * CSS 初始值：`economy`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/print-color-adjust
    */
-  readonly printColorAdjust:
-    keyof PrintColorAdjustValues | Exclude<Property.PrintColorAdjust, string> | CssString;
+  readonly printColorAdjust: keyof PrintColorAdjustValues | CssString;
   /**
    * 设置生成引号所用的开闭字符对。（quotes）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/quotes
    */
-  readonly quotes: keyof QuotesValues | Exclude<Property.Quotes, string> | CssString;
+  readonly quotes: keyof QuotesValues | CssString;
   /**
    * 设置 SVG 圆的半径。（r）
    *
@@ -2923,7 +2788,7 @@ export interface KeywordValues {
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/resize
    */
-  readonly resize: keyof ResizeValues | Exclude<Property.Resize, string> | CssString;
+  readonly resize: keyof ResizeValues | CssString;
   /**
    * 设置定位元素相对于其定位参照的右侧偏移。（right）
    *
@@ -2937,7 +2802,7 @@ export interface KeywordValues {
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/rotate
    */
-  readonly rotate: keyof RotateValues | Exclude<Property.Rotate, string> | CssString;
+  readonly rotate: keyof RotateValues | CssString;
   /**
    * 设置布局中相邻行之间的间距。（row-gap）
    *
@@ -2951,30 +2816,28 @@ export interface KeywordValues {
    * CSS 初始值：`space-around`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/ruby-align
    */
-  readonly rubyAlign: keyof RubyAlignValues | Exclude<Property.RubyAlign, string> | CssString;
+  readonly rubyAlign: keyof RubyAlignValues | CssString;
   /**
    * 设置相邻注音容器的合并方式；使用前核对目标浏览器。（ruby-merge）
    *
    * CSS 初始值：`separate`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/ruby-merge
    */
-  readonly rubyMerge: keyof RubyMergeValues | Exclude<Property.RubyMerge, string> | CssString;
+  readonly rubyMerge: keyof RubyMergeValues | CssString;
   /**
    * 控制注音文字是否可以悬伸到相邻文本上方。（ruby-overhang）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/ruby-overhang
    */
-  readonly rubyOverhang:
-    keyof RubyOverhangValues | Exclude<Property.RubyOverhang, string> | CssString;
+  readonly rubyOverhang: keyof RubyOverhangValues | CssString;
   /**
    * 设置注音文字相对于基底文字的位置。（ruby-position）
    *
    * CSS 初始值：`alternate`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/ruby-position
    */
-  readonly rubyPosition:
-    keyof RubyPositionValues | Exclude<Property.RubyPosition, string> | CssString;
+  readonly rubyPosition: keyof RubyPositionValues | CssString;
   /**
    * 设置 SVG 椭圆的水平半径，或矩形的水平圆角半径。（rx）
    *
@@ -3006,16 +2869,14 @@ export interface KeywordValues {
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-behavior
    */
-  readonly scrollBehavior:
-    keyof ScrollBehaviorValues | Exclude<Property.ScrollBehavior, string> | CssString;
+  readonly scrollBehavior: keyof ScrollBehaviorValues | CssString;
   /**
    * 将元素声明为祖先滚动容器首次呈现时的候选滚动吸附目标。（scroll-initial-target）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-initial-target
    */
-  readonly scrollInitialTarget:
-    keyof ScrollInitialTargetValues | Exclude<Property.ScrollInitialTarget, string> | CssString;
+  readonly scrollInitialTarget: keyof ScrollInitialTargetValues | CssString;
   /**
    * 设置元素滚动目标区域的四边外扩距离，不改变普通布局外边距。（scroll-margin）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin
@@ -3196,8 +3057,7 @@ export interface KeywordValues {
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-snap-align
    */
-  readonly scrollSnapAlign:
-    keyof ScrollSnapAlignValues | Exclude<Property.ScrollSnapAlign, string> | CssString;
+  readonly scrollSnapAlign: keyof ScrollSnapAlignValues | CssString;
   /**
    * 设置滚动吸附区域外扩的旧名称；新代码使用 scroll-margin。（scroll-snap-margin）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin
@@ -3242,8 +3102,7 @@ export interface KeywordValues {
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-snap-stop
    */
-  readonly scrollSnapStop:
-    keyof ScrollSnapStopValues | Exclude<Property.ScrollSnapStop, string> | CssString;
+  readonly scrollSnapStop: keyof ScrollSnapStopValues | CssString;
   /**
    * 设置滚动容器的吸附轴和吸附强度。（scroll-snap-type）
    *
@@ -3252,54 +3111,47 @@ export interface KeywordValues {
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-snap-type
    */
-  readonly scrollSnapType:
-    keyof ScrollSnapTypeValues | Exclude<Property.ScrollSnapType, string> | CssString;
+  readonly scrollSnapType: keyof ScrollSnapTypeValues | CssString;
   /**
    * 同时声明滚动进度时间线的名称和轴。（scroll-timeline）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-timeline
    */
-  readonly scrollTimeline:
-    keyof ScrollTimelineValues | Exclude<Property.ScrollTimeline, string> | CssString;
+  readonly scrollTimeline: keyof ScrollTimelineValues | CssString;
   /**
    * 设置滚动进度时间线所观察的滚动轴。（scroll-timeline-axis）
    *
    * CSS 初始值：`block`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-timeline-axis
    */
-  readonly scrollTimelineAxis:
-    keyof ScrollTimelineAxisValues | Exclude<Property.ScrollTimelineAxis, string> | CssString;
+  readonly scrollTimelineAxis: keyof ScrollTimelineAxisValues | CssString;
   /**
    * 声明基于当前容器滚动进度的时间线名称。（scroll-timeline-name）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-timeline-name
    */
-  readonly scrollTimelineName:
-    keyof ScrollTimelineNameValues | Exclude<Property.ScrollTimelineName, string> | CssString;
+  readonly scrollTimelineName: keyof ScrollTimelineNameValues | CssString;
   /**
    * 设置滚动条滑块和轨道的颜色。（scrollbar-color）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scrollbar-color
    */
-  readonly scrollbarColor:
-    keyof ScrollbarColorValues | Exclude<Property.ScrollbarColor, string> | CssString;
+  readonly scrollbarColor: keyof ScrollbarColorValues | CssString;
   /**
    * 设置是否预留滚动条槽位，以减少滚动条出现时的布局变化。（scrollbar-gutter）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scrollbar-gutter
    */
-  readonly scrollbarGutter:
-    keyof ScrollbarGutterValues | Exclude<Property.ScrollbarGutter, string> | CssString;
+  readonly scrollbarGutter: keyof ScrollbarGutterValues | CssString;
   /**
    * 设置滚动条采用正常、较细或隐藏的外观。（scrollbar-width）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scrollbar-width
    */
-  readonly scrollbarWidth:
-    keyof ScrollbarWidthValues | Exclude<Property.ScrollbarWidth, string> | CssString;
+  readonly scrollbarWidth: keyof ScrollbarWidthValues | CssString;
   /**
    * 设置从图像 alpha 信息提取环绕形状时的阈值。（shape-image-threshold）
    *
@@ -3321,26 +3173,24 @@ export interface KeywordValues {
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/shape-outside
    */
-  readonly shapeOutside:
-    keyof ShapeOutsideValues | Exclude<Property.ShapeOutside, string> | CssString;
+  readonly shapeOutside: keyof ShapeOutsideValues | CssString;
   /**
    * 向 SVG 渲染器提供图形绘制精度与速度的偏好。（shape-rendering）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/shape-rendering
    */
-  readonly shapeRendering:
-    keyof ShapeRenderingValues | Exclude<Property.ShapeRendering, string> | CssString;
+  readonly shapeRendering: keyof ShapeRenderingValues | CssString;
   /**
    * 设置语音呈现时文字、数字和标点的朗读方式；使用前核对语音媒体支持。（speak-as）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/speak-as
    */
-  readonly speakAs: keyof SpeakAsValues | Exclude<Property.SpeakAs, string> | CssString;
+  readonly speakAs: keyof SpeakAsValues | CssString;
   /**
    * 设置 SVG 渐变 stop 节点的颜色。（stop-color）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stop-color
    */
-  readonly stopColor: keyof StopColorValues | Exclude<Property.StopColor, string> | CssString;
+  readonly stopColor: keyof StopColorValues | CssString;
   /**
    * 设置 SVG 渐变 stop 节点的不透明度。（stop-opacity）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stop-opacity
@@ -3350,14 +3200,14 @@ export interface KeywordValues {
    * 设置 SVG 图形轮廓的描边绘制方式。（stroke）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stroke
    */
-  readonly stroke: keyof StrokeValues | Exclude<Property.Stroke, string> | CssString;
+  readonly stroke: keyof StrokeValues | CssString;
   /**
    * 设置描边颜色的扩展属性；常规 SVG 优先使用 stroke 并核对支持情况。（stroke-color）
    *
    * CSS 初始值：`transparent`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stroke-color
    */
-  readonly strokeColor: keyof StrokeColorValues | Exclude<Property.StrokeColor, string> | CssString;
+  readonly strokeColor: keyof StrokeColorValues | CssString;
   /**
    * 设置 SVG 描边虚线中线段与空隙的长度序列。（stroke-dasharray）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stroke-dasharray
@@ -3374,14 +3224,12 @@ export interface KeywordValues {
    * 设置开放 SVG 子路径端点的描边形状。（stroke-linecap）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stroke-linecap
    */
-  readonly strokeLinecap:
-    keyof StrokeLinecapValues | Exclude<Property.StrokeLinecap, string> | CssString;
+  readonly strokeLinecap: keyof StrokeLinecapValues | CssString;
   /**
    * 设置 SVG 路径转角处描边的连接形状。（stroke-linejoin）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stroke-linejoin
    */
-  readonly strokeLinejoin:
-    keyof StrokeLinejoinValues | Exclude<Property.StrokeLinejoin, string> | CssString;
+  readonly strokeLinejoin: keyof StrokeLinejoinValues | CssString;
   /**
    * 限制尖角连接的延伸比例，超过阈值时改变连接形状。（stroke-miterlimit）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stroke-miterlimit
@@ -3412,7 +3260,7 @@ export interface KeywordValues {
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/table-layout
    */
-  readonly tableLayout: keyof TableLayoutValues | Exclude<Property.TableLayout, string> | CssString;
+  readonly tableLayout: keyof TableLayoutValues | CssString;
   /**
    * 设置块容器中行内内容的水平或逻辑方向对齐。（text-align）
    *
@@ -3429,57 +3277,54 @@ export interface KeywordValues {
    * CSS 初始值：`start`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-align
    */
-  readonly textAlign: keyof TextAlignValues | Exclude<Property.TextAlign, string> | CssString;
+  readonly textAlign: keyof TextAlignValues | CssString;
   /**
    * 设置段落最后一行或强制换行前一行的对齐方式。（text-align-last）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-align-last
    */
-  readonly textAlignLast:
-    keyof TextAlignLastValues | Exclude<Property.TextAlignLast, string> | CssString;
+  readonly textAlignLast: keyof TextAlignLastValues | CssString;
   /**
    * 设置 SVG 文本片段相对于定位点的锚定方式。（text-anchor）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-anchor
    */
-  readonly textAnchor: keyof TextAnchorValues | Exclude<Property.TextAnchor, string> | CssString;
+  readonly textAnchor: keyof TextAnchorValues | CssString;
   /**
    * 设置中西文、数字等不同文字系统之间的自动间距。（text-autospace）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-autospace
    */
-  readonly textAutospace:
-    keyof TextAutospaceValues | Exclude<Property.TextAutospace, string> | CssString;
+  readonly textAutospace: keyof TextAutospaceValues | CssString;
   /**
    * 同时设置文本盒边缘参照及首尾空白裁减。（text-box）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-box
    */
-  readonly textBox: keyof TextBoxValues | Exclude<Property.TextBox, string> | CssString;
+  readonly textBox: keyof TextBoxValues | CssString;
   /**
    * 选择文本盒裁减或对齐使用的字体边缘度量。（text-box-edge）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-box-edge
    */
-  readonly textBoxEdge: keyof TextBoxEdgeValues | Exclude<Property.TextBoxEdge, string> | CssString;
+  readonly textBoxEdge: keyof TextBoxEdgeValues | CssString;
   /**
    * 裁减文本块开头或结尾的额外行高空白。（text-box-trim）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-box-trim
    */
-  readonly textBoxTrim: keyof TextBoxTrimValues | Exclude<Property.TextBoxTrim, string> | CssString;
+  readonly textBoxTrim: keyof TextBoxTrimValues | CssString;
   /**
    * 设置竖排文字中多个字符是否合成为一个横排字形单元。（text-combine-upright）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-combine-upright
    */
-  readonly textCombineUpright:
-    keyof TextCombineUprightValues | Exclude<Property.TextCombineUpright, string> | CssString;
+  readonly textCombineUpright: keyof TextCombineUprightValues | CssString;
   /**
    * 集中设置文本装饰线的位置、线型、颜色及粗细。（text-decoration）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-decoration
@@ -3492,40 +3337,35 @@ export interface KeywordValues {
    * CSS 初始值：`currentcolor`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-decoration-color
    */
-  readonly textDecorationColor:
-    keyof TextDecorationColorValues | Exclude<Property.TextDecorationColor, string> | CssString;
+  readonly textDecorationColor: keyof TextDecorationColorValues | CssString;
   /**
    * 设置下划线、上划线或删除线等装饰线位置。（text-decoration-line）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-decoration-line
    */
-  readonly textDecorationLine:
-    keyof TextDecorationLineValues | Exclude<Property.TextDecorationLine, string> | CssString;
+  readonly textDecorationLine: keyof TextDecorationLineValues | CssString;
   /**
    * 设置文本装饰线跳过哪些内容；具体语法需核对支持情况。（text-decoration-skip）
    *
    * CSS 初始值：`objects`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-decoration-skip
    */
-  readonly textDecorationSkip:
-    keyof TextDecorationSkipValues | Exclude<Property.TextDecorationSkip, string> | CssString;
+  readonly textDecorationSkip: keyof TextDecorationSkipValues | CssString;
   /**
    * 设置装饰线是否避让字形的笔画。（text-decoration-skip-ink）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-decoration-skip-ink
    */
-  readonly textDecorationSkipInk:
-    keyof TextDecorationSkipInkValues | Exclude<Property.TextDecorationSkipInk, string> | CssString;
+  readonly textDecorationSkipInk: keyof TextDecorationSkipInkValues | CssString;
   /**
    * 设置文本装饰线的实线、波浪线等线型。（text-decoration-style）
    *
    * CSS 初始值：`solid`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-decoration-style
    */
-  readonly textDecorationStyle:
-    keyof TextDecorationStyleValues | Exclude<Property.TextDecorationStyle, string> | CssString;
+  readonly textDecorationStyle: keyof TextDecorationStyleValues | CssString;
   /**
    * 设置文本装饰线粗细。（text-decoration-thickness）
    *
@@ -3540,32 +3380,28 @@ export interface KeywordValues {
    * 同时设置文字着重号的样式和颜色。（text-emphasis）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-emphasis
    */
-  readonly textEmphasis:
-    keyof TextEmphasisValues | Exclude<Property.TextEmphasis, string> | CssString;
+  readonly textEmphasis: keyof TextEmphasisValues | CssString;
   /**
    * 设置文字着重号颜色。（text-emphasis-color）
    *
    * CSS 初始值：`currentcolor`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-emphasis-color
    */
-  readonly textEmphasisColor:
-    keyof TextEmphasisColorValues | Exclude<Property.TextEmphasisColor, string> | CssString;
+  readonly textEmphasisColor: keyof TextEmphasisColorValues | CssString;
   /**
    * 设置文字着重号位于文字的哪一侧。（text-emphasis-position）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-emphasis-position
    */
-  readonly textEmphasisPosition:
-    keyof TextEmphasisPositionValues | Exclude<Property.TextEmphasisPosition, string> | CssString;
+  readonly textEmphasisPosition: keyof TextEmphasisPositionValues | CssString;
   /**
    * 设置文字着重号的形状和填充方式。（text-emphasis-style）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-emphasis-style
    */
-  readonly textEmphasisStyle:
-    keyof TextEmphasisStyleValues | Exclude<Property.TextEmphasisStyle, string> | CssString;
+  readonly textEmphasisStyle: keyof TextEmphasisStyleValues | CssString;
   /**
    * 设置文本行的缩进距离。（text-indent）
    *
@@ -3579,15 +3415,14 @@ export interface KeywordValues {
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-justify
    */
-  readonly textJustify: keyof TextJustifyValues | Exclude<Property.TextJustify, string> | CssString;
+  readonly textJustify: keyof TextJustifyValues | CssString;
   /**
    * 设置竖排模式下字符的方向。（text-orientation）
    *
    * CSS 初始值：`mixed`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-orientation
    */
-  readonly textOrientation:
-    keyof TextOrientationValues | Exclude<Property.TextOrientation, string> | CssString;
+  readonly textOrientation: keyof TextOrientationValues | CssString;
   /**
    * 设置被裁剪的行内溢出文本如何提示，例如显示省略号。（text-overflow）
    *
@@ -3602,45 +3437,40 @@ export interface KeywordValues {
    * CSS 初始值：`clip`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-overflow
    */
-  readonly textOverflow:
-    keyof TextOverflowValues | Exclude<Property.TextOverflow, string> | CssString;
+  readonly textOverflow: keyof TextOverflowValues | CssString;
   /**
    * 向渲染器提供文本速度、可读性或几何精度的偏好。（text-rendering）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-rendering
    */
-  readonly textRendering:
-    keyof TextRenderingValues | Exclude<Property.TextRendering, string> | CssString;
+  readonly textRendering: keyof TextRenderingValues | CssString;
   /**
    * 设置文字及其装饰的阴影，可叠加多层。（text-shadow）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-shadow
    */
-  readonly textShadow: keyof TextShadowValues | Exclude<Property.TextShadow, string> | CssString;
+  readonly textShadow: keyof TextShadowValues | CssString;
   /**
    * 控制移动浏览器为提升可读性而进行的文字自动放大。（text-size-adjust）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-size-adjust
    */
-  readonly textSizeAdjust:
-    keyof TextSizeAdjustValues | Exclude<Property.TextSizeAdjust, string> | CssString;
+  readonly textSizeAdjust: keyof TextSizeAdjustValues | CssString;
   /**
    * 设置东亚文字标点等字符周围空白的裁减。（text-spacing-trim）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-spacing-trim
    */
-  readonly textSpacingTrim:
-    keyof TextSpacingTrimValues | Exclude<Property.TextSpacingTrim, string> | CssString;
+  readonly textSpacingTrim: keyof TextSpacingTrimValues | CssString;
   /**
    * 设置文字显示时的大小写、全角或其他字形转换。（text-transform）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-transform
    */
-  readonly textTransform:
-    keyof TextTransformValues | Exclude<Property.TextTransform, string> | CssString;
+  readonly textTransform: keyof TextTransformValues | CssString;
   /**
    * 设置下划线相对于默认位置的偏移。（text-underline-offset）
    *
@@ -3655,39 +3485,35 @@ export interface KeywordValues {
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-underline-position
    */
-  readonly textUnderlinePosition:
-    keyof TextUnderlinePositionValues | Exclude<Property.TextUnderlinePosition, string> | CssString;
+  readonly textUnderlinePosition: keyof TextUnderlinePositionValues | CssString;
   /**
    * 同时设置文本是否换行及换行策略。（text-wrap）
    *
    * CSS 初始值：`wrap`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-wrap
    */
-  readonly textWrap: keyof TextWrapValues | Exclude<Property.TextWrap, string> | CssString;
+  readonly textWrap: keyof TextWrapValues | CssString;
   /**
    * 设置文本是否允许软换行。（text-wrap-mode）
    *
    * CSS 初始值：`wrap`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-wrap-mode
    */
-  readonly textWrapMode:
-    keyof TextWrapModeValues | Exclude<Property.TextWrapMode, string> | CssString;
+  readonly textWrapMode: keyof TextWrapModeValues | CssString;
   /**
    * 设置文本换行的排版策略，例如平衡各行长度。（text-wrap-style）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-wrap-style
    */
-  readonly textWrapStyle:
-    keyof TextWrapStyleValues | Exclude<Property.TextWrapStyle, string> | CssString;
+  readonly textWrapStyle: keyof TextWrapStyleValues | CssString;
   /**
    * 扩大命名动画时间线的可引用作用域。（timeline-scope）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/timeline-scope
    */
-  readonly timelineScope:
-    keyof TimelineScopeValues | Exclude<Property.TimelineScope, string> | CssString;
+  readonly timelineScope: keyof TimelineScopeValues | CssString;
   /**
    * 设置定位元素相对于其定位参照的上侧偏移。（top）
    *
@@ -3711,7 +3537,7 @@ export interface KeywordValues {
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/touch-action
    */
-  readonly touchAction: keyof TouchActionValues | Exclude<Property.TouchAction, string> | CssString;
+  readonly touchAction: keyof TouchActionValues | CssString;
   /**
    * 按顺序组合平移、旋转、缩放等二维或三维变换。（transform）
    *
@@ -3722,15 +3548,14 @@ export interface KeywordValues {
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transform
    */
-  readonly transform: keyof TransformValues | Exclude<Property.Transform, string> | CssString;
+  readonly transform: keyof TransformValues | CssString;
   /**
    * 设置变换及其原点所依据的参照盒。（transform-box）
    *
    * CSS 初始值：`view-box`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transform-box
    */
-  readonly transformBox:
-    keyof TransformBoxValues | Exclude<Property.TransformBox, string> | CssString;
+  readonly transformBox: keyof TransformBoxValues | CssString;
   /**
    * 设置元素变换的原点。（transform-origin）
    *
@@ -3745,8 +3570,7 @@ export interface KeywordValues {
    * CSS 初始值：`flat`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transform-style
    */
-  readonly transformStyle:
-    keyof TransformStyleValues | Exclude<Property.TransformStyle, string> | CssString;
+  readonly transformStyle: keyof TransformStyleValues | CssString;
   /**
    * 集中设置属性变化过渡的目标、时长、缓动、延迟和行为。（transition）
    *
@@ -3755,47 +3579,40 @@ export interface KeywordValues {
    * 适用场景：悬停、选中和展开状态之间的平滑变化。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transition
    */
-  readonly transition: keyof TransitionValues | Exclude<Property.Transition, string> | CssString;
+  readonly transition: keyof TransitionValues | CssString;
   /**
    * 控制离散属性是否可以启动 CSS 过渡。（transition-behavior）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transition-behavior
    */
-  readonly transitionBehavior:
-    keyof TransitionBehaviorValues | Exclude<Property.TransitionBehavior, string> | CssString;
+  readonly transitionBehavior: keyof TransitionBehaviorValues | CssString;
   /**
    * 设置属性变化后开始过渡的延迟。（transition-delay）
    *
    * CSS 初始值：`0s`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transition-delay
    */
-  readonly transitionDelay:
-    keyof TransitionDelayValues | Exclude<Property.TransitionDelay, string> | CssString;
+  readonly transitionDelay: keyof TransitionDelayValues | CssString;
   /**
    * 设置过渡从开始到完成的时长。（transition-duration）
    *
    * CSS 初始值：`0s`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transition-duration
    */
-  readonly transitionDuration:
-    keyof TransitionDurationValues | Exclude<Property.TransitionDuration, string> | CssString;
+  readonly transitionDuration: keyof TransitionDurationValues | CssString;
   /**
    * 指定发生变化时需要过渡的 CSS 属性。（transition-property）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transition-property
    */
-  readonly transitionProperty:
-    keyof TransitionPropertyValues | Exclude<Property.TransitionProperty, string> | CssString;
+  readonly transitionProperty: keyof TransitionPropertyValues | CssString;
   /**
    * 设置过渡进度变化的缓动函数。（transition-timing-function）
    *
    * CSS 初始值：`ease`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transition-timing-function
    */
-  readonly transitionTimingFunction:
-    | keyof TransitionTimingFunctionValues
-    | Exclude<Property.TransitionTimingFunction, string>
-    | CssString;
+  readonly transitionTimingFunction: keyof TransitionTimingFunctionValues | CssString;
   /**
    * 独立设置元素在二维或三维空间中的平移。（translate）
    *
@@ -3807,7 +3624,7 @@ export interface KeywordValues {
    * 设置元素如何参与 Unicode 双向文本算法，通常与 direction 配合。（unicode-bidi）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/unicode-bidi
    */
-  readonly unicodeBidi: keyof UnicodeBidiValues | Exclude<Property.UnicodeBidi, string> | CssString;
+  readonly unicodeBidi: keyof UnicodeBidiValues | CssString;
   /**
    * 设置用户是否可以选取元素中的文本。（user-select）
    *
@@ -3822,13 +3639,12 @@ export interface KeywordValues {
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/user-select
    */
-  readonly userSelect: keyof UserSelectValues | Exclude<Property.UserSelect, string> | CssString;
+  readonly userSelect: keyof UserSelectValues | CssString;
   /**
    * 设置 SVG 图形变换时对描边等矢量效果的处理。（vector-effect）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/vector-effect
    */
-  readonly vectorEffect:
-    keyof VectorEffectValues | Exclude<Property.VectorEffect, string> | CssString;
+  readonly vectorEffect: keyof VectorEffectValues | CssString;
   /**
    * 设置行内级盒子或表格单元格的垂直对齐，不用于普通块盒居中。（vertical-align）
    *
@@ -3841,16 +3657,14 @@ export interface KeywordValues {
    * 同时声明基于元素可见进度的时间线名称与轴。（view-timeline）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/view-timeline
    */
-  readonly viewTimeline:
-    keyof ViewTimelineValues | Exclude<Property.ViewTimeline, string> | CssString;
+  readonly viewTimeline: keyof ViewTimelineValues | CssString;
   /**
    * 设置可见进度时间线所观察的滚动轴。（view-timeline-axis）
    *
    * CSS 初始值：`block`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/view-timeline-axis
    */
-  readonly viewTimelineAxis:
-    keyof ViewTimelineAxisValues | Exclude<Property.ViewTimelineAxis, string> | CssString;
+  readonly viewTimelineAxis: keyof ViewTimelineAxisValues | CssString;
   /**
    * 设置可见进度时间线使用的滚动视口内缩范围。（view-timeline-inset）
    *
@@ -3865,24 +3679,21 @@ export interface KeywordValues {
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/view-timeline-name
    */
-  readonly viewTimelineName:
-    keyof ViewTimelineNameValues | Exclude<Property.ViewTimelineName, string> | CssString;
+  readonly viewTimelineName: keyof ViewTimelineNameValues | CssString;
   /**
    * 为视图过渡的快照伪元素分组，以便共用样式。（view-transition-class）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/view-transition-class
    */
-  readonly viewTransitionClass:
-    keyof ViewTransitionClassValues | Exclude<Property.ViewTransitionClass, string> | CssString;
+  readonly viewTransitionClass: keyof ViewTransitionClassValues | CssString;
   /**
    * 为视图过渡中的元素命名，以匹配前后状态的快照。（view-transition-name）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/view-transition-name
    */
-  readonly viewTransitionName:
-    keyof ViewTransitionNameValues | Exclude<Property.ViewTransitionName, string> | CssString;
+  readonly viewTransitionName: keyof ViewTransitionNameValues | CssString;
   /**
    * 设置元素是否可见；隐藏通常保留布局空间。（visibility）
    *
@@ -3894,7 +3705,7 @@ export interface KeywordValues {
    * 适用场景：需要隐藏内容但通常保留其布局占位的场景。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/visibility
    */
-  readonly visibility: keyof VisibilityValues | Exclude<Property.Visibility, string> | CssString;
+  readonly visibility: keyof VisibilityValues | CssString;
   /**
    * 设置空白折叠和换行处理方式。（white-space）
    *
@@ -3911,15 +3722,14 @@ export interface KeywordValues {
    * 适用场景：单行标签、保留换行的用户文本和代码片段。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/white-space
    */
-  readonly whiteSpace: keyof WhiteSpaceValues | Exclude<Property.WhiteSpace, string> | CssString;
+  readonly whiteSpace: keyof WhiteSpaceValues | CssString;
   /**
    * 设置空格、制表符和换行符如何折叠或保留。（white-space-collapse）
    *
    * CSS 初始值：`collapse`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/white-space-collapse
    */
-  readonly whiteSpaceCollapse:
-    keyof WhiteSpaceCollapseValues | Exclude<Property.WhiteSpaceCollapse, string> | CssString;
+  readonly whiteSpaceCollapse: keyof WhiteSpaceCollapseValues | CssString;
   /**
    * 设置分页或分栏断点后需保留的最少行数。（widows）
    *
@@ -3952,7 +3762,7 @@ export interface KeywordValues {
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/will-change
    */
-  readonly willChange: keyof WillChangeValues | Exclude<Property.WillChange, string> | CssString;
+  readonly willChange: keyof WillChangeValues | CssString;
   /**
    * 设置单词内部或文字之间的断行规则。（word-break）
    *
@@ -3966,7 +3776,7 @@ export interface KeywordValues {
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/word-break
    */
-  readonly wordBreak: keyof WordBreakValues | Exclude<Property.WordBreak, string> | CssString;
+  readonly wordBreak: keyof WordBreakValues | CssString;
   /**
    * 设置单词或词间分隔符的额外间距。（word-spacing）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/word-spacing
@@ -3978,12 +3788,12 @@ export interface KeywordValues {
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/word-wrap
    */
-  readonly wordWrap: keyof WordWrapValues | Exclude<Property.WordWrap, string> | CssString;
+  readonly wordWrap: keyof WordWrapValues | CssString;
   /**
    * 设置水平或竖直书写模式，以及行和块的推进方向。（writing-mode）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/writing-mode
    */
-  readonly writingMode: keyof WritingModeValues | Exclude<Property.WritingMode, string> | CssString;
+  readonly writingMode: keyof WritingModeValues | CssString;
   /**
    * 设置适用 SVG 元素的水平几何坐标。（x）
    *

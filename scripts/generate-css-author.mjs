@@ -170,9 +170,10 @@ for (const name of names) {
       name +
       ': keyof ' +
       valueType +
-      ' | Exclude<Property.' +
-      item.propertyType +
-      ', string> | CssString;',
+      (valuesOf(item.type).some((value) => typeof value !== 'string')
+        ? ' | Exclude<Property.' + item.propertyType + ', string>'
+        : '') +
+      ' | CssString;',
   );
   author.push(
     docs.replace(
