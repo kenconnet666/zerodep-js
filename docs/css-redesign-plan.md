@@ -67,3 +67,5 @@ return <div class={[base, appearance, className]} />;
 - e545c30 的 CI：三浏览器、六平台工具链、Linux/Windows 独立消费通过；verify 发现 6 份旧 CSS 静态类型夹具漏迁移。本阶段已改为新方法/主题/bx/数组的正反类型用例，6 份独立 TS7 完整诊断为零，未恢复旧 API。
 - 自查补充：动态动画变量按目标选择器命名，插入无关样式不再改变动画名；新增回归通过。最终验收仍等待修复提交的完整 CI。
 - fb24310 的三浏览器、六平台及 Linux/Windows 独立消费再次通过，全部项目类型检查通过；verify 在两份新增测试的 15 处 no-floating-promises 上停止。按 Node 测试注册惯例显式 void，不改规则或用例断言；两文件 53 个测试及相关类型感知 lint 通过，继续等待修复提交 CI。
+- R4 完成：4ca5f0d 的 verify、三浏览器、六平台工具链、Linux/Windows 独立消费和发布制品任务全部通过，运行记录为 GitHub Actions 38135117918；未发布 npm。
+- 后续编辑器完善：按用户当前设置关闭 WebStorm 服务驱动类型引擎，选择项目 TS7。系统字符串改为引用带中文文档的类型成员，502 属性的原有可接受值通过双向可赋值检查保持一致；只增加声明、不增加运行时关键字对象。不生成重复调用形式的单属性示例。详见 .design/css-string-documentation.md。

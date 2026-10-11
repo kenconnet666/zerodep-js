@@ -86,6 +86,42 @@ function keywordDetail(name, value) {
   return typeof entry === 'string' ? { summary: entry } : entry;
 }
 
+/** 字符串值也需要可导航的声明；只生成类型文档，不添加运行时关键字对象。 */
+export function keywordDocumentation(name, cssName, value) {
+  const detail = keywordDetail(name, value);
+  return jsdoc(detail?.summary ?? `原生 CSS 关键字 ${value}。`, {
+    remarks: detail
+      ? [
+          detail.effect,
+          detail.comparison && `区别：${detail.comparison}`,
+          detail.usage && `适用场景：${detail.usage}`,
+          detail.notes,
+        ]
+          .filter(Boolean)
+          .join('\n\n')
+      : `${docs.properties[name]}该值的具体行为见属性参考。`,
+    // 不把单属性调用当示例；有教学价值的组合另行维护，不复用旧作者语法。
+    see: `https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/${cssName}`,
+  });
+}
+
+/** 全局关键字和命名颜色跨属性共用声明，避免为每个属性复制同一份文档。 */
+export function commonKeywordDocumentation(value, group) {
+  if (group === 'NamedColor')
+    return jsdoc(`CSS 命名颜色 ${value}。`, {
+      see: 'https://developer.mozilla.org/docs/Web/CSS/named-color',
+    });
+  if (group === 'SystemColor' || group === 'DeprecatedSystemColor')
+    return jsdoc(`CSS 系统颜色 ${value}，具体颜色由浏览器和用户环境决定。`, {
+      remarks:
+        group === 'DeprecatedSystemColor'
+          ? '历史系统颜色名称；新代码优先使用现代系统颜色。'
+          : undefined,
+      see: 'https://developer.mozilla.org/docs/Web/CSS/system-color',
+    });
+  return jsdoc(docs.globalKeywords[value] ?? 'Firefox 历史初始值关键字；新代码使用 initial。');
+}
+
 export function propertyDocumentation(name, cssName, upstream) {
   const initial = upstream.match(/\*\*Initial value\*\*: `([^`]+)`/)?.[1];
   const url = upstream.match(/@see (https:\/\/[^\s*]+)/)?.[1];

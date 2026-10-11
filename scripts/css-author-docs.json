@@ -879,6 +879,9 @@
     "backgroundSize": "maskSize"
   },
   "keywords": {
+    "backgroundImage": {
+      "none": "不绘制这一层背景图像；背景颜色仍然可以显示。"
+    },
     "margin": {
       "auto": "由布局模式分配自动外边距；在 Flex/Grid 中可吸收剩余空间，不保证所有方向都自动居中。"
     },

@@ -1,6 +1,6 @@
 # 换机环境配置
 
-更新：2026-10-09。当前源码与 IDE 使用微软官方 TypeScript 7.1.0-dev.20261008.1；此前 JetBrains 分支与旧 npm 框架发行记录属于历史状态。
+更新：2026-10-11。项目继续使用微软官方 TypeScript 7.1.0-dev.20261008.1。WebStorm 当前选择项目 node_modules/typescript，保留 TypeScript 语言服务，关闭“启用服务驱动的类型引擎”；编辑器自身的类型分析可按属性定位字符串关键字及文档。下方原生预览缓存与代理适配步骤属于历史配置，当前方案无需执行。此前 JetBrains 分支与旧 npm 框架发行记录同样属于历史状态。
 
 ## 1. 固定版本与获取方式
 
@@ -47,7 +47,7 @@ pnpm lsp:completions
 
 CI 在各自任务中执行这些检查；语言探针会临时创建示例源码，不能与同工作区的 check/build 并行。补全探针的全部用例都应通过，总数以当前脚本输出为准，服务版本应为上述 微软官方 SDK。完整浏览器与独立包消费同样由 CI 执行。完整远端 CI 尚未结束时，不能把本机焦点检查当作六平台和三浏览器矩阵全部通过。
 
-## 3. WebStorm SDK 缓存
+## 3. 历史：WebStorm 原生预览 SDK 缓存
 
 安装指定 EAP 构建；Windows x64 发行文件为 [WebStorm 263.6259.34](https://download.jetbrains.com/webstorm/WebStorm-263.6259.34.exe)。在 Help / About 核对 build；安装目录因机器而异，不照抄本机的 `WebStorm 2` 路径。
 
@@ -85,7 +85,7 @@ console.log('项目与 IDE 的 LSP 二进制一致：', target);
 
 目标中主包目录名是 `native-preview`，但里面 package.json 的真实包名仍是 `typescript`；这是 IDE 的预览缓存布局，不需要修改包名、版本或 SDK 源码。已有缓存可以保留并核对，不必重复复制；不要删除其他版本或共享 pnpm store。
 
-## 4. 应用 IDE 代理补丁
+## 4. 历史：应用原生预览 IDE 代理补丁
 
 继续保持 IDE 关闭，设置实际安装目录后执行：
 
@@ -123,7 +123,7 @@ UI 包已使用下述源码类型入口。此时应保留 WebStorm 原生补全�
 | `typescript.service.completion.customServiceContributorEnabled` | `true` | 保留 TypeScript 专用补全处理    |
 | `typescript.service.completion.ownContributorsEnabled`          | `true` | 保留 IDE 原生函数补全及括号插入 |
 
-保留 TypeScript 语言服务和服务驱动的类型引擎。已在真实编辑器验证：已有导入时，补全 `const s = useC` 得到 `const s = useCss()`；没有导入时，会同时补入 `from 'zerodep-js-ui'` 和调用括号。不需要开放 `/src` 导出。
+保留 TypeScript 语言服务，当前关闭服务驱动的类型引擎。此前已在真实编辑器验证：已有导入时，补全 `const s = useC` 得到 `const s = useCss()`；没有导入时，会同时补入 `from 'zerodep-js-ui'` 和调用括号。不需要开放 `/src` 导出。字符串文档应在当前配置下单独验收，不能用原生 LSP 的空 hover 推断 WebStorm 自身解析能力。
 
 此前曾关闭上述两项以绕开错误的 `/src` 导入，但标准 LSP 对导入别名只插入函数名，失去了 IDE 的自动括号处理；源码类型入口修复后应撤销这项临时规避。设置 → 编辑器 → 常规 → 代码补全中的“适用时自动插入括号”保留开启，见 [WebStorm 补全说明](https://www.jetbrains.com/help/webstorm/auto-completing-code.html)。
 

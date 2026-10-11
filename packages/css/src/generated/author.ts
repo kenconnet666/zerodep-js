@@ -11,7 +11,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/accent-color
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.accentColor("inherit"));
    */
   accentColor(value: PropertyInput<'accentColor', T>): this {
     this.write('accentColor', 'accent-color', value);
@@ -24,7 +23,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/align-content
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.alignContent("inherit"));
    */
   alignContent(value: PropertyInput<'alignContent', T>): this {
     this.write('alignContent', 'align-content', value);
@@ -48,7 +46,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/align-items
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.alignItems("inherit"));
    */
   alignItems(value: PropertyInput<'alignItems', T>): this {
     this.write('alignItems', 'align-items', value);
@@ -68,7 +65,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/align-self
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.alignSelf("inherit"));
    */
   alignSelf(value: PropertyInput<'alignSelf', T>): this {
     this.write('alignSelf', 'align-self', value);
@@ -81,7 +77,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/align-tracks
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.alignTracks("inherit"));
    */
   alignTracks(value: PropertyInput<'alignTracks', T>): this {
     this.write('alignTracks', 'align-tracks', value);
@@ -92,7 +87,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/alignment-baseline
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.alignmentBaseline("inherit"));
    */
   alignmentBaseline(value: PropertyInput<'alignmentBaseline', T>): this {
     this.write('alignmentBaseline', 'alignment-baseline', value);
@@ -103,7 +97,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/all
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.all("inherit"));
    */
   all(value: PropertyInput<'all', T>): this {
     this.write('all', 'all', value);
@@ -116,7 +109,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/anchor-name
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.anchorName("inherit"));
    */
   anchorName(value: PropertyInput<'anchorName', T>): this {
     this.write('anchorName', 'anchor-name', value);
@@ -129,7 +121,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/anchor-scope
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.anchorScope("inherit"));
    */
   anchorScope(value: PropertyInput<'anchorScope', T>): this {
     this.write('anchorScope', 'anchor-scope', value);
@@ -140,7 +131,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.animation("inherit"));
    */
   animation(value: PropertyInput<'animation', T>): this {
     this.write('animation', 'animation', value);
@@ -153,7 +143,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-composition
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.animationComposition("inherit"));
    */
   animationComposition(value: PropertyInput<'animationComposition', T>): this {
     this.write('animationComposition', 'animation-composition', value);
@@ -166,7 +155,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-delay
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.animationDelay("inherit"));
    */
   animationDelay(value: PropertyInput<'animationDelay', T>): this {
     this.write('animationDelay', 'animation-delay', value);
@@ -179,7 +167,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-direction
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.animationDirection("inherit"));
    */
   animationDirection(value: PropertyInput<'animationDirection', T>): this {
     this.write('animationDirection', 'animation-direction', value);
@@ -192,7 +179,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-duration
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.animationDuration("inherit"));
    */
   animationDuration(value: PropertyInput<'animationDuration', T>): this {
     this.write('animationDuration', 'animation-duration', value);
@@ -215,7 +201,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-fill-mode
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.animationFillMode("inherit"));
    */
   animationFillMode(value: PropertyInput<'animationFillMode', T>): this {
     this.write('animationFillMode', 'animation-fill-mode', value);
@@ -228,7 +213,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-iteration-count
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.animationIterationCount("inherit"));
    */
   animationIterationCount(value: PropertyInput<'animationIterationCount', T>): this {
     this.write('animationIterationCount', 'animation-iteration-count', value);
@@ -241,7 +225,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-name
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.animationName("inherit"));
    */
   animationName(value: PropertyInput<'animationName', T>): this {
     this.write('animationName', 'animation-name', value);
@@ -254,7 +237,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-play-state
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.animationPlayState("inherit"));
    */
   animationPlayState(value: PropertyInput<'animationPlayState', T>): this {
     this.write('animationPlayState', 'animation-play-state', value);
@@ -265,7 +247,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-range
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.animationRange("inherit"));
    */
   animationRange(value: PropertyInput<'animationRange', T>): this {
     this.write('animationRange', 'animation-range', value);
@@ -278,7 +259,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-range-end
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.animationRangeEnd("inherit"));
    */
   animationRangeEnd(value: PropertyInput<'animationRangeEnd', T>): this {
     this.write('animationRangeEnd', 'animation-range-end', value);
@@ -291,7 +271,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-range-start
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.animationRangeStart("inherit"));
    */
   animationRangeStart(value: PropertyInput<'animationRangeStart', T>): this {
     this.write('animationRangeStart', 'animation-range-start', value);
@@ -304,7 +283,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-timeline
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.animationTimeline("inherit"));
    */
   animationTimeline(value: PropertyInput<'animationTimeline', T>): this {
     this.write('animationTimeline', 'animation-timeline', value);
@@ -317,7 +295,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-timing-function
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.animationTimingFunction("inherit"));
    */
   animationTimingFunction(value: PropertyInput<'animationTimingFunction', T>): this {
     this.write('animationTimingFunction', 'animation-timing-function', value);
@@ -330,7 +307,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/appearance
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.appearance("inherit"));
    */
   appearance(value: PropertyInput<'appearance', T>): this {
     this.write('appearance', 'appearance', value);
@@ -347,7 +323,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/aspect-ratio
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.aspectRatio("inherit"));
    */
   aspectRatio(value: PropertyInput<'aspectRatio', T>): this {
     this.write('aspectRatio', 'aspect-ratio', value);
@@ -360,7 +335,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/backdrop-filter
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.backdropFilter("inherit"));
    */
   backdropFilter(value: PropertyInput<'backdropFilter', T>): this {
     this.write('backdropFilter', 'backdrop-filter', value);
@@ -373,7 +347,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/backface-visibility
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.backfaceVisibility("inherit"));
    */
   backfaceVisibility(value: PropertyInput<'backfaceVisibility', T>): this {
     this.write('backfaceVisibility', 'backface-visibility', value);
@@ -384,7 +357,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.background("inherit"));
    */
   background(value: PropertyInput<'background', T>): this {
     this.write('background', 'background', value);
@@ -397,7 +369,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background-attachment
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.backgroundAttachment("inherit"));
    */
   backgroundAttachment(value: PropertyInput<'backgroundAttachment', T>): this {
     this.write('backgroundAttachment', 'background-attachment', value);
@@ -410,7 +381,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background-blend-mode
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.backgroundBlendMode("inherit"));
    */
   backgroundBlendMode(value: PropertyInput<'backgroundBlendMode', T>): this {
     this.write('backgroundBlendMode', 'background-blend-mode', value);
@@ -423,7 +393,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background-clip
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.backgroundClip("inherit"));
    */
   backgroundClip(value: PropertyInput<'backgroundClip', T>): this {
     this.write('backgroundClip', 'background-clip', value);
@@ -436,7 +405,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background-color
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.backgroundColor("inherit"));
    */
   backgroundColor(value: PropertyInput<'backgroundColor', T>): this {
     this.write('backgroundColor', 'background-color', value);
@@ -449,7 +417,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background-image
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.backgroundImage("inherit"));
    */
   backgroundImage(value: PropertyInput<'backgroundImage', T>): this {
     this.write('backgroundImage', 'background-image', value);
@@ -462,7 +429,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background-origin
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.backgroundOrigin("inherit"));
    */
   backgroundOrigin(value: PropertyInput<'backgroundOrigin', T>): this {
     this.write('backgroundOrigin', 'background-origin', value);
@@ -475,7 +441,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background-position
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.backgroundPosition("inherit"));
    */
   backgroundPosition(value: PropertyInput<'backgroundPosition', T>): this {
     this.write('backgroundPosition', 'background-position', value);
@@ -488,7 +453,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background-position-x
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.backgroundPositionX("inherit"));
    */
   backgroundPositionX(value: PropertyInput<'backgroundPositionX', T>): this {
     this.write('backgroundPositionX', 'background-position-x', value);
@@ -501,7 +465,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background-position-y
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.backgroundPositionY("inherit"));
    */
   backgroundPositionY(value: PropertyInput<'backgroundPositionY', T>): this {
     this.write('backgroundPositionY', 'background-position-y', value);
@@ -514,7 +477,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background-repeat
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.backgroundRepeat("inherit"));
    */
   backgroundRepeat(value: PropertyInput<'backgroundRepeat', T>): this {
     this.write('backgroundRepeat', 'background-repeat', value);
@@ -536,7 +498,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background-size
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.backgroundSize("inherit"));
    */
   backgroundSize(value: PropertyInput<'backgroundSize', T>): this {
     this.write('backgroundSize', 'background-size', value);
@@ -547,7 +508,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/baseline-shift
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.baselineShift("inherit"));
    */
   baselineShift(value: PropertyInput<'baselineShift', T>): this {
     this.write('baselineShift', 'baseline-shift', value);
@@ -564,7 +524,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/block-size
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.blockSize("inherit"));
    */
   blockSize(value: PropertyInput<'blockSize', T>): this {
     this.write('blockSize', 'block-size', value);
@@ -575,7 +534,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.border("inherit"));
    */
   border(value: PropertyInput<'border', T>): this {
     this.write('border', 'border', value);
@@ -586,7 +544,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderBlock("inherit"));
    */
   borderBlock(value: PropertyInput<'borderBlock', T>): this {
     this.write('borderBlock', 'border-block', value);
@@ -599,7 +556,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block-color
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderBlockColor("inherit"));
    */
   borderBlockColor(value: PropertyInput<'borderBlockColor', T>): this {
     this.write('borderBlockColor', 'border-block-color', value);
@@ -610,7 +566,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block-end
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderBlockEnd("inherit"));
    */
   borderBlockEnd(value: PropertyInput<'borderBlockEnd', T>): this {
     this.write('borderBlockEnd', 'border-block-end', value);
@@ -623,7 +578,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block-end-color
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderBlockEndColor("inherit"));
    */
   borderBlockEndColor(value: PropertyInput<'borderBlockEndColor', T>): this {
     this.write('borderBlockEndColor', 'border-block-end-color', value);
@@ -636,7 +590,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block-end-style
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderBlockEndStyle("inherit"));
    */
   borderBlockEndStyle(value: PropertyInput<'borderBlockEndStyle', T>): this {
     this.write('borderBlockEndStyle', 'border-block-end-style', value);
@@ -649,7 +602,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block-end-width
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderBlockEndWidth("inherit"));
    */
   borderBlockEndWidth(value: PropertyInput<'borderBlockEndWidth', T>): this {
     this.write('borderBlockEndWidth', 'border-block-end-width', value);
@@ -660,7 +612,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block-start
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderBlockStart("inherit"));
    */
   borderBlockStart(value: PropertyInput<'borderBlockStart', T>): this {
     this.write('borderBlockStart', 'border-block-start', value);
@@ -673,7 +624,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block-start-color
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderBlockStartColor("inherit"));
    */
   borderBlockStartColor(value: PropertyInput<'borderBlockStartColor', T>): this {
     this.write('borderBlockStartColor', 'border-block-start-color', value);
@@ -686,7 +636,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block-start-style
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderBlockStartStyle("inherit"));
    */
   borderBlockStartStyle(value: PropertyInput<'borderBlockStartStyle', T>): this {
     this.write('borderBlockStartStyle', 'border-block-start-style', value);
@@ -699,7 +648,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block-start-width
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderBlockStartWidth("inherit"));
    */
   borderBlockStartWidth(value: PropertyInput<'borderBlockStartWidth', T>): this {
     this.write('borderBlockStartWidth', 'border-block-start-width', value);
@@ -712,7 +660,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block-style
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderBlockStyle("inherit"));
    */
   borderBlockStyle(value: PropertyInput<'borderBlockStyle', T>): this {
     this.write('borderBlockStyle', 'border-block-style', value);
@@ -725,7 +672,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block-width
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderBlockWidth("inherit"));
    */
   borderBlockWidth(value: PropertyInput<'borderBlockWidth', T>): this {
     this.write('borderBlockWidth', 'border-block-width', value);
@@ -736,7 +682,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-bottom
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderBottom("inherit"));
    */
   borderBottom(value: PropertyInput<'borderBottom', T>): this {
     this.write('borderBottom', 'border-bottom', value);
@@ -749,7 +694,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-bottom-color
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderBottomColor("inherit"));
    */
   borderBottomColor(value: PropertyInput<'borderBottomColor', T>): this {
     this.write('borderBottomColor', 'border-bottom-color', value);
@@ -762,7 +706,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-bottom-left-radius
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderBottomLeftRadius("inherit"));
    */
   borderBottomLeftRadius(value: PropertyInput<'borderBottomLeftRadius', T>): this {
     this.write('borderBottomLeftRadius', 'border-bottom-left-radius', value);
@@ -775,7 +718,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-bottom-right-radius
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderBottomRightRadius("inherit"));
    */
   borderBottomRightRadius(value: PropertyInput<'borderBottomRightRadius', T>): this {
     this.write('borderBottomRightRadius', 'border-bottom-right-radius', value);
@@ -788,7 +730,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-bottom-style
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderBottomStyle("inherit"));
    */
   borderBottomStyle(value: PropertyInput<'borderBottomStyle', T>): this {
     this.write('borderBottomStyle', 'border-bottom-style', value);
@@ -801,7 +742,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-bottom-width
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderBottomWidth("inherit"));
    */
   borderBottomWidth(value: PropertyInput<'borderBottomWidth', T>): this {
     this.write('borderBottomWidth', 'border-bottom-width', value);
@@ -814,7 +754,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-collapse
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderCollapse("inherit"));
    */
   borderCollapse(value: PropertyInput<'borderCollapse', T>): this {
     this.write('borderCollapse', 'border-collapse', value);
@@ -825,7 +764,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-color
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderColor("inherit"));
    */
   borderColor(value: PropertyInput<'borderColor', T>): this {
     this.write('borderColor', 'border-color', value);
@@ -838,7 +776,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-end-end-radius
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderEndEndRadius("inherit"));
    */
   borderEndEndRadius(value: PropertyInput<'borderEndEndRadius', T>): this {
     this.write('borderEndEndRadius', 'border-end-end-radius', value);
@@ -851,7 +788,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-end-start-radius
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderEndStartRadius("inherit"));
    */
   borderEndStartRadius(value: PropertyInput<'borderEndStartRadius', T>): this {
     this.write('borderEndStartRadius', 'border-end-start-radius', value);
@@ -862,7 +798,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-image
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderImage("inherit"));
    */
   borderImage(value: PropertyInput<'borderImage', T>): this {
     this.write('borderImage', 'border-image', value);
@@ -875,7 +810,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-image-outset
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderImageOutset("inherit"));
    */
   borderImageOutset(value: PropertyInput<'borderImageOutset', T>): this {
     this.write('borderImageOutset', 'border-image-outset', value);
@@ -888,7 +822,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-image-repeat
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderImageRepeat("inherit"));
    */
   borderImageRepeat(value: PropertyInput<'borderImageRepeat', T>): this {
     this.write('borderImageRepeat', 'border-image-repeat', value);
@@ -901,7 +834,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-image-slice
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderImageSlice("inherit"));
    */
   borderImageSlice(value: PropertyInput<'borderImageSlice', T>): this {
     this.write('borderImageSlice', 'border-image-slice', value);
@@ -914,7 +846,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-image-source
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderImageSource("inherit"));
    */
   borderImageSource(value: PropertyInput<'borderImageSource', T>): this {
     this.write('borderImageSource', 'border-image-source', value);
@@ -927,7 +858,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-image-width
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderImageWidth("inherit"));
    */
   borderImageWidth(value: PropertyInput<'borderImageWidth', T>): this {
     this.write('borderImageWidth', 'border-image-width', value);
@@ -938,7 +868,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderInline("inherit"));
    */
   borderInline(value: PropertyInput<'borderInline', T>): this {
     this.write('borderInline', 'border-inline', value);
@@ -951,7 +880,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline-color
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderInlineColor("inherit"));
    */
   borderInlineColor(value: PropertyInput<'borderInlineColor', T>): this {
     this.write('borderInlineColor', 'border-inline-color', value);
@@ -962,7 +890,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline-end
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderInlineEnd("inherit"));
    */
   borderInlineEnd(value: PropertyInput<'borderInlineEnd', T>): this {
     this.write('borderInlineEnd', 'border-inline-end', value);
@@ -975,7 +902,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline-end-color
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderInlineEndColor("inherit"));
    */
   borderInlineEndColor(value: PropertyInput<'borderInlineEndColor', T>): this {
     this.write('borderInlineEndColor', 'border-inline-end-color', value);
@@ -988,7 +914,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline-end-style
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderInlineEndStyle("inherit"));
    */
   borderInlineEndStyle(value: PropertyInput<'borderInlineEndStyle', T>): this {
     this.write('borderInlineEndStyle', 'border-inline-end-style', value);
@@ -1001,7 +926,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline-end-width
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderInlineEndWidth("inherit"));
    */
   borderInlineEndWidth(value: PropertyInput<'borderInlineEndWidth', T>): this {
     this.write('borderInlineEndWidth', 'border-inline-end-width', value);
@@ -1012,7 +936,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline-start
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderInlineStart("inherit"));
    */
   borderInlineStart(value: PropertyInput<'borderInlineStart', T>): this {
     this.write('borderInlineStart', 'border-inline-start', value);
@@ -1025,7 +948,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline-start-color
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderInlineStartColor("inherit"));
    */
   borderInlineStartColor(value: PropertyInput<'borderInlineStartColor', T>): this {
     this.write('borderInlineStartColor', 'border-inline-start-color', value);
@@ -1038,7 +960,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline-start-style
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderInlineStartStyle("inherit"));
    */
   borderInlineStartStyle(value: PropertyInput<'borderInlineStartStyle', T>): this {
     this.write('borderInlineStartStyle', 'border-inline-start-style', value);
@@ -1051,7 +972,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline-start-width
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderInlineStartWidth("inherit"));
    */
   borderInlineStartWidth(value: PropertyInput<'borderInlineStartWidth', T>): this {
     this.write('borderInlineStartWidth', 'border-inline-start-width', value);
@@ -1064,7 +984,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline-style
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderInlineStyle("inherit"));
    */
   borderInlineStyle(value: PropertyInput<'borderInlineStyle', T>): this {
     this.write('borderInlineStyle', 'border-inline-style', value);
@@ -1077,7 +996,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline-width
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderInlineWidth("inherit"));
    */
   borderInlineWidth(value: PropertyInput<'borderInlineWidth', T>): this {
     this.write('borderInlineWidth', 'border-inline-width', value);
@@ -1088,7 +1006,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-left
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderLeft("inherit"));
    */
   borderLeft(value: PropertyInput<'borderLeft', T>): this {
     this.write('borderLeft', 'border-left', value);
@@ -1101,7 +1018,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-left-color
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderLeftColor("inherit"));
    */
   borderLeftColor(value: PropertyInput<'borderLeftColor', T>): this {
     this.write('borderLeftColor', 'border-left-color', value);
@@ -1114,7 +1030,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-left-style
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderLeftStyle("inherit"));
    */
   borderLeftStyle(value: PropertyInput<'borderLeftStyle', T>): this {
     this.write('borderLeftStyle', 'border-left-style', value);
@@ -1127,7 +1042,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-left-width
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderLeftWidth("inherit"));
    */
   borderLeftWidth(value: PropertyInput<'borderLeftWidth', T>): this {
     this.write('borderLeftWidth', 'border-left-width', value);
@@ -1142,7 +1056,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-radius
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderRadius("inherit"));
    */
   borderRadius(value: PropertyInput<'borderRadius', T>): this {
     this.write('borderRadius', 'border-radius', value);
@@ -1153,7 +1066,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-right
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderRight("inherit"));
    */
   borderRight(value: PropertyInput<'borderRight', T>): this {
     this.write('borderRight', 'border-right', value);
@@ -1166,7 +1078,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-right-color
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderRightColor("inherit"));
    */
   borderRightColor(value: PropertyInput<'borderRightColor', T>): this {
     this.write('borderRightColor', 'border-right-color', value);
@@ -1179,7 +1090,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-right-style
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderRightStyle("inherit"));
    */
   borderRightStyle(value: PropertyInput<'borderRightStyle', T>): this {
     this.write('borderRightStyle', 'border-right-style', value);
@@ -1192,7 +1102,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-right-width
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderRightWidth("inherit"));
    */
   borderRightWidth(value: PropertyInput<'borderRightWidth', T>): this {
     this.write('borderRightWidth', 'border-right-width', value);
@@ -1205,7 +1114,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-spacing
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderSpacing("inherit"));
    */
   borderSpacing(value: PropertyInput<'borderSpacing', T>): this {
     this.write('borderSpacing', 'border-spacing', value);
@@ -1218,7 +1126,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-start-end-radius
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderStartEndRadius("inherit"));
    */
   borderStartEndRadius(value: PropertyInput<'borderStartEndRadius', T>): this {
     this.write('borderStartEndRadius', 'border-start-end-radius', value);
@@ -1231,7 +1138,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-start-start-radius
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderStartStartRadius("inherit"));
    */
   borderStartStartRadius(value: PropertyInput<'borderStartStartRadius', T>): this {
     this.write('borderStartStartRadius', 'border-start-start-radius', value);
@@ -1242,7 +1148,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-style
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderStyle("inherit"));
    */
   borderStyle(value: PropertyInput<'borderStyle', T>): this {
     this.write('borderStyle', 'border-style', value);
@@ -1253,7 +1158,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-top
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderTop("inherit"));
    */
   borderTop(value: PropertyInput<'borderTop', T>): this {
     this.write('borderTop', 'border-top', value);
@@ -1266,7 +1170,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-top-color
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderTopColor("inherit"));
    */
   borderTopColor(value: PropertyInput<'borderTopColor', T>): this {
     this.write('borderTopColor', 'border-top-color', value);
@@ -1279,7 +1182,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-top-left-radius
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderTopLeftRadius("inherit"));
    */
   borderTopLeftRadius(value: PropertyInput<'borderTopLeftRadius', T>): this {
     this.write('borderTopLeftRadius', 'border-top-left-radius', value);
@@ -1292,7 +1194,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-top-right-radius
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderTopRightRadius("inherit"));
    */
   borderTopRightRadius(value: PropertyInput<'borderTopRightRadius', T>): this {
     this.write('borderTopRightRadius', 'border-top-right-radius', value);
@@ -1305,7 +1206,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-top-style
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderTopStyle("inherit"));
    */
   borderTopStyle(value: PropertyInput<'borderTopStyle', T>): this {
     this.write('borderTopStyle', 'border-top-style', value);
@@ -1318,7 +1218,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-top-width
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderTopWidth("inherit"));
    */
   borderTopWidth(value: PropertyInput<'borderTopWidth', T>): this {
     this.write('borderTopWidth', 'border-top-width', value);
@@ -1329,7 +1228,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-width
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.borderWidth("inherit"));
    */
   borderWidth(value: PropertyInput<'borderWidth', T>): this {
     this.write('borderWidth', 'border-width', value);
@@ -1342,7 +1240,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/bottom
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.bottom("inherit"));
    */
   bottom(value: PropertyInput<'bottom', T>): this {
     this.write('bottom', 'bottom', value);
@@ -1355,7 +1252,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/box-decoration-break
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.boxDecorationBreak("inherit"));
    */
   boxDecorationBreak(value: PropertyInput<'boxDecorationBreak', T>): this {
     this.write('boxDecorationBreak', 'box-decoration-break', value);
@@ -1372,7 +1268,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/box-shadow
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.boxShadow("inherit"));
    */
   boxShadow(value: PropertyInput<'boxShadow', T>): this {
     this.write('boxShadow', 'box-shadow', value);
@@ -1391,7 +1286,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/box-sizing
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.boxSizing("inherit"));
    */
   boxSizing(value: PropertyInput<'boxSizing', T>): this {
     this.write('boxSizing', 'box-sizing', value);
@@ -1404,7 +1298,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/break-after
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.breakAfter("inherit"));
    */
   breakAfter(value: PropertyInput<'breakAfter', T>): this {
     this.write('breakAfter', 'break-after', value);
@@ -1417,7 +1310,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/break-before
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.breakBefore("inherit"));
    */
   breakBefore(value: PropertyInput<'breakBefore', T>): this {
     this.write('breakBefore', 'break-before', value);
@@ -1430,7 +1322,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/break-inside
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.breakInside("inherit"));
    */
   breakInside(value: PropertyInput<'breakInside', T>): this {
     this.write('breakInside', 'break-inside', value);
@@ -1443,7 +1334,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/caption-side
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.captionSide("inherit"));
    */
   captionSide(value: PropertyInput<'captionSide', T>): this {
     this.write('captionSide', 'caption-side', value);
@@ -1454,7 +1344,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/caret
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.caret("inherit"));
    */
   caret(value: PropertyInput<'caret', T>): this {
     this.write('caret', 'caret', value);
@@ -1467,7 +1356,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/caret-color
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.caretColor("inherit"));
    */
   caretColor(value: PropertyInput<'caretColor', T>): this {
     this.write('caretColor', 'caret-color', value);
@@ -1480,7 +1368,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/caret-shape
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.caretShape("inherit"));
    */
   caretShape(value: PropertyInput<'caretShape', T>): this {
     this.write('caretShape', 'caret-shape', value);
@@ -1493,7 +1380,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/clear
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.clear("inherit"));
    */
   clear(value: PropertyInput<'clear', T>): this {
     this.write('clear', 'clear', value);
@@ -1504,7 +1390,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/clip
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.clip("inherit"));
    */
   clip(value: PropertyInput<'clip', T>): this {
     this.write('clip', 'clip', value);
@@ -1515,7 +1400,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/clip-path
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.clipPath("inherit"));
    */
   clipPath(value: PropertyInput<'clipPath', T>): this {
     this.write('clipPath', 'clip-path', value);
@@ -1526,7 +1410,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/clip-rule
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.clipRule("inherit"));
    */
   clipRule(value: PropertyInput<'clipRule', T>): this {
     this.write('clipRule', 'clip-rule', value);
@@ -1539,7 +1422,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/color
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.color("inherit"));
    */
   color(value: PropertyInput<'color', T>): this {
     this.write('color', 'color', value);
@@ -1552,7 +1434,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/print-color-adjust
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.colorAdjust("inherit"));
    */
   colorAdjust(value: PropertyInput<'colorAdjust', T>): this {
     this.write('colorAdjust', 'color-adjust', value);
@@ -1563,7 +1444,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/color-interpolation
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.colorInterpolation("inherit"));
    */
   colorInterpolation(value: PropertyInput<'colorInterpolation', T>): this {
     this.write('colorInterpolation', 'color-interpolation', value);
@@ -1576,7 +1456,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/color-interpolation-filters
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.colorInterpolationFilters("inherit"));
    */
   colorInterpolationFilters(value: PropertyInput<'colorInterpolationFilters', T>): this {
     this.write('colorInterpolationFilters', 'color-interpolation-filters', value);
@@ -1587,7 +1466,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/color-rendering
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.colorRendering("inherit"));
    */
   colorRendering(value: PropertyInput<'colorRendering', T>): this {
     this.write('colorRendering', 'color-rendering', value);
@@ -1602,7 +1480,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/color-scheme
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.colorScheme("inherit"));
    */
   colorScheme(value: PropertyInput<'colorScheme', T>): this {
     this.write('colorScheme', 'color-scheme', value);
@@ -1615,7 +1492,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/column-count
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.columnCount("inherit"));
    */
   columnCount(value: PropertyInput<'columnCount', T>): this {
     this.write('columnCount', 'column-count', value);
@@ -1628,7 +1504,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/column-fill
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.columnFill("inherit"));
    */
   columnFill(value: PropertyInput<'columnFill', T>): this {
     this.write('columnFill', 'column-fill', value);
@@ -1641,7 +1516,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/column-gap
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.columnGap("inherit"));
    */
   columnGap(value: PropertyInput<'columnGap', T>): this {
     this.write('columnGap', 'column-gap', value);
@@ -1652,7 +1526,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/column-rule
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.columnRule("inherit"));
    */
   columnRule(value: PropertyInput<'columnRule', T>): this {
     this.write('columnRule', 'column-rule', value);
@@ -1665,7 +1538,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/column-rule-color
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.columnRuleColor("inherit"));
    */
   columnRuleColor(value: PropertyInput<'columnRuleColor', T>): this {
     this.write('columnRuleColor', 'column-rule-color', value);
@@ -1678,7 +1550,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/column-rule-style
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.columnRuleStyle("inherit"));
    */
   columnRuleStyle(value: PropertyInput<'columnRuleStyle', T>): this {
     this.write('columnRuleStyle', 'column-rule-style', value);
@@ -1691,7 +1562,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/column-rule-width
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.columnRuleWidth("inherit"));
    */
   columnRuleWidth(value: PropertyInput<'columnRuleWidth', T>): this {
     this.write('columnRuleWidth', 'column-rule-width', value);
@@ -1704,7 +1574,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/column-span
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.columnSpan("inherit"));
    */
   columnSpan(value: PropertyInput<'columnSpan', T>): this {
     this.write('columnSpan', 'column-span', value);
@@ -1717,7 +1586,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/column-width
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.columnWidth("inherit"));
    */
   columnWidth(value: PropertyInput<'columnWidth', T>): this {
     this.write('columnWidth', 'column-width', value);
@@ -1728,7 +1596,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/columns
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.columns("inherit"));
    */
   columns(value: PropertyInput<'columns', T>): this {
     this.write('columns', 'columns', value);
@@ -1752,7 +1619,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/contain
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.contain("inherit"));
    */
   contain(value: PropertyInput<'contain', T>): this {
     this.write('contain', 'contain', value);
@@ -1765,7 +1631,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/contain-intrinsic-block-size
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.containIntrinsicBlockSize("inherit"));
    */
   containIntrinsicBlockSize(value: PropertyInput<'containIntrinsicBlockSize', T>): this {
     this.write('containIntrinsicBlockSize', 'contain-intrinsic-block-size', value);
@@ -1778,7 +1643,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/contain-intrinsic-height
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.containIntrinsicHeight("inherit"));
    */
   containIntrinsicHeight(value: PropertyInput<'containIntrinsicHeight', T>): this {
     this.write('containIntrinsicHeight', 'contain-intrinsic-height', value);
@@ -1791,7 +1655,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/contain-intrinsic-inline-size
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.containIntrinsicInlineSize("inherit"));
    */
   containIntrinsicInlineSize(value: PropertyInput<'containIntrinsicInlineSize', T>): this {
     this.write('containIntrinsicInlineSize', 'contain-intrinsic-inline-size', value);
@@ -1802,7 +1665,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/contain-intrinsic-size
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.containIntrinsicSize("inherit"));
    */
   containIntrinsicSize(value: PropertyInput<'containIntrinsicSize', T>): this {
     this.write('containIntrinsicSize', 'contain-intrinsic-size', value);
@@ -1815,7 +1677,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/contain-intrinsic-width
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.containIntrinsicWidth("inherit"));
    */
   containIntrinsicWidth(value: PropertyInput<'containIntrinsicWidth', T>): this {
     this.write('containIntrinsicWidth', 'contain-intrinsic-width', value);
@@ -1826,7 +1687,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/container
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.container("inherit"));
    */
   container(value: PropertyInput<'container', T>): this {
     this.write('container', 'container', value);
@@ -1839,7 +1699,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/container-name
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.containerName("inherit"));
    */
   containerName(value: PropertyInput<'containerName', T>): this {
     this.write('containerName', 'container-name', value);
@@ -1861,7 +1720,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/container-type
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.containerType("inherit"));
    */
   containerType(value: PropertyInput<'containerType', T>): this {
     this.write('containerType', 'container-type', value);
@@ -1874,7 +1732,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/content
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.content("inherit"));
    */
   content(value: PropertyInput<'content', T>): this {
     this.write('content', 'content', value);
@@ -1896,7 +1753,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/content-visibility
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.contentVisibility("inherit"));
    */
   contentVisibility(value: PropertyInput<'contentVisibility', T>): this {
     this.write('contentVisibility', 'content-visibility', value);
@@ -1909,7 +1765,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/counter-increment
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.counterIncrement("inherit"));
    */
   counterIncrement(value: PropertyInput<'counterIncrement', T>): this {
     this.write('counterIncrement', 'counter-increment', value);
@@ -1922,7 +1777,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/counter-reset
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.counterReset("inherit"));
    */
   counterReset(value: PropertyInput<'counterReset', T>): this {
     this.write('counterReset', 'counter-reset', value);
@@ -1935,7 +1789,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/counter-set
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.counterSet("inherit"));
    */
   counterSet(value: PropertyInput<'counterSet', T>): this {
     this.write('counterSet', 'counter-set', value);
@@ -1946,7 +1799,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/cursor
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.cursor("inherit"));
    */
   cursor(value: PropertyInput<'cursor', T>): this {
     this.write('cursor', 'cursor', value);
@@ -1959,7 +1811,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/cx
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.cx("inherit"));
    */
   cx(value: PropertyInput<'cx', T>): this {
     this.write('cx', 'cx', value);
@@ -1972,7 +1823,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/cy
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.cy("inherit"));
    */
   cy(value: PropertyInput<'cy', T>): this {
     this.write('cy', 'cy', value);
@@ -1985,7 +1835,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/d
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.d("inherit"));
    */
   d(value: PropertyInput<'d', T>): this {
     this.write('d', 'd', value);
@@ -1996,7 +1845,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/direction
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.direction("inherit"));
    */
   direction(value: PropertyInput<'direction', T>): this {
     this.write('direction', 'direction', value);
@@ -2019,7 +1867,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/Reference/Properties/display
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.display("inherit"));
    */
   display(value: PropertyInput<'display', T>): this {
     this.write('display', 'display', value);
@@ -2030,7 +1877,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/dominant-baseline
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.dominantBaseline("inherit"));
    */
   dominantBaseline(value: PropertyInput<'dominantBaseline', T>): this {
     this.write('dominantBaseline', 'dominant-baseline', value);
@@ -2043,7 +1889,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/empty-cells
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.emptyCells("inherit"));
    */
   emptyCells(value: PropertyInput<'emptyCells', T>): this {
     this.write('emptyCells', 'empty-cells', value);
@@ -2056,7 +1901,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/field-sizing
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fieldSizing("inherit"));
    */
   fieldSizing(value: PropertyInput<'fieldSizing', T>): this {
     this.write('fieldSizing', 'field-sizing', value);
@@ -2067,7 +1911,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/fill
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fill("inherit"));
    */
   fill(value: PropertyInput<'fill', T>): this {
     this.write('fill', 'fill', value);
@@ -2078,7 +1921,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/fill-opacity
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fillOpacity("inherit"));
    */
   fillOpacity(value: PropertyInput<'fillOpacity', T>): this {
     this.write('fillOpacity', 'fill-opacity', value);
@@ -2089,7 +1931,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/fill-rule
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fillRule("inherit"));
    */
   fillRule(value: PropertyInput<'fillRule', T>): this {
     this.write('fillRule', 'fill-rule', value);
@@ -2100,7 +1941,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/filter
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.filter("inherit"));
    */
   filter(value: PropertyInput<'filter', T>): this {
     this.write('filter', 'filter', value);
@@ -2119,7 +1959,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/flex
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.flex("inherit"));
    */
   flex(value: PropertyInput<'flex', T>): this {
     this.write('flex', 'flex', value);
@@ -2140,7 +1979,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/flex-basis
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.flexBasis("inherit"));
    */
   flexBasis(value: PropertyInput<'flexBasis', T>): this {
     this.write('flexBasis', 'flex-basis', value);
@@ -2161,7 +1999,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/flex-direction
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.flexDirection("inherit"));
    */
   flexDirection(value: PropertyInput<'flexDirection', T>): this {
     this.write('flexDirection', 'flex-direction', value);
@@ -2172,7 +2009,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/flex-flow
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.flexFlow("inherit"));
    */
   flexFlow(value: PropertyInput<'flexFlow', T>): this {
     this.write('flexFlow', 'flex-flow', value);
@@ -2189,7 +2025,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/flex-grow
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.flexGrow("inherit"));
    */
   flexGrow(value: PropertyInput<'flexGrow', T>): this {
     this.write('flexGrow', 'flex-grow', value);
@@ -2206,7 +2041,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/flex-shrink
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.flexShrink("inherit"));
    */
   flexShrink(value: PropertyInput<'flexShrink', T>): this {
     this.write('flexShrink', 'flex-shrink', value);
@@ -2226,7 +2060,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/flex-wrap
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.flexWrap("inherit"));
    */
   flexWrap(value: PropertyInput<'flexWrap', T>): this {
     this.write('flexWrap', 'flex-wrap', value);
@@ -2239,7 +2072,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/float
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.float("inherit"));
    */
   float(value: PropertyInput<'float', T>): this {
     this.write('float', 'float', value);
@@ -2250,7 +2082,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/flood-color
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.floodColor("inherit"));
    */
   floodColor(value: PropertyInput<'floodColor', T>): this {
     this.write('floodColor', 'flood-color', value);
@@ -2261,7 +2092,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/flood-opacity
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.floodOpacity("inherit"));
    */
   floodOpacity(value: PropertyInput<'floodOpacity', T>): this {
     this.write('floodOpacity', 'flood-opacity', value);
@@ -2272,7 +2102,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.font("inherit"));
    */
   font(value: PropertyInput<'font', T>): this {
     this.write('font', 'font', value);
@@ -2283,7 +2112,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-family
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fontFamily("inherit"));
    */
   fontFamily(value: PropertyInput<'fontFamily', T>): this {
     this.write('fontFamily', 'font-family', value);
@@ -2296,7 +2124,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-feature-settings
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fontFeatureSettings("inherit"));
    */
   fontFeatureSettings(value: PropertyInput<'fontFeatureSettings', T>): this {
     this.write('fontFeatureSettings', 'font-feature-settings', value);
@@ -2309,7 +2136,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-kerning
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fontKerning("inherit"));
    */
   fontKerning(value: PropertyInput<'fontKerning', T>): this {
     this.write('fontKerning', 'font-kerning', value);
@@ -2322,7 +2148,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-language-override
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fontLanguageOverride("inherit"));
    */
   fontLanguageOverride(value: PropertyInput<'fontLanguageOverride', T>): this {
     this.write('fontLanguageOverride', 'font-language-override', value);
@@ -2335,7 +2160,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-optical-sizing
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fontOpticalSizing("inherit"));
    */
   fontOpticalSizing(value: PropertyInput<'fontOpticalSizing', T>): this {
     this.write('fontOpticalSizing', 'font-optical-sizing', value);
@@ -2348,7 +2172,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-palette
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fontPalette("inherit"));
    */
   fontPalette(value: PropertyInput<'fontPalette', T>): this {
     this.write('fontPalette', 'font-palette', value);
@@ -2363,7 +2186,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-size
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fontSize("inherit"));
    */
   fontSize(value: PropertyInput<'fontSize', T>): this {
     this.write('fontSize', 'font-size', value);
@@ -2374,7 +2196,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-size-adjust
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fontSizeAdjust("inherit"));
    */
   fontSizeAdjust(value: PropertyInput<'fontSizeAdjust', T>): this {
     this.write('fontSizeAdjust', 'font-size-adjust', value);
@@ -2387,7 +2208,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-smooth
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fontSmooth("inherit"));
    */
   fontSmooth(value: PropertyInput<'fontSmooth', T>): this {
     this.write('fontSmooth', 'font-smooth', value);
@@ -2398,7 +2218,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-stretch
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fontStretch("inherit"));
    */
   fontStretch(value: PropertyInput<'fontStretch', T>): this {
     this.write('fontStretch', 'font-stretch', value);
@@ -2409,7 +2228,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-style
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fontStyle("inherit"));
    */
   fontStyle(value: PropertyInput<'fontStyle', T>): this {
     this.write('fontStyle', 'font-style', value);
@@ -2422,7 +2240,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-synthesis
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fontSynthesis("inherit"));
    */
   fontSynthesis(value: PropertyInput<'fontSynthesis', T>): this {
     this.write('fontSynthesis', 'font-synthesis', value);
@@ -2435,7 +2252,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-synthesis-position
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fontSynthesisPosition("inherit"));
    */
   fontSynthesisPosition(value: PropertyInput<'fontSynthesisPosition', T>): this {
     this.write('fontSynthesisPosition', 'font-synthesis-position', value);
@@ -2448,7 +2264,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-synthesis-small-caps
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fontSynthesisSmallCaps("inherit"));
    */
   fontSynthesisSmallCaps(value: PropertyInput<'fontSynthesisSmallCaps', T>): this {
     this.write('fontSynthesisSmallCaps', 'font-synthesis-small-caps', value);
@@ -2461,7 +2276,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-synthesis-style
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fontSynthesisStyle("inherit"));
    */
   fontSynthesisStyle(value: PropertyInput<'fontSynthesisStyle', T>): this {
     this.write('fontSynthesisStyle', 'font-synthesis-style', value);
@@ -2474,7 +2288,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-synthesis-weight
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fontSynthesisWeight("inherit"));
    */
   fontSynthesisWeight(value: PropertyInput<'fontSynthesisWeight', T>): this {
     this.write('fontSynthesisWeight', 'font-synthesis-weight', value);
@@ -2485,7 +2298,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variant
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fontVariant("inherit"));
    */
   fontVariant(value: PropertyInput<'fontVariant', T>): this {
     this.write('fontVariant', 'font-variant', value);
@@ -2498,7 +2310,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variant-alternates
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fontVariantAlternates("inherit"));
    */
   fontVariantAlternates(value: PropertyInput<'fontVariantAlternates', T>): this {
     this.write('fontVariantAlternates', 'font-variant-alternates', value);
@@ -2511,7 +2322,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variant-caps
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fontVariantCaps("inherit"));
    */
   fontVariantCaps(value: PropertyInput<'fontVariantCaps', T>): this {
     this.write('fontVariantCaps', 'font-variant-caps', value);
@@ -2524,7 +2334,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variant-east-asian
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fontVariantEastAsian("inherit"));
    */
   fontVariantEastAsian(value: PropertyInput<'fontVariantEastAsian', T>): this {
     this.write('fontVariantEastAsian', 'font-variant-east-asian', value);
@@ -2537,7 +2346,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variant-emoji
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fontVariantEmoji("inherit"));
    */
   fontVariantEmoji(value: PropertyInput<'fontVariantEmoji', T>): this {
     this.write('fontVariantEmoji', 'font-variant-emoji', value);
@@ -2550,7 +2358,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variant-ligatures
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fontVariantLigatures("inherit"));
    */
   fontVariantLigatures(value: PropertyInput<'fontVariantLigatures', T>): this {
     this.write('fontVariantLigatures', 'font-variant-ligatures', value);
@@ -2563,7 +2370,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variant-numeric
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fontVariantNumeric("inherit"));
    */
   fontVariantNumeric(value: PropertyInput<'fontVariantNumeric', T>): this {
     this.write('fontVariantNumeric', 'font-variant-numeric', value);
@@ -2576,7 +2382,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variant-position
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fontVariantPosition("inherit"));
    */
   fontVariantPosition(value: PropertyInput<'fontVariantPosition', T>): this {
     this.write('fontVariantPosition', 'font-variant-position', value);
@@ -2589,7 +2394,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variation-settings
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fontVariationSettings("inherit"));
    */
   fontVariationSettings(value: PropertyInput<'fontVariationSettings', T>): this {
     this.write('fontVariationSettings', 'font-variation-settings', value);
@@ -2610,7 +2414,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-weight
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fontWeight("inherit"));
    */
   fontWeight(value: PropertyInput<'fontWeight', T>): this {
     this.write('fontWeight', 'font-weight', value);
@@ -2623,7 +2426,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-width
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.fontWidth("inherit"));
    */
   fontWidth(value: PropertyInput<'fontWidth', T>): this {
     this.write('fontWidth', 'font-width', value);
@@ -2636,7 +2438,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/forced-color-adjust
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.forcedColorAdjust("inherit"));
    */
   forcedColorAdjust(value: PropertyInput<'forcedColorAdjust', T>): this {
     this.write('forcedColorAdjust', 'forced-color-adjust', value);
@@ -2651,7 +2452,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/gap
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.gap("inherit"));
    */
   gap(value: PropertyInput<'gap', T>): this {
     this.write('gap', 'gap', value);
@@ -2662,7 +2462,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/glyph-orientation-vertical
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.glyphOrientationVertical("inherit"));
    */
   glyphOrientationVertical(value: PropertyInput<'glyphOrientationVertical', T>): this {
     this.write('glyphOrientationVertical', 'glyph-orientation-vertical', value);
@@ -2673,7 +2472,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.grid("inherit"));
    */
   grid(value: PropertyInput<'grid', T>): this {
     this.write('grid', 'grid', value);
@@ -2684,7 +2482,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-area
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.gridArea("inherit"));
    */
   gridArea(value: PropertyInput<'gridArea', T>): this {
     this.write('gridArea', 'grid-area', value);
@@ -2697,7 +2494,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-auto-columns
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.gridAutoColumns("inherit"));
    */
   gridAutoColumns(value: PropertyInput<'gridAutoColumns', T>): this {
     this.write('gridAutoColumns', 'grid-auto-columns', value);
@@ -2719,7 +2515,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-auto-flow
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.gridAutoFlow("inherit"));
    */
   gridAutoFlow(value: PropertyInput<'gridAutoFlow', T>): this {
     this.write('gridAutoFlow', 'grid-auto-flow', value);
@@ -2732,7 +2527,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-auto-rows
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.gridAutoRows("inherit"));
    */
   gridAutoRows(value: PropertyInput<'gridAutoRows', T>): this {
     this.write('gridAutoRows', 'grid-auto-rows', value);
@@ -2743,7 +2537,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-column
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.gridColumn("inherit"));
    */
   gridColumn(value: PropertyInput<'gridColumn', T>): this {
     this.write('gridColumn', 'grid-column', value);
@@ -2756,7 +2549,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-column-end
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.gridColumnEnd("inherit"));
    */
   gridColumnEnd(value: PropertyInput<'gridColumnEnd', T>): this {
     this.write('gridColumnEnd', 'grid-column-end', value);
@@ -2769,7 +2561,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-column-start
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.gridColumnStart("inherit"));
    */
   gridColumnStart(value: PropertyInput<'gridColumnStart', T>): this {
     this.write('gridColumnStart', 'grid-column-start', value);
@@ -2780,7 +2571,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-row
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.gridRow("inherit"));
    */
   gridRow(value: PropertyInput<'gridRow', T>): this {
     this.write('gridRow', 'grid-row', value);
@@ -2793,7 +2583,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-row-end
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.gridRowEnd("inherit"));
    */
   gridRowEnd(value: PropertyInput<'gridRowEnd', T>): this {
     this.write('gridRowEnd', 'grid-row-end', value);
@@ -2806,7 +2595,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-row-start
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.gridRowStart("inherit"));
    */
   gridRowStart(value: PropertyInput<'gridRowStart', T>): this {
     this.write('gridRowStart', 'grid-row-start', value);
@@ -2817,7 +2605,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-template
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.gridTemplate("inherit"));
    */
   gridTemplate(value: PropertyInput<'gridTemplate', T>): this {
     this.write('gridTemplate', 'grid-template', value);
@@ -2830,7 +2617,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-template-areas
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.gridTemplateAreas("inherit"));
    */
   gridTemplateAreas(value: PropertyInput<'gridTemplateAreas', T>): this {
     this.write('gridTemplateAreas', 'grid-template-areas', value);
@@ -2847,7 +2633,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-template-columns
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.gridTemplateColumns("inherit"));
    */
   gridTemplateColumns(value: PropertyInput<'gridTemplateColumns', T>): this {
     this.write('gridTemplateColumns', 'grid-template-columns', value);
@@ -2864,7 +2649,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-template-rows
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.gridTemplateRows("inherit"));
    */
   gridTemplateRows(value: PropertyInput<'gridTemplateRows', T>): this {
     this.write('gridTemplateRows', 'grid-template-rows', value);
@@ -2877,7 +2661,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/hanging-punctuation
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.hangingPunctuation("inherit"));
    */
   hangingPunctuation(value: PropertyInput<'hangingPunctuation', T>): this {
     this.write('hangingPunctuation', 'hanging-punctuation', value);
@@ -2894,7 +2677,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/height
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.height("inherit"));
    */
   height(value: PropertyInput<'height', T>): this {
     this.write('height', 'height', value);
@@ -2907,7 +2689,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/hyphenate-character
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.hyphenateCharacter("inherit"));
    */
   hyphenateCharacter(value: PropertyInput<'hyphenateCharacter', T>): this {
     this.write('hyphenateCharacter', 'hyphenate-character', value);
@@ -2920,7 +2701,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/hyphenate-limit-chars
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.hyphenateLimitChars("inherit"));
    */
   hyphenateLimitChars(value: PropertyInput<'hyphenateLimitChars', T>): this {
     this.write('hyphenateLimitChars', 'hyphenate-limit-chars', value);
@@ -2933,7 +2713,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/hyphens
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.hyphens("inherit"));
    */
   hyphens(value: PropertyInput<'hyphens', T>): this {
     this.write('hyphens', 'hyphens', value);
@@ -2946,7 +2725,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/image-orientation
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.imageOrientation("inherit"));
    */
   imageOrientation(value: PropertyInput<'imageOrientation', T>): this {
     this.write('imageOrientation', 'image-orientation', value);
@@ -2957,7 +2735,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/image-rendering
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.imageRendering("inherit"));
    */
   imageRendering(value: PropertyInput<'imageRendering', T>): this {
     this.write('imageRendering', 'image-rendering', value);
@@ -2970,7 +2747,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/image-resolution
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.imageResolution("inherit"));
    */
   imageResolution(value: PropertyInput<'imageResolution', T>): this {
     this.write('imageResolution', 'image-resolution', value);
@@ -2983,7 +2759,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/initial-letter
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.initialLetter("inherit"));
    */
   initialLetter(value: PropertyInput<'initialLetter', T>): this {
     this.write('initialLetter', 'initial-letter', value);
@@ -2996,7 +2771,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/initial-letter-align
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.initialLetterAlign("inherit"));
    */
   initialLetterAlign(value: PropertyInput<'initialLetterAlign', T>): this {
     this.write('initialLetterAlign', 'initial-letter-align', value);
@@ -3013,7 +2787,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/inline-size
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.inlineSize("inherit"));
    */
   inlineSize(value: PropertyInput<'inlineSize', T>): this {
     this.write('inlineSize', 'inline-size', value);
@@ -3024,7 +2797,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/inset
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.inset("inherit"));
    */
   inset(value: PropertyInput<'inset', T>): this {
     this.write('inset', 'inset', value);
@@ -3035,7 +2807,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/inset-block
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.insetBlock("inherit"));
    */
   insetBlock(value: PropertyInput<'insetBlock', T>): this {
     this.write('insetBlock', 'inset-block', value);
@@ -3048,7 +2819,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/inset-block-end
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.insetBlockEnd("inherit"));
    */
   insetBlockEnd(value: PropertyInput<'insetBlockEnd', T>): this {
     this.write('insetBlockEnd', 'inset-block-end', value);
@@ -3061,7 +2831,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/inset-block-start
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.insetBlockStart("inherit"));
    */
   insetBlockStart(value: PropertyInput<'insetBlockStart', T>): this {
     this.write('insetBlockStart', 'inset-block-start', value);
@@ -3072,7 +2841,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/inset-inline
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.insetInline("inherit"));
    */
   insetInline(value: PropertyInput<'insetInline', T>): this {
     this.write('insetInline', 'inset-inline', value);
@@ -3085,7 +2853,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/inset-inline-end
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.insetInlineEnd("inherit"));
    */
   insetInlineEnd(value: PropertyInput<'insetInlineEnd', T>): this {
     this.write('insetInlineEnd', 'inset-inline-end', value);
@@ -3098,7 +2865,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/inset-inline-start
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.insetInlineStart("inherit"));
    */
   insetInlineStart(value: PropertyInput<'insetInlineStart', T>): this {
     this.write('insetInlineStart', 'inset-inline-start', value);
@@ -3111,7 +2877,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/interpolate-size
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.interpolateSize("inherit"));
    */
   interpolateSize(value: PropertyInput<'interpolateSize', T>): this {
     this.write('interpolateSize', 'interpolate-size', value);
@@ -3130,7 +2895,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/isolation
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.isolation("inherit"));
    */
   isolation(value: PropertyInput<'isolation', T>): this {
     this.write('isolation', 'isolation', value);
@@ -3151,7 +2915,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/justify-content
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.justifyContent("inherit"));
    */
   justifyContent(value: PropertyInput<'justifyContent', T>): this {
     this.write('justifyContent', 'justify-content', value);
@@ -3164,7 +2927,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/justify-items
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.justifyItems("inherit"));
    */
   justifyItems(value: PropertyInput<'justifyItems', T>): this {
     this.write('justifyItems', 'justify-items', value);
@@ -3177,7 +2939,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/justify-self
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.justifySelf("inherit"));
    */
   justifySelf(value: PropertyInput<'justifySelf', T>): this {
     this.write('justifySelf', 'justify-self', value);
@@ -3190,7 +2951,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/justify-tracks
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.justifyTracks("inherit"));
    */
   justifyTracks(value: PropertyInput<'justifyTracks', T>): this {
     this.write('justifyTracks', 'justify-tracks', value);
@@ -3203,7 +2963,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/left
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.left("inherit"));
    */
   left(value: PropertyInput<'left', T>): this {
     this.write('left', 'left', value);
@@ -3214,7 +2973,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/letter-spacing
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.letterSpacing("inherit"));
    */
   letterSpacing(value: PropertyInput<'letterSpacing', T>): this {
     this.write('letterSpacing', 'letter-spacing', value);
@@ -3225,7 +2983,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/lighting-color
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.lightingColor("inherit"));
    */
   lightingColor(value: PropertyInput<'lightingColor', T>): this {
     this.write('lightingColor', 'lighting-color', value);
@@ -3238,7 +2995,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/line-break
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.lineBreak("inherit"));
    */
   lineBreak(value: PropertyInput<'lineBreak', T>): this {
     this.write('lineBreak', 'line-break', value);
@@ -3251,7 +3007,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/line-clamp
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.lineClamp("inherit"));
    */
   lineClamp(value: PropertyInput<'lineClamp', T>): this {
     this.write('lineClamp', 'line-clamp', value);
@@ -3266,7 +3021,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/line-height
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.lineHeight("inherit"));
    */
   lineHeight(value: PropertyInput<'lineHeight', T>): this {
     this.write('lineHeight', 'line-height', value);
@@ -3279,7 +3033,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/line-height-step
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.lineHeightStep("inherit"));
    */
   lineHeightStep(value: PropertyInput<'lineHeightStep', T>): this {
     this.write('lineHeightStep', 'line-height-step', value);
@@ -3290,7 +3043,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/list-style
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.listStyle("inherit"));
    */
   listStyle(value: PropertyInput<'listStyle', T>): this {
     this.write('listStyle', 'list-style', value);
@@ -3303,7 +3055,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/list-style-image
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.listStyleImage("inherit"));
    */
   listStyleImage(value: PropertyInput<'listStyleImage', T>): this {
     this.write('listStyleImage', 'list-style-image', value);
@@ -3316,7 +3067,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/list-style-position
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.listStylePosition("inherit"));
    */
   listStylePosition(value: PropertyInput<'listStylePosition', T>): this {
     this.write('listStylePosition', 'list-style-position', value);
@@ -3329,7 +3079,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/list-style-type
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.listStyleType("inherit"));
    */
   listStyleType(value: PropertyInput<'listStyleType', T>): this {
     this.write('listStyleType', 'list-style-type', value);
@@ -3344,7 +3093,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.margin("inherit"));
    */
   margin(value: PropertyInput<'margin', T>): this {
     this.write('margin', 'margin', value);
@@ -3355,7 +3103,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin-block
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.marginBlock("inherit"));
    */
   marginBlock(value: PropertyInput<'marginBlock', T>): this {
     this.write('marginBlock', 'margin-block', value);
@@ -3368,7 +3115,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin-block-end
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.marginBlockEnd("inherit"));
    */
   marginBlockEnd(value: PropertyInput<'marginBlockEnd', T>): this {
     this.write('marginBlockEnd', 'margin-block-end', value);
@@ -3381,7 +3127,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin-block-start
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.marginBlockStart("inherit"));
    */
   marginBlockStart(value: PropertyInput<'marginBlockStart', T>): this {
     this.write('marginBlockStart', 'margin-block-start', value);
@@ -3394,7 +3139,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin-bottom
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.marginBottom("inherit"));
    */
   marginBottom(value: PropertyInput<'marginBottom', T>): this {
     this.write('marginBottom', 'margin-bottom', value);
@@ -3405,7 +3149,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin-inline
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.marginInline("inherit"));
    */
   marginInline(value: PropertyInput<'marginInline', T>): this {
     this.write('marginInline', 'margin-inline', value);
@@ -3418,7 +3161,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin-inline-end
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.marginInlineEnd("inherit"));
    */
   marginInlineEnd(value: PropertyInput<'marginInlineEnd', T>): this {
     this.write('marginInlineEnd', 'margin-inline-end', value);
@@ -3431,7 +3173,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin-inline-start
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.marginInlineStart("inherit"));
    */
   marginInlineStart(value: PropertyInput<'marginInlineStart', T>): this {
     this.write('marginInlineStart', 'margin-inline-start', value);
@@ -3444,7 +3185,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin-left
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.marginLeft("inherit"));
    */
   marginLeft(value: PropertyInput<'marginLeft', T>): this {
     this.write('marginLeft', 'margin-left', value);
@@ -3457,7 +3197,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin-right
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.marginRight("inherit"));
    */
   marginRight(value: PropertyInput<'marginRight', T>): this {
     this.write('marginRight', 'margin-right', value);
@@ -3470,7 +3209,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin-top
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.marginTop("inherit"));
    */
   marginTop(value: PropertyInput<'marginTop', T>): this {
     this.write('marginTop', 'margin-top', value);
@@ -3483,7 +3221,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin-trim
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.marginTrim("inherit"));
    */
   marginTrim(value: PropertyInput<'marginTrim', T>): this {
     this.write('marginTrim', 'margin-trim', value);
@@ -3494,7 +3231,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/marker
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.marker("inherit"));
    */
   marker(value: PropertyInput<'marker', T>): this {
     this.write('marker', 'marker', value);
@@ -3505,7 +3241,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/marker-end
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.markerEnd("inherit"));
    */
   markerEnd(value: PropertyInput<'markerEnd', T>): this {
     this.write('markerEnd', 'marker-end', value);
@@ -3516,7 +3251,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/marker-mid
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.markerMid("inherit"));
    */
   markerMid(value: PropertyInput<'markerMid', T>): this {
     this.write('markerMid', 'marker-mid', value);
@@ -3527,7 +3261,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/marker-start
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.markerStart("inherit"));
    */
   markerStart(value: PropertyInput<'markerStart', T>): this {
     this.write('markerStart', 'marker-start', value);
@@ -3538,7 +3271,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.mask("inherit"));
    */
   mask(value: PropertyInput<'mask', T>): this {
     this.write('mask', 'mask', value);
@@ -3549,7 +3281,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-border
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.maskBorder("inherit"));
    */
   maskBorder(value: PropertyInput<'maskBorder', T>): this {
     this.write('maskBorder', 'mask-border', value);
@@ -3562,7 +3293,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-border-mode
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.maskBorderMode("inherit"));
    */
   maskBorderMode(value: PropertyInput<'maskBorderMode', T>): this {
     this.write('maskBorderMode', 'mask-border-mode', value);
@@ -3575,7 +3305,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-border-outset
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.maskBorderOutset("inherit"));
    */
   maskBorderOutset(value: PropertyInput<'maskBorderOutset', T>): this {
     this.write('maskBorderOutset', 'mask-border-outset', value);
@@ -3588,7 +3317,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-border-repeat
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.maskBorderRepeat("inherit"));
    */
   maskBorderRepeat(value: PropertyInput<'maskBorderRepeat', T>): this {
     this.write('maskBorderRepeat', 'mask-border-repeat', value);
@@ -3601,7 +3329,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-border-slice
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.maskBorderSlice("inherit"));
    */
   maskBorderSlice(value: PropertyInput<'maskBorderSlice', T>): this {
     this.write('maskBorderSlice', 'mask-border-slice', value);
@@ -3614,7 +3341,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-border-source
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.maskBorderSource("inherit"));
    */
   maskBorderSource(value: PropertyInput<'maskBorderSource', T>): this {
     this.write('maskBorderSource', 'mask-border-source', value);
@@ -3627,7 +3353,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-border-width
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.maskBorderWidth("inherit"));
    */
   maskBorderWidth(value: PropertyInput<'maskBorderWidth', T>): this {
     this.write('maskBorderWidth', 'mask-border-width', value);
@@ -3640,7 +3365,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-clip
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.maskClip("inherit"));
    */
   maskClip(value: PropertyInput<'maskClip', T>): this {
     this.write('maskClip', 'mask-clip', value);
@@ -3653,7 +3377,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-composite
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.maskComposite("inherit"));
    */
   maskComposite(value: PropertyInput<'maskComposite', T>): this {
     this.write('maskComposite', 'mask-composite', value);
@@ -3666,7 +3389,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-image
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.maskImage("inherit"));
    */
   maskImage(value: PropertyInput<'maskImage', T>): this {
     this.write('maskImage', 'mask-image', value);
@@ -3679,7 +3401,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-mode
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.maskMode("inherit"));
    */
   maskMode(value: PropertyInput<'maskMode', T>): this {
     this.write('maskMode', 'mask-mode', value);
@@ -3692,7 +3413,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-origin
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.maskOrigin("inherit"));
    */
   maskOrigin(value: PropertyInput<'maskOrigin', T>): this {
     this.write('maskOrigin', 'mask-origin', value);
@@ -3705,7 +3425,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-position
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.maskPosition("inherit"));
    */
   maskPosition(value: PropertyInput<'maskPosition', T>): this {
     this.write('maskPosition', 'mask-position', value);
@@ -3718,7 +3437,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-repeat
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.maskRepeat("inherit"));
    */
   maskRepeat(value: PropertyInput<'maskRepeat', T>): this {
     this.write('maskRepeat', 'mask-repeat', value);
@@ -3731,7 +3449,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-size
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.maskSize("inherit"));
    */
   maskSize(value: PropertyInput<'maskSize', T>): this {
     this.write('maskSize', 'mask-size', value);
@@ -3744,7 +3461,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-type
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.maskType("inherit"));
    */
   maskType(value: PropertyInput<'maskType', T>): this {
     this.write('maskType', 'mask-type', value);
@@ -3757,7 +3473,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/masonry-auto-flow
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.masonryAutoFlow("inherit"));
    */
   masonryAutoFlow(value: PropertyInput<'masonryAutoFlow', T>): this {
     this.write('masonryAutoFlow', 'masonry-auto-flow', value);
@@ -3770,7 +3485,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/math-depth
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.mathDepth("inherit"));
    */
   mathDepth(value: PropertyInput<'mathDepth', T>): this {
     this.write('mathDepth', 'math-depth', value);
@@ -3783,7 +3497,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/math-shift
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.mathShift("inherit"));
    */
   mathShift(value: PropertyInput<'mathShift', T>): this {
     this.write('mathShift', 'math-shift', value);
@@ -3796,7 +3509,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/math-style
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.mathStyle("inherit"));
    */
   mathStyle(value: PropertyInput<'mathStyle', T>): this {
     this.write('mathStyle', 'math-style', value);
@@ -3809,7 +3521,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/max-block-size
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.maxBlockSize("inherit"));
    */
   maxBlockSize(value: PropertyInput<'maxBlockSize', T>): this {
     this.write('maxBlockSize', 'max-block-size', value);
@@ -3822,7 +3533,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/max-height
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.maxHeight("inherit"));
    */
   maxHeight(value: PropertyInput<'maxHeight', T>): this {
     this.write('maxHeight', 'max-height', value);
@@ -3835,7 +3545,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/max-inline-size
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.maxInlineSize("inherit"));
    */
   maxInlineSize(value: PropertyInput<'maxInlineSize', T>): this {
     this.write('maxInlineSize', 'max-inline-size', value);
@@ -3848,7 +3557,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/max-lines
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.maxLines("inherit"));
    */
   maxLines(value: PropertyInput<'maxLines', T>): this {
     this.write('maxLines', 'max-lines', value);
@@ -3865,7 +3573,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/max-width
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.maxWidth("inherit"));
    */
   maxWidth(value: PropertyInput<'maxWidth', T>): this {
     this.write('maxWidth', 'max-width', value);
@@ -3878,7 +3585,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/min-block-size
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.minBlockSize("inherit"));
    */
   minBlockSize(value: PropertyInput<'minBlockSize', T>): this {
     this.write('minBlockSize', 'min-block-size', value);
@@ -3891,7 +3597,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/min-height
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.minHeight("inherit"));
    */
   minHeight(value: PropertyInput<'minHeight', T>): this {
     this.write('minHeight', 'min-height', value);
@@ -3904,7 +3609,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/min-inline-size
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.minInlineSize("inherit"));
    */
   minInlineSize(value: PropertyInput<'minInlineSize', T>): this {
     this.write('minInlineSize', 'min-inline-size', value);
@@ -3921,7 +3625,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/min-width
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.minWidth("inherit"));
    */
   minWidth(value: PropertyInput<'minWidth', T>): this {
     this.write('minWidth', 'min-width', value);
@@ -3934,7 +3637,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mix-blend-mode
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.mixBlendMode("inherit"));
    */
   mixBlendMode(value: PropertyInput<'mixBlendMode', T>): this {
     this.write('mixBlendMode', 'mix-blend-mode', value);
@@ -3945,7 +3647,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/offset
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.motion("inherit"));
    */
   motion(value: PropertyInput<'motion', T>): this {
     this.write('motion', 'motion', value);
@@ -3958,7 +3659,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/offset-distance
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.motionDistance("inherit"));
    */
   motionDistance(value: PropertyInput<'motionDistance', T>): this {
     this.write('motionDistance', 'motion-distance', value);
@@ -3971,7 +3671,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/offset-path
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.motionPath("inherit"));
    */
   motionPath(value: PropertyInput<'motionPath', T>): this {
     this.write('motionPath', 'motion-path', value);
@@ -3984,7 +3683,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/offset-rotate
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.motionRotation("inherit"));
    */
   motionRotation(value: PropertyInput<'motionRotation', T>): this {
     this.write('motionRotation', 'motion-rotation', value);
@@ -4008,7 +3706,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/object-fit
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.objectFit("inherit"));
    */
   objectFit(value: PropertyInput<'objectFit', T>): this {
     this.write('objectFit', 'object-fit', value);
@@ -4021,7 +3718,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/object-position
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.objectPosition("inherit"));
    */
   objectPosition(value: PropertyInput<'objectPosition', T>): this {
     this.write('objectPosition', 'object-position', value);
@@ -4034,7 +3730,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/object-view-box
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.objectViewBox("inherit"));
    */
   objectViewBox(value: PropertyInput<'objectViewBox', T>): this {
     this.write('objectViewBox', 'object-view-box', value);
@@ -4045,7 +3740,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/offset
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.offset("inherit"));
    */
   offset(value: PropertyInput<'offset', T>): this {
     this.write('offset', 'offset', value);
@@ -4058,7 +3752,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/offset-anchor
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.offsetAnchor("inherit"));
    */
   offsetAnchor(value: PropertyInput<'offsetAnchor', T>): this {
     this.write('offsetAnchor', 'offset-anchor', value);
@@ -4071,7 +3764,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/offset-distance
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.offsetDistance("inherit"));
    */
   offsetDistance(value: PropertyInput<'offsetDistance', T>): this {
     this.write('offsetDistance', 'offset-distance', value);
@@ -4084,7 +3776,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/offset-path
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.offsetPath("inherit"));
    */
   offsetPath(value: PropertyInput<'offsetPath', T>): this {
     this.write('offsetPath', 'offset-path', value);
@@ -4097,7 +3788,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/offset-position
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.offsetPosition("inherit"));
    */
   offsetPosition(value: PropertyInput<'offsetPosition', T>): this {
     this.write('offsetPosition', 'offset-position', value);
@@ -4110,7 +3800,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/offset-rotate
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.offsetRotate("inherit"));
    */
   offsetRotate(value: PropertyInput<'offsetRotate', T>): this {
     this.write('offsetRotate', 'offset-rotate', value);
@@ -4123,7 +3812,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/offset-rotate
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.offsetRotation("inherit"));
    */
   offsetRotation(value: PropertyInput<'offsetRotation', T>): this {
     this.write('offsetRotation', 'offset-rotation', value);
@@ -4138,7 +3826,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/opacity
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.opacity("inherit"));
    */
   opacity(value: PropertyInput<'opacity', T>): this {
     this.write('opacity', 'opacity', value);
@@ -4153,7 +3840,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/order
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.order("inherit"));
    */
   order(value: PropertyInput<'order', T>): this {
     this.write('order', 'order', value);
@@ -4166,7 +3852,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/orphans
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.orphans("inherit"));
    */
   orphans(value: PropertyInput<'orphans', T>): this {
     this.write('orphans', 'orphans', value);
@@ -4181,7 +3866,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/outline
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.outline("inherit"));
    */
   outline(value: PropertyInput<'outline', T>): this {
     this.write('outline', 'outline', value);
@@ -4194,7 +3878,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/outline-color
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.outlineColor("inherit"));
    */
   outlineColor(value: PropertyInput<'outlineColor', T>): this {
     this.write('outlineColor', 'outline-color', value);
@@ -4207,7 +3890,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/outline-offset
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.outlineOffset("inherit"));
    */
   outlineOffset(value: PropertyInput<'outlineOffset', T>): this {
     this.write('outlineOffset', 'outline-offset', value);
@@ -4220,7 +3902,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/outline-style
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.outlineStyle("inherit"));
    */
   outlineStyle(value: PropertyInput<'outlineStyle', T>): this {
     this.write('outlineStyle', 'outline-style', value);
@@ -4233,7 +3914,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/outline-width
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.outlineWidth("inherit"));
    */
   outlineWidth(value: PropertyInput<'outlineWidth', T>): this {
     this.write('outlineWidth', 'outline-width', value);
@@ -4255,7 +3935,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overflow
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.overflow("inherit"));
    */
   overflow(value: PropertyInput<'overflow', T>): this {
     this.write('overflow', 'overflow', value);
@@ -4268,7 +3947,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overflow-anchor
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.overflowAnchor("inherit"));
    */
   overflowAnchor(value: PropertyInput<'overflowAnchor', T>): this {
     this.write('overflowAnchor', 'overflow-anchor', value);
@@ -4281,7 +3959,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overflow-block
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.overflowBlock("inherit"));
    */
   overflowBlock(value: PropertyInput<'overflowBlock', T>): this {
     this.write('overflowBlock', 'overflow-block', value);
@@ -4294,7 +3971,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overflow-clip-box
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.overflowClipBox("inherit"));
    */
   overflowClipBox(value: PropertyInput<'overflowClipBox', T>): this {
     this.write('overflowClipBox', 'overflow-clip-box', value);
@@ -4307,7 +3983,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overflow-clip-margin
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.overflowClipMargin("inherit"));
    */
   overflowClipMargin(value: PropertyInput<'overflowClipMargin', T>): this {
     this.write('overflowClipMargin', 'overflow-clip-margin', value);
@@ -4320,7 +3995,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overflow-inline
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.overflowInline("inherit"));
    */
   overflowInline(value: PropertyInput<'overflowInline', T>): this {
     this.write('overflowInline', 'overflow-inline', value);
@@ -4340,7 +4014,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overflow-wrap
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.overflowWrap("inherit"));
    */
   overflowWrap(value: PropertyInput<'overflowWrap', T>): this {
     this.write('overflowWrap', 'overflow-wrap', value);
@@ -4362,7 +4035,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overflow-x
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.overflowX("inherit"));
    */
   overflowX(value: PropertyInput<'overflowX', T>): this {
     this.write('overflowX', 'overflow-x', value);
@@ -4384,7 +4056,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overflow-y
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.overflowY("inherit"));
    */
   overflowY(value: PropertyInput<'overflowY', T>): this {
     this.write('overflowY', 'overflow-y', value);
@@ -4397,7 +4068,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overlay
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.overlay("inherit"));
    */
   overlay(value: PropertyInput<'overlay', T>): this {
     this.write('overlay', 'overlay', value);
@@ -4417,7 +4087,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overscroll-behavior
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.overscrollBehavior("inherit"));
    */
   overscrollBehavior(value: PropertyInput<'overscrollBehavior', T>): this {
     this.write('overscrollBehavior', 'overscroll-behavior', value);
@@ -4430,7 +4099,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overscroll-behavior-block
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.overscrollBehaviorBlock("inherit"));
    */
   overscrollBehaviorBlock(value: PropertyInput<'overscrollBehaviorBlock', T>): this {
     this.write('overscrollBehaviorBlock', 'overscroll-behavior-block', value);
@@ -4443,7 +4111,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overscroll-behavior-inline
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.overscrollBehaviorInline("inherit"));
    */
   overscrollBehaviorInline(value: PropertyInput<'overscrollBehaviorInline', T>): this {
     this.write('overscrollBehaviorInline', 'overscroll-behavior-inline', value);
@@ -4456,7 +4123,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overscroll-behavior-x
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.overscrollBehaviorX("inherit"));
    */
   overscrollBehaviorX(value: PropertyInput<'overscrollBehaviorX', T>): this {
     this.write('overscrollBehaviorX', 'overscroll-behavior-x', value);
@@ -4469,7 +4135,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overscroll-behavior-y
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.overscrollBehaviorY("inherit"));
    */
   overscrollBehaviorY(value: PropertyInput<'overscrollBehaviorY', T>): this {
     this.write('overscrollBehaviorY', 'overscroll-behavior-y', value);
@@ -4484,7 +4149,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/padding
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.padding("inherit"));
    */
   padding(value: PropertyInput<'padding', T>): this {
     this.write('padding', 'padding', value);
@@ -4495,7 +4159,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/padding-block
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.paddingBlock("inherit"));
    */
   paddingBlock(value: PropertyInput<'paddingBlock', T>): this {
     this.write('paddingBlock', 'padding-block', value);
@@ -4508,7 +4171,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/padding-block-end
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.paddingBlockEnd("inherit"));
    */
   paddingBlockEnd(value: PropertyInput<'paddingBlockEnd', T>): this {
     this.write('paddingBlockEnd', 'padding-block-end', value);
@@ -4521,7 +4183,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/padding-block-start
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.paddingBlockStart("inherit"));
    */
   paddingBlockStart(value: PropertyInput<'paddingBlockStart', T>): this {
     this.write('paddingBlockStart', 'padding-block-start', value);
@@ -4534,7 +4195,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/padding-bottom
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.paddingBottom("inherit"));
    */
   paddingBottom(value: PropertyInput<'paddingBottom', T>): this {
     this.write('paddingBottom', 'padding-bottom', value);
@@ -4545,7 +4205,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/padding-inline
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.paddingInline("inherit"));
    */
   paddingInline(value: PropertyInput<'paddingInline', T>): this {
     this.write('paddingInline', 'padding-inline', value);
@@ -4558,7 +4217,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/padding-inline-end
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.paddingInlineEnd("inherit"));
    */
   paddingInlineEnd(value: PropertyInput<'paddingInlineEnd', T>): this {
     this.write('paddingInlineEnd', 'padding-inline-end', value);
@@ -4571,7 +4229,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/padding-inline-start
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.paddingInlineStart("inherit"));
    */
   paddingInlineStart(value: PropertyInput<'paddingInlineStart', T>): this {
     this.write('paddingInlineStart', 'padding-inline-start', value);
@@ -4584,7 +4241,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/padding-left
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.paddingLeft("inherit"));
    */
   paddingLeft(value: PropertyInput<'paddingLeft', T>): this {
     this.write('paddingLeft', 'padding-left', value);
@@ -4597,7 +4253,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/padding-right
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.paddingRight("inherit"));
    */
   paddingRight(value: PropertyInput<'paddingRight', T>): this {
     this.write('paddingRight', 'padding-right', value);
@@ -4610,7 +4265,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/padding-top
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.paddingTop("inherit"));
    */
   paddingTop(value: PropertyInput<'paddingTop', T>): this {
     this.write('paddingTop', 'padding-top', value);
@@ -4623,7 +4277,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/page
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.page("inherit"));
    */
   page(value: PropertyInput<'page', T>): this {
     this.write('page', 'page', value);
@@ -4634,7 +4287,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/paint-order
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.paintOrder("inherit"));
    */
   paintOrder(value: PropertyInput<'paintOrder', T>): this {
     this.write('paintOrder', 'paint-order', value);
@@ -4647,7 +4299,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/perspective
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.perspective("inherit"));
    */
   perspective(value: PropertyInput<'perspective', T>): this {
     this.write('perspective', 'perspective', value);
@@ -4660,7 +4311,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/perspective-origin
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.perspectiveOrigin("inherit"));
    */
   perspectiveOrigin(value: PropertyInput<'perspectiveOrigin', T>): this {
     this.write('perspectiveOrigin', 'perspective-origin', value);
@@ -4671,7 +4321,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/place-content
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.placeContent("inherit"));
    */
   placeContent(value: PropertyInput<'placeContent', T>): this {
     this.write('placeContent', 'place-content', value);
@@ -4682,7 +4331,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/place-items
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.placeItems("inherit"));
    */
   placeItems(value: PropertyInput<'placeItems', T>): this {
     this.write('placeItems', 'place-items', value);
@@ -4693,7 +4341,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/place-self
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.placeSelf("inherit"));
    */
   placeSelf(value: PropertyInput<'placeSelf', T>): this {
     this.write('placeSelf', 'place-self', value);
@@ -4712,7 +4359,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/pointer-events
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.pointerEvents("inherit"));
    */
   pointerEvents(value: PropertyInput<'pointerEvents', T>): this {
     this.write('pointerEvents', 'pointer-events', value);
@@ -4736,7 +4382,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.position("inherit"));
    */
   position(value: PropertyInput<'position', T>): this {
     this.write('position', 'position', value);
@@ -4749,7 +4394,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-anchor
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.positionAnchor("inherit"));
    */
   positionAnchor(value: PropertyInput<'positionAnchor', T>): this {
     this.write('positionAnchor', 'position-anchor', value);
@@ -4762,7 +4406,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-area
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.positionArea("inherit"));
    */
   positionArea(value: PropertyInput<'positionArea', T>): this {
     this.write('positionArea', 'position-area', value);
@@ -4773,7 +4416,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-try
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.positionTry("inherit"));
    */
   positionTry(value: PropertyInput<'positionTry', T>): this {
     this.write('positionTry', 'position-try', value);
@@ -4786,7 +4428,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-try-fallbacks
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.positionTryFallbacks("inherit"));
    */
   positionTryFallbacks(value: PropertyInput<'positionTryFallbacks', T>): this {
     this.write('positionTryFallbacks', 'position-try-fallbacks', value);
@@ -4799,7 +4440,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-try-order
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.positionTryOrder("inherit"));
    */
   positionTryOrder(value: PropertyInput<'positionTryOrder', T>): this {
     this.write('positionTryOrder', 'position-try-order', value);
@@ -4812,7 +4452,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-visibility
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.positionVisibility("inherit"));
    */
   positionVisibility(value: PropertyInput<'positionVisibility', T>): this {
     this.write('positionVisibility', 'position-visibility', value);
@@ -4825,7 +4464,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/print-color-adjust
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.printColorAdjust("inherit"));
    */
   printColorAdjust(value: PropertyInput<'printColorAdjust', T>): this {
     this.write('printColorAdjust', 'print-color-adjust', value);
@@ -4836,7 +4474,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/quotes
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.quotes("inherit"));
    */
   quotes(value: PropertyInput<'quotes', T>): this {
     this.write('quotes', 'quotes', value);
@@ -4849,7 +4486,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/r
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.r("inherit"));
    */
   r(value: PropertyInput<'r', T>): this {
     this.write('r', 'r', value);
@@ -4862,7 +4498,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/resize
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.resize("inherit"));
    */
   resize(value: PropertyInput<'resize', T>): this {
     this.write('resize', 'resize', value);
@@ -4875,7 +4510,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/right
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.right("inherit"));
    */
   right(value: PropertyInput<'right', T>): this {
     this.write('right', 'right', value);
@@ -4888,7 +4522,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/rotate
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.rotate("inherit"));
    */
   rotate(value: PropertyInput<'rotate', T>): this {
     this.write('rotate', 'rotate', value);
@@ -4901,7 +4534,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/row-gap
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.rowGap("inherit"));
    */
   rowGap(value: PropertyInput<'rowGap', T>): this {
     this.write('rowGap', 'row-gap', value);
@@ -4914,7 +4546,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/ruby-align
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.rubyAlign("inherit"));
    */
   rubyAlign(value: PropertyInput<'rubyAlign', T>): this {
     this.write('rubyAlign', 'ruby-align', value);
@@ -4927,7 +4558,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/ruby-merge
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.rubyMerge("inherit"));
    */
   rubyMerge(value: PropertyInput<'rubyMerge', T>): this {
     this.write('rubyMerge', 'ruby-merge', value);
@@ -4940,7 +4570,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/ruby-overhang
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.rubyOverhang("inherit"));
    */
   rubyOverhang(value: PropertyInput<'rubyOverhang', T>): this {
     this.write('rubyOverhang', 'ruby-overhang', value);
@@ -4953,7 +4582,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/ruby-position
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.rubyPosition("inherit"));
    */
   rubyPosition(value: PropertyInput<'rubyPosition', T>): this {
     this.write('rubyPosition', 'ruby-position', value);
@@ -4966,7 +4594,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/rx
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.rx("inherit"));
    */
   rx(value: PropertyInput<'rx', T>): this {
     this.write('rx', 'rx', value);
@@ -4979,7 +4606,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/ry
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.ry("inherit"));
    */
   ry(value: PropertyInput<'ry', T>): this {
     this.write('ry', 'ry', value);
@@ -4992,7 +4618,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scale
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scale("inherit"));
    */
   scale(value: PropertyInput<'scale', T>): this {
     this.write('scale', 'scale', value);
@@ -5009,7 +4634,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-behavior
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollBehavior("inherit"));
    */
   scrollBehavior(value: PropertyInput<'scrollBehavior', T>): this {
     this.write('scrollBehavior', 'scroll-behavior', value);
@@ -5022,7 +4646,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-initial-target
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollInitialTarget("inherit"));
    */
   scrollInitialTarget(value: PropertyInput<'scrollInitialTarget', T>): this {
     this.write('scrollInitialTarget', 'scroll-initial-target', value);
@@ -5033,7 +4656,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollMargin("inherit"));
    */
   scrollMargin(value: PropertyInput<'scrollMargin', T>): this {
     this.write('scrollMargin', 'scroll-margin', value);
@@ -5044,7 +4666,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-block
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollMarginBlock("inherit"));
    */
   scrollMarginBlock(value: PropertyInput<'scrollMarginBlock', T>): this {
     this.write('scrollMarginBlock', 'scroll-margin-block', value);
@@ -5057,7 +4678,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-block-end
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollMarginBlockEnd("inherit"));
    */
   scrollMarginBlockEnd(value: PropertyInput<'scrollMarginBlockEnd', T>): this {
     this.write('scrollMarginBlockEnd', 'scroll-margin-block-end', value);
@@ -5070,7 +4690,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-block-start
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollMarginBlockStart("inherit"));
    */
   scrollMarginBlockStart(value: PropertyInput<'scrollMarginBlockStart', T>): this {
     this.write('scrollMarginBlockStart', 'scroll-margin-block-start', value);
@@ -5083,7 +4702,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-bottom
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollMarginBottom("inherit"));
    */
   scrollMarginBottom(value: PropertyInput<'scrollMarginBottom', T>): this {
     this.write('scrollMarginBottom', 'scroll-margin-bottom', value);
@@ -5094,7 +4712,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-inline
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollMarginInline("inherit"));
    */
   scrollMarginInline(value: PropertyInput<'scrollMarginInline', T>): this {
     this.write('scrollMarginInline', 'scroll-margin-inline', value);
@@ -5107,7 +4724,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-inline-end
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollMarginInlineEnd("inherit"));
    */
   scrollMarginInlineEnd(value: PropertyInput<'scrollMarginInlineEnd', T>): this {
     this.write('scrollMarginInlineEnd', 'scroll-margin-inline-end', value);
@@ -5120,7 +4736,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-inline-start
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollMarginInlineStart("inherit"));
    */
   scrollMarginInlineStart(value: PropertyInput<'scrollMarginInlineStart', T>): this {
     this.write('scrollMarginInlineStart', 'scroll-margin-inline-start', value);
@@ -5133,7 +4748,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-left
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollMarginLeft("inherit"));
    */
   scrollMarginLeft(value: PropertyInput<'scrollMarginLeft', T>): this {
     this.write('scrollMarginLeft', 'scroll-margin-left', value);
@@ -5146,7 +4760,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-right
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollMarginRight("inherit"));
    */
   scrollMarginRight(value: PropertyInput<'scrollMarginRight', T>): this {
     this.write('scrollMarginRight', 'scroll-margin-right', value);
@@ -5159,7 +4772,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-top
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollMarginTop("inherit"));
    */
   scrollMarginTop(value: PropertyInput<'scrollMarginTop', T>): this {
     this.write('scrollMarginTop', 'scroll-margin-top', value);
@@ -5170,7 +4782,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-padding
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollPadding("inherit"));
    */
   scrollPadding(value: PropertyInput<'scrollPadding', T>): this {
     this.write('scrollPadding', 'scroll-padding', value);
@@ -5181,7 +4792,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-padding-block
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollPaddingBlock("inherit"));
    */
   scrollPaddingBlock(value: PropertyInput<'scrollPaddingBlock', T>): this {
     this.write('scrollPaddingBlock', 'scroll-padding-block', value);
@@ -5194,7 +4804,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-padding-block-end
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollPaddingBlockEnd("inherit"));
    */
   scrollPaddingBlockEnd(value: PropertyInput<'scrollPaddingBlockEnd', T>): this {
     this.write('scrollPaddingBlockEnd', 'scroll-padding-block-end', value);
@@ -5207,7 +4816,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-padding-block-start
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollPaddingBlockStart("inherit"));
    */
   scrollPaddingBlockStart(value: PropertyInput<'scrollPaddingBlockStart', T>): this {
     this.write('scrollPaddingBlockStart', 'scroll-padding-block-start', value);
@@ -5220,7 +4828,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-padding-bottom
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollPaddingBottom("inherit"));
    */
   scrollPaddingBottom(value: PropertyInput<'scrollPaddingBottom', T>): this {
     this.write('scrollPaddingBottom', 'scroll-padding-bottom', value);
@@ -5231,7 +4838,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-padding-inline
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollPaddingInline("inherit"));
    */
   scrollPaddingInline(value: PropertyInput<'scrollPaddingInline', T>): this {
     this.write('scrollPaddingInline', 'scroll-padding-inline', value);
@@ -5244,7 +4850,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-padding-inline-end
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollPaddingInlineEnd("inherit"));
    */
   scrollPaddingInlineEnd(value: PropertyInput<'scrollPaddingInlineEnd', T>): this {
     this.write('scrollPaddingInlineEnd', 'scroll-padding-inline-end', value);
@@ -5257,7 +4862,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-padding-inline-start
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollPaddingInlineStart("inherit"));
    */
   scrollPaddingInlineStart(value: PropertyInput<'scrollPaddingInlineStart', T>): this {
     this.write('scrollPaddingInlineStart', 'scroll-padding-inline-start', value);
@@ -5270,7 +4874,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-padding-left
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollPaddingLeft("inherit"));
    */
   scrollPaddingLeft(value: PropertyInput<'scrollPaddingLeft', T>): this {
     this.write('scrollPaddingLeft', 'scroll-padding-left', value);
@@ -5283,7 +4886,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-padding-right
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollPaddingRight("inherit"));
    */
   scrollPaddingRight(value: PropertyInput<'scrollPaddingRight', T>): this {
     this.write('scrollPaddingRight', 'scroll-padding-right', value);
@@ -5296,7 +4898,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-padding-top
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollPaddingTop("inherit"));
    */
   scrollPaddingTop(value: PropertyInput<'scrollPaddingTop', T>): this {
     this.write('scrollPaddingTop', 'scroll-padding-top', value);
@@ -5309,7 +4910,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-snap-align
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollSnapAlign("inherit"));
    */
   scrollSnapAlign(value: PropertyInput<'scrollSnapAlign', T>): this {
     this.write('scrollSnapAlign', 'scroll-snap-align', value);
@@ -5320,7 +4920,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollSnapMargin("inherit"));
    */
   scrollSnapMargin(value: PropertyInput<'scrollSnapMargin', T>): this {
     this.write('scrollSnapMargin', 'scroll-snap-margin', value);
@@ -5333,7 +4932,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-bottom
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollSnapMarginBottom("inherit"));
    */
   scrollSnapMarginBottom(value: PropertyInput<'scrollSnapMarginBottom', T>): this {
     this.write('scrollSnapMarginBottom', 'scroll-snap-margin-bottom', value);
@@ -5346,7 +4944,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-left
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollSnapMarginLeft("inherit"));
    */
   scrollSnapMarginLeft(value: PropertyInput<'scrollSnapMarginLeft', T>): this {
     this.write('scrollSnapMarginLeft', 'scroll-snap-margin-left', value);
@@ -5359,7 +4956,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-right
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollSnapMarginRight("inherit"));
    */
   scrollSnapMarginRight(value: PropertyInput<'scrollSnapMarginRight', T>): this {
     this.write('scrollSnapMarginRight', 'scroll-snap-margin-right', value);
@@ -5372,7 +4968,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-top
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollSnapMarginTop("inherit"));
    */
   scrollSnapMarginTop(value: PropertyInput<'scrollSnapMarginTop', T>): this {
     this.write('scrollSnapMarginTop', 'scroll-snap-margin-top', value);
@@ -5385,7 +4980,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-snap-stop
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollSnapStop("inherit"));
    */
   scrollSnapStop(value: PropertyInput<'scrollSnapStop', T>): this {
     this.write('scrollSnapStop', 'scroll-snap-stop', value);
@@ -5400,7 +4994,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-snap-type
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollSnapType("inherit"));
    */
   scrollSnapType(value: PropertyInput<'scrollSnapType', T>): this {
     this.write('scrollSnapType', 'scroll-snap-type', value);
@@ -5411,7 +5004,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-timeline
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollTimeline("inherit"));
    */
   scrollTimeline(value: PropertyInput<'scrollTimeline', T>): this {
     this.write('scrollTimeline', 'scroll-timeline', value);
@@ -5424,7 +5016,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-timeline-axis
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollTimelineAxis("inherit"));
    */
   scrollTimelineAxis(value: PropertyInput<'scrollTimelineAxis', T>): this {
     this.write('scrollTimelineAxis', 'scroll-timeline-axis', value);
@@ -5437,7 +5028,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-timeline-name
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollTimelineName("inherit"));
    */
   scrollTimelineName(value: PropertyInput<'scrollTimelineName', T>): this {
     this.write('scrollTimelineName', 'scroll-timeline-name', value);
@@ -5450,7 +5040,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scrollbar-color
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollbarColor("inherit"));
    */
   scrollbarColor(value: PropertyInput<'scrollbarColor', T>): this {
     this.write('scrollbarColor', 'scrollbar-color', value);
@@ -5463,7 +5052,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scrollbar-gutter
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollbarGutter("inherit"));
    */
   scrollbarGutter(value: PropertyInput<'scrollbarGutter', T>): this {
     this.write('scrollbarGutter', 'scrollbar-gutter', value);
@@ -5476,7 +5064,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scrollbar-width
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.scrollbarWidth("inherit"));
    */
   scrollbarWidth(value: PropertyInput<'scrollbarWidth', T>): this {
     this.write('scrollbarWidth', 'scrollbar-width', value);
@@ -5489,7 +5076,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/shape-image-threshold
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.shapeImageThreshold("inherit"));
    */
   shapeImageThreshold(value: PropertyInput<'shapeImageThreshold', T>): this {
     this.write('shapeImageThreshold', 'shape-image-threshold', value);
@@ -5502,7 +5088,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/shape-margin
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.shapeMargin("inherit"));
    */
   shapeMargin(value: PropertyInput<'shapeMargin', T>): this {
     this.write('shapeMargin', 'shape-margin', value);
@@ -5515,7 +5100,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/shape-outside
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.shapeOutside("inherit"));
    */
   shapeOutside(value: PropertyInput<'shapeOutside', T>): this {
     this.write('shapeOutside', 'shape-outside', value);
@@ -5526,7 +5110,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/shape-rendering
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.shapeRendering("inherit"));
    */
   shapeRendering(value: PropertyInput<'shapeRendering', T>): this {
     this.write('shapeRendering', 'shape-rendering', value);
@@ -5539,7 +5122,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/speak-as
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.speakAs("inherit"));
    */
   speakAs(value: PropertyInput<'speakAs', T>): this {
     this.write('speakAs', 'speak-as', value);
@@ -5550,7 +5132,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stop-color
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.stopColor("inherit"));
    */
   stopColor(value: PropertyInput<'stopColor', T>): this {
     this.write('stopColor', 'stop-color', value);
@@ -5561,7 +5142,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stop-opacity
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.stopOpacity("inherit"));
    */
   stopOpacity(value: PropertyInput<'stopOpacity', T>): this {
     this.write('stopOpacity', 'stop-opacity', value);
@@ -5572,7 +5152,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stroke
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.stroke("inherit"));
    */
   stroke(value: PropertyInput<'stroke', T>): this {
     this.write('stroke', 'stroke', value);
@@ -5585,7 +5164,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stroke-color
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.strokeColor("inherit"));
    */
   strokeColor(value: PropertyInput<'strokeColor', T>): this {
     this.write('strokeColor', 'stroke-color', value);
@@ -5596,7 +5174,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stroke-dasharray
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.strokeDasharray("inherit"));
    */
   strokeDasharray(value: PropertyInput<'strokeDasharray', T>): this {
     this.write('strokeDasharray', 'stroke-dasharray', value);
@@ -5607,7 +5184,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stroke-dashoffset
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.strokeDashoffset("inherit"));
    */
   strokeDashoffset(value: PropertyInput<'strokeDashoffset', T>): this {
     this.write('strokeDashoffset', 'stroke-dashoffset', value);
@@ -5618,7 +5194,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stroke-linecap
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.strokeLinecap("inherit"));
    */
   strokeLinecap(value: PropertyInput<'strokeLinecap', T>): this {
     this.write('strokeLinecap', 'stroke-linecap', value);
@@ -5629,7 +5204,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stroke-linejoin
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.strokeLinejoin("inherit"));
    */
   strokeLinejoin(value: PropertyInput<'strokeLinejoin', T>): this {
     this.write('strokeLinejoin', 'stroke-linejoin', value);
@@ -5640,7 +5214,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stroke-miterlimit
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.strokeMiterlimit("inherit"));
    */
   strokeMiterlimit(value: PropertyInput<'strokeMiterlimit', T>): this {
     this.write('strokeMiterlimit', 'stroke-miterlimit', value);
@@ -5651,7 +5224,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stroke-opacity
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.strokeOpacity("inherit"));
    */
   strokeOpacity(value: PropertyInput<'strokeOpacity', T>): this {
     this.write('strokeOpacity', 'stroke-opacity', value);
@@ -5662,7 +5234,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stroke-width
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.strokeWidth("inherit"));
    */
   strokeWidth(value: PropertyInput<'strokeWidth', T>): this {
     this.write('strokeWidth', 'stroke-width', value);
@@ -5675,7 +5246,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/tab-size
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.tabSize("inherit"));
    */
   tabSize(value: PropertyInput<'tabSize', T>): this {
     this.write('tabSize', 'tab-size', value);
@@ -5688,7 +5258,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/table-layout
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.tableLayout("inherit"));
    */
   tableLayout(value: PropertyInput<'tableLayout', T>): this {
     this.write('tableLayout', 'table-layout', value);
@@ -5711,7 +5280,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-align
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textAlign("inherit"));
    */
   textAlign(value: PropertyInput<'textAlign', T>): this {
     this.write('textAlign', 'text-align', value);
@@ -5724,7 +5292,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-align-last
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textAlignLast("inherit"));
    */
   textAlignLast(value: PropertyInput<'textAlignLast', T>): this {
     this.write('textAlignLast', 'text-align-last', value);
@@ -5735,7 +5302,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-anchor
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textAnchor("inherit"));
    */
   textAnchor(value: PropertyInput<'textAnchor', T>): this {
     this.write('textAnchor', 'text-anchor', value);
@@ -5748,7 +5314,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-autospace
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textAutospace("inherit"));
    */
   textAutospace(value: PropertyInput<'textAutospace', T>): this {
     this.write('textAutospace', 'text-autospace', value);
@@ -5761,7 +5326,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-box
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textBox("inherit"));
    */
   textBox(value: PropertyInput<'textBox', T>): this {
     this.write('textBox', 'text-box', value);
@@ -5774,7 +5338,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-box-edge
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textBoxEdge("inherit"));
    */
   textBoxEdge(value: PropertyInput<'textBoxEdge', T>): this {
     this.write('textBoxEdge', 'text-box-edge', value);
@@ -5787,7 +5350,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-box-trim
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textBoxTrim("inherit"));
    */
   textBoxTrim(value: PropertyInput<'textBoxTrim', T>): this {
     this.write('textBoxTrim', 'text-box-trim', value);
@@ -5800,7 +5362,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-combine-upright
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textCombineUpright("inherit"));
    */
   textCombineUpright(value: PropertyInput<'textCombineUpright', T>): this {
     this.write('textCombineUpright', 'text-combine-upright', value);
@@ -5811,7 +5372,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-decoration
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textDecoration("inherit"));
    */
   textDecoration(value: PropertyInput<'textDecoration', T>): this {
     this.write('textDecoration', 'text-decoration', value);
@@ -5824,7 +5384,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-decoration-color
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textDecorationColor("inherit"));
    */
   textDecorationColor(value: PropertyInput<'textDecorationColor', T>): this {
     this.write('textDecorationColor', 'text-decoration-color', value);
@@ -5837,7 +5396,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-decoration-line
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textDecorationLine("inherit"));
    */
   textDecorationLine(value: PropertyInput<'textDecorationLine', T>): this {
     this.write('textDecorationLine', 'text-decoration-line', value);
@@ -5850,7 +5408,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-decoration-skip
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textDecorationSkip("inherit"));
    */
   textDecorationSkip(value: PropertyInput<'textDecorationSkip', T>): this {
     this.write('textDecorationSkip', 'text-decoration-skip', value);
@@ -5863,7 +5420,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-decoration-skip-ink
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textDecorationSkipInk("inherit"));
    */
   textDecorationSkipInk(value: PropertyInput<'textDecorationSkipInk', T>): this {
     this.write('textDecorationSkipInk', 'text-decoration-skip-ink', value);
@@ -5876,7 +5432,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-decoration-style
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textDecorationStyle("inherit"));
    */
   textDecorationStyle(value: PropertyInput<'textDecorationStyle', T>): this {
     this.write('textDecorationStyle', 'text-decoration-style', value);
@@ -5889,7 +5444,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-decoration-thickness
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textDecorationThickness("inherit"));
    */
   textDecorationThickness(value: PropertyInput<'textDecorationThickness', T>): this {
     this.write('textDecorationThickness', 'text-decoration-thickness', value);
@@ -5900,7 +5454,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-emphasis
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textEmphasis("inherit"));
    */
   textEmphasis(value: PropertyInput<'textEmphasis', T>): this {
     this.write('textEmphasis', 'text-emphasis', value);
@@ -5913,7 +5466,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-emphasis-color
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textEmphasisColor("inherit"));
    */
   textEmphasisColor(value: PropertyInput<'textEmphasisColor', T>): this {
     this.write('textEmphasisColor', 'text-emphasis-color', value);
@@ -5926,7 +5478,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-emphasis-position
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textEmphasisPosition("inherit"));
    */
   textEmphasisPosition(value: PropertyInput<'textEmphasisPosition', T>): this {
     this.write('textEmphasisPosition', 'text-emphasis-position', value);
@@ -5939,7 +5490,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-emphasis-style
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textEmphasisStyle("inherit"));
    */
   textEmphasisStyle(value: PropertyInput<'textEmphasisStyle', T>): this {
     this.write('textEmphasisStyle', 'text-emphasis-style', value);
@@ -5952,7 +5502,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-indent
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textIndent("inherit"));
    */
   textIndent(value: PropertyInput<'textIndent', T>): this {
     this.write('textIndent', 'text-indent', value);
@@ -5965,7 +5514,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-justify
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textJustify("inherit"));
    */
   textJustify(value: PropertyInput<'textJustify', T>): this {
     this.write('textJustify', 'text-justify', value);
@@ -5978,7 +5526,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-orientation
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textOrientation("inherit"));
    */
   textOrientation(value: PropertyInput<'textOrientation', T>): this {
     this.write('textOrientation', 'text-orientation', value);
@@ -5999,7 +5546,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-overflow
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textOverflow("inherit"));
    */
   textOverflow(value: PropertyInput<'textOverflow', T>): this {
     this.write('textOverflow', 'text-overflow', value);
@@ -6010,7 +5556,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-rendering
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textRendering("inherit"));
    */
   textRendering(value: PropertyInput<'textRendering', T>): this {
     this.write('textRendering', 'text-rendering', value);
@@ -6023,7 +5568,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-shadow
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textShadow("inherit"));
    */
   textShadow(value: PropertyInput<'textShadow', T>): this {
     this.write('textShadow', 'text-shadow', value);
@@ -6036,7 +5580,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-size-adjust
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textSizeAdjust("inherit"));
    */
   textSizeAdjust(value: PropertyInput<'textSizeAdjust', T>): this {
     this.write('textSizeAdjust', 'text-size-adjust', value);
@@ -6049,7 +5592,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-spacing-trim
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textSpacingTrim("inherit"));
    */
   textSpacingTrim(value: PropertyInput<'textSpacingTrim', T>): this {
     this.write('textSpacingTrim', 'text-spacing-trim', value);
@@ -6062,7 +5604,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-transform
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textTransform("inherit"));
    */
   textTransform(value: PropertyInput<'textTransform', T>): this {
     this.write('textTransform', 'text-transform', value);
@@ -6075,7 +5616,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-underline-offset
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textUnderlineOffset("inherit"));
    */
   textUnderlineOffset(value: PropertyInput<'textUnderlineOffset', T>): this {
     this.write('textUnderlineOffset', 'text-underline-offset', value);
@@ -6088,7 +5628,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-underline-position
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textUnderlinePosition("inherit"));
    */
   textUnderlinePosition(value: PropertyInput<'textUnderlinePosition', T>): this {
     this.write('textUnderlinePosition', 'text-underline-position', value);
@@ -6101,7 +5640,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-wrap
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textWrap("inherit"));
    */
   textWrap(value: PropertyInput<'textWrap', T>): this {
     this.write('textWrap', 'text-wrap', value);
@@ -6114,7 +5652,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-wrap-mode
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textWrapMode("inherit"));
    */
   textWrapMode(value: PropertyInput<'textWrapMode', T>): this {
     this.write('textWrapMode', 'text-wrap-mode', value);
@@ -6127,7 +5664,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-wrap-style
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.textWrapStyle("inherit"));
    */
   textWrapStyle(value: PropertyInput<'textWrapStyle', T>): this {
     this.write('textWrapStyle', 'text-wrap-style', value);
@@ -6140,7 +5676,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/timeline-scope
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.timelineScope("inherit"));
    */
   timelineScope(value: PropertyInput<'timelineScope', T>): this {
     this.write('timelineScope', 'timeline-scope', value);
@@ -6153,7 +5688,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/top
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.top("inherit"));
    */
   top(value: PropertyInput<'top', T>): this {
     this.write('top', 'top', value);
@@ -6176,7 +5710,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/touch-action
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.touchAction("inherit"));
    */
   touchAction(value: PropertyInput<'touchAction', T>): this {
     this.write('touchAction', 'touch-action', value);
@@ -6193,7 +5726,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transform
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.transform("inherit"));
    */
   transform(value: PropertyInput<'transform', T>): this {
     this.write('transform', 'transform', value);
@@ -6206,7 +5738,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transform-box
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.transformBox("inherit"));
    */
   transformBox(value: PropertyInput<'transformBox', T>): this {
     this.write('transformBox', 'transform-box', value);
@@ -6219,7 +5750,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transform-origin
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.transformOrigin("inherit"));
    */
   transformOrigin(value: PropertyInput<'transformOrigin', T>): this {
     this.write('transformOrigin', 'transform-origin', value);
@@ -6232,7 +5762,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transform-style
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.transformStyle("inherit"));
    */
   transformStyle(value: PropertyInput<'transformStyle', T>): this {
     this.write('transformStyle', 'transform-style', value);
@@ -6247,7 +5776,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transition
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.transition("inherit"));
    */
   transition(value: PropertyInput<'transition', T>): this {
     this.write('transition', 'transition', value);
@@ -6260,7 +5788,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transition-behavior
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.transitionBehavior("inherit"));
    */
   transitionBehavior(value: PropertyInput<'transitionBehavior', T>): this {
     this.write('transitionBehavior', 'transition-behavior', value);
@@ -6273,7 +5800,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transition-delay
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.transitionDelay("inherit"));
    */
   transitionDelay(value: PropertyInput<'transitionDelay', T>): this {
     this.write('transitionDelay', 'transition-delay', value);
@@ -6286,7 +5812,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transition-duration
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.transitionDuration("inherit"));
    */
   transitionDuration(value: PropertyInput<'transitionDuration', T>): this {
     this.write('transitionDuration', 'transition-duration', value);
@@ -6297,7 +5822,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transition-property
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.transitionProperty("inherit"));
    */
   transitionProperty(value: PropertyInput<'transitionProperty', T>): this {
     this.write('transitionProperty', 'transition-property', value);
@@ -6310,7 +5834,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transition-timing-function
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.transitionTimingFunction("inherit"));
    */
   transitionTimingFunction(value: PropertyInput<'transitionTimingFunction', T>): this {
     this.write('transitionTimingFunction', 'transition-timing-function', value);
@@ -6323,7 +5846,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/translate
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.translate("inherit"));
    */
   translate(value: PropertyInput<'translate', T>): this {
     this.write('translate', 'translate', value);
@@ -6334,7 +5856,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/unicode-bidi
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.unicodeBidi("inherit"));
    */
   unicodeBidi(value: PropertyInput<'unicodeBidi', T>): this {
     this.write('unicodeBidi', 'unicode-bidi', value);
@@ -6355,7 +5876,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/user-select
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.userSelect("inherit"));
    */
   userSelect(value: PropertyInput<'userSelect', T>): this {
     this.write('userSelect', 'user-select', value);
@@ -6366,7 +5886,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/vector-effect
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.vectorEffect("inherit"));
    */
   vectorEffect(value: PropertyInput<'vectorEffect', T>): this {
     this.write('vectorEffect', 'vector-effect', value);
@@ -6379,7 +5898,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/vertical-align
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.verticalAlign("inherit"));
    */
   verticalAlign(value: PropertyInput<'verticalAlign', T>): this {
     this.write('verticalAlign', 'vertical-align', value);
@@ -6390,7 +5908,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/view-timeline
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.viewTimeline("inherit"));
    */
   viewTimeline(value: PropertyInput<'viewTimeline', T>): this {
     this.write('viewTimeline', 'view-timeline', value);
@@ -6403,7 +5920,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/view-timeline-axis
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.viewTimelineAxis("inherit"));
    */
   viewTimelineAxis(value: PropertyInput<'viewTimelineAxis', T>): this {
     this.write('viewTimelineAxis', 'view-timeline-axis', value);
@@ -6416,7 +5932,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/view-timeline-inset
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.viewTimelineInset("inherit"));
    */
   viewTimelineInset(value: PropertyInput<'viewTimelineInset', T>): this {
     this.write('viewTimelineInset', 'view-timeline-inset', value);
@@ -6429,7 +5944,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/view-timeline-name
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.viewTimelineName("inherit"));
    */
   viewTimelineName(value: PropertyInput<'viewTimelineName', T>): this {
     this.write('viewTimelineName', 'view-timeline-name', value);
@@ -6442,7 +5956,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/view-transition-class
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.viewTransitionClass("inherit"));
    */
   viewTransitionClass(value: PropertyInput<'viewTransitionClass', T>): this {
     this.write('viewTransitionClass', 'view-transition-class', value);
@@ -6455,7 +5968,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/view-transition-name
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.viewTransitionName("inherit"));
    */
   viewTransitionName(value: PropertyInput<'viewTransitionName', T>): this {
     this.write('viewTransitionName', 'view-transition-name', value);
@@ -6473,7 +5985,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/visibility
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.visibility("inherit"));
    */
   visibility(value: PropertyInput<'visibility', T>): this {
     this.write('visibility', 'visibility', value);
@@ -6496,7 +6007,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/white-space
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.whiteSpace("inherit"));
    */
   whiteSpace(value: PropertyInput<'whiteSpace', T>): this {
     this.write('whiteSpace', 'white-space', value);
@@ -6509,7 +6019,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/white-space-collapse
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.whiteSpaceCollapse("inherit"));
    */
   whiteSpaceCollapse(value: PropertyInput<'whiteSpaceCollapse', T>): this {
     this.write('whiteSpaceCollapse', 'white-space-collapse', value);
@@ -6522,7 +6031,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/widows
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.widows("inherit"));
    */
   widows(value: PropertyInput<'widows', T>): this {
     this.write('widows', 'widows', value);
@@ -6545,7 +6053,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/width
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.width("inherit"));
    */
   width(value: PropertyInput<'width', T>): this {
     this.write('width', 'width', value);
@@ -6560,7 +6067,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/will-change
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.willChange("inherit"));
    */
   willChange(value: PropertyInput<'willChange', T>): this {
     this.write('willChange', 'will-change', value);
@@ -6580,7 +6086,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/word-break
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.wordBreak("inherit"));
    */
   wordBreak(value: PropertyInput<'wordBreak', T>): this {
     this.write('wordBreak', 'word-break', value);
@@ -6591,7 +6096,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/word-spacing
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.wordSpacing("inherit"));
    */
   wordSpacing(value: PropertyInput<'wordSpacing', T>): this {
     this.write('wordSpacing', 'word-spacing', value);
@@ -6604,7 +6108,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/word-wrap
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.wordWrap("inherit"));
    */
   wordWrap(value: PropertyInput<'wordWrap', T>): this {
     this.write('wordWrap', 'word-wrap', value);
@@ -6615,7 +6118,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/writing-mode
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.writingMode("inherit"));
    */
   writingMode(value: PropertyInput<'writingMode', T>): this {
     this.write('writingMode', 'writing-mode', value);
@@ -6628,7 +6130,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/x
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.x("inherit"));
    */
   x(value: PropertyInput<'x', T>): this {
     this.write('x', 'x', value);
@@ -6641,7 +6142,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/y
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.y("inherit"));
    */
   y(value: PropertyInput<'y', T>): this {
     this.write('y', 'y', value);
@@ -6658,7 +6158,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/z-index
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.zIndex("inherit"));
    */
   zIndex(value: PropertyInput<'zIndex', T>): this {
     this.write('zIndex', 'z-index', value);
@@ -6671,7 +6170,6 @@ export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T>
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/zoom
    * @param value 当前属性值、主题 token 或 bx 绑定。
    * @returns 当前作者，支持连续调用其他属性方法。
-   * @example css(() => s.zoom("inherit"));
    */
   zoom(value: PropertyInput<'zoom', T>): this {
     this.write('zoom', 'zoom', value);

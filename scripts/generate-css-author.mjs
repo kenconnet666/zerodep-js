@@ -3,7 +3,12 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import prettier from 'prettier';
 import { parse } from '@babel/parser';
-import { propertyDocumentation, validatePropertyDocs } from './css-author-docs.mjs';
+import {
+  propertyDocumentation,
+  keywordDocumentation,
+  commonKeywordDocumentation,
+  validatePropertyDocs,
+} from './css-author-docs.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const input = resolve(root, 'packages/css/node_modules/csstype/index.d.ts');
@@ -111,6 +116,27 @@ const author = [
   '/** 真实方法作者；声明写入当前 css 收集范围，实例只保存主题来源。 */',
   'export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T> {',
 ];
+const commonGroups = ['Globals', 'NamedColor', 'SystemColor', 'DeprecatedSystemColor'].map(
+  (name) => {
+    const scope = name === 'Globals' ? '' : 'DataType';
+    const alias = aliases.get(scope ? scope + '.' + name : name);
+    return {
+      name,
+      type: name + 'Values',
+      values: new Set(valuesOf(alias.node.typeAnnotation, scope)),
+    };
+  },
+);
+const valueDeclarations = [];
+for (const { name, type, values } of commonGroups) {
+  valueDeclarations.push('interface ' + type + ' {');
+  for (const value of values)
+    valueDeclarations.push(
+      commonKeywordDocumentation(value, name),
+      'readonly ' + JSON.stringify(value) + ': ' + JSON.stringify(value) + ';',
+    );
+  valueDeclarations.push('}');
+}
 for (const name of names) {
   const item = properties.get(name);
   // 删除旧属性对象专属的调用示例；中文语义和 MDN 来源继续保留。
@@ -118,13 +144,40 @@ for (const name of names) {
     /\n \* @example[\s\S]*?(?=\n \* @|\n \*\/)/g,
     '',
   );
-  keywords.push(docs, 'readonly ' + name + ': Property.' + item.propertyType + ' | CssString;');
+  const values = [
+    ...new Set(valuesOf(item.type).filter((value) => typeof value === 'string')),
+  ].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+  const valueType = item.propertyType + 'Values';
+  const common = commonGroups.filter((group) =>
+    [...group.values].every((value) => values.includes(value)),
+  );
+  valueDeclarations.push(
+    'interface ' +
+      valueType +
+      (common.length ? ' extends ' + common.map((group) => group.type).join(', ') : '') +
+      ' {',
+  );
+  for (const value of values.filter((value) => !common.some((group) => group.values.has(value))))
+    valueDeclarations.push(
+      keywordDocumentation(name, item.cssName, value),
+      'readonly ' + JSON.stringify(value) + ': ' + JSON.stringify(value) + ';',
+    );
+  valueDeclarations.push('}');
+  // 字面量来自有文档的成员，数值边界仍由 csstype 决定；开放字符串不改变原契约。
+  keywords.push(
+    docs,
+    'readonly ' +
+      name +
+      ': keyof ' +
+      valueType +
+      ' | Exclude<Property.' +
+      item.propertyType +
+      ', string> | CssString;',
+  );
   author.push(
     docs.replace(
       ' */',
-      ' * @param value 当前属性值、主题 token 或 bx 绑定。\n * @returns 当前作者，支持连续调用其他属性方法。\n * @example css(() => s.' +
-        name +
-        '("inherit"));\n */',
+      ' * @param value 当前属性值、主题 token 或 bx 绑定。\n * @returns 当前作者，支持连续调用其他属性方法。\n */',
     ),
     name + '(value: PropertyInput<' + JSON.stringify(name) + ', T>): this {',
     'this.write(' + JSON.stringify(name) + ', ' + JSON.stringify(item.cssName) + ', value);',
@@ -141,6 +194,7 @@ keywords.push(
 );
 for (const name of names) keywords.push('readonly ' + name + ': EmptyTokens = empty;');
 keywords.push('}', 'export const systemKeywords = Object.freeze(new SystemKeywords());');
+keywords.push(...valueDeclarations);
 author.push('}');
 // 只保留去重后的原始关键字集合用于分类，不恢复属性作者对象或关键字成员 API。
 const groups = [],

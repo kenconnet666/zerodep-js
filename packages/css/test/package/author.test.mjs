@@ -59,9 +59,46 @@ void test('生成声明保留真实方法、属性类型、中文文档和链式
     assert.match(docs, /[\u4e00-\u9fff]/);
     assert.match(docs, /@param value/);
     assert.match(docs, /@returns/);
-    assert.match(docs, /@example/);
+    assert.doesNotMatch(docs, /@example css\(\(\) => s\./);
     assert.equal(member.returnType.typeAnnotation.type, 'TSThisType');
   }
+});
+
+void test('字符串关键字引用带文档的属性成员，公共词共享而同名属性含义保持独立', async () => {
+  const source = await readFile(
+    new URL('../../dist/generated/keywords.d.ts', import.meta.url),
+    'utf8',
+  );
+  const ast = parse(source, { sourceType: 'module', plugins: ['typescript'] });
+  const declarations = new Map(
+    ast.program.body.map((entry) => {
+      const node = entry.declaration ?? entry;
+      return [node.id?.name, node];
+    }),
+  );
+  const keywordValues = declarations.get('KeywordValues');
+  assert.equal(keywordValues.body.body.length, 502);
+  for (const member of keywordValues.body.body) {
+    const type = member.typeAnnotation.typeAnnotation.types.find(
+      (node) => node.type === 'TSTypeOperator' && node.operator === 'keyof',
+    );
+    assert.ok(declarations.has(type?.typeAnnotation.typeName.name), member.key.name);
+  }
+  const doc = (group, value) =>
+    declarations
+      .get(group)
+      .body.body.find((member) => (member.key.name ?? member.key.value) === value)
+      .leadingComments.map((comment) => comment.value)
+      .join('\n');
+  assert.match(doc('DisplayValues', 'inline-flex'), /创建行内级的 Flex 容器/);
+  assert.match(doc('DisplayValues', 'none'), /不生成元素及其后代的布局盒子/);
+  assert.match(doc('BackgroundImageValues', 'none'), /不绘制这一层背景图像/);
+  assert.match(doc('GlobalsValues', 'inherit'), /使用父元素该属性的计算值/);
+  assert.match(doc('NamedColorValues', 'red'), /CSS 命名颜色 red/);
+  assert.doesNotMatch(
+    await readFile(new URL('../../dist/generated/keywords.js', import.meta.url), 'utf8'),
+    /inline-flex|DisplayValues|NamedColorValues/,
+  );
 });
 
 for (const [property, value, safe] of [
@@ -150,7 +187,11 @@ void test('主题更新、父子作者和安全/特殊 token 转换', () => {
 
 void test('真实 TS7 检查属性输入、主题约束、绑定类型及 class 数组', async () => {
   const file = resolve('packages/css/test/package/__types_' + randomUUID() + '.tsx');
-  const source = `import{Css,SystemKeywords,css,bx,type CssValue}from'zerodep-js-css';import type{ClassValue}from'zerodep-js';
+  const source = `import{Css,SystemKeywords,css,bx,type CssValue,type CssString,type KeywordValues}from'zerodep-js-css';import type{ClassValue}from'zerodep-js';
+import type { Properties } from 'csstype';
+type OldValue<K extends keyof KeywordValues> = Exclude<Properties[K], undefined> | CssString;
+type Changed = { [K in keyof KeywordValues]: [KeywordValues[K]] extends [OldValue<K>] ? [OldValue<K>] extends [KeywordValues[K]] ? never : K : K }[keyof KeywordValues];
+const sameAcceptedValues: [Changed] extends [never] ? true : false = true; void sameAcceptedValues;
 class Theme extends SystemKeywords{override readonly color={_primary:'#123456'};override readonly gap={_sm:'4px'};}
 const s=new Css(new Theme());const result=css(()=>{s.color('_primary').width('12px').gap(bx('_sm')).opacity(bx(0.5));});
 const classes:ClassValue=[false,null,result,[undefined,'external']];void classes;
