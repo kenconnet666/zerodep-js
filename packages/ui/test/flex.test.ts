@@ -1,10 +1,9 @@
 import { expectCssValue } from './style-assertions.js';
 import { expect, it } from 'vitest';
 import { defineComponent, element, renderToString } from 'zerodep-js';
-
-import { css, createServerCssHost, withCssHost } from 'zerodep-js-css';
+import { css, createServerCssHost, withCssHost, Css } from 'zerodep-js-css';
 import { Provider, Flex } from '../dist/index.js';
-
+const _cssAuthor = new Css();
 it('Flex SSR 保留原生子项、字号继承与显式布局，不创建隐式分组语义', () => {
   const host = createServerCssHost();
   const App = defineComponent(() =>
@@ -14,11 +13,18 @@ it('Flex SSR 保留原生子项、字号继承与显式布局，不创建隐式�
         gap: '1em',
         size: '2vw',
         equal: true,
-        class: css('padding:3px;'),
+        class: css(() => {
+          _cssAuthor.padding('3px');
+        }),
         'data-part': 'custom',
         children: [
-          element('button', { children: '一' }),
-          element('a', { href: '/two', children: '二' }),
+          element('button', {
+            children: '一',
+          }),
+          element('a', {
+            href: '/two',
+            children: '二',
+          }),
         ],
       }),
     }),
@@ -30,8 +36,22 @@ it('Flex SSR 保留原生子项、字号继承与显式布局，不创建隐式�
   expect(html).toContain('<a href="/two">二</a>');
   expect(html).not.toContain('role=');
   expect(html).not.toContain('equal=');
-  expectCssValue({ html, css: host.cssText() }, 'flex-direction', 'column');
-  expectCssValue({ html, css: host.cssText() }, 'font-size', '2vw');
+  expectCssValue(
+    {
+      html,
+      css: host.cssText(),
+    },
+    'flex-direction',
+    'column',
+  );
+  expectCssValue(
+    {
+      html,
+      css: host.cssText(),
+    },
+    'font-size',
+    '2vw',
+  );
   expect(host.cssText()).toContain('flex:1 1 0;');
   expect(host.cssText()).not.toContain('data-ui-action');
   expect(host.cssText()).not.toContain('margin-inline-start');

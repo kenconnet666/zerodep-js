@@ -1,6 +1,14 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
-import type { CssInput, CssClassInput, CssClass } from '../util/author.js';
 import type { ServerCssHost } from './rules.js';
+import {
+  collectCss,
+  collectKeyframes,
+  collectGlobal,
+  collectTheme,
+  resolvePrograms,
+  type CssAuthor,
+  type ClassResolver,
+} from './program.js';
 
 const current = new AsyncLocalStorage<ServerCssHost>();
 
@@ -9,15 +17,18 @@ export function withCssHost<T>(host: ServerCssHost, render: () => T): T {
   return current.run(host, render);
 }
 
-export function css(...parts: CssClassInput[]): CssClass {
-  return requireHost().css(...parts);
-}
+const resolve: ClassResolver = (sources) => resolvePrograms(sources, requireHost());
+export const css = (build: Parameters<typeof collectCss>[0]) => collectCss(build, resolve);
+export const _themeStyle = (author: CssAuthor) => collectTheme(author, resolve);
 
 function requireHost(): ServerCssHost {
   const host = current.getStore();
   if (!host) throw new Error('CSS server host is unavailable.');
   return host;
 }
-export const keyframes = (...parts: CssInput[]): string => requireHost().keyframes(...parts);
-export const globalCss = (key: string, ...parts: CssInput[]): void =>
-  requireHost().globalCss(key, ...parts);
+export const keyframes = collectKeyframes;
+export const globalCss = (key: string, build?: Parameters<typeof collectGlobal>[0]): void => {
+  const host = requireHost();
+  if (build) host.globalCss(key, collectGlobal(build, host));
+  else host.globalCss(key);
+};

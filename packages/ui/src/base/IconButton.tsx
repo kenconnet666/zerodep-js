@@ -1,5 +1,4 @@
 import { _component, _derived, type JSX } from 'zerodep-js';
-import { css } from 'zerodep-js-css';
 import type { LucideIconData } from '@lucide/icons';
 import type { ButtonState } from './Button.js';
 import { ButtonBase } from './ButtonBase.js';
@@ -45,7 +44,7 @@ export const IconButton = _component(
         unavailable: disabled || loading,
       }),
     );
-    const style = css(
+    const style = _derived([
       _buttonStyle(s, {
         variant,
         color,
@@ -54,7 +53,7 @@ export const IconButton = _component(
         iconOnly: true,
       }),
       className,
-    );
+    ]);
     return (
       <ButtonBase
         {...rest}

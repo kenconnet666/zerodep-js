@@ -5,7 +5,15 @@ import {
   type CssRule,
   type ServerCssHost,
 } from './rules.js';
-import type { CssInput, CssClassInput, CssClass } from '../util/author.js';
+import {
+  collectCss,
+  collectKeyframes,
+  collectGlobal,
+  collectTheme,
+  resolvePrograms,
+  type CssAuthor,
+  type ClassResolver,
+} from './program.js';
 
 export interface BrowserCssOptions {
   nonce?: string;
@@ -76,7 +84,7 @@ function createHost(target: Document) {
           if (!warned && size >= config.warnAfter!) {
             warned = true;
             console.warn(
-              `[zerodep-css] ${size} rules registered. Inspect cssStats() and use implicit CSS variables for continuously changing values.`,
+              `[zerodep-css] ${size} rules registered. Inspect cssStats() and use bx for continuously changing values.`,
             );
           }
         },
@@ -113,17 +121,19 @@ function getHost(target: Document) {
 }
 
 /** 浏览器文档共享规则；每次调用只注册尚未出现的声明组合。 */
-export function css(...parts: CssClassInput[]): CssClass {
+const resolve: ClassResolver = (sources) => {
   if (typeof document === 'undefined') throw new Error('CSS browser host is unavailable.');
-  return getHost(document).registry.css(...parts);
-}
+  return resolvePrograms(sources, getHost(document).registry);
+};
+export const css = (build: Parameters<typeof collectCss>[0]) => collectCss(build, resolve);
+export const _themeStyle = (author: CssAuthor) => collectTheme(author, resolve);
 
-export const keyframes = (...parts: CssInput[]): string =>
-  getHost(document).registry.keyframes(...parts);
-export function globalCss(key: string, ...parts: CssInput[]): void {
+export const keyframes = collectKeyframes;
+export function globalCss(key: string, build?: Parameters<typeof collectGlobal>[0]): void {
   const host = getHost(document);
   if (host.globals.has(key) && !host.globals.get(key)!.isConnected) host.rebuild();
-  host.registry.globalCss(key, ...parts);
+  if (build) host.registry.globalCss(key, collectGlobal(build, host.registry));
+  else host.registry.globalCss(key);
 }
 
 /** 仅用于整个应用宿主退出；不能在任意子组件卸载时调用。 */

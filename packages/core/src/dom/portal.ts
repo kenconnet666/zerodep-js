@@ -15,6 +15,20 @@ import {
   type Render,
 } from './utils.js';
 import type { HydrationCursor } from './hydration.js';
+import {
+  _createContext,
+  _provideContext,
+  _useContext,
+  _portalClassContext,
+} from '../runtime/context.js';
+import type { ClassValue } from '../native/style.js';
+
+const rootClassContext = _createContext<{ parent: Container; read: () => ClassValue }>();
+/** 只附加到 Portal 内容的实际根元素，不创建包装 DOM 或扫描目标文档。 */
+export function portalRootClass(parent: Container): (() => ClassValue) | undefined {
+  const value = _useContext(rootClassContext);
+  return value?.parent === parent ? value.read : undefined;
+}
 
 export interface PortalProps {
   /** 默认放入当前文档 body；null 暂不显示。目标改变时保留子组件和节点。 */
@@ -37,6 +51,7 @@ export function renderPortal(
   hydration?: HydrationCursor,
 ): void {
   const owner = getScope()!;
+  const inheritedClass = _useContext(_portalClassContext);
   const document = parent.ownerDocument!;
   const placeholder = createRange(parent, before, 'portal', hydration);
   placeholder.hydration?.finish();
@@ -88,6 +103,8 @@ export function renderPortal(
           let created!: NodeRange;
           try {
             next.run(() => {
+              if (inheritedClass)
+                _provideContext(rootClassContext, { parent: destination, read: inheritedClass });
               created = createRange(fragment, null, 'portal-content');
               render(
                 dynamic(() => template.input.children),

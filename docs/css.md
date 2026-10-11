@@ -1,135 +1,117 @@
-# 原生 CSS
+# CSS 回调作者
 
-> 正在按 [CSS 回调作者计划](css-redesign-plan.md) 重构。以下记录迁移前公开契约；新计划中的能力只有在对应阶段验证后才视为已实现。
+CSS 由本仓库 zerodep-js-css 提供，使用真实属性方法、同步回调和结构化样式结果。迁移计划与验证记录见 [重构计划](css-redesign-plan.md)。本次是破坏性作者 API 迁移，core/compiler ABI 为 5，应用和预编译库需要一起重建。
 
-CSS 由本仓库 packages/css（包名 zerodep-js-css）提供，TSX 中的 CSS 调用由 compiler 内置转换。core 不依赖 CSS 包，不使用它的应用可以继续用普通 CSS。
-
-```ts
-import { zerodep } from 'zerodep-js-compiler';
-export default { plugins: [zerodep()] };
-```
-
-工作区 SSR 联调需要让框架及 CSS 包同属一个模块加载环境，例如 `ssr.noExternal: ['zerodep-js', 'zerodep-js-css']`。预编译组件库将框架与 CSS 包都设为 external，保留包内 Node/浏览器宿主选择。普通 npm 独立消费则可全部 external；不要混合两份框架运行时。
+## 作者与组合
 
 ```tsx
-import { _component, _state } from 'zerodep-js';
-import { Css } from 'zerodep-js-css';
-import { css } from 'zerodep-js-css';
+const s = useCss();
+const appearance = css(() => {
+  s.display('flex').padding('_md');
+  s.color(bx(color)).width(bx(width));
+  if (disabled) s.opacity(0.5);
+  s.select('&:hover', () => s.color('_primary'));
+});
+return <div class={[base, appearance, className]} />;
+```
 
-const s = new Css();
-export const Card = _component(() => {
-  let width = _state(120);
-  let active = _state(false);
-  const className = css(s.width.px(width), s.color.raw(active ? 'red' : 'blue'));
-  return <div class={className} style={{ padding: '8px' }} />;
+UI 的 useCss() 从 Provider 取得带 UiTheme 类型的作者。没有 UI 时可从 CSS 包创建 new Css()，或使用 createCssContext<Css<AppTheme>>() 提供自定义作者。作者只持有主题来源；每次 css 独立收集，不把状态保存在共享作者上。
+
+属性方法返回 this，既能链式调用，也能分行调用。回调支持普通同步函数、if/switch 和循环；返回值不参与样式组合。属性方法不能在收集范围外调用，回调不能跨 await。嵌套 css 和异常退出恢复外层收集范围。
+
+css 返回不可变的 CssClass 描述，创建时不登记规则。原生 class/className 展平数组、忽略 false/null/undefined，合并声明和绑定，再生成一个最终哈希类。不得把结果拼接成字符串或交给 classList.add。组件 class 属性复用 core 的 ClassValue 或原生 JSX 属性类型。
+
+同选择器/条件路径、同属性最后一次有效调用覆盖此前声明，并取得最后出现的位置。undefined 忽略，0 保留。不同路径仍遵循浏览器层叠；只合并相邻同路径块，不重排 hover/active 或简写/单项声明。不支持靠重复同属性保存无效值回退，兼容分支使用 @supports。
+
+普通字符串 class 仍是原生类名，不反向解析未知样式；数组中的外部类名不享有“后面的声明覆盖前面的声明”的结构化合并保证。识别 DOM 使用 data-* 或 id，生成类不是稳定身份。
+
+## 响应式边界
+
+- 函数内从 CSS 包直接命名导入的 css 调用初始化 const，继续自动派生；导入别名也支持。依赖变化重新执行整个回调。
+- JSX 动态 class 中的调用随依赖更新。共享包装函数放在 JSX 或 _derived 中调用；普通函数参数、局部解构、返回值仍是当次取值。
+- props 参数解构直接响应，不要求额外 _derived。
+- 不为 bx 建立独立 effect、订阅或历史值表。结果结构不变时复用类；动态结构或原声明回退可能登记新类。
+
+## bx、系统关键字和主题
+
+```tsx
+css(() => {
+  s.color('_text');
+  s.color(bx(color)); // 未传入时不擦掉默认值
+  s.width(bx(width)); // width 可以是 12px、auto、inherit 或主题 token
 });
 ```
 
-className 的类型是 CssClass，可能是单个哈希类字符串，也可能携带当前元素变量值。直接传给 class，由原生渲染统一展开；不要字符串拼接、模板插值或 classList.add() 消费样式结果。组件属性复用 ClassValue 或原生 JSX 属性类型，组合只有 css 一个入口。
+bx 保存原始值和绑定意图，不马上生成 var()。属性方法知道具体属性及主题，按以下顺序处理：
 
-## 单个样式类与 DOM 定位
+1. undefined 忽略。
+2. 系统关键字查表后按原值输出；bx('red')、bx('auto')、bx('inherit') 不生成元素变量。
+3. 完整的下划线主题 token 查当前属性的主题表。bx('_primary') 合法，与不加 bx 的主题 token 共用主题机制，不额外套一层 bx 变量。
+4. 其他值按固定安全范围及选择器位置判断；安全时使用 --zj-* 元素变量，否则保留原声明。
+
+常用完整长度、基础颜色数值、受约束数值和时间值可优化；特殊值、未知复合值和不能确认变量继承位置的选择器保留声明。SSR 与浏览器使用相同分类，不读取 CSS.supports，也不把类型提示表当作浏览器兼容性表。
+
+长度单位放进绑定值：bx(width + 'px')。不能写 bx(width) 后再拼 px，也不支持模板字符串中嵌入多个 bx；需要时拆成单项属性，或把完整复合表达式交给 bx。数字不自动补 px。无效值不由框架修正，只有明确的输入边界错误会抛出诊断。
+
+主题普通安全值使用 --zt-*。UI Provider 在根元素注入主题变量，嵌套 Provider 覆盖；Portal 在内容的实际根节点桥接逻辑 Provider 的变量，不增加包装 DOM、@scope、DOM 扫描器或 MutationObserver。独立 new Css(theme) 没有 Provider 时，主题值随结果绑定到使用元素。特殊主题值仍回退原声明。
+
+普通 CSS 变量按 DOM 继承，兄弟选择器目标不会继承当前元素变量；第一版对不能确认安全的位置保守回退。内部前缀 --zj-/--zt- 不手写。显式用户 style 最后覆盖，被覆盖或退出分支的绑定同步移除。
+
+## 选择器、动画与全局样式
 
 ```tsx
-const panel = css(s.width.px(width), s.color.raw(color), incomingClass);
-return <div data-ui="panel" class={panel} />;
+css(() => {
+  s.select('&:focus-visible', () => s.outlineColor('_focus').outlineStyle('solid'));
+  s.select('@media (width < 48rem)', () => s.padding('_sm'));
+  s.select('@supports (display: grid)', () => s.display('grid'));
+});
+
+const fade = keyframes(() => {
+  s.select('from', () => s.opacity(0));
+  s.select('to', () => s.opacity(1));
+});
+const appearance = css(() => {
+  s.animationName(fade).animationDuration('160ms').animationFillMode('both');
+});
 ```
 
-incomingClass 使用本 CSS 宿主生成的样式结果。css 按参数顺序展开已有类的声明与动态值，生成一个最终哈希类；不是把多个类名拼到 DOM 上。空输入返回空结果，不登记空规则。重复声明、无效值前的合法回退、important、嵌套选择器与媒体条件都保留原顺序，由浏览器处理层叠。
+select 是唯一块入口。普通样式接受相对选择器和 @media/@supports/@container；关键帧只接受 from/to/百分比位置。回调语义相同，不增加 hover/media/when 等作者方法。
 
-原生 CSS 字符串片段及嵌套条件数组继续支持；不按标点猜测 class。内部哈希引用若没有在当前宿主登记，或传入旧的多个生成类，会明确报错。SSR 先恢复对应清单再接管，不跨请求共享登记器。
+keyframes 返回结构化动画结果，由 animationName 消费；不能拼接动画字符串。动态帧值需要在 JSX/派生位置重新计算，安全绑定随最终使用元素传递；只改变绑定值不生成新动画名。帧内禁止 !important 和 animation 控制属性，animationTimingFunction 除外。不自动注册 @property 或实现动画状态系统。
 
-不再提供 `_mergeClasses`、标记函数 `className(name)` 或重复类型 `CssProps`，旧应用和预编译库需要重新构建。样式哈希不作为稳定身份；组件/部件定位使用必要的 data-*，唯一关联使用 id/_id。原生 DOM class/className 仍可用，但 css 组合不承诺展开第三方任意类名。
+globalCss(key, callback) 通过 select 输出全局规则；globalCss(key) 移除对应全局块。全局样式没有绑定元素，不接受 bx 元素绑定。主题变量引用仍遵守文档中的 DOM 继承，不假定存在组件根节点。
 
-## 响应式求值边界
+## SSR、接管和宿主
 
-函数内从 zerodep-js-css 命名导入的 css（包括导入别名）直接初始化命名 const 时，复用普通派生缓存。JSX 中调用按动态属性求值。普通参数、局部解构、返回结果和别名仍是当次取值；不会跨包装函数自动传播宏语义。
-
-| 写法                                     | 行为                                       |
-| ---------------------------------------- | ------------------------------------------ |
-| const name = css(...)                    | 函数内直接声明自动派生，模块顶层仍普通执行 |
-| JSX class={appearance(width)}            | 在 JSX 动态位置重新调用共享函数            |
-| const name = _derived(appearance(width)) | 共享函数显式派生                           |
-| const saved = appearance(width)          | 保存本次结果，之后不自动更新               |
-| const saved = name                       | 保存当前样式结果的快照                     |
-
-样式计算应为同步纯计算。函数调用、成员/getter、模板字符串及运算在求值时读取的依赖正常跟踪；普通快照不会重新关联到原变量。订阅与异步请求不能放入样式计算。不使用 let 重新赋值命名 css 派生。
-
-模块顶层优先保存作者和声明片段；SSR 的 css 登记需要请求宿主。未优化的值仍可响应式重算；能否转为变量和能否跟踪依赖是两件事。
-
-## 元素变量与 class 回退
-
-只接管 css 的直接属性方法参数，保留接收者、方法先于参数的求值顺序；完整参数在原位置求值一次，不展开用户函数、不提前进入条件分支。同步调用、成员访问、模板字符串和简单表达式可参与优化；赋值、自增、await/yield 不搬入绑定回调。普通参数和快照也可使用绑定表示，但不会因此变成实时引用。
-
-主题成员（如 s.color._primary）及 raw 的下划线主题 token 保留实际声明，通过 class 更新。raw 先按原语义解析 token，不重复读取 getter。直接传入的普通值，以及主题作者未覆写的单位方法，与系统作者使用同一安全分类。
-
-| 输入                                                                   | 输出策略                                            |
-| ---------------------------------------------------------------------- | --------------------------------------------------- |
-| 常用长度属性的 px/em/rem 等基础单位、raw 单个长度字符串或零            | 支持范围内使用元素变量；属性允许百分比/负值时才接管 |
-| 十六进制颜色、常用基础颜色名、transparent/currentColor                 | 对支持的颜色属性变量化                              |
-| 合法 opacity、lineHeight、flexGrow/flexShrink、fontWeight、整数 zIndex | 支持范围内变量化                                    |
-| 主题 token、布局关键词（包括 flex、run-in）                            | 原声明重算 class                                    |
-| CSS-wide、important、已有 var()/calc()、未知/复合值                    | 原声明重算 class                                    |
-| 覆写作者方法、嵌套选择器、声明级条件                                   | 保持原调用与重算，不猜测实现                        |
-
-安全表与作者关键字全集分开。浏览器可能不支持作者类型表里的某些关键词；放进 var 后才无效会改变层叠，因此不能用“命中系统关键字”代替安全判断。SSR 与客户端使用同一分类，不读取 CSS.supports。负 margin/偏移可以优化，负 width/padding 仍保留原声明，不裁剪输入。
-
-所有系统 raw 接受 undefined 并省略声明。安全值切到 undefined、inherit、revert 等时，会撤销该项自动变量并切换 class；恢复安全值后复用规则。0 是合法值，不被当成缺失。raw 不自动补单位；px(width) 的完整 width px 值放在变量里，声明使用 width:var(--zj-...)。
-
-共享函数返回 CssClass，组件原样转发，直到原生元素展开。class/className/spread 按覆盖顺序决定最终结果，被覆盖的结果不留下旧变量。显式用户 style 始终最后覆盖；--zj- 为内部前缀，不手写。多个元素只持有各自当前值，不添加 CSS 专用 effect 或历史值注册表。
-
-规则登记表按声明内容去重，但不会在子组件卸载时逐条回收。连续输入若走 class 回退，仍会登记不同规则；cssStats/warnAfter 用于观察增长，不是 LRU 或自动回收。有限主题切换复用已出现的 class，不承诺所有 CSS 输入都保持一个 class。
-
-## SSR 与接管
-
-每请求新建 CSS 库自身宿主，完成组件渲染后收集并安全序列化：
+SSR 仍由应用拼接样式标签：
 
 ```ts
-import { createServerCssHost, withCssHost, serializeCssRules } from 'zerodep-js-css';
-
 const host = createServerCssHost();
 const html = withCssHost(host, () => renderToString(App));
 const { cssText, manifest, nonceAttribute } = serializeCssRules(host.rules(), { nonce });
 const styles =
-  `<style data-zerodep-css${nonceAttribute}>${cssText}</style>` +
-  `<script type="application/json" data-zerodep-css${nonceAttribute}>${manifest}</script>`;
-// 将 styles 插入 head；不要直接拼接未经处理的 CSS 或 JSON。
+  '<style data-zerodep-css' +
+  nonceAttribute +
+  '>' +
+  cssText +
+  '</style>' +
+  '<script type="application/json" data-zerodep-css' +
+  nonceAttribute +
+  '>' +
+  manifest +
+  '</script>';
 ```
 
-客户端在 `_hydrate` / `_mount` 前调用 `hydrateCss()`，从 `zerodep-js-css` 导入。没有 SSR 清单时直接返回；有清单则核对并恢复登记表。实例共享文档宿主，不能在子组件卸载时调用全局 disposeCss。元素变量需要 CSP 允许相应内联 style；标签 nonce 不会自动授权 style 属性。
+每个请求拥有宿主；样式真正被元素消费时登记。客户端在 _hydrate/_mount 前 hydrateCss()。变量命名不依赖随机数、当前值、构建路径或全局递增编号。显式 style、变量和最终类同步处理，接管不先清空再补回。
 
-实际接线见示例应用 entry-server.ts、entry-client.ts 与 examples/CssExample.tsx。
+浏览器宿主按文档共享。configureCss 支持 nonce/insertionPoint/warnAfter；cssStats 用于观察规则增长；disposeCss 仅供整个文档宿主退出，不在子组件卸载时调用。nonce 不自动授权 style 属性，元素变量仍遵守应用的 CSP。
 
-## 类型和维护
+Vite 使用标准 browser 字段选择宿主，core 不依赖 CSS 包。SSR 联调保持一份运行时，不混用源码和重复安装的框架实例。旧的字符串作者、raw/px 等属性对象、cssBinding/cssResult 已删除，无兼容转发。
 
-源码布局固定为 runtime/generated/util 三个目录，src 根目录仅 index.ts。小型声明工具和关键字机制在 util，宿主、规则表、组件上下文及动态绑定在 runtime。系统作者按需建立主题属性缓存；优化器使用固定的安全值范围，不枚举主题关键字表、不记录用户历史值。
+## 类型与维护
 
-所有 API（包括 SSR 收集器和编译器调用的 cssBinding/cssResult）统一从 zerodep-js-css 根入口导入，不再提供子入口。类型统一指向 dist/index.d.ts，并发布声明映射与源码；Vite 按标准 browser 字段将 Node 宿主替换为浏览器实现，源码不使用包内导入别名。
+CssValue<'color', UiTheme> 等是组件 props 的普通输入类型；CssInput 是作者方法接受的输入，另包含类型保持的 bx 标记及适用的动画结果。CssClass 是结构化结果，ClassValue 负责原生 class 的数组与普通类名。
 
-2026-10-11 删除主题变量化所用的 cssKeyword 内部协议，core/compiler ABI 升为 4。应用与预编译组件库需要一起重建，不能混用旧产物。
+CSSType 提供属性值类型，生成器输出 502 个真实方法、中文说明和去重的系统关键字分类数据，不恢复旧的逐属性对象及大量关键字成员。字符串 token 候选保留补全，但不承诺 IDE 能展示每个字符串候选的中文说明；s.keywords 的主题字段继续保留定义导航。
 
-CSS 提供 SystemKeywords 和继承机制，不提供 UiTheme 或亮暗配色。UI 的主题从 zerodep-js-ui 导入；自定义作者也可直接继承 SystemKeywords。CssValue 的第二个参数指定主题类型，默认不包含 UI 自定义关键字。
-
-当前工作区 CSS 已沿用关键字压缩实现。沿用原有写法：原始值只保存一份，按值和语义说明一致分组，公开作者/关键字构造器仍可继承。公开类型保持 ColorCss、ColorKeywords、FontSizeCss 等语义名称，公共集合使用 globalKeywords、colorKeywords、fontSizeKeywords；中文说明在 hover 和补全详情中均保留，不要求重复输出每个属性的完整声明示例。默认系统声明仍是自有字符串字段，主题读取保留声明，普通值的元素变量采用保守回退。
-
-CSS 与框架使用同仓库 workspace 依赖及同一套 微软官方 TS7.1。生成器通过 Babel 解析 csstype 声明；pnpm css:generate 更新，pnpm css:check 检查生成结果。没有外部 CSS 仓库或 TS6 依赖。
-
-运行 `pnpm test:packages` 可验证工作区外的 tgz 独立安装、类型检查、CSR 与 SSR。不要求相邻 CSS 仓库存在，也不提交临时绝对路径依赖。
-
-当前新包布局尚未发布到 npm；本地依赖由 pnpm workspace 连接，不使用临时 tgz 或本机绝对路径覆盖。
-
-## CSS 作者上下文
-
-从 zerodep-js-css 导入 createCssContext，在项目模块中创建一次工厂，组件初始化时提供作者，后代通过同一工厂读取。
-
-```tsx
-const { provideCss, useCss } = createCssContext<AppCss>();
-
-// 提供者的初始化代码；AppCss 为项目自己的作者类。
-let theme = _state.raw(initialTheme); // initialTheme 由项目自己的主题定义提供。
-provideCss(new AppCss(() => theme));
-
-// 后代组件初始化时读取，类型保持 AppCss，不必非空断言。
-const s = useCss();
-```
-
-useCss 在缺少提供者时明确报错；同一作用域不可重复提供，子作用域可覆盖。作者对象本身不克隆、不深代理；整体切换主题使用 Css(() => theme) 的读取函数。Portal 继承逻辑 context，但不会自动复制 DOM 上继承的 CSS 变量；这两种主题来源须分开理解。SSR 请求仅共享工厂的 context 键，不共享作者数据。外部事件应捕获初始化时取到的作者，不在没有组件作用域的回调中调用 useCss。
+源码为 generated/runtime/util，根目录只有 index.ts。pnpm css:generate 更新，pnpm css:check 检查；入口和文档不用维护另一份方法名单。语言服务使用固定的官方 TS7，完整验证由最新提交 CI 给出。

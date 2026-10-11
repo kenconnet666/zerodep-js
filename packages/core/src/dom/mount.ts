@@ -10,11 +10,11 @@ import { attachAttributes, attachRef } from './attributes.js';
 import { notifySelect } from './controls.js';
 import { bindHeadDocument } from '../runtime/head.js';
 import { synchronous } from '../runtime/synchronous.js';
-import type { Props } from '../runtime/props.js';
+import { props, restProps, type Props } from '../runtime/props.js';
 import { childContainer, createRange, insert, rollback, type Container } from './utils.js';
 import { renderList } from './list.js';
 import { renderBoundary } from './boundary.js';
-import { renderPortal } from './portal.js';
+import { renderPortal, portalRootClass } from './portal.js';
 import { HydrationError, HydrationCursor, hydrationRoot } from './hydration.js';
 import {
   HTML,
@@ -180,10 +180,24 @@ export function renderValue(
   const node = hydration
     ? hydration.element(tag, namespace)
     : parent.ownerDocument!.createElementNS(namespace, tag);
-  if (hydration) hydration.attributes(node, value.props);
+  const inheritedClass = portalRootClass(namespaceParent);
+  const input = inheritedClass
+    ? props([
+        () => restProps(value.props, ['class', 'className']),
+        {
+          class: () => {
+            const key = Object.keys(value.props)
+              .filter((name) => name === 'class' || name === 'className')
+              .at(-1);
+            return [inheritedClass(), key ? value.props[key] : undefined];
+          },
+        },
+      ])
+    : value.props;
+  if (hydration) hydration.attributes(node, input);
   else insert(node, parent, before);
   const owner = getScope()!;
-  const attributes = () => attachAttributes(node, value.props, hydration?.session);
+  const attributes = () => attachAttributes(node, input, hydration?.session);
   if (node.localName !== 'select') {
     if (hydration) hydration.session.defer(attributes);
     else attributes();

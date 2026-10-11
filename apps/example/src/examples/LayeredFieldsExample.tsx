@@ -1,6 +1,5 @@
-import { _component, _state, _id, _onCleanup, type JSX } from 'zerodep-js';
-import { Css, css } from 'zerodep-js-css';
-
+import { _component, _state, _id, _onCleanup, type JSX, _derived } from 'zerodep-js';
+import { Css, css, bx } from 'zerodep-js-css';
 const s = new Css();
 type FieldProps<T> = Pick<JSX.IntrinsicElements['input'], 'class' | 'style' | 'placeholder'> & {
   value: T;
@@ -12,7 +11,6 @@ type FieldProps<T> = Pick<JSX.IntrinsicElements['input'], 'class' | 'style' | 'p
   title?: string | undefined;
   onDispose?: () => void;
 };
-
 const FieldInput = _component(
   <T,>({
     value,
@@ -28,7 +26,12 @@ const FieldInput = _component(
     const id = _id();
     const initial = format(value);
     _onCleanup(() => onDispose?.());
-    const appearance = css(s.padding.px(2), incoming);
+    const appearance = _derived([
+      css(() => {
+        s.padding('2px');
+      }),
+      incoming,
+    ]);
     return (
       <label>
         <span>{label}</span>
@@ -64,20 +67,29 @@ const FieldShell = _component(<T,>({ value: model, onValueChange, ...rest }: Fie
     </div>
   );
 });
-
 export const LayeredFieldsExample = _component(() => {
-  let form = _state<{ name: string | undefined; amount: number | undefined; width: number }>({
+  let form = _state<{
+    name: string | undefined;
+    amount: number | undefined;
+    width: number;
+  }>({
     name: '第一份',
     amount: 1,
     width: 160,
   });
   const original = form;
-  const attributes = _state<{ title?: string }>({ title: '初始提示' });
+  const attributes = _state<{
+    title?: string;
+  }>({
+    title: '初始提示',
+  });
   let revision = _state('A');
   let callback = _state('');
   let visible = _state(true);
   let disposed = _state(0);
-  const appearance = css(s.width.px(form.width));
+  const appearance = css(() => {
+    s.width(bx(`${form.width}px`));
+  });
   const first = () => {
     callback = `A:${form.name ?? '空'}`;
   };
@@ -117,7 +129,11 @@ export const LayeredFieldsExample = _component(() => {
       <output data-layer-disposed>{disposed}</output>
       <button
         onClick={() => {
-          form = { name: '第二份', amount: 2, width: 240 };
+          form = {
+            name: '第二份',
+            amount: 2,
+            width: 240,
+          };
           revision = 'B';
           delete attributes.title;
         }}

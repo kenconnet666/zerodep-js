@@ -88,7 +88,7 @@
 
 ## 交付与合理取舍
 
-bind、_snapshot、_lazy 采用 [编写指南](authoring.md) 中的写回类型、快照和同步 SSR 占位契约；编译输出 ABI 为 4。开发检查与 HMR 采用[开发态契约](devtools.md)，有界查看和数据迁移不扩展为任意组件树/外部状态的恢复协议。
+bind、_snapshot、_lazy 采用 [编写指南](authoring.md) 中的写回类型、快照和同步 SSR 占位契约；编译输出 ABI 为 5（CSS 回调作者与结构化结果协议）。开发检查与 HMR 采用[开发态契约](devtools.md)，有界查看和数据迁移不扩展为任意组件树/外部状态的恢复协议。
 
 框架保留状态、上下文、快照、通用生命周期与页面入口；独立应用工具包已于 2026-10-09 删除，不再维护路由、store、持久化和撤销重做。全栈数据层、RSC、流式 SSR 等能力不自动进入核心职责。UI Provider 的范围见 [Provider](provider.md)。
 

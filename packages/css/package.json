@@ -27,7 +27,8 @@
     "build": "tsc -b"
   },
   "dependencies": {
-    "csstype": "catalog:"
+    "csstype": "catalog:",
+    "@csstools/css-tokenizer": "catalog:"
   },
   "devDependencies": {
     "zerodep-js": "workspace:*",
@@ -49,7 +50,7 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "description": "zerodep-js 原生 CSS 作者、隐式变量与浏览器/SSR 样式管理",
+  "description": "zerodep-js 原生 CSS 回调作者、显式变量与浏览器/SSR 样式管理",
   "peerDependencies": {
     "zerodep-js": "workspace:*"
   },

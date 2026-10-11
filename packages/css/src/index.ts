@@ -1,6 +1,13 @@
 export * from './generated/author.js';
-export type { CssString } from './generated/base.js';
-export type { CssInput, CssSelector, CssValue, CssClass, CssClassInput } from './util/author.js';
+export * from './generated/keywords.js';
+export type { CssString, CssSelector, CssValue } from './util/author.js';
+export {
+  bx,
+  type CssBinding,
+  type CssAnimation,
+  type CssProgram as CssClass,
+  type PropertyInput as CssInput,
+} from './runtime/program.js';
 export {
   createServerCssHost,
   serializeCssRules,
@@ -10,7 +17,7 @@ export {
 export { createCssContext } from './runtime/context.js';
 
 // 唯一公开入口；Vite 按 browser 字段选择浏览器宿主，类型始终沿用同一份声明。
-export { css, keyframes, globalCss, withCssHost } from './runtime/server.js';
+export { css, keyframes, globalCss, withCssHost, _themeStyle } from './runtime/server.js';
 export {
   hydrateCss,
   configureCss,
@@ -18,6 +25,3 @@ export {
   cssStats,
   type BrowserCssOptions,
 } from './runtime/browser.js';
-
-// 编译器生成的调用也走包根；应用通常直接使用 css()。
-export { cssBinding, cssResult } from './runtime/bindings.js';

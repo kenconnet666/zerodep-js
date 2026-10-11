@@ -1,5 +1,4 @@
 import { _component, _derived, type JSX } from 'zerodep-js';
-import { css } from 'zerodep-js-css';
 import { ButtonBase } from './ButtonBase.js';
 import { ButtonContent } from './ButtonContent.js';
 import { _buttonStyle } from './button-style.js';
@@ -51,7 +50,7 @@ export const Button = _component(
         unavailable: disabled || loading,
       }),
     );
-    const style = css(
+    const style = _derived([
       _buttonStyle(s, {
         variant,
         color,
@@ -59,7 +58,7 @@ export const Button = _component(
         borderColor,
       }),
       className,
-    );
+    ]);
     return (
       <ButtonBase
         {...rest}

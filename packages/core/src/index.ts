@@ -22,6 +22,7 @@ export { HydrationError } from './dom/hydration.js';
 export type { Renderable, Template, TextRenderable } from './runtime/template.js';
 export type { JSX, NativeProps, Style, StyleObject, EventHandler } from './native/types.js';
 export { _createContext, _provideContext, _useContext } from './runtime/context.js';
+export { _portalClassContext } from './runtime/context.js';
 export type { Context } from './runtime/context.js';
 export { For, ErrorBoundary } from './runtime/flow.js';
 export type { ForProps, Key, ErrorBoundaryProps } from './runtime/flow.js';

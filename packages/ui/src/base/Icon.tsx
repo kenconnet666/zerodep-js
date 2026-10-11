@@ -1,11 +1,9 @@
 import type { UiTheme } from '../provider/theme/theme.js';
 import { _component, _derived, type JSX, type Template, element } from 'zerodep-js';
-
-import { css, type CssValue } from 'zerodep-js-css';
+import { css, type CssValue, bx } from 'zerodep-js-css';
 import type { LucideIconData, LucideIconNode } from '@lucide/icons';
 import { buildLucideIconNode } from '@lucide/icons/build';
 import { useCss } from '../provider/context.js';
-
 export type IconProps = Omit<JSX.IntrinsicElements['svg'], 'children' | 'color'> & {
   /** 静态导入的 Lucide 图标数据；不在运行时按名称下载图标。 */
   icon: LucideIconData;
@@ -18,9 +16,11 @@ export type IconProps = Omit<JSX.IntrinsicElements['svg'], 'children' | 'color'>
 
 // 只构造框架模板，浏览器与 SSR 使用同一棵节点树；不提前创建 DOM 或拼接 SVG 字符串。
 function renderNode([tag, attributes, children]: LucideIconNode): Template {
-  return element(tag, { ...attributes, children: children?.map(renderNode) });
+  return element(tag, {
+    ...attributes,
+    children: children?.map(renderNode),
+  });
 }
-
 export const Icon = _component(({ icon, color, size, class: className, ...rest }: IconProps) => {
   const s = useCss();
   const svg = _derived.by(() => {
@@ -33,17 +33,22 @@ export const Icon = _component(({ icon, color, size, class: className, ...rest }
         'stroke-linejoin': 'strokeLinejoin',
       },
     });
-    return { attributes, children: children.map(renderNode) };
+    return {
+      attributes,
+      children: children.map(renderNode),
+    };
   });
   const named = _derived(Boolean(rest['aria-label'] || rest['aria-labelledby']));
-  const style = css(
-    s.display.inlineBlock,
-    s.verticalAlign.middle,
-    s.flexShrink.raw(0),
-    s.color.raw(color),
-    s.fontSize.raw(size),
+  const style = _derived([
+    css(() => {
+      s.display('inline-block');
+      s.verticalAlign('middle');
+      s.flexShrink(0);
+      s.color(bx(color));
+      s.fontSize(bx(size));
+    }),
     className,
-  );
+  ]);
   return (
     <svg
       {...svg.attributes}

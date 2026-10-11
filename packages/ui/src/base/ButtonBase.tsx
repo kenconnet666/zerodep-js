@@ -1,10 +1,9 @@
 import type { UiTheme } from '../provider/theme/theme.js';
 import { _component, _derived, type JSX } from 'zerodep-js';
-import { css, type CssValue } from 'zerodep-js-css';
+import { css, type CssValue, bx } from 'zerodep-js-css';
 import { useCss } from '../provider/context.js';
 import { Ripple, type RippleProps } from './Ripple.js';
 import { _resolveSlotProps, type SlotProps } from '../utils/slot-props.js';
-
 export interface ButtonBaseState {
   readonly disabled: boolean;
 }
@@ -30,31 +29,41 @@ export const ButtonBase = _component(
     ...rest
   }: ButtonBaseProps) => {
     const s = useCss();
-    const state = _derived(Object.freeze({ disabled: Boolean(disabled) }));
-    const rippleProps = _derived.by(() => _resolveSlotProps(slotRipple, state));
-    const style = css(
-      s.position.relative,
-      s.display.inlineFlex,
-      s.alignItems.center,
-      s.justifyContent.center,
-      s.font.inherit,
-      s.fontSize.raw(size),
-      s.color.inherit,
-      s.backgroundColor.transparent,
-      s.border.raw('0'),
-      s.padding.raw(0),
-      s.cursor.pointer,
-      // :disabled 同时涵盖自身属性和 fieldset 继承，首个 legend 的原生例外仍有效。
-      s._selector('&:disabled', s.cursor.notAllowed, s.opacity._disabled),
-      s._selector('&[hidden]', s.display.none),
-      s._focusVisible(
-        s.outlineStyle.solid,
-        s.outlineWidth.em(0.125),
-        s.outlineOffset.em(0.125),
-        s.outlineColor._focus,
-      ),
-      className,
+    const state = _derived(
+      Object.freeze({
+        disabled: Boolean(disabled),
+      }),
     );
+    const rippleProps = _derived.by(() => _resolveSlotProps(slotRipple, state));
+    const style = _derived([
+      css(() => {
+        s.position('relative');
+        s.display('inline-flex');
+        s.alignItems('center');
+        s.justifyContent('center');
+        s.font('inherit');
+        s.fontSize(bx(size));
+        s.color('inherit');
+        s.backgroundColor('transparent');
+        s.border('0');
+        s.padding(0);
+        s.cursor('pointer');
+        s.select('&:disabled', () => {
+          s.cursor('not-allowed');
+          s.opacity('_disabled');
+        });
+        s.select('&[hidden]', () => {
+          s.display('none');
+        });
+        s.select('&:focus-visible', () => {
+          s.outlineStyle('solid');
+          s.outlineWidth('0.125em');
+          s.outlineOffset('0.125em');
+          s.outlineColor('_focus');
+        });
+      }),
+      className,
+    ]);
     return (
       <button
         {...rest}

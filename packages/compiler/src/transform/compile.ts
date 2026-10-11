@@ -11,7 +11,7 @@ import { normalizeNamespaces } from './namespaces.js';
 import { checkGuards } from './guards.js';
 import { coreImport } from './imports.js';
 import { Development } from './development.js';
-import { prepareCss, isCssCall } from './css.js';
+import { isCssCall } from './css.js';
 import { prepareDerivedPatterns } from './derived.js';
 
 export interface CompileOptions {
@@ -41,7 +41,7 @@ export interface CompileResult {
 }
 
 // 这是输出协议版本，不跟随普通修复版本变化；修改时须同步 core 的 runtime/bindings。
-const RUNTIME_ABI = 4;
+const RUNTIME_ABI = 5;
 
 interface ReactiveBinding {
   binding: Binding;
@@ -110,7 +110,6 @@ function transformFramework(
 
   const forCallbacks = collectForCallbacks(ast, report);
   checkGuards(ast, forCallbacks, report);
-  const css = prepareCss(ast, program, source);
   const hasJsx = transformJsx(ast, helper, report);
   program.scope.crawl();
   transformForCallbacks(ast, forCallbacks, helper, report);
@@ -213,7 +212,7 @@ function transformFramework(
     VariableDeclarator(path) {
       if (!t.isIdentifier(path.node.id) || !path.getFunctionParent()) return;
       const init = path.get('init');
-      if (!css.records.has(path.node) && !(init.isCallExpression() && isCssCall(init))) return;
+      if (!(init.isCallExpression() && isCssCall(init))) return;
       const binding = path.scope.getBinding(path.node.id.name)!;
       if (binding.kind !== 'const') {
         report(path.node, 'ZJ1600', '自动追踪的声明使用 const；修改来源状态即可。');

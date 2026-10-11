@@ -1,199 +1,35 @@
 // 由 scripts/generate-css-author.mjs 从 csstype@3.2.3 生成；请勿手改。
 // 来源许可见 packages/css/THIRD_PARTY_NOTICES.md。
-import * as group0 from './a.js';
-import * as group1 from './b.js';
-import * as group2 from './c-f.js';
-import * as group3 from './g-l.js';
-import * as group4 from './m-o.js';
-import * as group5 from './p-r.js';
-import * as group6 from './s-t.js';
-import * as group7 from './u-z.js';
-export * from './a.js';
-export * from './b.js';
-export * from './c-f.js';
-export * from './g-l.js';
-export * from './m-o.js';
-export * from './p-r.js';
-export * from './s-t.js';
-export * from './u-z.js';
-import { selectorRule, type CssSelector } from '../util/author.js';
-import type { CssInput } from '../util/author.js';
-import { SystemKeywords, systemKeywords } from './keywords.js';
-export * from './keywords.js';
-import {
-  getKeywordSource,
-  setKeywordSource,
-  bindKeywords,
-  type KeywordSource,
-  type KeywordAuthor,
-  type CheckedKeywords,
-} from '../util/keywords.js';
-
-// 仅在首次构造作者实例时注册，避免未使用的属性链阻止按需打包。
-let systemPropertiesReady = false;
-/** 系统属性链；项目可通过类继承扩展关键字。 */
-export class Css<T extends SystemKeywords = SystemKeywords> {
-  /**
-   * 创建作者入口；可注入主题值或由框架跟踪的当前主题读取函数。
-   *
-   * 系统默认属性实例只读共享；注入主题时创建作用域属性视图。主题值变化在下一次读取声明时生效。
-   * @param theme 原始关键字值或读取函数；省略时使用系统默认值。
-   * @example
-   * const s = new Css();
-   * @example
-   * s.display.flex // display:flex;
-   */
-  constructor(theme: KeywordSource<T> & KeywordSource<CheckedKeywords<T>>);
-  /**
-   * 创建无主题的系统作者；显式扩展主题类型时必须提供对应值。
-   * @param args 系统作者可省略参数；自定义主题作者必须提供主题值或读取函数。
-   * @example
-   * const s = new Css();
-   */
-  constructor(
-    ...args: SystemKeywords extends T
-      ? []
-      : [theme: KeywordSource<T> & KeywordSource<CheckedKeywords<T>>]
-  );
-  constructor(...args: [theme?: KeywordSource<T> & KeywordSource<CheckedKeywords<T>>]) {
-    initializeSystemProperties();
-    if (args[0]) setKeywordSource(this, args[0]);
-  }
-  /**
-   * 取得当前作用域的原始关键字值；主题读取函数由框架跟踪。
-   * @example
-   * const values = new Css().keywords;
-   */
-  get keywords(): T {
-    return (getKeywordSource(this)?.() ?? systemKeywords) as T;
-  }
-  /**
-   * 构造原生选择器、@ 规则或动画帧的嵌套声明片段。
-   * @param selector 选择器、逗号分隔的选择器列表或 @ 规则字符串；& 代表当前规则。
-   * @param parts 属性声明、嵌套片段、数组或条件空项；展开数组并省略条件空项。
-   * @returns 嵌套声明片段；交给 css(...) 后才登记样式。
-   * @example
-   * s._selector('& > span', s.color.red)
-   * @example
-   * s._selector('@media (min-width: 48rem)', s.display.grid)
-   */
-  _selector(selector: CssSelector, ...parts: CssInput[]): string {
-    return selectorRule(selector, parts);
-  }
-  /**
-   * 指针悬停时应用；触屏环境可能没有持续悬停状态。
-   * @param parts 属性声明或嵌套片段；允许数组及条件空项。
-   * @returns &:hover 嵌套规则片段，不立即登记样式。
-   * @example
-   * s._hover(s.color.red)
-   */
-  _hover(...parts: CssInput[]): string {
-    return this._selector('&:hover', ...parts);
-  }
-  /**
-   * 用户正在激活元素时应用，例如按住鼠标按钮期间。
-   * @param parts 属性声明或嵌套片段；允许数组及条件空项。
-   * @returns &:active 嵌套规则片段，不立即登记样式。
-   * @example
-   * s._active(s.color.red)
-   */
-  _active(...parts: CssInput[]): string {
-    return this._selector('&:active', ...parts);
-  }
-  /**
-   * 元素自身获得焦点时应用。
-   * @param parts 属性声明或嵌套片段；允许数组及条件空项。
-   * @returns &:focus 嵌套规则片段，不立即登记样式。
-   * @example
-   * s._focus(s.color.red)
-   */
-  _focus(...parts: CssInput[]): string {
-    return this._selector('&:focus', ...parts);
-  }
-  /**
-   * 元素获得焦点且浏览器判断应显示焦点指示时应用。
-   * @param parts 属性声明或嵌套片段；允许数组及条件空项。
-   * @returns &:focus-visible 嵌套规则片段，不立即登记样式。
-   * @example
-   * s._focusVisible(s.color.red)
-   */
-  _focusVisible(...parts: CssInput[]): string {
-    return this._selector('&:focus-visible', ...parts);
-  }
-  /**
-   * 元素自身或其后代获得焦点时应用。
-   * @param parts 属性声明或嵌套片段；允许数组及条件空项。
-   * @returns &:focus-within 嵌套规则片段，不立即登记样式。
-   * @example
-   * s._focusWithin(s.color.red)
-   */
-  _focusWithin(...parts: CssInput[]): string {
-    return this._selector('&:focus-within', ...parts);
-  }
-  /**
-   * 匹配原生禁用状态；仅设置 aria-disabled 不会匹配。
-   * @param parts 属性声明或嵌套片段；允许数组及条件空项。
-   * @returns &:disabled 嵌套规则片段，不立即登记样式。
-   * @example
-   * s._disabled(s.color.red)
-   */
-  _disabled(...parts: CssInput[]): string {
-    return this._selector('&:disabled', ...parts);
-  }
-  /**
-   * 匹配原生选中状态，例如复选框或单选框被选中。
-   * @param parts 属性声明或嵌套片段；允许数组及条件空项。
-   * @returns &:checked 嵌套规则片段，不立即登记样式。
-   * @example
-   * s._checked(s.color.red)
-   */
-  _checked(...parts: CssInput[]): string {
-    return this._selector('&:checked', ...parts);
-  }
-  /**
-   * 设置元素前置伪元素；通常还需要 content 才会生成盒子。
-   * @param parts 属性声明或嵌套片段；允许数组及条件空项。
-   * @returns &::before 嵌套规则片段，不立即登记样式。
-   * @example
-   * s._before(s.color.red)
-   */
-  _before(...parts: CssInput[]): string {
-    return this._selector('&::before', ...parts);
-  }
-  /**
-   * 设置元素后置伪元素；通常还需要 content 才会生成盒子。
-   * @param parts 属性声明或嵌套片段；允许数组及条件空项。
-   * @returns &::after 嵌套规则片段，不立即登记样式。
-   * @example
-   * s._after(s.color.red)
-   */
-  _after(...parts: CssInput[]): string {
-    return this._selector('&::after', ...parts);
-  }
-  /**
-   * 设置输入控件占位文字的样式，允许的属性受伪元素规则限制。
-   * @param parts 属性声明或嵌套片段；允许数组及条件空项。
-   * @returns &::placeholder 嵌套规则片段，不立即登记样式。
-   * @example
-   * s._placeholder(s.color.red)
-   */
-  _placeholder(...parts: CssInput[]): string {
-    return this._selector('&::placeholder', ...parts);
-  }
+import { CssAuthor, type PropertyInput } from '../runtime/program.js';
+import type { SystemKeywords } from './keywords.js';
+/** 真实方法作者；声明写入当前 css 收集范围，实例只保存主题来源。 */
+export class Css<T extends SystemKeywords = SystemKeywords> extends CssAuthor<T> {
   /**
    * 设置复选框、单选框等原生控件的强调色；具体使用部位由浏览器决定。（accent-color）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/accent-color
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.accentColor("inherit"));
    */
-  declare readonly accentColor: KeywordAuthor<group0.AccentColorCss, T['accentColor']>;
+  accentColor(value: PropertyInput<'accentColor', T>): this {
+    this.write('accentColor', 'accent-color', value);
+    return this;
+  }
   /**
    * 分配布局容器交叉轴或块轴上的剩余空间，控制内容整体的对齐。（align-content）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/align-content
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.alignContent("inherit"));
    */
-  declare readonly alignContent: KeywordAuthor<group0.AlignContentCss, T['alignContent']>;
+  alignContent(value: PropertyInput<'alignContent', T>): this {
+    this.write('alignContent', 'align-content', value);
+    return this;
+  }
   /**
    * 设置容器内项目在交叉轴或块轴上的默认对齐方式。（align-items）
    *
@@ -209,11 +45,15 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：图标与文字居中、表单控件基线对齐或项目拉伸。
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
-   * @example
-   * css(s.display.flex, s.alignItems.center)
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/align-items
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.alignItems("inherit"));
    */
-  declare readonly alignItems: KeywordAuthor<group0.AlignItemsCss, T['alignItems']>;
+  alignItems(value: PropertyInput<'alignItems', T>): this {
+    this.write('alignItems', 'align-items', value);
+    return this;
+  }
   /**
    * 单独覆盖一个项目的交叉轴或块轴对齐方式。（align-self）
    *
@@ -225,89 +65,139 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：只改变某一个项目的交叉轴或块轴对齐，不改变同组其他项目。
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
-   * @example
-   * s.alignSelf.center
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/align-self
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.alignSelf("inherit"));
    */
-  declare readonly alignSelf: KeywordAuthor<group0.AlignSelfCss, T['alignSelf']>;
+  alignSelf(value: PropertyInput<'alignSelf', T>): this {
+    this.write('alignSelf', 'align-self', value);
+    return this;
+  }
   /**
    * 旧版瀑布流布局提案中沿块轴对齐轨道的属性；使用前核对实现与规范版本。（align-tracks）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/align-tracks
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.alignTracks("inherit"));
    */
-  declare readonly alignTracks: KeywordAuthor<group0.AlignTracksCss, T['alignTracks']>;
+  alignTracks(value: PropertyInput<'alignTracks', T>): this {
+    this.write('alignTracks', 'align-tracks', value);
+    return this;
+  }
   /**
    * 选择行内或 SVG 文本参与对齐时使用的基线。（alignment-baseline）
-   *
-   * CSS 初始值：`baseline`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/alignment-baseline
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.alignmentBaseline("inherit"));
    */
-  declare readonly alignmentBaseline: KeywordAuthor<
-    group0.AlignmentBaselineCss,
-    T['alignmentBaseline']
-  >;
+  alignmentBaseline(value: PropertyInput<'alignmentBaseline', T>): this {
+    this.write('alignmentBaseline', 'alignment-baseline', value);
+    return this;
+  }
   /**
    * 批量重置 CSS 属性；不重置 direction、unicode-bidi 和自定义属性。（all）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/all
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.all("inherit"));
    */
-  declare readonly all: KeywordAuthor<group0.AllCss, T['all']>;
+  all(value: PropertyInput<'all', T>): this {
+    this.write('all', 'all', value);
+    return this;
+  }
   /**
    * 为元素声明锚点名称，供锚点定位的元素引用。（anchor-name）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/anchor-name
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.anchorName("inherit"));
    */
-  declare readonly anchorName: KeywordAuthor<group0.AnchorNameCss, T['anchorName']>;
+  anchorName(value: PropertyInput<'anchorName', T>): this {
+    this.write('anchorName', 'anchor-name', value);
+    return this;
+  }
   /**
    * 限制锚点名称的可见范围，避免同名锚点跨组件互相影响。（anchor-scope）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/anchor-scope
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.anchorScope("inherit"));
    */
-  declare readonly anchorScope: KeywordAuthor<group0.AnchorScopeCss, T['anchorScope']>;
+  anchorScope(value: PropertyInput<'anchorScope', T>): this {
+    this.write('anchorScope', 'anchor-scope', value);
+    return this;
+  }
   /**
    * 集中设置关键帧动画的名称、时长、缓动、延迟、次数及播放行为。（animation）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.animation("inherit"));
    */
-  declare readonly animation: KeywordAuthor<group0.AnimationCss, T['animation']>;
+  animation(value: PropertyInput<'animation', T>): this {
+    this.write('animation', 'animation', value);
+    return this;
+  }
   /**
    * 设置动画效果与底层属性值的替换、叠加或累积方式。（animation-composition）
    *
    * CSS 初始值：`replace`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-composition
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.animationComposition("inherit"));
    */
-  declare readonly animationComposition: KeywordAuthor<
-    group0.AnimationCompositionCss,
-    T['animationComposition']
-  >;
+  animationComposition(value: PropertyInput<'animationComposition', T>): this {
+    this.write('animationComposition', 'animation-composition', value);
+    return this;
+  }
   /**
    * 设置动画开始前的延迟；负值表示从动画中途开始播放。（animation-delay）
    *
    * CSS 初始值：`0s`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-delay
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.animationDelay("inherit"));
    */
-  declare readonly animationDelay: KeywordAuthor<group0.AnimationDelayCss, T['animationDelay']>;
+  animationDelay(value: PropertyInput<'animationDelay', T>): this {
+    this.write('animationDelay', 'animation-delay', value);
+    return this;
+  }
   /**
    * 设置动画按正向、反向或交替方向播放。（animation-direction）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-direction
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.animationDirection("inherit"));
    */
-  declare readonly animationDirection: KeywordAuthor<
-    group0.AnimationDirectionCss,
-    T['animationDirection']
-  >;
+  animationDirection(value: PropertyInput<'animationDirection', T>): this {
+    this.write('animationDirection', 'animation-direction', value);
+    return this;
+  }
   /**
    * 设置动画完成一次循环的时长。（animation-duration）
    *
    * CSS 初始值：`0s`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-duration
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.animationDuration("inherit"));
    */
-  declare readonly animationDuration: KeywordAuthor<
-    group0.AnimationDurationCss,
-    T['animationDuration']
-  >;
+  animationDuration(value: PropertyInput<'animationDuration', T>): this {
+    this.write('animationDuration', 'animation-duration', value);
+    return this;
+  }
   /**
    * 设置动画在有效播放区间之外是否应用关键帧样式。（animation-fill-mode）
    *
@@ -322,93 +212,130 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：控制延迟阶段和播放结束后的动画呈现。
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
-   * @example
-   * s.animationFillMode.forwards
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-fill-mode
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.animationFillMode("inherit"));
    */
-  declare readonly animationFillMode: KeywordAuthor<
-    group0.AnimationFillModeCss,
-    T['animationFillMode']
-  >;
+  animationFillMode(value: PropertyInput<'animationFillMode', T>): this {
+    this.write('animationFillMode', 'animation-fill-mode', value);
+    return this;
+  }
   /**
    * 设置动画循环次数，或无限循环。（animation-iteration-count）
    *
    * CSS 初始值：`1`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-iteration-count
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.animationIterationCount("inherit"));
    */
-  declare readonly animationIterationCount: KeywordAuthor<
-    group0.AnimationIterationCountCss,
-    T['animationIterationCount']
-  >;
+  animationIterationCount(value: PropertyInput<'animationIterationCount', T>): this {
+    this.write('animationIterationCount', 'animation-iteration-count', value);
+    return this;
+  }
   /**
    * 选择要播放的 @keyframes 动画名称。（animation-name）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-name
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.animationName("inherit"));
    */
-  declare readonly animationName: KeywordAuthor<group0.AnimationNameCss, T['animationName']>;
+  animationName(value: PropertyInput<'animationName', T>): this {
+    this.write('animationName', 'animation-name', value);
+    return this;
+  }
   /**
    * 控制动画运行或暂停，暂停后可从原位置继续。（animation-play-state）
    *
    * CSS 初始值：`running`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-play-state
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.animationPlayState("inherit"));
    */
-  declare readonly animationPlayState: KeywordAuthor<
-    group0.AnimationPlayStateCss,
-    T['animationPlayState']
-  >;
+  animationPlayState(value: PropertyInput<'animationPlayState', T>): this {
+    this.write('animationPlayState', 'animation-play-state', value);
+    return this;
+  }
   /**
    * 设置动画附着到时间线的起止范围。（animation-range）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-range
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.animationRange("inherit"));
    */
-  declare readonly animationRange: KeywordAuthor<group0.AnimationRangeCss, T['animationRange']>;
+  animationRange(value: PropertyInput<'animationRange', T>): this {
+    this.write('animationRange', 'animation-range', value);
+    return this;
+  }
   /**
    * 设置动画在时间线上的附着范围终点。（animation-range-end）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-range-end
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.animationRangeEnd("inherit"));
    */
-  declare readonly animationRangeEnd: KeywordAuthor<
-    group0.AnimationRangeEndCss,
-    T['animationRangeEnd']
-  >;
+  animationRangeEnd(value: PropertyInput<'animationRangeEnd', T>): this {
+    this.write('animationRangeEnd', 'animation-range-end', value);
+    return this;
+  }
   /**
    * 设置动画在时间线上的附着范围起点。（animation-range-start）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-range-start
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.animationRangeStart("inherit"));
    */
-  declare readonly animationRangeStart: KeywordAuthor<
-    group0.AnimationRangeStartCss,
-    T['animationRangeStart']
-  >;
+  animationRangeStart(value: PropertyInput<'animationRangeStart', T>): this {
+    this.write('animationRangeStart', 'animation-range-start', value);
+    return this;
+  }
   /**
    * 选择驱动动画的时间线，例如文档时间或滚动进度。（animation-timeline）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-timeline
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.animationTimeline("inherit"));
    */
-  declare readonly animationTimeline: KeywordAuthor<
-    group0.AnimationTimelineCss,
-    T['animationTimeline']
-  >;
+  animationTimeline(value: PropertyInput<'animationTimeline', T>): this {
+    this.write('animationTimeline', 'animation-timeline', value);
+    return this;
+  }
   /**
    * 设置动画每个关键帧区间内进度变化的缓动函数。（animation-timing-function）
    *
    * CSS 初始值：`ease`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation-timing-function
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.animationTimingFunction("inherit"));
    */
-  declare readonly animationTimingFunction: KeywordAuthor<
-    group0.AnimationTimingFunctionCss,
-    T['animationTimingFunction']
-  >;
+  animationTimingFunction(value: PropertyInput<'animationTimingFunction', T>): this {
+    this.write('animationTimingFunction', 'animation-timing-function', value);
+    return this;
+  }
   /**
    * 控制元素是否采用平台原生控件外观。（appearance）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/appearance
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.appearance("inherit"));
    */
-  declare readonly appearance: KeywordAuthor<group0.AppearanceCss, T['appearance']>;
+  appearance(value: PropertyInput<'appearance', T>): this {
+    this.write('appearance', 'appearance', value);
+    return this;
+  }
   /**
    * 设置盒子的首选宽高比，参与自动尺寸计算。（aspect-ratio）
    *
@@ -417,124 +344,182 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：图片占位、视频和卡片封面区域。
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
-   * @example
-   * css(s.aspectRatio.raw('16 / 9'), s.width.percent(100))
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/aspect-ratio
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.aspectRatio("inherit"));
    */
-  declare readonly aspectRatio: KeywordAuthor<group0.AspectRatioCss, T['aspectRatio']>;
+  aspectRatio(value: PropertyInput<'aspectRatio', T>): this {
+    this.write('aspectRatio', 'aspect-ratio', value);
+    return this;
+  }
   /**
    * 对元素背后的图像区域应用模糊等滤镜，通常需要透明或半透明背景。（backdrop-filter）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/backdrop-filter
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.backdropFilter("inherit"));
    */
-  declare readonly backdropFilter: KeywordAuthor<group1.BackdropFilterCss, T['backdropFilter']>;
+  backdropFilter(value: PropertyInput<'backdropFilter', T>): this {
+    this.write('backdropFilter', 'backdrop-filter', value);
+    return this;
+  }
   /**
    * 控制经过三维变换后背向观察者的元素背面是否可见。（backface-visibility）
    *
    * CSS 初始值：`visible`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/backface-visibility
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.backfaceVisibility("inherit"));
    */
-  declare readonly backfaceVisibility: KeywordAuthor<
-    group1.BackfaceVisibilityCss,
-    T['backfaceVisibility']
-  >;
+  backfaceVisibility(value: PropertyInput<'backfaceVisibility', T>): this {
+    this.write('backfaceVisibility', 'backface-visibility', value);
+    return this;
+  }
   /**
    * 集中设置背景颜色、图像、位置、尺寸、重复及绘制区域。（background）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.background("inherit"));
    */
-  declare readonly background: KeywordAuthor<group1.BackgroundCss, T['background']>;
+  background(value: PropertyInput<'background', T>): this {
+    this.write('background', 'background', value);
+    return this;
+  }
   /**
    * 设置背景图像相对于视口、元素或局部滚动内容的固定方式。（background-attachment）
    *
    * CSS 初始值：`scroll`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background-attachment
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.backgroundAttachment("inherit"));
    */
-  declare readonly backgroundAttachment: KeywordAuthor<
-    group1.BackgroundAttachmentCss,
-    T['backgroundAttachment']
-  >;
+  backgroundAttachment(value: PropertyInput<'backgroundAttachment', T>): this {
+    this.write('backgroundAttachment', 'background-attachment', value);
+    return this;
+  }
   /**
    * 设置背景图层彼此之间以及与背景色之间的混合模式。（background-blend-mode）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background-blend-mode
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.backgroundBlendMode("inherit"));
    */
-  declare readonly backgroundBlendMode: KeywordAuthor<
-    group1.BackgroundBlendModeCss,
-    T['backgroundBlendMode']
-  >;
+  backgroundBlendMode(value: PropertyInput<'backgroundBlendMode', T>): this {
+    this.write('backgroundBlendMode', 'background-blend-mode', value);
+    return this;
+  }
   /**
    * 设置背景允许绘制到的边界区域。（background-clip）
    *
    * CSS 初始值：`border-box`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background-clip
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.backgroundClip("inherit"));
    */
-  declare readonly backgroundClip: KeywordAuthor<group1.BackgroundClipCss, T['backgroundClip']>;
+  backgroundClip(value: PropertyInput<'backgroundClip', T>): this {
+    this.write('backgroundClip', 'background-clip', value);
+    return this;
+  }
   /**
    * 设置元素背景颜色，位于背景图像下方。（background-color）
    *
    * CSS 初始值：`transparent`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background-color
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.backgroundColor("inherit"));
    */
-  declare readonly backgroundColor: KeywordAuthor<group1.BackgroundColorCss, T['backgroundColor']>;
+  backgroundColor(value: PropertyInput<'backgroundColor', T>): this {
+    this.write('backgroundColor', 'background-color', value);
+    return this;
+  }
   /**
    * 设置一个或多个背景图像或渐变图层。（background-image）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background-image
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.backgroundImage("inherit"));
    */
-  declare readonly backgroundImage: KeywordAuthor<group1.BackgroundImageCss, T['backgroundImage']>;
+  backgroundImage(value: PropertyInput<'backgroundImage', T>): this {
+    this.write('backgroundImage', 'background-image', value);
+    return this;
+  }
   /**
    * 设置背景图像定位所依据的盒子区域。（background-origin）
    *
    * CSS 初始值：`padding-box`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background-origin
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.backgroundOrigin("inherit"));
    */
-  declare readonly backgroundOrigin: KeywordAuthor<
-    group1.BackgroundOriginCss,
-    T['backgroundOrigin']
-  >;
+  backgroundOrigin(value: PropertyInput<'backgroundOrigin', T>): this {
+    this.write('backgroundOrigin', 'background-origin', value);
+    return this;
+  }
   /**
    * 设置背景图像在定位区域内的位置。（background-position）
    *
    * CSS 初始值：`0% 0%`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background-position
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.backgroundPosition("inherit"));
    */
-  declare readonly backgroundPosition: KeywordAuthor<
-    group1.BackgroundPositionCss,
-    T['backgroundPosition']
-  >;
+  backgroundPosition(value: PropertyInput<'backgroundPosition', T>): this {
+    this.write('backgroundPosition', 'background-position', value);
+    return this;
+  }
   /**
    * 设置背景图像的水平位置。（background-position-x）
    *
    * CSS 初始值：`0%`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background-position-x
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.backgroundPositionX("inherit"));
    */
-  declare readonly backgroundPositionX: KeywordAuthor<
-    group1.BackgroundPositionXCss,
-    T['backgroundPositionX']
-  >;
+  backgroundPositionX(value: PropertyInput<'backgroundPositionX', T>): this {
+    this.write('backgroundPositionX', 'background-position-x', value);
+    return this;
+  }
   /**
    * 设置背景图像的垂直位置。（background-position-y）
    *
    * CSS 初始值：`0%`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background-position-y
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.backgroundPositionY("inherit"));
    */
-  declare readonly backgroundPositionY: KeywordAuthor<
-    group1.BackgroundPositionYCss,
-    T['backgroundPositionY']
-  >;
+  backgroundPositionY(value: PropertyInput<'backgroundPositionY', T>): this {
+    this.write('backgroundPositionY', 'background-position-y', value);
+    return this;
+  }
   /**
    * 设置背景图像在水平和垂直方向上的重复方式。（background-repeat）
    *
    * CSS 初始值：`repeat`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background-repeat
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.backgroundRepeat("inherit"));
    */
-  declare readonly backgroundRepeat: KeywordAuthor<
-    group1.BackgroundRepeatCss,
-    T['backgroundRepeat']
-  >;
+  backgroundRepeat(value: PropertyInput<'backgroundRepeat', T>): this {
+    this.write('backgroundRepeat', 'background-repeat', value);
+    return this;
+  }
   /**
    * 设置背景图像尺寸，以及覆盖或完整容纳图像的缩放方式。（background-size）
    *
@@ -548,18 +533,26 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：背景封面或需要完整显示的背景装饰。
    *
    * CSS 初始值：`auto auto`（不同于浏览器默认样式表）。
-   * @example
-   * css(s.backgroundSize.cover, s.backgroundPosition.raw('center'))
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/background-size
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.backgroundSize("inherit"));
    */
-  declare readonly backgroundSize: KeywordAuthor<group1.BackgroundSizeCss, T['backgroundSize']>;
+  backgroundSize(value: PropertyInput<'backgroundSize', T>): this {
+    this.write('backgroundSize', 'background-size', value);
+    return this;
+  }
   /**
    * 使 SVG 文本基线相对于其基准位置偏移。（baseline-shift）
-   *
-   * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/baseline-shift
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.baselineShift("inherit"));
    */
-  declare readonly baselineShift: KeywordAuthor<group1.BaselineShiftCss, T['baselineShift']>;
+  baselineShift(value: PropertyInput<'baselineShift', T>): this {
+    this.write('baselineShift', 'baseline-shift', value);
+    return this;
+  }
   /**
    * 设置逻辑块轴尺寸；水平书写时通常对应高度。（block-size）
    *
@@ -568,546 +561,806 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：使用逻辑轴表达内容块尺寸。
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
-   * @example
-   * s.blockSize.rem(10)
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/block-size
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.blockSize("inherit"));
    */
-  declare readonly blockSize: KeywordAuthor<group1.BlockSizeCss, T['blockSize']>;
+  blockSize(value: PropertyInput<'blockSize', T>): this {
+    this.write('blockSize', 'block-size', value);
+    return this;
+  }
   /**
    * 同时设置四边边框的宽度、线型和颜色。（border）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.border("inherit"));
    */
-  declare readonly border: KeywordAuthor<group1.BorderCss, T['border']>;
+  border(value: PropertyInput<'border', T>): this {
+    this.write('border', 'border', value);
+    return this;
+  }
   /**
    * 设置逻辑块轴起始侧和结束侧的边框。（border-block）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderBlock("inherit"));
    */
-  declare readonly borderBlock: KeywordAuthor<group1.BorderBlockCss, T['borderBlock']>;
+  borderBlock(value: PropertyInput<'borderBlock', T>): this {
+    this.write('borderBlock', 'border-block', value);
+    return this;
+  }
   /**
    * 设置逻辑块轴两侧边框颜色。（border-block-color）
    *
    * CSS 初始值：`currentcolor`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block-color
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderBlockColor("inherit"));
    */
-  declare readonly borderBlockColor: KeywordAuthor<
-    group1.BorderBlockColorCss,
-    T['borderBlockColor']
-  >;
+  borderBlockColor(value: PropertyInput<'borderBlockColor', T>): this {
+    this.write('borderBlockColor', 'border-block-color', value);
+    return this;
+  }
   /**
    * 设置逻辑块轴结束侧边框的宽度、线型和颜色。（border-block-end）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block-end
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderBlockEnd("inherit"));
    */
-  declare readonly borderBlockEnd: KeywordAuthor<group1.BorderBlockEndCss, T['borderBlockEnd']>;
+  borderBlockEnd(value: PropertyInput<'borderBlockEnd', T>): this {
+    this.write('borderBlockEnd', 'border-block-end', value);
+    return this;
+  }
   /**
    * 设置逻辑块轴结束侧的边框颜色。（border-block-end-color）
    *
    * CSS 初始值：`currentcolor`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block-end-color
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderBlockEndColor("inherit"));
    */
-  declare readonly borderBlockEndColor: KeywordAuthor<
-    group1.BorderBlockEndColorCss,
-    T['borderBlockEndColor']
-  >;
+  borderBlockEndColor(value: PropertyInput<'borderBlockEndColor', T>): this {
+    this.write('borderBlockEndColor', 'border-block-end-color', value);
+    return this;
+  }
   /**
    * 设置逻辑块轴结束侧的边框线型。（border-block-end-style）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block-end-style
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderBlockEndStyle("inherit"));
    */
-  declare readonly borderBlockEndStyle: KeywordAuthor<
-    group1.BorderBlockEndStyleCss,
-    T['borderBlockEndStyle']
-  >;
+  borderBlockEndStyle(value: PropertyInput<'borderBlockEndStyle', T>): this {
+    this.write('borderBlockEndStyle', 'border-block-end-style', value);
+    return this;
+  }
   /**
    * 设置逻辑块轴结束侧的边框宽度。（border-block-end-width）
    *
    * CSS 初始值：`medium`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block-end-width
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderBlockEndWidth("inherit"));
    */
-  declare readonly borderBlockEndWidth: KeywordAuthor<
-    group1.BorderBlockEndWidthCss,
-    T['borderBlockEndWidth']
-  >;
+  borderBlockEndWidth(value: PropertyInput<'borderBlockEndWidth', T>): this {
+    this.write('borderBlockEndWidth', 'border-block-end-width', value);
+    return this;
+  }
   /**
    * 设置逻辑块轴起始侧边框的宽度、线型和颜色。（border-block-start）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block-start
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderBlockStart("inherit"));
    */
-  declare readonly borderBlockStart: KeywordAuthor<
-    group1.BorderBlockStartCss,
-    T['borderBlockStart']
-  >;
+  borderBlockStart(value: PropertyInput<'borderBlockStart', T>): this {
+    this.write('borderBlockStart', 'border-block-start', value);
+    return this;
+  }
   /**
    * 设置逻辑块轴起始侧的边框颜色。（border-block-start-color）
    *
    * CSS 初始值：`currentcolor`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block-start-color
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderBlockStartColor("inherit"));
    */
-  declare readonly borderBlockStartColor: KeywordAuthor<
-    group1.BorderBlockStartColorCss,
-    T['borderBlockStartColor']
-  >;
+  borderBlockStartColor(value: PropertyInput<'borderBlockStartColor', T>): this {
+    this.write('borderBlockStartColor', 'border-block-start-color', value);
+    return this;
+  }
   /**
    * 设置逻辑块轴起始侧的边框线型。（border-block-start-style）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block-start-style
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderBlockStartStyle("inherit"));
    */
-  declare readonly borderBlockStartStyle: KeywordAuthor<
-    group1.BorderBlockStartStyleCss,
-    T['borderBlockStartStyle']
-  >;
+  borderBlockStartStyle(value: PropertyInput<'borderBlockStartStyle', T>): this {
+    this.write('borderBlockStartStyle', 'border-block-start-style', value);
+    return this;
+  }
   /**
    * 设置逻辑块轴起始侧的边框宽度。（border-block-start-width）
    *
    * CSS 初始值：`medium`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block-start-width
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderBlockStartWidth("inherit"));
    */
-  declare readonly borderBlockStartWidth: KeywordAuthor<
-    group1.BorderBlockStartWidthCss,
-    T['borderBlockStartWidth']
-  >;
+  borderBlockStartWidth(value: PropertyInput<'borderBlockStartWidth', T>): this {
+    this.write('borderBlockStartWidth', 'border-block-start-width', value);
+    return this;
+  }
   /**
    * 设置逻辑块轴两侧的边框线型。（border-block-style）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block-style
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderBlockStyle("inherit"));
    */
-  declare readonly borderBlockStyle: KeywordAuthor<
-    group1.BorderBlockStyleCss,
-    T['borderBlockStyle']
-  >;
+  borderBlockStyle(value: PropertyInput<'borderBlockStyle', T>): this {
+    this.write('borderBlockStyle', 'border-block-style', value);
+    return this;
+  }
   /**
    * 设置逻辑块轴两侧的边框宽度。（border-block-width）
    *
    * CSS 初始值：`medium`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-block-width
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderBlockWidth("inherit"));
    */
-  declare readonly borderBlockWidth: KeywordAuthor<
-    group1.BorderBlockWidthCss,
-    T['borderBlockWidth']
-  >;
+  borderBlockWidth(value: PropertyInput<'borderBlockWidth', T>): this {
+    this.write('borderBlockWidth', 'border-block-width', value);
+    return this;
+  }
   /**
    * 设置下边框的宽度、线型和颜色。（border-bottom）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-bottom
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderBottom("inherit"));
    */
-  declare readonly borderBottom: KeywordAuthor<group1.BorderBottomCss, T['borderBottom']>;
+  borderBottom(value: PropertyInput<'borderBottom', T>): this {
+    this.write('borderBottom', 'border-bottom', value);
+    return this;
+  }
   /**
    * 设置下边框颜色。（border-bottom-color）
    *
    * CSS 初始值：`currentcolor`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-bottom-color
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderBottomColor("inherit"));
    */
-  declare readonly borderBottomColor: KeywordAuthor<
-    group1.BorderBottomColorCss,
-    T['borderBottomColor']
-  >;
+  borderBottomColor(value: PropertyInput<'borderBottomColor', T>): this {
+    this.write('borderBottomColor', 'border-bottom-color', value);
+    return this;
+  }
   /**
    * 设置左下角边框的圆角半径。（border-bottom-left-radius）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-bottom-left-radius
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderBottomLeftRadius("inherit"));
    */
-  declare readonly borderBottomLeftRadius: KeywordAuthor<
-    group1.BorderBottomLeftRadiusCss,
-    T['borderBottomLeftRadius']
-  >;
+  borderBottomLeftRadius(value: PropertyInput<'borderBottomLeftRadius', T>): this {
+    this.write('borderBottomLeftRadius', 'border-bottom-left-radius', value);
+    return this;
+  }
   /**
    * 设置右下角边框的圆角半径。（border-bottom-right-radius）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-bottom-right-radius
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderBottomRightRadius("inherit"));
    */
-  declare readonly borderBottomRightRadius: KeywordAuthor<
-    group1.BorderBottomRightRadiusCss,
-    T['borderBottomRightRadius']
-  >;
+  borderBottomRightRadius(value: PropertyInput<'borderBottomRightRadius', T>): this {
+    this.write('borderBottomRightRadius', 'border-bottom-right-radius', value);
+    return this;
+  }
   /**
    * 设置下边框线型。（border-bottom-style）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-bottom-style
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderBottomStyle("inherit"));
    */
-  declare readonly borderBottomStyle: KeywordAuthor<
-    group1.BorderBottomStyleCss,
-    T['borderBottomStyle']
-  >;
+  borderBottomStyle(value: PropertyInput<'borderBottomStyle', T>): this {
+    this.write('borderBottomStyle', 'border-bottom-style', value);
+    return this;
+  }
   /**
    * 设置下边框宽度。（border-bottom-width）
    *
    * CSS 初始值：`medium`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-bottom-width
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderBottomWidth("inherit"));
    */
-  declare readonly borderBottomWidth: KeywordAuthor<
-    group1.BorderBottomWidthCss,
-    T['borderBottomWidth']
-  >;
+  borderBottomWidth(value: PropertyInput<'borderBottomWidth', T>): this {
+    this.write('borderBottomWidth', 'border-bottom-width', value);
+    return this;
+  }
   /**
    * 设置表格相邻单元格边框合并还是分离。（border-collapse）
    *
    * CSS 初始值：`separate`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-collapse
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderCollapse("inherit"));
    */
-  declare readonly borderCollapse: KeywordAuthor<group1.BorderCollapseCss, T['borderCollapse']>;
+  borderCollapse(value: PropertyInput<'borderCollapse', T>): this {
+    this.write('borderCollapse', 'border-collapse', value);
+    return this;
+  }
   /**
    * 设置四边边框颜色，支持按上、右、下、左顺序简写。（border-color）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-color
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderColor("inherit"));
    */
-  declare readonly borderColor: KeywordAuthor<group1.BorderColorCss, T['borderColor']>;
+  borderColor(value: PropertyInput<'borderColor', T>): this {
+    this.write('borderColor', 'border-color', value);
+    return this;
+  }
   /**
    * 设置逻辑块轴结束侧与行内轴结束侧相交角的圆角。（border-end-end-radius）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-end-end-radius
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderEndEndRadius("inherit"));
    */
-  declare readonly borderEndEndRadius: KeywordAuthor<
-    group1.BorderEndEndRadiusCss,
-    T['borderEndEndRadius']
-  >;
+  borderEndEndRadius(value: PropertyInput<'borderEndEndRadius', T>): this {
+    this.write('borderEndEndRadius', 'border-end-end-radius', value);
+    return this;
+  }
   /**
    * 设置逻辑块轴结束侧与行内轴起始侧相交角的圆角。（border-end-start-radius）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-end-start-radius
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderEndStartRadius("inherit"));
    */
-  declare readonly borderEndStartRadius: KeywordAuthor<
-    group1.BorderEndStartRadiusCss,
-    T['borderEndStartRadius']
-  >;
+  borderEndStartRadius(value: PropertyInput<'borderEndStartRadius', T>): this {
+    this.write('borderEndStartRadius', 'border-end-start-radius', value);
+    return this;
+  }
   /**
    * 设置用作边框的图像及其切片、宽度、外扩和重复方式。（border-image）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-image
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderImage("inherit"));
    */
-  declare readonly borderImage: KeywordAuthor<group1.BorderImageCss, T['borderImage']>;
+  borderImage(value: PropertyInput<'borderImage', T>): this {
+    this.write('borderImage', 'border-image', value);
+    return this;
+  }
   /**
    * 设置边框图像超出边框盒的距离。（border-image-outset）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-image-outset
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderImageOutset("inherit"));
    */
-  declare readonly borderImageOutset: KeywordAuthor<
-    group1.BorderImageOutsetCss,
-    T['borderImageOutset']
-  >;
+  borderImageOutset(value: PropertyInput<'borderImageOutset', T>): this {
+    this.write('borderImageOutset', 'border-image-outset', value);
+    return this;
+  }
   /**
    * 设置边框图像切片沿边框的重复或拉伸方式。（border-image-repeat）
    *
    * CSS 初始值：`stretch`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-image-repeat
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderImageRepeat("inherit"));
    */
-  declare readonly borderImageRepeat: KeywordAuthor<
-    group1.BorderImageRepeatCss,
-    T['borderImageRepeat']
-  >;
+  borderImageRepeat(value: PropertyInput<'borderImageRepeat', T>): this {
+    this.write('borderImageRepeat', 'border-image-repeat', value);
+    return this;
+  }
   /**
    * 设置边框图像的切片位置及是否填充中间区域。（border-image-slice）
    *
    * CSS 初始值：`100%`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-image-slice
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderImageSlice("inherit"));
    */
-  declare readonly borderImageSlice: KeywordAuthor<
-    group1.BorderImageSliceCss,
-    T['borderImageSlice']
-  >;
+  borderImageSlice(value: PropertyInput<'borderImageSlice', T>): this {
+    this.write('borderImageSlice', 'border-image-slice', value);
+    return this;
+  }
   /**
    * 指定边框使用的图像或渐变。（border-image-source）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-image-source
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderImageSource("inherit"));
    */
-  declare readonly borderImageSource: KeywordAuthor<
-    group1.BorderImageSourceCss,
-    T['borderImageSource']
-  >;
+  borderImageSource(value: PropertyInput<'borderImageSource', T>): this {
+    this.write('borderImageSource', 'border-image-source', value);
+    return this;
+  }
   /**
    * 设置边框图像各边的绘制宽度。（border-image-width）
    *
    * CSS 初始值：`1`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-image-width
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderImageWidth("inherit"));
    */
-  declare readonly borderImageWidth: KeywordAuthor<
-    group1.BorderImageWidthCss,
-    T['borderImageWidth']
-  >;
+  borderImageWidth(value: PropertyInput<'borderImageWidth', T>): this {
+    this.write('borderImageWidth', 'border-image-width', value);
+    return this;
+  }
   /**
    * 设置逻辑行内轴起始侧和结束侧的边框。（border-inline）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderInline("inherit"));
    */
-  declare readonly borderInline: KeywordAuthor<group1.BorderInlineCss, T['borderInline']>;
+  borderInline(value: PropertyInput<'borderInline', T>): this {
+    this.write('borderInline', 'border-inline', value);
+    return this;
+  }
   /**
    * 设置逻辑行内轴两侧边框颜色。（border-inline-color）
    *
    * CSS 初始值：`currentcolor`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline-color
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderInlineColor("inherit"));
    */
-  declare readonly borderInlineColor: KeywordAuthor<
-    group1.BorderInlineColorCss,
-    T['borderInlineColor']
-  >;
+  borderInlineColor(value: PropertyInput<'borderInlineColor', T>): this {
+    this.write('borderInlineColor', 'border-inline-color', value);
+    return this;
+  }
   /**
    * 设置逻辑行内轴结束侧边框的宽度、线型和颜色。（border-inline-end）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline-end
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderInlineEnd("inherit"));
    */
-  declare readonly borderInlineEnd: KeywordAuthor<group1.BorderInlineEndCss, T['borderInlineEnd']>;
+  borderInlineEnd(value: PropertyInput<'borderInlineEnd', T>): this {
+    this.write('borderInlineEnd', 'border-inline-end', value);
+    return this;
+  }
   /**
    * 设置逻辑行内轴结束侧边框颜色。（border-inline-end-color）
    *
    * CSS 初始值：`currentcolor`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline-end-color
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderInlineEndColor("inherit"));
    */
-  declare readonly borderInlineEndColor: KeywordAuthor<
-    group1.BorderInlineEndColorCss,
-    T['borderInlineEndColor']
-  >;
+  borderInlineEndColor(value: PropertyInput<'borderInlineEndColor', T>): this {
+    this.write('borderInlineEndColor', 'border-inline-end-color', value);
+    return this;
+  }
   /**
    * 设置逻辑行内轴结束侧边框线型。（border-inline-end-style）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline-end-style
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderInlineEndStyle("inherit"));
    */
-  declare readonly borderInlineEndStyle: KeywordAuthor<
-    group1.BorderInlineEndStyleCss,
-    T['borderInlineEndStyle']
-  >;
+  borderInlineEndStyle(value: PropertyInput<'borderInlineEndStyle', T>): this {
+    this.write('borderInlineEndStyle', 'border-inline-end-style', value);
+    return this;
+  }
   /**
    * 设置逻辑行内轴结束侧边框宽度。（border-inline-end-width）
    *
    * CSS 初始值：`medium`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline-end-width
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderInlineEndWidth("inherit"));
    */
-  declare readonly borderInlineEndWidth: KeywordAuthor<
-    group1.BorderInlineEndWidthCss,
-    T['borderInlineEndWidth']
-  >;
+  borderInlineEndWidth(value: PropertyInput<'borderInlineEndWidth', T>): this {
+    this.write('borderInlineEndWidth', 'border-inline-end-width', value);
+    return this;
+  }
   /**
    * 设置逻辑行内轴起始侧边框的宽度、线型和颜色。（border-inline-start）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline-start
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderInlineStart("inherit"));
    */
-  declare readonly borderInlineStart: KeywordAuthor<
-    group1.BorderInlineStartCss,
-    T['borderInlineStart']
-  >;
+  borderInlineStart(value: PropertyInput<'borderInlineStart', T>): this {
+    this.write('borderInlineStart', 'border-inline-start', value);
+    return this;
+  }
   /**
    * 设置逻辑行内轴起始侧边框颜色。（border-inline-start-color）
    *
    * CSS 初始值：`currentcolor`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline-start-color
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderInlineStartColor("inherit"));
    */
-  declare readonly borderInlineStartColor: KeywordAuthor<
-    group1.BorderInlineStartColorCss,
-    T['borderInlineStartColor']
-  >;
+  borderInlineStartColor(value: PropertyInput<'borderInlineStartColor', T>): this {
+    this.write('borderInlineStartColor', 'border-inline-start-color', value);
+    return this;
+  }
   /**
    * 设置逻辑行内轴起始侧边框线型。（border-inline-start-style）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline-start-style
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderInlineStartStyle("inherit"));
    */
-  declare readonly borderInlineStartStyle: KeywordAuthor<
-    group1.BorderInlineStartStyleCss,
-    T['borderInlineStartStyle']
-  >;
+  borderInlineStartStyle(value: PropertyInput<'borderInlineStartStyle', T>): this {
+    this.write('borderInlineStartStyle', 'border-inline-start-style', value);
+    return this;
+  }
   /**
    * 设置逻辑行内轴起始侧边框宽度。（border-inline-start-width）
    *
    * CSS 初始值：`medium`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline-start-width
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderInlineStartWidth("inherit"));
    */
-  declare readonly borderInlineStartWidth: KeywordAuthor<
-    group1.BorderInlineStartWidthCss,
-    T['borderInlineStartWidth']
-  >;
+  borderInlineStartWidth(value: PropertyInput<'borderInlineStartWidth', T>): this {
+    this.write('borderInlineStartWidth', 'border-inline-start-width', value);
+    return this;
+  }
   /**
    * 设置逻辑行内轴两侧边框线型。（border-inline-style）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline-style
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderInlineStyle("inherit"));
    */
-  declare readonly borderInlineStyle: KeywordAuthor<
-    group1.BorderInlineStyleCss,
-    T['borderInlineStyle']
-  >;
+  borderInlineStyle(value: PropertyInput<'borderInlineStyle', T>): this {
+    this.write('borderInlineStyle', 'border-inline-style', value);
+    return this;
+  }
   /**
    * 设置逻辑行内轴两侧边框宽度。（border-inline-width）
    *
    * CSS 初始值：`medium`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-inline-width
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderInlineWidth("inherit"));
    */
-  declare readonly borderInlineWidth: KeywordAuthor<
-    group1.BorderInlineWidthCss,
-    T['borderInlineWidth']
-  >;
+  borderInlineWidth(value: PropertyInput<'borderInlineWidth', T>): this {
+    this.write('borderInlineWidth', 'border-inline-width', value);
+    return this;
+  }
   /**
    * 设置左边框的宽度、线型和颜色。（border-left）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-left
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderLeft("inherit"));
    */
-  declare readonly borderLeft: KeywordAuthor<group1.BorderLeftCss, T['borderLeft']>;
+  borderLeft(value: PropertyInput<'borderLeft', T>): this {
+    this.write('borderLeft', 'border-left', value);
+    return this;
+  }
   /**
    * 设置左边框颜色。（border-left-color）
    *
    * CSS 初始值：`currentcolor`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-left-color
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderLeftColor("inherit"));
    */
-  declare readonly borderLeftColor: KeywordAuthor<group1.BorderLeftColorCss, T['borderLeftColor']>;
+  borderLeftColor(value: PropertyInput<'borderLeftColor', T>): this {
+    this.write('borderLeftColor', 'border-left-color', value);
+    return this;
+  }
   /**
    * 设置左边框线型。（border-left-style）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-left-style
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderLeftStyle("inherit"));
    */
-  declare readonly borderLeftStyle: KeywordAuthor<group1.BorderLeftStyleCss, T['borderLeftStyle']>;
+  borderLeftStyle(value: PropertyInput<'borderLeftStyle', T>): this {
+    this.write('borderLeftStyle', 'border-left-style', value);
+    return this;
+  }
   /**
    * 设置左边框宽度。（border-left-width）
    *
    * CSS 初始值：`medium`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-left-width
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderLeftWidth("inherit"));
    */
-  declare readonly borderLeftWidth: KeywordAuthor<group1.BorderLeftWidthCss, T['borderLeftWidth']>;
+  borderLeftWidth(value: PropertyInput<'borderLeftWidth', T>): this {
+    this.write('borderLeftWidth', 'border-left-width', value);
+    return this;
+  }
   /**
    * 设置四个角的圆角半径；斜杠语法可分别指定水平和垂直半径。（border-radius）
    *
    * 1/2/3/4 个半径依次控制四角、两组对角、三组角和逐角。它裁剪自身背景，但不会单独保证裁剪所有后代内容。
    *
    * 适用场景：卡片、按钮、头像的圆角外观。
-   * @example
-   * s.borderRadius.px(8)
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-radius
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderRadius("inherit"));
    */
-  declare readonly borderRadius: KeywordAuthor<group1.BorderRadiusCss, T['borderRadius']>;
+  borderRadius(value: PropertyInput<'borderRadius', T>): this {
+    this.write('borderRadius', 'border-radius', value);
+    return this;
+  }
   /**
    * 设置右边框的宽度、线型和颜色。（border-right）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-right
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderRight("inherit"));
    */
-  declare readonly borderRight: KeywordAuthor<group1.BorderRightCss, T['borderRight']>;
+  borderRight(value: PropertyInput<'borderRight', T>): this {
+    this.write('borderRight', 'border-right', value);
+    return this;
+  }
   /**
    * 设置右边框颜色。（border-right-color）
    *
    * CSS 初始值：`currentcolor`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-right-color
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderRightColor("inherit"));
    */
-  declare readonly borderRightColor: KeywordAuthor<
-    group1.BorderRightColorCss,
-    T['borderRightColor']
-  >;
+  borderRightColor(value: PropertyInput<'borderRightColor', T>): this {
+    this.write('borderRightColor', 'border-right-color', value);
+    return this;
+  }
   /**
    * 设置右边框线型。（border-right-style）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-right-style
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderRightStyle("inherit"));
    */
-  declare readonly borderRightStyle: KeywordAuthor<
-    group1.BorderRightStyleCss,
-    T['borderRightStyle']
-  >;
+  borderRightStyle(value: PropertyInput<'borderRightStyle', T>): this {
+    this.write('borderRightStyle', 'border-right-style', value);
+    return this;
+  }
   /**
    * 设置右边框宽度。（border-right-width）
    *
    * CSS 初始值：`medium`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-right-width
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderRightWidth("inherit"));
    */
-  declare readonly borderRightWidth: KeywordAuthor<
-    group1.BorderRightWidthCss,
-    T['borderRightWidth']
-  >;
+  borderRightWidth(value: PropertyInput<'borderRightWidth', T>): this {
+    this.write('borderRightWidth', 'border-right-width', value);
+    return this;
+  }
   /**
    * 设置分离边框模型下表格单元格之间的水平和垂直间距。（border-spacing）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-spacing
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderSpacing("inherit"));
    */
-  declare readonly borderSpacing: KeywordAuthor<group1.BorderSpacingCss, T['borderSpacing']>;
+  borderSpacing(value: PropertyInput<'borderSpacing', T>): this {
+    this.write('borderSpacing', 'border-spacing', value);
+    return this;
+  }
   /**
    * 设置逻辑块轴起始侧与行内轴结束侧相交角的圆角。（border-start-end-radius）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-start-end-radius
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderStartEndRadius("inherit"));
    */
-  declare readonly borderStartEndRadius: KeywordAuthor<
-    group1.BorderStartEndRadiusCss,
-    T['borderStartEndRadius']
-  >;
+  borderStartEndRadius(value: PropertyInput<'borderStartEndRadius', T>): this {
+    this.write('borderStartEndRadius', 'border-start-end-radius', value);
+    return this;
+  }
   /**
    * 设置逻辑块轴起始侧与行内轴起始侧相交角的圆角。（border-start-start-radius）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-start-start-radius
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderStartStartRadius("inherit"));
    */
-  declare readonly borderStartStartRadius: KeywordAuthor<
-    group1.BorderStartStartRadiusCss,
-    T['borderStartStartRadius']
-  >;
+  borderStartStartRadius(value: PropertyInput<'borderStartStartRadius', T>): this {
+    this.write('borderStartStartRadius', 'border-start-start-radius', value);
+    return this;
+  }
   /**
    * 设置四边边框线型。（border-style）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-style
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderStyle("inherit"));
    */
-  declare readonly borderStyle: KeywordAuthor<group1.BorderStyleCss, T['borderStyle']>;
+  borderStyle(value: PropertyInput<'borderStyle', T>): this {
+    this.write('borderStyle', 'border-style', value);
+    return this;
+  }
   /**
    * 设置上边框的宽度、线型和颜色。（border-top）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-top
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderTop("inherit"));
    */
-  declare readonly borderTop: KeywordAuthor<group1.BorderTopCss, T['borderTop']>;
+  borderTop(value: PropertyInput<'borderTop', T>): this {
+    this.write('borderTop', 'border-top', value);
+    return this;
+  }
   /**
    * 设置上边框颜色。（border-top-color）
    *
    * CSS 初始值：`currentcolor`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-top-color
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderTopColor("inherit"));
    */
-  declare readonly borderTopColor: KeywordAuthor<group1.BorderTopColorCss, T['borderTopColor']>;
+  borderTopColor(value: PropertyInput<'borderTopColor', T>): this {
+    this.write('borderTopColor', 'border-top-color', value);
+    return this;
+  }
   /**
    * 设置左上角边框的圆角半径。（border-top-left-radius）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-top-left-radius
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderTopLeftRadius("inherit"));
    */
-  declare readonly borderTopLeftRadius: KeywordAuthor<
-    group1.BorderTopLeftRadiusCss,
-    T['borderTopLeftRadius']
-  >;
+  borderTopLeftRadius(value: PropertyInput<'borderTopLeftRadius', T>): this {
+    this.write('borderTopLeftRadius', 'border-top-left-radius', value);
+    return this;
+  }
   /**
    * 设置右上角边框的圆角半径。（border-top-right-radius）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-top-right-radius
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderTopRightRadius("inherit"));
    */
-  declare readonly borderTopRightRadius: KeywordAuthor<
-    group1.BorderTopRightRadiusCss,
-    T['borderTopRightRadius']
-  >;
+  borderTopRightRadius(value: PropertyInput<'borderTopRightRadius', T>): this {
+    this.write('borderTopRightRadius', 'border-top-right-radius', value);
+    return this;
+  }
   /**
    * 设置上边框线型。（border-top-style）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-top-style
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderTopStyle("inherit"));
    */
-  declare readonly borderTopStyle: KeywordAuthor<group1.BorderTopStyleCss, T['borderTopStyle']>;
+  borderTopStyle(value: PropertyInput<'borderTopStyle', T>): this {
+    this.write('borderTopStyle', 'border-top-style', value);
+    return this;
+  }
   /**
    * 设置上边框宽度。（border-top-width）
    *
    * CSS 初始值：`medium`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-top-width
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderTopWidth("inherit"));
    */
-  declare readonly borderTopWidth: KeywordAuthor<group1.BorderTopWidthCss, T['borderTopWidth']>;
+  borderTopWidth(value: PropertyInput<'borderTopWidth', T>): this {
+    this.write('borderTopWidth', 'border-top-width', value);
+    return this;
+  }
   /**
    * 设置四边边框宽度；可见边框通常还需要非 none 的线型。（border-width）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/border-width
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.borderWidth("inherit"));
    */
-  declare readonly borderWidth: KeywordAuthor<group1.BorderWidthCss, T['borderWidth']>;
+  borderWidth(value: PropertyInput<'borderWidth', T>): this {
+    this.write('borderWidth', 'border-width', value);
+    return this;
+  }
   /**
    * 设置定位元素相对于其定位参照的下侧偏移。（bottom）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/bottom
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.bottom("inherit"));
    */
-  declare readonly bottom: KeywordAuthor<group1.BottomCss, T['bottom']>;
+  bottom(value: PropertyInput<'bottom', T>): this {
+    this.write('bottom', 'bottom', value);
+    return this;
+  }
   /**
    * 设置盒子被分成多行、多栏或多页时装饰如何绘制。（box-decoration-break）
    *
    * CSS 初始值：`slice`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/box-decoration-break
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.boxDecorationBreak("inherit"));
    */
-  declare readonly boxDecorationBreak: KeywordAuthor<
-    group1.BoxDecorationBreakCss,
-    T['boxDecorationBreak']
-  >;
+  boxDecorationBreak(value: PropertyInput<'boxDecorationBreak', T>): this {
+    this.write('boxDecorationBreak', 'box-decoration-break', value);
+    return this;
+  }
   /**
    * 设置盒子的外部或内部阴影，可叠加多层。（box-shadow）
    *
@@ -1116,11 +1369,15 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：浮层层次、卡片边缘或内凹效果。
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
-   * @example
-   * s.boxShadow.raw('0 2px 8px rgb(0 0 0 / 0.15)')
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/box-shadow
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.boxShadow("inherit"));
    */
-  declare readonly boxShadow: KeywordAuthor<group1.BoxShadowCss, T['boxShadow']>;
+  boxShadow(value: PropertyInput<'boxShadow', T>): this {
+    this.write('boxShadow', 'box-shadow', value);
+    return this;
+  }
   /**
    * 决定 width、height 等尺寸是否包含内边距和边框。（box-sizing）
    *
@@ -1131,127 +1388,211 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：确定组件声明宽高时是否把 padding 和 border 算在尺寸内。
    *
    * CSS 初始值：`content-box`（不同于浏览器默认样式表）。
-   * @example
-   * css(s.boxSizing.borderBox, s.width.rem(20), s.padding.rem(1))
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/box-sizing
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.boxSizing("inherit"));
    */
-  declare readonly boxSizing: KeywordAuthor<group1.BoxSizingCss, T['boxSizing']>;
+  boxSizing(value: PropertyInput<'boxSizing', T>): this {
+    this.write('boxSizing', 'box-sizing', value);
+    return this;
+  }
   /**
    * 设置元素之后的分页、分栏或区域分片行为。（break-after）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/break-after
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.breakAfter("inherit"));
    */
-  declare readonly breakAfter: KeywordAuthor<group1.BreakAfterCss, T['breakAfter']>;
+  breakAfter(value: PropertyInput<'breakAfter', T>): this {
+    this.write('breakAfter', 'break-after', value);
+    return this;
+  }
   /**
    * 设置元素之前的分页、分栏或区域分片行为。（break-before）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/break-before
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.breakBefore("inherit"));
    */
-  declare readonly breakBefore: KeywordAuthor<group1.BreakBeforeCss, T['breakBefore']>;
+  breakBefore(value: PropertyInput<'breakBefore', T>): this {
+    this.write('breakBefore', 'break-before', value);
+    return this;
+  }
   /**
    * 设置元素内部是否允许分页、分栏或区域分片。（break-inside）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/break-inside
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.breakInside("inherit"));
    */
-  declare readonly breakInside: KeywordAuthor<group1.BreakInsideCss, T['breakInside']>;
+  breakInside(value: PropertyInput<'breakInside', T>): this {
+    this.write('breakInside', 'break-inside', value);
+    return this;
+  }
   /**
    * 设置表格标题相对于表格的放置侧。（caption-side）
    *
    * CSS 初始值：`top`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/caption-side
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.captionSide("inherit"));
    */
-  declare readonly captionSide: KeywordAuthor<group2.CaptionSideCss, T['captionSide']>;
+  captionSide(value: PropertyInput<'captionSide', T>): this {
+    this.write('captionSide', 'caption-side', value);
+    return this;
+  }
   /**
    * 集中设置文本插入光标的颜色和形状。（caret）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/caret
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.caret("inherit"));
    */
-  declare readonly caret: KeywordAuthor<group2.CaretCss, T['caret']>;
+  caret(value: PropertyInput<'caret', T>): this {
+    this.write('caret', 'caret', value);
+    return this;
+  }
   /**
    * 设置可编辑内容中的文本插入光标颜色。（caret-color）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/caret-color
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.caretColor("inherit"));
    */
-  declare readonly caretColor: KeywordAuthor<group2.CaretColorCss, T['caretColor']>;
+  caretColor(value: PropertyInput<'caretColor', T>): this {
+    this.write('caretColor', 'caret-color', value);
+    return this;
+  }
   /**
    * 设置文本插入光标的形状。（caret-shape）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/caret-shape
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.caretShape("inherit"));
    */
-  declare readonly caretShape: KeywordAuthor<group2.CaretShapeCss, T['caretShape']>;
+  caretShape(value: PropertyInput<'caretShape', T>): this {
+    this.write('caretShape', 'caret-shape', value);
+    return this;
+  }
   /**
    * 要求元素避让指定侧的前置浮动元素。（clear）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/clear
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.clear("inherit"));
    */
-  declare readonly clear: KeywordAuthor<group2.ClearCss, T['clear']>;
+  clear(value: PropertyInput<'clear', T>): this {
+    this.write('clear', 'clear', value);
+    return this;
+  }
   /**
    * 使用旧式矩形裁剪绝对定位元素；新代码优先考虑 clip-path。（clip）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/clip
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.clip("inherit"));
    */
-  declare readonly clip: KeywordAuthor<group2.ClipCss, T['clip']>;
+  clip(value: PropertyInput<'clip', T>): this {
+    this.write('clip', 'clip', value);
+    return this;
+  }
   /**
    * 通过基本形状、路径或引用裁剪元素的可见区域。（clip-path）
-   *
-   * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/clip-path
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.clipPath("inherit"));
    */
-  declare readonly clipPath: KeywordAuthor<group2.ClipPathCss, T['clipPath']>;
+  clipPath(value: PropertyInput<'clipPath', T>): this {
+    this.write('clipPath', 'clip-path', value);
+    return this;
+  }
   /**
    * 设置 SVG 裁剪路径判断内部区域所用的填充规则。（clip-rule）
-   *
-   * CSS 初始值：`nonzero`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/clip-rule
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.clipRule("inherit"));
    */
-  declare readonly clipRule: KeywordAuthor<group2.ClipRuleCss, T['clipRule']>;
+  clipRule(value: PropertyInput<'clipRule', T>): this {
+    this.write('clipRule', 'clip-rule', value);
+    return this;
+  }
   /**
    * 设置文字前景色，同时作为 currentColor 的来源。（color）
    *
    * 改变文字和 currentColor 的来源，不会自动改变背景。颜色函数方法返回完整 color 声明。
-   *
-   * CSS 初始值：`canvastext`（不同于浏览器默认样式表）。
-   * @example
-   * s.color.rgb(255, 0, 0, 0.5) // color:rgb(255 0 0 / 0.5);
-   * @example
-   * s.color.oklch(0.7, 0.15, 250) // color:oklch(0.7 0.15 250);
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/color
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.color("inherit"));
    */
-  declare readonly color: KeywordAuthor<group2.ColorCss, T['color']>;
+  color(value: PropertyInput<'color', T>): this {
+    this.write('color', 'color', value);
+    return this;
+  }
   /**
    * 控制输出设备对颜色的自动调整；这是 print-color-adjust 的旧名称。（color-adjust）
    *
    * CSS 初始值：`economy`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/print-color-adjust
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.colorAdjust("inherit"));
    */
-  declare readonly colorAdjust: KeywordAuthor<group2.ColorAdjustCss, T['colorAdjust']>;
+  colorAdjust(value: PropertyInput<'colorAdjust', T>): this {
+    this.write('colorAdjust', 'color-adjust', value);
+    return this;
+  }
   /**
    * 设置 SVG 图形颜色插值所用的色彩空间。（color-interpolation）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/color-interpolation
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.colorInterpolation("inherit"));
    */
-  declare readonly colorInterpolation: KeywordAuthor<
-    group2.ColorInterpolationCss,
-    T['colorInterpolation']
-  >;
+  colorInterpolation(value: PropertyInput<'colorInterpolation', T>): this {
+    this.write('colorInterpolation', 'color-interpolation', value);
+    return this;
+  }
   /**
    * 设置 SVG 滤镜效果进行颜色计算时所用的色彩空间。（color-interpolation-filters）
    *
    * CSS 初始值：`linearRGB`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/color-interpolation-filters
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.colorInterpolationFilters("inherit"));
    */
-  declare readonly colorInterpolationFilters: KeywordAuthor<
-    group2.ColorInterpolationFiltersCss,
-    T['colorInterpolationFilters']
-  >;
+  colorInterpolationFilters(value: PropertyInput<'colorInterpolationFilters', T>): this {
+    this.write('colorInterpolationFilters', 'color-interpolation-filters', value);
+    return this;
+  }
   /**
    * 向 SVG 渲染器提供颜色绘制质量与速度之间的偏好。（color-rendering）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/color-rendering
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.colorRendering("inherit"));
    */
-  declare readonly colorRendering: KeywordAuthor<group2.ColorRenderingCss, T['colorRendering']>;
+  colorRendering(value: PropertyInput<'colorRendering', T>): this {
+    this.write('colorRendering', 'color-rendering', value);
+    return this;
+  }
   /**
    * 声明元素支持的配色方案，影响原生控件、滚动条等浏览器绘制内容。（color-scheme）
    *
@@ -1259,74 +1600,140 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/color-scheme
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.colorScheme("inherit"));
    */
-  declare readonly colorScheme: KeywordAuthor<group2.ColorSchemeCss, T['colorScheme']>;
+  colorScheme(value: PropertyInput<'colorScheme', T>): this {
+    this.write('colorScheme', 'color-scheme', value);
+    return this;
+  }
   /**
    * 设置多栏布局的目标栏数。（column-count）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/column-count
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.columnCount("inherit"));
    */
-  declare readonly columnCount: KeywordAuthor<group2.ColumnCountCss, T['columnCount']>;
+  columnCount(value: PropertyInput<'columnCount', T>): this {
+    this.write('columnCount', 'column-count', value);
+    return this;
+  }
   /**
    * 设置多栏内容顺序填充还是尽量均衡栏高。（column-fill）
    *
    * CSS 初始值：`balance`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/column-fill
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.columnFill("inherit"));
    */
-  declare readonly columnFill: KeywordAuthor<group2.ColumnFillCss, T['columnFill']>;
+  columnFill(value: PropertyInput<'columnFill', T>): this {
+    this.write('columnFill', 'column-fill', value);
+    return this;
+  }
   /**
    * 设置布局中相邻列之间的间距。（column-gap）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/column-gap
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.columnGap("inherit"));
    */
-  declare readonly columnGap: KeywordAuthor<group2.ColumnGapCss, T['columnGap']>;
+  columnGap(value: PropertyInput<'columnGap', T>): this {
+    this.write('columnGap', 'column-gap', value);
+    return this;
+  }
   /**
    * 设置多栏之间分隔线的宽度、线型和颜色。（column-rule）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/column-rule
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.columnRule("inherit"));
    */
-  declare readonly columnRule: KeywordAuthor<group2.ColumnRuleCss, T['columnRule']>;
+  columnRule(value: PropertyInput<'columnRule', T>): this {
+    this.write('columnRule', 'column-rule', value);
+    return this;
+  }
   /**
    * 设置多栏分隔线的颜色。（column-rule-color）
    *
    * CSS 初始值：`currentcolor`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/column-rule-color
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.columnRuleColor("inherit"));
    */
-  declare readonly columnRuleColor: KeywordAuthor<group2.ColumnRuleColorCss, T['columnRuleColor']>;
+  columnRuleColor(value: PropertyInput<'columnRuleColor', T>): this {
+    this.write('columnRuleColor', 'column-rule-color', value);
+    return this;
+  }
   /**
    * 设置多栏分隔线的线型。（column-rule-style）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/column-rule-style
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.columnRuleStyle("inherit"));
    */
-  declare readonly columnRuleStyle: KeywordAuthor<group2.ColumnRuleStyleCss, T['columnRuleStyle']>;
+  columnRuleStyle(value: PropertyInput<'columnRuleStyle', T>): this {
+    this.write('columnRuleStyle', 'column-rule-style', value);
+    return this;
+  }
   /**
    * 设置多栏分隔线的宽度。（column-rule-width）
    *
    * CSS 初始值：`medium`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/column-rule-width
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.columnRuleWidth("inherit"));
    */
-  declare readonly columnRuleWidth: KeywordAuthor<group2.ColumnRuleWidthCss, T['columnRuleWidth']>;
+  columnRuleWidth(value: PropertyInput<'columnRuleWidth', T>): this {
+    this.write('columnRuleWidth', 'column-rule-width', value);
+    return this;
+  }
   /**
    * 设置多栏布局中的元素是否跨越所有栏。（column-span）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/column-span
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.columnSpan("inherit"));
    */
-  declare readonly columnSpan: KeywordAuthor<group2.ColumnSpanCss, T['columnSpan']>;
+  columnSpan(value: PropertyInput<'columnSpan', T>): this {
+    this.write('columnSpan', 'column-span', value);
+    return this;
+  }
   /**
    * 设置多栏布局的首选栏宽，实际栏宽由容器空间决定。（column-width）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/column-width
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.columnWidth("inherit"));
    */
-  declare readonly columnWidth: KeywordAuthor<group2.ColumnWidthCss, T['columnWidth']>;
+  columnWidth(value: PropertyInput<'columnWidth', T>): this {
+    this.write('columnWidth', 'column-width', value);
+    return this;
+  }
   /**
    * 同时设置多栏布局的首选栏宽和目标栏数。（columns）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/columns
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.columns("inherit"));
    */
-  declare readonly columns: KeywordAuthor<group2.ColumnsCss, T['columns']>;
+  columns(value: PropertyInput<'columns', T>): this {
+    this.write('columns', 'columns', value);
+    return this;
+  }
   /**
    * 声明尺寸、布局、绘制或样式隔离，限制子树对外部的影响。（contain）
    *
@@ -1342,71 +1749,102 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：边界明确且尺寸、溢出行为经过验证的独立区域。
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
-   * @example
-   * s.contain.content
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/contain
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.contain("inherit"));
    */
-  declare readonly contain: KeywordAuthor<group2.ContainCss, T['contain']>;
+  contain(value: PropertyInput<'contain', T>): this {
+    this.write('contain', 'contain', value);
+    return this;
+  }
   /**
    * 设置块轴尺寸隔离或跳过内容渲染时使用的替代内部尺寸。（contain-intrinsic-block-size）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/contain-intrinsic-block-size
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.containIntrinsicBlockSize("inherit"));
    */
-  declare readonly containIntrinsicBlockSize: KeywordAuthor<
-    group2.ContainIntrinsicBlockSizeCss,
-    T['containIntrinsicBlockSize']
-  >;
+  containIntrinsicBlockSize(value: PropertyInput<'containIntrinsicBlockSize', T>): this {
+    this.write('containIntrinsicBlockSize', 'contain-intrinsic-block-size', value);
+    return this;
+  }
   /**
    * 设置高度隔离或跳过内容渲染时使用的替代内部高度。（contain-intrinsic-height）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/contain-intrinsic-height
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.containIntrinsicHeight("inherit"));
    */
-  declare readonly containIntrinsicHeight: KeywordAuthor<
-    group2.ContainIntrinsicHeightCss,
-    T['containIntrinsicHeight']
-  >;
+  containIntrinsicHeight(value: PropertyInput<'containIntrinsicHeight', T>): this {
+    this.write('containIntrinsicHeight', 'contain-intrinsic-height', value);
+    return this;
+  }
   /**
    * 设置行内轴尺寸隔离或跳过内容渲染时使用的替代内部尺寸。（contain-intrinsic-inline-size）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/contain-intrinsic-inline-size
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.containIntrinsicInlineSize("inherit"));
    */
-  declare readonly containIntrinsicInlineSize: KeywordAuthor<
-    group2.ContainIntrinsicInlineSizeCss,
-    T['containIntrinsicInlineSize']
-  >;
+  containIntrinsicInlineSize(value: PropertyInput<'containIntrinsicInlineSize', T>): this {
+    this.write('containIntrinsicInlineSize', 'contain-intrinsic-inline-size', value);
+    return this;
+  }
   /**
    * 集中设置尺寸隔离时使用的替代内部宽高。（contain-intrinsic-size）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/contain-intrinsic-size
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.containIntrinsicSize("inherit"));
    */
-  declare readonly containIntrinsicSize: KeywordAuthor<
-    group2.ContainIntrinsicSizeCss,
-    T['containIntrinsicSize']
-  >;
+  containIntrinsicSize(value: PropertyInput<'containIntrinsicSize', T>): this {
+    this.write('containIntrinsicSize', 'contain-intrinsic-size', value);
+    return this;
+  }
   /**
    * 设置宽度隔离或跳过内容渲染时使用的替代内部宽度。（contain-intrinsic-width）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/contain-intrinsic-width
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.containIntrinsicWidth("inherit"));
    */
-  declare readonly containIntrinsicWidth: KeywordAuthor<
-    group2.ContainIntrinsicWidthCss,
-    T['containIntrinsicWidth']
-  >;
+  containIntrinsicWidth(value: PropertyInput<'containIntrinsicWidth', T>): this {
+    this.write('containIntrinsicWidth', 'contain-intrinsic-width', value);
+    return this;
+  }
   /**
    * 同时声明查询容器的名称和类型。（container）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/container
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.container("inherit"));
    */
-  declare readonly container: KeywordAuthor<group2.ContainerCss, T['container']>;
+  container(value: PropertyInput<'container', T>): this {
+    this.write('container', 'container', value);
+    return this;
+  }
   /**
    * 为查询容器命名，供 @container 条件规则选择。（container-name）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/container-name
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.containerName("inherit"));
    */
-  declare readonly containerName: KeywordAuthor<group2.ContainerNameCss, T['containerName']>;
+  containerName(value: PropertyInput<'containerName', T>): this {
+    this.write('containerName', 'container-name', value);
+    return this;
+  }
   /**
    * 建立指定类型的查询容器，并施加所需的隔离行为。（container-type）
    *
@@ -1420,18 +1858,28 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：让组件按所在容器尺寸响应，而不是只按视口响应。
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
-   * @example
-   * s.containerType.inlineSize
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/container-type
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.containerType("inherit"));
    */
-  declare readonly containerType: KeywordAuthor<group2.ContainerTypeCss, T['containerType']>;
+  containerType(value: PropertyInput<'containerType', T>): this {
+    this.write('containerType', 'container-type', value);
+    return this;
+  }
   /**
    * 设置生成内容、替换内容或伪元素的内容。（content）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/content
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.content("inherit"));
    */
-  declare readonly content: KeywordAuthor<group2.ContentCss, T['content']>;
+  content(value: PropertyInput<'content', T>): this {
+    this.write('content', 'content', value);
+    return this;
+  }
   /**
    * 控制是否渲染元素内容，并允许浏览器跳过暂时不可见的子树。（content-visibility）
    *
@@ -1445,73 +1893,115 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：页面中较长、暂时位于视口外的独立内容区域。
    *
    * CSS 初始值：`visible`（不同于浏览器默认样式表）。
-   * @example
-   * s.contentVisibility.auto
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/content-visibility
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.contentVisibility("inherit"));
    */
-  declare readonly contentVisibility: KeywordAuthor<
-    group2.ContentVisibilityCss,
-    T['contentVisibility']
-  >;
+  contentVisibility(value: PropertyInput<'contentVisibility', T>): this {
+    this.write('contentVisibility', 'content-visibility', value);
+    return this;
+  }
   /**
    * 增加或减少指定 CSS 计数器的值。（counter-increment）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/counter-increment
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.counterIncrement("inherit"));
    */
-  declare readonly counterIncrement: KeywordAuthor<
-    group2.CounterIncrementCss,
-    T['counterIncrement']
-  >;
+  counterIncrement(value: PropertyInput<'counterIncrement', T>): this {
+    this.write('counterIncrement', 'counter-increment', value);
+    return this;
+  }
   /**
    * 创建或重置 CSS 计数器。（counter-reset）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/counter-reset
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.counterReset("inherit"));
    */
-  declare readonly counterReset: KeywordAuthor<group2.CounterResetCss, T['counterReset']>;
+  counterReset(value: PropertyInput<'counterReset', T>): this {
+    this.write('counterReset', 'counter-reset', value);
+    return this;
+  }
   /**
    * 设置已有 CSS 计数器的值，必要时创建计数器。（counter-set）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/counter-set
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.counterSet("inherit"));
    */
-  declare readonly counterSet: KeywordAuthor<group2.CounterSetCss, T['counterSet']>;
+  counterSet(value: PropertyInput<'counterSet', T>): this {
+    this.write('counterSet', 'counter-set', value);
+    return this;
+  }
   /**
    * 设置指针位于元素上方时显示的光标。（cursor）
-   *
-   * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/cursor
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.cursor("inherit"));
    */
-  declare readonly cursor: KeywordAuthor<group2.CursorCss, T['cursor']>;
+  cursor(value: PropertyInput<'cursor', T>): this {
+    this.write('cursor', 'cursor', value);
+    return this;
+  }
   /**
    * 设置 SVG 圆或椭圆中心的横坐标。（cx）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/cx
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.cx("inherit"));
    */
-  declare readonly cx: KeywordAuthor<group2.CxCss, T['cx']>;
+  cx(value: PropertyInput<'cx', T>): this {
+    this.write('cx', 'cx', value);
+    return this;
+  }
   /**
    * 设置 SVG 圆或椭圆中心的纵坐标。（cy）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/cy
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.cy("inherit"));
    */
-  declare readonly cy: KeywordAuthor<group2.CyCss, T['cy']>;
+  cy(value: PropertyInput<'cy', T>): this {
+    this.write('cy', 'cy', value);
+    return this;
+  }
   /**
    * 设置 SVG path 元素的路径数据。（d）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/d
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.d("inherit"));
    */
-  declare readonly d: KeywordAuthor<group2.DCss, T['d']>;
+  d(value: PropertyInput<'d', T>): this {
+    this.write('d', 'd', value);
+    return this;
+  }
   /**
    * 设置文本基本方向，参与双向文本及部分布局计算。（direction）
-   *
-   * CSS 初始值：`ltr`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/direction
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.direction("inherit"));
    */
-  declare readonly direction: KeywordAuthor<group2.DirectionCss, T['direction']>;
+  direction(value: PropertyInput<'direction', T>): this {
+    this.write('direction', 'direction', value);
+    return this;
+  }
   /**
    * 决定元素是否生成布局盒子，以及元素自身和内部内容如何排版。（display）
    *
@@ -1526,65 +2016,96 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * - `none`：不生成元素及其后代的布局盒子，通常也从可访问性树中移除。
    *
    * 适用场景：选择容器的布局方式；具体对齐、间距和换行由对应布局属性控制。
-   *
-   * CSS 初始值：`inline`（不同于浏览器默认样式表）。
-   * @example
-   * css(s.display.flex, s.alignItems.center, s.gap.rem(0.5))
    * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/Reference/Properties/display
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.display("inherit"));
    */
-  declare readonly display: KeywordAuthor<group2.DisplayCss, T['display']>;
+  display(value: PropertyInput<'display', T>): this {
+    this.write('display', 'display', value);
+    return this;
+  }
   /**
    * 选择 SVG 文本布局的主导基线及基线表。（dominant-baseline）
-   *
-   * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/dominant-baseline
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.dominantBaseline("inherit"));
    */
-  declare readonly dominantBaseline: KeywordAuthor<
-    group2.DominantBaselineCss,
-    T['dominantBaseline']
-  >;
+  dominantBaseline(value: PropertyInput<'dominantBaseline', T>): this {
+    this.write('dominantBaseline', 'dominant-baseline', value);
+    return this;
+  }
   /**
    * 控制分离边框表格中空单元格的边框和背景是否绘制。（empty-cells）
    *
    * CSS 初始值：`show`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/empty-cells
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.emptyCells("inherit"));
    */
-  declare readonly emptyCells: KeywordAuthor<group2.EmptyCellsCss, T['emptyCells']>;
+  emptyCells(value: PropertyInput<'emptyCells', T>): this {
+    this.write('emptyCells', 'empty-cells', value);
+    return this;
+  }
   /**
    * 控制表单控件采用固定默认尺寸还是根据内容调整尺寸。（field-sizing）
    *
    * CSS 初始值：`fixed`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/field-sizing
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fieldSizing("inherit"));
    */
-  declare readonly fieldSizing: KeywordAuthor<group2.FieldSizingCss, T['fieldSizing']>;
+  fieldSizing(value: PropertyInput<'fieldSizing', T>): this {
+    this.write('fieldSizing', 'field-sizing', value);
+    return this;
+  }
   /**
    * 设置 SVG 图形内部的填充绘制方式。（fill）
-   *
-   * CSS 初始值：`black`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/fill
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fill("inherit"));
    */
-  declare readonly fill: KeywordAuthor<group2.FillCss, T['fill']>;
+  fill(value: PropertyInput<'fill', T>): this {
+    this.write('fill', 'fill', value);
+    return this;
+  }
   /**
    * 设置 SVG 填充的不透明度，不影响描边。（fill-opacity）
-   *
-   * CSS 初始值：`1`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/fill-opacity
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fillOpacity("inherit"));
    */
-  declare readonly fillOpacity: KeywordAuthor<group2.FillOpacityCss, T['fillOpacity']>;
+  fillOpacity(value: PropertyInput<'fillOpacity', T>): this {
+    this.write('fillOpacity', 'fill-opacity', value);
+    return this;
+  }
   /**
    * 设置复杂 SVG 路径的内部区域判定规则。（fill-rule）
-   *
-   * CSS 初始值：`nonzero`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/fill-rule
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fillRule("inherit"));
    */
-  declare readonly fillRule: KeywordAuthor<group2.FillRuleCss, T['fillRule']>;
+  fillRule(value: PropertyInput<'fillRule', T>): this {
+    this.write('fillRule', 'fill-rule', value);
+    return this;
+  }
   /**
    * 对元素的最终图像应用模糊、亮度等滤镜。（filter）
-   *
-   * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/filter
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.filter("inherit"));
    */
-  declare readonly filter: KeywordAuthor<group2.FilterCss, T['filter']>;
+  filter(value: PropertyInput<'filter', T>): this {
+    this.write('filter', 'filter', value);
+    return this;
+  }
   /**
    * 集中设置弹性项目的增长系数、收缩系数和基础尺寸。（flex）
    *
@@ -1595,13 +2116,15 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * - `none`：等价于 0 0 auto：不增长也不收缩，保留自动基础尺寸。
    *
    * 适用场景：分配弹性布局中的剩余空间，或让项目保持自身尺寸。
-   * @example
-   * s.flex.raw('1 1 0%')
-   * @example
-   * s.flex.none
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/flex
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.flex("inherit"));
    */
-  declare readonly flex: KeywordAuthor<group2.FlexCss, T['flex']>;
+  flex(value: PropertyInput<'flex', T>): this {
+    this.write('flex', 'flex', value);
+    return this;
+  }
   /**
    * 设置弹性项目分配剩余空间之前的主轴基础尺寸。（flex-basis）
    *
@@ -1614,11 +2137,15 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：为侧栏、内容区或重复项目指定弹性分配的起始尺寸。
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
-   * @example
-   * s.flexBasis.rem(16)
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/flex-basis
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.flexBasis("inherit"));
    */
-  declare readonly flexBasis: KeywordAuthor<group2.FlexBasisCss, T['flexBasis']>;
+  flexBasis(value: PropertyInput<'flexBasis', T>): this {
+    this.write('flexBasis', 'flex-basis', value);
+    return this;
+  }
   /**
    * 设置弹性容器的主轴方向及项目排列方向。（flex-direction）
    *
@@ -1631,16 +2158,26 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * - `column-reverse`：反转块方向的视觉排列，不改变 DOM 顺序。
    *
    * CSS 初始值：`row`（不同于浏览器默认样式表）。
-   * @example
-   * css(s.display.flex, s.flexDirection.column, s.gap.rem(1))
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/flex-direction
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.flexDirection("inherit"));
    */
-  declare readonly flexDirection: KeywordAuthor<group2.FlexDirectionCss, T['flexDirection']>;
+  flexDirection(value: PropertyInput<'flexDirection', T>): this {
+    this.write('flexDirection', 'flex-direction', value);
+    return this;
+  }
   /**
    * 同时设置弹性布局的主轴方向和换行方式。（flex-flow）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/flex-flow
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.flexFlow("inherit"));
    */
-  declare readonly flexFlow: KeywordAuthor<group2.FlexFlowCss, T['flexFlow']>;
+  flexFlow(value: PropertyInput<'flexFlow', T>): this {
+    this.write('flexFlow', 'flex-flow', value);
+    return this;
+  }
   /**
    * 设置弹性项目分配正剩余空间时的增长系数。（flex-grow）
    *
@@ -1649,11 +2186,15 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：让主内容区填充工具栏或行布局的剩余空间。
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
-   * @example
-   * s.flexGrow.raw(1)
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/flex-grow
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.flexGrow("inherit"));
    */
-  declare readonly flexGrow: KeywordAuthor<group2.FlexGrowCss, T['flexGrow']>;
+  flexGrow(value: PropertyInput<'flexGrow', T>): this {
+    this.write('flexGrow', 'flex-grow', value);
+    return this;
+  }
   /**
    * 设置弹性项目空间不足时的收缩系数。（flex-shrink）
    *
@@ -1662,11 +2203,15 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：控制空间不足时是否允许缩小；设置为 0 可避免图标或固定控件收缩。
    *
    * CSS 初始值：`1`（不同于浏览器默认样式表）。
-   * @example
-   * s.flexShrink.raw(0)
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/flex-shrink
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.flexShrink("inherit"));
    */
-  declare readonly flexShrink: KeywordAuthor<group2.FlexShrinkCss, T['flexShrink']>;
+  flexShrink(value: PropertyInput<'flexShrink', T>): this {
+    this.write('flexShrink', 'flex-shrink', value);
+    return this;
+  }
   /**
    * 设置弹性项目是否换行，以及多行的排列方向。（flex-wrap）
    *
@@ -1678,256 +2223,378 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：标签、按钮等项目不足一行时允许分行。
    *
    * CSS 初始值：`nowrap`（不同于浏览器默认样式表）。
-   * @example
-   * css(s.display.flex, s.flexWrap.wrap, s.gap.rem(0.5))
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/flex-wrap
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.flexWrap("inherit"));
    */
-  declare readonly flexWrap: KeywordAuthor<group2.FlexWrapCss, T['flexWrap']>;
+  flexWrap(value: PropertyInput<'flexWrap', T>): this {
+    this.write('flexWrap', 'flex-wrap', value);
+    return this;
+  }
   /**
    * 将元素浮动到指定侧，使相邻行内内容围绕它排列。（float）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/float
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.float("inherit"));
    */
-  declare readonly float: KeywordAuthor<group2.FloatCss, T['float']>;
+  float(value: PropertyInput<'float', T>): this {
+    this.write('float', 'float', value);
+    return this;
+  }
   /**
    * 设置 SVG feFlood 或相关滤镜的洪泛颜色。（flood-color）
-   *
-   * CSS 初始值：`black`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/flood-color
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.floodColor("inherit"));
    */
-  declare readonly floodColor: KeywordAuthor<group2.FloodColorCss, T['floodColor']>;
+  floodColor(value: PropertyInput<'floodColor', T>): this {
+    this.write('floodColor', 'flood-color', value);
+    return this;
+  }
   /**
    * 设置 SVG 洪泛滤镜颜色的不透明度。（flood-opacity）
-   *
-   * CSS 初始值：`black`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/flood-opacity
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.floodOpacity("inherit"));
    */
-  declare readonly floodOpacity: KeywordAuthor<group2.FloodOpacityCss, T['floodOpacity']>;
+  floodOpacity(value: PropertyInput<'floodOpacity', T>): this {
+    this.write('floodOpacity', 'flood-opacity', value);
+    return this;
+  }
   /**
    * 集中设置字体样式、粗细、大小、行高和字体族等信息。（font）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.font("inherit"));
    */
-  declare readonly font: KeywordAuthor<group2.FontCss, T['font']>;
+  font(value: PropertyInput<'font', T>): this {
+    this.write('font', 'font', value);
+    return this;
+  }
   /**
    * 设置按优先级排列的字体族及通用字体回退。（font-family）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-family
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fontFamily("inherit"));
    */
-  declare readonly fontFamily: KeywordAuthor<group2.FontFamilyCss, T['fontFamily']>;
+  fontFamily(value: PropertyInput<'fontFamily', T>): this {
+    this.write('fontFamily', 'font-family', value);
+    return this;
+  }
   /**
    * 通过 OpenType 特性标签控制字体的底层排版功能。（font-feature-settings）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-feature-settings
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fontFeatureSettings("inherit"));
    */
-  declare readonly fontFeatureSettings: KeywordAuthor<
-    group2.FontFeatureSettingsCss,
-    T['fontFeatureSettings']
-  >;
+  fontFeatureSettings(value: PropertyInput<'fontFeatureSettings', T>): this {
+    this.write('fontFeatureSettings', 'font-feature-settings', value);
+    return this;
+  }
   /**
    * 设置是否应用字体提供的字偶间距调整。（font-kerning）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-kerning
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fontKerning("inherit"));
    */
-  declare readonly fontKerning: KeywordAuthor<group2.FontKerningCss, T['fontKerning']>;
+  fontKerning(value: PropertyInput<'fontKerning', T>): this {
+    this.write('fontKerning', 'font-kerning', value);
+    return this;
+  }
   /**
    * 覆盖字体排版使用的语言系统标签，不改变文本实际语言。（font-language-override）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-language-override
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fontLanguageOverride("inherit"));
    */
-  declare readonly fontLanguageOverride: KeywordAuthor<
-    group2.FontLanguageOverrideCss,
-    T['fontLanguageOverride']
-  >;
+  fontLanguageOverride(value: PropertyInput<'fontLanguageOverride', T>): this {
+    this.write('fontLanguageOverride', 'font-language-override', value);
+    return this;
+  }
   /**
    * 控制支持光学尺寸轴的字体是否按字号优化字形。（font-optical-sizing）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-optical-sizing
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fontOpticalSizing("inherit"));
    */
-  declare readonly fontOpticalSizing: KeywordAuthor<
-    group2.FontOpticalSizingCss,
-    T['fontOpticalSizing']
-  >;
+  fontOpticalSizing(value: PropertyInput<'fontOpticalSizing', T>): this {
+    this.write('fontOpticalSizing', 'font-optical-sizing', value);
+    return this;
+  }
   /**
    * 选择或覆盖彩色字体使用的调色板。（font-palette）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-palette
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fontPalette("inherit"));
    */
-  declare readonly fontPalette: KeywordAuthor<group2.FontPaletteCss, T['fontPalette']>;
+  fontPalette(value: PropertyInput<'fontPalette', T>): this {
+    this.write('fontPalette', 'font-palette', value);
+    return this;
+  }
   /**
    * 设置字体大小，也影响 em 等相对单位的计算。（font-size）
    *
    * 改变字形大小，并影响 em 等相对长度；行盒高度还由 line-height 决定。
    *
    * 适用场景：建立文字层级，根字号相对尺寸可用 rem 表达。
-   *
-   * CSS 初始值：`medium`（不同于浏览器默认样式表）。
-   * @example
-   * css(s.fontSize.rem(1), s.lineHeight.raw(1.5))
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-size
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fontSize("inherit"));
    */
-  declare readonly fontSize: KeywordAuthor<group2.FontSizeCss, T['fontSize']>;
+  fontSize(value: PropertyInput<'fontSize', T>): this {
+    this.write('fontSize', 'font-size', value);
+    return this;
+  }
   /**
    * 按字体特征尺寸调整字号，减少字体回退造成的视觉变化。（font-size-adjust）
-   *
-   * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-size-adjust
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fontSizeAdjust("inherit"));
    */
-  declare readonly fontSizeAdjust: KeywordAuthor<group2.FontSizeAdjustCss, T['fontSizeAdjust']>;
+  fontSizeAdjust(value: PropertyInput<'fontSizeAdjust', T>): this {
+    this.write('fontSizeAdjust', 'font-size-adjust', value);
+    return this;
+  }
   /**
    * 控制字体平滑的非标准属性；使用前核对目标浏览器。（font-smooth）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-smooth
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fontSmooth("inherit"));
    */
-  declare readonly fontSmooth: KeywordAuthor<group2.FontSmoothCss, T['fontSmooth']>;
+  fontSmooth(value: PropertyInput<'fontSmooth', T>): this {
+    this.write('fontSmooth', 'font-smooth', value);
+    return this;
+  }
   /**
    * 选择字体的宽窄字面；font-width 是其较新的名称。（font-stretch）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-stretch
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fontStretch("inherit"));
    */
-  declare readonly fontStretch: KeywordAuthor<group2.FontStretchCss, T['fontStretch']>;
+  fontStretch(value: PropertyInput<'fontStretch', T>): this {
+    this.write('fontStretch', 'font-stretch', value);
+    return this;
+  }
   /**
    * 选择正常、斜体或倾斜字体样式。（font-style）
-   *
-   * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-style
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fontStyle("inherit"));
    */
-  declare readonly fontStyle: KeywordAuthor<group2.FontStyleCss, T['fontStyle']>;
+  fontStyle(value: PropertyInput<'fontStyle', T>): this {
+    this.write('fontStyle', 'font-style', value);
+    return this;
+  }
   /**
    * 控制缺少真实字体字形时浏览器可否合成粗体、斜体等样式。（font-synthesis）
    *
    * CSS 初始值：`weight style small-caps position `（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-synthesis
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fontSynthesis("inherit"));
    */
-  declare readonly fontSynthesis: KeywordAuthor<group2.FontSynthesisCss, T['fontSynthesis']>;
+  fontSynthesis(value: PropertyInput<'fontSynthesis', T>): this {
+    this.write('fontSynthesis', 'font-synthesis', value);
+    return this;
+  }
   /**
    * 控制浏览器是否可以合成上标和下标字形。（font-synthesis-position）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-synthesis-position
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fontSynthesisPosition("inherit"));
    */
-  declare readonly fontSynthesisPosition: KeywordAuthor<
-    group2.FontSynthesisPositionCss,
-    T['fontSynthesisPosition']
-  >;
+  fontSynthesisPosition(value: PropertyInput<'fontSynthesisPosition', T>): this {
+    this.write('fontSynthesisPosition', 'font-synthesis-position', value);
+    return this;
+  }
   /**
    * 控制浏览器是否可以合成小型大写字形。（font-synthesis-small-caps）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-synthesis-small-caps
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fontSynthesisSmallCaps("inherit"));
    */
-  declare readonly fontSynthesisSmallCaps: KeywordAuthor<
-    group2.FontSynthesisSmallCapsCss,
-    T['fontSynthesisSmallCaps']
-  >;
+  fontSynthesisSmallCaps(value: PropertyInput<'fontSynthesisSmallCaps', T>): this {
+    this.write('fontSynthesisSmallCaps', 'font-synthesis-small-caps', value);
+    return this;
+  }
   /**
    * 控制浏览器是否可以合成倾斜字体。（font-synthesis-style）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-synthesis-style
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fontSynthesisStyle("inherit"));
    */
-  declare readonly fontSynthesisStyle: KeywordAuthor<
-    group2.FontSynthesisStyleCss,
-    T['fontSynthesisStyle']
-  >;
+  fontSynthesisStyle(value: PropertyInput<'fontSynthesisStyle', T>): this {
+    this.write('fontSynthesisStyle', 'font-synthesis-style', value);
+    return this;
+  }
   /**
    * 控制浏览器是否可以合成加粗字体。（font-synthesis-weight）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-synthesis-weight
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fontSynthesisWeight("inherit"));
    */
-  declare readonly fontSynthesisWeight: KeywordAuthor<
-    group2.FontSynthesisWeightCss,
-    T['fontSynthesisWeight']
-  >;
+  fontSynthesisWeight(value: PropertyInput<'fontSynthesisWeight', T>): this {
+    this.write('fontSynthesisWeight', 'font-synthesis-weight', value);
+    return this;
+  }
   /**
    * 集中设置字体的连字、大小写、数字及其他变体。（font-variant）
-   *
-   * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variant
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fontVariant("inherit"));
    */
-  declare readonly fontVariant: KeywordAuthor<group2.FontVariantCss, T['fontVariant']>;
+  fontVariant(value: PropertyInput<'fontVariant', T>): this {
+    this.write('fontVariant', 'font-variant', value);
+    return this;
+  }
   /**
    * 选择字体提供的替代字形。（font-variant-alternates）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variant-alternates
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fontVariantAlternates("inherit"));
    */
-  declare readonly fontVariantAlternates: KeywordAuthor<
-    group2.FontVariantAlternatesCss,
-    T['fontVariantAlternates']
-  >;
+  fontVariantAlternates(value: PropertyInput<'fontVariantAlternates', T>): this {
+    this.write('fontVariantAlternates', 'font-variant-alternates', value);
+    return this;
+  }
   /**
    * 设置小型大写等大小写字形变体。（font-variant-caps）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variant-caps
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fontVariantCaps("inherit"));
    */
-  declare readonly fontVariantCaps: KeywordAuthor<group2.FontVariantCapsCss, T['fontVariantCaps']>;
+  fontVariantCaps(value: PropertyInput<'fontVariantCaps', T>): this {
+    this.write('fontVariantCaps', 'font-variant-caps', value);
+    return this;
+  }
   /**
    * 设置东亚文字字形及宽度变体。（font-variant-east-asian）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variant-east-asian
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fontVariantEastAsian("inherit"));
    */
-  declare readonly fontVariantEastAsian: KeywordAuthor<
-    group2.FontVariantEastAsianCss,
-    T['fontVariantEastAsian']
-  >;
+  fontVariantEastAsian(value: PropertyInput<'fontVariantEastAsian', T>): this {
+    this.write('fontVariantEastAsian', 'font-variant-east-asian', value);
+    return this;
+  }
   /**
    * 设置字符优先采用文本字形还是 emoji 字形。（font-variant-emoji）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variant-emoji
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fontVariantEmoji("inherit"));
    */
-  declare readonly fontVariantEmoji: KeywordAuthor<
-    group2.FontVariantEmojiCss,
-    T['fontVariantEmoji']
-  >;
+  fontVariantEmoji(value: PropertyInput<'fontVariantEmoji', T>): this {
+    this.write('fontVariantEmoji', 'font-variant-emoji', value);
+    return this;
+  }
   /**
    * 设置字体连字的启用方式。（font-variant-ligatures）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variant-ligatures
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fontVariantLigatures("inherit"));
    */
-  declare readonly fontVariantLigatures: KeywordAuthor<
-    group2.FontVariantLigaturesCss,
-    T['fontVariantLigatures']
-  >;
+  fontVariantLigatures(value: PropertyInput<'fontVariantLigatures', T>): this {
+    this.write('fontVariantLigatures', 'font-variant-ligatures', value);
+    return this;
+  }
   /**
    * 设置数字的等宽、比例、分数及其他排版变体。（font-variant-numeric）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variant-numeric
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fontVariantNumeric("inherit"));
    */
-  declare readonly fontVariantNumeric: KeywordAuthor<
-    group2.FontVariantNumericCss,
-    T['fontVariantNumeric']
-  >;
+  fontVariantNumeric(value: PropertyInput<'fontVariantNumeric', T>): this {
+    this.write('fontVariantNumeric', 'font-variant-numeric', value);
+    return this;
+  }
   /**
    * 选择字体提供的上标或下标字形。（font-variant-position）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variant-position
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fontVariantPosition("inherit"));
    */
-  declare readonly fontVariantPosition: KeywordAuthor<
-    group2.FontVariantPositionCss,
-    T['fontVariantPosition']
-  >;
+  fontVariantPosition(value: PropertyInput<'fontVariantPosition', T>): this {
+    this.write('fontVariantPosition', 'font-variant-position', value);
+    return this;
+  }
   /**
    * 直接设置可变字体各个轴的数值。（font-variation-settings）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-variation-settings
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fontVariationSettings("inherit"));
    */
-  declare readonly fontVariationSettings: KeywordAuthor<
-    group2.FontVariationSettingsCss,
-    T['fontVariationSettings']
-  >;
+  fontVariationSettings(value: PropertyInput<'fontVariationSettings', T>): this {
+    this.write('fontVariationSettings', 'font-variation-settings', value);
+    return this;
+  }
   /**
    * 设置字体粗细，实际可用字重取决于字体。（font-weight）
    *
@@ -1940,66 +2607,102 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * - `lighter`：相对于继承字重选择更细的字重，不是简单减一个固定数值。
    *
    * 适用场景：正文、强调文字和标题的视觉层级。
-   *
-   * CSS 初始值：`normal`（不同于浏览器默认样式表）。
-   * @example
-   * s.fontWeight.raw(600)
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-weight
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fontWeight("inherit"));
    */
-  declare readonly fontWeight: KeywordAuthor<group2.FontWeightCss, T['fontWeight']>;
+  fontWeight(value: PropertyInput<'fontWeight', T>): this {
+    this.write('fontWeight', 'font-weight', value);
+    return this;
+  }
   /**
    * 选择字体的宽窄字面，不是通过变换拉伸元素。（font-width）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/font-width
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.fontWidth("inherit"));
    */
-  declare readonly fontWidth: KeywordAuthor<group2.FontWidthCss, T['fontWidth']>;
+  fontWidth(value: PropertyInput<'fontWidth', T>): this {
+    this.write('fontWidth', 'font-width', value);
+    return this;
+  }
   /**
    * 控制元素是否参与系统强制颜色模式的自动替换。（forced-color-adjust）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/forced-color-adjust
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.forcedColorAdjust("inherit"));
    */
-  declare readonly forcedColorAdjust: KeywordAuthor<
-    group2.ForcedColorAdjustCss,
-    T['forcedColorAdjust']
-  >;
+  forcedColorAdjust(value: PropertyInput<'forcedColorAdjust', T>): this {
+    this.write('forcedColorAdjust', 'forced-color-adjust', value);
+    return this;
+  }
   /**
    * 设置行与列之间的间距，用于 Grid、Flex 和多栏等布局。（gap）
    *
    * 两个值依次为 row-gap 和 column-gap；在 Flex 中对应项目还是行间距取决于 flex-direction。它不增加容器外缘的间距。
    *
    * 适用场景：给 Flex/Grid 项目设置统一间隔，避免逐个项目添加 margin。
-   * @example
-   * s.gap.px(8, 16) // gap:8px 16px;
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/gap
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.gap("inherit"));
    */
-  declare readonly gap: KeywordAuthor<group3.GapCss, T['gap']>;
+  gap(value: PropertyInput<'gap', T>): this {
+    this.write('gap', 'gap', value);
+    return this;
+  }
   /**
    * 设置竖排 SVG 字形方向的旧属性；新代码优先考虑 text-orientation。（glyph-orientation-vertical）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/glyph-orientation-vertical
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.glyphOrientationVertical("inherit"));
    */
-  declare readonly glyphOrientationVertical: KeywordAuthor<
-    group3.GlyphOrientationVerticalCss,
-    T['glyphOrientationVertical']
-  >;
+  glyphOrientationVertical(value: PropertyInput<'glyphOrientationVertical', T>): this {
+    this.write('glyphOrientationVertical', 'glyph-orientation-vertical', value);
+    return this;
+  }
   /**
    * 集中设置显式和隐式网格的轨道、区域及自动放置方式。（grid）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.grid("inherit"));
    */
-  declare readonly grid: KeywordAuthor<group3.GridCss, T['grid']>;
+  grid(value: PropertyInput<'grid', T>): this {
+    this.write('grid', 'grid', value);
+    return this;
+  }
   /**
    * 设置网格项目的区域名，或行起点、列起点、行终点、列终点。（grid-area）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-area
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.gridArea("inherit"));
    */
-  declare readonly gridArea: KeywordAuthor<group3.GridAreaCss, T['gridArea']>;
+  gridArea(value: PropertyInput<'gridArea', T>): this {
+    this.write('gridArea', 'grid-area', value);
+    return this;
+  }
   /**
    * 设置隐式生成的网格列尺寸。（grid-auto-columns）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-auto-columns
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.gridAutoColumns("inherit"));
    */
-  declare readonly gridAutoColumns: KeywordAuthor<group3.GridAutoColumnsCss, T['gridAutoColumns']>;
+  gridAutoColumns(value: PropertyInput<'gridAutoColumns', T>): this {
+    this.write('gridAutoColumns', 'grid-auto-columns', value);
+    return this;
+  }
   /**
    * 设置网格自动放置算法的行列方向及是否密集填洞。（grid-auto-flow）
    *
@@ -2013,71 +2716,126 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：控制未明确指定位置的网格项目如何自动填入轨道。
    *
    * CSS 初始值：`row`（不同于浏览器默认样式表）。
-   * @example
-   * css(s.display.grid, s.gridAutoFlow.row)
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-auto-flow
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.gridAutoFlow("inherit"));
    */
-  declare readonly gridAutoFlow: KeywordAuthor<group3.GridAutoFlowCss, T['gridAutoFlow']>;
+  gridAutoFlow(value: PropertyInput<'gridAutoFlow', T>): this {
+    this.write('gridAutoFlow', 'grid-auto-flow', value);
+    return this;
+  }
   /**
    * 设置隐式生成的网格行尺寸。（grid-auto-rows）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-auto-rows
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.gridAutoRows("inherit"));
    */
-  declare readonly gridAutoRows: KeywordAuthor<group3.GridAutoRowsCss, T['gridAutoRows']>;
+  gridAutoRows(value: PropertyInput<'gridAutoRows', T>): this {
+    this.write('gridAutoRows', 'grid-auto-rows', value);
+    return this;
+  }
   /**
    * 设置网格项目的列起点和列终点。（grid-column）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-column
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.gridColumn("inherit"));
    */
-  declare readonly gridColumn: KeywordAuthor<group3.GridColumnCss, T['gridColumn']>;
+  gridColumn(value: PropertyInput<'gridColumn', T>): this {
+    this.write('gridColumn', 'grid-column', value);
+    return this;
+  }
   /**
    * 设置网格项目的列终止线或跨越范围。（grid-column-end）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-column-end
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.gridColumnEnd("inherit"));
    */
-  declare readonly gridColumnEnd: KeywordAuthor<group3.GridColumnEndCss, T['gridColumnEnd']>;
+  gridColumnEnd(value: PropertyInput<'gridColumnEnd', T>): this {
+    this.write('gridColumnEnd', 'grid-column-end', value);
+    return this;
+  }
   /**
    * 设置网格项目的列起始线或跨越范围。（grid-column-start）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-column-start
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.gridColumnStart("inherit"));
    */
-  declare readonly gridColumnStart: KeywordAuthor<group3.GridColumnStartCss, T['gridColumnStart']>;
+  gridColumnStart(value: PropertyInput<'gridColumnStart', T>): this {
+    this.write('gridColumnStart', 'grid-column-start', value);
+    return this;
+  }
   /**
    * 设置网格项目的行起点和行终点。（grid-row）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-row
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.gridRow("inherit"));
    */
-  declare readonly gridRow: KeywordAuthor<group3.GridRowCss, T['gridRow']>;
+  gridRow(value: PropertyInput<'gridRow', T>): this {
+    this.write('gridRow', 'grid-row', value);
+    return this;
+  }
   /**
    * 设置网格项目的行终止线或跨越范围。（grid-row-end）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-row-end
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.gridRowEnd("inherit"));
    */
-  declare readonly gridRowEnd: KeywordAuthor<group3.GridRowEndCss, T['gridRowEnd']>;
+  gridRowEnd(value: PropertyInput<'gridRowEnd', T>): this {
+    this.write('gridRowEnd', 'grid-row-end', value);
+    return this;
+  }
   /**
    * 设置网格项目的行起始线或跨越范围。（grid-row-start）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-row-start
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.gridRowStart("inherit"));
    */
-  declare readonly gridRowStart: KeywordAuthor<group3.GridRowStartCss, T['gridRowStart']>;
+  gridRowStart(value: PropertyInput<'gridRowStart', T>): this {
+    this.write('gridRowStart', 'grid-row-start', value);
+    return this;
+  }
   /**
    * 集中设置显式网格的行、列和命名区域。（grid-template）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-template
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.gridTemplate("inherit"));
    */
-  declare readonly gridTemplate: KeywordAuthor<group3.GridTemplateCss, T['gridTemplate']>;
+  gridTemplate(value: PropertyInput<'gridTemplate', T>): this {
+    this.write('gridTemplate', 'grid-template', value);
+    return this;
+  }
   /**
    * 用区域名称矩阵定义网格布局区域。（grid-template-areas）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-template-areas
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.gridTemplateAreas("inherit"));
    */
-  declare readonly gridTemplateAreas: KeywordAuthor<
-    group3.GridTemplateAreasCss,
-    T['gridTemplateAreas']
-  >;
+  gridTemplateAreas(value: PropertyInput<'gridTemplateAreas', T>): this {
+    this.write('gridTemplateAreas', 'grid-template-areas', value);
+    return this;
+  }
   /**
    * 定义显式网格的列轨道尺寸及网格线名称。（grid-template-columns）
    *
@@ -2086,14 +2844,15 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：响应式卡片、表单标签与输入框的列布局。
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
-   * @example
-   * s.gridTemplateColumns.repeat(3, 'minmax(0, 1fr)') // grid-template-columns:repeat(3, minmax(0, 1fr));
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-template-columns
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.gridTemplateColumns("inherit"));
    */
-  declare readonly gridTemplateColumns: KeywordAuthor<
-    group3.GridTemplateColumnsCss,
-    T['gridTemplateColumns']
-  >;
+  gridTemplateColumns(value: PropertyInput<'gridTemplateColumns', T>): this {
+    this.write('gridTemplateColumns', 'grid-template-columns', value);
+    return this;
+  }
   /**
    * 定义显式网格的行轨道尺寸及网格线名称。（grid-template-rows）
    *
@@ -2102,24 +2861,28 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：区分固定工具栏和可伸缩内容区域。
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
-   * @example
-   * s.gridTemplateRows.raw('auto minmax(0, 1fr)')
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-template-rows
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.gridTemplateRows("inherit"));
    */
-  declare readonly gridTemplateRows: KeywordAuthor<
-    group3.GridTemplateRowsCss,
-    T['gridTemplateRows']
-  >;
+  gridTemplateRows(value: PropertyInput<'gridTemplateRows', T>): this {
+    this.write('gridTemplateRows', 'grid-template-rows', value);
+    return this;
+  }
   /**
    * 控制标点是否可以悬挂在行盒边缘之外。（hanging-punctuation）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/hanging-punctuation
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.hangingPunctuation("inherit"));
    */
-  declare readonly hangingPunctuation: KeywordAuthor<
-    group3.HangingPunctuationCss,
-    T['hangingPunctuation']
-  >;
+  hangingPunctuation(value: PropertyInput<'hangingPunctuation', T>): this {
+    this.write('hangingPunctuation', 'hanging-punctuation', value);
+    return this;
+  }
   /**
    * 设置元素的物理高度，盒子范围受 box-sizing 影响。（height）
    *
@@ -2128,79 +2891,117 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：控制物理高度；滚动面板通常结合 max-height 和 overflow。
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
-   * @example
-   * css(s.maxHeight.rem(20), s.overflowY.auto)
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/height
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.height("inherit"));
    */
-  declare readonly height: KeywordAuthor<group3.HeightCss, T['height']>;
+  height(value: PropertyInput<'height', T>): this {
+    this.write('height', 'height', value);
+    return this;
+  }
   /**
    * 设置自动断词时插入的断字符号。（hyphenate-character）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/hyphenate-character
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.hyphenateCharacter("inherit"));
    */
-  declare readonly hyphenateCharacter: KeywordAuthor<
-    group3.HyphenateCharacterCss,
-    T['hyphenateCharacter']
-  >;
+  hyphenateCharacter(value: PropertyInput<'hyphenateCharacter', T>): this {
+    this.write('hyphenateCharacter', 'hyphenate-character', value);
+    return this;
+  }
   /**
    * 限制可断词的最小单词长度以及断点两侧的最少字符数。（hyphenate-limit-chars）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/hyphenate-limit-chars
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.hyphenateLimitChars("inherit"));
    */
-  declare readonly hyphenateLimitChars: KeywordAuthor<
-    group3.HyphenateLimitCharsCss,
-    T['hyphenateLimitChars']
-  >;
+  hyphenateLimitChars(value: PropertyInput<'hyphenateLimitChars', T>): this {
+    this.write('hyphenateLimitChars', 'hyphenate-limit-chars', value);
+    return this;
+  }
   /**
    * 设置文字断词和连字符插入的方式；自动断词依赖语言和词典。（hyphens）
    *
    * CSS 初始值：`manual`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/hyphens
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.hyphens("inherit"));
    */
-  declare readonly hyphens: KeywordAuthor<group3.HyphensCss, T['hyphens']>;
+  hyphens(value: PropertyInput<'hyphens', T>): this {
+    this.write('hyphens', 'hyphens', value);
+    return this;
+  }
   /**
    * 设置图像是否按元数据等信息调整方向。（image-orientation）
    *
    * CSS 初始值：`from-image`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/image-orientation
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.imageOrientation("inherit"));
    */
-  declare readonly imageOrientation: KeywordAuthor<
-    group3.ImageOrientationCss,
-    T['imageOrientation']
-  >;
+  imageOrientation(value: PropertyInput<'imageOrientation', T>): this {
+    this.write('imageOrientation', 'image-orientation', value);
+    return this;
+  }
   /**
    * 向浏览器指定图像缩放时的插值与清晰度偏好。（image-rendering）
-   *
-   * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/image-rendering
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.imageRendering("inherit"));
    */
-  declare readonly imageRendering: KeywordAuthor<group3.ImageRenderingCss, T['imageRendering']>;
+  imageRendering(value: PropertyInput<'imageRendering', T>): this {
+    this.write('imageRendering', 'image-rendering', value);
+    return this;
+  }
   /**
    * 设置图像的分辨率解释方式；使用前核对目标浏览器支持。（image-resolution）
    *
    * CSS 初始值：`1dppx`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/image-resolution
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.imageResolution("inherit"));
    */
-  declare readonly imageResolution: KeywordAuthor<group3.ImageResolutionCss, T['imageResolution']>;
+  imageResolution(value: PropertyInput<'imageResolution', T>): this {
+    this.write('imageResolution', 'image-resolution', value);
+    return this;
+  }
   /**
    * 设置段落首字下沉或抬升时占用的行数与对齐位置。（initial-letter）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/initial-letter
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.initialLetter("inherit"));
    */
-  declare readonly initialLetter: KeywordAuthor<group3.InitialLetterCss, T['initialLetter']>;
+  initialLetter(value: PropertyInput<'initialLetter', T>): this {
+    this.write('initialLetter', 'initial-letter', value);
+    return this;
+  }
   /**
    * 设置首字下沉时字形与正文使用的对齐基线。（initial-letter-align）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/initial-letter-align
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.initialLetterAlign("inherit"));
    */
-  declare readonly initialLetterAlign: KeywordAuthor<
-    group3.InitialLetterAlignCss,
-    T['initialLetterAlign']
-  >;
+  initialLetterAlign(value: PropertyInput<'initialLetterAlign', T>): this {
+    this.write('initialLetterAlign', 'initial-letter-align', value);
+    return this;
+  }
   /**
    * 设置逻辑行内轴尺寸；水平书写时通常对应宽度。（inline-size）
    *
@@ -2209,64 +3010,113 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：希望布局尺寸跟随书写模式变化的组件。
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
-   * @example
-   * s.inlineSize.rem(20)
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/inline-size
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.inlineSize("inherit"));
    */
-  declare readonly inlineSize: KeywordAuthor<group3.InlineSizeCss, T['inlineSize']>;
+  inlineSize(value: PropertyInput<'inlineSize', T>): this {
+    this.write('inlineSize', 'inline-size', value);
+    return this;
+  }
   /**
    * 同时设置定位元素的上、右、下、左偏移。（inset）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/inset
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.inset("inherit"));
    */
-  declare readonly inset: KeywordAuthor<group3.InsetCss, T['inset']>;
+  inset(value: PropertyInput<'inset', T>): this {
+    this.write('inset', 'inset', value);
+    return this;
+  }
   /**
    * 设置定位元素沿逻辑块轴的起始和结束偏移。（inset-block）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/inset-block
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.insetBlock("inherit"));
    */
-  declare readonly insetBlock: KeywordAuthor<group3.InsetBlockCss, T['insetBlock']>;
+  insetBlock(value: PropertyInput<'insetBlock', T>): this {
+    this.write('insetBlock', 'inset-block', value);
+    return this;
+  }
   /**
    * 设置定位元素在逻辑块轴结束侧的偏移。（inset-block-end）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/inset-block-end
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.insetBlockEnd("inherit"));
    */
-  declare readonly insetBlockEnd: KeywordAuthor<group3.InsetBlockEndCss, T['insetBlockEnd']>;
+  insetBlockEnd(value: PropertyInput<'insetBlockEnd', T>): this {
+    this.write('insetBlockEnd', 'inset-block-end', value);
+    return this;
+  }
   /**
    * 设置定位元素在逻辑块轴起始侧的偏移。（inset-block-start）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/inset-block-start
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.insetBlockStart("inherit"));
    */
-  declare readonly insetBlockStart: KeywordAuthor<group3.InsetBlockStartCss, T['insetBlockStart']>;
+  insetBlockStart(value: PropertyInput<'insetBlockStart', T>): this {
+    this.write('insetBlockStart', 'inset-block-start', value);
+    return this;
+  }
   /**
    * 设置定位元素沿逻辑行内轴的起始和结束偏移。（inset-inline）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/inset-inline
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.insetInline("inherit"));
    */
-  declare readonly insetInline: KeywordAuthor<group3.InsetInlineCss, T['insetInline']>;
+  insetInline(value: PropertyInput<'insetInline', T>): this {
+    this.write('insetInline', 'inset-inline', value);
+    return this;
+  }
   /**
    * 设置定位元素在逻辑行内轴结束侧的偏移。（inset-inline-end）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/inset-inline-end
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.insetInlineEnd("inherit"));
    */
-  declare readonly insetInlineEnd: KeywordAuthor<group3.InsetInlineEndCss, T['insetInlineEnd']>;
+  insetInlineEnd(value: PropertyInput<'insetInlineEnd', T>): this {
+    this.write('insetInlineEnd', 'inset-inline-end', value);
+    return this;
+  }
   /**
    * 设置定位元素在逻辑行内轴起始侧的偏移。（inset-inline-start）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/inset-inline-start
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.insetInlineStart("inherit"));
    */
-  declare readonly insetInlineStart: KeywordAuthor<
-    group3.InsetInlineStartCss,
-    T['insetInlineStart']
-  >;
+  insetInlineStart(value: PropertyInput<'insetInlineStart', T>): this {
+    this.write('insetInlineStart', 'inset-inline-start', value);
+    return this;
+  }
   /**
    * 控制动画是否允许在数值尺寸与内部尺寸关键字之间插值。（interpolate-size）
    *
    * CSS 初始值：`numeric-only`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/interpolate-size
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.interpolateSize("inherit"));
    */
-  declare readonly interpolateSize: KeywordAuthor<group3.InterpolateSizeCss, T['interpolateSize']>;
+  interpolateSize(value: PropertyInput<'interpolateSize', T>): this {
+    this.write('interpolateSize', 'interpolate-size', value);
+    return this;
+  }
   /**
    * 控制元素是否建立独立的层叠上下文，隔离混合效果。（isolation）
    *
@@ -2277,11 +3127,15 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：建立局部层叠边界，或限制混合模式影响范围。
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
-   * @example
-   * s.isolation.isolate
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/isolation
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.isolation("inherit"));
    */
-  declare readonly isolation: KeywordAuthor<group3.IsolationCss, T['isolation']>;
+  isolation(value: PropertyInput<'isolation', T>): this {
+    this.write('isolation', 'isolation', value);
+    return this;
+  }
   /**
    * 分配布局主轴或行内轴的剩余空间，控制内容整体对齐。（justify-content）
    *
@@ -2294,414 +3148,712 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * - `space-evenly`：容器两端和相邻项目之间分配相等空间。
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
-   * @example
-   * css(s.display.flex, s.justifyContent.spaceBetween)
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/justify-content
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.justifyContent("inherit"));
    */
-  declare readonly justifyContent: KeywordAuthor<group3.JustifyContentCss, T['justifyContent']>;
+  justifyContent(value: PropertyInput<'justifyContent', T>): this {
+    this.write('justifyContent', 'justify-content', value);
+    return this;
+  }
   /**
    * 设置容器内项目在行内轴上的默认对齐方式；不控制 Flex 项目的主轴对齐。（justify-items）
    *
    * CSS 初始值：`legacy`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/justify-items
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.justifyItems("inherit"));
    */
-  declare readonly justifyItems: KeywordAuthor<group3.JustifyItemsCss, T['justifyItems']>;
+  justifyItems(value: PropertyInput<'justifyItems', T>): this {
+    this.write('justifyItems', 'justify-items', value);
+    return this;
+  }
   /**
    * 单独设置项目在其布局区域内的行内轴对齐方式。（justify-self）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/justify-self
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.justifySelf("inherit"));
    */
-  declare readonly justifySelf: KeywordAuthor<group3.JustifySelfCss, T['justifySelf']>;
+  justifySelf(value: PropertyInput<'justifySelf', T>): this {
+    this.write('justifySelf', 'justify-self', value);
+    return this;
+  }
   /**
    * 旧版瀑布流布局提案中沿行内轴对齐轨道的属性；使用前核对实现与规范版本。（justify-tracks）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/justify-tracks
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.justifyTracks("inherit"));
    */
-  declare readonly justifyTracks: KeywordAuthor<group3.JustifyTracksCss, T['justifyTracks']>;
+  justifyTracks(value: PropertyInput<'justifyTracks', T>): this {
+    this.write('justifyTracks', 'justify-tracks', value);
+    return this;
+  }
   /**
    * 设置定位元素相对于其定位参照的左侧偏移。（left）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/left
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.left("inherit"));
    */
-  declare readonly left: KeywordAuthor<group3.LeftCss, T['left']>;
+  left(value: PropertyInput<'left', T>): this {
+    this.write('left', 'left', value);
+    return this;
+  }
   /**
    * 设置字符之间额外增加或减少的间距。（letter-spacing）
-   *
-   * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/letter-spacing
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.letterSpacing("inherit"));
    */
-  declare readonly letterSpacing: KeywordAuthor<group3.LetterSpacingCss, T['letterSpacing']>;
+  letterSpacing(value: PropertyInput<'letterSpacing', T>): this {
+    this.write('letterSpacing', 'letter-spacing', value);
+    return this;
+  }
   /**
    * 设置 SVG 光照滤镜使用的光源颜色。（lighting-color）
-   *
-   * CSS 初始值：`white`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/lighting-color
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.lightingColor("inherit"));
    */
-  declare readonly lightingColor: KeywordAuthor<group3.LightingColorCss, T['lightingColor']>;
+  lightingColor(value: PropertyInput<'lightingColor', T>): this {
+    this.write('lightingColor', 'lighting-color', value);
+    return this;
+  }
   /**
    * 设置东亚文字标点等字符的换行严格程度。（line-break）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/line-break
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.lineBreak("inherit"));
    */
-  declare readonly lineBreak: KeywordAuthor<group3.LineBreakCss, T['lineBreak']>;
+  lineBreak(value: PropertyInput<'lineBreak', T>): this {
+    this.write('lineBreak', 'line-break', value);
+    return this;
+  }
   /**
    * 限制块容器显示的行数及截断行为；使用前核对所需语法的支持情况。（line-clamp）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/line-clamp
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.lineClamp("inherit"));
    */
-  declare readonly lineClamp: KeywordAuthor<group3.LineClampCss, T['lineClamp']>;
+  lineClamp(value: PropertyInput<'lineClamp', T>): this {
+    this.write('lineClamp', 'line-clamp', value);
+    return this;
+  }
   /**
    * 设置行盒高度；无单位数值按元素自身字号计算。（line-height）
    *
    * 无单位数字作为倍数继承；长度值按长度继承。单独设置行高不会自动实现多行文本垂直居中。
    *
    * 适用场景：控制正文行间节奏；可继承的字号倍数通常比固定长度更适合嵌套文字。
-   *
-   * CSS 初始值：`normal`（不同于浏览器默认样式表）。
-   * @example
-   * s.lineHeight.raw(1.5) // line-height:1.5;
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/line-height
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.lineHeight("inherit"));
    */
-  declare readonly lineHeight: KeywordAuthor<group3.LineHeightCss, T['lineHeight']>;
+  lineHeight(value: PropertyInput<'lineHeight', T>): this {
+    this.write('lineHeight', 'line-height', value);
+    return this;
+  }
   /**
    * 设置行盒高度向上取整使用的步长。（line-height-step）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/line-height-step
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.lineHeightStep("inherit"));
    */
-  declare readonly lineHeightStep: KeywordAuthor<group3.LineHeightStepCss, T['lineHeightStep']>;
+  lineHeightStep(value: PropertyInput<'lineHeightStep', T>): this {
+    this.write('lineHeightStep', 'line-height-step', value);
+    return this;
+  }
   /**
    * 集中设置列表标记的类型、图像和位置。（list-style）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/list-style
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.listStyle("inherit"));
    */
-  declare readonly listStyle: KeywordAuthor<group3.ListStyleCss, T['listStyle']>;
+  listStyle(value: PropertyInput<'listStyle', T>): this {
+    this.write('listStyle', 'list-style', value);
+    return this;
+  }
   /**
    * 设置用作列表标记的图像。（list-style-image）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/list-style-image
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.listStyleImage("inherit"));
    */
-  declare readonly listStyleImage: KeywordAuthor<group3.ListStyleImageCss, T['listStyleImage']>;
+  listStyleImage(value: PropertyInput<'listStyleImage', T>): this {
+    this.write('listStyleImage', 'list-style-image', value);
+    return this;
+  }
   /**
    * 设置列表标记位于主块盒内部还是外部。（list-style-position）
    *
    * CSS 初始值：`outside`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/list-style-position
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.listStylePosition("inherit"));
    */
-  declare readonly listStylePosition: KeywordAuthor<
-    group3.ListStylePositionCss,
-    T['listStylePosition']
-  >;
+  listStylePosition(value: PropertyInput<'listStylePosition', T>): this {
+    this.write('listStylePosition', 'list-style-position', value);
+    return this;
+  }
   /**
    * 设置列表标记或计数器的样式。（list-style-type）
    *
    * CSS 初始值：`disc`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/list-style-type
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.listStyleType("inherit"));
    */
-  declare readonly listStyleType: KeywordAuthor<group3.ListStyleTypeCss, T['listStyleType']>;
+  listStyleType(value: PropertyInput<'listStyleType', T>): this {
+    this.write('listStyleType', 'list-style-type', value);
+    return this;
+  }
   /**
    * 设置盒子四周的外边距，可使用负值或自动外边距。（margin）
    *
    * 1/2/3/4 个值依次表示：四边；上下/左右；上/左右/下；上/右/下/左。块布局中的垂直外边距可能折叠。
    *
    * 适用场景：控制盒子外侧与相邻内容的距离；布局项统一间隔可考虑容器 gap。
-   * @example
-   * s.margin.px(8, 16) // margin:8px 16px;
-   * @example
-   * s.margin.raw('0 auto') // margin:0 auto;
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.margin("inherit"));
    */
-  declare readonly margin: KeywordAuthor<group4.MarginCss, T['margin']>;
+  margin(value: PropertyInput<'margin', T>): this {
+    this.write('margin', 'margin', value);
+    return this;
+  }
   /**
    * 设置逻辑块轴起始侧和结束侧的外边距。（margin-block）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin-block
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.marginBlock("inherit"));
    */
-  declare readonly marginBlock: KeywordAuthor<group4.MarginBlockCss, T['marginBlock']>;
+  marginBlock(value: PropertyInput<'marginBlock', T>): this {
+    this.write('marginBlock', 'margin-block', value);
+    return this;
+  }
   /**
    * 设置逻辑块轴结束侧的外边距。（margin-block-end）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin-block-end
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.marginBlockEnd("inherit"));
    */
-  declare readonly marginBlockEnd: KeywordAuthor<group4.MarginBlockEndCss, T['marginBlockEnd']>;
+  marginBlockEnd(value: PropertyInput<'marginBlockEnd', T>): this {
+    this.write('marginBlockEnd', 'margin-block-end', value);
+    return this;
+  }
   /**
    * 设置逻辑块轴起始侧的外边距。（margin-block-start）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin-block-start
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.marginBlockStart("inherit"));
    */
-  declare readonly marginBlockStart: KeywordAuthor<
-    group4.MarginBlockStartCss,
-    T['marginBlockStart']
-  >;
+  marginBlockStart(value: PropertyInput<'marginBlockStart', T>): this {
+    this.write('marginBlockStart', 'margin-block-start', value);
+    return this;
+  }
   /**
    * 设置下外边距。（margin-bottom）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin-bottom
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.marginBottom("inherit"));
    */
-  declare readonly marginBottom: KeywordAuthor<group4.MarginBottomCss, T['marginBottom']>;
+  marginBottom(value: PropertyInput<'marginBottom', T>): this {
+    this.write('marginBottom', 'margin-bottom', value);
+    return this;
+  }
   /**
    * 设置逻辑行内轴起始侧和结束侧的外边距。（margin-inline）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin-inline
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.marginInline("inherit"));
    */
-  declare readonly marginInline: KeywordAuthor<group4.MarginInlineCss, T['marginInline']>;
+  marginInline(value: PropertyInput<'marginInline', T>): this {
+    this.write('marginInline', 'margin-inline', value);
+    return this;
+  }
   /**
    * 设置逻辑行内轴结束侧的外边距。（margin-inline-end）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin-inline-end
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.marginInlineEnd("inherit"));
    */
-  declare readonly marginInlineEnd: KeywordAuthor<group4.MarginInlineEndCss, T['marginInlineEnd']>;
+  marginInlineEnd(value: PropertyInput<'marginInlineEnd', T>): this {
+    this.write('marginInlineEnd', 'margin-inline-end', value);
+    return this;
+  }
   /**
    * 设置逻辑行内轴起始侧的外边距。（margin-inline-start）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin-inline-start
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.marginInlineStart("inherit"));
    */
-  declare readonly marginInlineStart: KeywordAuthor<
-    group4.MarginInlineStartCss,
-    T['marginInlineStart']
-  >;
+  marginInlineStart(value: PropertyInput<'marginInlineStart', T>): this {
+    this.write('marginInlineStart', 'margin-inline-start', value);
+    return this;
+  }
   /**
    * 设置左外边距。（margin-left）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin-left
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.marginLeft("inherit"));
    */
-  declare readonly marginLeft: KeywordAuthor<group4.MarginLeftCss, T['marginLeft']>;
+  marginLeft(value: PropertyInput<'marginLeft', T>): this {
+    this.write('marginLeft', 'margin-left', value);
+    return this;
+  }
   /**
    * 设置右外边距。（margin-right）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin-right
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.marginRight("inherit"));
    */
-  declare readonly marginRight: KeywordAuthor<group4.MarginRightCss, T['marginRight']>;
+  marginRight(value: PropertyInput<'marginRight', T>): this {
+    this.write('marginRight', 'margin-right', value);
+    return this;
+  }
   /**
    * 设置上外边距。（margin-top）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin-top
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.marginTop("inherit"));
    */
-  declare readonly marginTop: KeywordAuthor<group4.MarginTopCss, T['marginTop']>;
+  marginTop(value: PropertyInput<'marginTop', T>): this {
+    this.write('marginTop', 'margin-top', value);
+    return this;
+  }
   /**
    * 控制容器边缘处子元素外边距的裁减。（margin-trim）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/margin-trim
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.marginTrim("inherit"));
    */
-  declare readonly marginTrim: KeywordAuthor<group4.MarginTrimCss, T['marginTrim']>;
+  marginTrim(value: PropertyInput<'marginTrim', T>): this {
+    this.write('marginTrim', 'margin-trim', value);
+    return this;
+  }
   /**
    * 同时设置 SVG 路径起点、中间顶点和终点的标记图形。（marker）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/marker
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.marker("inherit"));
    */
-  declare readonly marker: KeywordAuthor<group4.MarkerCss, T['marker']>;
+  marker(value: PropertyInput<'marker', T>): this {
+    this.write('marker', 'marker', value);
+    return this;
+  }
   /**
    * 设置 SVG 路径终点的标记图形。（marker-end）
-   *
-   * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/marker-end
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.markerEnd("inherit"));
    */
-  declare readonly markerEnd: KeywordAuthor<group4.MarkerEndCss, T['markerEnd']>;
+  markerEnd(value: PropertyInput<'markerEnd', T>): this {
+    this.write('markerEnd', 'marker-end', value);
+    return this;
+  }
   /**
    * 设置 SVG 路径中间顶点的标记图形。（marker-mid）
-   *
-   * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/marker-mid
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.markerMid("inherit"));
    */
-  declare readonly markerMid: KeywordAuthor<group4.MarkerMidCss, T['markerMid']>;
+  markerMid(value: PropertyInput<'markerMid', T>): this {
+    this.write('markerMid', 'marker-mid', value);
+    return this;
+  }
   /**
    * 设置 SVG 路径起点的标记图形。（marker-start）
-   *
-   * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/marker-start
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.markerStart("inherit"));
    */
-  declare readonly markerStart: KeywordAuthor<group4.MarkerStartCss, T['markerStart']>;
+  markerStart(value: PropertyInput<'markerStart', T>): this {
+    this.write('markerStart', 'marker-start', value);
+    return this;
+  }
   /**
    * 集中设置遮罩图层的图像、位置、尺寸、重复及合成方式。（mask）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.mask("inherit"));
    */
-  declare readonly mask: KeywordAuthor<group4.MaskCss, T['mask']>;
+  mask(value: PropertyInput<'mask', T>): this {
+    this.write('mask', 'mask', value);
+    return this;
+  }
   /**
    * 设置基于九宫格图像切片的边框遮罩。（mask-border）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-border
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.maskBorder("inherit"));
    */
-  declare readonly maskBorder: KeywordAuthor<group4.MaskBorderCss, T['maskBorder']>;
+  maskBorder(value: PropertyInput<'maskBorder', T>): this {
+    this.write('maskBorder', 'mask-border', value);
+    return this;
+  }
   /**
    * 设置边框遮罩使用 alpha 还是亮度信息。（mask-border-mode）
    *
    * CSS 初始值：`alpha`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-border-mode
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.maskBorderMode("inherit"));
    */
-  declare readonly maskBorderMode: KeywordAuthor<group4.MaskBorderModeCss, T['maskBorderMode']>;
+  maskBorderMode(value: PropertyInput<'maskBorderMode', T>): this {
+    this.write('maskBorderMode', 'mask-border-mode', value);
+    return this;
+  }
   /**
    * 设置边框遮罩超出边框盒的距离。（mask-border-outset）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-border-outset
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.maskBorderOutset("inherit"));
    */
-  declare readonly maskBorderOutset: KeywordAuthor<
-    group4.MaskBorderOutsetCss,
-    T['maskBorderOutset']
-  >;
+  maskBorderOutset(value: PropertyInput<'maskBorderOutset', T>): this {
+    this.write('maskBorderOutset', 'mask-border-outset', value);
+    return this;
+  }
   /**
    * 设置边框遮罩切片的重复或拉伸方式。（mask-border-repeat）
    *
    * CSS 初始值：`stretch`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-border-repeat
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.maskBorderRepeat("inherit"));
    */
-  declare readonly maskBorderRepeat: KeywordAuthor<
-    group4.MaskBorderRepeatCss,
-    T['maskBorderRepeat']
-  >;
+  maskBorderRepeat(value: PropertyInput<'maskBorderRepeat', T>): this {
+    this.write('maskBorderRepeat', 'mask-border-repeat', value);
+    return this;
+  }
   /**
    * 设置边框遮罩图像的切片位置。（mask-border-slice）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-border-slice
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.maskBorderSlice("inherit"));
    */
-  declare readonly maskBorderSlice: KeywordAuthor<group4.MaskBorderSliceCss, T['maskBorderSlice']>;
+  maskBorderSlice(value: PropertyInput<'maskBorderSlice', T>): this {
+    this.write('maskBorderSlice', 'mask-border-slice', value);
+    return this;
+  }
   /**
    * 设置边框遮罩的源图像。（mask-border-source）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-border-source
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.maskBorderSource("inherit"));
    */
-  declare readonly maskBorderSource: KeywordAuthor<
-    group4.MaskBorderSourceCss,
-    T['maskBorderSource']
-  >;
+  maskBorderSource(value: PropertyInput<'maskBorderSource', T>): this {
+    this.write('maskBorderSource', 'mask-border-source', value);
+    return this;
+  }
   /**
    * 设置边框遮罩各边的宽度。（mask-border-width）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-border-width
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.maskBorderWidth("inherit"));
    */
-  declare readonly maskBorderWidth: KeywordAuthor<group4.MaskBorderWidthCss, T['maskBorderWidth']>;
+  maskBorderWidth(value: PropertyInput<'maskBorderWidth', T>): this {
+    this.write('maskBorderWidth', 'mask-border-width', value);
+    return this;
+  }
   /**
    * 设置遮罩效果允许作用的裁剪区域。（mask-clip）
    *
    * CSS 初始值：`border-box`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-clip
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.maskClip("inherit"));
    */
-  declare readonly maskClip: KeywordAuthor<group4.MaskClipCss, T['maskClip']>;
+  maskClip(value: PropertyInput<'maskClip', T>): this {
+    this.write('maskClip', 'mask-clip', value);
+    return this;
+  }
   /**
    * 设置多个遮罩图层之间的合成运算。（mask-composite）
    *
    * CSS 初始值：`add`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-composite
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.maskComposite("inherit"));
    */
-  declare readonly maskComposite: KeywordAuthor<group4.MaskCompositeCss, T['maskComposite']>;
+  maskComposite(value: PropertyInput<'maskComposite', T>): this {
+    this.write('maskComposite', 'mask-composite', value);
+    return this;
+  }
   /**
    * 设置遮罩使用的图像、渐变或 SVG 遮罩引用。（mask-image）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-image
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.maskImage("inherit"));
    */
-  declare readonly maskImage: KeywordAuthor<group4.MaskImageCss, T['maskImage']>;
+  maskImage(value: PropertyInput<'maskImage', T>): this {
+    this.write('maskImage', 'mask-image', value);
+    return this;
+  }
   /**
    * 设置遮罩按 alpha、亮度或源类型解释。（mask-mode）
    *
    * CSS 初始值：`match-source`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-mode
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.maskMode("inherit"));
    */
-  declare readonly maskMode: KeywordAuthor<group4.MaskModeCss, T['maskMode']>;
+  maskMode(value: PropertyInput<'maskMode', T>): this {
+    this.write('maskMode', 'mask-mode', value);
+    return this;
+  }
   /**
    * 设置遮罩图像定位所依据的盒子。（mask-origin）
    *
    * CSS 初始值：`border-box`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-origin
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.maskOrigin("inherit"));
    */
-  declare readonly maskOrigin: KeywordAuthor<group4.MaskOriginCss, T['maskOrigin']>;
+  maskOrigin(value: PropertyInput<'maskOrigin', T>): this {
+    this.write('maskOrigin', 'mask-origin', value);
+    return this;
+  }
   /**
    * 设置遮罩图像在定位区域中的位置。（mask-position）
    *
    * CSS 初始值：`0% 0%`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-position
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.maskPosition("inherit"));
    */
-  declare readonly maskPosition: KeywordAuthor<group4.MaskPositionCss, T['maskPosition']>;
+  maskPosition(value: PropertyInput<'maskPosition', T>): this {
+    this.write('maskPosition', 'mask-position', value);
+    return this;
+  }
   /**
    * 设置遮罩图像的重复方式。（mask-repeat）
    *
    * CSS 初始值：`repeat`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-repeat
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.maskRepeat("inherit"));
    */
-  declare readonly maskRepeat: KeywordAuthor<group4.MaskRepeatCss, T['maskRepeat']>;
+  maskRepeat(value: PropertyInput<'maskRepeat', T>): this {
+    this.write('maskRepeat', 'mask-repeat', value);
+    return this;
+  }
   /**
    * 设置遮罩图像的尺寸。（mask-size）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-size
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.maskSize("inherit"));
    */
-  declare readonly maskSize: KeywordAuthor<group4.MaskSizeCss, T['maskSize']>;
+  maskSize(value: PropertyInput<'maskSize', T>): this {
+    this.write('maskSize', 'mask-size', value);
+    return this;
+  }
   /**
    * 设置 SVG mask 元素使用亮度还是 alpha 作为遮罩。（mask-type）
    *
    * CSS 初始值：`luminance`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mask-type
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.maskType("inherit"));
    */
-  declare readonly maskType: KeywordAuthor<group4.MaskTypeCss, T['maskType']>;
+  maskType(value: PropertyInput<'maskType', T>): this {
+    this.write('maskType', 'mask-type', value);
+    return this;
+  }
   /**
    * 旧版瀑布流布局提案中的自动放置策略；使用前核对实现与规范版本。（masonry-auto-flow）
    *
    * CSS 初始值：`pack`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/masonry-auto-flow
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.masonryAutoFlow("inherit"));
    */
-  declare readonly masonryAutoFlow: KeywordAuthor<group4.MasonryAutoFlowCss, T['masonryAutoFlow']>;
+  masonryAutoFlow(value: PropertyInput<'masonryAutoFlow', T>): this {
+    this.write('masonryAutoFlow', 'masonry-auto-flow', value);
+    return this;
+  }
   /**
    * 设置数学公式的嵌套深度，用于数学字号等排版计算。（math-depth）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/math-depth
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.mathDepth("inherit"));
    */
-  declare readonly mathDepth: KeywordAuthor<group4.MathDepthCss, T['mathDepth']>;
+  mathDepth(value: PropertyInput<'mathDepth', T>): this {
+    this.write('mathDepth', 'math-depth', value);
+    return this;
+  }
   /**
    * 控制数学上标采用正常还是压缩的垂直偏移。（math-shift）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/math-shift
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.mathShift("inherit"));
    */
-  declare readonly mathShift: KeywordAuthor<group4.MathShiftCss, T['mathShift']>;
+  mathShift(value: PropertyInput<'mathShift', T>): this {
+    this.write('mathShift', 'math-shift', value);
+    return this;
+  }
   /**
    * 设置数学公式采用正常还是紧凑排版。（math-style）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/math-style
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.mathStyle("inherit"));
    */
-  declare readonly mathStyle: KeywordAuthor<group4.MathStyleCss, T['mathStyle']>;
+  mathStyle(value: PropertyInput<'mathStyle', T>): this {
+    this.write('mathStyle', 'math-style', value);
+    return this;
+  }
   /**
    * 限制元素逻辑块轴的最大尺寸。（max-block-size）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/max-block-size
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.maxBlockSize("inherit"));
    */
-  declare readonly maxBlockSize: KeywordAuthor<group4.MaxBlockSizeCss, T['maxBlockSize']>;
+  maxBlockSize(value: PropertyInput<'maxBlockSize', T>): this {
+    this.write('maxBlockSize', 'max-block-size', value);
+    return this;
+  }
   /**
    * 限制元素的最大物理高度。（max-height）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/max-height
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.maxHeight("inherit"));
    */
-  declare readonly maxHeight: KeywordAuthor<group4.MaxHeightCss, T['maxHeight']>;
+  maxHeight(value: PropertyInput<'maxHeight', T>): this {
+    this.write('maxHeight', 'max-height', value);
+    return this;
+  }
   /**
    * 限制元素逻辑行内轴的最大尺寸。（max-inline-size）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/max-inline-size
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.maxInlineSize("inherit"));
    */
-  declare readonly maxInlineSize: KeywordAuthor<group4.MaxInlineSizeCss, T['maxInlineSize']>;
+  maxInlineSize(value: PropertyInput<'maxInlineSize', T>): this {
+    this.write('maxInlineSize', 'max-inline-size', value);
+    return this;
+  }
   /**
    * 限制分片上下文中的最大行数；属于需核对支持情况的截行能力。（max-lines）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/max-lines
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.maxLines("inherit"));
    */
-  declare readonly maxLines: KeywordAuthor<group4.MaxLinesCss, T['maxLines']>;
+  maxLines(value: PropertyInput<'maxLines', T>): this {
+    this.write('maxLines', 'max-lines', value);
+    return this;
+  }
   /**
    * 限制元素的最大物理宽度。（max-width）
    *
@@ -2710,32 +3862,54 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：限制正文行长、弹窗宽度或响应式内容区。
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
-   * @example
-   * css(s.width.percent(100), s.maxWidth.rem(48))
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/max-width
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.maxWidth("inherit"));
    */
-  declare readonly maxWidth: KeywordAuthor<group4.MaxWidthCss, T['maxWidth']>;
+  maxWidth(value: PropertyInput<'maxWidth', T>): this {
+    this.write('maxWidth', 'max-width', value);
+    return this;
+  }
   /**
    * 设置元素逻辑块轴的最小尺寸。（min-block-size）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/min-block-size
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.minBlockSize("inherit"));
    */
-  declare readonly minBlockSize: KeywordAuthor<group4.MinBlockSizeCss, T['minBlockSize']>;
+  minBlockSize(value: PropertyInput<'minBlockSize', T>): this {
+    this.write('minBlockSize', 'min-block-size', value);
+    return this;
+  }
   /**
    * 设置元素的最小物理高度。（min-height）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/min-height
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.minHeight("inherit"));
    */
-  declare readonly minHeight: KeywordAuthor<group4.MinHeightCss, T['minHeight']>;
+  minHeight(value: PropertyInput<'minHeight', T>): this {
+    this.write('minHeight', 'min-height', value);
+    return this;
+  }
   /**
    * 设置元素逻辑行内轴的最小尺寸。（min-inline-size）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/min-inline-size
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.minInlineSize("inherit"));
    */
-  declare readonly minInlineSize: KeywordAuthor<group4.MinInlineSizeCss, T['minInlineSize']>;
+  minInlineSize(value: PropertyInput<'minInlineSize', T>): this {
+    this.write('minInlineSize', 'min-inline-size', value);
+    return this;
+  }
   /**
    * 设置元素的最小物理宽度。（min-width）
    *
@@ -2744,44 +3918,78 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：给控件设置最小可用宽度，或用 0 允许 Flex/Grid 子项突破自动内容最小宽度。
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
-   * @example
-   * s.minWidth.px(0)
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/min-width
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.minWidth("inherit"));
    */
-  declare readonly minWidth: KeywordAuthor<group4.MinWidthCss, T['minWidth']>;
+  minWidth(value: PropertyInput<'minWidth', T>): this {
+    this.write('minWidth', 'min-width', value);
+    return this;
+  }
   /**
    * 设置元素整体与其背后内容的颜色混合方式。（mix-blend-mode）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/mix-blend-mode
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.mixBlendMode("inherit"));
    */
-  declare readonly mixBlendMode: KeywordAuthor<group4.MixBlendModeCss, T['mixBlendMode']>;
+  mixBlendMode(value: PropertyInput<'mixBlendMode', T>): this {
+    this.write('mixBlendMode', 'mix-blend-mode', value);
+    return this;
+  }
   /**
    * 设置运动路径的旧式简写；对应现代 offset 属性族。（motion）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/offset
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.motion("inherit"));
    */
-  declare readonly motion: KeywordAuthor<group4.MotionCss, T['motion']>;
+  motion(value: PropertyInput<'motion', T>): this {
+    this.write('motion', 'motion', value);
+    return this;
+  }
   /**
    * 设置沿运动路径行进距离的旧属性；对应 offset-distance。（motion-distance）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/offset-distance
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.motionDistance("inherit"));
    */
-  declare readonly motionDistance: KeywordAuthor<group4.MotionDistanceCss, T['motionDistance']>;
+  motionDistance(value: PropertyInput<'motionDistance', T>): this {
+    this.write('motionDistance', 'motion-distance', value);
+    return this;
+  }
   /**
    * 设置运动路径的旧属性；对应 offset-path。（motion-path）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/offset-path
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.motionPath("inherit"));
    */
-  declare readonly motionPath: KeywordAuthor<group4.MotionPathCss, T['motionPath']>;
+  motionPath(value: PropertyInput<'motionPath', T>): this {
+    this.write('motionPath', 'motion-path', value);
+    return this;
+  }
   /**
    * 设置运动路径旋转方式的旧属性；对应 offset-rotate。（motion-rotation）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/offset-rotate
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.motionRotation("inherit"));
    */
-  declare readonly motionRotation: KeywordAuthor<group4.MotionRotationCss, T['motionRotation']>;
+  motionRotation(value: PropertyInput<'motionRotation', T>): this {
+    this.write('motionRotation', 'motion-rotation', value);
+    return this;
+  }
   /**
    * 设置替换元素的内容如何适应其内容盒，例如图像的裁切和缩放。（object-fit）
    *
@@ -2797,85 +4005,145 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：封面裁剪、头像和完整图像预览。
    *
    * CSS 初始值：`fill`（不同于浏览器默认样式表）。
-   * @example
-   * css(s.width.px(80), s.height.px(80), s.objectFit.cover)
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/object-fit
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.objectFit("inherit"));
    */
-  declare readonly objectFit: KeywordAuthor<group4.ObjectFitCss, T['objectFit']>;
+  objectFit(value: PropertyInput<'objectFit', T>): this {
+    this.write('objectFit', 'object-fit', value);
+    return this;
+  }
   /**
    * 设置替换元素内容在内容盒内的对齐位置。（object-position）
    *
    * CSS 初始值：`50% 50%`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/object-position
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.objectPosition("inherit"));
    */
-  declare readonly objectPosition: KeywordAuthor<group4.ObjectPositionCss, T['objectPosition']>;
+  objectPosition(value: PropertyInput<'objectPosition', T>): this {
+    this.write('objectPosition', 'object-position', value);
+    return this;
+  }
   /**
    * 设置替换元素内容的可视区域，控制用于呈现的图像范围。（object-view-box）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/object-view-box
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.objectViewBox("inherit"));
    */
-  declare readonly objectViewBox: KeywordAuthor<group4.ObjectViewBoxCss, T['objectViewBox']>;
+  objectViewBox(value: PropertyInput<'objectViewBox', T>): this {
+    this.write('objectViewBox', 'object-view-box', value);
+    return this;
+  }
   /**
    * 集中设置运动路径、起始位置、距离、方向和锚点。（offset）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/offset
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.offset("inherit"));
    */
-  declare readonly offset: KeywordAuthor<group4.OffsetCss, T['offset']>;
+  offset(value: PropertyInput<'offset', T>): this {
+    this.write('offset', 'offset', value);
+    return this;
+  }
   /**
    * 设置元素沿运动路径移动时与路径相接的内部锚点。（offset-anchor）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/offset-anchor
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.offsetAnchor("inherit"));
    */
-  declare readonly offsetAnchor: KeywordAuthor<group4.OffsetAnchorCss, T['offsetAnchor']>;
+  offsetAnchor(value: PropertyInput<'offsetAnchor', T>): this {
+    this.write('offsetAnchor', 'offset-anchor', value);
+    return this;
+  }
   /**
    * 设置元素沿运动路径行进的距离。（offset-distance）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/offset-distance
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.offsetDistance("inherit"));
    */
-  declare readonly offsetDistance: KeywordAuthor<group4.OffsetDistanceCss, T['offsetDistance']>;
+  offsetDistance(value: PropertyInput<'offsetDistance', T>): this {
+    this.write('offsetDistance', 'offset-distance', value);
+    return this;
+  }
   /**
    * 设置元素运动所沿用的路径。（offset-path）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/offset-path
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.offsetPath("inherit"));
    */
-  declare readonly offsetPath: KeywordAuthor<group4.OffsetPathCss, T['offsetPath']>;
+  offsetPath(value: PropertyInput<'offsetPath', T>): this {
+    this.write('offsetPath', 'offset-path', value);
+    return this;
+  }
   /**
    * 设置运动路径的初始位置。（offset-position）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/offset-position
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.offsetPosition("inherit"));
    */
-  declare readonly offsetPosition: KeywordAuthor<group4.OffsetPositionCss, T['offsetPosition']>;
+  offsetPosition(value: PropertyInput<'offsetPosition', T>): this {
+    this.write('offsetPosition', 'offset-position', value);
+    return this;
+  }
   /**
    * 设置元素沿运动路径移动时的方向和附加旋转。（offset-rotate）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/offset-rotate
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.offsetRotate("inherit"));
    */
-  declare readonly offsetRotate: KeywordAuthor<group4.OffsetRotateCss, T['offsetRotate']>;
+  offsetRotate(value: PropertyInput<'offsetRotate', T>): this {
+    this.write('offsetRotate', 'offset-rotate', value);
+    return this;
+  }
   /**
    * 设置路径旋转的旧名称；新代码使用 offset-rotate。（offset-rotation）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/offset-rotate
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.offsetRotation("inherit"));
    */
-  declare readonly offsetRotation: KeywordAuthor<group4.OffsetRotationCss, T['offsetRotation']>;
+  offsetRotation(value: PropertyInput<'offsetRotation', T>): this {
+    this.write('offsetRotation', 'offset-rotation', value);
+    return this;
+  }
   /**
    * 设置元素及其子树合成后的整体不透明度。（opacity）
    *
    * 0 完全透明，1 完全不透明；作用于整个子树的合成结果。透明元素仍可能接受点击和键盘焦点。
    *
    * 适用场景：统一调整整个元素子树的透明度；只需背景半透明时应使用带 alpha 的背景色。
-   *
-   * CSS 初始值：`1`（不同于浏览器默认样式表）。
-   * @example
-   * s.opacity.raw(0.5) // opacity:0.5;
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/opacity
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.opacity("inherit"));
    */
-  declare readonly opacity: KeywordAuthor<group4.OpacityCss, T['opacity']>;
+  opacity(value: PropertyInput<'opacity', T>): this {
+    this.write('opacity', 'opacity', value);
+    return this;
+  }
   /**
    * 设置 Flex 或 Grid 项目的视觉排列顺序，不改变 DOM 顺序。（order）
    *
@@ -2883,54 +4151,94 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/order
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.order("inherit"));
    */
-  declare readonly order: KeywordAuthor<group4.OrderCss, T['order']>;
+  order(value: PropertyInput<'order', T>): this {
+    this.write('order', 'order', value);
+    return this;
+  }
   /**
    * 设置分页或分栏断点前需保留的最少行数。（orphans）
    *
    * CSS 初始值：`2`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/orphans
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.orphans("inherit"));
    */
-  declare readonly orphans: KeywordAuthor<group4.OrphansCss, T['orphans']>;
+  orphans(value: PropertyInput<'orphans', T>): this {
+    this.write('orphans', 'orphans', value);
+    return this;
+  }
   /**
    * 设置盒子外围轮廓线的宽度、线型和颜色，不占布局空间。（outline）
    *
    * 不占布局空间，可用 outline-offset 调整距离；键盘焦点指示不应被无替代地移除。
    *
    * 适用场景：控件焦点指示和不影响布局的轮廓。
-   * @example
-   * s._focusVisible(s.outline.raw('2px solid currentColor'), s.outlineOffset.px(2))
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/outline
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.outline("inherit"));
    */
-  declare readonly outline: KeywordAuthor<group4.OutlineCss, T['outline']>;
+  outline(value: PropertyInput<'outline', T>): this {
+    this.write('outline', 'outline', value);
+    return this;
+  }
   /**
    * 设置轮廓线颜色。（outline-color）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/outline-color
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.outlineColor("inherit"));
    */
-  declare readonly outlineColor: KeywordAuthor<group4.OutlineColorCss, T['outlineColor']>;
+  outlineColor(value: PropertyInput<'outlineColor', T>): this {
+    this.write('outlineColor', 'outline-color', value);
+    return this;
+  }
   /**
    * 设置轮廓线与边框边缘之间的距离。（outline-offset）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/outline-offset
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.outlineOffset("inherit"));
    */
-  declare readonly outlineOffset: KeywordAuthor<group4.OutlineOffsetCss, T['outlineOffset']>;
+  outlineOffset(value: PropertyInput<'outlineOffset', T>): this {
+    this.write('outlineOffset', 'outline-offset', value);
+    return this;
+  }
   /**
    * 设置轮廓线线型。（outline-style）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/outline-style
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.outlineStyle("inherit"));
    */
-  declare readonly outlineStyle: KeywordAuthor<group4.OutlineStyleCss, T['outlineStyle']>;
+  outlineStyle(value: PropertyInput<'outlineStyle', T>): this {
+    this.write('outlineStyle', 'outline-style', value);
+    return this;
+  }
   /**
    * 设置轮廓线宽度。（outline-width）
    *
    * CSS 初始值：`medium`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/outline-width
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.outlineWidth("inherit"));
    */
-  declare readonly outlineWidth: KeywordAuthor<group4.OutlineWidthCss, T['outlineWidth']>;
+  outlineWidth(value: PropertyInput<'outlineWidth', T>): this {
+    this.write('outlineWidth', 'outline-width', value);
+    return this;
+  }
   /**
    * 设置内容超出盒子时的裁剪和滚动行为。（overflow）
    *
@@ -2944,51 +4252,80 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * - `scroll`：建立滚动容器，通常即使未溢出也显示滚动条；具体外观由平台决定。
    *
    * 适用场景：滚动面板、内容裁剪和受限尺寸区域。
-   *
-   * CSS 初始值：`visible`（不同于浏览器默认样式表）。
-   * @example
-   * css(s.maxHeight.rem(20), s.overflow.auto)
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overflow
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.overflow("inherit"));
    */
-  declare readonly overflow: KeywordAuthor<group4.OverflowCss, T['overflow']>;
+  overflow(value: PropertyInput<'overflow', T>): this {
+    this.write('overflow', 'overflow', value);
+    return this;
+  }
   /**
    * 控制元素是否参与滚动锚定，以减少内容变化造成的视口跳动。（overflow-anchor）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overflow-anchor
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.overflowAnchor("inherit"));
    */
-  declare readonly overflowAnchor: KeywordAuthor<group4.OverflowAnchorCss, T['overflowAnchor']>;
+  overflowAnchor(value: PropertyInput<'overflowAnchor', T>): this {
+    this.write('overflowAnchor', 'overflow-anchor', value);
+    return this;
+  }
   /**
    * 设置逻辑块轴上的溢出行为。（overflow-block）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overflow-block
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.overflowBlock("inherit"));
    */
-  declare readonly overflowBlock: KeywordAuthor<group4.OverflowBlockCss, T['overflowBlock']>;
+  overflowBlock(value: PropertyInput<'overflowBlock', T>): this {
+    this.write('overflowBlock', 'overflow-block', value);
+    return this;
+  }
   /**
    * 设置溢出裁剪参照盒的非标准属性；使用前核对目标浏览器。（overflow-clip-box）
    *
    * CSS 初始值：`padding-box`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overflow-clip-box
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.overflowClipBox("inherit"));
    */
-  declare readonly overflowClipBox: KeywordAuthor<group4.OverflowClipBoxCss, T['overflowClipBox']>;
+  overflowClipBox(value: PropertyInput<'overflowClipBox', T>): this {
+    this.write('overflowClipBox', 'overflow-clip-box', value);
+    return this;
+  }
   /**
    * 设置 overflow:clip 的裁剪边界允许向外扩展的距离。（overflow-clip-margin）
    *
    * CSS 初始值：`0px`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overflow-clip-margin
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.overflowClipMargin("inherit"));
    */
-  declare readonly overflowClipMargin: KeywordAuthor<
-    group4.OverflowClipMarginCss,
-    T['overflowClipMargin']
-  >;
+  overflowClipMargin(value: PropertyInput<'overflowClipMargin', T>): this {
+    this.write('overflowClipMargin', 'overflow-clip-margin', value);
+    return this;
+  }
   /**
    * 设置逻辑行内轴上的溢出行为。（overflow-inline）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overflow-inline
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.overflowInline("inherit"));
    */
-  declare readonly overflowInline: KeywordAuthor<group4.OverflowInlineCss, T['overflowInline']>;
+  overflowInline(value: PropertyInput<'overflowInline', T>): this {
+    this.write('overflowInline', 'overflow-inline', value);
+    return this;
+  }
   /**
    * 设置不可正常断开的长文本是否允许额外换行。（overflow-wrap）
    *
@@ -3000,11 +4337,15 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：防止 URL、标识符等长文本撑破容器。
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
-   * @example
-   * s.overflowWrap.anywhere
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overflow-wrap
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.overflowWrap("inherit"));
    */
-  declare readonly overflowWrap: KeywordAuthor<group4.OverflowWrapCss, T['overflowWrap']>;
+  overflowWrap(value: PropertyInput<'overflowWrap', T>): this {
+    this.write('overflowWrap', 'overflow-wrap', value);
+    return this;
+  }
   /**
    * 设置水平方向的溢出行为。（overflow-x）
    *
@@ -3018,11 +4359,15 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：横向滚动标签、宽表格或水平内容裁剪。
    *
    * CSS 初始值：`visible`（不同于浏览器默认样式表）。
-   * @example
-   * s.overflowX.auto
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overflow-x
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.overflowX("inherit"));
    */
-  declare readonly overflowX: KeywordAuthor<group4.OverflowXCss, T['overflowX']>;
+  overflowX(value: PropertyInput<'overflowX', T>): this {
+    this.write('overflowX', 'overflow-x', value);
+    return this;
+  }
   /**
    * 设置垂直方向的溢出行为。（overflow-y）
    *
@@ -3036,18 +4381,28 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：纵向列表和弹窗内容区。
    *
    * CSS 初始值：`visible`（不同于浏览器默认样式表）。
-   * @example
-   * css(s.maxHeight.rem(20), s.overflowY.auto)
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overflow-y
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.overflowY("inherit"));
    */
-  declare readonly overflowY: KeywordAuthor<group4.OverflowYCss, T['overflowY']>;
+  overflowY(value: PropertyInput<'overflowY', T>): this {
+    this.write('overflowY', 'overflow-y', value);
+    return this;
+  }
   /**
    * 反映元素是否位于顶层，主要用于顶层退出过渡；通常由浏览器管理。（overlay）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overlay
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.overlay("inherit"));
    */
-  declare readonly overlay: KeywordAuthor<group4.OverlayCss, T['overlay']>;
+  overlay(value: PropertyInput<'overlay', T>): this {
+    this.write('overlay', 'overlay', value);
+    return this;
+  }
   /**
    * 控制滚动到边界后的滚动链和越界反馈行为。（overscroll-behavior）
    *
@@ -3059,186 +4414,291 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：阻止弹窗或内部滚动面板到达边界后继续滚动外层页面。
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
-   * @example
-   * css(s.overflowY.auto, s.overscrollBehavior.contain)
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overscroll-behavior
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.overscrollBehavior("inherit"));
    */
-  declare readonly overscrollBehavior: KeywordAuthor<
-    group4.OverscrollBehaviorCss,
-    T['overscrollBehavior']
-  >;
+  overscrollBehavior(value: PropertyInput<'overscrollBehavior', T>): this {
+    this.write('overscrollBehavior', 'overscroll-behavior', value);
+    return this;
+  }
   /**
    * 控制逻辑块轴上到达滚动边界后的行为。（overscroll-behavior-block）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overscroll-behavior-block
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.overscrollBehaviorBlock("inherit"));
    */
-  declare readonly overscrollBehaviorBlock: KeywordAuthor<
-    group4.OverscrollBehaviorBlockCss,
-    T['overscrollBehaviorBlock']
-  >;
+  overscrollBehaviorBlock(value: PropertyInput<'overscrollBehaviorBlock', T>): this {
+    this.write('overscrollBehaviorBlock', 'overscroll-behavior-block', value);
+    return this;
+  }
   /**
    * 控制逻辑行内轴上到达滚动边界后的行为。（overscroll-behavior-inline）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overscroll-behavior-inline
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.overscrollBehaviorInline("inherit"));
    */
-  declare readonly overscrollBehaviorInline: KeywordAuthor<
-    group4.OverscrollBehaviorInlineCss,
-    T['overscrollBehaviorInline']
-  >;
+  overscrollBehaviorInline(value: PropertyInput<'overscrollBehaviorInline', T>): this {
+    this.write('overscrollBehaviorInline', 'overscroll-behavior-inline', value);
+    return this;
+  }
   /**
    * 控制水平方向到达滚动边界后的行为。（overscroll-behavior-x）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overscroll-behavior-x
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.overscrollBehaviorX("inherit"));
    */
-  declare readonly overscrollBehaviorX: KeywordAuthor<
-    group4.OverscrollBehaviorXCss,
-    T['overscrollBehaviorX']
-  >;
+  overscrollBehaviorX(value: PropertyInput<'overscrollBehaviorX', T>): this {
+    this.write('overscrollBehaviorX', 'overscroll-behavior-x', value);
+    return this;
+  }
   /**
    * 控制垂直方向到达滚动边界后的行为。（overscroll-behavior-y）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/overscroll-behavior-y
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.overscrollBehaviorY("inherit"));
    */
-  declare readonly overscrollBehaviorY: KeywordAuthor<
-    group4.OverscrollBehaviorYCss,
-    T['overscrollBehaviorY']
-  >;
+  overscrollBehaviorY(value: PropertyInput<'overscrollBehaviorY', T>): this {
+    this.write('overscrollBehaviorY', 'overscroll-behavior-y', value);
+    return this;
+  }
   /**
    * 设置内容与边框之间的四边内边距，不接受负值。（padding）
    *
    * 1/2/3/4 个值依次表示：四边；上下/左右；上/左右/下；上/右/下/左。不能使用负值或 auto。
    *
    * 适用场景：控制文字或子元素与组件边框之间的留白。
-   * @example
-   * s.padding.rem(0.5, 1) // padding:0.5rem 1rem;
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/padding
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.padding("inherit"));
    */
-  declare readonly padding: KeywordAuthor<group5.PaddingCss, T['padding']>;
+  padding(value: PropertyInput<'padding', T>): this {
+    this.write('padding', 'padding', value);
+    return this;
+  }
   /**
    * 设置逻辑块轴起始侧和结束侧的内边距。（padding-block）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/padding-block
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.paddingBlock("inherit"));
    */
-  declare readonly paddingBlock: KeywordAuthor<group5.PaddingBlockCss, T['paddingBlock']>;
+  paddingBlock(value: PropertyInput<'paddingBlock', T>): this {
+    this.write('paddingBlock', 'padding-block', value);
+    return this;
+  }
   /**
    * 设置逻辑块轴结束侧的内边距。（padding-block-end）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/padding-block-end
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.paddingBlockEnd("inherit"));
    */
-  declare readonly paddingBlockEnd: KeywordAuthor<group5.PaddingBlockEndCss, T['paddingBlockEnd']>;
+  paddingBlockEnd(value: PropertyInput<'paddingBlockEnd', T>): this {
+    this.write('paddingBlockEnd', 'padding-block-end', value);
+    return this;
+  }
   /**
    * 设置逻辑块轴起始侧的内边距。（padding-block-start）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/padding-block-start
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.paddingBlockStart("inherit"));
    */
-  declare readonly paddingBlockStart: KeywordAuthor<
-    group5.PaddingBlockStartCss,
-    T['paddingBlockStart']
-  >;
+  paddingBlockStart(value: PropertyInput<'paddingBlockStart', T>): this {
+    this.write('paddingBlockStart', 'padding-block-start', value);
+    return this;
+  }
   /**
    * 设置下内边距。（padding-bottom）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/padding-bottom
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.paddingBottom("inherit"));
    */
-  declare readonly paddingBottom: KeywordAuthor<group5.PaddingBottomCss, T['paddingBottom']>;
+  paddingBottom(value: PropertyInput<'paddingBottom', T>): this {
+    this.write('paddingBottom', 'padding-bottom', value);
+    return this;
+  }
   /**
    * 设置逻辑行内轴起始侧和结束侧的内边距。（padding-inline）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/padding-inline
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.paddingInline("inherit"));
    */
-  declare readonly paddingInline: KeywordAuthor<group5.PaddingInlineCss, T['paddingInline']>;
+  paddingInline(value: PropertyInput<'paddingInline', T>): this {
+    this.write('paddingInline', 'padding-inline', value);
+    return this;
+  }
   /**
    * 设置逻辑行内轴结束侧的内边距。（padding-inline-end）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/padding-inline-end
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.paddingInlineEnd("inherit"));
    */
-  declare readonly paddingInlineEnd: KeywordAuthor<
-    group5.PaddingInlineEndCss,
-    T['paddingInlineEnd']
-  >;
+  paddingInlineEnd(value: PropertyInput<'paddingInlineEnd', T>): this {
+    this.write('paddingInlineEnd', 'padding-inline-end', value);
+    return this;
+  }
   /**
    * 设置逻辑行内轴起始侧的内边距。（padding-inline-start）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/padding-inline-start
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.paddingInlineStart("inherit"));
    */
-  declare readonly paddingInlineStart: KeywordAuthor<
-    group5.PaddingInlineStartCss,
-    T['paddingInlineStart']
-  >;
+  paddingInlineStart(value: PropertyInput<'paddingInlineStart', T>): this {
+    this.write('paddingInlineStart', 'padding-inline-start', value);
+    return this;
+  }
   /**
    * 设置左内边距。（padding-left）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/padding-left
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.paddingLeft("inherit"));
    */
-  declare readonly paddingLeft: KeywordAuthor<group5.PaddingLeftCss, T['paddingLeft']>;
+  paddingLeft(value: PropertyInput<'paddingLeft', T>): this {
+    this.write('paddingLeft', 'padding-left', value);
+    return this;
+  }
   /**
    * 设置右内边距。（padding-right）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/padding-right
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.paddingRight("inherit"));
    */
-  declare readonly paddingRight: KeywordAuthor<group5.PaddingRightCss, T['paddingRight']>;
+  paddingRight(value: PropertyInput<'paddingRight', T>): this {
+    this.write('paddingRight', 'padding-right', value);
+    return this;
+  }
   /**
    * 设置上内边距。（padding-top）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/padding-top
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.paddingTop("inherit"));
    */
-  declare readonly paddingTop: KeywordAuthor<group5.PaddingTopCss, T['paddingTop']>;
+  paddingTop(value: PropertyInput<'paddingTop', T>): this {
+    this.write('paddingTop', 'padding-top', value);
+    return this;
+  }
   /**
    * 选择分页媒体中使用的命名页面类型。（page）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/page
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.page("inherit"));
    */
-  declare readonly page: KeywordAuthor<group5.PageCss, T['page']>;
+  page(value: PropertyInput<'page', T>): this {
+    this.write('page', 'page', value);
+    return this;
+  }
   /**
    * 设置 SVG 填充、描边和标记的绘制先后顺序。（paint-order）
-   *
-   * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/paint-order
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.paintOrder("inherit"));
    */
-  declare readonly paintOrder: KeywordAuthor<group5.PaintOrderCss, T['paintOrder']>;
+  paintOrder(value: PropertyInput<'paintOrder', T>): this {
+    this.write('paintOrder', 'paint-order', value);
+    return this;
+  }
   /**
    * 设置观察子元素三维变换时的透视距离。（perspective）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/perspective
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.perspective("inherit"));
    */
-  declare readonly perspective: KeywordAuthor<group5.PerspectiveCss, T['perspective']>;
+  perspective(value: PropertyInput<'perspective', T>): this {
+    this.write('perspective', 'perspective', value);
+    return this;
+  }
   /**
    * 设置三维透视的观察原点。（perspective-origin）
    *
    * CSS 初始值：`50% 50%`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/perspective-origin
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.perspectiveOrigin("inherit"));
    */
-  declare readonly perspectiveOrigin: KeywordAuthor<
-    group5.PerspectiveOriginCss,
-    T['perspectiveOrigin']
-  >;
+  perspectiveOrigin(value: PropertyInput<'perspectiveOrigin', T>): this {
+    this.write('perspectiveOrigin', 'perspective-origin', value);
+    return this;
+  }
   /**
    * 同时设置 align-content 与 justify-content。（place-content）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/place-content
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.placeContent("inherit"));
    */
-  declare readonly placeContent: KeywordAuthor<group5.PlaceContentCss, T['placeContent']>;
+  placeContent(value: PropertyInput<'placeContent', T>): this {
+    this.write('placeContent', 'place-content', value);
+    return this;
+  }
   /**
    * 同时设置 align-items 与 justify-items。（place-items）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/place-items
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.placeItems("inherit"));
    */
-  declare readonly placeItems: KeywordAuthor<group5.PlaceItemsCss, T['placeItems']>;
+  placeItems(value: PropertyInput<'placeItems', T>): this {
+    this.write('placeItems', 'place-items', value);
+    return this;
+  }
   /**
    * 同时设置 align-self 与 justify-self。（place-self）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/place-self
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.placeSelf("inherit"));
    */
-  declare readonly placeSelf: KeywordAuthor<group5.PlaceSelfCss, T['placeSelf']>;
+  placeSelf(value: PropertyInput<'placeSelf', T>): this {
+    this.write('placeSelf', 'place-self', value);
+    return this;
+  }
   /**
    * 设置元素何时可以成为指针命中目标；SVG 还支持按填充和描边命中。（pointer-events）
    *
@@ -3249,13 +4709,15 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * - `none`：元素本身不成为指针命中目标；不等于禁用，仍可能通过 Tab 获焦，后代也可恢复命中。
    *
    * 适用场景：允许指针穿过装饰层；可交互控件的禁用应同时处理行为和语义。
-   *
-   * CSS 初始值：`auto`（不同于浏览器默认样式表）。
-   * @example
-   * s.pointerEvents.none
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/pointer-events
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.pointerEvents("inherit"));
    */
-  declare readonly pointerEvents: KeywordAuthor<group5.PointerEventsCss, T['pointerEvents']>;
+  pointerEvents(value: PropertyInput<'pointerEvents', T>): this {
+    this.write('pointerEvents', 'pointer-events', value);
+    return this;
+  }
   /**
    * 设置元素的定位方式，并决定偏移属性如何参与布局。（position）
    *
@@ -3271,159 +4733,271 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：建立定位参照、覆盖层、固定区域或滚动吸附内容。
    *
    * CSS 初始值：`static`（不同于浏览器默认样式表）。
-   * @example
-   * css(s.position.sticky, s.top.px(0))
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.position("inherit"));
    */
-  declare readonly position: KeywordAuthor<group5.PositionCss, T['position']>;
+  position(value: PropertyInput<'position', T>): this {
+    this.write('position', 'position', value);
+    return this;
+  }
   /**
    * 选择绝对定位元素使用的默认锚点。（position-anchor）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-anchor
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.positionAnchor("inherit"));
    */
-  declare readonly positionAnchor: KeywordAuthor<group5.PositionAnchorCss, T['positionAnchor']>;
+  positionAnchor(value: PropertyInput<'positionAnchor', T>): this {
+    this.write('positionAnchor', 'position-anchor', value);
+    return this;
+  }
   /**
    * 选择相对于锚点的定位区域。（position-area）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-area
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.positionArea("inherit"));
    */
-  declare readonly positionArea: KeywordAuthor<group5.PositionAreaCss, T['positionArea']>;
+  positionArea(value: PropertyInput<'positionArea', T>): this {
+    this.write('positionArea', 'position-area', value);
+    return this;
+  }
   /**
    * 同时设置锚点定位的候选回退方式及尝试顺序。（position-try）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-try
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.positionTry("inherit"));
    */
-  declare readonly positionTry: KeywordAuthor<group5.PositionTryCss, T['positionTry']>;
+  positionTry(value: PropertyInput<'positionTry', T>): this {
+    this.write('positionTry', 'position-try', value);
+    return this;
+  }
   /**
    * 设置锚点定位溢出时尝试的替代位置。（position-try-fallbacks）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-try-fallbacks
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.positionTryFallbacks("inherit"));
    */
-  declare readonly positionTryFallbacks: KeywordAuthor<
-    group5.PositionTryFallbacksCss,
-    T['positionTryFallbacks']
-  >;
+  positionTryFallbacks(value: PropertyInput<'positionTryFallbacks', T>): this {
+    this.write('positionTryFallbacks', 'position-try-fallbacks', value);
+    return this;
+  }
   /**
    * 设置锚点定位候选方案的尝试顺序。（position-try-order）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-try-order
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.positionTryOrder("inherit"));
    */
-  declare readonly positionTryOrder: KeywordAuthor<
-    group5.PositionTryOrderCss,
-    T['positionTryOrder']
-  >;
+  positionTryOrder(value: PropertyInput<'positionTryOrder', T>): this {
+    this.write('positionTryOrder', 'position-try-order', value);
+    return this;
+  }
   /**
    * 设置锚点定位元素根据锚点可见性和溢出情况是否显示。（position-visibility）
    *
    * CSS 初始值：`anchors-visible`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-visibility
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.positionVisibility("inherit"));
    */
-  declare readonly positionVisibility: KeywordAuthor<
-    group5.PositionVisibilityCss,
-    T['positionVisibility']
-  >;
+  positionVisibility(value: PropertyInput<'positionVisibility', T>): this {
+    this.write('positionVisibility', 'position-visibility', value);
+    return this;
+  }
   /**
    * 设置打印时浏览器是否可以为节墨或可读性调整颜色。（print-color-adjust）
    *
    * CSS 初始值：`economy`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/print-color-adjust
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.printColorAdjust("inherit"));
    */
-  declare readonly printColorAdjust: KeywordAuthor<
-    group5.PrintColorAdjustCss,
-    T['printColorAdjust']
-  >;
+  printColorAdjust(value: PropertyInput<'printColorAdjust', T>): this {
+    this.write('printColorAdjust', 'print-color-adjust', value);
+    return this;
+  }
   /**
    * 设置生成引号所用的开闭字符对。（quotes）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/quotes
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.quotes("inherit"));
    */
-  declare readonly quotes: KeywordAuthor<group5.QuotesCss, T['quotes']>;
+  quotes(value: PropertyInput<'quotes', T>): this {
+    this.write('quotes', 'quotes', value);
+    return this;
+  }
   /**
    * 设置 SVG 圆的半径。（r）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/r
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.r("inherit"));
    */
-  declare readonly r: KeywordAuthor<group5.RCss, T['r']>;
+  r(value: PropertyInput<'r', T>): this {
+    this.write('r', 'r', value);
+    return this;
+  }
   /**
    * 设置用户是否能调整元素尺寸以及可调整的方向。（resize）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/resize
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.resize("inherit"));
    */
-  declare readonly resize: KeywordAuthor<group5.ResizeCss, T['resize']>;
+  resize(value: PropertyInput<'resize', T>): this {
+    this.write('resize', 'resize', value);
+    return this;
+  }
   /**
    * 设置定位元素相对于其定位参照的右侧偏移。（right）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/right
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.right("inherit"));
    */
-  declare readonly right: KeywordAuthor<group5.RightCss, T['right']>;
+  right(value: PropertyInput<'right', T>): this {
+    this.write('right', 'right', value);
+    return this;
+  }
   /**
    * 独立设置元素旋转，不必重写 transform 中的其他变换。（rotate）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/rotate
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.rotate("inherit"));
    */
-  declare readonly rotate: KeywordAuthor<group5.RotateCss, T['rotate']>;
+  rotate(value: PropertyInput<'rotate', T>): this {
+    this.write('rotate', 'rotate', value);
+    return this;
+  }
   /**
    * 设置布局中相邻行之间的间距。（row-gap）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/row-gap
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.rowGap("inherit"));
    */
-  declare readonly rowGap: KeywordAuthor<group5.RowGapCss, T['rowGap']>;
+  rowGap(value: PropertyInput<'rowGap', T>): this {
+    this.write('rowGap', 'row-gap', value);
+    return this;
+  }
   /**
    * 设置注音文字与基底文字之间剩余空间的分配方式。（ruby-align）
    *
    * CSS 初始值：`space-around`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/ruby-align
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.rubyAlign("inherit"));
    */
-  declare readonly rubyAlign: KeywordAuthor<group5.RubyAlignCss, T['rubyAlign']>;
+  rubyAlign(value: PropertyInput<'rubyAlign', T>): this {
+    this.write('rubyAlign', 'ruby-align', value);
+    return this;
+  }
   /**
    * 设置相邻注音容器的合并方式；使用前核对目标浏览器。（ruby-merge）
    *
    * CSS 初始值：`separate`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/ruby-merge
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.rubyMerge("inherit"));
    */
-  declare readonly rubyMerge: KeywordAuthor<group5.RubyMergeCss, T['rubyMerge']>;
+  rubyMerge(value: PropertyInput<'rubyMerge', T>): this {
+    this.write('rubyMerge', 'ruby-merge', value);
+    return this;
+  }
   /**
    * 控制注音文字是否可以悬伸到相邻文本上方。（ruby-overhang）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/ruby-overhang
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.rubyOverhang("inherit"));
    */
-  declare readonly rubyOverhang: KeywordAuthor<group5.RubyOverhangCss, T['rubyOverhang']>;
+  rubyOverhang(value: PropertyInput<'rubyOverhang', T>): this {
+    this.write('rubyOverhang', 'ruby-overhang', value);
+    return this;
+  }
   /**
    * 设置注音文字相对于基底文字的位置。（ruby-position）
    *
    * CSS 初始值：`alternate`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/ruby-position
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.rubyPosition("inherit"));
    */
-  declare readonly rubyPosition: KeywordAuthor<group5.RubyPositionCss, T['rubyPosition']>;
+  rubyPosition(value: PropertyInput<'rubyPosition', T>): this {
+    this.write('rubyPosition', 'ruby-position', value);
+    return this;
+  }
   /**
    * 设置 SVG 椭圆的水平半径，或矩形的水平圆角半径。（rx）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/rx
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.rx("inherit"));
    */
-  declare readonly rx: KeywordAuthor<group5.RxCss, T['rx']>;
+  rx(value: PropertyInput<'rx', T>): this {
+    this.write('rx', 'rx', value);
+    return this;
+  }
   /**
    * 设置 SVG 椭圆的垂直半径，或矩形的垂直圆角半径。（ry）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/ry
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.ry("inherit"));
    */
-  declare readonly ry: KeywordAuthor<group5.RyCss, T['ry']>;
+  ry(value: PropertyInput<'ry', T>): this {
+    this.write('ry', 'ry', value);
+    return this;
+  }
   /**
    * 独立设置元素的缩放比例。（scale）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scale
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scale("inherit"));
    */
-  declare readonly scale: KeywordAuthor<group6.ScaleCss, T['scale']>;
+  scale(value: PropertyInput<'scale', T>): this {
+    this.write('scale', 'scale', value);
+    return this;
+  }
   /**
    * 设置由导航或滚动 API 触发的滚动采用即时还是平滑方式。（scroll-behavior）
    *
@@ -3432,472 +5006,694 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：锚点跳转或程序化滚动；应同时考虑减少动态效果的用户偏好。
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
-   * @example
-   * s.scrollBehavior.smooth
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-behavior
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollBehavior("inherit"));
    */
-  declare readonly scrollBehavior: KeywordAuthor<group6.ScrollBehaviorCss, T['scrollBehavior']>;
+  scrollBehavior(value: PropertyInput<'scrollBehavior', T>): this {
+    this.write('scrollBehavior', 'scroll-behavior', value);
+    return this;
+  }
   /**
    * 将元素声明为祖先滚动容器首次呈现时的候选滚动吸附目标。（scroll-initial-target）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-initial-target
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollInitialTarget("inherit"));
    */
-  declare readonly scrollInitialTarget: KeywordAuthor<
-    group6.ScrollInitialTargetCss,
-    T['scrollInitialTarget']
-  >;
+  scrollInitialTarget(value: PropertyInput<'scrollInitialTarget', T>): this {
+    this.write('scrollInitialTarget', 'scroll-initial-target', value);
+    return this;
+  }
   /**
    * 设置元素滚动目标区域的四边外扩距离，不改变普通布局外边距。（scroll-margin）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollMargin("inherit"));
    */
-  declare readonly scrollMargin: KeywordAuthor<group6.ScrollMarginCss, T['scrollMargin']>;
+  scrollMargin(value: PropertyInput<'scrollMargin', T>): this {
+    this.write('scrollMargin', 'scroll-margin', value);
+    return this;
+  }
   /**
    * 设置滚动目标区域在逻辑块轴两侧的外扩距离。（scroll-margin-block）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-block
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollMarginBlock("inherit"));
    */
-  declare readonly scrollMarginBlock: KeywordAuthor<
-    group6.ScrollMarginBlockCss,
-    T['scrollMarginBlock']
-  >;
+  scrollMarginBlock(value: PropertyInput<'scrollMarginBlock', T>): this {
+    this.write('scrollMarginBlock', 'scroll-margin-block', value);
+    return this;
+  }
   /**
    * 设置滚动目标区域在逻辑块轴结束侧的外扩距离。（scroll-margin-block-end）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-block-end
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollMarginBlockEnd("inherit"));
    */
-  declare readonly scrollMarginBlockEnd: KeywordAuthor<
-    group6.ScrollMarginBlockEndCss,
-    T['scrollMarginBlockEnd']
-  >;
+  scrollMarginBlockEnd(value: PropertyInput<'scrollMarginBlockEnd', T>): this {
+    this.write('scrollMarginBlockEnd', 'scroll-margin-block-end', value);
+    return this;
+  }
   /**
    * 设置滚动目标区域在逻辑块轴起始侧的外扩距离。（scroll-margin-block-start）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-block-start
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollMarginBlockStart("inherit"));
    */
-  declare readonly scrollMarginBlockStart: KeywordAuthor<
-    group6.ScrollMarginBlockStartCss,
-    T['scrollMarginBlockStart']
-  >;
+  scrollMarginBlockStart(value: PropertyInput<'scrollMarginBlockStart', T>): this {
+    this.write('scrollMarginBlockStart', 'scroll-margin-block-start', value);
+    return this;
+  }
   /**
    * 设置滚动目标区域下侧的外扩距离。（scroll-margin-bottom）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-bottom
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollMarginBottom("inherit"));
    */
-  declare readonly scrollMarginBottom: KeywordAuthor<
-    group6.ScrollMarginBottomCss,
-    T['scrollMarginBottom']
-  >;
+  scrollMarginBottom(value: PropertyInput<'scrollMarginBottom', T>): this {
+    this.write('scrollMarginBottom', 'scroll-margin-bottom', value);
+    return this;
+  }
   /**
    * 设置滚动目标区域在逻辑行内轴两侧的外扩距离。（scroll-margin-inline）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-inline
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollMarginInline("inherit"));
    */
-  declare readonly scrollMarginInline: KeywordAuthor<
-    group6.ScrollMarginInlineCss,
-    T['scrollMarginInline']
-  >;
+  scrollMarginInline(value: PropertyInput<'scrollMarginInline', T>): this {
+    this.write('scrollMarginInline', 'scroll-margin-inline', value);
+    return this;
+  }
   /**
    * 设置滚动目标区域在逻辑行内轴结束侧的外扩距离。（scroll-margin-inline-end）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-inline-end
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollMarginInlineEnd("inherit"));
    */
-  declare readonly scrollMarginInlineEnd: KeywordAuthor<
-    group6.ScrollMarginInlineEndCss,
-    T['scrollMarginInlineEnd']
-  >;
+  scrollMarginInlineEnd(value: PropertyInput<'scrollMarginInlineEnd', T>): this {
+    this.write('scrollMarginInlineEnd', 'scroll-margin-inline-end', value);
+    return this;
+  }
   /**
    * 设置滚动目标区域在逻辑行内轴起始侧的外扩距离。（scroll-margin-inline-start）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-inline-start
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollMarginInlineStart("inherit"));
    */
-  declare readonly scrollMarginInlineStart: KeywordAuthor<
-    group6.ScrollMarginInlineStartCss,
-    T['scrollMarginInlineStart']
-  >;
+  scrollMarginInlineStart(value: PropertyInput<'scrollMarginInlineStart', T>): this {
+    this.write('scrollMarginInlineStart', 'scroll-margin-inline-start', value);
+    return this;
+  }
   /**
    * 设置滚动目标区域左侧的外扩距离。（scroll-margin-left）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-left
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollMarginLeft("inherit"));
    */
-  declare readonly scrollMarginLeft: KeywordAuthor<
-    group6.ScrollMarginLeftCss,
-    T['scrollMarginLeft']
-  >;
+  scrollMarginLeft(value: PropertyInput<'scrollMarginLeft', T>): this {
+    this.write('scrollMarginLeft', 'scroll-margin-left', value);
+    return this;
+  }
   /**
    * 设置滚动目标区域右侧的外扩距离。（scroll-margin-right）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-right
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollMarginRight("inherit"));
    */
-  declare readonly scrollMarginRight: KeywordAuthor<
-    group6.ScrollMarginRightCss,
-    T['scrollMarginRight']
-  >;
+  scrollMarginRight(value: PropertyInput<'scrollMarginRight', T>): this {
+    this.write('scrollMarginRight', 'scroll-margin-right', value);
+    return this;
+  }
   /**
    * 设置滚动目标区域上侧的外扩距离。（scroll-margin-top）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-top
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollMarginTop("inherit"));
    */
-  declare readonly scrollMarginTop: KeywordAuthor<group6.ScrollMarginTopCss, T['scrollMarginTop']>;
+  scrollMarginTop(value: PropertyInput<'scrollMarginTop', T>): this {
+    this.write('scrollMarginTop', 'scroll-margin-top', value);
+    return this;
+  }
   /**
    * 设置滚动容器最佳可视区域的四边内缩距离。（scroll-padding）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-padding
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollPadding("inherit"));
    */
-  declare readonly scrollPadding: KeywordAuthor<group6.ScrollPaddingCss, T['scrollPadding']>;
+  scrollPadding(value: PropertyInput<'scrollPadding', T>): this {
+    this.write('scrollPadding', 'scroll-padding', value);
+    return this;
+  }
   /**
    * 设置滚动容器最佳可视区域在逻辑块轴两侧的内缩距离。（scroll-padding-block）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-padding-block
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollPaddingBlock("inherit"));
    */
-  declare readonly scrollPaddingBlock: KeywordAuthor<
-    group6.ScrollPaddingBlockCss,
-    T['scrollPaddingBlock']
-  >;
+  scrollPaddingBlock(value: PropertyInput<'scrollPaddingBlock', T>): this {
+    this.write('scrollPaddingBlock', 'scroll-padding-block', value);
+    return this;
+  }
   /**
    * 设置滚动容器最佳可视区域在逻辑块轴结束侧的内缩距离。（scroll-padding-block-end）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-padding-block-end
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollPaddingBlockEnd("inherit"));
    */
-  declare readonly scrollPaddingBlockEnd: KeywordAuthor<
-    group6.ScrollPaddingBlockEndCss,
-    T['scrollPaddingBlockEnd']
-  >;
+  scrollPaddingBlockEnd(value: PropertyInput<'scrollPaddingBlockEnd', T>): this {
+    this.write('scrollPaddingBlockEnd', 'scroll-padding-block-end', value);
+    return this;
+  }
   /**
    * 设置滚动容器最佳可视区域在逻辑块轴起始侧的内缩距离。（scroll-padding-block-start）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-padding-block-start
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollPaddingBlockStart("inherit"));
    */
-  declare readonly scrollPaddingBlockStart: KeywordAuthor<
-    group6.ScrollPaddingBlockStartCss,
-    T['scrollPaddingBlockStart']
-  >;
+  scrollPaddingBlockStart(value: PropertyInput<'scrollPaddingBlockStart', T>): this {
+    this.write('scrollPaddingBlockStart', 'scroll-padding-block-start', value);
+    return this;
+  }
   /**
    * 设置滚动容器最佳可视区域下侧的内缩距离。（scroll-padding-bottom）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-padding-bottom
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollPaddingBottom("inherit"));
    */
-  declare readonly scrollPaddingBottom: KeywordAuthor<
-    group6.ScrollPaddingBottomCss,
-    T['scrollPaddingBottom']
-  >;
+  scrollPaddingBottom(value: PropertyInput<'scrollPaddingBottom', T>): this {
+    this.write('scrollPaddingBottom', 'scroll-padding-bottom', value);
+    return this;
+  }
   /**
    * 设置滚动容器最佳可视区域在逻辑行内轴两侧的内缩距离。（scroll-padding-inline）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-padding-inline
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollPaddingInline("inherit"));
    */
-  declare readonly scrollPaddingInline: KeywordAuthor<
-    group6.ScrollPaddingInlineCss,
-    T['scrollPaddingInline']
-  >;
+  scrollPaddingInline(value: PropertyInput<'scrollPaddingInline', T>): this {
+    this.write('scrollPaddingInline', 'scroll-padding-inline', value);
+    return this;
+  }
   /**
    * 设置滚动容器最佳可视区域在逻辑行内轴结束侧的内缩距离。（scroll-padding-inline-end）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-padding-inline-end
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollPaddingInlineEnd("inherit"));
    */
-  declare readonly scrollPaddingInlineEnd: KeywordAuthor<
-    group6.ScrollPaddingInlineEndCss,
-    T['scrollPaddingInlineEnd']
-  >;
+  scrollPaddingInlineEnd(value: PropertyInput<'scrollPaddingInlineEnd', T>): this {
+    this.write('scrollPaddingInlineEnd', 'scroll-padding-inline-end', value);
+    return this;
+  }
   /**
    * 设置滚动容器最佳可视区域在逻辑行内轴起始侧的内缩距离。（scroll-padding-inline-start）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-padding-inline-start
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollPaddingInlineStart("inherit"));
    */
-  declare readonly scrollPaddingInlineStart: KeywordAuthor<
-    group6.ScrollPaddingInlineStartCss,
-    T['scrollPaddingInlineStart']
-  >;
+  scrollPaddingInlineStart(value: PropertyInput<'scrollPaddingInlineStart', T>): this {
+    this.write('scrollPaddingInlineStart', 'scroll-padding-inline-start', value);
+    return this;
+  }
   /**
    * 设置滚动容器最佳可视区域左侧的内缩距离。（scroll-padding-left）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-padding-left
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollPaddingLeft("inherit"));
    */
-  declare readonly scrollPaddingLeft: KeywordAuthor<
-    group6.ScrollPaddingLeftCss,
-    T['scrollPaddingLeft']
-  >;
+  scrollPaddingLeft(value: PropertyInput<'scrollPaddingLeft', T>): this {
+    this.write('scrollPaddingLeft', 'scroll-padding-left', value);
+    return this;
+  }
   /**
    * 设置滚动容器最佳可视区域右侧的内缩距离。（scroll-padding-right）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-padding-right
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollPaddingRight("inherit"));
    */
-  declare readonly scrollPaddingRight: KeywordAuthor<
-    group6.ScrollPaddingRightCss,
-    T['scrollPaddingRight']
-  >;
+  scrollPaddingRight(value: PropertyInput<'scrollPaddingRight', T>): this {
+    this.write('scrollPaddingRight', 'scroll-padding-right', value);
+    return this;
+  }
   /**
    * 设置滚动容器最佳可视区域上侧的内缩距离。（scroll-padding-top）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-padding-top
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollPaddingTop("inherit"));
    */
-  declare readonly scrollPaddingTop: KeywordAuthor<
-    group6.ScrollPaddingTopCss,
-    T['scrollPaddingTop']
-  >;
+  scrollPaddingTop(value: PropertyInput<'scrollPaddingTop', T>): this {
+    this.write('scrollPaddingTop', 'scroll-padding-top', value);
+    return this;
+  }
   /**
    * 设置元素作为滚动吸附目标时在块轴和行内轴上的对齐位置。（scroll-snap-align）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-snap-align
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollSnapAlign("inherit"));
    */
-  declare readonly scrollSnapAlign: KeywordAuthor<group6.ScrollSnapAlignCss, T['scrollSnapAlign']>;
+  scrollSnapAlign(value: PropertyInput<'scrollSnapAlign', T>): this {
+    this.write('scrollSnapAlign', 'scroll-snap-align', value);
+    return this;
+  }
   /**
    * 设置滚动吸附区域外扩的旧名称；新代码使用 scroll-margin。（scroll-snap-margin）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollSnapMargin("inherit"));
    */
-  declare readonly scrollSnapMargin: KeywordAuthor<
-    group6.ScrollSnapMarginCss,
-    T['scrollSnapMargin']
-  >;
+  scrollSnapMargin(value: PropertyInput<'scrollSnapMargin', T>): this {
+    this.write('scrollSnapMargin', 'scroll-snap-margin', value);
+    return this;
+  }
   /**
    * 设置滚动吸附区域下侧外扩的旧名称；新代码使用 scroll-margin-bottom。（scroll-snap-margin-bottom）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-bottom
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollSnapMarginBottom("inherit"));
    */
-  declare readonly scrollSnapMarginBottom: KeywordAuthor<
-    group6.ScrollSnapMarginBottomCss,
-    T['scrollSnapMarginBottom']
-  >;
+  scrollSnapMarginBottom(value: PropertyInput<'scrollSnapMarginBottom', T>): this {
+    this.write('scrollSnapMarginBottom', 'scroll-snap-margin-bottom', value);
+    return this;
+  }
   /**
    * 设置滚动吸附区域左侧外扩的旧名称；新代码使用 scroll-margin-left。（scroll-snap-margin-left）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-left
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollSnapMarginLeft("inherit"));
    */
-  declare readonly scrollSnapMarginLeft: KeywordAuthor<
-    group6.ScrollSnapMarginLeftCss,
-    T['scrollSnapMarginLeft']
-  >;
+  scrollSnapMarginLeft(value: PropertyInput<'scrollSnapMarginLeft', T>): this {
+    this.write('scrollSnapMarginLeft', 'scroll-snap-margin-left', value);
+    return this;
+  }
   /**
    * 设置滚动吸附区域右侧外扩的旧名称；新代码使用 scroll-margin-right。（scroll-snap-margin-right）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-right
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollSnapMarginRight("inherit"));
    */
-  declare readonly scrollSnapMarginRight: KeywordAuthor<
-    group6.ScrollSnapMarginRightCss,
-    T['scrollSnapMarginRight']
-  >;
+  scrollSnapMarginRight(value: PropertyInput<'scrollSnapMarginRight', T>): this {
+    this.write('scrollSnapMarginRight', 'scroll-snap-margin-right', value);
+    return this;
+  }
   /**
    * 设置滚动吸附区域上侧外扩的旧名称；新代码使用 scroll-margin-top。（scroll-snap-margin-top）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-margin-top
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollSnapMarginTop("inherit"));
    */
-  declare readonly scrollSnapMarginTop: KeywordAuthor<
-    group6.ScrollSnapMarginTopCss,
-    T['scrollSnapMarginTop']
-  >;
+  scrollSnapMarginTop(value: PropertyInput<'scrollSnapMarginTop', T>): this {
+    this.write('scrollSnapMarginTop', 'scroll-snap-margin-top', value);
+    return this;
+  }
   /**
    * 设置滚动时是否允许越过该元素的吸附位置。（scroll-snap-stop）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-snap-stop
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollSnapStop("inherit"));
    */
-  declare readonly scrollSnapStop: KeywordAuthor<group6.ScrollSnapStopCss, T['scrollSnapStop']>;
+  scrollSnapStop(value: PropertyInput<'scrollSnapStop', T>): this {
+    this.write('scrollSnapStop', 'scroll-snap-stop', value);
+    return this;
+  }
   /**
    * 设置滚动容器的吸附轴和吸附强度。（scroll-snap-type）
    *
    * 轴和吸附强度的组合通过 raw 写入，例如 x mandatory；单独声明轴时省略的强度按 CSS 规则处理。
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
-   * @example
-   * s.scrollSnapType.raw('x mandatory') // scroll-snap-type:x mandatory;
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-snap-type
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollSnapType("inherit"));
    */
-  declare readonly scrollSnapType: KeywordAuthor<group6.ScrollSnapTypeCss, T['scrollSnapType']>;
+  scrollSnapType(value: PropertyInput<'scrollSnapType', T>): this {
+    this.write('scrollSnapType', 'scroll-snap-type', value);
+    return this;
+  }
   /**
    * 同时声明滚动进度时间线的名称和轴。（scroll-timeline）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-timeline
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollTimeline("inherit"));
    */
-  declare readonly scrollTimeline: KeywordAuthor<group6.ScrollTimelineCss, T['scrollTimeline']>;
+  scrollTimeline(value: PropertyInput<'scrollTimeline', T>): this {
+    this.write('scrollTimeline', 'scroll-timeline', value);
+    return this;
+  }
   /**
    * 设置滚动进度时间线所观察的滚动轴。（scroll-timeline-axis）
    *
    * CSS 初始值：`block`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-timeline-axis
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollTimelineAxis("inherit"));
    */
-  declare readonly scrollTimelineAxis: KeywordAuthor<
-    group6.ScrollTimelineAxisCss,
-    T['scrollTimelineAxis']
-  >;
+  scrollTimelineAxis(value: PropertyInput<'scrollTimelineAxis', T>): this {
+    this.write('scrollTimelineAxis', 'scroll-timeline-axis', value);
+    return this;
+  }
   /**
    * 声明基于当前容器滚动进度的时间线名称。（scroll-timeline-name）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scroll-timeline-name
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollTimelineName("inherit"));
    */
-  declare readonly scrollTimelineName: KeywordAuthor<
-    group6.ScrollTimelineNameCss,
-    T['scrollTimelineName']
-  >;
+  scrollTimelineName(value: PropertyInput<'scrollTimelineName', T>): this {
+    this.write('scrollTimelineName', 'scroll-timeline-name', value);
+    return this;
+  }
   /**
    * 设置滚动条滑块和轨道的颜色。（scrollbar-color）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scrollbar-color
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollbarColor("inherit"));
    */
-  declare readonly scrollbarColor: KeywordAuthor<group6.ScrollbarColorCss, T['scrollbarColor']>;
+  scrollbarColor(value: PropertyInput<'scrollbarColor', T>): this {
+    this.write('scrollbarColor', 'scrollbar-color', value);
+    return this;
+  }
   /**
    * 设置是否预留滚动条槽位，以减少滚动条出现时的布局变化。（scrollbar-gutter）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scrollbar-gutter
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollbarGutter("inherit"));
    */
-  declare readonly scrollbarGutter: KeywordAuthor<group6.ScrollbarGutterCss, T['scrollbarGutter']>;
+  scrollbarGutter(value: PropertyInput<'scrollbarGutter', T>): this {
+    this.write('scrollbarGutter', 'scrollbar-gutter', value);
+    return this;
+  }
   /**
    * 设置滚动条采用正常、较细或隐藏的外观。（scrollbar-width）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scrollbar-width
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.scrollbarWidth("inherit"));
    */
-  declare readonly scrollbarWidth: KeywordAuthor<group6.ScrollbarWidthCss, T['scrollbarWidth']>;
+  scrollbarWidth(value: PropertyInput<'scrollbarWidth', T>): this {
+    this.write('scrollbarWidth', 'scrollbar-width', value);
+    return this;
+  }
   /**
    * 设置从图像 alpha 信息提取环绕形状时的阈值。（shape-image-threshold）
    *
    * CSS 初始值：`0.0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/shape-image-threshold
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.shapeImageThreshold("inherit"));
    */
-  declare readonly shapeImageThreshold: KeywordAuthor<
-    group6.ShapeImageThresholdCss,
-    T['shapeImageThreshold']
-  >;
+  shapeImageThreshold(value: PropertyInput<'shapeImageThreshold', T>): this {
+    this.write('shapeImageThreshold', 'shape-image-threshold', value);
+    return this;
+  }
   /**
    * 设置文字环绕形状之外的额外间距。（shape-margin）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/shape-margin
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.shapeMargin("inherit"));
    */
-  declare readonly shapeMargin: KeywordAuthor<group6.ShapeMarginCss, T['shapeMargin']>;
+  shapeMargin(value: PropertyInput<'shapeMargin', T>): this {
+    this.write('shapeMargin', 'shape-margin', value);
+    return this;
+  }
   /**
    * 设置浮动元素周围行内内容所环绕的形状。（shape-outside）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/shape-outside
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.shapeOutside("inherit"));
    */
-  declare readonly shapeOutside: KeywordAuthor<group6.ShapeOutsideCss, T['shapeOutside']>;
+  shapeOutside(value: PropertyInput<'shapeOutside', T>): this {
+    this.write('shapeOutside', 'shape-outside', value);
+    return this;
+  }
   /**
    * 向 SVG 渲染器提供图形绘制精度与速度的偏好。（shape-rendering）
-   *
-   * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/shape-rendering
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.shapeRendering("inherit"));
    */
-  declare readonly shapeRendering: KeywordAuthor<group6.ShapeRenderingCss, T['shapeRendering']>;
+  shapeRendering(value: PropertyInput<'shapeRendering', T>): this {
+    this.write('shapeRendering', 'shape-rendering', value);
+    return this;
+  }
   /**
    * 设置语音呈现时文字、数字和标点的朗读方式；使用前核对语音媒体支持。（speak-as）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/speak-as
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.speakAs("inherit"));
    */
-  declare readonly speakAs: KeywordAuthor<group6.SpeakAsCss, T['speakAs']>;
+  speakAs(value: PropertyInput<'speakAs', T>): this {
+    this.write('speakAs', 'speak-as', value);
+    return this;
+  }
   /**
    * 设置 SVG 渐变 stop 节点的颜色。（stop-color）
-   *
-   * CSS 初始值：`black`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stop-color
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.stopColor("inherit"));
    */
-  declare readonly stopColor: KeywordAuthor<group6.StopColorCss, T['stopColor']>;
+  stopColor(value: PropertyInput<'stopColor', T>): this {
+    this.write('stopColor', 'stop-color', value);
+    return this;
+  }
   /**
    * 设置 SVG 渐变 stop 节点的不透明度。（stop-opacity）
-   *
-   * CSS 初始值：`black`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stop-opacity
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.stopOpacity("inherit"));
    */
-  declare readonly stopOpacity: KeywordAuthor<group6.StopOpacityCss, T['stopOpacity']>;
+  stopOpacity(value: PropertyInput<'stopOpacity', T>): this {
+    this.write('stopOpacity', 'stop-opacity', value);
+    return this;
+  }
   /**
    * 设置 SVG 图形轮廓的描边绘制方式。（stroke）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stroke
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.stroke("inherit"));
    */
-  declare readonly stroke: KeywordAuthor<group6.StrokeCss, T['stroke']>;
+  stroke(value: PropertyInput<'stroke', T>): this {
+    this.write('stroke', 'stroke', value);
+    return this;
+  }
   /**
    * 设置描边颜色的扩展属性；常规 SVG 优先使用 stroke 并核对支持情况。（stroke-color）
    *
    * CSS 初始值：`transparent`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stroke-color
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.strokeColor("inherit"));
    */
-  declare readonly strokeColor: KeywordAuthor<group6.StrokeColorCss, T['strokeColor']>;
+  strokeColor(value: PropertyInput<'strokeColor', T>): this {
+    this.write('strokeColor', 'stroke-color', value);
+    return this;
+  }
   /**
    * 设置 SVG 描边虚线中线段与空隙的长度序列。（stroke-dasharray）
-   *
-   * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stroke-dasharray
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.strokeDasharray("inherit"));
    */
-  declare readonly strokeDasharray: KeywordAuthor<group6.StrokeDasharrayCss, T['strokeDasharray']>;
+  strokeDasharray(value: PropertyInput<'strokeDasharray', T>): this {
+    this.write('strokeDasharray', 'stroke-dasharray', value);
+    return this;
+  }
   /**
    * 设置 SVG 虚线描边相对于路径起点的偏移。（stroke-dashoffset）
-   *
-   * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stroke-dashoffset
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.strokeDashoffset("inherit"));
    */
-  declare readonly strokeDashoffset: KeywordAuthor<
-    group6.StrokeDashoffsetCss,
-    T['strokeDashoffset']
-  >;
+  strokeDashoffset(value: PropertyInput<'strokeDashoffset', T>): this {
+    this.write('strokeDashoffset', 'stroke-dashoffset', value);
+    return this;
+  }
   /**
    * 设置开放 SVG 子路径端点的描边形状。（stroke-linecap）
-   *
-   * CSS 初始值：`butt`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stroke-linecap
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.strokeLinecap("inherit"));
    */
-  declare readonly strokeLinecap: KeywordAuthor<group6.StrokeLinecapCss, T['strokeLinecap']>;
+  strokeLinecap(value: PropertyInput<'strokeLinecap', T>): this {
+    this.write('strokeLinecap', 'stroke-linecap', value);
+    return this;
+  }
   /**
    * 设置 SVG 路径转角处描边的连接形状。（stroke-linejoin）
-   *
-   * CSS 初始值：`miter`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stroke-linejoin
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.strokeLinejoin("inherit"));
    */
-  declare readonly strokeLinejoin: KeywordAuthor<group6.StrokeLinejoinCss, T['strokeLinejoin']>;
+  strokeLinejoin(value: PropertyInput<'strokeLinejoin', T>): this {
+    this.write('strokeLinejoin', 'stroke-linejoin', value);
+    return this;
+  }
   /**
    * 限制尖角连接的延伸比例，超过阈值时改变连接形状。（stroke-miterlimit）
-   *
-   * CSS 初始值：`4`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stroke-miterlimit
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.strokeMiterlimit("inherit"));
    */
-  declare readonly strokeMiterlimit: KeywordAuthor<
-    group6.StrokeMiterlimitCss,
-    T['strokeMiterlimit']
-  >;
+  strokeMiterlimit(value: PropertyInput<'strokeMiterlimit', T>): this {
+    this.write('strokeMiterlimit', 'stroke-miterlimit', value);
+    return this;
+  }
   /**
    * 设置 SVG 描边的不透明度，不影响填充。（stroke-opacity）
-   *
-   * CSS 初始值：`1`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stroke-opacity
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.strokeOpacity("inherit"));
    */
-  declare readonly strokeOpacity: KeywordAuthor<group6.StrokeOpacityCss, T['strokeOpacity']>;
+  strokeOpacity(value: PropertyInput<'strokeOpacity', T>): this {
+    this.write('strokeOpacity', 'stroke-opacity', value);
+    return this;
+  }
   /**
    * 设置 SVG 描边宽度。（stroke-width）
-   *
-   * CSS 初始值：`1px`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stroke-width
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.strokeWidth("inherit"));
    */
-  declare readonly strokeWidth: KeywordAuthor<group6.StrokeWidthCss, T['strokeWidth']>;
+  strokeWidth(value: PropertyInput<'strokeWidth', T>): this {
+    this.write('strokeWidth', 'stroke-width', value);
+    return this;
+  }
   /**
    * 设置保留制表符时每个制表位的宽度。（tab-size）
    *
    * CSS 初始值：`8`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/tab-size
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.tabSize("inherit"));
    */
-  declare readonly tabSize: KeywordAuthor<group6.TabSizeCss, T['tabSize']>;
+  tabSize(value: PropertyInput<'tabSize', T>): this {
+    this.write('tabSize', 'tab-size', value);
+    return this;
+  }
   /**
    * 设置表格列宽采用自动还是固定布局算法。（table-layout）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/table-layout
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.tableLayout("inherit"));
    */
-  declare readonly tableLayout: KeywordAuthor<group6.TableLayoutCss, T['tableLayout']>;
+  tableLayout(value: PropertyInput<'tableLayout', T>): this {
+    this.write('tableLayout', 'table-layout', value);
+    return this;
+  }
   /**
    * 设置块容器中行内内容的水平或逻辑方向对齐。（text-align）
    *
@@ -3912,184 +5708,282 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：正文、标题和表格单元格中的文本对齐。
    *
    * CSS 初始值：`start`（不同于浏览器默认样式表）。
-   * @example
-   * s.textAlign.start
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-align
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textAlign("inherit"));
    */
-  declare readonly textAlign: KeywordAuthor<group6.TextAlignCss, T['textAlign']>;
+  textAlign(value: PropertyInput<'textAlign', T>): this {
+    this.write('textAlign', 'text-align', value);
+    return this;
+  }
   /**
    * 设置段落最后一行或强制换行前一行的对齐方式。（text-align-last）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-align-last
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textAlignLast("inherit"));
    */
-  declare readonly textAlignLast: KeywordAuthor<group6.TextAlignLastCss, T['textAlignLast']>;
+  textAlignLast(value: PropertyInput<'textAlignLast', T>): this {
+    this.write('textAlignLast', 'text-align-last', value);
+    return this;
+  }
   /**
    * 设置 SVG 文本片段相对于定位点的锚定方式。（text-anchor）
-   *
-   * CSS 初始值：`start`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-anchor
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textAnchor("inherit"));
    */
-  declare readonly textAnchor: KeywordAuthor<group6.TextAnchorCss, T['textAnchor']>;
+  textAnchor(value: PropertyInput<'textAnchor', T>): this {
+    this.write('textAnchor', 'text-anchor', value);
+    return this;
+  }
   /**
    * 设置中西文、数字等不同文字系统之间的自动间距。（text-autospace）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-autospace
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textAutospace("inherit"));
    */
-  declare readonly textAutospace: KeywordAuthor<group6.TextAutospaceCss, T['textAutospace']>;
+  textAutospace(value: PropertyInput<'textAutospace', T>): this {
+    this.write('textAutospace', 'text-autospace', value);
+    return this;
+  }
   /**
    * 同时设置文本盒边缘参照及首尾空白裁减。（text-box）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-box
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textBox("inherit"));
    */
-  declare readonly textBox: KeywordAuthor<group6.TextBoxCss, T['textBox']>;
+  textBox(value: PropertyInput<'textBox', T>): this {
+    this.write('textBox', 'text-box', value);
+    return this;
+  }
   /**
    * 选择文本盒裁减或对齐使用的字体边缘度量。（text-box-edge）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-box-edge
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textBoxEdge("inherit"));
    */
-  declare readonly textBoxEdge: KeywordAuthor<group6.TextBoxEdgeCss, T['textBoxEdge']>;
+  textBoxEdge(value: PropertyInput<'textBoxEdge', T>): this {
+    this.write('textBoxEdge', 'text-box-edge', value);
+    return this;
+  }
   /**
    * 裁减文本块开头或结尾的额外行高空白。（text-box-trim）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-box-trim
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textBoxTrim("inherit"));
    */
-  declare readonly textBoxTrim: KeywordAuthor<group6.TextBoxTrimCss, T['textBoxTrim']>;
+  textBoxTrim(value: PropertyInput<'textBoxTrim', T>): this {
+    this.write('textBoxTrim', 'text-box-trim', value);
+    return this;
+  }
   /**
    * 设置竖排文字中多个字符是否合成为一个横排字形单元。（text-combine-upright）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-combine-upright
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textCombineUpright("inherit"));
    */
-  declare readonly textCombineUpright: KeywordAuthor<
-    group6.TextCombineUprightCss,
-    T['textCombineUpright']
-  >;
+  textCombineUpright(value: PropertyInput<'textCombineUpright', T>): this {
+    this.write('textCombineUpright', 'text-combine-upright', value);
+    return this;
+  }
   /**
    * 集中设置文本装饰线的位置、线型、颜色及粗细。（text-decoration）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-decoration
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textDecoration("inherit"));
    */
-  declare readonly textDecoration: KeywordAuthor<group6.TextDecorationCss, T['textDecoration']>;
+  textDecoration(value: PropertyInput<'textDecoration', T>): this {
+    this.write('textDecoration', 'text-decoration', value);
+    return this;
+  }
   /**
    * 设置文本装饰线颜色。（text-decoration-color）
    *
    * CSS 初始值：`currentcolor`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-decoration-color
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textDecorationColor("inherit"));
    */
-  declare readonly textDecorationColor: KeywordAuthor<
-    group6.TextDecorationColorCss,
-    T['textDecorationColor']
-  >;
+  textDecorationColor(value: PropertyInput<'textDecorationColor', T>): this {
+    this.write('textDecorationColor', 'text-decoration-color', value);
+    return this;
+  }
   /**
    * 设置下划线、上划线或删除线等装饰线位置。（text-decoration-line）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-decoration-line
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textDecorationLine("inherit"));
    */
-  declare readonly textDecorationLine: KeywordAuthor<
-    group6.TextDecorationLineCss,
-    T['textDecorationLine']
-  >;
+  textDecorationLine(value: PropertyInput<'textDecorationLine', T>): this {
+    this.write('textDecorationLine', 'text-decoration-line', value);
+    return this;
+  }
   /**
    * 设置文本装饰线跳过哪些内容；具体语法需核对支持情况。（text-decoration-skip）
    *
    * CSS 初始值：`objects`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-decoration-skip
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textDecorationSkip("inherit"));
    */
-  declare readonly textDecorationSkip: KeywordAuthor<
-    group6.TextDecorationSkipCss,
-    T['textDecorationSkip']
-  >;
+  textDecorationSkip(value: PropertyInput<'textDecorationSkip', T>): this {
+    this.write('textDecorationSkip', 'text-decoration-skip', value);
+    return this;
+  }
   /**
    * 设置装饰线是否避让字形的笔画。（text-decoration-skip-ink）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-decoration-skip-ink
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textDecorationSkipInk("inherit"));
    */
-  declare readonly textDecorationSkipInk: KeywordAuthor<
-    group6.TextDecorationSkipInkCss,
-    T['textDecorationSkipInk']
-  >;
+  textDecorationSkipInk(value: PropertyInput<'textDecorationSkipInk', T>): this {
+    this.write('textDecorationSkipInk', 'text-decoration-skip-ink', value);
+    return this;
+  }
   /**
    * 设置文本装饰线的实线、波浪线等线型。（text-decoration-style）
    *
    * CSS 初始值：`solid`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-decoration-style
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textDecorationStyle("inherit"));
    */
-  declare readonly textDecorationStyle: KeywordAuthor<
-    group6.TextDecorationStyleCss,
-    T['textDecorationStyle']
-  >;
+  textDecorationStyle(value: PropertyInput<'textDecorationStyle', T>): this {
+    this.write('textDecorationStyle', 'text-decoration-style', value);
+    return this;
+  }
   /**
    * 设置文本装饰线粗细。（text-decoration-thickness）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-decoration-thickness
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textDecorationThickness("inherit"));
    */
-  declare readonly textDecorationThickness: KeywordAuthor<
-    group6.TextDecorationThicknessCss,
-    T['textDecorationThickness']
-  >;
+  textDecorationThickness(value: PropertyInput<'textDecorationThickness', T>): this {
+    this.write('textDecorationThickness', 'text-decoration-thickness', value);
+    return this;
+  }
   /**
    * 同时设置文字着重号的样式和颜色。（text-emphasis）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-emphasis
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textEmphasis("inherit"));
    */
-  declare readonly textEmphasis: KeywordAuthor<group6.TextEmphasisCss, T['textEmphasis']>;
+  textEmphasis(value: PropertyInput<'textEmphasis', T>): this {
+    this.write('textEmphasis', 'text-emphasis', value);
+    return this;
+  }
   /**
    * 设置文字着重号颜色。（text-emphasis-color）
    *
    * CSS 初始值：`currentcolor`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-emphasis-color
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textEmphasisColor("inherit"));
    */
-  declare readonly textEmphasisColor: KeywordAuthor<
-    group6.TextEmphasisColorCss,
-    T['textEmphasisColor']
-  >;
+  textEmphasisColor(value: PropertyInput<'textEmphasisColor', T>): this {
+    this.write('textEmphasisColor', 'text-emphasis-color', value);
+    return this;
+  }
   /**
    * 设置文字着重号位于文字的哪一侧。（text-emphasis-position）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-emphasis-position
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textEmphasisPosition("inherit"));
    */
-  declare readonly textEmphasisPosition: KeywordAuthor<
-    group6.TextEmphasisPositionCss,
-    T['textEmphasisPosition']
-  >;
+  textEmphasisPosition(value: PropertyInput<'textEmphasisPosition', T>): this {
+    this.write('textEmphasisPosition', 'text-emphasis-position', value);
+    return this;
+  }
   /**
    * 设置文字着重号的形状和填充方式。（text-emphasis-style）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-emphasis-style
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textEmphasisStyle("inherit"));
    */
-  declare readonly textEmphasisStyle: KeywordAuthor<
-    group6.TextEmphasisStyleCss,
-    T['textEmphasisStyle']
-  >;
+  textEmphasisStyle(value: PropertyInput<'textEmphasisStyle', T>): this {
+    this.write('textEmphasisStyle', 'text-emphasis-style', value);
+    return this;
+  }
   /**
    * 设置文本行的缩进距离。（text-indent）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-indent
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textIndent("inherit"));
    */
-  declare readonly textIndent: KeywordAuthor<group6.TextIndentCss, T['textIndent']>;
+  textIndent(value: PropertyInput<'textIndent', T>): this {
+    this.write('textIndent', 'text-indent', value);
+    return this;
+  }
   /**
    * 设置两端对齐时增加间距的算法。（text-justify）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-justify
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textJustify("inherit"));
    */
-  declare readonly textJustify: KeywordAuthor<group6.TextJustifyCss, T['textJustify']>;
+  textJustify(value: PropertyInput<'textJustify', T>): this {
+    this.write('textJustify', 'text-justify', value);
+    return this;
+  }
   /**
    * 设置竖排模式下字符的方向。（text-orientation）
    *
    * CSS 初始值：`mixed`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-orientation
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textOrientation("inherit"));
    */
-  declare readonly textOrientation: KeywordAuthor<group6.TextOrientationCss, T['textOrientation']>;
+  textOrientation(value: PropertyInput<'textOrientation', T>): this {
+    this.write('textOrientation', 'text-orientation', value);
+    return this;
+  }
   /**
    * 设置被裁剪的行内溢出文本如何提示，例如显示省略号。（text-overflow）
    *
@@ -4102,101 +5996,169 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：受限宽度中的单行标题或标签。多行截断需要单独的布局和截行方案。
    *
    * CSS 初始值：`clip`（不同于浏览器默认样式表）。
-   * @example
-   * css(s.maxWidth.rem(12), s.whiteSpace.nowrap, s.overflow.hidden, s.textOverflow.ellipsis)
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-overflow
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textOverflow("inherit"));
    */
-  declare readonly textOverflow: KeywordAuthor<group6.TextOverflowCss, T['textOverflow']>;
+  textOverflow(value: PropertyInput<'textOverflow', T>): this {
+    this.write('textOverflow', 'text-overflow', value);
+    return this;
+  }
   /**
    * 向渲染器提供文本速度、可读性或几何精度的偏好。（text-rendering）
-   *
-   * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-rendering
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textRendering("inherit"));
    */
-  declare readonly textRendering: KeywordAuthor<group6.TextRenderingCss, T['textRendering']>;
+  textRendering(value: PropertyInput<'textRendering', T>): this {
+    this.write('textRendering', 'text-rendering', value);
+    return this;
+  }
   /**
    * 设置文字及其装饰的阴影，可叠加多层。（text-shadow）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-shadow
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textShadow("inherit"));
    */
-  declare readonly textShadow: KeywordAuthor<group6.TextShadowCss, T['textShadow']>;
+  textShadow(value: PropertyInput<'textShadow', T>): this {
+    this.write('textShadow', 'text-shadow', value);
+    return this;
+  }
   /**
    * 控制移动浏览器为提升可读性而进行的文字自动放大。（text-size-adjust）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-size-adjust
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textSizeAdjust("inherit"));
    */
-  declare readonly textSizeAdjust: KeywordAuthor<group6.TextSizeAdjustCss, T['textSizeAdjust']>;
+  textSizeAdjust(value: PropertyInput<'textSizeAdjust', T>): this {
+    this.write('textSizeAdjust', 'text-size-adjust', value);
+    return this;
+  }
   /**
    * 设置东亚文字标点等字符周围空白的裁减。（text-spacing-trim）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-spacing-trim
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textSpacingTrim("inherit"));
    */
-  declare readonly textSpacingTrim: KeywordAuthor<group6.TextSpacingTrimCss, T['textSpacingTrim']>;
+  textSpacingTrim(value: PropertyInput<'textSpacingTrim', T>): this {
+    this.write('textSpacingTrim', 'text-spacing-trim', value);
+    return this;
+  }
   /**
    * 设置文字显示时的大小写、全角或其他字形转换。（text-transform）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-transform
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textTransform("inherit"));
    */
-  declare readonly textTransform: KeywordAuthor<group6.TextTransformCss, T['textTransform']>;
+  textTransform(value: PropertyInput<'textTransform', T>): this {
+    this.write('textTransform', 'text-transform', value);
+    return this;
+  }
   /**
    * 设置下划线相对于默认位置的偏移。（text-underline-offset）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-underline-offset
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textUnderlineOffset("inherit"));
    */
-  declare readonly textUnderlineOffset: KeywordAuthor<
-    group6.TextUnderlineOffsetCss,
-    T['textUnderlineOffset']
-  >;
+  textUnderlineOffset(value: PropertyInput<'textUnderlineOffset', T>): this {
+    this.write('textUnderlineOffset', 'text-underline-offset', value);
+    return this;
+  }
   /**
    * 设置下划线相对于文字基线或竖排文字的放置方式。（text-underline-position）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-underline-position
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textUnderlinePosition("inherit"));
    */
-  declare readonly textUnderlinePosition: KeywordAuthor<
-    group6.TextUnderlinePositionCss,
-    T['textUnderlinePosition']
-  >;
+  textUnderlinePosition(value: PropertyInput<'textUnderlinePosition', T>): this {
+    this.write('textUnderlinePosition', 'text-underline-position', value);
+    return this;
+  }
   /**
    * 同时设置文本是否换行及换行策略。（text-wrap）
    *
    * CSS 初始值：`wrap`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-wrap
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textWrap("inherit"));
    */
-  declare readonly textWrap: KeywordAuthor<group6.TextWrapCss, T['textWrap']>;
+  textWrap(value: PropertyInput<'textWrap', T>): this {
+    this.write('textWrap', 'text-wrap', value);
+    return this;
+  }
   /**
    * 设置文本是否允许软换行。（text-wrap-mode）
    *
    * CSS 初始值：`wrap`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-wrap-mode
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textWrapMode("inherit"));
    */
-  declare readonly textWrapMode: KeywordAuthor<group6.TextWrapModeCss, T['textWrapMode']>;
+  textWrapMode(value: PropertyInput<'textWrapMode', T>): this {
+    this.write('textWrapMode', 'text-wrap-mode', value);
+    return this;
+  }
   /**
    * 设置文本换行的排版策略，例如平衡各行长度。（text-wrap-style）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/text-wrap-style
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.textWrapStyle("inherit"));
    */
-  declare readonly textWrapStyle: KeywordAuthor<group6.TextWrapStyleCss, T['textWrapStyle']>;
+  textWrapStyle(value: PropertyInput<'textWrapStyle', T>): this {
+    this.write('textWrapStyle', 'text-wrap-style', value);
+    return this;
+  }
   /**
    * 扩大命名动画时间线的可引用作用域。（timeline-scope）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/timeline-scope
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.timelineScope("inherit"));
    */
-  declare readonly timelineScope: KeywordAuthor<group6.TimelineScopeCss, T['timelineScope']>;
+  timelineScope(value: PropertyInput<'timelineScope', T>): this {
+    this.write('timelineScope', 'timeline-scope', value);
+    return this;
+  }
   /**
    * 设置定位元素相对于其定位参照的上侧偏移。（top）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/top
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.top("inherit"));
    */
-  declare readonly top: KeywordAuthor<group6.TopCss, T['top']>;
+  top(value: PropertyInput<'top', T>): this {
+    this.write('top', 'top', value);
+    return this;
+  }
   /**
    * 声明浏览器可以处理的触摸平移与缩放手势。（touch-action）
    *
@@ -4211,11 +6173,15 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：拖拽控件与页面滚动之间分配触摸方向；保留用户所需的缩放能力。
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
-   * @example
-   * s.touchAction.panY
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/touch-action
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.touchAction("inherit"));
    */
-  declare readonly touchAction: KeywordAuthor<group6.TouchActionCss, T['touchAction']>;
+  touchAction(value: PropertyInput<'touchAction', T>): this {
+    this.write('touchAction', 'touch-action', value);
+    return this;
+  }
   /**
    * 按顺序组合平移、旋转、缩放等二维或三维变换。（transform）
    *
@@ -4224,102 +6190,156 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：平移、旋转和缩放的视觉效果；需要改变普通流占位时应调整布局属性。
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
-   * @example
-   * s.transform.raw('translateX(8px) scale(1.05)')
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transform
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.transform("inherit"));
    */
-  declare readonly transform: KeywordAuthor<group6.TransformCss, T['transform']>;
+  transform(value: PropertyInput<'transform', T>): this {
+    this.write('transform', 'transform', value);
+    return this;
+  }
   /**
    * 设置变换及其原点所依据的参照盒。（transform-box）
    *
    * CSS 初始值：`view-box`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transform-box
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.transformBox("inherit"));
    */
-  declare readonly transformBox: KeywordAuthor<group6.TransformBoxCss, T['transformBox']>;
+  transformBox(value: PropertyInput<'transformBox', T>): this {
+    this.write('transformBox', 'transform-box', value);
+    return this;
+  }
   /**
    * 设置元素变换的原点。（transform-origin）
    *
    * CSS 初始值：`50% 50% 0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transform-origin
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.transformOrigin("inherit"));
    */
-  declare readonly transformOrigin: KeywordAuthor<group6.TransformOriginCss, T['transformOrigin']>;
+  transformOrigin(value: PropertyInput<'transformOrigin', T>): this {
+    this.write('transformOrigin', 'transform-origin', value);
+    return this;
+  }
   /**
    * 控制子元素的三维位置保留在三维空间还是展平。（transform-style）
    *
    * CSS 初始值：`flat`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transform-style
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.transformStyle("inherit"));
    */
-  declare readonly transformStyle: KeywordAuthor<group6.TransformStyleCss, T['transformStyle']>;
+  transformStyle(value: PropertyInput<'transformStyle', T>): this {
+    this.write('transformStyle', 'transform-style', value);
+    return this;
+  }
   /**
    * 集中设置属性变化过渡的目标、时长、缓动、延迟和行为。（transition）
    *
    * 只对属性变化创建过渡；不会自动触发变化。建议明确列出目标属性，避免 all 意外过渡布局变化。
    *
    * 适用场景：悬停、选中和展开状态之间的平滑变化。
-   * @example
-   * s.transition.raw('opacity 160ms ease')
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transition
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.transition("inherit"));
    */
-  declare readonly transition: KeywordAuthor<group6.TransitionCss, T['transition']>;
+  transition(value: PropertyInput<'transition', T>): this {
+    this.write('transition', 'transition', value);
+    return this;
+  }
   /**
    * 控制离散属性是否可以启动 CSS 过渡。（transition-behavior）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transition-behavior
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.transitionBehavior("inherit"));
    */
-  declare readonly transitionBehavior: KeywordAuthor<
-    group6.TransitionBehaviorCss,
-    T['transitionBehavior']
-  >;
+  transitionBehavior(value: PropertyInput<'transitionBehavior', T>): this {
+    this.write('transitionBehavior', 'transition-behavior', value);
+    return this;
+  }
   /**
    * 设置属性变化后开始过渡的延迟。（transition-delay）
    *
    * CSS 初始值：`0s`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transition-delay
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.transitionDelay("inherit"));
    */
-  declare readonly transitionDelay: KeywordAuthor<group6.TransitionDelayCss, T['transitionDelay']>;
+  transitionDelay(value: PropertyInput<'transitionDelay', T>): this {
+    this.write('transitionDelay', 'transition-delay', value);
+    return this;
+  }
   /**
    * 设置过渡从开始到完成的时长。（transition-duration）
    *
    * CSS 初始值：`0s`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transition-duration
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.transitionDuration("inherit"));
    */
-  declare readonly transitionDuration: KeywordAuthor<
-    group6.TransitionDurationCss,
-    T['transitionDuration']
-  >;
+  transitionDuration(value: PropertyInput<'transitionDuration', T>): this {
+    this.write('transitionDuration', 'transition-duration', value);
+    return this;
+  }
   /**
    * 指定发生变化时需要过渡的 CSS 属性。（transition-property）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transition-property
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.transitionProperty("inherit"));
    */
-  declare readonly transitionProperty: KeywordAuthor<
-    group6.TransitionPropertyCss,
-    T['transitionProperty']
-  >;
+  transitionProperty(value: PropertyInput<'transitionProperty', T>): this {
+    this.write('transitionProperty', 'transition-property', value);
+    return this;
+  }
   /**
    * 设置过渡进度变化的缓动函数。（transition-timing-function）
    *
    * CSS 初始值：`ease`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transition-timing-function
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.transitionTimingFunction("inherit"));
    */
-  declare readonly transitionTimingFunction: KeywordAuthor<
-    group6.TransitionTimingFunctionCss,
-    T['transitionTimingFunction']
-  >;
+  transitionTimingFunction(value: PropertyInput<'transitionTimingFunction', T>): this {
+    this.write('transitionTimingFunction', 'transition-timing-function', value);
+    return this;
+  }
   /**
    * 独立设置元素在二维或三维空间中的平移。（translate）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/translate
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.translate("inherit"));
    */
-  declare readonly translate: KeywordAuthor<group6.TranslateCss, T['translate']>;
+  translate(value: PropertyInput<'translate', T>): this {
+    this.write('translate', 'translate', value);
+    return this;
+  }
   /**
    * 设置元素如何参与 Unicode 双向文本算法，通常与 direction 配合。（unicode-bidi）
-   *
-   * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/unicode-bidi
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.unicodeBidi("inherit"));
    */
-  declare readonly unicodeBidi: KeywordAuthor<group7.UnicodeBidiCss, T['unicodeBidi']>;
+  unicodeBidi(value: PropertyInput<'unicodeBidi', T>): this {
+    this.write('unicodeBidi', 'unicode-bidi', value);
+    return this;
+  }
   /**
    * 设置用户是否可以选取元素中的文本。（user-select）
    *
@@ -4332,80 +6352,115 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：调整拖拽控件中的文本选取，或让代码片段整段选中。
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
-   * @example
-   * s.userSelect.all
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/user-select
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.userSelect("inherit"));
    */
-  declare readonly userSelect: KeywordAuthor<group7.UserSelectCss, T['userSelect']>;
+  userSelect(value: PropertyInput<'userSelect', T>): this {
+    this.write('userSelect', 'user-select', value);
+    return this;
+  }
   /**
    * 设置 SVG 图形变换时对描边等矢量效果的处理。（vector-effect）
-   *
-   * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/vector-effect
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.vectorEffect("inherit"));
    */
-  declare readonly vectorEffect: KeywordAuthor<group7.VectorEffectCss, T['vectorEffect']>;
+  vectorEffect(value: PropertyInput<'vectorEffect', T>): this {
+    this.write('vectorEffect', 'vector-effect', value);
+    return this;
+  }
   /**
    * 设置行内级盒子或表格单元格的垂直对齐，不用于普通块盒居中。（vertical-align）
    *
    * CSS 初始值：`baseline`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/vertical-align
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.verticalAlign("inherit"));
    */
-  declare readonly verticalAlign: KeywordAuthor<group7.VerticalAlignCss, T['verticalAlign']>;
+  verticalAlign(value: PropertyInput<'verticalAlign', T>): this {
+    this.write('verticalAlign', 'vertical-align', value);
+    return this;
+  }
   /**
    * 同时声明基于元素可见进度的时间线名称与轴。（view-timeline）
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/view-timeline
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.viewTimeline("inherit"));
    */
-  declare readonly viewTimeline: KeywordAuthor<group7.ViewTimelineCss, T['viewTimeline']>;
+  viewTimeline(value: PropertyInput<'viewTimeline', T>): this {
+    this.write('viewTimeline', 'view-timeline', value);
+    return this;
+  }
   /**
    * 设置可见进度时间线所观察的滚动轴。（view-timeline-axis）
    *
    * CSS 初始值：`block`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/view-timeline-axis
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.viewTimelineAxis("inherit"));
    */
-  declare readonly viewTimelineAxis: KeywordAuthor<
-    group7.ViewTimelineAxisCss,
-    T['viewTimelineAxis']
-  >;
+  viewTimelineAxis(value: PropertyInput<'viewTimelineAxis', T>): this {
+    this.write('viewTimelineAxis', 'view-timeline-axis', value);
+    return this;
+  }
   /**
    * 设置可见进度时间线使用的滚动视口内缩范围。（view-timeline-inset）
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/view-timeline-inset
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.viewTimelineInset("inherit"));
    */
-  declare readonly viewTimelineInset: KeywordAuthor<
-    group7.ViewTimelineInsetCss,
-    T['viewTimelineInset']
-  >;
+  viewTimelineInset(value: PropertyInput<'viewTimelineInset', T>): this {
+    this.write('viewTimelineInset', 'view-timeline-inset', value);
+    return this;
+  }
   /**
    * 声明基于元素进入和离开滚动视口的时间线名称。（view-timeline-name）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/view-timeline-name
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.viewTimelineName("inherit"));
    */
-  declare readonly viewTimelineName: KeywordAuthor<
-    group7.ViewTimelineNameCss,
-    T['viewTimelineName']
-  >;
+  viewTimelineName(value: PropertyInput<'viewTimelineName', T>): this {
+    this.write('viewTimelineName', 'view-timeline-name', value);
+    return this;
+  }
   /**
    * 为视图过渡的快照伪元素分组，以便共用样式。（view-transition-class）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/view-transition-class
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.viewTransitionClass("inherit"));
    */
-  declare readonly viewTransitionClass: KeywordAuthor<
-    group7.ViewTransitionClassCss,
-    T['viewTransitionClass']
-  >;
+  viewTransitionClass(value: PropertyInput<'viewTransitionClass', T>): this {
+    this.write('viewTransitionClass', 'view-transition-class', value);
+    return this;
+  }
   /**
    * 为视图过渡中的元素命名，以匹配前后状态的快照。（view-transition-name）
    *
    * CSS 初始值：`none`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/view-transition-name
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.viewTransitionName("inherit"));
    */
-  declare readonly viewTransitionName: KeywordAuthor<
-    group7.ViewTransitionNameCss,
-    T['viewTransitionName']
-  >;
+  viewTransitionName(value: PropertyInput<'viewTransitionName', T>): this {
+    this.write('viewTransitionName', 'view-transition-name', value);
+    return this;
+  }
   /**
    * 设置元素是否可见；隐藏通常保留布局空间。（visibility）
    *
@@ -4415,13 +6470,15 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * - `collapse`：对表格行列等特定布局有折叠语义，其他场景通常类似 hidden；应核对具体布局行为。
    *
    * 适用场景：需要隐藏内容但通常保留其布局占位的场景。
-   *
-   * CSS 初始值：`visible`（不同于浏览器默认样式表）。
-   * @example
-   * s.visibility.hidden
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/visibility
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.visibility("inherit"));
    */
-  declare readonly visibility: KeywordAuthor<group7.VisibilityCss, T['visibility']>;
+  visibility(value: PropertyInput<'visibility', T>): this {
+    this.write('visibility', 'visibility', value);
+    return this;
+  }
   /**
    * 设置空白折叠和换行处理方式。（white-space）
    *
@@ -4436,30 +6493,41 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * - `break-spaces`：保留空白并允许在保留的空格后换行；行末空格占据空间。
    *
    * 适用场景：单行标签、保留换行的用户文本和代码片段。
-   *
-   * CSS 初始值：`normal`（不同于浏览器默认样式表）。
-   * @example
-   * s.whiteSpace.preWrap
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/white-space
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.whiteSpace("inherit"));
    */
-  declare readonly whiteSpace: KeywordAuthor<group7.WhiteSpaceCss, T['whiteSpace']>;
+  whiteSpace(value: PropertyInput<'whiteSpace', T>): this {
+    this.write('whiteSpace', 'white-space', value);
+    return this;
+  }
   /**
    * 设置空格、制表符和换行符如何折叠或保留。（white-space-collapse）
    *
    * CSS 初始值：`collapse`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/white-space-collapse
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.whiteSpaceCollapse("inherit"));
    */
-  declare readonly whiteSpaceCollapse: KeywordAuthor<
-    group7.WhiteSpaceCollapseCss,
-    T['whiteSpaceCollapse']
-  >;
+  whiteSpaceCollapse(value: PropertyInput<'whiteSpaceCollapse', T>): this {
+    this.write('whiteSpaceCollapse', 'white-space-collapse', value);
+    return this;
+  }
   /**
    * 设置分页或分栏断点后需保留的最少行数。（widows）
    *
    * CSS 初始值：`2`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/widows
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.widows("inherit"));
    */
-  declare readonly widows: KeywordAuthor<group7.WidowsCss, T['widows']>;
+  widows(value: PropertyInput<'widows', T>): this {
+    this.write('widows', 'widows', value);
+    return this;
+  }
   /**
    * 设置元素的物理宽度，盒子范围受 box-sizing 影响。（width）
    *
@@ -4474,13 +6542,15 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：控制物理宽度；支持书写模式的布局可优先考虑 inline-size。
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
-   * @example
-   * s.width.rem(20) // width:20rem;
-   * @example
-   * s.width.clamp('12rem', '50vw', '40rem') // width:clamp(12rem, 50vw, 40rem);
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/width
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.width("inherit"));
    */
-  declare readonly width: KeywordAuthor<group7.WidthCss, T['width']>;
+  width(value: PropertyInput<'width', T>): this {
+    this.write('width', 'width', value);
+    return this;
+  }
   /**
    * 提前告知浏览器可能发生变化的属性，便于准备优化资源。（will-change）
    *
@@ -4488,8 +6558,14 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/will-change
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.willChange("inherit"));
    */
-  declare readonly willChange: KeywordAuthor<group7.WillChangeCss, T['willChange']>;
+  willChange(value: PropertyInput<'willChange', T>): this {
+    this.write('willChange', 'will-change', value);
+    return this;
+  }
   /**
    * 设置单词内部或文字之间的断行规则。（word-break）
    *
@@ -4501,46 +6577,76 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * - `keep-all`：限制中日韩文字内部断行，其他文字仍按正常规则处理。
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
-   * @example
-   * s.wordBreak.normal
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/word-break
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.wordBreak("inherit"));
    */
-  declare readonly wordBreak: KeywordAuthor<group7.WordBreakCss, T['wordBreak']>;
+  wordBreak(value: PropertyInput<'wordBreak', T>): this {
+    this.write('wordBreak', 'word-break', value);
+    return this;
+  }
   /**
    * 设置单词或词间分隔符的额外间距。（word-spacing）
-   *
-   * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/word-spacing
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.wordSpacing("inherit"));
    */
-  declare readonly wordSpacing: KeywordAuthor<group7.WordSpacingCss, T['wordSpacing']>;
+  wordSpacing(value: PropertyInput<'wordSpacing', T>): this {
+    this.write('wordSpacing', 'word-spacing', value);
+    return this;
+  }
   /**
    * 设置长文本的额外换行行为；是 overflow-wrap 的兼容名称。（word-wrap）
    *
    * CSS 初始值：`normal`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/word-wrap
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.wordWrap("inherit"));
    */
-  declare readonly wordWrap: KeywordAuthor<group7.WordWrapCss, T['wordWrap']>;
+  wordWrap(value: PropertyInput<'wordWrap', T>): this {
+    this.write('wordWrap', 'word-wrap', value);
+    return this;
+  }
   /**
    * 设置水平或竖直书写模式，以及行和块的推进方向。（writing-mode）
-   *
-   * CSS 初始值：`horizontal-tb`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/writing-mode
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.writingMode("inherit"));
    */
-  declare readonly writingMode: KeywordAuthor<group7.WritingModeCss, T['writingMode']>;
+  writingMode(value: PropertyInput<'writingMode', T>): this {
+    this.write('writingMode', 'writing-mode', value);
+    return this;
+  }
   /**
    * 设置适用 SVG 元素的水平几何坐标。（x）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/x
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.x("inherit"));
    */
-  declare readonly x: KeywordAuthor<group7.XCss, T['x']>;
+  x(value: PropertyInput<'x', T>): this {
+    this.write('x', 'x', value);
+    return this;
+  }
   /**
    * 设置适用 SVG 元素的垂直几何坐标。（y）
    *
    * CSS 初始值：`0`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/y
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.y("inherit"));
    */
-  declare readonly y: KeywordAuthor<group7.YCss, T['y']>;
+  y(value: PropertyInput<'y', T>): this {
+    this.write('y', 'y', value);
+    return this;
+  }
   /**
    * 设置元素在所属层叠上下文中的层叠级别。（z-index）
    *
@@ -4549,550 +6655,26 @@ export class Css<T extends SystemKeywords = SystemKeywords> {
    * 适用场景：控制同一层叠上下文中的浮层顺序，排查遮挡时先确认祖先层叠上下文。
    *
    * CSS 初始值：`auto`（不同于浏览器默认样式表）。
-   * @example
-   * css(s.position.relative, s.zIndex.raw(1))
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/z-index
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.zIndex("inherit"));
    */
-  declare readonly zIndex: KeywordAuthor<group7.ZIndexCss, T['zIndex']>;
+  zIndex(value: PropertyInput<'zIndex', T>): this {
+    this.write('zIndex', 'z-index', value);
+    return this;
+  }
   /**
    * 设置元素及其布局的缩放比例，与 transform:scale 的布局行为不同。（zoom）
    *
    * CSS 初始值：`1`（不同于浏览器默认样式表）。
    * @see https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/zoom
+   * @param value 当前属性值、主题 token 或 bx 绑定。
+   * @returns 当前作者，支持连续调用其他属性方法。
+   * @example css(() => s.zoom("inherit"));
    */
-  declare readonly zoom: KeywordAuthor<group7.ZoomCss, T['zoom']>;
-}
-function defineSystemProperty(name: string, create: () => object): void {
-  let shared: object | undefined;
-  let scoped: WeakMap<object, object> | undefined;
-  Object.defineProperty(Css.prototype, name, {
-    configurable: true,
-    get() {
-      const source = getKeywordSource(this);
-      if (!source) return (shared ??= Object.freeze(create()));
-      let value = scoped?.get(this);
-      if (!value) {
-        value = bindKeywords(create() as { raw(value: never): string }, name, () =>
-          Reflect.get(source(), name),
-        );
-        (scoped ??= new WeakMap<object, object>()).set(this, value);
-      }
-      return value;
-    },
-  });
-}
-function initializeSystemProperties(): void {
-  if (systemPropertiesReady) return;
-  defineSystemProperty('accentColor', () => new group0.AccentColorCss());
-  defineSystemProperty('alignContent', () => new group0.AlignContentCss());
-  defineSystemProperty('alignItems', () => new group0.AlignItemsCss());
-  defineSystemProperty('alignSelf', () => new group0.AlignSelfCss());
-  defineSystemProperty('alignTracks', () => new group0.AlignTracksCss());
-  defineSystemProperty('alignmentBaseline', () => new group0.AlignmentBaselineCss());
-  defineSystemProperty('all', () => new group0.AllCss());
-  defineSystemProperty('anchorName', () => new group0.AnchorNameCss());
-  defineSystemProperty('anchorScope', () => new group0.AnchorScopeCss());
-  defineSystemProperty('animation', () => new group0.AnimationCss());
-  defineSystemProperty('animationComposition', () => new group0.AnimationCompositionCss());
-  defineSystemProperty('animationDelay', () => new group0.AnimationDelayCss());
-  defineSystemProperty('animationDirection', () => new group0.AnimationDirectionCss());
-  defineSystemProperty('animationDuration', () => new group0.AnimationDurationCss());
-  defineSystemProperty('animationFillMode', () => new group0.AnimationFillModeCss());
-  defineSystemProperty('animationIterationCount', () => new group0.AnimationIterationCountCss());
-  defineSystemProperty('animationName', () => new group0.AnimationNameCss());
-  defineSystemProperty('animationPlayState', () => new group0.AnimationPlayStateCss());
-  defineSystemProperty('animationRange', () => new group0.AnimationRangeCss());
-  defineSystemProperty('animationRangeEnd', () => new group0.AnimationRangeEndCss());
-  defineSystemProperty('animationRangeStart', () => new group0.AnimationRangeStartCss());
-  defineSystemProperty('animationTimeline', () => new group0.AnimationTimelineCss());
-  defineSystemProperty('animationTimingFunction', () => new group0.AnimationTimingFunctionCss());
-  defineSystemProperty('appearance', () => new group0.AppearanceCss());
-  defineSystemProperty('aspectRatio', () => new group0.AspectRatioCss());
-  defineSystemProperty('backdropFilter', () => new group1.BackdropFilterCss());
-  defineSystemProperty('backfaceVisibility', () => new group1.BackfaceVisibilityCss());
-  defineSystemProperty('background', () => new group1.BackgroundCss());
-  defineSystemProperty('backgroundAttachment', () => new group1.BackgroundAttachmentCss());
-  defineSystemProperty('backgroundBlendMode', () => new group1.BackgroundBlendModeCss());
-  defineSystemProperty('backgroundClip', () => new group1.BackgroundClipCss());
-  defineSystemProperty('backgroundColor', () => new group1.BackgroundColorCss());
-  defineSystemProperty('backgroundImage', () => new group1.BackgroundImageCss());
-  defineSystemProperty('backgroundOrigin', () => new group1.BackgroundOriginCss());
-  defineSystemProperty('backgroundPosition', () => new group1.BackgroundPositionCss());
-  defineSystemProperty('backgroundPositionX', () => new group1.BackgroundPositionXCss());
-  defineSystemProperty('backgroundPositionY', () => new group1.BackgroundPositionYCss());
-  defineSystemProperty('backgroundRepeat', () => new group1.BackgroundRepeatCss());
-  defineSystemProperty('backgroundSize', () => new group1.BackgroundSizeCss());
-  defineSystemProperty('baselineShift', () => new group1.BaselineShiftCss());
-  defineSystemProperty('blockSize', () => new group1.BlockSizeCss());
-  defineSystemProperty('border', () => new group1.BorderCss());
-  defineSystemProperty('borderBlock', () => new group1.BorderBlockCss());
-  defineSystemProperty('borderBlockColor', () => new group1.BorderBlockColorCss());
-  defineSystemProperty('borderBlockEnd', () => new group1.BorderBlockEndCss());
-  defineSystemProperty('borderBlockEndColor', () => new group1.BorderBlockEndColorCss());
-  defineSystemProperty('borderBlockEndStyle', () => new group1.BorderBlockEndStyleCss());
-  defineSystemProperty('borderBlockEndWidth', () => new group1.BorderBlockEndWidthCss());
-  defineSystemProperty('borderBlockStart', () => new group1.BorderBlockStartCss());
-  defineSystemProperty('borderBlockStartColor', () => new group1.BorderBlockStartColorCss());
-  defineSystemProperty('borderBlockStartStyle', () => new group1.BorderBlockStartStyleCss());
-  defineSystemProperty('borderBlockStartWidth', () => new group1.BorderBlockStartWidthCss());
-  defineSystemProperty('borderBlockStyle', () => new group1.BorderBlockStyleCss());
-  defineSystemProperty('borderBlockWidth', () => new group1.BorderBlockWidthCss());
-  defineSystemProperty('borderBottom', () => new group1.BorderBottomCss());
-  defineSystemProperty('borderBottomColor', () => new group1.BorderBottomColorCss());
-  defineSystemProperty('borderBottomLeftRadius', () => new group1.BorderBottomLeftRadiusCss());
-  defineSystemProperty('borderBottomRightRadius', () => new group1.BorderBottomRightRadiusCss());
-  defineSystemProperty('borderBottomStyle', () => new group1.BorderBottomStyleCss());
-  defineSystemProperty('borderBottomWidth', () => new group1.BorderBottomWidthCss());
-  defineSystemProperty('borderCollapse', () => new group1.BorderCollapseCss());
-  defineSystemProperty('borderColor', () => new group1.BorderColorCss());
-  defineSystemProperty('borderEndEndRadius', () => new group1.BorderEndEndRadiusCss());
-  defineSystemProperty('borderEndStartRadius', () => new group1.BorderEndStartRadiusCss());
-  defineSystemProperty('borderImage', () => new group1.BorderImageCss());
-  defineSystemProperty('borderImageOutset', () => new group1.BorderImageOutsetCss());
-  defineSystemProperty('borderImageRepeat', () => new group1.BorderImageRepeatCss());
-  defineSystemProperty('borderImageSlice', () => new group1.BorderImageSliceCss());
-  defineSystemProperty('borderImageSource', () => new group1.BorderImageSourceCss());
-  defineSystemProperty('borderImageWidth', () => new group1.BorderImageWidthCss());
-  defineSystemProperty('borderInline', () => new group1.BorderInlineCss());
-  defineSystemProperty('borderInlineColor', () => new group1.BorderInlineColorCss());
-  defineSystemProperty('borderInlineEnd', () => new group1.BorderInlineEndCss());
-  defineSystemProperty('borderInlineEndColor', () => new group1.BorderInlineEndColorCss());
-  defineSystemProperty('borderInlineEndStyle', () => new group1.BorderInlineEndStyleCss());
-  defineSystemProperty('borderInlineEndWidth', () => new group1.BorderInlineEndWidthCss());
-  defineSystemProperty('borderInlineStart', () => new group1.BorderInlineStartCss());
-  defineSystemProperty('borderInlineStartColor', () => new group1.BorderInlineStartColorCss());
-  defineSystemProperty('borderInlineStartStyle', () => new group1.BorderInlineStartStyleCss());
-  defineSystemProperty('borderInlineStartWidth', () => new group1.BorderInlineStartWidthCss());
-  defineSystemProperty('borderInlineStyle', () => new group1.BorderInlineStyleCss());
-  defineSystemProperty('borderInlineWidth', () => new group1.BorderInlineWidthCss());
-  defineSystemProperty('borderLeft', () => new group1.BorderLeftCss());
-  defineSystemProperty('borderLeftColor', () => new group1.BorderLeftColorCss());
-  defineSystemProperty('borderLeftStyle', () => new group1.BorderLeftStyleCss());
-  defineSystemProperty('borderLeftWidth', () => new group1.BorderLeftWidthCss());
-  defineSystemProperty('borderRadius', () => new group1.BorderRadiusCss());
-  defineSystemProperty('borderRight', () => new group1.BorderRightCss());
-  defineSystemProperty('borderRightColor', () => new group1.BorderRightColorCss());
-  defineSystemProperty('borderRightStyle', () => new group1.BorderRightStyleCss());
-  defineSystemProperty('borderRightWidth', () => new group1.BorderRightWidthCss());
-  defineSystemProperty('borderSpacing', () => new group1.BorderSpacingCss());
-  defineSystemProperty('borderStartEndRadius', () => new group1.BorderStartEndRadiusCss());
-  defineSystemProperty('borderStartStartRadius', () => new group1.BorderStartStartRadiusCss());
-  defineSystemProperty('borderStyle', () => new group1.BorderStyleCss());
-  defineSystemProperty('borderTop', () => new group1.BorderTopCss());
-  defineSystemProperty('borderTopColor', () => new group1.BorderTopColorCss());
-  defineSystemProperty('borderTopLeftRadius', () => new group1.BorderTopLeftRadiusCss());
-  defineSystemProperty('borderTopRightRadius', () => new group1.BorderTopRightRadiusCss());
-  defineSystemProperty('borderTopStyle', () => new group1.BorderTopStyleCss());
-  defineSystemProperty('borderTopWidth', () => new group1.BorderTopWidthCss());
-  defineSystemProperty('borderWidth', () => new group1.BorderWidthCss());
-  defineSystemProperty('bottom', () => new group1.BottomCss());
-  defineSystemProperty('boxDecorationBreak', () => new group1.BoxDecorationBreakCss());
-  defineSystemProperty('boxShadow', () => new group1.BoxShadowCss());
-  defineSystemProperty('boxSizing', () => new group1.BoxSizingCss());
-  defineSystemProperty('breakAfter', () => new group1.BreakAfterCss());
-  defineSystemProperty('breakBefore', () => new group1.BreakBeforeCss());
-  defineSystemProperty('breakInside', () => new group1.BreakInsideCss());
-  defineSystemProperty('captionSide', () => new group2.CaptionSideCss());
-  defineSystemProperty('caret', () => new group2.CaretCss());
-  defineSystemProperty('caretColor', () => new group2.CaretColorCss());
-  defineSystemProperty('caretShape', () => new group2.CaretShapeCss());
-  defineSystemProperty('clear', () => new group2.ClearCss());
-  defineSystemProperty('clip', () => new group2.ClipCss());
-  defineSystemProperty('clipPath', () => new group2.ClipPathCss());
-  defineSystemProperty('clipRule', () => new group2.ClipRuleCss());
-  defineSystemProperty('color', () => new group2.ColorCss());
-  defineSystemProperty('colorAdjust', () => new group2.ColorAdjustCss());
-  defineSystemProperty('colorInterpolation', () => new group2.ColorInterpolationCss());
-  defineSystemProperty(
-    'colorInterpolationFilters',
-    () => new group2.ColorInterpolationFiltersCss(),
-  );
-  defineSystemProperty('colorRendering', () => new group2.ColorRenderingCss());
-  defineSystemProperty('colorScheme', () => new group2.ColorSchemeCss());
-  defineSystemProperty('columnCount', () => new group2.ColumnCountCss());
-  defineSystemProperty('columnFill', () => new group2.ColumnFillCss());
-  defineSystemProperty('columnGap', () => new group2.ColumnGapCss());
-  defineSystemProperty('columnRule', () => new group2.ColumnRuleCss());
-  defineSystemProperty('columnRuleColor', () => new group2.ColumnRuleColorCss());
-  defineSystemProperty('columnRuleStyle', () => new group2.ColumnRuleStyleCss());
-  defineSystemProperty('columnRuleWidth', () => new group2.ColumnRuleWidthCss());
-  defineSystemProperty('columnSpan', () => new group2.ColumnSpanCss());
-  defineSystemProperty('columnWidth', () => new group2.ColumnWidthCss());
-  defineSystemProperty('columns', () => new group2.ColumnsCss());
-  defineSystemProperty('contain', () => new group2.ContainCss());
-  defineSystemProperty(
-    'containIntrinsicBlockSize',
-    () => new group2.ContainIntrinsicBlockSizeCss(),
-  );
-  defineSystemProperty('containIntrinsicHeight', () => new group2.ContainIntrinsicHeightCss());
-  defineSystemProperty(
-    'containIntrinsicInlineSize',
-    () => new group2.ContainIntrinsicInlineSizeCss(),
-  );
-  defineSystemProperty('containIntrinsicSize', () => new group2.ContainIntrinsicSizeCss());
-  defineSystemProperty('containIntrinsicWidth', () => new group2.ContainIntrinsicWidthCss());
-  defineSystemProperty('container', () => new group2.ContainerCss());
-  defineSystemProperty('containerName', () => new group2.ContainerNameCss());
-  defineSystemProperty('containerType', () => new group2.ContainerTypeCss());
-  defineSystemProperty('content', () => new group2.ContentCss());
-  defineSystemProperty('contentVisibility', () => new group2.ContentVisibilityCss());
-  defineSystemProperty('counterIncrement', () => new group2.CounterIncrementCss());
-  defineSystemProperty('counterReset', () => new group2.CounterResetCss());
-  defineSystemProperty('counterSet', () => new group2.CounterSetCss());
-  defineSystemProperty('cursor', () => new group2.CursorCss());
-  defineSystemProperty('cx', () => new group2.CxCss());
-  defineSystemProperty('cy', () => new group2.CyCss());
-  defineSystemProperty('d', () => new group2.DCss());
-  defineSystemProperty('direction', () => new group2.DirectionCss());
-  defineSystemProperty('display', () => new group2.DisplayCss());
-  defineSystemProperty('dominantBaseline', () => new group2.DominantBaselineCss());
-  defineSystemProperty('emptyCells', () => new group2.EmptyCellsCss());
-  defineSystemProperty('fieldSizing', () => new group2.FieldSizingCss());
-  defineSystemProperty('fill', () => new group2.FillCss());
-  defineSystemProperty('fillOpacity', () => new group2.FillOpacityCss());
-  defineSystemProperty('fillRule', () => new group2.FillRuleCss());
-  defineSystemProperty('filter', () => new group2.FilterCss());
-  defineSystemProperty('flex', () => new group2.FlexCss());
-  defineSystemProperty('flexBasis', () => new group2.FlexBasisCss());
-  defineSystemProperty('flexDirection', () => new group2.FlexDirectionCss());
-  defineSystemProperty('flexFlow', () => new group2.FlexFlowCss());
-  defineSystemProperty('flexGrow', () => new group2.FlexGrowCss());
-  defineSystemProperty('flexShrink', () => new group2.FlexShrinkCss());
-  defineSystemProperty('flexWrap', () => new group2.FlexWrapCss());
-  defineSystemProperty('float', () => new group2.FloatCss());
-  defineSystemProperty('floodColor', () => new group2.FloodColorCss());
-  defineSystemProperty('floodOpacity', () => new group2.FloodOpacityCss());
-  defineSystemProperty('font', () => new group2.FontCss());
-  defineSystemProperty('fontFamily', () => new group2.FontFamilyCss());
-  defineSystemProperty('fontFeatureSettings', () => new group2.FontFeatureSettingsCss());
-  defineSystemProperty('fontKerning', () => new group2.FontKerningCss());
-  defineSystemProperty('fontLanguageOverride', () => new group2.FontLanguageOverrideCss());
-  defineSystemProperty('fontOpticalSizing', () => new group2.FontOpticalSizingCss());
-  defineSystemProperty('fontPalette', () => new group2.FontPaletteCss());
-  defineSystemProperty('fontSize', () => new group2.FontSizeCss());
-  defineSystemProperty('fontSizeAdjust', () => new group2.FontSizeAdjustCss());
-  defineSystemProperty('fontSmooth', () => new group2.FontSmoothCss());
-  defineSystemProperty('fontStretch', () => new group2.FontStretchCss());
-  defineSystemProperty('fontStyle', () => new group2.FontStyleCss());
-  defineSystemProperty('fontSynthesis', () => new group2.FontSynthesisCss());
-  defineSystemProperty('fontSynthesisPosition', () => new group2.FontSynthesisPositionCss());
-  defineSystemProperty('fontSynthesisSmallCaps', () => new group2.FontSynthesisSmallCapsCss());
-  defineSystemProperty('fontSynthesisStyle', () => new group2.FontSynthesisStyleCss());
-  defineSystemProperty('fontSynthesisWeight', () => new group2.FontSynthesisWeightCss());
-  defineSystemProperty('fontVariant', () => new group2.FontVariantCss());
-  defineSystemProperty('fontVariantAlternates', () => new group2.FontVariantAlternatesCss());
-  defineSystemProperty('fontVariantCaps', () => new group2.FontVariantCapsCss());
-  defineSystemProperty('fontVariantEastAsian', () => new group2.FontVariantEastAsianCss());
-  defineSystemProperty('fontVariantEmoji', () => new group2.FontVariantEmojiCss());
-  defineSystemProperty('fontVariantLigatures', () => new group2.FontVariantLigaturesCss());
-  defineSystemProperty('fontVariantNumeric', () => new group2.FontVariantNumericCss());
-  defineSystemProperty('fontVariantPosition', () => new group2.FontVariantPositionCss());
-  defineSystemProperty('fontVariationSettings', () => new group2.FontVariationSettingsCss());
-  defineSystemProperty('fontWeight', () => new group2.FontWeightCss());
-  defineSystemProperty('fontWidth', () => new group2.FontWidthCss());
-  defineSystemProperty('forcedColorAdjust', () => new group2.ForcedColorAdjustCss());
-  defineSystemProperty('gap', () => new group3.GapCss());
-  defineSystemProperty('glyphOrientationVertical', () => new group3.GlyphOrientationVerticalCss());
-  defineSystemProperty('grid', () => new group3.GridCss());
-  defineSystemProperty('gridArea', () => new group3.GridAreaCss());
-  defineSystemProperty('gridAutoColumns', () => new group3.GridAutoColumnsCss());
-  defineSystemProperty('gridAutoFlow', () => new group3.GridAutoFlowCss());
-  defineSystemProperty('gridAutoRows', () => new group3.GridAutoRowsCss());
-  defineSystemProperty('gridColumn', () => new group3.GridColumnCss());
-  defineSystemProperty('gridColumnEnd', () => new group3.GridColumnEndCss());
-  defineSystemProperty('gridColumnStart', () => new group3.GridColumnStartCss());
-  defineSystemProperty('gridRow', () => new group3.GridRowCss());
-  defineSystemProperty('gridRowEnd', () => new group3.GridRowEndCss());
-  defineSystemProperty('gridRowStart', () => new group3.GridRowStartCss());
-  defineSystemProperty('gridTemplate', () => new group3.GridTemplateCss());
-  defineSystemProperty('gridTemplateAreas', () => new group3.GridTemplateAreasCss());
-  defineSystemProperty('gridTemplateColumns', () => new group3.GridTemplateColumnsCss());
-  defineSystemProperty('gridTemplateRows', () => new group3.GridTemplateRowsCss());
-  defineSystemProperty('hangingPunctuation', () => new group3.HangingPunctuationCss());
-  defineSystemProperty('height', () => new group3.HeightCss());
-  defineSystemProperty('hyphenateCharacter', () => new group3.HyphenateCharacterCss());
-  defineSystemProperty('hyphenateLimitChars', () => new group3.HyphenateLimitCharsCss());
-  defineSystemProperty('hyphens', () => new group3.HyphensCss());
-  defineSystemProperty('imageOrientation', () => new group3.ImageOrientationCss());
-  defineSystemProperty('imageRendering', () => new group3.ImageRenderingCss());
-  defineSystemProperty('imageResolution', () => new group3.ImageResolutionCss());
-  defineSystemProperty('initialLetter', () => new group3.InitialLetterCss());
-  defineSystemProperty('initialLetterAlign', () => new group3.InitialLetterAlignCss());
-  defineSystemProperty('inlineSize', () => new group3.InlineSizeCss());
-  defineSystemProperty('inset', () => new group3.InsetCss());
-  defineSystemProperty('insetBlock', () => new group3.InsetBlockCss());
-  defineSystemProperty('insetBlockEnd', () => new group3.InsetBlockEndCss());
-  defineSystemProperty('insetBlockStart', () => new group3.InsetBlockStartCss());
-  defineSystemProperty('insetInline', () => new group3.InsetInlineCss());
-  defineSystemProperty('insetInlineEnd', () => new group3.InsetInlineEndCss());
-  defineSystemProperty('insetInlineStart', () => new group3.InsetInlineStartCss());
-  defineSystemProperty('interpolateSize', () => new group3.InterpolateSizeCss());
-  defineSystemProperty('isolation', () => new group3.IsolationCss());
-  defineSystemProperty('justifyContent', () => new group3.JustifyContentCss());
-  defineSystemProperty('justifyItems', () => new group3.JustifyItemsCss());
-  defineSystemProperty('justifySelf', () => new group3.JustifySelfCss());
-  defineSystemProperty('justifyTracks', () => new group3.JustifyTracksCss());
-  defineSystemProperty('left', () => new group3.LeftCss());
-  defineSystemProperty('letterSpacing', () => new group3.LetterSpacingCss());
-  defineSystemProperty('lightingColor', () => new group3.LightingColorCss());
-  defineSystemProperty('lineBreak', () => new group3.LineBreakCss());
-  defineSystemProperty('lineClamp', () => new group3.LineClampCss());
-  defineSystemProperty('lineHeight', () => new group3.LineHeightCss());
-  defineSystemProperty('lineHeightStep', () => new group3.LineHeightStepCss());
-  defineSystemProperty('listStyle', () => new group3.ListStyleCss());
-  defineSystemProperty('listStyleImage', () => new group3.ListStyleImageCss());
-  defineSystemProperty('listStylePosition', () => new group3.ListStylePositionCss());
-  defineSystemProperty('listStyleType', () => new group3.ListStyleTypeCss());
-  defineSystemProperty('margin', () => new group4.MarginCss());
-  defineSystemProperty('marginBlock', () => new group4.MarginBlockCss());
-  defineSystemProperty('marginBlockEnd', () => new group4.MarginBlockEndCss());
-  defineSystemProperty('marginBlockStart', () => new group4.MarginBlockStartCss());
-  defineSystemProperty('marginBottom', () => new group4.MarginBottomCss());
-  defineSystemProperty('marginInline', () => new group4.MarginInlineCss());
-  defineSystemProperty('marginInlineEnd', () => new group4.MarginInlineEndCss());
-  defineSystemProperty('marginInlineStart', () => new group4.MarginInlineStartCss());
-  defineSystemProperty('marginLeft', () => new group4.MarginLeftCss());
-  defineSystemProperty('marginRight', () => new group4.MarginRightCss());
-  defineSystemProperty('marginTop', () => new group4.MarginTopCss());
-  defineSystemProperty('marginTrim', () => new group4.MarginTrimCss());
-  defineSystemProperty('marker', () => new group4.MarkerCss());
-  defineSystemProperty('markerEnd', () => new group4.MarkerEndCss());
-  defineSystemProperty('markerMid', () => new group4.MarkerMidCss());
-  defineSystemProperty('markerStart', () => new group4.MarkerStartCss());
-  defineSystemProperty('mask', () => new group4.MaskCss());
-  defineSystemProperty('maskBorder', () => new group4.MaskBorderCss());
-  defineSystemProperty('maskBorderMode', () => new group4.MaskBorderModeCss());
-  defineSystemProperty('maskBorderOutset', () => new group4.MaskBorderOutsetCss());
-  defineSystemProperty('maskBorderRepeat', () => new group4.MaskBorderRepeatCss());
-  defineSystemProperty('maskBorderSlice', () => new group4.MaskBorderSliceCss());
-  defineSystemProperty('maskBorderSource', () => new group4.MaskBorderSourceCss());
-  defineSystemProperty('maskBorderWidth', () => new group4.MaskBorderWidthCss());
-  defineSystemProperty('maskClip', () => new group4.MaskClipCss());
-  defineSystemProperty('maskComposite', () => new group4.MaskCompositeCss());
-  defineSystemProperty('maskImage', () => new group4.MaskImageCss());
-  defineSystemProperty('maskMode', () => new group4.MaskModeCss());
-  defineSystemProperty('maskOrigin', () => new group4.MaskOriginCss());
-  defineSystemProperty('maskPosition', () => new group4.MaskPositionCss());
-  defineSystemProperty('maskRepeat', () => new group4.MaskRepeatCss());
-  defineSystemProperty('maskSize', () => new group4.MaskSizeCss());
-  defineSystemProperty('maskType', () => new group4.MaskTypeCss());
-  defineSystemProperty('masonryAutoFlow', () => new group4.MasonryAutoFlowCss());
-  defineSystemProperty('mathDepth', () => new group4.MathDepthCss());
-  defineSystemProperty('mathShift', () => new group4.MathShiftCss());
-  defineSystemProperty('mathStyle', () => new group4.MathStyleCss());
-  defineSystemProperty('maxBlockSize', () => new group4.MaxBlockSizeCss());
-  defineSystemProperty('maxHeight', () => new group4.MaxHeightCss());
-  defineSystemProperty('maxInlineSize', () => new group4.MaxInlineSizeCss());
-  defineSystemProperty('maxLines', () => new group4.MaxLinesCss());
-  defineSystemProperty('maxWidth', () => new group4.MaxWidthCss());
-  defineSystemProperty('minBlockSize', () => new group4.MinBlockSizeCss());
-  defineSystemProperty('minHeight', () => new group4.MinHeightCss());
-  defineSystemProperty('minInlineSize', () => new group4.MinInlineSizeCss());
-  defineSystemProperty('minWidth', () => new group4.MinWidthCss());
-  defineSystemProperty('mixBlendMode', () => new group4.MixBlendModeCss());
-  defineSystemProperty('motion', () => new group4.MotionCss());
-  defineSystemProperty('motionDistance', () => new group4.MotionDistanceCss());
-  defineSystemProperty('motionPath', () => new group4.MotionPathCss());
-  defineSystemProperty('motionRotation', () => new group4.MotionRotationCss());
-  defineSystemProperty('objectFit', () => new group4.ObjectFitCss());
-  defineSystemProperty('objectPosition', () => new group4.ObjectPositionCss());
-  defineSystemProperty('objectViewBox', () => new group4.ObjectViewBoxCss());
-  defineSystemProperty('offset', () => new group4.OffsetCss());
-  defineSystemProperty('offsetAnchor', () => new group4.OffsetAnchorCss());
-  defineSystemProperty('offsetDistance', () => new group4.OffsetDistanceCss());
-  defineSystemProperty('offsetPath', () => new group4.OffsetPathCss());
-  defineSystemProperty('offsetPosition', () => new group4.OffsetPositionCss());
-  defineSystemProperty('offsetRotate', () => new group4.OffsetRotateCss());
-  defineSystemProperty('offsetRotation', () => new group4.OffsetRotationCss());
-  defineSystemProperty('opacity', () => new group4.OpacityCss());
-  defineSystemProperty('order', () => new group4.OrderCss());
-  defineSystemProperty('orphans', () => new group4.OrphansCss());
-  defineSystemProperty('outline', () => new group4.OutlineCss());
-  defineSystemProperty('outlineColor', () => new group4.OutlineColorCss());
-  defineSystemProperty('outlineOffset', () => new group4.OutlineOffsetCss());
-  defineSystemProperty('outlineStyle', () => new group4.OutlineStyleCss());
-  defineSystemProperty('outlineWidth', () => new group4.OutlineWidthCss());
-  defineSystemProperty('overflow', () => new group4.OverflowCss());
-  defineSystemProperty('overflowAnchor', () => new group4.OverflowAnchorCss());
-  defineSystemProperty('overflowBlock', () => new group4.OverflowBlockCss());
-  defineSystemProperty('overflowClipBox', () => new group4.OverflowClipBoxCss());
-  defineSystemProperty('overflowClipMargin', () => new group4.OverflowClipMarginCss());
-  defineSystemProperty('overflowInline', () => new group4.OverflowInlineCss());
-  defineSystemProperty('overflowWrap', () => new group4.OverflowWrapCss());
-  defineSystemProperty('overflowX', () => new group4.OverflowXCss());
-  defineSystemProperty('overflowY', () => new group4.OverflowYCss());
-  defineSystemProperty('overlay', () => new group4.OverlayCss());
-  defineSystemProperty('overscrollBehavior', () => new group4.OverscrollBehaviorCss());
-  defineSystemProperty('overscrollBehaviorBlock', () => new group4.OverscrollBehaviorBlockCss());
-  defineSystemProperty('overscrollBehaviorInline', () => new group4.OverscrollBehaviorInlineCss());
-  defineSystemProperty('overscrollBehaviorX', () => new group4.OverscrollBehaviorXCss());
-  defineSystemProperty('overscrollBehaviorY', () => new group4.OverscrollBehaviorYCss());
-  defineSystemProperty('padding', () => new group5.PaddingCss());
-  defineSystemProperty('paddingBlock', () => new group5.PaddingBlockCss());
-  defineSystemProperty('paddingBlockEnd', () => new group5.PaddingBlockEndCss());
-  defineSystemProperty('paddingBlockStart', () => new group5.PaddingBlockStartCss());
-  defineSystemProperty('paddingBottom', () => new group5.PaddingBottomCss());
-  defineSystemProperty('paddingInline', () => new group5.PaddingInlineCss());
-  defineSystemProperty('paddingInlineEnd', () => new group5.PaddingInlineEndCss());
-  defineSystemProperty('paddingInlineStart', () => new group5.PaddingInlineStartCss());
-  defineSystemProperty('paddingLeft', () => new group5.PaddingLeftCss());
-  defineSystemProperty('paddingRight', () => new group5.PaddingRightCss());
-  defineSystemProperty('paddingTop', () => new group5.PaddingTopCss());
-  defineSystemProperty('page', () => new group5.PageCss());
-  defineSystemProperty('paintOrder', () => new group5.PaintOrderCss());
-  defineSystemProperty('perspective', () => new group5.PerspectiveCss());
-  defineSystemProperty('perspectiveOrigin', () => new group5.PerspectiveOriginCss());
-  defineSystemProperty('placeContent', () => new group5.PlaceContentCss());
-  defineSystemProperty('placeItems', () => new group5.PlaceItemsCss());
-  defineSystemProperty('placeSelf', () => new group5.PlaceSelfCss());
-  defineSystemProperty('pointerEvents', () => new group5.PointerEventsCss());
-  defineSystemProperty('position', () => new group5.PositionCss());
-  defineSystemProperty('positionAnchor', () => new group5.PositionAnchorCss());
-  defineSystemProperty('positionArea', () => new group5.PositionAreaCss());
-  defineSystemProperty('positionTry', () => new group5.PositionTryCss());
-  defineSystemProperty('positionTryFallbacks', () => new group5.PositionTryFallbacksCss());
-  defineSystemProperty('positionTryOrder', () => new group5.PositionTryOrderCss());
-  defineSystemProperty('positionVisibility', () => new group5.PositionVisibilityCss());
-  defineSystemProperty('printColorAdjust', () => new group5.PrintColorAdjustCss());
-  defineSystemProperty('quotes', () => new group5.QuotesCss());
-  defineSystemProperty('r', () => new group5.RCss());
-  defineSystemProperty('resize', () => new group5.ResizeCss());
-  defineSystemProperty('right', () => new group5.RightCss());
-  defineSystemProperty('rotate', () => new group5.RotateCss());
-  defineSystemProperty('rowGap', () => new group5.RowGapCss());
-  defineSystemProperty('rubyAlign', () => new group5.RubyAlignCss());
-  defineSystemProperty('rubyMerge', () => new group5.RubyMergeCss());
-  defineSystemProperty('rubyOverhang', () => new group5.RubyOverhangCss());
-  defineSystemProperty('rubyPosition', () => new group5.RubyPositionCss());
-  defineSystemProperty('rx', () => new group5.RxCss());
-  defineSystemProperty('ry', () => new group5.RyCss());
-  defineSystemProperty('scale', () => new group6.ScaleCss());
-  defineSystemProperty('scrollBehavior', () => new group6.ScrollBehaviorCss());
-  defineSystemProperty('scrollInitialTarget', () => new group6.ScrollInitialTargetCss());
-  defineSystemProperty('scrollMargin', () => new group6.ScrollMarginCss());
-  defineSystemProperty('scrollMarginBlock', () => new group6.ScrollMarginBlockCss());
-  defineSystemProperty('scrollMarginBlockEnd', () => new group6.ScrollMarginBlockEndCss());
-  defineSystemProperty('scrollMarginBlockStart', () => new group6.ScrollMarginBlockStartCss());
-  defineSystemProperty('scrollMarginBottom', () => new group6.ScrollMarginBottomCss());
-  defineSystemProperty('scrollMarginInline', () => new group6.ScrollMarginInlineCss());
-  defineSystemProperty('scrollMarginInlineEnd', () => new group6.ScrollMarginInlineEndCss());
-  defineSystemProperty('scrollMarginInlineStart', () => new group6.ScrollMarginInlineStartCss());
-  defineSystemProperty('scrollMarginLeft', () => new group6.ScrollMarginLeftCss());
-  defineSystemProperty('scrollMarginRight', () => new group6.ScrollMarginRightCss());
-  defineSystemProperty('scrollMarginTop', () => new group6.ScrollMarginTopCss());
-  defineSystemProperty('scrollPadding', () => new group6.ScrollPaddingCss());
-  defineSystemProperty('scrollPaddingBlock', () => new group6.ScrollPaddingBlockCss());
-  defineSystemProperty('scrollPaddingBlockEnd', () => new group6.ScrollPaddingBlockEndCss());
-  defineSystemProperty('scrollPaddingBlockStart', () => new group6.ScrollPaddingBlockStartCss());
-  defineSystemProperty('scrollPaddingBottom', () => new group6.ScrollPaddingBottomCss());
-  defineSystemProperty('scrollPaddingInline', () => new group6.ScrollPaddingInlineCss());
-  defineSystemProperty('scrollPaddingInlineEnd', () => new group6.ScrollPaddingInlineEndCss());
-  defineSystemProperty('scrollPaddingInlineStart', () => new group6.ScrollPaddingInlineStartCss());
-  defineSystemProperty('scrollPaddingLeft', () => new group6.ScrollPaddingLeftCss());
-  defineSystemProperty('scrollPaddingRight', () => new group6.ScrollPaddingRightCss());
-  defineSystemProperty('scrollPaddingTop', () => new group6.ScrollPaddingTopCss());
-  defineSystemProperty('scrollSnapAlign', () => new group6.ScrollSnapAlignCss());
-  defineSystemProperty('scrollSnapMargin', () => new group6.ScrollSnapMarginCss());
-  defineSystemProperty('scrollSnapMarginBottom', () => new group6.ScrollSnapMarginBottomCss());
-  defineSystemProperty('scrollSnapMarginLeft', () => new group6.ScrollSnapMarginLeftCss());
-  defineSystemProperty('scrollSnapMarginRight', () => new group6.ScrollSnapMarginRightCss());
-  defineSystemProperty('scrollSnapMarginTop', () => new group6.ScrollSnapMarginTopCss());
-  defineSystemProperty('scrollSnapStop', () => new group6.ScrollSnapStopCss());
-  defineSystemProperty('scrollSnapType', () => new group6.ScrollSnapTypeCss());
-  defineSystemProperty('scrollTimeline', () => new group6.ScrollTimelineCss());
-  defineSystemProperty('scrollTimelineAxis', () => new group6.ScrollTimelineAxisCss());
-  defineSystemProperty('scrollTimelineName', () => new group6.ScrollTimelineNameCss());
-  defineSystemProperty('scrollbarColor', () => new group6.ScrollbarColorCss());
-  defineSystemProperty('scrollbarGutter', () => new group6.ScrollbarGutterCss());
-  defineSystemProperty('scrollbarWidth', () => new group6.ScrollbarWidthCss());
-  defineSystemProperty('shapeImageThreshold', () => new group6.ShapeImageThresholdCss());
-  defineSystemProperty('shapeMargin', () => new group6.ShapeMarginCss());
-  defineSystemProperty('shapeOutside', () => new group6.ShapeOutsideCss());
-  defineSystemProperty('shapeRendering', () => new group6.ShapeRenderingCss());
-  defineSystemProperty('speakAs', () => new group6.SpeakAsCss());
-  defineSystemProperty('stopColor', () => new group6.StopColorCss());
-  defineSystemProperty('stopOpacity', () => new group6.StopOpacityCss());
-  defineSystemProperty('stroke', () => new group6.StrokeCss());
-  defineSystemProperty('strokeColor', () => new group6.StrokeColorCss());
-  defineSystemProperty('strokeDasharray', () => new group6.StrokeDasharrayCss());
-  defineSystemProperty('strokeDashoffset', () => new group6.StrokeDashoffsetCss());
-  defineSystemProperty('strokeLinecap', () => new group6.StrokeLinecapCss());
-  defineSystemProperty('strokeLinejoin', () => new group6.StrokeLinejoinCss());
-  defineSystemProperty('strokeMiterlimit', () => new group6.StrokeMiterlimitCss());
-  defineSystemProperty('strokeOpacity', () => new group6.StrokeOpacityCss());
-  defineSystemProperty('strokeWidth', () => new group6.StrokeWidthCss());
-  defineSystemProperty('tabSize', () => new group6.TabSizeCss());
-  defineSystemProperty('tableLayout', () => new group6.TableLayoutCss());
-  defineSystemProperty('textAlign', () => new group6.TextAlignCss());
-  defineSystemProperty('textAlignLast', () => new group6.TextAlignLastCss());
-  defineSystemProperty('textAnchor', () => new group6.TextAnchorCss());
-  defineSystemProperty('textAutospace', () => new group6.TextAutospaceCss());
-  defineSystemProperty('textBox', () => new group6.TextBoxCss());
-  defineSystemProperty('textBoxEdge', () => new group6.TextBoxEdgeCss());
-  defineSystemProperty('textBoxTrim', () => new group6.TextBoxTrimCss());
-  defineSystemProperty('textCombineUpright', () => new group6.TextCombineUprightCss());
-  defineSystemProperty('textDecoration', () => new group6.TextDecorationCss());
-  defineSystemProperty('textDecorationColor', () => new group6.TextDecorationColorCss());
-  defineSystemProperty('textDecorationLine', () => new group6.TextDecorationLineCss());
-  defineSystemProperty('textDecorationSkip', () => new group6.TextDecorationSkipCss());
-  defineSystemProperty('textDecorationSkipInk', () => new group6.TextDecorationSkipInkCss());
-  defineSystemProperty('textDecorationStyle', () => new group6.TextDecorationStyleCss());
-  defineSystemProperty('textDecorationThickness', () => new group6.TextDecorationThicknessCss());
-  defineSystemProperty('textEmphasis', () => new group6.TextEmphasisCss());
-  defineSystemProperty('textEmphasisColor', () => new group6.TextEmphasisColorCss());
-  defineSystemProperty('textEmphasisPosition', () => new group6.TextEmphasisPositionCss());
-  defineSystemProperty('textEmphasisStyle', () => new group6.TextEmphasisStyleCss());
-  defineSystemProperty('textIndent', () => new group6.TextIndentCss());
-  defineSystemProperty('textJustify', () => new group6.TextJustifyCss());
-  defineSystemProperty('textOrientation', () => new group6.TextOrientationCss());
-  defineSystemProperty('textOverflow', () => new group6.TextOverflowCss());
-  defineSystemProperty('textRendering', () => new group6.TextRenderingCss());
-  defineSystemProperty('textShadow', () => new group6.TextShadowCss());
-  defineSystemProperty('textSizeAdjust', () => new group6.TextSizeAdjustCss());
-  defineSystemProperty('textSpacingTrim', () => new group6.TextSpacingTrimCss());
-  defineSystemProperty('textTransform', () => new group6.TextTransformCss());
-  defineSystemProperty('textUnderlineOffset', () => new group6.TextUnderlineOffsetCss());
-  defineSystemProperty('textUnderlinePosition', () => new group6.TextUnderlinePositionCss());
-  defineSystemProperty('textWrap', () => new group6.TextWrapCss());
-  defineSystemProperty('textWrapMode', () => new group6.TextWrapModeCss());
-  defineSystemProperty('textWrapStyle', () => new group6.TextWrapStyleCss());
-  defineSystemProperty('timelineScope', () => new group6.TimelineScopeCss());
-  defineSystemProperty('top', () => new group6.TopCss());
-  defineSystemProperty('touchAction', () => new group6.TouchActionCss());
-  defineSystemProperty('transform', () => new group6.TransformCss());
-  defineSystemProperty('transformBox', () => new group6.TransformBoxCss());
-  defineSystemProperty('transformOrigin', () => new group6.TransformOriginCss());
-  defineSystemProperty('transformStyle', () => new group6.TransformStyleCss());
-  defineSystemProperty('transition', () => new group6.TransitionCss());
-  defineSystemProperty('transitionBehavior', () => new group6.TransitionBehaviorCss());
-  defineSystemProperty('transitionDelay', () => new group6.TransitionDelayCss());
-  defineSystemProperty('transitionDuration', () => new group6.TransitionDurationCss());
-  defineSystemProperty('transitionProperty', () => new group6.TransitionPropertyCss());
-  defineSystemProperty('transitionTimingFunction', () => new group6.TransitionTimingFunctionCss());
-  defineSystemProperty('translate', () => new group6.TranslateCss());
-  defineSystemProperty('unicodeBidi', () => new group7.UnicodeBidiCss());
-  defineSystemProperty('userSelect', () => new group7.UserSelectCss());
-  defineSystemProperty('vectorEffect', () => new group7.VectorEffectCss());
-  defineSystemProperty('verticalAlign', () => new group7.VerticalAlignCss());
-  defineSystemProperty('viewTimeline', () => new group7.ViewTimelineCss());
-  defineSystemProperty('viewTimelineAxis', () => new group7.ViewTimelineAxisCss());
-  defineSystemProperty('viewTimelineInset', () => new group7.ViewTimelineInsetCss());
-  defineSystemProperty('viewTimelineName', () => new group7.ViewTimelineNameCss());
-  defineSystemProperty('viewTransitionClass', () => new group7.ViewTransitionClassCss());
-  defineSystemProperty('viewTransitionName', () => new group7.ViewTransitionNameCss());
-  defineSystemProperty('visibility', () => new group7.VisibilityCss());
-  defineSystemProperty('whiteSpace', () => new group7.WhiteSpaceCss());
-  defineSystemProperty('whiteSpaceCollapse', () => new group7.WhiteSpaceCollapseCss());
-  defineSystemProperty('widows', () => new group7.WidowsCss());
-  defineSystemProperty('width', () => new group7.WidthCss());
-  defineSystemProperty('willChange', () => new group7.WillChangeCss());
-  defineSystemProperty('wordBreak', () => new group7.WordBreakCss());
-  defineSystemProperty('wordSpacing', () => new group7.WordSpacingCss());
-  defineSystemProperty('wordWrap', () => new group7.WordWrapCss());
-  defineSystemProperty('writingMode', () => new group7.WritingModeCss());
-  defineSystemProperty('x', () => new group7.XCss());
-  defineSystemProperty('y', () => new group7.YCss());
-  defineSystemProperty('zIndex', () => new group7.ZIndexCss());
-  defineSystemProperty('zoom', () => new group7.ZoomCss());
-  systemPropertiesReady = true;
+  zoom(value: PropertyInput<'zoom', T>): this {
+    this.write('zoom', 'zoom', value);
+    return this;
+  }
 }

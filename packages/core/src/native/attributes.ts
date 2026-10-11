@@ -301,7 +301,7 @@ export function nativeAttributes(input: Props, tag: string, namespace = HTML): M
       )
         continue;
       const bundle = resolveClass(original);
-      original = bundle.class || null;
+      original = bundle.class || (typeof original === 'string' ? '' : null);
       classStyle = styleText(bundle.style);
     }
     const value =

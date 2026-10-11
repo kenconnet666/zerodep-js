@@ -1,4 +1,5 @@
 import { assertCanWrite, getScope } from './reactivity.js';
+import type { ClassValue } from '../native/style.js';
 
 export interface Context<T> {
   readonly key: symbol;
@@ -31,3 +32,6 @@ export function _useContext<T>(context: Context<T>): T {
   }
   return context.defaultValue;
 }
+
+/** Portal 的通用样式继承接线；具体主题数据由 UI/CSS 提供，core 不认识 token。 */
+export const _portalClassContext = _createContext<() => ClassValue>();

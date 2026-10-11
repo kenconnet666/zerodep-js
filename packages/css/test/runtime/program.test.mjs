@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createServerCssHost } from './runtime.mjs';
-const { CssMethods } = await import('../../src/generated/methods.ts');
+const { Css: CssMethods } = await import('../../src/generated/author.ts');
 const { SystemKeywords } = await import('../../src/generated/keywords.ts');
 const { bx, collectCss, collectTheme, collectKeyframes, resolvePrograms } =
   await import('../../src/runtime/program.ts');
@@ -64,7 +64,7 @@ test('安全连续值复用类；undefined 忽略，特殊值及兄弟选择器�
   for (let value = 1; value <= 100; value++) {
     const result = resolve([css(() => s.width(bx(`${value}px`)))]);
     classes.add(result.class);
-    assert.match(result.style, new RegExp(`:${value}px$`));
+    assert.match(result.style, new RegExp(`:${value}px;$`));
   }
   assert.equal(classes.size, 1);
   assert.equal(host.rules().length, 1);
@@ -93,7 +93,7 @@ test('数组先覆盖再登记，来源不变，class 别名覆盖不会消费�
   assert.equal(attributes.get('style'), 'color:blue');
   assert.equal(host.rules()[0].body, 'color:red;width:20px;');
   const original = nativeAttributes({ class: base }, 'div');
-  assert.match(original.get('style'), /:12px$/);
+  assert.match(original.get('style'), /:12px;$/);
   const unused = css(() => s.height('200px'));
   const count = host.rules().length;
   assert.equal(
@@ -110,6 +110,7 @@ test('bx 主题 token 按属性解析，Provider 值变化不改变消费类，�
     configurable: true,
   });
   const { host, s, css, resolve } = setup(theme);
+  collectTheme(s, resolve);
   const consumer = () => resolve([css(() => s.color(bx('_primary')))]);
   const first = consumer();
   assert.equal(first.style, '');
@@ -137,7 +138,32 @@ test('关键帧参数随样式结果传递，动态值不产生新动画名', ()
   }
   assert.equal(new Set(styles.map((x) => x.class)).size, 1);
   assert.equal(host.rules().filter((x) => x.kind === 'keyframes').length, 1);
-  assert.match(styles[2].style, /:0.8$/);
+  assert.match(styles[2].style, /:0.8;$/);
   assert.throws(() => collectKeyframes(() => s.opacity(1)), /帧位置/);
+  assert.throws(
+    () => collectKeyframes(() => s.select('to', () => s.opacity('1!important'))),
+    /关键帧不接受/,
+  );
+  assert.throws(
+    () => collectKeyframes(() => s.select('to', () => s.animationDuration('1s'))),
+    /关键帧不接受/,
+  );
   assert.throws(() => css(() => s.select('@font-face', () => s.color('red'))), /局部条件/);
+});
+
+test('select 保留引号中的分隔符，拒绝块注入，标准条件可正常收集', () => {
+  const { host, s, css, resolve } = setup();
+  resolve([
+    css(() => {
+      s.select('&[data-note=";{}"]', () => s.color('red'));
+      s.select('@media(width > 10px)', () => s.color('blue'));
+    }),
+  ]);
+  assert.equal(
+    host.rules()[0].body,
+    '&[data-note=";{}"]{color:red;}@media(width > 10px){color:blue;}',
+  );
+  assert.throws(() => css(() => s.select('&{}body', () => s.color('red'))), /声明块/);
+  assert.throws(() => css(() => s.select('&:is(', () => s.color('red'))), /完整选择器/);
+  assert.equal(nativeAttributes({ class: '' }, 'div').get('class'), '');
 });

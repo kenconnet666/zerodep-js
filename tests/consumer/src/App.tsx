@@ -11,44 +11,56 @@ import {
   _head,
 } from 'zerodep-js';
 import { Counter, Label } from '@zerodep-consumer/counter';
-import { Css, WidthCss, SystemKeywords, systemKeywords } from 'zerodep-js-css';
+import { Css, type CssInput, SystemKeywords, systemKeywords, bx } from 'zerodep-js-css';
 import { css } from 'zerodep-js-css';
-
 const s = new Css();
-class OpacityWidth extends WidthCss {
-  protected override readonly name = 'opacity';
-}
 class MappedCss extends Css {
-  override readonly width = new OpacityWidth();
+  override width(value: CssInput<'width'>): this {
+    return this.opacity(value as CssInput<'opacity'>);
+  }
 }
 const mapped = new MappedCss();
 class PackedTheme extends SystemKeywords {
   // oxlint-disable-next-line typescript/no-misused-spread -- 按主题契约复制原始颜色值。
-  override readonly color = { ...systemKeywords.color, _primary: '' };
+  override readonly color = {
+    ...systemKeywords.color,
+    _primary: '',
+  };
   constructor(value: string) {
     super();
     this.color._primary = value;
   }
 }
-
 const LazyCounter = _lazy(() =>
   import('@zerodep-consumer/counter').then((module) => module.Counter),
 );
-
 export const App = _component(({ title }: { title: string }) => {
-  _head(() => ({ title, description: '独立包消费' }));
+  _head(() => ({
+    title,
+    description: '独立包消费',
+  }));
   let width = _state(120);
   let mappedValue = _state('auto');
   let keyword = _state('#245fc5');
   const themed = new Css(() => new PackedTheme(keyword));
-  const className = css(s.width.px(width + 1));
+  const className = css(() => {
+    s.width(bx(`${width + 1}px`));
+  });
   const inputId = _id();
   let input: HTMLInputElement | undefined = undefined;
-  const messages = _state({ message: '等待' });
+  const messages = _state({
+    message: '等待',
+  });
   let lazyVisible = _state(false);
   const rows = _state([
-    { id: 1, name: '甲' },
-    { id: 2, name: '乙' },
+    {
+      id: 1,
+      name: '甲',
+    },
+    {
+      id: 2,
+      name: '乙',
+    },
   ]);
   _onMount(() => {
     const signal = _getAbortSignal();
@@ -60,7 +72,11 @@ export const App = _component(({ title }: { title: string }) => {
   });
   return (
     <main
-      style={{ containerType: 'inline-size', '--package-consumer': '1', color: 'black !important' }}
+      style={{
+        containerType: 'inline-size',
+        '--package-consumer': '1',
+        color: 'black !important',
+      }}
     >
       <h1>{title}</h1>
       <button
@@ -76,8 +92,12 @@ export const App = _component(({ title }: { title: string }) => {
       </div>
       <div
         data-packed-keyword
-        class={css(themed.color._primary)}
-        style={{ '--consumer-accent': '#663399' }}
+        class={css(() => {
+          themed.color('_primary');
+        })}
+        style={{
+          '--consumer-accent': '#663399',
+        }}
       >
         主题声明
       </div>
@@ -96,9 +116,12 @@ export const App = _component(({ title }: { title: string }) => {
       </button>
       <div
         data-packed-mapped-css
-        class={css(mapped.width.raw('0.5'), mapped.width.raw(mappedValue))}
+        class={css(() => {
+          mapped.width('0.5');
+          mapped.width(bx(mappedValue));
+        })}
       >
-        继承作者的无效值保留先前有效声明
+        继承作者按最终属性分类，最后声明覆盖此前值
       </div>
       <button
         data-packed-mapped-update
@@ -128,7 +151,13 @@ export const App = _component(({ title }: { title: string }) => {
       {lazyVisible && <LazyCounter label="按需打包" />}
 
       <output>{messages.message}</output>
-      <Label value={{ id: 3 }}>{(value) => value.id}</Label>
+      <Label
+        value={{
+          id: 3,
+        }}
+      >
+        {(value) => value.id}
+      </Label>
       <For each={rows} keyBy={(row) => row.id}>
         {(row) => <span data-row={row.id}>{row.name}</span>}
       </For>

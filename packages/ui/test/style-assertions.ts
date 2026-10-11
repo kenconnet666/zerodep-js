@@ -11,7 +11,7 @@ export function expectCssValue(
   ];
   const found = declarations.some(([, declaration]) => {
     if (declaration === value) return true;
-    const variable = declaration!.match(/^var\((--zj-[a-z0-9-]+)\)$/)?.[1];
+    const variable = declaration!.match(/^var\((--(?:zj|zt)-[a-z0-9-]+)\)$/)?.[1];
     return variable !== undefined && result.html.includes(`${variable}:${value};`);
   });
   expect(found, `SSR CSS 应包含 ${property}:${value}，或指向元素实际值的变量`).toBe(true);

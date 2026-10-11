@@ -19,14 +19,14 @@ import { Css } from 'zerodep-js-css';
 import { css, createCssContext, type CssClass } from 'zerodep-js-css';
 
 const cssAuthor = new Css();
-const styleClass: CssClass = css(cssAuthor.width.px(12));
+const styleClass: CssClass = css(() => cssAuthor.width('12px'));
 <div class={styleClass} />;
 <div className={styleClass} />;
 // @ts-expect-error 样式可能携带动态值，不能声明为纯类名字符串。
 const plainClass: string = styleClass;
 void plainClass;
-// @ts-expect-error CSS 作者类型通过公开包入口保持单位参数约束。
-cssAuthor.width.px('12px');
+// @ts-expect-error CSS 宽度类型不自动把任意数字解释成 px。
+cssAuthor.width(12);
 class ProjectCss extends Css {
   readonly label = 'project';
 }

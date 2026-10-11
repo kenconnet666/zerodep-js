@@ -1,5 +1,12 @@
-import { _component, _derived, _provideContext, _useContext, type JSX } from 'zerodep-js';
-import { css, Css, type CssValue } from 'zerodep-js-css';
+import {
+  _component,
+  _derived,
+  _provideContext,
+  _useContext,
+  _portalClassContext,
+  type JSX,
+} from 'zerodep-js';
+import { css, Css, bx, _themeStyle, type CssValue } from 'zerodep-js-css';
 import { lightTheme } from './theme/light.js';
 import type { UiTheme } from './theme/theme.js';
 import { zhCN } from './lang/zh-CN.js';
@@ -74,16 +81,16 @@ export const Provider = _component(
     // 方向也通过 getter 继承，不能把初始字符串当作后续配置。
     _provideContext(directionContext, () => direction);
     const s = provideCss(new Css<UiTheme>(readTheme));
-    const style = css(
-      s.colorScheme.raw(s.keywords.name),
-      s.fontFamily._sans,
-      s.fontSize.raw(size ?? (parentTheme ? 'inherit' : '_md')),
-      s.fontWeight._normal,
-      s.lineHeight._normal,
-      s.color._text,
-      s.backgroundColor._background,
+    _provideContext(_portalClassContext, () => _themeStyle(s));
+    const style = _derived([
+      _themeStyle(s),
+      css(() => {
+        s.colorScheme(s.keywords.name).fontFamily('_sans');
+        s.fontSize(bx(size ?? (parentTheme ? 'inherit' : '_md')));
+        s.fontWeight('_normal').lineHeight('_normal').color('_text').backgroundColor('_background');
+      }),
       className,
-    );
+    ]);
     return (
       <div {...rest} lang={language.code} dir={direction} class={style}>
         {children}

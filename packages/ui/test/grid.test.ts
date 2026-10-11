@@ -1,16 +1,20 @@
 import { expectCssValue } from './style-assertions.js';
 import { expect, it } from 'vitest';
 import { defineComponent, element, renderToString } from 'zerodep-js';
-
-import { css, createServerCssHost, withCssHost } from 'zerodep-js-css';
+import { css, createServerCssHost, withCssHost, Css } from 'zerodep-js-css';
 import { Provider, Grid } from '../dist/index.js';
-
+const _cssAuthor = new Css();
 function render(props: Record<string, unknown> | (() => Record<string, unknown>)) {
   const host = createServerCssHost();
   const App = defineComponent(() =>
-    element(Provider, { children: element(Grid, typeof props === 'function' ? props() : props) }),
+    element(Provider, {
+      children: element(Grid, typeof props === 'function' ? props() : props),
+    }),
   );
-  return { html: withCssHost(host, () => renderToString(App)), css: host.cssText() };
+  return {
+    html: withCssHost(host, () => renderToString(App)),
+    css: host.cssText(),
+  };
 }
 it('Grid SSR 复用 CSS 轨道，保留普通子项和原生属性', () => {
   const result = render(() => ({
@@ -18,9 +22,14 @@ it('Grid SSR 复用 CSS 轨道，保留普通子项和原生属性', () => {
     rows: 'auto 1fr',
     gap: '1em',
     size: '2vw',
-    class: css('padding:3px;'),
+    class: css(() => {
+      _cssAuthor.padding('3px');
+    }),
     'data-part': 'custom',
-    children: element('div', { style: 'grid-column:span 2', children: '跨列' }),
+    children: element('div', {
+      style: 'grid-column:span 2',
+      children: '跨列',
+    }),
   }));
   expect(result.css).toContain('grid-template-columns:repeat(3, minmax(0, 1fr));');
   expect(result.css).toContain('grid-template-rows:auto 1fr;');
@@ -45,8 +54,16 @@ it('Grid 支持原始轨道/命名区域/自动放置，不解释 CSS 字符串'
 });
 it('Grid 拒绝非法数字列数，普通轨道不附加按钮接缝', () => {
   for (const columns of [0, -1, 1.5, NaN, Infinity])
-    expect(() => render({ columns })).toThrow('正安全整数');
-  const result = render({ columns: 2, gap: '1em', alignContent: 'space-between' });
+    expect(() =>
+      render({
+        columns,
+      }),
+    ).toThrow('正安全整数');
+  const result = render({
+    columns: 2,
+    gap: '1em',
+    alignContent: 'space-between',
+  });
   expectCssValue(result, 'gap', '1em');
   expectCssValue(result, 'align-content', 'space-between');
   expect(result.css).not.toContain('data-ui-action');

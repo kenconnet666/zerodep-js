@@ -1,6 +1,6 @@
 import type { UiTheme } from '../provider/theme/theme.js';
 import { _component, _derived, type JSX } from 'zerodep-js';
-import { css, type CssValue } from 'zerodep-js-css';
+import { css, type CssValue, bx } from 'zerodep-js-css';
 import { useCss } from '../provider/context.js';
 export interface GridProps extends Omit<JSX.IntrinsicElements['div'], 'size'> {
   inline?: boolean | undefined;
@@ -46,30 +46,34 @@ export const Grid = _component(
     const s = useCss();
     const tracks = _derived.by(() => {
       const value = columns ?? 1;
-      if (typeof value !== 'number') return s.gridTemplateColumns.raw(value);
+      if (typeof value !== 'number') return value;
       if (!Number.isSafeInteger(value) || value < 1)
         throw new Error('Grid columns 数字必须是正安全整数。');
-      return s.gridTemplateColumns.repeat(value, 'minmax(0, 1fr)');
+      return `repeat(${value}, minmax(0, 1fr))`;
     });
-    const style = css(
-      s.display.raw(inline ? 'inline-grid' : 'grid'),
-      tracks,
-      s.gridTemplateRows.raw(rows),
-      s.gridTemplateAreas.raw(areas),
-      s.gridAutoRows.raw(autoRows),
-      s.gridAutoColumns.raw(autoColumns),
-      s.gridAutoFlow.raw(autoFlow),
-      s.gap.raw(gap),
-      s.rowGap.raw(rowGap),
-      s.columnGap.raw(columnGap),
-      s.alignItems.raw(alignItems),
-      s.justifyItems.raw(justifyItems),
-      s.alignContent.raw(alignContent),
-      s.justifyContent.raw(justifyContent),
-      s.fontSize.raw(size),
-      s._selector('&[hidden]', s.display.none),
+    const style = _derived([
+      css(() => {
+        s.display(bx(inline ? 'inline-grid' : 'grid'));
+        s.gridTemplateColumns(bx(tracks));
+        s.gridTemplateRows(bx(rows));
+        s.gridTemplateAreas(bx(areas));
+        s.gridAutoRows(bx(autoRows));
+        s.gridAutoColumns(bx(autoColumns));
+        s.gridAutoFlow(bx(autoFlow));
+        s.gap(bx(gap));
+        s.rowGap(bx(rowGap));
+        s.columnGap(bx(columnGap));
+        s.alignItems(bx(alignItems));
+        s.justifyItems(bx(justifyItems));
+        s.alignContent(bx(alignContent));
+        s.justifyContent(bx(justifyContent));
+        s.fontSize(bx(size));
+        s.select('&[hidden]', () => {
+          s.display('none');
+        });
+      }),
       className,
-    );
+    ]);
     return (
       <div {...rest} class={style}>
         {children}

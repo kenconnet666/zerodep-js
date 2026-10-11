@@ -55,6 +55,9 @@ for (const mode of ['csr', 'ssr']) {
     await expect(inner.locator('[data-locale]')).toHaveText('en-US');
     await page.getByLabel('显示 Portal').check();
     const portal = page.locator('[data-provider="portal"]');
+    const directPortal = page.locator('[data-preview="portal-direct"]');
+    await expect(directPortal).toHaveCSS('color', 'rgb(237, 242, 247)');
+    const directClass = await directPortal.getAttribute('class');
     await expect(portal).toHaveAttribute('lang', 'en-US');
     await expect(portal).toHaveCSS('color-scheme', 'dark');
     await page.getByLabel('内层覆盖').uncheck();
@@ -65,11 +68,14 @@ for (const mode of ['csr', 'ssr']) {
     await expect(inner.locator('[data-confirm]')).toHaveText('确定');
     await expect(inner.locator('[data-hours]')).toHaveText('24');
     await expect(portal).toHaveAttribute('lang', 'zh-CN');
+    await expect(directPortal).toHaveCSS('color', 'rgb(32, 42, 54)');
+    await expect(directPortal).toHaveAttribute('class', directClass!);
     await expect(portal).toHaveCSS('color-scheme', 'light');
     await expect(outer).toHaveAttribute('data-preserved', 'true');
     await expect(page.getByLabel('保留输入')).toHaveValue('切换后仍保留');
     await page.getByLabel('显示预览').uncheck();
     await expect(portal).toHaveCount(0);
+    await expect(directPortal).toHaveCount(0);
     await page.getByLabel('显示预览').check();
     await expect(outer.locator('[data-theme]')).toHaveText('light');
     expect(errors).toEqual([]);

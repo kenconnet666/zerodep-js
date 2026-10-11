@@ -1,10 +1,8 @@
 import { _component, _derived, _state, _lazy, Portal } from 'zerodep-js';
-import { Css } from 'zerodep-js-css';
+import { Css, bx } from 'zerodep-js-css';
 import { css } from 'zerodep-js-css';
 import { Keywords, provideCss, useCss } from './css-theme.js';
-
 const s = new Css();
-
 const keywordValues = [
   '#245fc5',
   'inherit',
@@ -21,9 +19,18 @@ const KeywordBindingProbe = _component(() => {
   let external = _state('#123456');
   const theme = _derived(new Keywords(keywordValues[position]!));
   const author = new Css(() => theme);
-  const className = css(s.color.red, author.color._primary);
+  const className = css(() => {
+    s.color('red');
+    author.color('_primary');
+  });
   return (
-    <section style={{ color: 'rgb(20, 30, 40)', colorScheme: 'light', '--external': external }}>
+    <section
+      style={{
+        color: 'rgb(20, 30, 40)',
+        colorScheme: 'light',
+        '--external': external,
+      }}
+    >
       <button
         data-css-keyword-next
         onClick={() => {
@@ -40,23 +47,39 @@ const KeywordBindingProbe = _component(() => {
       >
         更新用户变量
       </button>
-      <div data-css-keyword class={className} style={{ '--user': 'kept' }}>
+      <div
+        data-css-keyword
+        class={className}
+        style={{
+          '--user': 'kept',
+        }}
+      >
         {keywordValues[position]}
       </div>
     </section>
   );
 });
-
 const LazyThemeProbe = _lazy(() => import('./LazyThemeProbe.js'));
 const ValueBindingProbe = _component(() => {
   const author = useCss();
   const sizes = ['12px', '24px', undefined, 'inherit', 'calc(10px + 20px)', '12px'] as const;
   let step = _state(0);
   let display = _state('run-in');
-  const { size, label } = _derived({ size: sizes[step], label: `步骤 ${step}` });
-  const width = css(s.width.px(80), author.width.raw(size));
+  const { size, label } = _derived({
+    size: sizes[step],
+    label: `步骤 ${step}`,
+  });
+  const width = css(() => {
+    s.width('80px');
+    author.width(bx(size));
+  });
   return (
-    <section data-css-values style={{ width: '180px' }}>
+    <section
+      data-css-values
+      style={{
+        width: '180px',
+      }}
+    >
       <button
         data-css-value-step
         onClick={() => {
@@ -68,7 +91,13 @@ const ValueBindingProbe = _component(() => {
       <div data-css-value-width class={width}>
         {label}
       </div>
-      <div data-css-value-display class={css(s.display.flex, s.display.raw(display))}>
+      <div
+        data-css-value-display
+        class={css(() => {
+          s.display('flex');
+          s.display(bx(display));
+        })}
+      >
         保留原声明降级
       </div>
     </section>
@@ -77,7 +106,12 @@ const ValueBindingProbe = _component(() => {
 const ThemeProbe = _component(({ location }: { location: string }) => {
   const author = useCss();
   return (
-    <div data-css-theme={location} class={css(author.color._primary)}>
+    <div
+      data-css-theme={location}
+      class={css(() => {
+        author.color('_primary');
+      })}
+    >
       主题作用域
     </div>
   );
@@ -91,17 +125,16 @@ const LocalThemeProbe = _component(({ lazy }: { lazy: boolean }) => {
     </>
   );
 });
-
 const Card = _component(({ name, initial }: { name: string; initial: number }) => {
   let width = _state(initial);
   let active = _state(false);
   const height = _derived(24);
-  // css 声明自动追踪；尺寸和简单条件的安全结果都使用元素变量。
-  const className = css(
-    s.width.px(width),
-    s.height.px(height),
-    s.color.raw(active ? 'red' : 'blue'),
-  );
+  // css 声明自动追踪；尺寸使用元素变量；系统颜色关键字直接输出，有限切换复用对应类。
+  const className = css(() => {
+    s.width(bx(`${width}px`));
+    s.height(bx(`${height}px`));
+    s.color(bx(active ? 'red' : 'blue'));
+  });
   return (
     <section data-css-card={name}>
       <button
@@ -123,30 +156,47 @@ const Card = _component(({ name, initial }: { name: string; initial: number }) =
       <div
         data-css-box={name}
         class={className}
-        style={{ border: '1px solid currentColor', '--user': 'kept' }}
+        style={{
+          border: '1px solid currentColor',
+          '--user': 'kept',
+        }}
       >
         原生样式
       </div>
-      <div data-css-inline={name} class={css(s.width.px(width))}>
+      <div
+        data-css-inline={name}
+        class={css(() => {
+          s.width(bx(`${width}px`));
+        })}
+      >
         内联样式
       </div>
       <div
         data-css-expression={name}
-        class={css(s.width.px(width + 1), s.height.px(active ? height * 2 : height))}
+        class={css(() => {
+          s.width(bx(`${width + 1}px`));
+          s.height(bx(`${active ? height * 2 : height}px`));
+        })}
       >
         表达式样式
       </div>
       <div
-        {...{ title: 'spread', style: { '--user-spread': 'kept' } }}
+        {...{
+          title: 'spread',
+          style: {
+            '--user-spread': 'kept',
+          },
+        }}
         data-css-spread={name}
-        class={css(s.width.px(width))}
+        class={css(() => {
+          s.width(bx(`${width}px`));
+        })}
       >
         展开属性
       </div>
     </section>
   );
 });
-
 export const CssExample = _component(() => {
   let visible = _state(true);
   let lazyVisible = _state(false);
@@ -191,7 +241,14 @@ export const CssExample = _component(() => {
         </>
       )}
       <Portal>
-        <div data-css-portal class={css(s.position.fixed, s.bottom.px(0), s.pointerEvents.none)}>
+        <div
+          data-css-portal
+          class={css(() => {
+            s.position('fixed');
+            s.bottom('0px');
+            s.pointerEvents('none');
+          })}
+        >
           CSS Portal
           <ThemeProbe location="portal" />
           {lazyVisible && <LazyThemeProbe location="lazy-portal" />}

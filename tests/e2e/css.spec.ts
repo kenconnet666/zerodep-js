@@ -8,11 +8,11 @@ for (const mode of ['csr', 'ssr']) {
     const node = page.locator('[data-css-value-width]');
     await expect(node).toHaveCSS('width', '12px');
     const name = await node.getAttribute('class');
-    // run-in 不支持时保留前面的 flex；支持时与原生声明一样采用 run-in。
+    // 同属性最后调用覆盖旧声明；run-in 不支持时回到 div 的原生 block。
     const supported = await page.evaluate(() => CSS.supports('display', 'run-in'));
     await expect(page.locator('[data-css-value-display]')).toHaveCSS(
       'display',
-      supported ? 'run-in' : 'flex',
+      supported ? 'run-in' : 'block',
     );
     for (const [index, value] of ['24px', '80px', '180px', '30px', '12px'].entries()) {
       await page.locator('[data-css-value-step]').click();
@@ -25,7 +25,7 @@ for (const mode of ['csr', 'ssr']) {
     }
     expect(errors).toEqual([]);
   });
-  test(`${mode} 主题关键字与全局值、用户 var 通过 class 更新且无自动变量`, async ({ page }) => {
+  test(`${mode} 主题安全值使用变量，特殊值与用户 var 保留原声明`, async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (error) => errors.push(error.message));
     await page.goto(`/?render=${mode}`);
@@ -33,10 +33,10 @@ for (const mode of ['csr', 'ssr']) {
     const name = await node.getAttribute('class');
     const variables = () =>
       node.evaluate((element: HTMLElement) =>
-        Array.from(element.style).filter((key) => key.startsWith('--zj-')),
+        Array.from(element.style).filter((key) => key.startsWith('--zt-')),
       );
     await expect(node).toHaveCSS('color', 'rgb(36, 95, 197)');
-    expect(await variables()).toHaveLength(0);
+    expect(await variables()).toHaveLength(1);
     for (const color of [
       'rgb(20, 30, 40)',
       'rgb(0, 0, 0)',
@@ -44,7 +44,7 @@ for (const mode of ['csr', 'ssr']) {
       'rgb(20, 30, 40)',
       'rgb(20, 30, 40)',
       'rgb(18, 52, 86)',
-      'rgb(255, 0, 0)',
+      'rgb(20, 30, 40)',
     ]) {
       await page.locator('[data-css-keyword-next]').click();
       await expect(node).toHaveCSS('color', color);
@@ -61,8 +61,8 @@ for (const mode of ['csr', 'ssr']) {
     }
     await page.locator('[data-css-keyword-next]').click();
     await expect(node).toHaveCSS('color', 'rgb(255, 255, 255)');
-    expect(await node.getAttribute('class')).not.toBe(name);
-    expect(await variables()).toHaveLength(0);
+    expect(await node.getAttribute('class')).toBe(name);
+    expect(await variables()).toHaveLength(1);
     expect(errors).toEqual([]);
   });
 
@@ -141,8 +141,13 @@ for (const mode of ['csr', 'ssr']) {
     await page.locator('[data-css-toggle=first]').click();
     await expect(first).toHaveCSS('color', 'rgb(255, 0, 0)');
     await expect(expression).toHaveCSS('height', '48px');
+    expect(await first.getAttribute('class')).not.toBe(name);
+    expect(await expression.getAttribute('class')).toBe(expressionClass);
+    expect(await ruleCount()).toBe(rules + 1);
+    await page.locator('[data-css-toggle=first]').click();
+    await expect(first).toHaveCSS('color', 'rgb(0, 0, 255)');
     expect(await first.getAttribute('class')).toBe(name);
-    expect(await ruleCount()).toBe(rules);
+    expect(await ruleCount()).toBe(rules + 1);
     await expect(second).toHaveCSS('color', 'rgb(0, 0, 255)');
     await expect(page.locator('[data-css-portal]')).toHaveCSS('position', 'fixed');
     await page.locator('[data-css-visible]').click();
@@ -163,13 +168,13 @@ for (const mode of ['csr', 'ssr']) {
     await expect(page.locator('[data-css-theme=local]')).toHaveCSS('color', 'rgb(128, 0, 128)');
     const outer = page.locator('[data-css-theme=outer]');
     const themeClass = await outer.getAttribute('class');
-    expect(await outer.getAttribute('style')).toBeNull();
+    expect(await outer.getAttribute('style')).toMatch(/--zt-/);
     await page.locator('[data-css-theme-toggle]').click();
     await expect(page.locator('[data-css-theme=outer]')).toHaveCSS('color', 'rgb(0, 128, 0)');
     await expect(page.locator('[data-css-theme=portal]')).toHaveCSS('color', 'rgb(0, 128, 0)');
     await expect(page.locator('[data-css-theme=local]')).toHaveCSS('color', 'rgb(128, 0, 128)');
-    expect(await outer.getAttribute('class')).not.toBe(themeClass);
-    expect(await outer.getAttribute('style')).toBeNull();
+    expect(await outer.getAttribute('class')).toBe(themeClass);
+    expect(await outer.getAttribute('style')).toMatch(/--zt-/);
     await page.locator('[data-unmount]').click();
     await expect(page.locator('[data-css-theme=portal]')).toHaveCount(0);
     expect(errors).toEqual([]);

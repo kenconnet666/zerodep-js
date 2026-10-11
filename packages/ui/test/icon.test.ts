@@ -79,7 +79,7 @@ describe('Icon 真实构建产物', () => {
     const dark = render({ icon: Check, color: '_primary', size: '_lg' }, true);
     expectCssValue(light, 'color', '#245fc5');
     expectCssValue(dark, 'color', darkTheme.color._primary);
-    expect(light.css).toContain('font-size:1.125rem;');
+    expectCssValue(light, 'font-size', '1.125rem');
     const raw = render({ icon: Check, color: 'var(--brand-color)', size: '20px' });
     expect(raw.css).toContain('color:var(--brand-color);');
     expectCssValue(raw, 'font-size', '20px');

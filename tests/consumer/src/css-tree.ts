@@ -1,3 +1,3 @@
-import { ColorCss } from 'zerodep-js-css';
+import { systemKeywords } from 'zerodep-js-css';
 
-export const red = new ColorCss().red;
+export const defaults = systemKeywords;

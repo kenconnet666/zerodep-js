@@ -1,5 +1,3 @@
-import { joinFragments, type CssInput, type CssClassInput, type CssClass } from '../util/author.js';
-
 /** 两路 32 位累积完整 UTF-16 输入；内容确定命名，冲突仍由登记器检查。 */
 export function hash(text: string): string {
   let left = 2166136261;
@@ -58,47 +56,18 @@ export function createRuleRegistry(
     return name;
   }
 
-  function classBody(name: string): string {
-    if (!name) return '';
-    if (/\s/.test(name)) throw new Error('CSS 组合只接受单个生成类；旧产物请重新构建。');
-    const rule = byName.get(name);
-    if (!rule || (rule.kind && rule.kind !== 'class'))
-      throw new Error(
-        `CSS 样式类 ${name} 在当前宿主未登记；请先恢复 SSR 清单或在当前宿主生成样式。`,
-      );
-    return rule.body;
-  }
-
-  function resolvePart(input: CssClassInput, styles: string[]): string {
-    if (typeof input === 'string') {
-      // 只识别保留的生成类格式，不靠 CSS 标点猜测任意原生声明片段。
-      return /^z-[a-z0-9]{14}(?:\s+z-[a-z0-9]{14})*$/.test(input) ? classBody(input) : input;
-    }
-    if (!input) return '';
-    if (Array.isArray(input)) return input.map((part) => resolvePart(part, styles)).join('');
-    const bundle = input as Exclude<CssClass, string>;
-    styles.push(bundle.style);
-    return classBody(bundle.class);
-  }
-
-  const css = (...parts: CssClassInput[]): CssClass => {
-    const styles: string[] = [];
-    const body = parts.map((part) => resolvePart(part, styles)).join('');
-    const name = body.trim() ? register(body, 'class') : '';
-    return styles.some(Boolean) ? { class: name, style: styles.filter(Boolean).join(';') } : name;
-  };
+  const css = (body: string): string => (body.trim() ? register(body, 'class') : '');
   return {
     css,
-    keyframes: (...parts: CssInput[]) => register(joinFragments(parts), 'keyframes'),
-    globalCss(this: void, key: string, ...parts: CssInput[]): void {
-      if (!parts.length) {
+    keyframes: (body: string) => register(body, 'keyframes'),
+    globalCss(this: void, key: string, body?: string): void {
+      if (body === undefined) {
         if (globals.has(key)) {
           updateGlobal(key);
           globals.delete(key);
         }
         return;
       }
-      const body = joinFragments(parts);
       if (globals.get(key)?.body === body) return;
       const rule: CssRule = { kind: 'global', key, className: ruleName('global', body, key), body };
       updateGlobal(key, rule);
@@ -180,9 +149,9 @@ export function serializeCssRules(rules: readonly CssRule[], options: { nonce?: 
 }
 
 export interface ServerCssHost {
-  css(...parts: CssClassInput[]): CssClass;
-  keyframes(...parts: CssInput[]): string;
-  globalCss(key: string, ...parts: CssInput[]): void;
+  css(body: string): string;
+  keyframes(body: string): string;
+  globalCss(key: string, body?: string): void;
   readonly nonce?: string;
   rules(): CssRule[];
   cssText(): string;

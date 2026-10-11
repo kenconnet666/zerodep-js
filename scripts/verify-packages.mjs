@@ -247,8 +247,8 @@ try {
     for (const name of ['compile', 'diagnose', 'zerodep']) assert.equal(typeof compiler[name], 'function');
     const css = await import('zerodep-js-css');
     for (const name of ['UiTheme', 'LightTheme', 'DarkTheme', 'lightTheme', 'darkTheme']) assert.equal(name in css, false);
-    for (const name of ['css', 'createServerCssHost', 'withCssHost', 'hydrateCss', 'cssBinding', 'cssResult']) assert.equal(typeof css[name], 'function');
-    for (const name of ['_mergeClasses', 'className', 'CssProps']) assert.equal(name in css, false, '旧 CSS 入口已删除');
+    for (const name of ['css', 'createServerCssHost', 'withCssHost', 'hydrateCss', 'bx', 'keyframes']) assert.equal(typeof css[name], 'function');
+    for (const name of ['_mergeClasses', 'className', 'CssProps', 'cssBinding', 'cssResult', 'ColorCss', 'WidthCss', 'ColorKeywords']) assert.equal(name in css, false, '旧 CSS 入口已删除');
   `,
     ],
     { cwd: consumer, env, windowsHide: true, encoding: 'utf8' },
@@ -314,13 +314,14 @@ try {
         id,
       ),
     ),
-    '单属性作者不应带入完整作者、框架运行时或样式宿主。',
+    '主题默认表不应带入作者、框架运行时或样式宿主。',
   );
   const isolatedCss = await import(
     pathToFileURL(resolve(consumer, 'dist/css-tree/css-tree.js')).href
   );
-  assert.equal(isolatedCss.red, 'color:red;');
-  assert.deepEqual(Object.keys(isolatedCss), ['red']);
+  assert.deepEqual(isolatedCss.defaults.color, {});
+  assert.equal(Object.keys(isolatedCss.defaults).length, 502);
+  assert.deepEqual(Object.keys(isolatedCss), ['defaults']);
   const treeModules = report.tree.flatMap((chunk) => chunk.modules);
   assert(
     !treeModules.some(
@@ -390,22 +391,22 @@ try {
     const keywordNode = page.locator('[data-packed-keyword]');
     const keywordClass = await keywordNode.getAttribute('class');
     await expect(keywordNode).toHaveCSS('color', 'rgb(36, 95, 197)');
-    assert(!/--zj-/.test(await keywordNode.getAttribute('style')));
+    assert(/--zt-/.test(await keywordNode.getAttribute('style')));
     await expect(keywordNode).toHaveAttribute('style', /--consumer-accent:#663399/);
     await page.locator('[data-packed-keyword-update]').click();
     await expect(keywordNode).toHaveCSS('color', 'rgb(102, 51, 153)');
-    assert(!/--zj-/.test(await keywordNode.getAttribute('style')));
+    assert(!/--zt-/.test(await keywordNode.getAttribute('style')));
     const fallbackClass = await keywordNode.getAttribute('class');
     assert.notEqual(fallbackClass, keywordClass);
     await page.locator('[data-packed-keyword-update]').click();
     await expect(keywordNode).toHaveCSS('color', 'rgb(255, 255, 255)');
-    assert(!/--zj-/.test(await keywordNode.getAttribute('style')));
-    assert.notEqual(await keywordNode.getAttribute('class'), keywordClass);
+    assert(/--zt-/.test(await keywordNode.getAttribute('style')));
+    assert.equal(await keywordNode.getAttribute('class'), keywordClass);
     assert.notEqual(await keywordNode.getAttribute('class'), fallbackClass);
     await page.locator('[data-packed-keyword-update]').click();
     await expect(keywordNode).toHaveCSS('color', 'rgb(36, 95, 197)');
     assert.equal(await keywordNode.getAttribute('class'), keywordClass);
-    await expect(page.locator('[data-packed-mapped-css]')).toHaveCSS('opacity', '0.5');
+    await expect(page.locator('[data-packed-mapped-css]')).toHaveCSS('opacity', '1');
     await page.locator('[data-packed-mapped-update]').click();
     await expect(page.locator('[data-packed-mapped-css]')).toHaveCSS('opacity', '0.8');
     await expect(page.locator('[data-packed-portal]')).toHaveText('外层内容');

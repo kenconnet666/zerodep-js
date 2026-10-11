@@ -1,12 +1,10 @@
 import { _component, _state, _derived, _lazy, _snapshot } from 'zerodep-js';
-import { Css, css } from 'zerodep-js-css';
-
+import { Css, css, bx } from 'zerodep-js-css';
 const s = new Css();
 interface EditableProfile {
   name: string;
   width: number;
 }
-
 const ProfileField = _component(
   ({
     model: form,
@@ -21,7 +19,9 @@ const ProfileField = _component(
   }) => {
     let edits = _state(0);
     // props 参数别名仍是实时读取；CSS 和绑定都直接使用它，不需要 _derived。
-    const appearance = css(s.width.px(form.width));
+    const appearance = css(() => {
+      s.width(bx(`${form.width}px`));
+    });
     return (
       <div {...attrs} data-live-profile class={appearance}>
         <input
@@ -38,7 +38,6 @@ const ProfileField = _component(
     );
   },
 );
-
 const NameField = _component(
   ({ value, onValueChange }: { value: string; onValueChange: (value: string) => void }) => (
     <input
@@ -48,7 +47,6 @@ const NameField = _component(
     />
   ),
 );
-
 let attempts = 0;
 const Details = _lazy(
   async () => {
@@ -66,7 +64,6 @@ const Details = _lazy(
     ),
   },
 );
-
 export const AuthoringExample = _component(() => {
   let text = _state('初始文本');
   let afterInput = _state('');
@@ -75,10 +72,17 @@ export const AuthoringExample = _component(() => {
   let selected = _state<string[]>(['a']);
   let multipleMode = _state(false);
   let selection = _state<string | string[]>('a');
-  const selectOptions = _derived({ multiple: multipleMode });
+  const selectOptions = _derived({
+    multiple: multipleMode,
+  });
   let custom = _state('父组件数据');
-  let form = _state({ name: '保存的姓名' });
-  let profile = _state<EditableProfile>({ name: '第一份', width: 160 });
+  let form = _state({
+    name: '保存的姓名',
+  });
+  let profile = _state<EditableProfile>({
+    name: '第一份',
+    width: 160,
+  });
   const originalProfile = profile;
   let revision = _state('A');
   let edited = _state('');
@@ -90,7 +94,6 @@ export const AuthoringExample = _component(() => {
   }
   let show = _state(false);
   const initial = _snapshot(form);
-
   return (
     <section aria-label="绑定、快照和按需加载">
       <h2>少写重复的输入代码</h2>
@@ -184,7 +187,10 @@ export const AuthoringExample = _component(() => {
       <p data-profile-callback>{edited}</p>
       <button
         onClick={() => {
-          profile = { name: '第二份', width: 240 };
+          profile = {
+            name: '第二份',
+            width: 240,
+          };
           revision = 'B';
         }}
       >

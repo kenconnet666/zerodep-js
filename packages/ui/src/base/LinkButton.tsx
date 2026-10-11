@@ -1,5 +1,5 @@
 import { _component, _derived, type NativeProps, element } from 'zerodep-js';
-import { css } from 'zerodep-js-css';
+import { css, bx } from 'zerodep-js-css';
 import type { ButtonState } from './Button.js';
 import { Ripple } from './Ripple.js';
 import { ButtonContent } from './ButtonContent.js';
@@ -57,16 +57,18 @@ export const LinkButton = _component(
         unavailable: disabled || loading,
       }),
     );
-    const appearance = css(
+    const appearance = _derived([
       _buttonStyle(s, {
         variant,
         color,
         backgroundColor,
         borderColor,
       }),
-      s.fontSize.raw(size),
+      css(() => {
+        s.fontSize(bx(size));
+      }),
       className,
-    );
+    ]);
     return (
       <HtmlAnchor
         {...rest}

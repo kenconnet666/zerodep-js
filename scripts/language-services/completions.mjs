@@ -43,18 +43,17 @@ const cases = [
     edit: true,
   },
   ...[
-    ['width', 'raw', 'base.ts', '原样生成当前属性声明'],
-    ['width', 'clamp', 'base.ts', '将首选值约束在下限和上限之间'],
-    ['opacity', 'clamp', 'base.ts', '将首选值约束在下限和上限之间'],
-    ['color', 'rgb', 'base.ts', '现代空格分隔语法'],
-  ].map(([property, member, file, documentation]) => ({
-    name: `CSS共享方法-${property}.${member}`,
-    source: `import { Css } from 'zerodep-js-css'; const s = new Css(); s.${property}.${member.slice(0, -1)}¦;`,
-    expected: member,
-    word: member.slice(0, -1),
+    ['width', '设置元素'],
+    ['color', '文字前景色'],
+    ['opacity', '不透明度'],
+  ].map(([property]) => ({
+    name: 'CSS真实方法-' + property,
+    source: `import { Css } from 'zerodep-js-css'; const s = new Css(); s.${property.slice(0, -1)}¦;`,
+    expected: property,
+    word: property.slice(0, -1),
     details: true,
-    documentation,
-    definition: 'packages/css/src/generated/' + file,
+    method: true,
+    definition: 'packages/css/src/generated/author.ts',
   })),
   {
     name: 'CSS根入口-自动导入',
@@ -198,69 +197,43 @@ const cases = [
   ].map(([property, member, documentation]) => ({
     name: `UI主题定义-${property}.${member}`,
     directory: 'apps/docs/src',
-    source: `import { useCss } from 'zerodep-js-ui'; const s = useCss(); s.${property}.${member.slice(0, -1)}¦;`,
+    source: `import { useCss } from 'zerodep-js-ui'; const s = useCss(); s.keywords.${property}.${member.slice(0, -1)}¦;`,
     expected: member,
     word: member.slice(0, -1),
     details: true,
     documentation,
     definition: 'packages/ui/src/provider/theme/tokens.ts',
   })),
+  ...[
+    ['display', 'inline-flex'],
+    ['objectFit', 'cover'],
+    ['position', 'sticky'],
+    ['overflow', 'clip'],
+    ['width', 'fit-content'],
+    ['backgroundColor', 'inherit'],
+  ].map(([property, value]) => ({
+    name: 'CSS字符串-' + property,
+    source: `import { Css, css } from 'zerodep-js-css'; const s = new Css(); css(() => s.${property}('${value.slice(0, -1)}¦'));`,
+    expected: value,
+    word: value.slice(0, -1),
+  })),
   {
-    name: 'CSS说明-display.inlineFlex',
-    source: "import { Css } from 'zerodep-js-css'; const s = new Css(); s.display.inlineFle¦;",
-    expected: 'inlineFlex',
-    word: 'inlineFle',
+    name: 'CSS链式方法',
+    source:
+      "import { Css, css } from 'zerodep-js-css'; const s=new Css(); css(()=>s.color('red').widt¦('12px'));",
+    expected: 'width',
+    word: 'widt',
+    method: true,
     details: true,
-    documentation: '行内排版',
+    definition: 'packages/css/src/generated/author.ts',
   },
   {
-    name: 'CSS说明-objectFit.cover',
-    source: "import { Css } from 'zerodep-js-css'; const s = new Css(); s.objectFit.cove¦;",
-    expected: 'cover',
-    word: 'cove',
-    details: true,
-    documentation: '完整',
-  },
-  {
-    name: 'CSS说明-position.sticky',
-    source: "import { Css } from 'zerodep-js-css'; const s = new Css(); s.position.stick¦;",
-    expected: 'sticky',
-    word: 'stick',
-    details: true,
-    documentation: 'auto',
-  },
-  {
-    name: 'CSS说明-overflow.clip',
-    source: "import { Css } from 'zerodep-js-css'; const s = new Css(); s.overflow.cli¦;",
-    expected: 'clip',
-    word: 'cli',
-    details: true,
-    documentation: '不建立滚动容器',
-  },
-  {
-    name: 'CSS说明-width.rem',
-    source: "import { Css } from 'zerodep-js-css'; const s = new Css(); s.width.re¦;",
-    expected: 'rem',
-    word: 're',
-    details: true,
-    documentation: '根元素字号',
-  },
-  {
-    name: 'CSS说明-width.clamp',
-    source: "import { Css } from 'zerodep-js-css'; const s = new Css(); s.width.clam¦;",
-    expected: 'clamp',
-    word: 'clam',
-    details: true,
-    documentation: '下限和上限',
-  },
-
-  {
-    name: 'CSS公共关键字语义文档',
-    source: `import { Css } from 'zerodep-js-css'; const s = new Css(); s.backgroundColor.inhe¦;`,
-    expected: 'inherit',
-    word: 'inhe',
-    details: true,
-    documentation: '使用父元素该属性的计算值',
+    name: 'CSS绑定参数',
+    directory: 'apps/docs/src',
+    source:
+      "import {css,bx}from'zerodep-js-css';import{useCss}from'zerodep-js-ui';const s=useCss();css(()=>s.color(bx('_primar¦')));",
+    expected: '_primary',
+    word: '_primar',
   },
   {
     name: 'CSS属性用途文档',
@@ -280,7 +253,7 @@ class Theme extends SystemKeywords {
     _md: '1rem',
   };
 }
-const s = new Css(new Theme()); s.fontSize._m¦;`,
+const s = new Css(new Theme()); s.keywords.fontSize._m¦;`,
     expected: '_md',
     word: '_m',
     details: true,
@@ -302,11 +275,11 @@ const App = _component(() => { _head(() => ({ tit¦: '标题' })); return null; 
       `import { Css } from 'zerodep-js-css';
 import { createCssContext } from 'zerodep-js-css';
 const theme = createCssContext<Css>();
-const App = _component(() => { const s = theme.useCss(); s.width.p¦(20); return null; });`,
-    expected: 'px',
-    word: 'p',
+const App = _component(() => { const s = theme.useCss(); s.widt¦('20px'); return null; });`,
+    expected: 'width',
+    word: 'widt',
     details: true,
-    documentation: 'CSS 像素',
+    documentation: '宽度',
   },
   {
     name: 'DOM 引用绑定',
@@ -703,6 +676,7 @@ try {
         const items = Array.isArray(result) ? result : (result?.items ?? []);
         let item = items.find((item) => name(item) === entry.expected);
         assert(item, '缺少候选 ' + entry.expected);
+        if (entry.method) assert.equal(item.kind, 2, '必须是真实方法补全项，不能回退为函数值属性');
         for (const absent of entry.absent ?? [])
           assert(!items.some((item) => name(item) === absent), '错误候选 ' + absent);
         if (language.capabilities.completionProvider?.resolveProvider)

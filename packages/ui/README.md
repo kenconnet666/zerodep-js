@@ -81,9 +81,9 @@ import { Icon, Provider } from 'zerodep-js-ui';
 </Provider>;
 ```
 
-color/size 直接复用 CSS 作者 color.raw/fontSize.raw 的参数类型，保留主题关键字和原始 CSS 值。省略时继承文字颜色/字号，默认宽高为 1em；size 对应 font-size，数字不自动补 px。`s.keywords.color._primary` 是可传入的原值，`s.color._primary` 是 css(...) 使用的完整声明。
+color/size 直接复用 CssValue 对应的 color/fontSize 输入类型，保留主题关键字和原始 CSS 值。省略时继承文字颜色/字号，默认宽高为 1em；size 对应 font-size，数字不自动补 px。`s.keywords.color._primary` 是可传入的原值，`s.color('_primary')` 在 css 回调内写入当前声明。
 
-CSS 作者支持 raw(undefined) 省略声明，Icon 直接调用 raw(color)/raw(size)。动态撤销这两个属性时会恢复周围文字样式，无需组件自行过滤可选值。
+CSS 作者忽略 undefined，Icon 在 css 回调内调用 color(bx(color))/fontSize(bx(size))。动态撤销这两个属性时会恢复周围文字样式，无需组件自行过滤可选值。
 
 strokeWidth、width/height、viewBox、事件、class/style 等原生 SVG 属性可透传；用户 class 在默认样式之后组合，style 遵循原生规则。Icon 的内容由 icon 数据负责，不同时提供 children 入口。
 
@@ -138,16 +138,11 @@ Icon/Spinner 宽高为 1em，局部放大只通过 size 表达一次。ButtonBas
 
 ```tsx
 const s = useCss();
-const buttonStyle = css(
-  s.lineHeight.raw(1.25),
-  s.paddingBlock.em(0.625),
-  s.paddingInline.em(1),
-  s.gap.em(0.5),
-  s.borderRadius.em(0.5),
-  s.border.raw('0.0625em solid currentColor'),
-  s.minBlockSize.em(2.5),
-  s.minInlineSize.em(2.5),
-);
+const buttonStyle = css(() => {
+  s.lineHeight(1.25).paddingBlock('0.625em').paddingInline('1em');
+  s.gap('0.5em').borderRadius('0.5em');
+  s.border('0.0625em solid currentColor').minBlockSize('2.5em').minInlineSize('2.5em');
+});
 <ButtonBase size="clamp(0.875rem, 1vw + 0.5rem, 1.5rem)" class={buttonStyle}>
   <Icon icon={Search} size="1.125em" />
   <Text>搜索</Text>

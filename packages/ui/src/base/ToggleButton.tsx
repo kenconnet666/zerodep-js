@@ -1,5 +1,4 @@
 import { _component, _derived, type JSX } from 'zerodep-js';
-import { css } from 'zerodep-js-css';
 import type { LucideIconData } from '@lucide/icons';
 import type { ButtonState } from './Button.js';
 import { ButtonBase } from './ButtonBase.js';
@@ -73,7 +72,7 @@ export const ToggleButton = _component(
         pressed,
       }),
     );
-    const style = css(
+    const style = _derived([
       _buttonStyle(s, {
         variant,
         pressed,
@@ -83,7 +82,7 @@ export const ToggleButton = _component(
         iconOnly: Boolean(icon),
       }),
       className,
-    );
+    ]);
     const activate: NonNullable<JSX.IntrinsicElements['button']['onClick']> = (event) => {
       if (state.unavailable || event.currentTarget.matches(':disabled')) return;
       onClick?.(event);

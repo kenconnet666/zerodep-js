@@ -1,6 +1,6 @@
 import type { UiTheme } from '../provider/theme/theme.js';
-import { _component, _effect, _state, type JSX } from 'zerodep-js';
-import { css, type CssValue } from 'zerodep-js-css';
+import { _component, _effect, _state, type JSX, _derived } from 'zerodep-js';
+import { css, type CssValue, bx } from 'zerodep-js-css';
 import { useCss } from '../provider/context.js';
 import { _press } from '../utils/press.js';
 export type RippleProps = Omit<JSX.IntrinsicElements['span'], 'children' | 'color'> & {
@@ -96,17 +96,19 @@ export const Ripple = _component(
         clear();
       };
     });
-    const style = css(
-      s.position.absolute,
-      s.inset.raw(0),
-      s.borderRadius.inherit,
-      s.overflow.hidden,
-      s.pointerEvents.none,
-      s.opacity.raw(0.14),
-      s.transitionDuration._normal,
-      s.color.raw(color),
+    const style = _derived([
+      css(() => {
+        s.position('absolute');
+        s.inset(0);
+        s.borderRadius('inherit');
+        s.overflow('hidden');
+        s.pointerEvents('none');
+        s.opacity(0.14);
+        s.transitionDuration('_normal');
+        s.color(bx(color));
+      }),
       className,
-    );
+    ]);
     return <span {...rest} bind:this={layer} aria-hidden="true" class={style} />;
   },
 );

@@ -1,5 +1,5 @@
-import { _component, type JSX } from 'zerodep-js';
-import { css, type CssValue } from 'zerodep-js-css';
+import { _component, type JSX, _derived } from 'zerodep-js';
+import { css, type CssValue, bx } from 'zerodep-js-css';
 import { useCss } from '../provider/context.js';
 import type { UiTheme } from '../provider/theme/theme.js';
 import { buttonBorderWidth } from './button-style.js';
@@ -28,47 +28,61 @@ export const ButtonGroup = _component(
     ...rest
   }: ButtonGroupProps) => {
     const s = useCss();
-    const style = css(
-      s.display.raw(inline ? 'inline-flex' : 'flex'),
-      s.flexDirection.raw(direction),
-      s.flexWrap.nowrap,
-      s.gap.raw(0),
-      s.alignItems.stretch,
-      s.fontSize.raw(size),
-      s.isolation.isolate,
-      s._selector('&[hidden]', s.display.none),
-      equal &&
-        s._selector(
-          `& > ${item}`,
-          s.flex.raw('1 1 0'),
-          s.minInlineSize.raw(0),
-          s.minBlockSize.raw(0),
-        ),
-      direction === 'row'
-        ? s._selector(
-            afterFirst,
-            s.borderStartStartRadius.raw(0),
-            s.borderEndStartRadius.raw(0),
-            s.marginInlineStart.em(-buttonBorderWidth),
-          )
-        : s._selector(
-            afterFirst,
-            s.borderStartStartRadius.raw(0),
-            s.borderStartEndRadius.raw(0),
-            s.marginBlockStart.em(-buttonBorderWidth),
-          ),
-      direction === 'row'
-        ? s._selector(beforeLast, s.borderStartEndRadius.raw(0), s.borderEndEndRadius.raw(0))
-        : s._selector(beforeLast, s.borderEndStartRadius.raw(0), s.borderEndEndRadius.raw(0)),
-      // 禁用过滤不增加优先级，继续由后面的 pressed/focus-visible 覆盖 hover。
-      s._selector(
-        `& > ${item}:where(:not(:disabled):not([aria-disabled="true"])):hover`,
-        s.zIndex.raw(1),
-      ),
-      s._selector(`& > ${item}[aria-pressed="true"]`, s.zIndex.raw(2)),
-      s._selector(`& > ${item}:focus-visible`, s.zIndex.raw(3)),
+    const style = _derived([
+      css(() => {
+        s.display(bx(inline ? 'inline-flex' : 'flex'));
+        s.flexDirection(bx(direction));
+        s.flexWrap('nowrap');
+        s.gap(0);
+        s.alignItems('stretch');
+        s.fontSize(bx(size));
+        s.isolation('isolate');
+        s.select('&[hidden]', () => {
+          s.display('none');
+        });
+        if (equal) {
+          s.select(`& > ${item}`, () => {
+            s.flex('1 1 0');
+            s.minInlineSize(0);
+            s.minBlockSize(0);
+          });
+        }
+        if (direction === 'row') {
+          s.select(afterFirst, () => {
+            s.borderStartStartRadius(0);
+            s.borderEndStartRadius(0);
+            s.marginInlineStart(bx(`${-buttonBorderWidth}em`));
+          });
+        } else {
+          s.select(afterFirst, () => {
+            s.borderStartStartRadius(0);
+            s.borderStartEndRadius(0);
+            s.marginBlockStart(bx(`${-buttonBorderWidth}em`));
+          });
+        }
+        if (direction === 'row') {
+          s.select(beforeLast, () => {
+            s.borderStartEndRadius(0);
+            s.borderEndEndRadius(0);
+          });
+        } else {
+          s.select(beforeLast, () => {
+            s.borderEndStartRadius(0);
+            s.borderEndEndRadius(0);
+          });
+        }
+        s.select(`& > ${item}:where(:not(:disabled):not([aria-disabled="true"])):hover`, () => {
+          s.zIndex(1);
+        });
+        s.select(`& > ${item}[aria-pressed="true"]`, () => {
+          s.zIndex(2);
+        });
+        s.select(`& > ${item}:focus-visible`, () => {
+          s.zIndex(3);
+        });
+      }),
       className,
-    );
+    ]);
     return (
       <div {...rest} role={role} class={style}>
         {children}

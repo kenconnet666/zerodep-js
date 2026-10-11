@@ -1,3 +1,4 @@
+import { expectCssValue } from './style-assertions.js';
 import {
   lightTheme,
   darkTheme,
@@ -17,7 +18,7 @@ import { _createRoot, defineComponent, element, renderToString } from 'zerodep-j
 import {
   Css,
   SystemKeywords,
-  systemKeywords,
+  css as buildCss,
   createServerCssHost,
   withCssHost,
 } from 'zerodep-js-css';
@@ -60,7 +61,11 @@ function render(input: ProviderProps = {}) {
 describe('Provider 真实构建产物', () => {
   it('根字号使用主题，嵌套字号默认继承，显式字号允许 CSS 表达式', () => {
     const defaults = render();
-    expect(defaults.rules.some((rule) => rule.body.includes('font-size:1rem;'))).toBe(true);
+    expectCssValue(
+      { html: defaults.html, css: defaults.rules.map((rule) => '{' + rule.body + '}').join('') },
+      'font-size',
+      '1rem',
+    );
     expect(defaults.rules.some((rule) => rule.body.includes('font-size:inherit;'))).toBe(true);
     const custom = render({ size: 'clamp(1rem, 2vw, 2rem)' });
     expect(
@@ -116,15 +121,20 @@ describe('Provider 真实构建产物', () => {
     let theme: UiTheme = lightTheme;
     const css = new Css(() => theme);
     expect(theme).toBeInstanceOf(SystemKeywords);
-    expect(css.display.flex).toBe('display:flex;');
-    expect(css.color.red).toBe('color:red;');
-    expect(theme.color.red).toBe(systemKeywords.color.red);
-    expect(css.color._text).toBe('color:#202a36;');
+    const renderAuthor = () => {
+      const host = createServerCssHost();
+      const App = defineComponent(() =>
+        element('div', {
+          class: buildCss(() => css.display('flex').color('_text').backgroundColor('_primary')),
+        }),
+      );
+      return { html: withCssHost(host, () => renderToString(App)), css: host.cssText() };
+    };
+    expectCssValue(renderAuthor(), 'color', '#202a36');
     theme = darkTheme;
-    expect(css.color._text).toBe('color:#edf2f7;');
-    // oxlint-disable-next-line typescript/no-misused-spread -- 主题属性组仅包含原始 CSS 值，按公开扩展契约复制。
+    expectCssValue(renderAuthor(), 'color', '#edf2f7');
     theme = new UiTheme('light', { ...lightTheme.color, _primary: '#663399' });
-    expect(css.backgroundColor._primary).toBe('background-color:#663399;');
+    expectCssValue(renderAuthor(), 'background-color', '#663399');
     expect(Object.keys(lightTheme.color)).toEqual(Object.keys(darkTheme.color));
     expect(Object.isFrozen(lightTheme.color)).toBe(true);
   });

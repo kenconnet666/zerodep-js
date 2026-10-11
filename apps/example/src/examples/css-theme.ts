@@ -1,10 +1,9 @@
-import { Css, SystemKeywords, ColorKeywords } from 'zerodep-js-css';
+import { Css, SystemKeywords } from 'zerodep-js-css';
 import { createCssContext } from 'zerodep-js-css';
 
-class Colors extends ColorKeywords {
+class Colors {
   readonly _primary: string;
   constructor(primary: string) {
-    super();
     this._primary = primary;
   }
 }

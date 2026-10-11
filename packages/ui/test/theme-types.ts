@@ -26,5 +26,5 @@ void invalid;
 
 import { lightTheme } from '../src/index.js';
 const themed = new Css(lightTheme);
-themed.color.raw(undefined) satisfies string;
-themed.fontSize.raw(undefined) satisfies string;
+themed.color(undefined) satisfies Css<UiTheme>;
+themed.fontSize(undefined) satisfies Css<UiTheme>;

@@ -1,5 +1,6 @@
+import { nativeAttributes } from '../src/native/attributes.js';
 import { describe, expect, it } from 'vitest';
-import { Css, SystemKeywords, ColorKeywords } from 'zerodep-js-css';
+import { Css, SystemKeywords, css, createServerCssHost, withCssHost } from 'zerodep-js-css';
 import { createCssContext } from 'zerodep-js-css';
 import { source, _createRoot, _effect, _flushSync } from 'zerodep-js';
 
@@ -55,20 +56,14 @@ describe('CSS 作者作用域', () => {
   });
 
   it('注入的主题 getter 保持追踪，销毁后不保留副作用', () => {
-    class Colors extends ColorKeywords {
-      override readonly red: string;
-      constructor(value: string) {
-        super();
-        this.red = value;
-      }
-    }
     class Theme extends SystemKeywords {
-      override readonly color: SystemKeywords['color'];
+      override readonly color: { readonly _primary: string };
       constructor(primary: string) {
         super();
-        this.color = new Colors(primary);
+        this.color = { _primary: primary };
       }
     }
+    const host = createServerCssHost();
     const theme = source(new Theme('blue'));
     const { provideCss, useCss } = createCssContext();
     const seen: string[] = [];
@@ -77,7 +72,11 @@ describe('CSS 作者作用域', () => {
       _createRoot(() => {
         const s = useCss();
         _effect(() => {
-          seen.push(s.color.red);
+          seen.push(
+            withCssHost(host, () =>
+              nativeAttributes({ class: css(() => s.color('_primary')) }, 'div').get('style')!,
+            ),
+          );
         });
       });
       return stop;
@@ -86,7 +85,9 @@ describe('CSS 作者作用域', () => {
       _flushSync();
       theme.write(new Theme('green'));
       _flushSync();
-      expect(seen).toEqual(['color:blue;', 'color:green;']);
+      expect(seen).toHaveLength(2);
+      expect(seen[0]).toContain(':blue;');
+      expect(seen[1]).toContain(':green;');
       dispose();
       theme.write(new Theme('purple'));
       _flushSync();

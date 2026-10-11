@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdtemp, writeFile, rm, mkdir } from 'node:fs/promises';
+import { mkdtemp, writeFile, rm, mkdir, readdir, rmdir, unlink, realpath } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { dirname, resolve, relative, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -39,14 +39,14 @@ export const App = _component(({ onDestroy }: {onDestroy?: () => void;}) => {
 const localSource = (label, initial = 0, failure = false, mixed = false, color = 'blue') => `
 import {_component,_state,_derived,_onMount,_onCleanup,_getAbortSignal,_id} from 'zerodep-js';
 import {Css} from 'zerodep-js-css';
-import {css} from 'zerodep-js-css';
+import {css,bx} from 'zerodep-js-css';
 const s = new Css();
 export const App = _component(({onDestroy}:{onDestroy?:()=>void}) => {
   let count = _state(${initial});
   let node = _state<HTMLInputElement | undefined>(undefined);
   const form = _state({name:'初始'});
   const width = _derived(count);
-  const className = css(s.width.px(width + 100), s.color.raw('${color}'));
+  const className = css(() => { s.width(bx((width + 100) + 'px')); s.color('${color}'); });
   const inputId = _id();
   _onMount(() => {
     globalThis.__boundInput = () => node;
@@ -384,5 +384,18 @@ if(import.meta.hot)import.meta.hot.dispose(stop);
   await browser?.close();
   await server?.close();
   // fixture 是创建时已核对范围的固定绝对路径，仅清理本次持有的目录。
-  await rm(fixture, { recursive: true, force: true });
+  assert.equal(await realpath(fixture), fixture);
+  const pending = [fixture],
+    directories = [];
+  while (pending.length) {
+    const directory = pending.pop();
+    directories.push(directory);
+    for (const entry of await readdir(directory, { withFileTypes: true })) {
+      const file = resolve(directory, entry.name);
+      assert(file.startsWith(fixture + sep), '拒绝清理夹具范围之外的路径');
+      if (entry.isDirectory() && !entry.isSymbolicLink()) pending.push(file);
+      else await unlink(file);
+    }
+  }
+  for (const directory of directories.reverse()) await rmdir(directory);
 }

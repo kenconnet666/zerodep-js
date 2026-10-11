@@ -1,4 +1,4 @@
-import { _component } from 'zerodep-js';
+import { _component, _derived } from 'zerodep-js';
 import { css, keyframes } from 'zerodep-js-css';
 import { LoaderCircle } from '@lucide/icons';
 import { Icon, type IconProps } from './Icon.js';
@@ -8,11 +8,22 @@ export type SpinnerProps = Omit<IconProps, 'icon'>;
 /** 只提供加载图形，业务加载状态及操作说明由上层控件拥有。 */
 export const Spinner = _component(({ class: className, ...rest }: SpinnerProps) => {
   const s = useCss();
-  const rotation = keyframes('to{transform:rotate(360deg);}');
-  const style = css(
-    s.animation.raw(`${rotation} 800ms linear infinite`),
-    s._selector('@media (prefers-reduced-motion: reduce)', s.animation.none),
+  const rotation = keyframes(() => {
+    s.select('to', () => {
+      s.transform('rotate(360deg)');
+    });
+  });
+  const style = _derived([
+    css(() => {
+      s.animationName(rotation)
+        .animationDuration('800ms')
+        .animationTimingFunction('linear')
+        .animationIterationCount('infinite');
+      s.select('@media (prefers-reduced-motion: reduce)', () => {
+        s.animation('none');
+      });
+    }),
     className,
-  );
+  ]);
   return <Icon {...rest} icon={LoaderCircle} class={style} />;
 });

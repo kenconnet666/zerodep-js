@@ -1,13 +1,11 @@
 import { _component, type Renderable } from 'zerodep-js';
-import { css } from 'zerodep-js-css';
+import { css, bx } from 'zerodep-js-css';
 import type { LucideIconData } from '@lucide/icons';
 import { Icon } from './Icon.js';
 import { Text, type TextProps } from './Text.js';
 import { Spinner } from './Spinner.js';
 import { useCss } from '../provider/context.js';
-
 import type { DecorationProps } from './button-props.js';
-
 export interface ButtonContentProps {
   loading: boolean;
   icon?: LucideIconData | undefined;
@@ -36,23 +34,23 @@ export const ButtonContent = _component(
     spinnerProps,
   }: ButtonContentProps) => {
     const s = useCss();
-    const content = css(
-      s.display.inlineFlex,
-      s.alignItems.center,
-      s.justifyContent.center,
-      s.gap.em(0.5),
-      s.minInlineSize.raw(0),
-      s.maxInlineSize.raw('100%'),
-      s.opacity.raw(loading ? 0 : 1),
-    );
-    const overlay = css(
-      s.position.absolute,
-      s.inset.raw(0),
-      s.display.flex,
-      s.alignItems.center,
-      s.justifyContent.center,
-      s.pointerEvents.none,
-    );
+    const content = css(() => {
+      s.display('inline-flex');
+      s.alignItems('center');
+      s.justifyContent('center');
+      s.gap('0.5em');
+      s.minInlineSize(0);
+      s.maxInlineSize('100%');
+      s.opacity(bx(loading ? 0 : 1));
+    });
+    const overlay = css(() => {
+      s.position('absolute');
+      s.inset(0);
+      s.display('flex');
+      s.alignItems('center');
+      s.justifyContent('center');
+      s.pointerEvents('none');
+    });
     return (
       <>
         <span class={content} data-ui-button-content>

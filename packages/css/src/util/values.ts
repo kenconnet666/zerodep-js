@@ -1,5 +1,3 @@
-import { unitSuffix } from '../generated/base.js';
-
 // 作者关键词全集包含未获浏览器支持的值，不能充当变量优化白名单。
 const colors = new Set(
   'aqua black blue fuchsia gray green lime maroon navy olive orange purple red silver teal white yellow transparent currentcolor rebeccapurple'.split(
@@ -34,19 +32,9 @@ function safeLength(property: string, value: number, unit: string): boolean {
 }
 
 /** 只接管能确认的完整值；同一输入在 SSR/浏览器使用相同分类，不读取 CSS.supports。 */
-export function inlineValue(property: string, member: string, value: unknown): string | undefined {
+export function safeValue(property: string, value: unknown): string | undefined {
   let text: string | undefined;
-  if (
-    Object.hasOwn(unitSuffix, member) &&
-    typeof value === 'number' &&
-    safeLength(property, value, unitSuffix[member]!)
-  ) {
-    text = `${value}${unitSuffix[member]}`;
-  } else if (
-    member === 'raw' &&
-    typeof value === 'string' &&
-    !/^(initial|inherit|unset|revert|revert-layer)$/i.test(value)
-  ) {
+  if (typeof value === 'string' && !/^(initial|inherit|unset|revert|revert-layer)$/i.test(value)) {
     if (
       /^(color|backgroundColor|border(?:Top|Right|Bottom|Left)?Color|outlineColor|fill|stroke)$/.test(
         property,
@@ -57,9 +45,22 @@ export function inlineValue(property: string, member: string, value: unknown): s
     else {
       const length = /^([+-]?(?:\d+(?:\.\d+)?|\.\d+)(?:e[+-]?\d+)?)([a-z]+|%)$/i.exec(value);
       if (length && safeLength(property, Number(length[1]), length[2]!.toLowerCase())) text = value;
+      else if (
+        length &&
+        /^(?:animation|transition)(?:Duration|Delay)$/.test(property) &&
+        /^(?:ms|s)$/i.test(length[2]!) &&
+        Number.isFinite(Number(length[1])) &&
+        (property.endsWith('Delay') || Number(length[1]) >= 0)
+      )
+        text = value;
+      else if (
+        /^[+-]?(?:\d+(?:\.\d+)?|\.\d+)(?:e[+-]?\d+)?$/i.test(value) &&
+        safeValue(property, Number(value)) !== undefined
+      )
+        text = value;
       else if (value === '0' && lengths.has(property)) text = value;
     }
-  } else if (member === 'raw' && typeof value === 'number' && Number.isFinite(value)) {
+  } else if (typeof value === 'number' && Number.isFinite(value)) {
     if (
       (property === 'opacity' && value >= 0 && value <= 1) ||
       (['lineHeight', 'flexGrow', 'flexShrink'].includes(property) && value >= 0) ||

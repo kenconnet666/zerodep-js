@@ -14,20 +14,19 @@ import { addDays } from 'date-fns';
 
 // 纽约进入夏令时前一天的中午，方便直接观察“下一天”并不总是 24 小时。
 const instant = Date.UTC(2026, 2, 7, 17);
-
 const Preview = _component(({ name }: { name: string }) => {
   const s = useCss();
   const lang = useLang();
   const locale = useLocale();
-  const panel = css(
-    s.backgroundColor._surface,
-    s.color._text,
-    s.padding._md,
-    s.borderRadius._md,
-    s.borderColor._border,
-    s.borderWidth._thin,
-    s.borderStyle.solid,
-  );
+  const panel = css(() => {
+    s.backgroundColor('_surface');
+    s.color('_text');
+    s.padding('_md');
+    s.borderRadius('_md');
+    s.borderColor('_border');
+    s.borderWidth('_thin');
+    s.borderStyle('solid');
+  });
   return (
     <article class={panel} data-preview={name}>
       <h3>{name === 'outer' ? '跟随外层' : name === 'inner' ? '内层独立设置' : 'Portal 区域'}</h3>
@@ -61,7 +60,6 @@ const Preview = _component(({ name }: { name: string }) => {
     </article>
   );
 });
-
 export const ProviderDemo = _component(() => {
   let dark = _state(false);
   let english = _state(false);
@@ -127,6 +125,7 @@ export const ProviderDemo = _component(() => {
               <Preview name="inner" />
               {portal && (
                 <Portal>
+                  <Preview name="portal-direct" />
                   <Provider data-ui="provider-portal" data-provider="portal">
                     <Preview name="portal" />
                   </Provider>

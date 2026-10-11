@@ -1,6 +1,6 @@
 import type { UiTheme } from '../provider/theme/theme.js';
-import { _component, type JSX } from 'zerodep-js';
-import { css, type CssValue } from 'zerodep-js-css';
+import { _component, type JSX, _derived } from 'zerodep-js';
+import { css, type CssValue, bx } from 'zerodep-js-css';
 import { useCss } from '../provider/context.js';
 export interface FlexProps extends Omit<JSX.IntrinsicElements['div'], 'size'> {
   direction?: 'row' | 'column' | 'row-reverse' | 'column-reverse' | undefined;
@@ -34,21 +34,30 @@ export const Flex = _component(
     ...rest
   }: FlexProps) => {
     const s = useCss();
-    const style = css(
-      s.display.raw(inline ? 'inline-flex' : 'flex'),
-      s.flexDirection.raw(direction),
-      s.flexWrap.raw(wrap),
-      s.gap.raw(gap),
-      s.rowGap.raw(rowGap),
-      s.columnGap.raw(columnGap),
-      s.alignItems.raw(alignItems),
-      s.justifyContent.raw(justifyContent),
-      s.fontSize.raw(size),
-      s._selector('&[hidden]', s.display.none),
-      equal &&
-        s._selector('& > *', s.flex.raw('1 1 0'), s.minInlineSize.raw(0), s.minBlockSize.raw(0)),
+    const style = _derived([
+      css(() => {
+        s.display(bx(inline ? 'inline-flex' : 'flex'));
+        s.flexDirection(bx(direction));
+        s.flexWrap(bx(wrap));
+        s.gap(bx(gap));
+        s.rowGap(bx(rowGap));
+        s.columnGap(bx(columnGap));
+        s.alignItems(bx(alignItems));
+        s.justifyContent(bx(justifyContent));
+        s.fontSize(bx(size));
+        s.select('&[hidden]', () => {
+          s.display('none');
+        });
+        if (equal) {
+          s.select('& > *', () => {
+            s.flex('1 1 0');
+            s.minInlineSize(0);
+            s.minBlockSize(0);
+          });
+        }
+      }),
       className,
-    );
+    ]);
     return (
       <div {...rest} class={style}>
         {children}
