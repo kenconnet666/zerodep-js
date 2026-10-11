@@ -5,7 +5,7 @@
 ## 已确定契约
 
 - Button 是主要实现，拥有成品按钮状态、CSS 与内容装配。IconButton 只保留名称约束、纯图标默认几何和 text 默认变体；ToggleButton 只保留受控 pressed、取消顺序与内部槽状态补充。
-- LinkButton 保留真实 a 及导航、禁用、ref 语义；两种原生根只共享 button-shared.ts 内的私有外观声明函数，不创建任意 as 或根组件协议。单独导入 Button 仍不带入链接处理。
+- LinkButton 保留真实 a 及导航、禁用、ref 语义；按用户最新要求删除 button-shared.ts 和 _buttonAppearance，两种原生根各自在 css 回调中完整声明自己的外观。单独导入 Button 仍不带入链接处理。
 - icon/startIcon/endIcon 接收 Renderable；调用方直接创建 Icon 或自定义 SVG 并设置属性/ref。文本通过 children 组合。删除 slotIcon/slotStartIcon/slotEndIcon/slotText，不保留兼容入口。
 - 内部创建的 Spinner/Ripple 保留 slotSpinner/slotRipple 对象或状态回调；Toggle 的回调仍含 pressed。
 - 加载时文字保持可见，只在一个图标区域显示 Spinner；原图标节点保留。无图标时增加起始区域，宽度可以变化。loading 继续使用原生 disabled，根 aria-busy 不变。
@@ -20,3 +20,5 @@
 - 本地仅相关检查，完整 CI 交远端；不发布 npm。上一轮 CSS 文档生成器的冗余 never 分支单独修复，不降低 lint 或类型断言。
 
 状态：实施和上述焦点检查全部通过；相关 lint、UI/CSS 生成一致性检查通过。正式交付仍以最新提交的远端 CI 为准，不将本地 Chromium 结果等同于完整三浏览器/平台矩阵。
+
+后续按用户要求删除共享样式文件：Button/LinkButton 各自内联样式，类型按组件归属放置，ButtonGroup 负责接缝常量。UI 构建、19 个相关测试、7 个按钮属性/槽补全探针及相关 lint 通过。修正了上一轮 CI 中仍传 Lucide 数据的 IconButton 补全夹具，保留原类型断言。

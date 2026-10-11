@@ -1,8 +1,11 @@
 import { _component, type Renderable } from 'zerodep-js';
 import { css, bx } from 'zerodep-js-css';
-import { Spinner } from './Spinner.js';
+import { Spinner, type SpinnerProps } from './Spinner.js';
 import { useCss } from '../provider/context.js';
-import type { DecorationProps } from './button-shared.js';
+type Decoration = 'aria-hidden' | 'aria-label' | 'aria-labelledby' | 'role';
+export type DecorationProps = Omit<SpinnerProps, 'children' | Decoration> & {
+  [K in Decoration]?: never;
+};
 
 export interface ButtonContentProps {
   loading: boolean;

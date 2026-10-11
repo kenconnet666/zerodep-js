@@ -1,7 +1,7 @@
 import { _component, type JSX } from 'zerodep-js';
 import { Button } from './Button.js';
 import { _resolveSlotProps } from '../utils/slot-props.js';
-import type { ActionProps, ButtonState, ButtonContentInput } from './button-shared.js';
+import type { ActionProps, ButtonState, ButtonContentInput } from './Button.js';
 export interface ToggleButtonState extends ButtonState {
   readonly pressed: boolean;
 }

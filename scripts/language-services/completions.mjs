@@ -97,7 +97,7 @@ const cases = [
   ].map(([component, property, member]) => ({
     name: `按钮属性-${component}.${property}`,
     directory: 'apps/docs/src',
-    source: `import { ${component} } from 'zerodep-js-ui'; import { Search } from '@lucide/icons'; const view = <${component} ${component === 'IconButton' ? 'icon={Search} aria-label="搜索"' : component === 'LinkButton' ? 'href="/docs"' : ''} ${property}="${member.slice(0, -1)}¦" />;`,
+    source: `import { ${component}${component === 'IconButton' ? ', Icon' : ''} } from 'zerodep-js-ui'; import { Search } from '@lucide/icons'; const view = <${component} ${component === 'IconButton' ? 'icon={<Icon icon={Search} />} aria-label="搜索"' : component === 'LinkButton' ? 'href="/docs"' : ''} ${property}="${member.slice(0, -1)}¦" />;`,
     expected: member,
     word: member.slice(0, -1),
   })),

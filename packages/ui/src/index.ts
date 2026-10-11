@@ -2,16 +2,19 @@
 export {
   type ButtonVariant,
   type ButtonState,
-  buttonBorderWidth,
-  type DecorationProps,
   type AccessibleName,
   type ActionProps,
   type LabelProps,
-} from './base/button-shared.js';
-export { type ButtonProps, Button } from './base/Button.js';
+  type ButtonProps,
+  Button,
+} from './base/Button.js';
 export { type ButtonBaseState, type ButtonBaseProps, ButtonBase } from './base/ButtonBase.js';
-export { type ButtonContentProps, ButtonContent } from './base/ButtonContent.js';
-export { type ButtonGroupProps, ButtonGroup } from './base/ButtonGroup.js';
+export {
+  type DecorationProps,
+  type ButtonContentProps,
+  ButtonContent,
+} from './base/ButtonContent.js';
+export { buttonBorderWidth, type ButtonGroupProps, ButtonGroup } from './base/ButtonGroup.js';
 export { type IconProps, Icon } from './base/Icon.js';
 export { type IconButtonProps, IconButton } from './base/IconButton.js';
 export { type LinkButtonProps, LinkButton } from './base/LinkButton.js';
