@@ -162,6 +162,9 @@ for (const mode of ['csr', 'ssr']) {
     await page.keyboard.press('Tab');
     await page.keyboard.press('Shift+Tab');
     await expect(save).toHaveCSS('outline-width', '4px');
+    // 放大按钮后鼠标可能落入按钮，先移出再记录普通态，避免与悬停色混比。
+    await page.mouse.move(0, 0);
+    await expect.poll(() => save.evaluate((node) => node.matches(':hover'))).toBe(false);
     const lightBackground = await save.evaluate((node) => getComputedStyle(node).backgroundColor);
     await demo.getByLabel('按钮暗色', { exact: true }).check();
     await expect(save).not.toHaveCSS('background-color', lightBackground);

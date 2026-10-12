@@ -6,5 +6,6 @@
     "types": ["vite/client", "zerodep-js"],
     "noEmit": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"]
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "references": [{ "path": "../../packages/core" }, { "path": "../../packages/css" }]
 }

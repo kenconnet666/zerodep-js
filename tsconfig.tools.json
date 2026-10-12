@@ -9,6 +9,11 @@
     "noEmit": true
   },
   "exclude": ["tests/consumer"],
+  "references": [
+    { "path": "./packages/core" },
+    { "path": "./packages/css" },
+    { "path": "./packages/compiler" }
+  ],
   "include": [
     "*.config.ts",
     "apps/*/vite.config.ts",

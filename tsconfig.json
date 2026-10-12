@@ -4,6 +4,12 @@
   "references": [
     {
       "path": "./packages/core"
+    },
+    {
+      "path": "./packages/css"
+    },
+    {
+      "path": "./packages/compiler"
     }
   ]
 }
